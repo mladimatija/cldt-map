@@ -1,0 +1,12 @@
+# Netlify configuration for Next.js
+# https://docs.netlify.com/frameworks/next-js/overview/
+
+[build]
+  command = "next build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "24"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"

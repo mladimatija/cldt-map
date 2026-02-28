@@ -1,0 +1,45 @@
+:root {
+	--cldt-blue: #00a6c7;
+	--cldt-blue-text: #006b85;
+	--cldt-green: #5ec687;
+	--cldt-light-blue: #e5f0f5;
+	--cldt-light-green: #edf5ee;
+
+	--z-map: 0;
+	--z-map-tooltips: 2;
+	--z-map-markers: 3;
+	--z-map-overlay: 10;
+	--z-controls: 100;
+	--z-controls-popover: 110;
+	--z-tooltips: 200;
+	--z-modal: 300;
+	--z-toast: 400;
+
+	--min-touch-target: 44px;
+
+	touch-action: manipulation;
+}
+
+.dark {
+	--cldt-blue: #2dd4e6;
+	--cldt-green: #6ee7a0;
+	--cldt-light-blue: #0f172a;
+	--cldt-light-green: #052e16;
+	--bg-primary: #0f172a;
+	--bg-secondary: #1e293b;
+	--text-primary: #f1f5f9;
+	--text-secondary: #94a3b8;
+	--border-color: #334155;
+}
+
+.large-touch-targets .z-controls button,
+.large-touch-targets [class*='map-control'] button,
+.large-touch-targets .leaflet-control button {
+	min-height: 48px !important;
+	min-width: 48px !important;
+	padding: 12px !important;
+}
+
+.large-touch-targets .map-controls-top-row {
+	top: 88px !important;
+}

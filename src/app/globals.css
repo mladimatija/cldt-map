@@ -1,0 +1,7 @@
+@import 'tailwindcss';
+@config '../../tailwind.config.mjs';
+
+@import './styles/theme.css';
+@import './styles/base.css';
+@import './styles/map.css';
+@import './styles/components.css';
