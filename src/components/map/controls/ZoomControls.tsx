@@ -69,7 +69,10 @@ export default function ZoomControls(): React.ReactElement {
 					type="button"
 					onClick={() => null}
 				>
-					<span aria-hidden>Z{mapZoom.toPrecision(1)}</span>
+					<span aria-hidden>
+						Z{Math.floor(mapZoom)}
+						{mapZoom % 1 !== 0 ? '+' : ''}
+					</span>
 				</button>
 			</SmartTooltip>
 
