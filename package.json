@@ -1,58 +1,58 @@
 {
-  "name": "cldt-map",
-  "version": "0.1.0",
-  "private": false,
-  "license": "MIT",
-  "author": "Matija Culjak (https://matijaculjak.com)",
-  "engines": {
-    "node": ">=24"
-  },
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint .",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
-    "clean-install": "rm -rf node_modules .next package-lock.json && npm install"
-  },
-  "dependencies": {
-    "class-variance-authority": "^0.7.1",
-    "classnames": "^2.5.1",
-    "clsx": "^2.1.1",
-    "leaflet": "^1.9.4",
-    "leaflet-boundary-canvas": "^1.0.0",
-    "localforage": "^1.10.0",
-    "next": "16.1.6",
-    "next-intl": "^4.8.3",
-    "react": "19.2.4",
-    "react-dom": "19.2.4",
-    "react-icons": "^5.5.0",
-    "react-leaflet": "^5.0.0",
-    "recharts": "^3.7.0",
-    "tailwind-merge": "^3.0.2",
-    "tailwindcss-animate": "^1.0.7",
-    "zustand": "^5.0.3"
-  },
-  "devDependencies": {
-    "@eslint/eslintrc": "^3.3.4",
-    "@tailwindcss/postcss": "^4.0.15",
-    "@types/leaflet": "^1.9.16",
-    "@types/leaflet-boundary-canvas": "^1.0.3",
-    "@types/node": "^25.3.2",
-    "@types/react": "19.2.14",
-    "@types/react-dom": "19.2.3",
-    "eslint": "^9.39.3",
-    "eslint-config-next": "16.1.6",
-    "eslint-config-prettier": "^10.1.8",
-    "postcss": "^8.5.3",
-    "prettier": "^3.8.1",
-    "prettier-plugin-tailwindcss": "^0.7.2",
-    "tailwindcss": "^4.0.15",
-    "typescript": "^5.8.2"
-  },
-  "overrides": {
-    "@types/react": "19.2.14",
-    "@types/react-dom": "19.2.3"
-  }
+	"name": "cldt-map",
+	"version": "0.1.0",
+	"private": false,
+	"license": "MIT",
+	"author": "Matija Culjak (https://matijaculjak.com)",
+	"engines": {
+		"node": ">=24"
+	},
+	"scripts": {
+		"dev": "next dev",
+		"build": "next build",
+		"start": "next start",
+		"lint": "eslint .",
+		"format": "prettier --write .",
+		"format:check": "prettier --check .",
+		"clean-install": "rm -rf node_modules .next package-lock.json && npm install"
+	},
+	"dependencies": {
+		"class-variance-authority": "^0.7.1",
+		"classnames": "^2.5.1",
+		"clsx": "^2.1.1",
+		"leaflet": "^1.9.4",
+		"leaflet-boundary-canvas": "^1.0.0",
+		"localforage": "^1.10.0",
+		"next": "16.1.6",
+		"next-intl": "^4.8.3",
+		"react": "19.2.4",
+		"react-dom": "19.2.4",
+		"react-icons": "^5.5.0",
+		"react-leaflet": "^5.0.0",
+		"recharts": "^3.7.0",
+		"tailwind-merge": "^3.0.2",
+		"tailwindcss-animate": "^1.0.7",
+		"zustand": "^5.0.3"
+	},
+	"devDependencies": {
+		"@eslint/eslintrc": "^3.3.4",
+		"@tailwindcss/postcss": "^4.0.15",
+		"@types/leaflet": "^1.9.16",
+		"@types/leaflet-boundary-canvas": "^1.0.3",
+		"@types/node": "^25.3.2",
+		"@types/react": "19.2.14",
+		"@types/react-dom": "19.2.3",
+		"eslint": "^9.39.3",
+		"eslint-config-next": "16.1.6",
+		"eslint-config-prettier": "^10.1.8",
+		"postcss": "^8.5.3",
+		"prettier": "^3.8.1",
+		"prettier-plugin-tailwindcss": "^0.7.2",
+		"tailwindcss": "^4.0.15",
+		"typescript": "^5.8.2"
+	},
+	"overrides": {
+		"@types/react": "19.2.14",
+		"@types/react-dom": "19.2.3"
+	}
 }

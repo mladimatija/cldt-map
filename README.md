@@ -24,16 +24,16 @@ Interactive web map for the **Croatian Long Distance Trail (CLDT)** — a 2,200+
 
 ## Tech Stack
 
-| Layer      | Technology                    |
-| ---------- | ----------------------------- |
-| Framework  | Next.js 16, React 19          |
-| Language   | TypeScript                    |
-| Maps       | Leaflet, react-leaflet        |
-| State      | Zustand (slices + persisted)  |
-| Styling    | Tailwind CSS, shadcn/ui       |
-| i18n       | next-intl                     |
-| Charts     | Recharts                      |
-| Data       | localforage (GPX cache), fetch|
+| Layer     | Technology                     |
+| --------- | ------------------------------ |
+| Framework | Next.js 16, React 19           |
+| Language  | TypeScript                     |
+| Maps      | Leaflet, react-leaflet         |
+| State     | Zustand (slices + persisted)   |
+| Styling   | Tailwind CSS, shadcn/ui        |
+| i18n      | next-intl                      |
+| Charts    | Recharts                       |
+| Data      | localforage (GPX cache), fetch |
 
 ---
 
