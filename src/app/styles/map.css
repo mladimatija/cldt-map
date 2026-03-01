@@ -313,6 +313,10 @@
 	letter-spacing: 0;
 }
 
+.trail-section-marker-inner.trail-section-0 { background-color: #5ec687; }
+.trail-section-marker-inner.trail-section-1 { background-color: #00a6c7; }
+.trail-section-marker-inner.trail-section-2 { background-color: #e1584d; }
+
 .trail-section-info-tooltip.leaflet-tooltip {
 	background: rgba(255, 255, 255, 0.97) !important;
 	border-radius: 8px !important;
@@ -328,6 +332,10 @@
 .trail-section-info-tooltip-inner p {
 	margin: 0 0 2px;
 }
+
+.trail-section-info-tooltip-inner .trail-section-title-0 { color: #5ec687; }
+.trail-section-info-tooltip-inner .trail-section-title-1 { color: #00a6c7; }
+.trail-section-info-tooltip-inner .trail-section-title-2 { color: #e1584d; }
 
 .custom-button-tooltip {
 	background-color: rgba(255, 255, 255, 0.95) !important;
