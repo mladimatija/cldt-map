@@ -630,7 +630,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 				permanent: true,
 				direction: 'top',
 				offset: L.point(0, -60),
-				className: 'distance-tooltip',
+				className: 'map-tooltip',
 			})
 				.setLatLng(midPoint)
 				.setContent(content)

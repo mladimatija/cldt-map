@@ -56,7 +56,7 @@ function buildSectionTooltipHtml(
 	const estimatedDays = estimatePassageDays(secDistM, secAscent);
 	const ofTrail = t('sectionOfTrail');
 	return `
-		<div class="trail-section-info-tooltip-inner">
+		<div class="map-tooltip__inner">
 			<p class="font-bold text-sm mb-1 trail-section-title-${sectionIndex}">${t(section.nameKey)}</p>
 			<p><span class="font-medium">${t('sectionAlongTrail')}</span> ${formatDistance(alongTrailStartM, units, precision, true)} – ${formatDistance(alongTrailEndM, units, precision, true)}</p>
 			<p><span class="font-medium">${t('sectionFromYourStart')}</span> ${formatDistance(startDistM, units, precision, true)} – ${formatDistance(endDistM, units, precision, true)}</p>
@@ -280,7 +280,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 				offset,
 				direction: dir,
 				permanent: isTooltipVisible || tooltipPinnedFromShare,
-				className: 'trail-tooltip-container',
+				className: 'map-tooltip map-tooltip--wide',
 			})
 				.setLatLng(markerPosition)
 				.setContent(tooltipContent)
@@ -564,7 +564,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 							marker.bindTooltip(tooltipHtml, {
 								direction: 'top',
 								permanent: false,
-								className: 'trail-section-info-tooltip',
+								className: 'map-tooltip map-tooltip--section',
 							});
 							marker.addTo(map);
 							newSectionMarkers.push(marker);
@@ -632,7 +632,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 						startMarker.bindTooltip(t('startingPoint', { direction: directionText }), {
 							direction: 'top',
 							permanent: false,
-							className: 'trail-endpoint-tooltip',
+							className: 'map-tooltip map-tooltip--compact',
 						});
 						const startLabel = t('startingPoint', { direction: directionText });
 						startMarker.on('add', () => {
@@ -660,7 +660,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 					finishMarker.bindTooltip(t('finishPoint', { direction: directionText }), {
 						direction: 'top',
 						permanent: false,
-						className: 'trail-endpoint-tooltip',
+						className: 'map-tooltip map-tooltip--compact',
 					});
 					const finishLabel = t('finishPoint', { direction: directionText });
 					finishMarker.on('add', () => {

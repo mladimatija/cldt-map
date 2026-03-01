@@ -73,7 +73,7 @@ function ChartTooltipSync(props: {
 	}
 	const point = payload[0].payload;
 	return (
-		<div className="trail-tooltip-container !max-w-none !min-w-0">
+		<div className="map-tooltip !max-w-none !min-w-0">
 			<p>
 				<span className="font-medium">{distanceLabel}:</span> {formatDistance(point.distance, units, distancePrecision)}
 			</p>

@@ -187,7 +187,7 @@ export function Tooltip({
 
 	const tooltipContent = showTooltip && (
 		<div
-			className={`custom-button-tooltip pointer-events-auto fixed ${tooltipReady ? 'opacity-100' : 'opacity-0'}`}
+			className={`map-tooltip map-tooltip--control pointer-events-auto fixed ${tooltipReady ? 'opacity-100' : 'opacity-0'}`}
 			ref={tooltipRef}
 			role="tooltip"
 			style={tooltipStyle}

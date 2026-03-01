@@ -80,17 +80,60 @@
 	pointer-events: auto !important;
 }
 
-.leaflet-tooltip {
-	background-color: rgba(255, 255, 255, 0.95) !important;
-	color: #666 !important;
+/* Single reusable map tooltip (tokens in theme.css) */
+.map-tooltip {
+	background-color: var(--map-tooltip-bg) !important;
+	color: var(--map-tooltip-color) !important;
 	border: none !important;
-	border-radius: 8px !important;
-	padding: 12px !important;
-	font-size: 13px !important;
-	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2) !important;
+	border-left: 4px solid var(--cldt-blue) !important;
+	border-radius: var(--map-tooltip-radius) !important;
+	padding: var(--map-tooltip-padding) !important;
+	font-size: var(--map-tooltip-font-size) !important;
+	line-height: var(--map-tooltip-line-height) !important;
+	box-shadow: var(--map-tooltip-shadow) !important;
+	min-width: 200px;
+	max-width: 300px;
+	pointer-events: auto !important;
+	overflow-wrap: break-word;
+}
+
+.map-tooltip:before {
+	display: none !important;
+}
+
+.map-tooltip--compact {
+	padding: 6px 10px !important;
+	border-radius: 6px !important;
+	font-weight: 500 !important;
+	min-width: unset;
+	max-width: unset;
+}
+
+.map-tooltip--wide {
+	min-width: 250px !important;
+}
+
+.map-tooltip--narrow {
+	max-width: 280px !important;
+}
+
+.map-tooltip--section {
+	min-width: 220px;
+}
+
+/* Leaflet adds .leaflet-tooltip; when no .map-tooltip, keep default look via same tokens */
+.leaflet-tooltip:not(.map-tooltip) {
+	background-color: var(--map-tooltip-bg) !important;
+	color: var(--map-tooltip-color) !important;
+	border: none !important;
+	border-left: 4px solid var(--cldt-blue) !important;
+	border-radius: var(--map-tooltip-radius) !important;
+	padding: var(--map-tooltip-padding) !important;
+	font-size: var(--map-tooltip-font-size) !important;
+	line-height: var(--map-tooltip-line-height) !important;
+	box-shadow: var(--map-tooltip-shadow) !important;
 	pointer-events: none !important;
 	z-index: var(--z-map-tooltips) !important;
-	border-left: 4px solid var(--cldt-blue) !important;
 }
 
 .leaflet-tooltip-top:before,
@@ -103,22 +146,7 @@
 .leaflet-tooltip-styled {
 	font-weight: 500 !important;
 	text-align: left !important;
-	line-height: 1.4 !important;
-}
-
-.user-location-tooltip-off-trail {
-	background-color: rgba(255, 255, 255, 0.95) !important;
-	border-radius: 8px !important;
-	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2) !important;
-	padding: 12px !important;
-	min-width: 200px !important;
-	max-width: 280px !important;
-	border-left: 4px solid var(--cldt-blue) !important;
-	pointer-events: auto !important;
-}
-
-.user-location-tooltip-off-trail:before {
-	display: none !important;
+	line-height: var(--map-tooltip-line-height) !important;
 }
 
 .user-location-tooltip-inner {
@@ -151,46 +179,24 @@
 	background: rgba(0, 0, 0, 0.05);
 }
 
-.location-button-tooltip,
-.custom-button-tooltip {
+.map-tooltip,
+.location-button-tooltip {
 	z-index: var(--z-tooltips) !important;
 }
 
-.trail-tooltip-container {
-	background-color: rgba(255, 255, 255, 0.95) !important;
-	border-radius: 8px !important;
-	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2) !important;
-	padding: 12px !important;
-	min-width: 250px !important;
-	max-width: 300px !important;
-	border-left: 4px solid var(--cldt-blue) !important;
-	pointer-events: auto !important;
-	overflow-wrap: break-word;
-}
-
-.trail-tooltip-container .leaflet-tooltip-content {
+.leaflet-tooltip.map-tooltip .leaflet-tooltip-content {
 	padding: 0 !important;
 	margin: 0 !important;
 }
 
-.trail-tooltip-container:before {
-	display: none !important;
-}
-
-.trail-endpoint-tooltip {
-	padding: 6px 10px !important;
-	font-weight: 500 !important;
-	border-radius: 6px !important;
-}
-
-.distance-tooltip .distance-tooltip-content {
+.map-tooltip .distance-tooltip-content {
 	display: flex;
 	flex-direction: column;
 	gap: 4px;
-	line-height: 1.4;
+	line-height: var(--map-tooltip-line-height);
 }
 
-.trail-tooltip-container h3 {
+.map-tooltip h3 {
 	margin: 0 0 8px 0;
 	color: var(--cldt-blue);
 	font-size: 16px;
@@ -199,16 +205,17 @@
 	padding: 0 0 6px;
 }
 
-.trail-tooltip-container p {
+/* Shared tooltip content: labels and body text */
+.map-tooltip p {
 	margin: 4px 0;
 	padding: 0;
-	color: #666;
-	font-size: 13px;
-	line-height: 1.4;
+	color: var(--map-tooltip-color);
+	font-size: var(--map-tooltip-font-size);
+	line-height: var(--map-tooltip-line-height);
 }
 
-.trail-tooltip-container .font-medium {
-	color: #333;
+.map-tooltip .font-medium {
+	color: var(--map-tooltip-label-color);
 	font-weight: 500;
 }
 
@@ -323,59 +330,28 @@
 	background-color: #e1584d;
 }
 
-/* Match base .leaflet-tooltip / trail-tooltip-container styling */
-.trail-section-info-tooltip.leaflet-tooltip {
-	background-color: rgba(255, 255, 255, 0.95) !important;
-	color: #666 !important;
-	border: none !important;
-	border-left: 4px solid var(--cldt-blue) !important;
-	border-radius: 8px !important;
-	padding: 12px !important;
-	font-size: 13px !important;
-	line-height: 1.4 !important;
-	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2) !important;
-	min-width: 220px;
+.map-tooltip--section {
+	min-width: 220px !important;
 }
 
-.trail-section-info-tooltip-inner p {
-	margin: 4px 0;
-	padding: 0;
-	color: #666;
-	font-size: 13px;
-	line-height: 1.4;
-}
-
-.trail-section-info-tooltip-inner .font-medium {
-	color: #333;
-	font-weight: 500;
-}
-
-.trail-section-info-tooltip-inner .trail-section-title-0 {
+/* Section tooltip: colored title (A/B/C) */
+.map-tooltip__inner .trail-section-title-0 {
 	color: #5ec687;
 }
-.trail-section-info-tooltip-inner .trail-section-title-1 {
+.map-tooltip__inner .trail-section-title-1 {
 	color: #00a6c7;
 }
-.trail-section-info-tooltip-inner .trail-section-title-2 {
+.map-tooltip__inner .trail-section-title-2 {
 	color: #e1584d;
 }
 
-.custom-button-tooltip {
-	background-color: rgba(255, 255, 255, 0.95) !important;
-	border-radius: 8px !important;
-	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2) !important;
-	padding: 12px !important;
-	font-size: 13px !important;
-	line-height: 1.4 !important;
-	color: #666 !important;
-	border-left: 4px solid var(--cldt-blue) !important;
+/* Control button tooltips (Radix) */
+.map-tooltip.map-tooltip--control {
 	transition: opacity 0.15s ease-in-out !important;
 }
 
-.custom-button-tooltip p,
-.custom-button-tooltip div {
-	margin: 4px 0;
-	padding: 0;
+.map-tooltip.map-tooltip--control p,
+.map-tooltip.map-tooltip--control div {
 	font-weight: normal;
 	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }

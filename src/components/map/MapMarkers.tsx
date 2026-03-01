@@ -107,7 +107,7 @@ export default function MapMarkers(): React.ReactElement | null {
 			offset: L.point(0, -15),
 			direction: 'top',
 			permanent: true,
-			className: 'user-location-tooltip-off-trail',
+			className: 'map-tooltip map-tooltip--narrow',
 		});
 		marker.openTooltip();
 		const tooltip = marker.getTooltip();
