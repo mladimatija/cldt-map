@@ -15,6 +15,7 @@ Interactive web map for the **Croatian Long Distance Trail (CLDT)** — a 2,200+
 - **Location tracking** — Optional GPS to see your position on the trail
 - **Share links** — Share current map view or progress on the trail
 - **Units** — Metric (km) and imperial (miles)
+- **Trail sections** — Optional color-coded sections (A/B/C) with boundary markers and stats (persisted)
 - **Dark mode & battery saver** — UI preferences and reduced location updates
 - **Bilingual** — English and Croatian (hr)
 - **Offline support** — Service Worker caches GPX and map tiles
@@ -79,6 +80,7 @@ Optional overrides (see `src/lib/config.ts`, `src/lib/gpx-cache.ts`):
 - `NEXT_PUBLIC_DEFAULT_BATTERY_SAVER` — battery saver on load
 - `NEXT_PUBLIC_DEFAULT_LARGE_TOUCH_TARGETS` — large touch targets on load (accessibility)
 - `NEXT_PUBLIC_DEFAULT_RULER_ENABLED` — distance ruler on load
+- `NEXT_PUBLIC_DEFAULT_SHOW_SECTIONS` — show trail sections on load (default `false`)
 - `NEXT_PUBLIC_DEFAULT_LOCALE` — `en` or `hr`
 - `NEXT_PUBLIC_DEFAULT_MAP_CENTER` — `lat,lng` (e.g. `44.4268,16.438`)
 - `NEXT_PUBLIC_DEFAULT_MAP_ZOOM` — initial zoom level

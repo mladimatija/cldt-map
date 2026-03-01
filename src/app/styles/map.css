@@ -292,6 +292,43 @@
 	background: #e1584d;
 }
 
+.trail-section-marker.leaflet-div-icon {
+	background: none !important;
+	border: none !important;
+	overflow: visible !important;
+}
+
+.trail-section-marker-inner {
+	width: 24px;
+	height: 24px;
+	border: 2px solid white;
+	border-radius: 50%;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: white;
+	font-size: 10px;
+	font-weight: 700;
+	letter-spacing: 0;
+}
+
+.trail-section-info-tooltip.leaflet-tooltip {
+	background: rgba(255, 255, 255, 0.97) !important;
+	border-radius: 8px !important;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2) !important;
+	padding: 10px 12px !important;
+	font-size: 12px !important;
+	line-height: 1.5 !important;
+	color: #333 !important;
+	border: 1px solid rgba(0, 0, 0, 0.08) !important;
+	min-width: 220px;
+}
+
+.trail-section-info-tooltip-inner p {
+	margin: 0 0 2px;
+}
+
 .custom-button-tooltip {
 	background-color: rgba(255, 255, 255, 0.95) !important;
 	border-radius: 8px !important;

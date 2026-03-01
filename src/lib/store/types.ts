@@ -50,6 +50,7 @@ export interface EnhancedTrailPoint {
 	elevationGainFromStart: number;
 	elevationLossFromStart: number;
 	index: number;
+	sectionName?: string;
 }
 
 export interface TrailMetadata {
@@ -206,6 +207,8 @@ export interface MapStoreState {
 	setBatterySaverMode: (enabled: boolean) => void;
 	largeTouchTargets: boolean;
 	setLargeTouchTargets: (enabled: boolean) => void;
+	showSections: boolean;
+	setShowSections: (show: boolean) => void;
 	baseMapProvider: string;
 	setBaseMapProvider: (provider: string) => void;
 }

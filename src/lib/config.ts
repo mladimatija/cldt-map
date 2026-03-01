@@ -95,4 +95,7 @@ export const config = {
 
 	/** Distance ruler enabled by default */
 	rulerEnabled: envBool('NEXT_PUBLIC_DEFAULT_RULER_ENABLED', false),
+
+	/** Show trail sections (color-coded segments and boundary markers) by default */
+	showSections: envBool('NEXT_PUBLIC_DEFAULT_SHOW_SECTIONS', false),
 } as const;

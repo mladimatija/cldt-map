@@ -127,6 +127,8 @@ export function createMapStoreStub(): MapStoreState {
 		setBatterySaverMode: noop,
 		largeTouchTargets: false,
 		setLargeTouchTargets: noop,
+		showSections: false,
+		setShowSections: noop,
 		baseMapProvider: BaseMapProvider.OPEN_STREET_MAP,
 		setBaseMapProvider: noop,
 		requestRawGpxData: noopNull,

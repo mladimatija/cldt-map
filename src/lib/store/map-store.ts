@@ -112,6 +112,8 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 				setBatterySaverMode: (enabled: boolean) => set({ batterySaverMode: enabled }),
 				largeTouchTargets: config.largeTouchTargets,
 				setLargeTouchTargets: (enabled: boolean) => set({ largeTouchTargets: enabled }),
+				showSections: config.showSections,
+				setShowSections: (show: boolean) => set({ showSections: show }),
 				baseMapProvider: config.baseMapProvider,
 				setBaseMapProvider: (provider: string) => set({ baseMapProvider: provider }),
 
@@ -250,6 +252,7 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					showBoundary: state.showBoundary,
 					showTileBoundary: state.showTileBoundary,
 					showUserMarker: state.showUserMarker,
+					showSections: state.showSections,
 					distancePrecision: state.distancePrecision,
 					darkMode: state.darkMode,
 					batterySaverMode: state.batterySaverMode,

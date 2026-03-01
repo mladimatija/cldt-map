@@ -1,12 +1,14 @@
 'use client';
 
 import React, { type RefObject } from 'react';
+import { useTranslations } from 'next-intl';
 import SmartTooltip from '@/components/ui/SmartTooltip';
 import { Checkbox } from '@/components/ui/Checkbox';
 import {
 	IoMoonOutline,
 	IoBatteryHalfOutline,
 	IoHandLeftOutline,
+	IoLayersOutline,
 	IoSettingsOutline,
 	IoHelpCircleOutline,
 } from 'react-icons/io5';
@@ -25,6 +27,8 @@ interface MapControlsSettingsPanelProps {
 	batterySaverTooltip: string;
 	largeTouchTargets: boolean;
 	setLargeTouchTargets: (checked: boolean) => void;
+	showSections: boolean;
+	setShowSections: (checked: boolean) => void;
 	darkModeLabel: string;
 	batterySaverLabel: string;
 	largeTouchTargetsLabel: string;
@@ -32,7 +36,7 @@ interface MapControlsSettingsPanelProps {
 	tooltipHide: string;
 }
 
-/** Settings popover: dark mode, battery saver, large touch targets. */
+/** Settings popover: dark mode, battery saver, large touch targets, show sections. */
 export function MapControlsSettingsPanel({
 	containerRef,
 	isExpanded,
@@ -45,12 +49,15 @@ export function MapControlsSettingsPanel({
 	batterySaverTooltip,
 	largeTouchTargets,
 	setLargeTouchTargets,
+	showSections,
+	setShowSections,
 	darkModeLabel,
 	batterySaverLabel,
 	largeTouchTargetsLabel,
 	tooltipShow,
 	tooltipHide,
 }: MapControlsSettingsPanelProps): React.ReactElement {
+	const t = useTranslations('mapControls');
 	return (
 		<div className="relative inline-block w-10 shrink-0" ref={containerRef}>
 			{isExpanded && (
@@ -75,6 +82,16 @@ export function MapControlsSettingsPanel({
 						<Checkbox checked={largeTouchTargets} onCheckedChange={(checked) => setLargeTouchTargets(checked)} />
 						<IoHandLeftOutline className="h-4 w-4 shrink-0 text-gray-600 dark:text-gray-400" />
 						<span className="text-sm text-gray-700 dark:text-gray-200">{largeTouchTargetsLabel}</span>
+					</label>
+					<label className="flex cursor-pointer items-center gap-2">
+						<Checkbox checked={showSections} onCheckedChange={(checked) => setShowSections(checked)} />
+						<IoLayersOutline className="h-4 w-4 shrink-0 text-gray-600 dark:text-gray-400" />
+						<span className="text-sm text-gray-700 dark:text-gray-200">{t('showSections')}</span>
+						<span className="inline-flex" onClick={(e) => e.stopPropagation()} onMouseDown={(e) => e.stopPropagation()}>
+							<SmartTooltip content={t('showSectionsTooltip')} position="top">
+								<IoHelpCircleOutline className="ml-0.5 h-3.5 w-3.5 shrink-0 cursor-help text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300" />
+							</SmartTooltip>
+						</span>
 					</label>
 				</div>
 			)}

@@ -57,3 +57,17 @@ export function calculateTrailMetadata(
 		elevationLoss,
 	};
 }
+
+/**
+ * Estimate average passage time in days using Naismith's rule.
+ * Naismith: 1 h per 5 km + 1 h per 600 m ascent. Assumes 7 hiking hours per day.
+ * @param distanceM Distance in meters
+ * @param ascentM Total ascent in meters
+ * @returns Estimated days (rounded to 1 decimal)
+ */
+export function estimatePassageDays(distanceM: number, ascentM: number): number {
+	const distanceKm = distanceM / 1000;
+	const hours = distanceKm / 5 + ascentM / 600;
+	const days = hours / 7;
+	return Math.round(days * 10) / 10;
+}

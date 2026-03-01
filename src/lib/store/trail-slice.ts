@@ -4,6 +4,7 @@ import { config } from '../config';
 import { isWithinMapBoundary } from '../utils';
 import type { StoreState, TrailSlice, TrailState, ClosestPoint, EnhancedTrailPoint } from './types';
 import { L } from './leaflet';
+import { TRAIL_SECTIONS } from '../trail-sections';
 
 type GpxElevationPoint = { lat: number; lng: number; elevation: number };
 
@@ -203,6 +204,9 @@ export const createTrailSlice: StateCreator<StoreState, [], [], TrailSlice> = (s
 				}
 			}
 
+			const distKm = cumulativeDistance / 1000;
+			const section = TRAIL_SECTIONS.find((s) => distKm >= s.startKm && distKm < s.endKm);
+
 			enhancedPoints.push({
 				lat: points[i].lat,
 				lng: points[i].lng,
@@ -211,6 +215,7 @@ export const createTrailSlice: StateCreator<StoreState, [], [], TrailSlice> = (s
 				elevationGainFromStart: cumulativeElevGain,
 				elevationLossFromStart: cumulativeElevLoss,
 				index: i,
+				sectionName: section?.nameKey,
 			});
 		}
 

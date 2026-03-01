@@ -85,9 +85,11 @@ const MapControls: React.FC<MapControlsProps> = ({
 	const setDarkMode = useMapStore((state: MapStoreState) => state.setDarkMode);
 	const setBatterySaverMode = useMapStore((state: MapStoreState) => state.setBatterySaverMode);
 	const setLargeTouchTargets = useMapStore((state: MapStoreState) => state.setLargeTouchTargets);
+	const setShowSections = useMapStore((state: MapStoreState) => state.setShowSections);
 	const darkMode = useMapStore((state: MapStoreState) => state.darkMode);
 	const batterySaverMode = useMapStore((state: MapStoreState) => state.batterySaverMode);
 	const largeTouchTargets = useMapStore((state: MapStoreState) => state.largeTouchTargets);
+	const showSections = useMapStore((state: MapStoreState) => state.showSections);
 	const userLocation = useMapStore((state: MapStoreState) => state.userLocation);
 	const permissionStatus = useMapStore((state: MapStoreState) => state.permissionStatus);
 	const highlightedTrailPoint = useStore((state: StoreState) => state.highlightedTrailPoint);
@@ -1073,6 +1075,8 @@ const MapControls: React.FC<MapControlsProps> = ({
 					setBatterySaverMode={setBatterySaverMode}
 					setDarkMode={setDarkMode}
 					setLargeTouchTargets={setLargeTouchTargets}
+					setShowSections={setShowSections}
+					showSections={showSections}
 					tooltipHide={t('preferencesHide')}
 					tooltipShow={t('preferencesShow')}
 					onToggle={() => {

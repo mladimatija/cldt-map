@@ -5,7 +5,7 @@ import type L from 'leaflet';
 import { FIT_ROUTE_EVENT } from '@/components/map/controls/ZoomControls';
 
 /** Subscribes to FIT_ROUTE_EVENT and fits the map to the route bounds when fired. */
-export function useFitToRoute(map: L.Map | null, routeLayerRef: RefObject<L.Polyline | null>): void {
+export function useFitToRoute(map: L.Map | null, routeLayerRef: RefObject<L.FeatureGroup | null>): void {
 	useEffect(() => {
 		if (!map) return;
 

@@ -17,11 +17,56 @@ import {
 	TOOLTIP_PADDING,
 	START_FLAG_SVG,
 	FINISH_FLAG_SVG,
+	sectionBoundaryIcon,
 } from '@/components/map/trail-route-constants';
+import { TRAIL_SECTIONS } from '@/lib/trail-sections';
 import { fetchGPXWithCache } from '@/lib/gpx-cache';
-import { calculateTrailMetadata } from '@/lib/map';
+import { calculateTrailMetadata, estimatePassageDays } from '@/lib/map';
 import { clearShareUrlParams, formatDistance, formatElevation, parseShareUrlParams } from '@/lib/utils';
-import { useTranslations } from 'next-intl';
+import type { UnitSystem } from '@/lib/types';
+import { useLocale, useTranslations } from 'next-intl';
+
+interface SectionTooltipStats {
+	/** Distance from current start to section start (m). */
+	startDistM: number;
+	/** Distance from current start to section end (m). */
+	endDistM: number;
+	secDistM: number;
+	secAscent: number;
+	secDescent: number;
+	/** Geographic section index (0=A, 1=B, 2=C) for label and color. */
+	sectionIndex: number;
+}
+
+function buildSectionTooltipHtml(
+	stats: SectionTooltipStats,
+	totals: { totalDistanceM: number; totalAscentM: number; totalDescentM: number },
+	units: UnitSystem,
+	precision: number,
+	t: (key: string) => string,
+): string {
+	const { startDistM, endDistM, secDistM, secAscent, secDescent, sectionIndex } = stats;
+	const section = TRAIL_SECTIONS[sectionIndex];
+	const { totalDistanceM, totalAscentM, totalDescentM } = totals;
+	const alongTrailStartM = section.startKm * 1000;
+	const alongTrailEndM = section.endKm === Infinity ? totalDistanceM : section.endKm * 1000;
+	const distPct = totalDistanceM > 0 ? ((secDistM / totalDistanceM) * 100).toFixed(1) : '0.0';
+	const ascentPct = totalAscentM > 0 ? ((secAscent / totalAscentM) * 100).toFixed(1) : '0.0';
+	const descentPct = totalDescentM > 0 ? ((secDescent / totalDescentM) * 100).toFixed(1) : '0.0';
+	const estimatedDays = estimatePassageDays(secDistM, secAscent);
+	const ofTrail = t('sectionOfTrail');
+	return `
+		<div class="trail-section-info-tooltip-inner">
+			<p class="font-bold text-sm mb-1" style="color:${section.color}">${t(section.nameKey)}</p>
+			<p><span class="font-medium">${t('sectionAlongTrail')}</span> ${formatDistance(alongTrailStartM, units, precision, true)} – ${formatDistance(alongTrailEndM, units, precision, true)}</p>
+			<p><span class="font-medium">${t('sectionFromYourStart')}</span> ${formatDistance(startDistM, units, precision, true)} – ${formatDistance(endDistM, units, precision, true)}</p>
+			<p><span class="font-medium">${t('sectionDistance')}</span> ${formatDistance(secDistM, units, precision, true)} (${distPct}% ${ofTrail})</p>
+			<p><span class="font-medium">${t('sectionAscent')}</span> ${formatElevation(secAscent, units)} (${ascentPct}% ${ofTrail})</p>
+			<p><span class="font-medium">${t('sectionDescent')}</span> ${formatElevation(secDescent, units)} (${descentPct}% ${ofTrail})</p>
+			<p><span class="font-medium">${t('sectionAvgPassageTime')}</span> ${estimatedDays} ${t('sectionDays')}</p>
+		</div>
+	`;
+}
 
 interface TrailRouteProps {
 	pathOptions?: L.PathOptions;
@@ -30,8 +75,21 @@ interface TrailRouteProps {
 export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: TrailRouteProps): React.ReactElement | null {
 	const t = useTranslations('trailRoute');
 	const tChart = useTranslations('elevationChart');
+	const locale = useLocale();
 	const map = useMap();
-	const routeLayerRef = useRef<L.Polyline | null>(null);
+	const routeLayerRef = useRef<L.FeatureGroup | null>(null);
+	const sectionLayersRef = useRef<L.Polyline[]>([]);
+	const sectionBoundaryMarkersRef = useRef<L.Marker[]>([]);
+	const sectionStatsRef = useRef<
+		Array<{
+			startDistM: number;
+			endDistM: number;
+			secDistM: number;
+			secAscent: number;
+			secDescent: number;
+			sectionIndex: number;
+		}>
+	>([]);
 	const markerRef = useRef<L.Marker | null>(null);
 	const tooltipRef = useRef<L.Tooltip | null>(null);
 	const startMarkerRef = useRef<L.Marker | null>(null);
@@ -50,6 +108,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 	const units = useMapStore((state: MapStoreState) => state.units);
 	const isRulerEnabled = useMapStore((state: MapStoreState) => state.isRulerEnabled);
 	const distancePrecision = useMapStore((state: MapStoreState) => state.distancePrecision);
+	const showSections = useMapStore((state: MapStoreState) => state.showSections);
 
 	const highlightedPoint = useStore((state: StoreState) => state.highlightedTrailPoint);
 	const tooltipPinnedFromShare = useStore((state: StoreState) => state.tooltipPinnedFromShare);
@@ -70,6 +129,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 		distanceFromStart?: number;
 		elevationGainFromStart?: number;
 		elevationLossFromStart?: number;
+		sectionName?: string;
 	}
 
 	const clearMarkerAndTooltip = useCallback((): void => {
@@ -89,6 +149,11 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 			routeLayerRef.current.removeFrom(map);
 			routeLayerRef.current = null;
 		}
+		sectionLayersRef.current = [];
+		for (const m of sectionBoundaryMarkersRef.current) {
+			m.removeFrom(map);
+		}
+		sectionBoundaryMarkersRef.current = [];
 		if (startMarkerRef.current) {
 			startMarkerRef.current.removeFrom(map);
 			startMarkerRef.current = null;
@@ -162,8 +227,13 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 			const lat = point.lat;
 			const lng = point.lng;
 			const coordsFormatted = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+			const distKm = distanceFromStart / 1000;
+			const section = TRAIL_SECTIONS.find((s) => distKm >= s.startKm && distKm < s.endKm);
+			const sectionKey = point.sectionName ?? section?.nameKey;
+			const sectionLabel = sectionKey ? t(sectionKey) : '';
 			const trailInfoHtml = `
         <p><span class="font-bold">${t('tooltipCoordinates')}</span> <span class="trail-tooltip-coords-link font-bold" data-lat="${lat}" data-lng="${lng}" role="button" tabindex="0">${coordsFormatted}</span></p>
+        ${sectionLabel ? `<p><span class="font-medium">${t('tooltipSection')}</span> ${sectionLabel}</p>` : ''}
         <p><span class="font-medium">${t('tooltipElevation')}</span> ${formatElevation(currentElevation, currentUnits)}</p>
         <p><span class="font-medium">${t('tooltipDistanceFromStart')}</span> ${formatDistance(distanceFromStart, currentUnits, currentPrecision, true)} (${distanceFromStartPct.toFixed(1)}%)</p>
         <p><span class="font-medium">${t('tooltipDistanceToEnd')}</span> ${formatDistance(distanceToEnd, currentUnits, currentPrecision, true)} (${distanceToEndPct.toFixed(1)}%)</p>
@@ -350,60 +420,173 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 				const directionAdjustedElevPoints = direction === 'NOBO' ? [...elevationPoints].reverse() : elevationPoints;
 
 				if (points.length > 0) {
-					const polyline = L.polyline(directionAdjustedPoints, {
-						...pathOptions,
-						smoothFactor: 1,
-						interactive: true,
-						bubblingMouseEvents: true,
-						weight: pathOptions.weight || 5,
-						renderer: L.svg({ padding: 10 }),
+					// Compute cumulative distances to split points into sections.
+					const latLngPoints = directionAdjustedPoints.map((p) => {
+						const tuple = p as L.LatLngTuple;
+						return L.latLng(tuple[0], tuple[1]);
 					});
+					let cumDistM = 0;
+					const cumDistances: number[] = [0];
+					for (let i = 1; i < latLngPoints.length; i++) {
+						cumDistM += latLngPoints[i - 1].distanceTo(latLngPoints[i]);
+						cumDistances.push(cumDistM);
+					}
 
-					polyline.on('mousemove', (e) => {
-						if (useMapStore.getState().isRulerEnabled) {
-							return;
+					const featureGroup = L.featureGroup();
+					const sectionPolylines: L.Polyline[] = [];
+
+					// Helper: attach shared mousemove/mouseout/click handlers to a polyline.
+					const attachPolylineHandlers = (pl: L.Polyline): void => {
+						pl.on('mousemove', (e) => {
+							if (useMapStore.getState().isRulerEnabled) return;
+							if (useStore.getState().tooltipPinnedFromShare) return;
+							if (highlightTrailPosition) highlightTrailPosition({ lat: e.latlng.lat, lng: e.latlng.lng });
+						});
+						pl.on('mouseout', () => {
+							if (isTooltipPinnedByClickRef.current) return;
+							if (useStore.getState().tooltipPinnedFromShare) return;
+							if (clearTrailHighlight) clearTrailHighlight();
+						});
+						pl.on('click', (e) => {
+							if (useMapStore.getState().isRulerEnabled) return;
+							lastRouteClickTimeRef.current = Date.now();
+							isTooltipPinnedByClickRef.current = true;
+							if (useStore.getState().tooltipPinnedFromShare) {
+								useStore.getState().setTooltipPinnedFromShare?.(false);
+								clearShareUrlParams();
+							}
+							if (highlightTrailPosition) {
+								highlightTrailPosition({ lat: e.latlng.lat, lng: e.latlng.lng });
+								setIsTooltipVisible(true);
+							}
+						});
+					};
+
+					if (showSections) {
+						const totalDistanceM = cumDistances[cumDistances.length - 1];
+						// Position along trail (km from SOBO start): section boundaries are defined in this space.
+						const positionAlongTrailKm = (idx: number): number =>
+							direction === 'SOBO' ? cumDistances[idx] / 1000 : (totalDistanceM - cumDistances[idx]) / 1000;
+
+						// Bucket points by geographic section (0=A, 1=B, 2=C by position along trail). Ascent/descent in direction of travel.
+						const sectionPointGroups: L.LatLngExpression[][] = TRAIL_SECTIONS.map(() => []);
+						const sectionFirstIdx: number[] = new Array(TRAIL_SECTIONS.length).fill(-1);
+						const sectionLastIdx: number[] = new Array(TRAIL_SECTIONS.length).fill(-1);
+						const sectionAscentM: number[] = new Array(TRAIL_SECTIONS.length).fill(0);
+						const sectionDescentM: number[] = new Array(TRAIL_SECTIONS.length).fill(0);
+
+						for (let i = 0; i < directionAdjustedPoints.length; i++) {
+							const trailKm = positionAlongTrailKm(i);
+							const sIdx = TRAIL_SECTIONS.findIndex((s) => trailKm >= s.startKm && trailKm < s.endKm);
+							const resolvedIdx = sIdx >= 0 ? sIdx : TRAIL_SECTIONS.length - 1;
+							sectionPointGroups[resolvedIdx].push(directionAdjustedPoints[i]);
+							if (sectionFirstIdx[resolvedIdx] === -1) sectionFirstIdx[resolvedIdx] = i;
+							sectionLastIdx[resolvedIdx] = i;
+							// Share boundary point with next section to avoid visual gaps.
+							if (
+								i + 1 < directionAdjustedPoints.length &&
+								TRAIL_SECTIONS.findIndex((s) => {
+									const nextTrailKm = positionAlongTrailKm(i + 1);
+									return nextTrailKm >= s.startKm && nextTrailKm < s.endKm;
+								}) !== resolvedIdx
+							) {
+								sectionPointGroups[resolvedIdx].push(directionAdjustedPoints[i + 1]);
+							}
+							// Elevation change in direction of travel: attribute to the section of the segment start (i-1) by position along trail.
+							if (i > 0 && directionAdjustedElevPoints[i] && directionAdjustedElevPoints[i - 1]) {
+								const elevDiff =
+									directionAdjustedElevPoints[i].elevation - directionAdjustedElevPoints[i - 1].elevation;
+								const prevTrailKm = positionAlongTrailKm(i - 1);
+								const prevSIdx = TRAIL_SECTIONS.findIndex((s) => prevTrailKm >= s.startKm && prevTrailKm < s.endKm);
+								const prevResolvedIdx = prevSIdx >= 0 ? prevSIdx : TRAIL_SECTIONS.length - 1;
+								if (elevDiff > 0) sectionAscentM[prevResolvedIdx] += elevDiff;
+								else sectionDescentM[prevResolvedIdx] += Math.abs(elevDiff);
+							}
 						}
-						if (useStore.getState().tooltipPinnedFromShare) {
-							return;
-						}
-						if (highlightTrailPosition) {
-							highlightTrailPosition({
-								lat: e.latlng.lat,
-								lng: e.latlng.lng,
+						const totalAscentM = sectionAscentM.reduce((a, b) => a + b, 0);
+						const totalDescentM = sectionDescentM.reduce((a, b) => a + b, 0);
+						const currentUnits = useMapStore.getState().units;
+						const currentPrecision = useMapStore.getState().distancePrecision;
+
+						// Draw each geographic section with its own label and color (A=green, B=blue, C=red by position along trail).
+						const newSectionMarkers: L.Marker[] = [];
+						const newSectionStats: typeof sectionStatsRef.current = [];
+
+						for (let si = 0; si < TRAIL_SECTIONS.length; si++) {
+							const section = TRAIL_SECTIONS[si];
+							const sectionPts = sectionPointGroups[si];
+							if (sectionPts.length === 0) continue;
+
+							const sectionPolyline = L.polyline(sectionPts, {
+								...pathOptions,
+								color: section.color,
+								smoothFactor: 1,
+								interactive: true,
+								bubblingMouseEvents: true,
+								weight: pathOptions.weight || 5,
+								renderer: L.svg({ padding: 10 }),
 							});
-						}
-					});
+							attachPolylineHandlers(sectionPolyline);
+							featureGroup.addLayer(sectionPolyline);
+							sectionPolylines.push(sectionPolyline);
 
-					polyline.on('mouseout', () => {
-						if (isTooltipPinnedByClickRef.current) {
-							return;
-						}
-						if (useStore.getState().tooltipPinnedFromShare) {
-							return;
-						}
-						if (clearTrailHighlight) {
-							clearTrailHighlight();
-						}
-					});
+							const firstPt = sectionPts[0];
+							const [lat0, lng0] = firstPt as L.LatLngTuple;
+							const fi = sectionFirstIdx[si];
+							const li = sectionLastIdx[si];
+							const startDistM = fi >= 0 ? cumDistances[fi] : 0;
+							const endDistM = li >= 0 ? cumDistances[li] : 0;
+							const secDistM = fi >= 0 && li >= 0 ? cumDistances[li] - cumDistances[fi] : 0;
+							const secAscent = sectionAscentM[si];
+							const secDescent = sectionDescentM[si];
 
-					polyline.on('click', (e) => {
-						if (useMapStore.getState().isRulerEnabled) {
-							return;
-						}
-						lastRouteClickTimeRef.current = Date.now();
-						isTooltipPinnedByClickRef.current = true;
-						if (useStore.getState().tooltipPinnedFromShare) {
-							useStore.getState().setTooltipPinnedFromShare?.(false);
-							clearShareUrlParams();
-						}
-						if (highlightTrailPosition) {
-							highlightTrailPosition({
-								lat: e.latlng.lat,
-								lng: e.latlng.lng,
+							const stat = {
+								startDistM,
+								endDistM,
+								secDistM,
+								secAscent,
+								secDescent,
+								sectionIndex: si,
+							};
+							newSectionStats.push(stat);
+
+							const tooltipHtml = buildSectionTooltipHtml(
+								stat,
+								{ totalDistanceM, totalAscentM, totalDescentM },
+								currentUnits,
+								currentPrecision,
+								t,
+							);
+							const marker = L.marker(L.latLng(lat0, lng0), {
+								icon: sectionBoundaryIcon(section.shortName, section.color),
+								zIndexOffset: 50,
 							});
-							setIsTooltipVisible(true);
+							marker.bindTooltip(tooltipHtml, {
+								direction: 'top',
+								permanent: false,
+								className: 'trail-section-info-tooltip',
+							});
+							marker.addTo(map);
+							newSectionMarkers.push(marker);
 						}
-					});
+						sectionBoundaryMarkersRef.current = newSectionMarkers;
+						sectionStatsRef.current = newSectionStats;
+					} else {
+						// Sections hidden: single default-colored polyline.
+						const singlePolyline = L.polyline(directionAdjustedPoints, {
+							...pathOptions,
+							smoothFactor: 1,
+							interactive: true,
+							bubblingMouseEvents: true,
+							weight: pathOptions.weight || 5,
+							renderer: L.svg({ padding: 10 }),
+						});
+						attachPolylineHandlers(singlePolyline);
+						featureGroup.addLayer(singlePolyline);
+						sectionPolylines.push(singlePolyline);
+						sectionBoundaryMarkersRef.current = [];
+						sectionStatsRef.current = [];
+					}
 
 					const handleMapClick = (): void => {
 						if (Date.now() - lastRouteClickTimeRef.current < 100) {
@@ -420,8 +603,9 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 					map.on('click', handleMapClick);
 					mapClickHandlerRef.current = handleMapClick;
 
-					polyline.addTo(map);
-					routeLayerRef.current = polyline;
+					featureGroup.addTo(map);
+					routeLayerRef.current = featureGroup;
+					sectionLayersRef.current = sectionPolylines;
 
 					const directionText = direction === 'SOBO' ? tChart('directionNorthSouth') : tChart('directionSouthNorth');
 					const startPoint = L.latLng(
@@ -433,30 +617,35 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 						(directionAdjustedPoints[directionAdjustedPoints.length - 1] as L.LatLngTuple)[1],
 					);
 
-					const startIcon = L.divIcon({
-						className: 'trail-endpoint-marker trail-start-marker',
-						html: `<div class="trail-endpoint-marker-inner">${START_FLAG_SVG}</div>`,
-						iconSize: [28, 28],
-						iconAnchor: [14, 14],
-					});
-					const startMarker = L.marker(startPoint, {
-						icon: startIcon,
-						zIndexOffset: 100,
-					});
-					startMarker.bindTooltip(t('startingPoint', { direction: directionText }), {
-						direction: 'top',
-						permanent: false,
-						className: 'trail-endpoint-tooltip',
-					});
-					const startLabel = t('startingPoint', { direction: directionText });
-					startMarker.on('add', () => {
-						const el =
-							(startMarker as L.Marker & { getElement?: () => HTMLElement }).getElement?.() ??
-							(startMarker as unknown as { _icon?: HTMLElement })._icon;
-						if (el) el.setAttribute('aria-label', startLabel);
-					});
-					startMarker.addTo(map);
-					startMarkerRef.current = startMarker;
+					// Hide start marker when sections are shown so Section A label is visible.
+					if (!showSections) {
+						const startIcon = L.divIcon({
+							className: 'trail-endpoint-marker trail-start-marker',
+							html: `<div class="trail-endpoint-marker-inner">${START_FLAG_SVG}</div>`,
+							iconSize: [28, 28],
+							iconAnchor: [14, 14],
+						});
+						const startMarker = L.marker(startPoint, {
+							icon: startIcon,
+							zIndexOffset: 100,
+						});
+						startMarker.bindTooltip(t('startingPoint', { direction: directionText }), {
+							direction: 'top',
+							permanent: false,
+							className: 'trail-endpoint-tooltip',
+						});
+						const startLabel = t('startingPoint', { direction: directionText });
+						startMarker.on('add', () => {
+							const el =
+								(startMarker as L.Marker & { getElement?: () => HTMLElement }).getElement?.() ??
+								(startMarker as unknown as { _icon?: HTMLElement })._icon;
+							if (el) el.setAttribute('aria-label', startLabel);
+						});
+						startMarker.addTo(map);
+						startMarkerRef.current = startMarker;
+					} else {
+						startMarkerRef.current = null;
+					}
 
 					const finishIcon = L.divIcon({
 						className: 'trail-endpoint-marker trail-finish-marker',
@@ -485,11 +674,11 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 
 					const shareParams = parseShareUrlParams();
 					if (!shareParams?.progress) {
-						map.fitBounds(polyline.getBounds(), { padding: [50, 50] });
+						map.fitBounds(featureGroup.getBounds(), { padding: [50, 50] });
 					}
 
 					if (processTrailData) {
-						const latLngs = polyline.getLatLngs() as L.LatLng[];
+						const latLngs = latLngPoints;
 						const metadata = calculateTrailMetadata(latLngs, directionAdjustedElevPoints);
 
 						processTrailData(
@@ -572,7 +761,37 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 		processTrailData,
 		highlightTrailPosition,
 		clearTrailHighlight,
+		showSections,
 	]);
+
+	// Update section boundary tooltips when units, precision, or locale change.
+	useEffect(() => {
+		if (!showSections || sectionBoundaryMarkersRef.current.length === 0 || sectionStatsRef.current.length === 0) {
+			return;
+		}
+		const meta = trailMetadata;
+		const totalDistanceM = (meta?.totalDistance ?? 0) * 1000;
+		const totalAscentM = meta?.elevationGain ?? 0;
+		const totalDescentM = meta?.elevationLoss ?? 0;
+		const currentUnits = units;
+		const currentPrecision = distancePrecision;
+
+		const markers = sectionBoundaryMarkersRef.current;
+		const stats = sectionStatsRef.current;
+		for (let i = 0; i < markers.length && i < stats.length; i++) {
+			const tooltipHtml = buildSectionTooltipHtml(
+				stats[i],
+				{ totalDistanceM, totalAscentM, totalDescentM },
+				currentUnits,
+				currentPrecision,
+				t,
+			);
+			const tooltip = markers[i].getTooltip();
+			if (tooltip) {
+				tooltip.setContent(tooltipHtml);
+			}
+		}
+	}, [showSections, units, distancePrecision, locale, trailMetadata, t, direction]);
 
 	useEffect(() => {
 		if (isRulerEnabled) {
