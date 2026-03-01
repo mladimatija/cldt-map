@@ -4,7 +4,7 @@
  * Map overlay panel: direction/units, boundary toggles, share links, settings (precision, dark mode, etc.),
  * and optional test link. Uses useBlockMapPropagation so clicks don't drag the map.
  */
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useBlockMapPropagation } from '@/hooks';
 import { useMap } from 'react-leaflet';
 import L from 'leaflet';
@@ -20,7 +20,13 @@ import {
 	useMapStore,
 	useStore,
 } from '@/lib/store';
-import { buildShareProgressUrl, buildShareViewUrl, formatDistance, isWithinMapBoundary } from '@/lib/utils';
+import {
+	buildShareProgressUrl,
+	buildShareViewUrl,
+	formatDistance,
+	formatElevation,
+	isWithinMapBoundary,
+} from '@/lib/utils';
 import { config } from '@/lib/config';
 import type * as GeoJSON from 'geojson';
 import {
@@ -59,6 +65,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 }): React.ReactElement => {
 	const map = useMap() as ExtendedMap;
 	const t = useTranslations('mapControls');
+	const tChart = useTranslations('elevationChart');
 	const [direction, setDirectionState] = useState<TrailDirection>(initialDirection);
 	const [units, setUnitsState] = useState<UnitSystem>(initialUnits);
 	const [isShowingBoundary, setIsShowingBoundary] = useState(false);
@@ -113,7 +120,12 @@ const MapControls: React.FC<MapControlsProps> = ({
 	const rulerTooltipRef = useRef<L.Tooltip | null>(null);
 	const rulerPointDataRef = useRef<{ latlng: L.LatLng; distanceFromStart: number }[]>([]);
 	const rulerSegmentHighlightRef = useRef<L.Polyline | null>(null);
+	const rulerClickHandlerRef = useRef<(e: L.LeafletMouseEvent) => void>(() => {});
 	const colorAdjustRef = useRef<HTMLElement | null>(null);
+
+	const stableRulerClick = useCallback((e: L.LeafletMouseEvent) => {
+		rulerClickHandlerRef.current(e);
+	}, []);
 
 	const setDirection = useMapStore((state: MapStoreState) => state.setDirection);
 	const setUnits = useMapStore((state: MapStoreState) => state.setUnits);
@@ -536,9 +548,9 @@ const MapControls: React.FC<MapControlsProps> = ({
 				rulerSegmentHighlightRef.current = null;
 			}
 
-			map.off('click', handleRulerClick);
+			map.off('click', stableRulerClick);
 		} else {
-			map.on('click', handleRulerClick);
+			map.on('click', stableRulerClick);
 		}
 	};
 
@@ -615,15 +627,39 @@ const MapControls: React.FC<MapControlsProps> = ({
 			const distB = dataB.distanceFromStart;
 			const distanceBetween = hasTrail ? Math.abs(distB - distA) : calculateTrailMetadata(points).totalDistance;
 
+			const minDist = Math.min(distA, distB);
+			const maxDist = Math.max(distA, distB);
+			const segment =
+				hasTrail && enhancedTrailPoints
+					? enhancedTrailPoints
+							.filter(
+								(p: EnhancedTrailPoint) => p.distanceFromStart >= minDist - 0.1 && p.distanceFromStart <= maxDist + 0.1,
+							)
+							.sort((a: EnhancedTrailPoint, b: EnhancedTrailPoint) => a.distanceFromStart - b.distanceFromStart)
+					: [];
+			const elevationGain =
+				segment.length >= 2
+					? segment[segment.length - 1].elevationGainFromStart - segment[0].elevationGainFromStart
+					: 0;
+			const elevationLoss =
+				segment.length >= 2
+					? segment[segment.length - 1].elevationLossFromStart - segment[0].elevationLossFromStart
+					: 0;
+
 			const ptA = points[0];
 			const ptB = points[1];
 			const midPoint = L.latLng((ptA.lat + ptB.lat) / 2, (ptA.lng + ptB.lng) / 2);
 
 			const fmt = (meters: number): string => formatDistance(meters / 1000, units, distancePrecisionState, false);
+			const elevationLines =
+				segment.length >= 2
+					? `<div>${tChart('gain')}: ${formatElevation(elevationGain, units)}</div><div>${tChart('loss')}: ${formatElevation(elevationLoss, units)}</div>`
+					: '';
 			const content = `<div class="distance-tooltip-content">
                 <div>${t('pointA')}: ${fmt(distA)}</div>
                 <div>${t('pointB')}: ${fmt(distB)}</div>
                 <div><strong>${t('rulerDistance')}: ${fmt(distanceBetween)}</strong></div>
+                ${elevationLines}
             </div>`;
 
 			rulerTooltipRef.current = L.tooltip({
@@ -640,24 +676,16 @@ const MapControls: React.FC<MapControlsProps> = ({
 				map.removeLayer(rulerSegmentHighlightRef.current);
 				rulerSegmentHighlightRef.current = null;
 			}
-			if (hasTrail && enhancedTrailPoints) {
-				const minDist = Math.min(distA, distB);
-				const maxDist = Math.max(distA, distB);
-				const segmentPoints = enhancedTrailPoints
-					.filter(
-						(p: EnhancedTrailPoint) => p.distanceFromStart >= minDist - 0.1 && p.distanceFromStart <= maxDist + 0.1,
-					)
-					.sort((a: EnhancedTrailPoint, b: EnhancedTrailPoint) => a.distanceFromStart - b.distanceFromStart)
-					.map((p: EnhancedTrailPoint) => L.latLng(p.lat, p.lng));
-				if (segmentPoints.length >= 2) {
-					rulerSegmentHighlightRef.current = L.polyline(segmentPoints, {
-						color: 'var(--cldt-blue)',
-						weight: 5,
-					}).addTo(map);
-				}
+			if (segment.length >= 2) {
+				const segmentPoints = segment.map((p: EnhancedTrailPoint) => L.latLng(p.lat, p.lng));
+				rulerSegmentHighlightRef.current = L.polyline(segmentPoints, {
+					color: 'var(--cldt-blue)',
+					weight: 5,
+				}).addTo(map);
 			}
 		}
 	};
+	rulerClickHandlerRef.current = handleRulerClick;
 
 	useEffect(() => {
 		if (!rulerTooltipRef.current || rulerPointDataRef.current.length < 2) {
@@ -670,14 +698,33 @@ const MapControls: React.FC<MapControlsProps> = ({
 		const distanceBetween = hasTrail
 			? Math.abs(dataB.distanceFromStart - dataA.distanceFromStart)
 			: calculateTrailMetadata(points).totalDistance;
+		const minDist = Math.min(dataA.distanceFromStart, dataB.distanceFromStart);
+		const maxDist = Math.max(dataA.distanceFromStart, dataB.distanceFromStart);
+		const segment =
+			hasTrail && enhancedTrailPoints
+				? enhancedTrailPoints
+						.filter(
+							(p: EnhancedTrailPoint) => p.distanceFromStart >= minDist - 0.1 && p.distanceFromStart <= maxDist + 0.1,
+						)
+						.sort((a: EnhancedTrailPoint, b: EnhancedTrailPoint) => a.distanceFromStart - b.distanceFromStart)
+				: [];
+		const elevationGain =
+			segment.length >= 2 ? segment[segment.length - 1].elevationGainFromStart - segment[0].elevationGainFromStart : 0;
+		const elevationLoss =
+			segment.length >= 2 ? segment[segment.length - 1].elevationLossFromStart - segment[0].elevationLossFromStart : 0;
 		const fmt = (meters: number): string => formatDistance(meters / 1000, units, distancePrecisionState, false);
+		const elevationLines =
+			segment.length >= 2
+				? `<div>${tChart('gain')}: ${formatElevation(elevationGain, units)}</div><div>${tChart('loss')}: ${formatElevation(elevationLoss, units)}</div>`
+				: '';
 		const content = `<div class="distance-tooltip-content">
             <div>${t('pointA')}: ${fmt(dataA.distanceFromStart)}</div>
             <div>${t('pointB')}: ${fmt(dataB.distanceFromStart)}</div>
             <div><strong>${t('rulerDistance')}: ${fmt(distanceBetween)}</strong></div>
+            ${elevationLines}
         </div>`;
 		rulerTooltipRef.current.setContent(content);
-	}, [units, distancePrecisionState, t]);
+	}, [units, distancePrecisionState, t, tChart]);
 
 	const toggleColorAdjust = (): void => {
 		setIsColorAdjustEnabled((prev) => !prev);
@@ -914,6 +961,8 @@ const MapControls: React.FC<MapControlsProps> = ({
 
 	useEffect(
 		() => () => {
+			map.off('click', stableRulerClick);
+
 			if (boundaryLayerRef.current) {
 				map.removeLayer(boundaryLayerRef.current);
 			}
