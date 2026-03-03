@@ -1,9 +1,10 @@
-/** Loads messages for the segment locale and wraps children in ClientIntlProvider. */
+/** Loads messages for the segment locale and wraps children in ClientIntlProvider and ServiceWorkerProvider. */
 import { setRequestLocale } from 'next-intl/server';
 import { hasLocale } from 'next-intl';
 import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
 import { ClientIntlProvider } from '@/components/providers/ClientIntlProvider';
+import { ServiceWorkerProvider } from '@/components/common/ServiceWorkerProvider';
 
 type Props = {
 	children: React.ReactNode;
@@ -31,7 +32,7 @@ export default async function LocaleLayout({ children, params }: Props): Promise
 
 	return (
 		<ClientIntlProvider allMessages={allMessages} initialLocale={locale} initialMessages={initialMessages}>
-			{children}
+			<ServiceWorkerProvider>{children}</ServiceWorkerProvider>
 		</ClientIntlProvider>
 	);
 }

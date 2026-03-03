@@ -7,6 +7,7 @@
  */
 import { useState, useEffect, ReactElement } from 'react';
 import dynamic from 'next/dynamic';
+import { useTranslations } from 'next-intl';
 import { config } from '@/lib/config';
 
 const GPXLoadErrorBanner = dynamic(() => import('@/components/map/GPXLoadErrorBanner'), { ssr: false });
@@ -28,20 +29,25 @@ function MapLoading({ text }: { text: string }): ReactElement {
 	);
 }
 
+function MapLoadingWithTranslation(): ReactElement {
+	const t = useTranslations('mapWrapper');
+	return <MapLoading text={t('initializingMap')} />;
+}
+
 const Map = dynamic(() => import('@/components/map/Map'), {
 	ssr: false,
-	loading: () => <MapLoading text="Initializing map..." />,
+	loading: () => <MapLoadingWithTranslation />,
 });
 
 export default function MapWrapper(_props?: MapWrapperProps): ReactElement {
-	// Track the overall loading state
+	const t = useTranslations('mapWrapper');
 	const [isLoading, setIsLoading] = useState(true);
-	const [loadingText, setLoadingText] = useState('Initializing map...');
+	const [loadingText, setLoadingText] = useState(t('initializingMap'));
 
 	// Brief minimum loading time to avoid flash (reduced from 2.5s for better UX)
 	useEffect(() => {
 		const textUpdateTimer = setTimeout(() => {
-			setLoadingText('Loading map data...');
+			setLoadingText(t('loadingMapData'));
 		}, 300);
 		const loadingTimer = setTimeout(() => {
 			setIsLoading(false);
@@ -50,7 +56,7 @@ export default function MapWrapper(_props?: MapWrapperProps): ReactElement {
 			clearTimeout(loadingTimer);
 			clearTimeout(textUpdateTimer);
 		};
-	}, []);
+	}, [t]);
 
 	// Show loading state
 	if (isLoading) {

@@ -33,7 +33,7 @@ export default function UserLocationToggleButton(): React.ReactElement {
 		},
 	);
 
-	const iconColor = isDisabled ? 'text-gray-400' : showUserMarker ? '' : 'text-gray-700';
+	const iconColor = isDisabled ? 'text-gray-400' : showUserMarker ? '' : 'text-cldt-blue';
 
 	const handleClick = (): void => {
 		if (!isDisabled) {

@@ -1,7 +1,9 @@
 'use client';
 
 import React, { type RefObject } from 'react';
+import { useTranslations } from 'next-intl';
 import SmartTooltip from '@/components/ui/SmartTooltip';
+import { usePopoverFocusTrap } from '@/hooks';
 import { IoColorPaletteOutline } from 'react-icons/io5';
 import { CONTROL_BTN_BASE, CONTROL_BTN_ACTIVE, CONTROL_BTN_INACTIVE } from './map-controls-constants';
 import { cn } from '@/lib/utils';
@@ -61,14 +63,23 @@ export function MapControlsColorAdjust({
 	tooltipShow,
 	tooltipHide,
 }: MapControlsColorAdjustProps): React.ReactElement {
+	const t = useTranslations('mapControls');
+	const popoverRef = usePopoverFocusTrap(isEnabled);
+
 	return (
 		<div className="relative inline-block w-10 shrink-0" ref={containerRef}>
 			{isEnabled && (
-				<div className="z-controls-popover absolute top-1/2 right-[calc(100%+0.5rem)] flex w-48 -translate-y-1/2 flex-col gap-3 rounded-lg border border-gray-200 bg-white p-3 shadow-md">
-					<h3 className="text-sm font-medium text-gray-700">Map Appearance</h3>
+				<div
+					aria-label={t('colorMapAppearance')}
+					aria-modal="true"
+					className="z-controls-popover absolute top-1/2 right-[calc(100%+0.5rem)] flex w-48 -translate-y-1/2 flex-col gap-3 rounded-lg border border-gray-200 bg-white p-3 shadow-md"
+					ref={popoverRef}
+					role="dialog"
+				>
+					<h3 className="text-sm font-medium text-gray-700">{t('colorMapAppearance')}</h3>
 					<div className="flex flex-col gap-2">
 						<SliderRow
-							label="Brightness"
+							label={t('colorBrightness')}
 							max={150}
 							min={50}
 							step={5}
@@ -76,7 +87,7 @@ export function MapControlsColorAdjust({
 							onChange={(v) => setColorSettings((s) => ({ ...s, brightness: v }))}
 						/>
 						<SliderRow
-							label="Contrast"
+							label={t('colorContrast')}
 							max={150}
 							min={50}
 							step={5}
@@ -84,7 +95,7 @@ export function MapControlsColorAdjust({
 							onChange={(v) => setColorSettings((s) => ({ ...s, contrast: v }))}
 						/>
 						<SliderRow
-							label="Saturation"
+							label={t('colorSaturation')}
 							max={200}
 							min={0}
 							step={5}
@@ -97,7 +108,7 @@ export function MapControlsColorAdjust({
 						type="button"
 						onClick={() => setColorSettings({ brightness: 100, contrast: 100, saturation: 100 })}
 					>
-						Reset
+						{t('colorReset')}
 					</button>
 				</div>
 			)}

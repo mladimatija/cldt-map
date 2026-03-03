@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { IoRefresh } from 'react-icons/io5';
 
 interface ServiceWorkerProviderProps {
@@ -11,6 +12,7 @@ interface ServiceWorkerProviderProps {
  * Provider that manages service worker registration and updates
  */
 export function ServiceWorkerProvider({ children }: ServiceWorkerProviderProps): React.ReactElement {
+	const t = useTranslations('serviceWorker');
 	const [updateAvailable, setUpdateAvailable] = useState(false);
 
 	// Only run service worker logic on the client side
@@ -69,13 +71,13 @@ export function ServiceWorkerProvider({ children }: ServiceWorkerProviderProps):
 				<div className="z-toast fixed right-4 bottom-4 rounded-md bg-blue-600 p-4 text-white shadow-lg">
 					<div className="flex items-center gap-2">
 						<IoRefresh className="h-5 w-5" />
-						<p>New version available!</p>
+						<p>{t('updateAvailable')}</p>
 					</div>
 					<button
 						className="mt-2 flex w-full items-center justify-center rounded-md bg-white px-4 py-1 text-blue-600"
 						onClick={() => window.location.reload()}
 					>
-						<span>Update now</span>
+						<span>{t('updateNow')}</span>
 					</button>
 				</div>
 			)}

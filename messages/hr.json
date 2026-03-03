@@ -50,6 +50,11 @@
 	"home": {
 		"srTitle": "Karta {companyName}"
 	},
+	"mapWrapper": {
+		"initializingMap": "Pokretanje karte...",
+		"loadingMapData": "Učitavanje podataka karte...",
+		"loadingTrailData": "Učitavanje podataka staze..."
+	},
 	"mapControls": {
 		"preferences": "Postavke",
 		"darkMode": "Tamni način",
@@ -69,6 +74,8 @@
 		"unitsImperial": "Imperijalno (milje)",
 		"precisionDrag": "Povucite za promjenu decimalnih mjesta",
 		"precisionClick": "Decimale udaljenosti: {value} (kliknite za promjenu)",
+		"precisionDecimalPlace": "{count} decimalno mjesto",
+		"precisionDecimalPlaces": "{count} decimalna mjesta",
 		"boundaryShow": "Prikaži granicu Hrvatske",
 		"boundaryHide": "Sakrij granicu Hrvatske",
 		"rulerEnable": "Omogući ravnalo udaljenosti",
@@ -77,10 +84,18 @@
 		"tilesDisable": "Onemogući karte s granicom",
 		"colorShow": "Prikaži alat za prilagodbu boja",
 		"colorHide": "Sakrij alat za prilagodbu boja",
+		"colorMapAppearance": "Izgled karte",
+		"colorBrightness": "Svjetlina",
+		"colorContrast": "Kontrast",
+		"colorSaturation": "Zasićenost",
+		"colorReset": "Vrati",
 		"preferencesShow": "Prikaži postavke",
 		"preferencesHide": "Sakrij postavke",
 		"shareMap": "Dijeli kartu",
 		"shareUnavailable": "Dijeljenje nedostupno (omogućite lokaciju ili odaberite točku na stazi)",
+		"shareTitle": "Podijeli ovu kartu",
+		"copyLink": "Kopiraj poveznicu",
+		"cancel": "Odustani",
 		"borderOfCroatia": "Granica Hrvatske",
 		"tileBoundaryError": "Greška pri {action} granice karte. Pokušajte ponovno.",
 		"tileBoundaryEnabling": "omogućivanju",
@@ -124,7 +139,15 @@
 	"error": {
 		"title": "Došlo je do greške",
 		"warning": "Upozorenje",
-		"info": "Informacija"
+		"info": "Informacija",
+		"somethingWentWrong": "Nešto je pošlo krivo",
+		"unexpectedError": "Došlo je do neočekivane greške.",
+		"tryRefreshing": "Pokušajte osvježiti stranicu ili kontaktirajte podršku ako se problem nastavi.",
+		"refreshPage": "Osvježi stranicu"
+	},
+	"serviceWorker": {
+		"updateAvailable": "Dostupna je nova inačica!",
+		"updateNow": "Osvježi sada"
 	},
 	"location": {
 		"noData": "Nema podataka o lokaciji",

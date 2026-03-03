@@ -156,8 +156,8 @@
 
 .user-location-close-btn {
 	position: absolute;
-	top: 0;
-	right: 0;
+	top: -16px;
+	right: -12px;
 	width: 24px;
 	height: 24px;
 	padding: 0;
@@ -378,4 +378,9 @@
 	display: flex;
 	justify-content: center;
 	gap: 0.5rem;
+}
+
+.map-tooltip.map-tooltip--banner .user-location-close-btn {
+	top: 0;
+	right: 0;
 }

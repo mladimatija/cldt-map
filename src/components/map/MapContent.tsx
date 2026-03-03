@@ -6,7 +6,13 @@
  */
 import React, { Suspense, useState, useEffect, useCallback } from 'react';
 import dynamic from 'next/dynamic';
+import { useTranslations } from 'next-intl';
 import { useMapStore, type MapStoreState } from '@/lib/store';
+
+function MapTrailLoadingFallback(): React.ReactElement {
+	const t = useTranslations('mapWrapper');
+	return <div className="map-loading">{t('loadingTrailData')}</div>;
+}
 
 const MapControls = dynamic(() => import('@/components/map/controls/MapControls'), { ssr: false });
 const ZoomControls = dynamic(() => import('@/components/map/controls/ZoomControls'), { ssr: false });
@@ -104,7 +110,7 @@ export default function MapContent(): React.ReactElement {
 		<>
 			<ShareUrlHandler />
 			<BaseMapSelector />
-			<Suspense fallback={<div className="map-loading">Loading trail data...</div>}>
+			<Suspense fallback={<MapTrailLoadingFallback />}>
 				<TrailRoute
 					pathOptions={{
 						color: '#e1584d',

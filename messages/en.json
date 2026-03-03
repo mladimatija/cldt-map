@@ -50,6 +50,11 @@
 	"home": {
 		"srTitle": "{companyName} Map"
 	},
+	"mapWrapper": {
+		"initializingMap": "Initializing map...",
+		"loadingMapData": "Loading map data...",
+		"loadingTrailData": "Loading trail data..."
+	},
 	"mapControls": {
 		"preferences": "Preferences",
 		"darkMode": "Dark mode",
@@ -68,6 +73,8 @@
 		"unitsImperial": "Imperial (miles)",
 		"precisionDrag": "Drag to change decimal places",
 		"precisionClick": "Distance decimals: {value} (click to change)",
+		"precisionDecimalPlace": "{count} decimal place",
+		"precisionDecimalPlaces": "{count} decimal places",
 		"boundaryShow": "Show Croatia boundary",
 		"boundaryHide": "Hide Croatia boundary",
 		"rulerEnable": "Enable distance ruler",
@@ -76,10 +83,18 @@
 		"tilesDisable": "Disable boundary-clipped map tiles",
 		"colorShow": "Show color adjustment tool",
 		"colorHide": "Hide color adjustment tool",
+		"colorMapAppearance": "Map appearance",
+		"colorBrightness": "Brightness",
+		"colorContrast": "Contrast",
+		"colorSaturation": "Saturation",
+		"colorReset": "Reset",
 		"preferencesShow": "Show preferences",
 		"preferencesHide": "Hide preferences",
 		"shareMap": "Share map",
 		"shareUnavailable": "Share unavailable (enable location or select a point on the trail)",
+		"shareTitle": "Share this map",
+		"copyLink": "Copy link",
+		"cancel": "Cancel",
 		"borderOfCroatia": "Border of Croatia",
 		"tileBoundaryError": "Error {action} tile boundary. Please try again.",
 		"tileBoundaryEnabling": "enabling",
@@ -123,7 +138,15 @@
 	"error": {
 		"title": "An error occurred",
 		"warning": "Warning",
-		"info": "Information"
+		"info": "Information",
+		"somethingWentWrong": "Something went wrong",
+		"unexpectedError": "An unexpected error occurred",
+		"tryRefreshing": "Please try refreshing the page or contact support if the problem persists.",
+		"refreshPage": "Refresh Page"
+	},
+	"serviceWorker": {
+		"updateAvailable": "New version available!",
+		"updateNow": "Update now"
 	},
 	"location": {
 		"noData": "No location data available",

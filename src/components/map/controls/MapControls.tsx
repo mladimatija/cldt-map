@@ -8,7 +8,6 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useBlockMapPropagation } from '@/hooks';
 import { useMap } from 'react-leaflet';
 import L from 'leaflet';
-import { siteMetadata } from '@/lib/metadata';
 import geoData from '@/../public/data/geoJsonHr.json';
 import { calculateTrailMetadata } from '@/lib/map';
 import {
@@ -513,28 +512,14 @@ const MapControls: React.FC<MapControlsProps> = ({
 
 	const handleShare = (): void => {
 		closeOverlayTools();
-		const shareUrl = getShareProgressUrl() ?? getShareViewUrl();
-		if (navigator.share) {
-			navigator
-				.share({
-					title: siteMetadata.title,
-					text: t('shareText'),
-					url: shareUrl,
-				})
-				.catch((error) => console.error('Error sharing:', error));
-		} else {
-			setIsSharing((prev) => !prev);
-		}
+		setIsSharing((prev) => !prev);
 	};
 
 	const copyToClipboard = (url: string, withText = false): void => {
 		const text = withText ? `${t('shareText')}\n${url}` : url;
 		navigator.clipboard
 			.writeText(text)
-			.then(() => {
-				setIsSharing(false);
-				alert(t('linkCopied'));
-			})
+			.then(() => setIsSharing(false))
 			.catch((err) => {
 				console.error('Could not copy text:', err);
 			});
@@ -1035,6 +1020,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 			<div
 				className={`map-controls-top-row z-controls absolute top-[58px] right-2 flex flex-col gap-2 ${controlsDisabledClass}`}
 				ref={topRightControlsRef}
+				onContextMenu={(e) => e.preventDefault()}
 			>
 				<SmartTooltip
 					content={t('directionTooltip', {
@@ -1166,25 +1152,25 @@ const MapControls: React.FC<MapControlsProps> = ({
 
 				<div className="mx-auto my-1 h-[2px] w-8 bg-(--cldt-blue)" />
 
-				<MapControlButton
-					ariaLabel={canShare ? t('shareMap') : t('shareUnavailable')}
-					content={canShare ? t('shareMap') : t('shareUnavailable')}
-					disabled={!canShare}
-					onClick={canShare ? handleShare : undefined}
-				>
-					<IoShareSocialOutline aria-hidden className="h-5 w-5" />
-				</MapControlButton>
+				<div className="relative inline-block w-10 shrink-0">
+					<MapControlButton
+						ariaLabel={canShare ? t('shareMap') : t('shareUnavailable')}
+						content={canShare ? t('shareMap') : t('shareUnavailable')}
+						disabled={!canShare}
+						onClick={canShare ? handleShare : undefined}
+					>
+						<IoShareSocialOutline aria-hidden className="h-5 w-5" />
+					</MapControlButton>
+					{isSharing && (
+						<MapControlsSharePanel
+							copyToClipboard={copyToClipboard}
+							getShareUrl={() => getShareProgressUrl() ?? getShareViewUrl()}
+							sharePopupRef={sharePopupRef}
+							onClose={() => setIsSharing(false)}
+						/>
+					)}
+				</div>
 			</div>
-
-			{isSharing && (
-				<MapControlsSharePanel
-					copyToClipboard={copyToClipboard}
-					getShareProgressUrl={getShareProgressUrl}
-					getShareViewUrl={getShareViewUrl}
-					sharePopupRef={sharePopupRef}
-					onClose={() => setIsSharing(false)}
-				/>
-			)}
 		</>
 	);
 };

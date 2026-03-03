@@ -2,6 +2,7 @@
 
 import React, { type RefObject } from 'react';
 import { useTranslations } from 'next-intl';
+import { usePopoverFocusTrap } from '@/hooks';
 import SmartTooltip from '@/components/ui/SmartTooltip';
 import { Checkbox } from '@/components/ui/Checkbox';
 import {
@@ -58,10 +59,18 @@ export function MapControlsSettingsPanel({
 	tooltipHide,
 }: MapControlsSettingsPanelProps): React.ReactElement {
 	const t = useTranslations('mapControls');
+	const popoverRef = usePopoverFocusTrap(isExpanded);
+
 	return (
 		<div className="relative inline-block w-10 shrink-0" ref={containerRef}>
 			{isExpanded && (
-				<div className="z-controls-popover absolute top-1/2 right-[calc(100%+0.5rem)] flex w-52 -translate-y-1/2 flex-col gap-2 rounded-lg border border-gray-200 bg-white p-3 shadow-md dark:border-gray-600 dark:bg-gray-800">
+				<div
+					aria-label={preferencesTitle}
+					aria-modal="true"
+					className="z-controls-popover absolute top-1/2 right-[calc(100%+0.5rem)] flex w-52 -translate-y-1/2 flex-col gap-2 rounded-lg border border-gray-200 bg-white p-3 shadow-md dark:border-gray-600 dark:bg-gray-800"
+					ref={popoverRef}
+					role="dialog"
+				>
 					<h3 className="text-sm font-medium text-gray-700 dark:text-gray-200">{preferencesTitle}</h3>
 					<label className="flex cursor-pointer items-center gap-2">
 						<Checkbox checked={darkMode} onCheckedChange={(checked) => setDarkMode(checked)} />

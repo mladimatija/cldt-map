@@ -2,6 +2,7 @@
 
 /** Catches React errors in the tree and shows a fallback UI (or custom fallback prop) with a refresh button. */
 import { Component, ErrorInfo, ReactNode } from 'react';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/Card';
 
@@ -13,6 +14,26 @@ interface Props {
 interface State {
 	hasError: boolean;
 	error: Error | null;
+}
+
+function ErrorBoundaryFallback({ error }: { error: Error | null }): React.ReactElement {
+	const t = useTranslations('error');
+	return (
+		<div className="flex min-h-screen items-center justify-center p-4">
+			<Card className="w-full max-w-md">
+				<CardHeader>
+					<CardTitle>{t('somethingWentWrong')}</CardTitle>
+					<CardDescription>{error?.message || t('unexpectedError')}</CardDescription>
+				</CardHeader>
+				<CardContent>
+					<p className="text-muted-foreground text-sm">{t('tryRefreshing')}</p>
+				</CardContent>
+				<CardFooter>
+					<Button onClick={() => window.location.reload()}>{t('refreshPage')}</Button>
+				</CardFooter>
+			</Card>
+		</div>
+	);
 }
 
 export class ErrorBoundary extends Component<Props, State> {
@@ -37,25 +58,7 @@ export class ErrorBoundary extends Component<Props, State> {
 			if (this.props.fallback) {
 				return this.props.fallback;
 			}
-
-			return (
-				<div className="flex min-h-screen items-center justify-center p-4">
-					<Card className="w-full max-w-md">
-						<CardHeader>
-							<CardTitle>Something went wrong</CardTitle>
-							<CardDescription>{this.state.error?.message || 'An unexpected error occurred'}</CardDescription>
-						</CardHeader>
-						<CardContent>
-							<p className="text-muted-foreground text-sm">
-								Please try refreshing the page or contact support if the problem persists.
-							</p>
-						</CardContent>
-						<CardFooter>
-							<Button onClick={() => window.location.reload()}>Refresh Page</Button>
-						</CardFooter>
-					</Card>
-				</div>
-			);
+			return <ErrorBoundaryFallback error={this.state.error} />;
 		}
 
 		return this.props.children;

@@ -120,7 +120,7 @@ export default function LocationButton({ checkPermission }: LocationButtonProps)
 				? 'text-gray-400'
 				: buttonState === 'active'
 					? ''
-					: 'text-gray-700';
+					: 'text-cldt-blue';
 
 	return (
 		<Tooltip content={getTooltipText()} position="left">

@@ -1,5 +1,5 @@
 /**
- * Root layout: fonts, global metadata, ServiceWorker + ThemeProvider. Locale comes from next-intl middleware (x-next-intl-locale).
+ * Root layout: fonts, global metadata, ThemeProvider. ServiceWorker lives in [locale] layout (inside ClientIntlProvider for i18n). Locale from next-intl middleware (x-next-intl-locale).
  */
 import type { Metadata } from 'next';
 import { headers } from 'next/headers';
@@ -8,7 +8,6 @@ import React, { Suspense } from 'react';
 import './globals.css';
 import { getDefaultMapTileUrl } from '@/lib/config';
 import { siteMetadata } from '@/lib/metadata';
-import { ServiceWorkerProvider } from '@/components/common/ServiceWorkerProvider';
 import ThemeProvider from '@/components/common/ThemeProvider';
 
 const geistSans = Geist({
@@ -70,9 +69,7 @@ function HtmlShell({ lang, children }: { lang: string; children: React.ReactNode
 				<link as="image" fetchPriority="high" href={lcpTileUrl} rel="preload" />
 			</head>
 			<body className="h-full bg-white font-sans text-base leading-relaxed antialiased">
-				<ServiceWorkerProvider>
-					<ThemeProvider>{children}</ThemeProvider>
-				</ServiceWorkerProvider>
+				<ThemeProvider>{children}</ThemeProvider>
 			</body>
 		</html>
 	);

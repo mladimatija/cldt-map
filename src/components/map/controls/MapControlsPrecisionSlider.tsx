@@ -1,7 +1,9 @@
 'use client';
 
 import React, { type RefObject } from 'react';
+import { useTranslations } from 'next-intl';
 import SmartTooltip from '@/components/ui/SmartTooltip';
+import { usePopoverFocusTrap } from '@/hooks';
 import { IoOptionsOutline } from 'react-icons/io5';
 import {
 	DISTANCE_PRECISION_MIN,
@@ -31,10 +33,21 @@ export function MapControlsPrecisionSlider({
 	tooltipContent,
 	tooltipExpanded,
 }: MapControlsPrecisionSliderProps): React.ReactElement {
+	const t = useTranslations('mapControls');
+	const popoverRef = usePopoverFocusTrap(isExpanded);
+	const decimalTitle =
+		value === 1 ? t('precisionDecimalPlace', { count: value }) : t('precisionDecimalPlaces', { count: value });
+
 	return (
 		<div className="relative inline-block w-10 shrink-0" ref={containerRef}>
 			{isExpanded && (
-				<div className="z-controls-popover absolute top-1/2 right-[calc(100%+0.5rem)] flex w-32 -translate-y-1/2 items-center gap-3 rounded-full border border-gray-200 bg-white px-3 py-2 shadow-md">
+				<div
+					aria-label={tooltipExpanded}
+					aria-modal="true"
+					className="z-controls-popover absolute top-1/2 right-[calc(100%+0.5rem)] flex w-32 -translate-y-1/2 items-center gap-3 rounded-full border border-gray-200 bg-white px-3 py-2 shadow-md"
+					ref={popoverRef}
+					role="dialog"
+				>
 					<input
 						className="precision-slider min-w-0 flex-1"
 						max={DISTANCE_PRECISION_MAX}
@@ -51,7 +64,7 @@ export function MapControlsPrecisionSlider({
 				<button
 					aria-label={isExpanded ? tooltipExpanded : tooltipContent}
 					className={cn(CONTROL_BTN_BASE, CONTROL_BTN_INACTIVE)}
-					title={`${value} decimal place${value !== 1 ? 's' : ''}`}
+					title={decimalTitle}
 					type="button"
 					onClick={onToggle}
 				>
