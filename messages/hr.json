@@ -5,7 +5,8 @@
 		"backToMap": "Natrag na kartu",
 		"close": "Zatvori",
 		"loading": "Učitavanje...",
-		"retry": "Pokušaj ponovno"
+		"retry": "Pokušaj ponovno",
+		"failedToLoadTrail": "Učitavanje podataka o stazi nije uspjelo. Provjerite da li je GPX URL točno konfiguriran."
 	},
 	"footer": {
 		"about": "O projektu",
@@ -205,8 +206,7 @@
 		"instruction1": "Promijeni neke postavke (smjer, jedinice, granica, itd.)",
 		"instruction2": "Osvježi stranicu i provjeri perzistenciju postavki",
 		"instruction3": "Zatvori karticu i ponovno otvori za provjeru perzistencije između sesija",
-		"instructionNote": "U stvarnoj aplikaciji ove postavke inicijaliziraju kontrole karte pri učitavanju stranice.",
-		"failedToLoadTrail": "Učitavanje podataka o stazi nije uspjelo. Provjerite je li GPX URL konfiguriran."
+		"instructionNote": "U stvarnoj aplikaciji ove postavke inicijaliziraju kontrole karte pri učitavanju stranice."
 	},
 	"zoomControls": {
 		"zoomIn": "Povećaj",

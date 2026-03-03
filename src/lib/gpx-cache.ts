@@ -10,6 +10,7 @@ localforage.config({
 });
 
 const GPX_FETCH_TIMEOUT_MS = 90000; // proxy upstream (60s) + transfer for large GPX
+const GPX_CACHE_KEY = 'gpx-data';
 
 interface CachedGPX {
 	data: string;
@@ -77,10 +78,9 @@ export async function fetchGPXWithCache(): Promise<GPXResult> {
 	}
 
 	const cacheVersion = process.env.NEXT_PUBLIC_CACHE_VERSION || '1';
-	const cacheKey = 'gpx-data';
 
 	try {
-		const cachedData = await localforage.getItem<CachedGPX>(cacheKey);
+		const cachedData = await localforage.getItem<CachedGPX>(GPX_CACHE_KEY);
 
 		if (cachedData?.version === cacheVersion) {
 			return {
@@ -124,7 +124,7 @@ export async function fetchGPXWithCache(): Promise<GPXResult> {
 				version: cacheVersion,
 				timestamp: Date.now(),
 			};
-			await localforage.setItem(cacheKey, newCache);
+			await localforage.setItem(GPX_CACHE_KEY, newCache);
 
 			return {
 				data,
@@ -137,7 +137,7 @@ export async function fetchGPXWithCache(): Promise<GPXResult> {
 			console.error('Error fetching GPX via proxy:', proxyError);
 
 			if (cachedData) {
-				await localforage.setItem(cacheKey, {
+				await localforage.setItem(GPX_CACHE_KEY, {
 					...cachedData,
 					isFallback: true,
 				});
@@ -166,6 +166,14 @@ export async function fetchGPXWithCache(): Promise<GPXResult> {
 						: 'Unknown error fetching GPX data',
 		};
 	}
+}
+
+/**
+ * Clears the cached GPX data so the next fetch will request from the network.
+ * Use after a load failure to allow retry without stale cache.
+ */
+export async function clearGPXCache(): Promise<void> {
+	await localforage.removeItem(GPX_CACHE_KEY);
 }
 
 /**

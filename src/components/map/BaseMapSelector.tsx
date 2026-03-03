@@ -25,6 +25,7 @@ export default function BaseMapSelector({ initialProvider }: BaseMapSelectorProp
 	const map = useMap();
 	const storedProvider = useMapStore((state: MapStoreState) => state.baseMapProvider);
 	const setBaseMapProvider = useMapStore((state: MapStoreState) => state.setBaseMapProvider);
+	const gpxLoadFailed = useMapStore((state: MapStoreState) => state.gpxLoadFailed);
 	const effectiveInitial = resolveProvider(storedProvider, initialProvider || BaseMapProvider.OPEN_STREET_MAP);
 	const [currentLayer, setCurrentLayer] = useState<BaseMapProvider>(effectiveInitial);
 
@@ -339,7 +340,10 @@ export default function BaseMapSelector({ initialProvider }: BaseMapSelectorProp
 	);
 
 	return (
-		<div className="z-controls absolute top-2 right-2" ref={containerRef}>
+		<div
+			className={`z-controls absolute top-2 right-2 ${gpxLoadFailed ? 'pointer-events-none opacity-60' : ''}`}
+			ref={containerRef}
+		>
 			<div className="relative rounded-full bg-white shadow-md">
 				{isOpen ? (
 					toggleButton

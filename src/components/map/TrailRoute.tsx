@@ -120,6 +120,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 	const setGpxElevationPoints = useMapStore((state: MapStoreState) => state.setGpxElevationPoints);
 	const setGpxLoaded = useMapStore((state: MapStoreState) => state.setGpxLoaded);
 	const setGpxLoadFailed = useMapStore((state: MapStoreState) => state.setGpxLoadFailed);
+	const reloadTrailRequested = useMapStore((state: MapStoreState) => state.reloadTrailRequested);
 	const processTrailData = useMapStore((state: MapStoreState) => state.processTrailData);
 
 	interface TrailPoint {
@@ -752,6 +753,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 		pathOptions,
 		selectedTrail,
 		direction,
+		reloadTrailRequested,
 		t,
 		tChart,
 		setRawGpxData,

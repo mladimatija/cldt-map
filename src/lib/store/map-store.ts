@@ -34,6 +34,8 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 				setGpxLoaded: (loaded: boolean) => set({ gpxLoaded: loaded }),
 				gpxLoadFailed: false,
 				setGpxLoadFailed: (failed: boolean) => set({ gpxLoadFailed: failed }),
+				reloadTrailRequested: 0,
+				setReloadTrailRequested: (timestamp: number) => set({ reloadTrailRequested: timestamp }),
 
 				units: config.units,
 				setUnits: (units: UnitSystem) => set({ units }),
@@ -244,7 +246,7 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 				},
 			}),
 			{
-				name: 'map-storage',
+				name: 'cldt-map-storage',
 				storage: createJSONStorage(() => localStorage),
 				partialize: (state) => ({
 					units: state.units,

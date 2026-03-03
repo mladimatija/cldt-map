@@ -5,7 +5,8 @@
 		"backToMap": "Back to Map",
 		"close": "Close",
 		"loading": "Loading...",
-		"retry": "Retry"
+		"retry": "Retry",
+		"failedToLoadTrail": "Failed to load trail data. Check that GPX URL is configured correctly."
 	},
 	"footer": {
 		"about": "About",
@@ -204,8 +205,7 @@
 		"instruction1": "Toggle some settings (direction, units, boundary, etc.)",
 		"instruction2": "Refresh the page and check if the settings persist",
 		"instruction3": "Close the browser tab and reopen to verify persistence between sessions",
-		"instructionNote": "In the real application, these settings initialize the map controls when loading the page.",
-		"failedToLoadTrail": "Failed to load trail data. Check that GPX URL is configured."
+		"instructionNote": "In the real application, these settings initialize the map controls when loading the page."
 	},
 	"zoomControls": {
 		"zoomIn": "Zoom in",

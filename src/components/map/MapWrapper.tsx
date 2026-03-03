@@ -3,10 +3,13 @@
 /**
  * Wraps the Leaflet map in a dynamic import and shows a loading spinner until the map is ready.
  * Uses a short minimum display time to avoid a flash of empty content.
+ * Renders GPX load the error banner above the map, so it is visible when trail fetch fails.
  */
 import { useState, useEffect, ReactElement } from 'react';
 import dynamic from 'next/dynamic';
 import { config } from '@/lib/config';
+
+const GPXLoadErrorBanner = dynamic(() => import('@/components/map/GPXLoadErrorBanner'), { ssr: false });
 
 interface MapWrapperProps {
 	locale?: string;
@@ -54,5 +57,12 @@ export default function MapWrapper(_props?: MapWrapperProps): ReactElement {
 		return <MapLoading text={loadingText} />;
 	}
 
-	return <Map defaultBaseMap={config.baseMapProvider} zoomSnap={0} />;
+	return (
+		<div className="relative flex h-full w-full flex-col">
+			<GPXLoadErrorBanner />
+			<div className="relative min-h-0 flex-1">
+				<Map defaultBaseMap={config.baseMapProvider} zoomSnap={0} />
+			</div>
+		</div>
+	);
 }

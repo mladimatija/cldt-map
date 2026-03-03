@@ -92,6 +92,8 @@ export function createMapStoreStub(): MapStoreState {
 		setGpxLoaded: noop,
 		gpxLoadFailed: false,
 		setGpxLoadFailed: noop,
+		reloadTrailRequested: 0,
+		setReloadTrailRequested: noop,
 		units: 'metric' as UnitSystem,
 		setUnits: noop,
 		direction: 'SOBO' as TrailDirection,

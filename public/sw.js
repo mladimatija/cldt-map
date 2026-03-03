@@ -100,8 +100,16 @@ async function handleTileRequest(request) {
     }
     return networkResponse;
   } catch (error) {
-    // If both cache and network fail, return a placeholder tile
+    // If both cache and network fail, return a placeholder tile (gray 256x256 SVG)
     console.error('Failed to fetch tile:', error);
-    return new Response('', { status: 404 });
+    const svg =
+      '<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">' +
+      '<rect width="256" height="256" fill="#e5e7eb"/>' +
+      '<text x="128" y="136" font-family="sans-serif" font-size="14" fill="#6b7280" text-anchor="middle">Offline</text>' +
+      '</svg>';
+    return new Response(svg, {
+      status: 200,
+      headers: { 'Content-Type': 'image/svg+xml', 'Cache-Control': 'no-store' },
+    });
   }
 }

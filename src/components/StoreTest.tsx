@@ -20,6 +20,7 @@ const btnSelected =
 
 const StoreTest: React.FC = () => {
 	const t = useTranslations('storeTest');
+	const tCommon = useTranslations('common');
 	const {
 		direction,
 		setDirection,
@@ -60,7 +61,7 @@ const StoreTest: React.FC = () => {
 		try {
 			await setFakeUserLocationOnTrail();
 		} catch (_err) {
-			alert(t('failedToLoadTrail'));
+			alert(tCommon('failedToLoadTrail'));
 		} finally {
 			setTrailLoading(false);
 		}

@@ -155,6 +155,8 @@ export interface MapStoreState {
 	setGpxLoaded: (loaded: boolean) => void;
 	gpxLoadFailed?: boolean;
 	setGpxLoadFailed: (failed: boolean) => void;
+	reloadTrailRequested: number;
+	setReloadTrailRequested: (timestamp: number) => void;
 	trailPoints?: unknown[];
 	requestRawGpxData?: () => string | null;
 	processTrailData?: (

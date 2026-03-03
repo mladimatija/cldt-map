@@ -143,6 +143,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 	const storeShowBoundary = useMapStore((state: MapStoreState) => state.showBoundary);
 	const storeShowTileBoundary = useMapStore((state: MapStoreState) => state.showTileBoundary);
 	const baseMapProvider = useMapStore((state: MapStoreState) => state.baseMapProvider);
+	const gpxLoadFailed = useMapStore((state: MapStoreState) => state.gpxLoadFailed);
 
 	const [colorSettings, setColorSettings] = useState({
 		brightness: 100,
@@ -1021,14 +1022,18 @@ const MapControls: React.FC<MapControlsProps> = ({
 		[map, stableRulerClick],
 	);
 
+	const controlsDisabledClass = gpxLoadFailed ? 'pointer-events-none opacity-60' : '';
+
 	return (
 		<>
 			{process.env.NODE_ENV === 'development' && (
-				<MapControlsTestLink containerRef={testLinkRef} label={t('testStore')} />
+				<div className={controlsDisabledClass}>
+					<MapControlsTestLink containerRef={testLinkRef} label={t('testStore')} />
+				</div>
 			)}
 
 			<div
-				className="map-controls-top-row z-controls absolute top-[58px] right-2 flex flex-col gap-2"
+				className={`map-controls-top-row z-controls absolute top-[58px] right-2 flex flex-col gap-2 ${controlsDisabledClass}`}
 				ref={topRightControlsRef}
 			>
 				<SmartTooltip

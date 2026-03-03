@@ -8,7 +8,7 @@ import React, { createContext, useCallback, useContext, useEffect, useState } fr
 import { NextIntlClientProvider } from 'next-intl';
 import { routing } from '@/i18n/routing';
 
-const LOCALE_STORAGE_KEY = 'cldt-locale';
+const LOCALE_STORAGE_KEY = 'cldt-map-locale';
 
 function getStoredLocale(): string | null {
 	if (typeof window === 'undefined') return null;

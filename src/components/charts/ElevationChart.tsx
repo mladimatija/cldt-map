@@ -86,6 +86,7 @@ function ChartTooltipSync(props: {
 
 export default function ElevationChart({ className = '' }: ElevationChartProps): JSX.Element | null {
 	const t = useTranslations('elevationChart');
+	const tCommon = useTranslations('common');
 	const [chartData, setChartData] = useState<ElevationPoint[]>([]);
 	const [userProgress, setUserProgress] = useState<number | null>(null);
 	const [isExpanded, setIsExpanded] = useState<boolean>(false);
@@ -100,6 +101,7 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 	const clearTrailHighlight = useStore((state: StoreState) => state.clearTrailHighlight);
 	const trailMetadata = useStore((state: StoreState) => state.trailMetadata);
 	const gpxLoaded = useStore((state: StoreState) => state.gpxLoaded);
+	const gpxLoadFailed = useMapStore((state: MapStoreState) => state.gpxLoadFailed);
 	const chartRef = useRef<HTMLDivElement>(null);
 	useBlockMapPropagation(chartRef, [chartData.length]);
 
@@ -186,9 +188,10 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 	};
 
 	if (chartData.length === 0) {
+		const emptyMessage = gpxLoadFailed ? tCommon('failedToLoadTrail') : gpxLoaded ? t('noData') : t('loading');
 		return (
 			<div className={`rounded bg-white p-4 shadow ${className}`} ref={chartRef}>
-				<h2 className="text-cldt-blue-contrast mb-0 text-lg font-semibold">{gpxLoaded ? t('noData') : t('loading')}</h2>
+				<h2 className="text-cldt-blue-contrast mb-0 text-lg font-semibold">{emptyMessage}</h2>
 			</div>
 		);
 	}

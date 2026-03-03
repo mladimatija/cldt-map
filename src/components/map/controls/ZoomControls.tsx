@@ -24,6 +24,7 @@ export default function ZoomControls(): React.ReactElement {
 	const containerRef = useRef<HTMLDivElement>(null);
 	useBlockMapPropagation(containerRef);
 	const gpxLoaded = useMapStore((state: MapStoreState) => state.gpxLoaded);
+	const gpxLoadFailed = useMapStore((state: MapStoreState) => state.gpxLoadFailed);
 	const [mapZoom, setMapZoom] = useState(map.getZoom());
 
 	const handleZoomChange = useCallback((): void => {
@@ -50,7 +51,10 @@ export default function ZoomControls(): React.ReactElement {
 	};
 
 	return (
-		<div className="z-controls absolute bottom-2 left-2 flex flex-col gap-2" ref={containerRef}>
+		<div
+			className={`z-controls absolute bottom-2 left-2 flex flex-col gap-2 ${gpxLoadFailed ? 'pointer-events-none opacity-60' : ''}`}
+			ref={containerRef}
+		>
 			<SmartTooltip content={t('zoomIn')} position="right">
 				<button
 					aria-label={t('zoomIn')}
