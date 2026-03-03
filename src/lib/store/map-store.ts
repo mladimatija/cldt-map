@@ -119,6 +119,9 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 				baseMapProvider: config.baseMapProvider,
 				setBaseMapProvider: (provider: string) => set({ baseMapProvider: provider }),
 
+				isMapFullscreen: false,
+				setMapFullscreen: (fullscreen: boolean) => set({ isMapFullscreen: fullscreen }),
+
 				processTrailData: (
 					points: unknown[],
 					elevationPoints: { lat: number; lng: number; elevation: number }[],

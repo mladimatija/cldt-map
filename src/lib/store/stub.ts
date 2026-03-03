@@ -133,6 +133,8 @@ export function createMapStoreStub(): MapStoreState {
 		setShowSections: noop,
 		baseMapProvider: BaseMapProvider.OPEN_STREET_MAP,
 		setBaseMapProvider: noop,
+		isMapFullscreen: false,
+		setMapFullscreen: noop,
 		requestRawGpxData: noopNull,
 		processTrailData: () => {},
 	};

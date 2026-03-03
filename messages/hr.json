@@ -244,6 +244,8 @@
 		"zoomOut": "Smanji",
 		"zoomLevel": "Razina zumiranja: {level}",
 		"fitToRoute": "Prilagodi kartu ruti",
-		"loadRouteFirst": "Prvo učitaj rutu"
+		"loadRouteFirst": "Prvo učitaj rutu",
+		"fullscreen": "Cijeli zaslon karte",
+		"exitFullscreen": "Izlaz iz cijelog zaslona"
 	}
 }

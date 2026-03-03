@@ -243,6 +243,8 @@
 		"zoomOut": "Zoom out",
 		"zoomLevel": "Zoom level: {level}",
 		"fitToRoute": "Fit map to route",
-		"loadRouteFirst": "Load a route first"
+		"loadRouteFirst": "Load a route first",
+		"fullscreen": "Fullscreen map",
+		"exitFullscreen": "Exit fullscreen"
 	}
 }

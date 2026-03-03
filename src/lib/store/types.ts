@@ -213,4 +213,7 @@ export interface MapStoreState {
 	setShowSections: (show: boolean) => void;
 	baseMapProvider: string;
 	setBaseMapProvider: (provider: string) => void;
+
+	isMapFullscreen: boolean;
+	setMapFullscreen: (fullscreen: boolean) => void;
 }
