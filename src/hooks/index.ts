@@ -4,16 +4,16 @@
  */
 
 // Map service and persisted map store
-import {useMapService} from './useMapService';
-import {useMapStore} from '@/lib/store';
+import { useMapService } from './useMapService';
+import { useMapStore } from '@/lib/store';
 
 // Map overlay - block event propagation to map
-import {useBlockMapPropagation} from './useBlockMapPropagation';
+import { useBlockMapPropagation } from './useBlockMapPropagation';
 
 // Site metadata
-import {useSiteMetadata} from './useSiteMetadata';
+import { useSiteMetadata } from './useSiteMetadata';
 
-import {useFitToRoute} from './useFitToRoute';
+import { useFitToRoute } from './useFitToRoute';
 
 // Export all hooks
-export {useMapService, useSiteMetadata, useMapStore, useBlockMapPropagation, useFitToRoute};
+export { useMapService, useSiteMetadata, useMapStore, useBlockMapPropagation, useFitToRoute };

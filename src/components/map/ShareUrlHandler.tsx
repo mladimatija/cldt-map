@@ -5,9 +5,10 @@ import { useMap } from 'react-leaflet';
 import L from 'leaflet';
 import { parseShareUrlParams } from '@/lib/utils';
 import { useMapStore, useStore, type MapStoreState, type StoreState, TrailState } from '@/lib/store';
+import { KEY_TO_PROVIDER } from '@/components/map/base-map-options';
 
 /**
- * Handles share URL params on load: applies direction and unit, shows trail marker+tooltip at shared location.
+ * Handles share URL params on load: applies direction, unit, map style (baseMap, sections, dark), and shows trail marker+tooltip at shared location.
  * Uses the same pulsing marker and trail info tooltip as when the user clicks on the trail.
  */
 export default function ShareUrlHandler(): null {
@@ -17,17 +18,33 @@ export default function ShareUrlHandler(): null {
 	const clearTrailHighlight = useStore((state: StoreState) => state.clearTrailHighlight);
 	const setTooltipPinnedFromShare = useStore((state: StoreState) => state.setTooltipPinnedFromShare);
 	const setDirection = useMapStore((state: MapStoreState) => state.setDirection);
+	const setBaseMapProvider = useMapStore((state: MapStoreState) => state.setBaseMapProvider);
+	const setShowSections = useMapStore((state: MapStoreState) => state.setShowSections);
+	const setDarkMode = useMapStore((state: MapStoreState) => state.setDarkMode);
 	const gpxLoaded = useMapStore((state: MapStoreState) => state.gpxLoaded);
 	const enhancedTrailPoints = useStore((state: TrailState) => state.enhancedTrailPoints);
 
-	// Apply URL unit to store so the link's unit is respected (overrides localStorage)
+	// Apply URL query params to store so the link's preferences are respected
 	useEffect(() => {
 		const params = parseShareUrlParams();
-		if (params?.unit) {
+		if (!params) return;
+		if (params.unit) {
 			useMapStore.getState().setUnits?.(params.unit === 'mi' ? 'imperial' : 'metric');
 			useStore.getState().setUnits?.(params.unit === 'mi' ? 'imperial' : 'metric');
 		}
-	}, []);
+		if (params.baseMap) {
+			const provider = KEY_TO_PROVIDER[params.baseMap];
+			if (provider) {
+				setBaseMapProvider(provider);
+			}
+		}
+		if (params.sections !== undefined) {
+			setShowSections(params.sections);
+		}
+		if (params.dark !== undefined) {
+			setDarkMode(params.dark);
+		}
+	}, [setBaseMapProvider, setShowSections, setDarkMode]);
 
 	useEffect(() => {
 		const params = parseShareUrlParams();

@@ -21,12 +21,15 @@ import {
 	useStore,
 } from '@/lib/store';
 import {
+	type ShareBaseMapKey,
 	buildShareProgressUrl,
 	buildShareViewUrl,
 	formatDistance,
 	formatElevation,
 	isWithinMapBoundary,
 } from '@/lib/utils';
+import { PROVIDER_TO_KEY } from '@/components/map/base-map-options';
+import type { BaseMapProvider } from '@/lib/services/map-service';
 import { config } from '@/lib/config';
 import type * as GeoJSON from 'geojson';
 import {
@@ -139,6 +142,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 	const storeUnits = useMapStore((state: MapStoreState) => state.units);
 	const storeShowBoundary = useMapStore((state: MapStoreState) => state.showBoundary);
 	const storeShowTileBoundary = useMapStore((state: MapStoreState) => state.showTileBoundary);
+	const baseMapProvider = useMapStore((state: MapStoreState) => state.baseMapProvider);
 
 	const [colorSettings, setColorSettings] = useState({
 		brightness: 100,
@@ -449,11 +453,17 @@ const MapControls: React.FC<MapControlsProps> = ({
 	const getShareViewUrl = (): string => {
 		const center = map.getCenter();
 		const zoom = map.getZoom();
+		const baseMapKey = baseMapProvider
+			? (PROVIDER_TO_KEY[baseMapProvider as BaseMapProvider] as ShareBaseMapKey | undefined)
+			: undefined;
 		return buildShareViewUrl(window.location.origin + window.location.pathname, {
 			lat: center.lat,
 			lng: center.lng,
 			zoom,
 			direction: storeDirection,
+			baseMap: baseMapKey,
+			sections: showSections,
+			dark: darkMode,
 		});
 	};
 
@@ -466,6 +476,15 @@ const MapControls: React.FC<MapControlsProps> = ({
 		const unit = units === 'imperial' ? 'mi' : 'km';
 		const zoom = map.getZoom();
 
+		const baseMapKey = baseMapProvider
+			? (PROVIDER_TO_KEY[baseMapProvider as BaseMapProvider] as ShareBaseMapKey | undefined)
+			: undefined;
+		const styleParams = {
+			baseMap: baseMapKey,
+			sections: showSections,
+			dark: darkMode,
+		};
+
 		if (highlightedTrailPoint) {
 			const kmFromStart = highlightedTrailPoint.distanceFromStart / 1000;
 			return buildShareProgressUrl(window.location.origin + window.location.pathname, {
@@ -473,6 +492,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 				direction: storeDirection,
 				unit,
 				zoom,
+				...styleParams,
 			});
 		}
 
@@ -483,6 +503,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 				direction: storeDirection,
 				unit,
 				zoom,
+				...styleParams,
 			});
 		}
 
@@ -997,7 +1018,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 				mapElement.style.filter = '';
 			}
 		},
-		[map],
+		[map, stableRulerClick],
 	);
 
 	return (

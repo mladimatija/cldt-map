@@ -4,10 +4,10 @@
  * Renders the CLDT trail polyline, start/finish markers, and trail info tooltip on map click or share URL.
  * Fetches GPX, builds enhanced points (distance/elevation), and syncs with the main store and map store.
  */
-import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {useMap} from 'react-leaflet';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useMap } from 'react-leaflet';
 import L from 'leaflet';
-import {useMapStore, useStore, type MapStoreState, type StoreState} from '@/lib/store';
+import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
 import {
 	DEFAULT_PATH_OPTIONS,
 	TRAIL_EPSILON_M,
@@ -18,13 +18,13 @@ import {
 	FINISH_FLAG_SVG,
 	sectionBoundaryIcon,
 } from '@/components/map/trail-route-constants';
-import {TRAIL_SECTIONS} from '@/lib/trail-sections';
-import {fetchGPXWithCache} from '@/lib/gpx-cache';
-import {calculateTrailMetadata, estimatePassageDays} from '@/lib/map';
-import {clearShareUrlParams, formatDistance, formatElevation, parseShareUrlParams} from '@/lib/utils';
-import type {UnitSystem} from '@/lib/types';
-import {useLocale, useTranslations} from 'next-intl';
-import {useFitToRoute} from "@/hooks";
+import { TRAIL_SECTIONS } from '@/lib/trail-sections';
+import { fetchGPXWithCache } from '@/lib/gpx-cache';
+import { calculateTrailMetadata, estimatePassageDays } from '@/lib/map';
+import { clearShareUrlParams, formatDistance, formatElevation, parseShareUrlParams } from '@/lib/utils';
+import type { UnitSystem } from '@/lib/types';
+import { useLocale, useTranslations } from 'next-intl';
+import { useFitToRoute } from '@/hooks';
 
 interface SectionTooltipStats {
 	/** Distance from current start to section start (m). */
@@ -45,9 +45,9 @@ function buildSectionTooltipHtml(
 	precision: number,
 	t: (key: string) => string,
 ): string {
-	const {startDistM, endDistM, secDistM, secAscent, secDescent, sectionIndex} = stats;
+	const { startDistM, endDistM, secDistM, secAscent, secDescent, sectionIndex } = stats;
 	const section = TRAIL_SECTIONS[sectionIndex];
-	const {totalDistanceM, totalAscentM, totalDescentM} = totals;
+	const { totalDistanceM, totalAscentM, totalDescentM } = totals;
 	const alongTrailStartM = section.startKm * 1000;
 	const alongTrailEndM = section.endKm === Infinity ? totalDistanceM : section.endKm * 1000;
 	const distPct = totalDistanceM > 0 ? ((secDistM / totalDistanceM) * 100).toFixed(1) : '0.0';
@@ -72,7 +72,7 @@ interface TrailRouteProps {
 	pathOptions?: L.PathOptions;
 }
 
-export default function TrailRoute({pathOptions = DEFAULT_PATH_OPTIONS}: TrailRouteProps): React.ReactElement | null {
+export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: TrailRouteProps): React.ReactElement | null {
 	const t = useTranslations('trailRoute');
 	const tChart = useTranslations('elevationChart');
 	const locale = useLocale();
@@ -95,10 +95,8 @@ export default function TrailRoute({pathOptions = DEFAULT_PATH_OPTIONS}: TrailRo
 	const startMarkerRef = useRef<L.Marker | null>(null);
 	const finishMarkerRef = useRef<L.Marker | null>(null);
 	const [isTooltipVisible, setIsTooltipVisible] = useState(false);
-	const showMarkerAtPositionRef = useRef<(point: TrailPoint) => void>(() => {
-	});
-	const clearMarkerAndTooltipRef = useRef<() => void>(() => {
-	});
+	const showMarkerAtPositionRef = useRef<(point: TrailPoint) => void>(() => {});
+	const clearMarkerAndTooltipRef = useRef<() => void>(() => {});
 	const isTooltipPinnedByClickRef = useRef(false);
 	const lastRouteClickTimeRef = useRef(0);
 	const mapClickHandlerRef = useRef<(() => void) | null>(null);
@@ -442,7 +440,7 @@ export default function TrailRoute({pathOptions = DEFAULT_PATH_OPTIONS}: TrailRo
 						pl.on('mousemove', (e) => {
 							if (useMapStore.getState().isRulerEnabled) return;
 							if (useStore.getState().tooltipPinnedFromShare) return;
-							if (highlightTrailPosition) highlightTrailPosition({lat: e.latlng.lat, lng: e.latlng.lng});
+							if (highlightTrailPosition) highlightTrailPosition({ lat: e.latlng.lat, lng: e.latlng.lng });
 						});
 						pl.on('mouseout', () => {
 							if (isTooltipPinnedByClickRef.current) return;
@@ -458,7 +456,7 @@ export default function TrailRoute({pathOptions = DEFAULT_PATH_OPTIONS}: TrailRo
 								clearShareUrlParams();
 							}
 							if (highlightTrailPosition) {
-								highlightTrailPosition({lat: e.latlng.lat, lng: e.latlng.lng});
+								highlightTrailPosition({ lat: e.latlng.lat, lng: e.latlng.lng });
 								setIsTooltipVisible(true);
 							}
 						});
@@ -526,7 +524,7 @@ export default function TrailRoute({pathOptions = DEFAULT_PATH_OPTIONS}: TrailRo
 								interactive: true,
 								bubblingMouseEvents: true,
 								weight: pathOptions.weight || 5,
-								renderer: L.svg({padding: 10}),
+								renderer: L.svg({ padding: 10 }),
 							});
 							attachPolylineHandlers(sectionPolyline);
 							featureGroup.addLayer(sectionPolyline);
@@ -554,7 +552,7 @@ export default function TrailRoute({pathOptions = DEFAULT_PATH_OPTIONS}: TrailRo
 
 							const tooltipHtml = buildSectionTooltipHtml(
 								stat,
-								{totalDistanceM, totalAscentM, totalDescentM},
+								{ totalDistanceM, totalAscentM, totalDescentM },
 								currentUnits,
 								currentPrecision,
 								t,
@@ -581,7 +579,7 @@ export default function TrailRoute({pathOptions = DEFAULT_PATH_OPTIONS}: TrailRo
 							interactive: true,
 							bubblingMouseEvents: true,
 							weight: pathOptions.weight || 5,
-							renderer: L.svg({padding: 10}),
+							renderer: L.svg({ padding: 10 }),
 						});
 						attachPolylineHandlers(singlePolyline);
 						featureGroup.addLayer(singlePolyline);
@@ -631,12 +629,12 @@ export default function TrailRoute({pathOptions = DEFAULT_PATH_OPTIONS}: TrailRo
 							icon: startIcon,
 							zIndexOffset: 100,
 						});
-						startMarker.bindTooltip(t('startingPoint', {direction: directionText}), {
+						startMarker.bindTooltip(t('startingPoint', { direction: directionText }), {
 							direction: 'top',
 							permanent: false,
 							className: 'map-tooltip map-tooltip--compact',
 						});
-						const startLabel = t('startingPoint', {direction: directionText});
+						const startLabel = t('startingPoint', { direction: directionText });
 						startMarker.on('add', () => {
 							const el =
 								(startMarker as L.Marker & { getElement?: () => HTMLElement }).getElement?.() ??
@@ -659,12 +657,12 @@ export default function TrailRoute({pathOptions = DEFAULT_PATH_OPTIONS}: TrailRo
 						icon: finishIcon,
 						zIndexOffset: 100,
 					});
-					finishMarker.bindTooltip(t('finishPoint', {direction: directionText}), {
+					finishMarker.bindTooltip(t('finishPoint', { direction: directionText }), {
 						direction: 'top',
 						permanent: false,
 						className: 'map-tooltip map-tooltip--compact',
 					});
-					const finishLabel = t('finishPoint', {direction: directionText});
+					const finishLabel = t('finishPoint', { direction: directionText });
 					finishMarker.on('add', () => {
 						const el =
 							(finishMarker as L.Marker & { getElement?: () => HTMLElement }).getElement?.() ??
@@ -676,7 +674,7 @@ export default function TrailRoute({pathOptions = DEFAULT_PATH_OPTIONS}: TrailRo
 
 					const shareParams = parseShareUrlParams();
 					if (!shareParams?.progress) {
-						map.fitBounds(featureGroup.getBounds(), {padding: [50, 50]});
+						map.fitBounds(featureGroup.getBounds(), { padding: [50, 50] });
 					}
 
 					if (processTrailData) {
@@ -783,7 +781,7 @@ export default function TrailRoute({pathOptions = DEFAULT_PATH_OPTIONS}: TrailRo
 		for (let i = 0; i < markers.length && i < stats.length; i++) {
 			const tooltipHtml = buildSectionTooltipHtml(
 				stats[i],
-				{totalDistanceM, totalAscentM, totalDescentM},
+				{ totalDistanceM, totalAscentM, totalDescentM },
 				currentUnits,
 				currentPrecision,
 				t,

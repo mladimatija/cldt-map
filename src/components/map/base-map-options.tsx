@@ -13,6 +13,16 @@ export const PROVIDER_TO_KEY: Record<BaseMapProvider, string> = {
 	[BaseMapProvider.CROATIA_TOPO]: 'croatiaTopo',
 };
 
+/** Reverse map for share URL key → provider (for applying shared style). */
+export const KEY_TO_PROVIDER: Record<string, BaseMapProvider> = {
+	standard: BaseMapProvider.OPEN_STREET_MAP,
+	topo: BaseMapProvider.OPEN_TOPO_MAP,
+	satellite: BaseMapProvider.SATELLITE,
+	terrain: BaseMapProvider.TERRAIN,
+	cycling: BaseMapProvider.CYCL_OSM,
+	croatiaTopo: BaseMapProvider.CROATIA_TOPO,
+};
+
 export interface MapOption {
 	id: BaseMapProvider;
 	name: string;

@@ -239,12 +239,23 @@ export function getNavigateToPointUrl(originLat: number, originLng: number, dest
 	return `https://www.google.com/maps/dir/?api=1&origin=${originLat},${originLng}&destination=${destLat},${destLng}`;
 }
 
+/** Short keys for base map used in share URLs (e.g. standard, topo, croatiaTopo) */
+export type ShareBaseMapKey = 'standard' | 'topo' | 'satellite' | 'terrain' | 'cycling' | 'croatiaTopo';
+
 /**
- * Build a shareable URL with the current map view (center, zoom, direction)
+ * Build a shareable URL with the current map view (center, zoom, direction, style)
  */
 export function buildShareViewUrl(
 	baseUrl: string,
-	params: { lat: number; lng: number; zoom: number; direction?: TrailDirection },
+	params: {
+		lat: number;
+		lng: number;
+		zoom: number;
+		direction?: TrailDirection;
+		baseMap?: ShareBaseMapKey;
+		sections?: boolean;
+		dark?: boolean;
+	},
 ): string {
 	const url = new URL(baseUrl);
 	url.searchParams.set('lat', params.lat.toFixed(5));
@@ -253,16 +264,33 @@ export function buildShareViewUrl(
 	if (params.direction) {
 		url.searchParams.set('dir', params.direction);
 	}
+	if (params.baseMap) {
+		url.searchParams.set('baseMap', params.baseMap);
+	}
+	if (params.sections !== undefined) {
+		url.searchParams.set('sections', params.sections ? '1' : '0');
+	}
+	if (params.dark !== undefined) {
+		url.searchParams.set('dark', params.dark ? '1' : '0');
+	}
 	return url.toString();
 }
 
 /**
- * Build a shareable URL with progress (distance from start in km, direction, unit, zoom).
+ * Build a shareable URL with progress (distance from start in km, direction, unit, zoom, style).
  * Total is not needed: we find the point by matching progress (km) to distanceFromStart.
  */
 export function buildShareProgressUrl(
 	baseUrl: string,
-	params: { kmFromStart: number; direction: TrailDirection; unit?: 'km' | 'mi'; zoom?: number },
+	params: {
+		kmFromStart: number;
+		direction: TrailDirection;
+		unit?: 'km' | 'mi';
+		zoom?: number;
+		baseMap?: ShareBaseMapKey;
+		sections?: boolean;
+		dark?: boolean;
+	},
 ): string {
 	const url = new URL(baseUrl);
 	url.searchParams.set('progress', params.kmFromStart.toFixed(2));
@@ -273,11 +301,20 @@ export function buildShareProgressUrl(
 	if (params.zoom !== null && params.zoom !== undefined) {
 		url.searchParams.set('zoom', String(params.zoom));
 	}
+	if (params.baseMap) {
+		url.searchParams.set('baseMap', params.baseMap);
+	}
+	if (params.sections !== undefined) {
+		url.searchParams.set('sections', params.sections ? '1' : '0');
+	}
+	if (params.dark !== undefined) {
+		url.searchParams.set('dark', params.dark ? '1' : '0');
+	}
 	return url.toString();
 }
 
 /** Share URL param keys that we add/remove */
-const SHARE_URL_PARAMS = ['lat', 'lng', 'zoom', 'dir', 'progress', 'unit'] as const;
+const SHARE_URL_PARAMS = ['lat', 'lng', 'zoom', 'dir', 'progress', 'unit', 'baseMap', 'sections', 'dark'] as const;
 
 /**
  * Remove share URL params from the current location (clean URL when the share tooltip is closed)
@@ -298,6 +335,15 @@ export function clearShareUrlParams(): void {
 	}
 }
 
+const VALID_SHARE_BASE_MAP_KEYS = new Set<ShareBaseMapKey>([
+	'standard',
+	'topo',
+	'satellite',
+	'terrain',
+	'cycling',
+	'croatiaTopo',
+]);
+
 /**
  * Parse share URL params from the current location. Returns null if no share-related params are present.
  */
@@ -308,6 +354,9 @@ export function parseShareUrlParams(): {
 	dir?: TrailDirection;
 	progress?: number;
 	unit?: 'km' | 'mi';
+	baseMap?: ShareBaseMapKey;
+	sections?: boolean;
+	dark?: boolean;
 } | null {
 	if (typeof window === 'undefined') return null;
 	const params = new URLSearchParams(window.location.search);
@@ -317,13 +366,28 @@ export function parseShareUrlParams(): {
 	const dir = params.get('dir');
 	const progress = params.get('progress');
 	const unit = params.get('unit');
-	if (!lat && !lng && !zoom && !progress) return null;
+	const baseMap = params.get('baseMap');
+	const sections = params.get('sections');
+	const dark = params.get('dark');
+	if (!lat && !lng && !zoom && !progress && !baseMap && !sections && !dark) return null;
 	return {
 		...(lat && lng && { lat: parseFloat(lat), lng: parseFloat(lng) }),
 		...(zoom && { zoom: parseFloat(zoom) }),
 		...(dir && (dir === 'NOBO' || dir === 'SOBO') && { dir }),
 		...(progress && { progress: parseFloat(progress) }),
 		...(unit && (unit === 'km' || unit === 'mi') && { unit: unit }),
+		...(baseMap &&
+			VALID_SHARE_BASE_MAP_KEYS.has(baseMap as ShareBaseMapKey) && {
+				baseMap: baseMap as ShareBaseMapKey,
+			}),
+		...(sections !== null &&
+			sections !== undefined && {
+				sections: sections === '1',
+			}),
+		...(dark !== null &&
+			dark !== undefined && {
+				dark: dark === '1',
+			}),
 	};
 }
 
