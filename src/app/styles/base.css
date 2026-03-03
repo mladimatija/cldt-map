@@ -13,15 +13,15 @@
 		background: #1e293b;
 	}
 
-	html.dark .z-controls button,
+	html.dark .z-controls button:not(.base-map-option, .map-control-btn-outline),
 	html.dark .z-controls-popover {
 		background-color: var(--bg-secondary, #1e293b) !important;
 		border-color: var(--border-color, #334155) !important;
 		color: var(--text-primary, #f1f5f9) !important;
 	}
 
-	html.dark .z-controls button:hover,
-	html.dark .z-controls button:focus-visible {
+	html.dark .z-controls button:not(.base-map-option, .map-control-btn-outline):hover,
+	html.dark .z-controls button:not(.base-map-option, .map-control-btn-outline):focus-visible {
 		border-color: var(--cldt-green) !important;
 		color: var(--cldt-green) !important;
 	}

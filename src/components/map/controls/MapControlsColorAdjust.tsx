@@ -5,7 +5,13 @@ import { useTranslations } from 'next-intl';
 import SmartTooltip from '@/components/ui/SmartTooltip';
 import { usePopoverFocusTrap } from '@/hooks';
 import { IoColorPaletteOutline } from 'react-icons/io5';
-import { CONTROL_BTN_BASE, CONTROL_BTN_ACTIVE, CONTROL_BTN_INACTIVE } from './map-controls-constants';
+import {
+	CONTROL_BTN_BASE,
+	CONTROL_BTN_ACTIVE,
+	CONTROL_BTN_INACTIVE,
+	MAP_CONTROL_POPOVER,
+	MAP_CONTROL_BTN_OUTLINE,
+} from './map-controls-constants';
 import { cn } from '@/lib/utils';
 
 interface ColorSettings {
@@ -27,8 +33,8 @@ function SliderRow({ label, value, min, max, step, onChange }: SliderRowProps): 
 	return (
 		<div>
 			<div className="mb-0.5 flex justify-between">
-				<label className="text-xs text-gray-600">{label}</label>
-				<span className="text-cldt-blue text-xs font-medium">{value}%</span>
+				<label className="text-xs text-gray-600 dark:text-gray-400">{label}</label>
+				<span className="text-cldt-blue dark:text-cldt-blue text-xs font-medium">{value}%</span>
 			</div>
 			<input
 				className="precision-slider w-full min-w-0"
@@ -72,11 +78,14 @@ export function MapControlsColorAdjust({
 				<div
 					aria-label={t('colorMapAppearance')}
 					aria-modal="true"
-					className="z-controls-popover absolute top-1/2 right-[calc(100%+0.5rem)] flex w-48 -translate-y-1/2 flex-col gap-3 rounded-lg border border-gray-200 bg-white p-3 shadow-md"
+					className={cn(
+						'absolute top-1/2 right-[calc(100%+0.5rem)] flex w-48 -translate-y-1/2 flex-col gap-3',
+						MAP_CONTROL_POPOVER,
+					)}
 					ref={popoverRef}
 					role="dialog"
 				>
-					<h3 className="text-sm font-medium text-gray-700">{t('colorMapAppearance')}</h3>
+					<h3 className="text-sm font-medium text-gray-700 dark:text-gray-200">{t('colorMapAppearance')}</h3>
 					<div className="flex flex-col gap-2">
 						<SliderRow
 							label={t('colorBrightness')}
@@ -104,7 +113,7 @@ export function MapControlsColorAdjust({
 						/>
 					</div>
 					<button
-						className="hover:border-cldt-green hover:text-cldt-green focus-visible:border-cldt-green focus-visible:text-cldt-green w-full cursor-pointer rounded-full border border-gray-200 bg-white px-3 py-1.5 text-xs text-gray-700 transition-all outline-none"
+						className={cn(MAP_CONTROL_BTN_OUTLINE, 'w-full px-3 py-1.5 text-xs')}
 						type="button"
 						onClick={() => setColorSettings({ brightness: 100, contrast: 100, saturation: 100 })}
 					>

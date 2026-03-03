@@ -42,6 +42,14 @@
 	border-radius: 9999px;
 }
 
+html.dark .precision-slider {
+	background: var(--border-color, #334155);
+}
+
+html.dark .precision-slider::-moz-range-track {
+	background: var(--border-color, #334155);
+}
+
 .transition-height {
 	transition-property: height;
 	transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);

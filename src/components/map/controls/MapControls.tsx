@@ -1150,8 +1150,6 @@ const MapControls: React.FC<MapControlsProps> = ({
 					}}
 				/>
 
-				<div className="mx-auto my-1 h-[2px] w-8 bg-(--cldt-blue)" />
-
 				<div className="relative inline-block w-10 shrink-0">
 					<MapControlButton
 						ariaLabel={canShare ? t('shareMap') : t('shareUnavailable')}

@@ -3,11 +3,11 @@
 import React, { useRef } from 'react';
 import { useMapStore, type MapStoreState } from '@/lib/store';
 import { useBlockMapPropagation } from '@/hooks';
-import { isWithinMapBoundary } from '@/lib/utils';
+import { cn, isWithinMapBoundary } from '@/lib/utils';
 import { Tooltip } from '@/components/ui/Tooltip';
-import classNames from 'classnames';
 import { MdPersonPinCircle } from 'react-icons/md';
 import { useTranslations } from 'next-intl';
+import { CONTROL_BTN_BASE, CONTROL_BTN_ACTIVE, CONTROL_BTN_INACTIVE } from './map-controls-constants';
 
 export default function UserLocationToggleButton(): React.ReactElement {
 	const t = useTranslations('location');
@@ -21,19 +21,15 @@ export default function UserLocationToggleButton(): React.ReactElement {
 	const withinMapBoundary = userLocation ? isWithinMapBoundary(userLocation.lat, userLocation.lng) : true;
 	const isDisabled = !userLocation || permissionStatus !== 'granted' || !withinMapBoundary;
 
-	const buttonClasses = classNames(
-		'w-10 h-10 rounded-full flex items-center justify-center shadow-md transition-all outline-none',
-		{
-			'bg-white border-2 border-cldt-blue text-cldt-blue hover:border-cldt-green hover:text-cldt-green focus-visible:border-cldt-green focus-visible:text-cldt-green':
-				showUserMarker && !isDisabled,
-			'bg-white hover:border-cldt-green hover:text-cldt-green focus-visible:border-cldt-green focus-visible:text-cldt-green':
-				!showUserMarker && !isDisabled,
-			'bg-gray-100 cursor-not-allowed': isDisabled,
-			'cursor-pointer': !isDisabled,
-		},
+	const buttonClasses = cn(
+		CONTROL_BTN_BASE,
+		showUserMarker && !isDisabled && CONTROL_BTN_ACTIVE,
+		!showUserMarker && !isDisabled && CONTROL_BTN_INACTIVE,
+		!showUserMarker && !isDisabled && 'border-2 border-cldt-blue',
+		isDisabled && cn(CONTROL_BTN_INACTIVE, 'cursor-not-allowed opacity-50'),
+		!isDisabled && 'cursor-pointer',
+		'group',
 	);
-
-	const iconColor = isDisabled ? 'text-gray-400' : showUserMarker ? '' : 'text-cldt-blue';
 
 	const handleClick = (): void => {
 		if (!isDisabled) {
@@ -58,11 +54,11 @@ export default function UserLocationToggleButton(): React.ReactElement {
 				onClick={handleClick}
 			>
 				{showUserMarker ? (
-					<MdPersonPinCircle className={`h-6 w-6 ${iconColor}`} />
+					<MdPersonPinCircle className="h-6 w-6" />
 				) : (
 					<div className="relative inline-flex items-center justify-center">
-						<MdPersonPinCircle className={`h-6 w-6 ${iconColor}`} />
-						<div className="absolute h-[2px] w-7 rotate-45 rounded-full bg-gray-700" />
+						<MdPersonPinCircle className="h-6 w-6" />
+						<div className="group-hover:bg-cldt-green group-focus-visible:bg-cldt-green absolute h-[2px] w-7 rotate-45 rounded-full bg-current" />
 					</div>
 				)}
 			</button>

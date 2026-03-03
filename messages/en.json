@@ -124,12 +124,14 @@
 		"terrain": "Terrain",
 		"cycling": "Cycling",
 		"croatiaTopo": "Croatia Topo",
+		"darkMap": "Dark",
 		"standardDescription": "OpenStreetMap standard view",
 		"topoDescription": "Topographic map with contour lines",
 		"satelliteDescription": "Satellite imagery",
 		"terrainDescription": "Terrain view with shaded relief",
 		"cyclingDescription": "OpenCycleMap for cyclists and hiking",
 		"croatiaTopoDescription": "Official Croatian topographic maps",
+		"darkMapDescription": "Dark base layer for night or low-light use",
 		"changeMapStyle": "Change map style ({name})"
 	},
 	"test": {

@@ -159,6 +159,14 @@ export default function BaseMapSelector({ initialProvider }: BaseMapSelectorProp
 						maxZoom: 19,
 					});
 
+				case BaseMapProvider.DARK:
+					return L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png', {
+						attribution:
+							'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+						maxZoom: 20,
+						subdomains: 'abcd',
+					});
+
 				default:
 					return L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 						attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
@@ -358,14 +366,19 @@ export default function BaseMapSelector({ initialProvider }: BaseMapSelectorProp
 						{mapOptions.map((option) => {
 							const optionName = t(PROVIDER_TO_KEY[option.id] ?? 'standard');
 							const optionDescription = t(`${PROVIDER_TO_KEY[option.id] ?? 'standard'}Description`);
+							const isActive = option.id === currentLayer;
 							return (
 								<button
 									aria-label={`${optionName} - ${optionDescription}`}
 									className={cn(
-										'grid w-full grid-cols-[32px_1fr] items-center gap-2 p-2.5 text-left transition-colors outline-none hover:bg-gray-100 focus-visible:bg-gray-100 dark:hover:bg-gray-700 dark:focus-visible:bg-gray-700',
-										option.id === currentLayer
-											? 'bg-cldt-light-blue border-cldt-blue dark:bg-cldt-light-blue/30 border-l-4'
-											: '',
+										'base-map-option grid w-full cursor-pointer grid-cols-[32px_1fr] items-center gap-2 border-b border-gray-200 p-2.5 text-left transition-colors outline-none last:border-b-0',
+										'dark:bg-(--bg-secondary) dark:text-(--text-primary)',
+										'dark:border-b-(--bg-secondary) dark:last:border-b-0',
+										'hover:bg-gray-100 focus-visible:bg-gray-100 dark:hover:bg-gray-700 dark:focus-visible:bg-gray-700',
+										'border-l-4 border-l-transparent',
+										isActive
+											? 'border-l-cldt-green bg-cldt-light-blue dark:bg-cldt-light-blue/30'
+											: 'hover:border-l-cldt-green focus-visible:border-l-cldt-green dark:hover:border-l-cldt-green dark:focus-visible:border-l-cldt-green',
 									)}
 									key={option.id}
 									title={optionName}
@@ -380,7 +393,7 @@ export default function BaseMapSelector({ initialProvider }: BaseMapSelectorProp
 										{option.icon}
 									</div>
 									<div className="flex flex-col">
-										<span className="text-sm font-medium text-gray-800 dark:text-white">{optionName}</span>
+										<span className="text-sm font-medium dark:text-white">{optionName}</span>
 										<span className="text-xs text-gray-500 dark:text-gray-300">{optionDescription}</span>
 									</div>
 								</button>

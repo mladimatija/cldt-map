@@ -169,3 +169,6 @@ MIT — see [LICENSE](LICENSE).
 
 - Trail data: [Udruga Long Distance Trail Hrvatska (LDTH)](https://cldt.hr)
 - Map tiles: OpenStreetMap, OpenTopoMap, CyclOSM, Esri, DGU
+
+## TODO
+- Refactor how dark mode styles are implemented.

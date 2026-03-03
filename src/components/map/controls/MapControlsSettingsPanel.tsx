@@ -74,31 +74,31 @@ export function MapControlsSettingsPanel({
 					<h3 className="text-sm font-medium text-gray-700 dark:text-gray-200">{preferencesTitle}</h3>
 					<label className="flex cursor-pointer items-center gap-2">
 						<Checkbox checked={darkMode} onCheckedChange={(checked) => setDarkMode(checked)} />
-						<IoMoonOutline className="h-4 w-4 shrink-0 text-gray-600 dark:text-gray-400" />
+						<IoMoonOutline className="h-4 w-4 shrink-0 text-gray-600 dark:text-white" />
 						<span className="text-sm text-gray-700 dark:text-gray-200">{darkModeLabel}</span>
 					</label>
 					<label className="flex cursor-pointer items-center gap-2">
 						<Checkbox checked={batterySaverMode} onCheckedChange={(checked) => setBatterySaverMode(checked)} />
-						<IoBatteryHalfOutline className="h-4 w-4 shrink-0 text-gray-600 dark:text-gray-400" />
+						<IoBatteryHalfOutline className="h-4 w-4 shrink-0 text-gray-600 dark:text-white" />
 						<span className="text-sm text-gray-700 dark:text-gray-200">{batterySaverLabel}</span>
 						<span className="inline-flex" onClick={(e) => e.stopPropagation()} onMouseDown={(e) => e.stopPropagation()}>
 							<SmartTooltip content={batterySaverTooltip} position="top">
-								<IoHelpCircleOutline className="ml-0.5 h-3.5 w-3.5 shrink-0 cursor-help text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300" />
+								<IoHelpCircleOutline className="ml-0.5 h-3.5 w-3.5 shrink-0 cursor-help text-gray-400 hover:text-gray-600 dark:text-white" />
 							</SmartTooltip>
 						</span>
 					</label>
 					<label className="flex cursor-pointer items-center gap-2">
 						<Checkbox checked={largeTouchTargets} onCheckedChange={(checked) => setLargeTouchTargets(checked)} />
-						<IoHandLeftOutline className="h-4 w-4 shrink-0 text-gray-600 dark:text-gray-400" />
+						<IoHandLeftOutline className="h-4 w-4 shrink-0 text-gray-600 dark:text-white" />
 						<span className="text-sm text-gray-700 dark:text-gray-200">{largeTouchTargetsLabel}</span>
 					</label>
 					<label className="flex cursor-pointer items-center gap-2">
 						<Checkbox checked={showSections} onCheckedChange={(checked) => setShowSections(checked)} />
-						<IoLayersOutline className="h-4 w-4 shrink-0 text-gray-600 dark:text-gray-400" />
+						<IoLayersOutline className="h-4 w-4 shrink-0 text-gray-600 dark:text-white" />
 						<span className="text-sm text-gray-700 dark:text-gray-200">{t('showSections')}</span>
 						<span className="inline-flex" onClick={(e) => e.stopPropagation()} onMouseDown={(e) => e.stopPropagation()}>
 							<SmartTooltip content={t('showSectionsTooltip')} position="top">
-								<IoHelpCircleOutline className="ml-0.5 h-3.5 w-3.5 shrink-0 cursor-help text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300" />
+								<IoHelpCircleOutline className="ml-0.5 h-3.5 w-3.5 shrink-0 cursor-help text-gray-400 hover:text-gray-600 dark:text-white" />
 							</SmartTooltip>
 						</span>
 					</label>

@@ -11,6 +11,8 @@ export enum BaseMapProvider {
 	TERRAIN = 'Terrain',
 	CYCL_OSM = 'CyclOSM',
 	CROATIA_TOPO = 'CroatiaTopo',
+	/** Dark / low-light base layer (CartoDB Dark Matter) for night use. */
+	DARK = 'Dark',
 }
 
 /** Base map layer configuration. */

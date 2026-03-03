@@ -34,9 +34,9 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
 					aria-hidden
 					className={cn(
 						'flex h-4 w-4 shrink-0 items-center justify-center rounded border transition-colors',
-						'border-gray-300 bg-white dark:border-gray-500 dark:bg-gray-700',
+						'border-gray-300 bg-white dark:border-white dark:bg-transparent',
 						'peer-checked:border-cldt-blue peer-checked:bg-cldt-blue peer-checked:text-white',
-						'peer-focus-visible:ring-cldt-blue peer-focus-visible:ring-2 peer-focus-visible:ring-offset-1',
+						'peer-focus-visible:ring-cldt-green peer-focus-visible:ring-1 peer-focus-visible:ring-offset-1',
 						'peer-disabled:cursor-not-allowed peer-disabled:opacity-50',
 						className,
 					)}

@@ -252,8 +252,8 @@ export function getNavigateToPointUrl(originLat: number, originLng: number, dest
 	return `https://www.google.com/maps/dir/?api=1&origin=${originLat},${originLng}&destination=${destLat},${destLng}`;
 }
 
-/** Short keys for base map used in share URLs (e.g. standard, topo, croatiaTopo) */
-export type ShareBaseMapKey = 'standard' | 'topo' | 'satellite' | 'terrain' | 'cycling' | 'croatiaTopo';
+/** Short keys for base map used in share URLs (e.g. standard, topo, croatiaTopo, darkMap) */
+export type ShareBaseMapKey = 'standard' | 'topo' | 'satellite' | 'terrain' | 'cycling' | 'croatiaTopo' | 'darkMap';
 
 /**
  * Build a shareable URL with the current map view (center, zoom, direction, style)
@@ -355,6 +355,7 @@ const VALID_SHARE_BASE_MAP_KEYS = new Set<ShareBaseMapKey>([
 	'terrain',
 	'cycling',
 	'croatiaTopo',
+	'darkMap',
 ]);
 
 /**

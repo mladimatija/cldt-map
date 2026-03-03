@@ -3,12 +3,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useMapStore, type MapStoreState } from '@/lib/store';
 import { useBlockMapPropagation } from '@/hooks';
-import { isWithinMapBoundary } from '@/lib/utils';
+import { cn, isWithinMapBoundary } from '@/lib/utils';
 import { Tooltip } from '@/components/ui/Tooltip';
-import classNames from 'classnames';
 import { useMap } from 'react-leaflet';
 import { MdMyLocation, MdLocationSearching } from 'react-icons/md';
 import { useTranslations } from 'next-intl';
+import { CONTROL_BTN_BASE, CONTROL_BTN_ACTIVE, CONTROL_BTN_INACTIVE } from './map-controls-constants';
 
 type ButtonState = 'default' | 'locating' | 'disabled' | 'active';
 
@@ -100,27 +100,15 @@ export default function LocationButton({ checkPermission }: LocationButtonProps)
 	};
 
 	const buttonState = getButtonState();
-	const buttonClasses = classNames(
-		'w-10 h-10 rounded-full flex items-center justify-center border border-gray-200 shadow-md transition-all outline-none hover:border-2 focus-visible:border-2',
-		{
-			'bg-white hover:border-cldt-green hover:text-cldt-green focus-visible:border-cldt-green focus-visible:text-cldt-green':
-				buttonState === 'default',
-			'bg-cldt-blue/10': buttonState === 'locating',
-			'bg-gray-100 cursor-not-allowed': buttonState === 'disabled',
-			'bg-white border-2 border-cldt-blue text-cldt-blue hover:border-cldt-green hover:text-cldt-green focus-visible:border-cldt-green focus-visible:text-cldt-green':
-				buttonState === 'active',
-			'cursor-pointer': buttonState !== 'disabled',
-		},
+	const buttonClasses = cn(
+		CONTROL_BTN_BASE,
+		buttonState === 'default' && CONTROL_BTN_INACTIVE,
+		buttonState === 'active' && CONTROL_BTN_ACTIVE,
+		buttonState === 'locating' &&
+			'cursor-wait border border-gray-200 bg-cldt-blue/10 dark:border-[var(--border-color)] dark:bg-cldt-blue/20 dark:text-[var(--text-primary)]',
+		buttonState === 'disabled' && cn(CONTROL_BTN_INACTIVE, 'cursor-not-allowed opacity-50'),
+		buttonState !== 'disabled' && buttonState !== 'locating' && 'cursor-pointer',
 	);
-
-	const iconColor =
-		buttonState === 'locating'
-			? 'text-cldt-blue'
-			: buttonState === 'disabled'
-				? 'text-gray-400'
-				: buttonState === 'active'
-					? ''
-					: 'text-cldt-blue';
 
 	return (
 		<Tooltip content={getTooltipText()} position="left">
@@ -135,15 +123,19 @@ export default function LocationButton({ checkPermission }: LocationButtonProps)
 					<div className="absolute inset-0 flex items-center justify-center">
 						<div className="relative h-6 w-6">
 							<div className="border-t-cldt-blue border-r-cldt-blue/70 border-b-cldt-blue border-l-cldt-blue/70 absolute top-0 left-0 h-full w-full animate-spin rounded-full border-2"></div>
-							<div className="absolute top-[15%] left-[15%] h-[70%] w-[70%] rounded-full bg-white"></div>
+							<div className="absolute top-[15%] left-[15%] h-[70%] w-[70%] rounded-full bg-white dark:bg-(--bg-secondary)"></div>
 						</div>
 					</div>
 				) : null}
 
 				{buttonState === 'active' ? (
-					<MdMyLocation className={`h-6 w-6 ${iconColor} ${isLocating || isAnimating ? 'opacity-0' : ''}`} />
+					<MdMyLocation
+						className={`dark:hover:text-cldt-green h-6 w-6 dark:text-white ${isLocating || isAnimating ? 'opacity-0' : ''}`}
+					/>
 				) : (
-					<MdLocationSearching className={`h-6 w-6 ${iconColor} ${isLocating || isAnimating ? 'opacity-0' : ''}`} />
+					<MdLocationSearching
+						className={`dark:hover:text-cldt-green h-6 w-6 dark:text-white ${isLocating || isAnimating ? 'opacity-0' : ''}`}
+					/>
 				)}
 			</button>
 		</Tooltip>

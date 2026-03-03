@@ -79,7 +79,9 @@ export default function GoToDistance(): React.ReactElement | null {
 				<label className="sr-only" htmlFor="go-to-distance-input">
 					{t('label')}
 				</label>
-				<span className="text-cldt-blue-contrast text-sm font-medium whitespace-nowrap">{t('goTo')}</span>
+				<span className="text-cldt-blue-contrast text-sm font-medium whitespace-nowrap dark:text-white">
+					{t('goTo')}
+				</span>
 				<input
 					aria-describedby={error ? 'go-to-distance-error' : undefined}
 					aria-invalid={!!error}
@@ -94,7 +96,7 @@ export default function GoToDistance(): React.ReactElement | null {
 						setError(null);
 					}}
 				/>
-				<span className="text-cldt-blue-contrast text-sm font-medium">{unitLabel}</span>
+				<span className="text-cldt-blue-contrast text-sm font-medium dark:text-white">{unitLabel}</span>
 				<button className={`${MAP_CONTROL_BTN_OUTLINE} ml-auto`} type="submit">
 					{t('go')}
 				</button>

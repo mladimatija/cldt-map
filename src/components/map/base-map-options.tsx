@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { BaseMapProvider } from '@/lib/services/map-service';
-import { FaMap, FaMountain, FaSatellite, FaMapMarkedAlt, FaBiking, FaLocationArrow } from 'react-icons/fa';
+import { FaMap, FaMountain, FaSatellite, FaMapMarkedAlt, FaBiking, FaLocationArrow, FaMoon } from 'react-icons/fa';
 
 export const PROVIDER_TO_KEY: Record<BaseMapProvider, string> = {
 	[BaseMapProvider.OPEN_STREET_MAP]: 'standard',
@@ -11,9 +11,10 @@ export const PROVIDER_TO_KEY: Record<BaseMapProvider, string> = {
 	[BaseMapProvider.TERRAIN]: 'terrain',
 	[BaseMapProvider.CYCL_OSM]: 'cycling',
 	[BaseMapProvider.CROATIA_TOPO]: 'croatiaTopo',
+	[BaseMapProvider.DARK]: 'darkMap',
 };
 
-/** Reverse map for share URL key → provider (for applying shared style). */
+/** Reverse map for a share URL key → provider (for applying shared style). */
 export const KEY_TO_PROVIDER: Record<string, BaseMapProvider> = {
 	standard: BaseMapProvider.OPEN_STREET_MAP,
 	topo: BaseMapProvider.OPEN_TOPO_MAP,
@@ -21,6 +22,7 @@ export const KEY_TO_PROVIDER: Record<string, BaseMapProvider> = {
 	terrain: BaseMapProvider.TERRAIN,
 	cycling: BaseMapProvider.CYCL_OSM,
 	croatiaTopo: BaseMapProvider.CROATIA_TOPO,
+	darkMap: BaseMapProvider.DARK,
 };
 
 export interface MapOption {
@@ -30,7 +32,7 @@ export interface MapOption {
 	icon: React.ReactNode;
 }
 
-const iconClass = 'h-4 w-4 text-gray-700 dark:text-white';
+const iconClass = 'h-4 w-4 dark:text-white';
 
 export const mapOptions: MapOption[] = [
 	{
@@ -68,6 +70,12 @@ export const mapOptions: MapOption[] = [
 		name: 'Croatia Topo',
 		description: 'Official Croatian topographic maps',
 		icon: <FaLocationArrow className={`${iconClass} text-cldt-red`} />,
+	},
+	{
+		id: BaseMapProvider.DARK,
+		name: 'Dark',
+		description: 'Dark base layer for night or low-light use',
+		icon: <FaMoon className={iconClass} />,
 	},
 ];
 

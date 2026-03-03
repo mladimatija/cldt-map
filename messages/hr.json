@@ -125,12 +125,14 @@
 		"terrain": "Teren",
 		"cycling": "Bicikl",
 		"croatiaTopo": "Hrvatska Topo",
+		"darkMap": "Tamna",
 		"standardDescription": "Standardni prikaz OpenStreetMap",
 		"topoDescription": "Topografska karta s izohipama",
 		"satelliteDescription": "Satelitska snimka",
 		"terrainDescription": "Prikaz terena s osjenčanjem",
 		"cyclingDescription": "OpenCycleMap za bicikliste i planinare",
 		"croatiaTopoDescription": "Službene hrvatske topografske karte",
+		"darkMapDescription": "Tamna podloga za noćnu ili slabu osvijetljenost",
 		"changeMapStyle": "Promijeni stil karte ({name})"
 	},
 	"test": {
