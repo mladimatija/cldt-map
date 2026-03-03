@@ -2,6 +2,7 @@
 	--cldt-blue: #00a6c7;
 	--cldt-blue-text: #006b85;
 	--cldt-green: #5ec687;
+	--cldt-red: #e1584d;
 	--cldt-light-blue: #e5f0f5;
 	--cldt-light-green: #edf5ee;
 
@@ -34,6 +35,7 @@
 .dark {
 	--cldt-blue: #2dd4e6;
 	--cldt-green: #6ee7a0;
+	--cldt-red: #f87171;
 	--cldt-light-blue: #0f172a;
 	--cldt-light-green: #052e16;
 	--bg-primary: #0f172a;

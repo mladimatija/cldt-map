@@ -98,10 +98,23 @@ interface Conversions {
 	elevation: (value: number) => number;
 }
 
+/** Factor for km → mi (1 km = 0.621371 mi). */
+const KM_TO_MI = 0.621371;
+
+/** Convert kilometers to miles. */
+export function kmToMiles(km: number): number {
+	return km * KM_TO_MI;
+}
+
 const toImperial: Conversions = {
-	distance: (km: number): number => km * 0.621371,
+	distance: kmToMiles,
 	elevation: (meters: number): number => meters * 3.28084,
 };
+
+/** Convert miles to kilometers. */
+export function milesToKm(mi: number): number {
+	return mi / KM_TO_MI;
+}
 
 /**
  * Format distance with appropriate units

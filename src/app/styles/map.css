@@ -296,7 +296,7 @@
 }
 
 .trail-finish-marker .trail-endpoint-marker-inner {
-	background: #e1584d;
+	background: var(--cldt-red);
 }
 
 .trail-section-marker.leaflet-div-icon {
@@ -327,7 +327,7 @@
 	background-color: #00a6c7;
 }
 .trail-section-marker-inner.trail-section-2 {
-	background-color: #e1584d;
+	background-color: var(--cldt-red);
 }
 
 .map-tooltip--section {
@@ -342,7 +342,7 @@
 	color: #00a6c7;
 }
 .map-tooltip__inner .trail-section-title-2 {
-	color: #e1584d;
+	color: var(--cldt-red);
 }
 
 /* Control button tooltips (Radix) */
@@ -383,4 +383,13 @@
 .map-tooltip.map-tooltip--banner .user-location-close-btn {
 	top: 0;
 	right: 0;
+}
+
+.map-tooltip--error {
+	color: var(--cldt-red) !important;
+	border-left-color: var(--cldt-red) !important;
+}
+
+.map-tooltip--error p {
+	color: inherit;
 }

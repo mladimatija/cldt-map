@@ -67,7 +67,7 @@ export const mapOptions: MapOption[] = [
 		id: BaseMapProvider.CROATIA_TOPO,
 		name: 'Croatia Topo',
 		description: 'Official Croatian topographic maps',
-		icon: <FaLocationArrow className={`${iconClass} text-red-600`} />,
+		icon: <FaLocationArrow className={`${iconClass} text-cldt-red`} />,
 	},
 ];
 

@@ -55,6 +55,14 @@
 		"loadingMapData": "Učitavanje podataka karte...",
 		"loadingTrailData": "Učitavanje podataka staze..."
 	},
+	"goToDistance": {
+		"label": "Idi na udaljenost duž staze",
+		"goTo": "Idi na",
+		"km": "km",
+		"mi": "mi",
+		"go": "Idi",
+		"invalidNumber": "Unesite valjanu udaljenost unutar staze."
+	},
 	"mapControls": {
 		"preferences": "Postavke",
 		"darkMode": "Tamni način",

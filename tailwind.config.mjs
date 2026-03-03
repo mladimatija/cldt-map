@@ -25,6 +25,7 @@ const config = {
 				'cldt-blue': '#00a6c7',
 				'cldt-blue-contrast': '#006b85',
 				'cldt-green': '#5ec687',
+				'cldt-red': 'var(--cldt-red)',
 				'cldt-light-blue': '#e5f0f5',
 				'cldt-light-green': '#edf5ee',
 				border: 'hsl(var(--border))',

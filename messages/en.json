@@ -55,6 +55,14 @@
 		"loadingMapData": "Loading map data...",
 		"loadingTrailData": "Loading trail data..."
 	},
+	"goToDistance": {
+		"label": "Go to distance along trail",
+		"goTo": "Go to",
+		"km": "km",
+		"mi": "mi",
+		"go": "Go",
+		"invalidNumber": "Enter a valid distance within the trail."
+	},
 	"mapControls": {
 		"preferences": "Preferences",
 		"darkMode": "Dark mode",

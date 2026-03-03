@@ -8,6 +8,7 @@ import React, { Suspense, useState, useEffect, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 import { useTranslations } from 'next-intl';
 import { useMapStore, type MapStoreState } from '@/lib/store';
+import { DEFAULT_PATH_OPTIONS } from '@/components/map/trail-route-constants';
 
 function MapTrailLoadingFallback(): React.ReactElement {
 	const t = useTranslations('mapWrapper');
@@ -21,6 +22,7 @@ const LocationControls = dynamic(() => import('@/components/map/controls/Locatio
 const BaseMapSelector = dynamic(() => import('@/components/map/BaseMapSelector'), { ssr: false });
 const MapMarkers = dynamic(() => import('@/components/map/MapMarkers'), { ssr: false });
 const ShareUrlHandler = dynamic(() => import('@/components/map/ShareUrlHandler'), { ssr: false });
+const GoToDistance = dynamic(() => import('@/components/map/GoToDistance'), { ssr: false });
 const ElevationChart = dynamic(() => import('@/components/charts/ElevationChart'), { ssr: false });
 
 export default function MapContent(): React.ReactElement {
@@ -109,15 +111,10 @@ export default function MapContent(): React.ReactElement {
 	return (
 		<>
 			<ShareUrlHandler />
+			<GoToDistance />
 			<BaseMapSelector />
 			<Suspense fallback={<MapTrailLoadingFallback />}>
-				<TrailRoute
-					pathOptions={{
-						color: '#e1584d',
-						weight: 5,
-						opacity: 0.8,
-					}}
-				/>
+				<TrailRoute pathOptions={DEFAULT_PATH_OPTIONS} />
 			</Suspense>
 			<MapMarkers />
 			<MapControls />

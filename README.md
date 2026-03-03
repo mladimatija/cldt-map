@@ -31,7 +31,7 @@ Interactive web map for the **Croatian Long Distance Trail (CLDT)** — a 2,200+
 | Language  | TypeScript                     |
 | Maps      | Leaflet, react-leaflet         |
 | State     | Zustand (slices + persisted)   |
-| Styling   | Tailwind CSS, shadcn/ui        |
+| Styling   | Tailwind CSS                   |
 | i18n      | next-intl                      |
 | Charts    | Recharts                       |
 | Data      | localforage (GPX cache), fetch |
@@ -141,7 +141,7 @@ src/
 ├── components/
 │   ├── map/          # Map, BaseMapSelector, TrailRoute, MapMarkers, controls
 │   ├── layout/       # Header, Footer, Layout
-│   ├── ui/           # Button, Card, Tooltip, etc. (shadcn-style)
+│   ├── ui/           # Button, Card, Tooltip, etc.
 │   ├── common/       # ErrorBoundary, ServiceWorkerProvider, ThemeProvider
 │   ├── charts/       # ElevationChart
 │   └── providers/    # ClientIntlProvider
