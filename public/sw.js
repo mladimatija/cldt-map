@@ -1,6 +1,8 @@
-// Service worker for caching map tiles
-const CACHE_NAME = 'cldt-map-cache-v2';
-const TILE_CACHE_NAME = 'cldt-map-tiles-v2';
+// Service worker for CLDT Map (app shell + tiles)
+const CACHE_NAME = 'cldt-map-cache-v3';
+const TILE_CACHE_NAME = 'cldt-map-tiles-v3';
+const OFFLINE_URL = '/offline';
+const CORE_ASSETS = ['/', OFFLINE_URL, '/manifest.webmanifest', '/cldt-logo.svg', '/icon-192.png', '/icon-512.png'];
 
 // Tile hosts to cache for offline map use
 const TILE_HOSTS = [
@@ -21,12 +23,10 @@ const TILE_HOSTS = [
 
 // Install event - cache core assets
 self.addEventListener('install', (event) => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      const urlsToCache = ['/', '/cldt-logo.svg'];
-      return Promise.allSettled(
-        urlsToCache.map((url) => cache.add(url).catch(() => {}))
-      );
+      return Promise.allSettled(CORE_ASSETS.map((url) => cache.add(url).catch(() => {})));
     })
   );
 });
@@ -34,53 +34,84 @@ self.addEventListener('install', (event) => {
 // Activate event - clean up old caches
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
+    (async () => {
+      const cacheNames = await caches.keys();
+      await Promise.all(
         cacheNames
           .filter((cacheName) => {
-            return (
-              cacheName.startsWith('cldt-map-') &&
-              cacheName !== CACHE_NAME &&
-              cacheName !== TILE_CACHE_NAME
-            );
+            return cacheName.startsWith('cldt-map-') && cacheName !== CACHE_NAME && cacheName !== TILE_CACHE_NAME;
           })
-          .map((cacheName) => {
-            return caches.delete(cacheName);
-          })
+          .map((cacheName) => caches.delete(cacheName))
       );
-    })
+      await self.clients.claim();
+    })()
   );
+});
+
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });
 
 // Fetch event - network first with cache fallback
 self.addEventListener('fetch', (event) => {
-  const url = new URL(event.request.url);
-  
-  // Handle tile requests differently (cache first)
-  if (TILE_HOSTS.some(host => url.hostname.includes(host))) {
-    event.respondWith(handleTileRequest(event.request));
+  const req = event.request;
+
+  if (req.method !== 'GET') {
     return;
   }
-  
-  // For other requests, use network-first strategy
-  event.respondWith(
-    fetch(event.request)
-      .then((networkResponse) => {
-        // Cache the response if it's valid
-        if (networkResponse && networkResponse.status === 200) {
-          const responseClone = networkResponse.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseClone);
-          });
-        }
-        return networkResponse;
-      })
-      .catch(() => {
-        // Fallback to cache if network fails
-        return caches.match(event.request);
-      })
-  );
+
+  const url = new URL(req.url);
+
+  // Handle tile requests differently (cache first)
+  if (TILE_HOSTS.some((host) => url.hostname.includes(host))) {
+    event.respondWith(handleTileRequest(req));
+    return;
+  }
+
+  // Navigation requests: network first, then offline fallback.
+  if (req.mode === 'navigate') {
+    event.respondWith(handleNavigationRequest(req));
+    return;
+  }
+
+  // For other GET requests, prefer network but fall back to cache.
+  event.respondWith(handleGenericGetRequest(req));
 });
+
+async function handleNavigationRequest(request) {
+  try {
+    const networkResponse = await fetch(request);
+    // Cache successful navigations for faster repeat loads.
+    if (networkResponse && networkResponse.status === 200) {
+      const cache = await caches.open(CACHE_NAME);
+      cache.put(request, networkResponse.clone());
+    }
+    return networkResponse;
+  } catch {
+    const cache = await caches.open(CACHE_NAME);
+    const cached = await cache.match(request);
+    if (cached) return cached;
+    const offline = await cache.match(OFFLINE_URL);
+    if (offline) return offline;
+    return new Response('Offline', { status: 200, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
+  }
+}
+
+async function handleGenericGetRequest(request) {
+  try {
+    const networkResponse = await fetch(request);
+    if (networkResponse && networkResponse.status === 200) {
+      const responseClone = networkResponse.clone();
+      const cache = await caches.open(CACHE_NAME);
+      cache.put(request, responseClone);
+    }
+    return networkResponse;
+  } catch {
+    return caches.match(request);
+  }
+}
 
 // Special handler for tile requests
 async function handleTileRequest(request) {
