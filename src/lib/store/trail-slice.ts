@@ -257,7 +257,7 @@ export const createTrailSlice: StateCreator<StoreState, [], [], TrailSlice> = (s
 		return closestPoint;
 	},
 
-	findTrailPointByCoordinates: (lat, lng): EnhancedTrailPoint | null => {
+	findTrailPointByCoordinates: (lat, lng, maxDistanceM = 150): EnhancedTrailPoint | null => {
 		const { enhancedTrailPoints } = get();
 
 		if (!enhancedTrailPoints || enhancedTrailPoints.length === 0) {
@@ -283,9 +283,7 @@ export const createTrailSlice: StateCreator<StoreState, [], [], TrailSlice> = (s
 			}
 		}
 
-		const maxDistanceThreshold = 150;
-
-		if (minDistance <= maxDistanceThreshold) {
+		if (minDistance <= maxDistanceM) {
 			return closestPoint;
 		}
 		return null;
@@ -298,7 +296,8 @@ export const createTrailSlice: StateCreator<StoreState, [], [], TrailSlice> = (s
 		if ('distance' in position) {
 			point = state.findTrailPointByDistance(position.distance);
 		} else if ('lat' in position && 'lng' in position) {
-			point = state.findTrailPointByCoordinates(position.lat, position.lng);
+			const maxDistanceM = 'maxDistance' in position ? position.maxDistance : undefined;
+			point = state.findTrailPointByCoordinates(position.lat, position.lng, maxDistanceM);
 		}
 
 		if (point) {

@@ -446,6 +446,8 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 						pl.on('mouseout', () => {
 							if (isTooltipPinnedByClickRef.current) return;
 							if (useStore.getState().tooltipPinnedFromShare) return;
+							// Avoid clearing when mouseout fires immediately after a click (e.g. focus change).
+							if (Date.now() - lastRouteClickTimeRef.current < 80) return;
 							if (clearTrailHighlight) clearTrailHighlight();
 						});
 						pl.on('click', (e) => {
@@ -457,8 +459,18 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 								clearShareUrlParams();
 							}
 							if (highlightTrailPosition) {
-								highlightTrailPosition({ lat: e.latlng.lat, lng: e.latlng.lng });
+								// Use larger maxDistance so any click on the route finds the nearest point (sparse GPX can exceed 150m between points).
+								highlightTrailPosition({
+									lat: e.latlng.lat,
+									lng: e.latlng.lng,
+									maxDistance: 2000,
+								});
 								setIsTooltipVisible(true);
+								// Show marker/tooltip immediately so it appears without needing to move the cursor.
+								const point = useStore.getState().highlightedTrailPoint;
+								if (point) {
+									showMarkerAtPositionRef.current(point);
+								}
 							}
 						});
 					};
