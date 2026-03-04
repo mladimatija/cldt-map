@@ -18,17 +18,14 @@ const outDir = join(root, 'public');
 const svg = readFileSync(svgPath);
 
 async function generate() {
-  for (const size of [192, 512]) {
-    const outPath = join(outDir, `icon-${size}.png`);
-    await sharp(svg)
-      .resize(size, size)
-      .png()
-      .toFile(outPath);
-    console.log(`Written ${outPath}`);
-  }
+	for (const size of [192, 512]) {
+		const outPath = join(outDir, `icon-${size}.png`);
+		await sharp(svg).resize(size, size).png().toFile(outPath);
+		console.log(`Written ${outPath}`);
+	}
 }
 
 generate().catch((err) => {
-  console.error(err);
-  process.exit(1);
+	console.error(err);
+	process.exit(1);
 });
