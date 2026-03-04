@@ -1,5 +1,5 @@
 /** Loads messages for the segment locale and wraps children in ClientIntlProvider and ServiceWorkerProvider. */
-import { setRequestLocale } from 'next-intl/server';
+import { getTimeZone, setRequestLocale } from 'next-intl/server';
 import { hasLocale } from 'next-intl';
 import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
@@ -29,9 +29,10 @@ export default async function LocaleLayout({ children, params }: Props): Promise
 
 	const allMessages = { en: enMessages, hr: hrMessages };
 	const initialMessages = allMessages[locale] ?? allMessages[routing.defaultLocale];
+	const timeZone = await getTimeZone();
 
 	return (
-		<ClientIntlProvider allMessages={allMessages} initialLocale={locale} initialMessages={initialMessages}>
+		<ClientIntlProvider allMessages={allMessages} initialLocale={locale} initialMessages={initialMessages} timeZone={timeZone}>
 			<ServiceWorkerProvider>{children}</ServiceWorkerProvider>
 		</ClientIntlProvider>
 	);

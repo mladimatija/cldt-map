@@ -40,6 +40,7 @@ type Props = {
 	initialLocale: string;
 	initialMessages: Messages;
 	allMessages: Record<string, Messages>;
+	timeZone?: string;
 	children: React.ReactNode;
 };
 
@@ -47,6 +48,7 @@ export function ClientIntlProvider({
 	initialLocale,
 	initialMessages,
 	allMessages,
+	timeZone,
 	children,
 }: Props): React.ReactElement {
 	const [locale, setLocaleState] = useState<string>(() =>
@@ -70,7 +72,7 @@ export function ClientIntlProvider({
 
 	return (
 		<ClientIntlContext.Provider value={{ locale, setLocale }}>
-			<NextIntlClientProvider locale={locale} messages={messages}>
+			<NextIntlClientProvider locale={locale} messages={messages} timeZone={timeZone}>
 				{children}
 			</NextIntlClientProvider>
 		</ClientIntlContext.Provider>
