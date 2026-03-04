@@ -248,5 +248,11 @@
 		"loadRouteFirst": "Load a route first",
 		"fullscreen": "Fullscreen map",
 		"exitFullscreen": "Exit fullscreen"
+	},
+	"pwa": {
+		"installTitle": "Install CLDT Map",
+		"installDescription": "Add to home screen for quick access and an app-like experience.",
+		"install": "Install",
+		"dismiss": "Not now"
 	}
 }

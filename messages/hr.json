@@ -249,5 +249,11 @@
 		"loadRouteFirst": "Prvo učitaj rutu",
 		"fullscreen": "Cijeli zaslon karte",
 		"exitFullscreen": "Izlaz iz cijelog zaslona"
+	},
+	"pwa": {
+		"installTitle": "Instaliraj CLDT kartu",
+		"installDescription": "Dodaj na početni zaslon za brzi pristup i iskustvo poput aplikacije.",
+		"install": "Instaliraj",
+		"dismiss": "Ne sada"
 	}
 }

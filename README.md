@@ -171,4 +171,5 @@ MIT — see [LICENSE](LICENSE).
 - Map tiles: OpenStreetMap, OpenTopoMap, CyclOSM, Esri, DGU
 
 ## TODO
+
 - Refactor how dark mode styles are implemented.

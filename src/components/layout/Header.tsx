@@ -17,7 +17,15 @@ export function Header({ className }: HeaderProps): React.ReactElement {
 	return (
 		<header className={cn('absolute top-2 left-2 z-410', className)}>
 			<Link href={companyUrl} target="_blank" title={companyName}>
-				<Image priority alt={companyName} height={102} src="/cldt-logo.svg" width={100} />
+				<Image
+					priority
+					alt={companyName}
+					className="block"
+					height={100}
+					sizes="100px"
+					src="/cldt-logo.svg"
+					width={100}
+				/>
 			</Link>
 		</header>
 	);

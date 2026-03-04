@@ -1,7 +1,7 @@
 /**
  * Root layout: fonts, global metadata, ThemeProvider. ServiceWorker lives in [locale] layout (inside ClientIntlProvider for i18n). Locale from next-intl middleware (x-next-intl-locale).
  */
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { headers } from 'next/headers';
 import { Geist, Geist_Mono } from 'next/font/google';
 import React, { Suspense } from 'react';
@@ -20,10 +20,15 @@ const geistMono = Geist_Mono({
 	subsets: ['latin'],
 });
 
+export const viewport: Viewport = {
+	themeColor: siteMetadata.themeColor,
+};
+
 export const metadata: Metadata = {
 	title: siteMetadata.title,
 	description: siteMetadata.description,
 	metadataBase: new URL(siteMetadata.url),
+	manifest: '/manifest.webmanifest',
 	icons: {
 		icon: '/cldt-logo.svg',
 		apple: '/cldt-logo.svg',
