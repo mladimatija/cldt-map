@@ -14,6 +14,7 @@
 		"lint": "eslint .",
 		"format": "prettier --write .",
 		"format:check": "prettier --check .",
+		"generate-pwa-icons": "node scripts/generate-pwa-icons.mjs",
 		"clean-install": "rm -rf node_modules .next package-lock.json && npm install"
 	},
 	"dependencies": {
@@ -48,6 +49,7 @@
 		"postcss": "^8.5.3",
 		"prettier": "^3.8.1",
 		"prettier-plugin-tailwindcss": "^0.7.2",
+		"sharp": "^0.33.5",
 		"tailwindcss": "^4.0.15",
 		"typescript": "^5.8.2"
 	},
