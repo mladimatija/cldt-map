@@ -88,7 +88,6 @@ export default function GoToDistance(): React.ReactElement | null {
 					className={MAP_CONTROL_INPUT}
 					id="go-to-distance-input"
 					inputMode="decimal"
-					placeholder={units === 'imperial' ? `0–${totalMi.toFixed(0)}` : `0–${totalKm.toFixed(0)}`}
 					type="text"
 					value={value}
 					onChange={(e) => {
