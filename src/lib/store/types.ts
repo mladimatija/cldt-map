@@ -105,12 +105,14 @@ export interface TrailActions {
 		elevGain: number,
 		elevLoss: number,
 	) => void;
-	highlightTrailPosition: (position: { lat: number; lng: number } | { distance: number; elevation?: number }) => void;
+	highlightTrailPosition: (
+		position: { lat: number; lng: number; maxDistance?: number } | { distance: number; elevation?: number },
+	) => void;
 	clearTrailHighlight: (force?: boolean) => void;
 	setTooltipPinnedFromShare: (pinned: boolean) => void;
 	requestRawGpxData: () => string | null;
 	findTrailPointByDistance: (distance: number) => EnhancedTrailPoint | null;
-	findTrailPointByCoordinates: (lat: number, lng: number) => EnhancedTrailPoint | null;
+	findTrailPointByCoordinates: (lat: number, lng: number, maxDistanceM?: number) => EnhancedTrailPoint | null;
 }
 
 export type TrailSlice = TrailState & TrailActions;
