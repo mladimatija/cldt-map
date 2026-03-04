@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { IoRefresh } from 'react-icons/io5';
+import { MAP_TOOLTIP_BTN_PRIMARY } from '@/components/map/controls/map-controls-constants';
 
 interface ServiceWorkerProviderProps {
 	children: React.ReactNode;
@@ -86,17 +87,16 @@ export function ServiceWorkerProvider({ children }: ServiceWorkerProviderProps):
 	return (
 		<>
 			{updateAvailable && (
-				<div className="z-toast fixed right-4 bottom-4 rounded-md bg-blue-600 p-4 text-white shadow-lg">
+				<div aria-label={t('updateAvailable')} className="map-tooltip map-tooltip--pwa" role="dialog">
 					<div className="flex items-center gap-2">
-						<IoRefresh className="h-5 w-5" />
-						<p>{t('updateAvailable')}</p>
+						<IoRefresh aria-hidden className="h-4 w-4 shrink-0 opacity-80" />
+						<p className="font-medium">{t('updateAvailable')}</p>
 					</div>
-					<button
-						className="mt-2 flex w-full items-center justify-center rounded-md bg-white px-4 py-1 text-blue-600"
-						onClick={onUpdateNow}
-					>
-						<span>{t('updateNow')}</span>
-					</button>
+					<div className="map-tooltip__actions">
+						<button className={MAP_TOOLTIP_BTN_PRIMARY} type="button" onClick={onUpdateNow}>
+							{t('updateNow')}
+						</button>
+					</div>
 				</div>
 			)}
 			{children}
