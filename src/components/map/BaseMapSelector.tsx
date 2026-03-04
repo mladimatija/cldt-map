@@ -110,6 +110,7 @@ export default function BaseMapSelector({ initialProvider }: BaseMapSelectorProp
 							attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
 							maxZoom: 19,
 							subdomains: 'abc',
+							detectRetina: true,
 						});
 					}
 
@@ -130,6 +131,7 @@ export default function BaseMapSelector({ initialProvider }: BaseMapSelectorProp
 							attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
 							maxZoom: 19,
 							subdomains: 'abc',
+							detectRetina: true,
 						});
 					}
 
@@ -139,6 +141,7 @@ export default function BaseMapSelector({ initialProvider }: BaseMapSelectorProp
 							'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="https://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)',
 						maxZoom: 17,
 						subdomains: 'abc',
+						detectRetina: true,
 					});
 
 				case BaseMapProvider.CYCL_OSM:
@@ -147,6 +150,7 @@ export default function BaseMapSelector({ initialProvider }: BaseMapSelectorProp
 							'&copy; <a href="https://github.com/cyclosm/cyclosm-cartocss-style/releases" title="CyclOSM - Open Bicycle render">CyclOSM</a> | Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
 						maxZoom: 18,
 						subdomains: 'abc',
+						detectRetina: true,
 					});
 
 				case BaseMapProvider.CROATIA_TOPO:
@@ -165,6 +169,7 @@ export default function BaseMapSelector({ initialProvider }: BaseMapSelectorProp
 							'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
 						maxZoom: 20,
 						subdomains: 'abcd',
+						detectRetina: true,
 					});
 
 				default:
@@ -172,6 +177,7 @@ export default function BaseMapSelector({ initialProvider }: BaseMapSelectorProp
 						attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
 						maxZoom: 19,
 						subdomains: 'abc',
+						detectRetina: true,
 					});
 			}
 		},

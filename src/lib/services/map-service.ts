@@ -201,7 +201,7 @@ export class MapService {
 		// Extract options from config
 		const { url, attribution, maxZoom, minZoom, subdomains, bounds, noWrap } = config;
 
-		// Create the tile layer
+		// Create the tile layer (detectRetina: request higher-zoom tiles on HiDPI for sharper 256px sources like OSM)
 		return L.tileLayer(url, {
 			attribution,
 			maxZoom,
@@ -209,6 +209,7 @@ export class MapService {
 			subdomains,
 			bounds,
 			noWrap,
+			detectRetina: true,
 		});
 	}
 
@@ -286,6 +287,7 @@ export class MapService {
 				return L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 					attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
 					maxZoom: 19,
+					detectRetina: true,
 				});
 			}
 		}
