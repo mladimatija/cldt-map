@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Generates PWA icons (192x192 and 512x512 PNG) from public/cldt-logo.svg.
+ * Generates PWA + iOS + favicon PNG assets from public/cldt-logo.svg.
  * Run: npm run generate-pwa-icons
  * Requires: npm install -D sharp
  */
@@ -18,8 +18,16 @@ const outDir = join(root, 'public');
 const svg = readFileSync(svgPath);
 
 async function generate() {
-	for (const size of [192, 512]) {
-		const outPath = join(outDir, `icon-${size}.png`);
+	const outputs = [
+		{ file: 'icon-192.png', size: 192 },
+		{ file: 'icon-512.png', size: 512 },
+		{ file: 'apple-touch-icon.png', size: 180 },
+		{ file: 'favicon-32.png', size: 32 },
+		{ file: 'favicon-16.png', size: 16 },
+	];
+
+	for (const { file, size } of outputs) {
+		const outPath = join(outDir, file);
 		await sharp(svg).resize(size, size).png().toFile(outPath);
 		console.log(`Written ${outPath}`);
 	}

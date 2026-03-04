@@ -20,10 +20,11 @@ export function Header({ className }: HeaderProps): React.ReactElement {
 				<Image
 					priority
 					alt={companyName}
-					className="block"
-					height={100}
+					className="block h-auto"
+					height={102}
 					sizes="100px"
 					src="/cldt-logo.svg"
+					style={{ height: 'auto' }}
 					width={100}
 				/>
 			</Link>

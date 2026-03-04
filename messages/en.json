@@ -254,5 +254,11 @@
 		"installDescription": "Add to home screen for quick access and an app-like experience.",
 		"install": "Install",
 		"dismiss": "Not now"
+	},
+	"offline": {
+		"title": "You're offline",
+		"description": "The map needs an internet connection for the first load. If you've visited this page before, some content may still be available from cache.",
+		"tryAgain": "Try again",
+		"goHome": "Go home"
 	}
 }
