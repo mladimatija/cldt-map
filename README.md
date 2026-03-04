@@ -48,7 +48,7 @@ Interactive web map for the **Croatian Long Distance Trail (CLDT)** — a 2,200+
 ### Install
 
 ```bash
-git clone https://github.com/matijaculjak/cldt-map.git
+git clone https://github.com/mladimatija/cldt-map.git
 cd cldt-map
 npm install
 ```
