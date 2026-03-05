@@ -32,7 +32,12 @@ export default async function LocaleLayout({ children, params }: Props): Promise
 	const timeZone = await getTimeZone();
 
 	return (
-		<ClientIntlProvider allMessages={allMessages} initialLocale={locale} initialMessages={initialMessages} timeZone={timeZone}>
+		<ClientIntlProvider
+			allMessages={allMessages}
+			initialLocale={locale}
+			initialMessages={initialMessages}
+			timeZone={timeZone}
+		>
 			<ServiceWorkerProvider>{children}</ServiceWorkerProvider>
 		</ClientIntlProvider>
 	);

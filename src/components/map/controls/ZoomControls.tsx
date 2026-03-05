@@ -72,7 +72,7 @@ export default function ZoomControls(): React.ReactElement {
 			<SmartTooltip content={t('zoomLevel', { level: mapZoom })} position="right">
 				<button
 					aria-label={t('zoomLevel', { level: mapZoom })}
-					className="text-cldt-blue-contrast hover:border-cldt-green hover:text-cldt-green focus-visible:border-cldt-green focus-visible:text-cldt-green flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-gray-200 bg-white shadow-md transition-all outline-none hover:border-2 focus-visible:border-2"
+					className="text-cldt-blue hover:border-cldt-green hover:text-cldt-green focus-visible:border-cldt-green focus-visible:text-cldt-green flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-gray-200 bg-white shadow-md transition-all outline-none hover:border-2 focus-visible:border-2"
 					type="button"
 					onClick={() => null}
 				>

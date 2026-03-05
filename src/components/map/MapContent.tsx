@@ -120,7 +120,7 @@ export default function MapContent(): React.ReactElement {
 			<MapControls />
 			<ZoomControls />
 			<LocationControls checkPermission={checkAndRequestLocation} />
-			<ElevationChart className="z-map-overlay absolute right-4 bottom-2 left-4 mx-2 shadow-lg sm:right-16 sm:left-16 sm:mx-0" />
+			<ElevationChart className="z-map-overlay absolute right-14 bottom-2 left-14 mx-2 shadow-lg sm:mx-0" />
 		</>
 	);
 }

@@ -42,6 +42,16 @@
 		@apply mb-4 text-base leading-relaxed;
 	}
 
+	button,
+	[role='button'] {
+		cursor: pointer;
+	}
+
+	button:disabled,
+	[role='button'][aria-disabled='true'] {
+		cursor: not-allowed;
+	}
+
 	a {
 		@apply text-cldt-blue font-medium no-underline transition-colors duration-200;
 	}
