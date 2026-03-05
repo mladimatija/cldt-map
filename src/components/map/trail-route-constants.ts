@@ -1,9 +1,8 @@
 import L from 'leaflet';
-import { CLDT_RED } from '@/lib/theme-colors';
 
 /** Default polyline style for the trail route. */
 export const DEFAULT_PATH_OPTIONS: L.PathOptions = {
-	color: CLDT_RED,
+	color: 'var(--cldt-red)',
 	weight: 5,
 	opacity: 0.8,
 };

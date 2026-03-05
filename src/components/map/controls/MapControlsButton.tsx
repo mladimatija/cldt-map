@@ -17,7 +17,7 @@ interface MapControlButtonProps {
 }
 
 /** Round map control button with tooltip; used for boundary, ruler, tiles, etc. */
-export function MapControlButton({
+export function MapControlsButton({
 	content,
 	ariaLabel,
 	active = false,

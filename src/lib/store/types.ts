@@ -186,6 +186,9 @@ export interface MapStoreState {
 
 	isRulerEnabled: boolean;
 	setRulerEnabled: (enabled: boolean) => void;
+	/** When the distance ruler has two points, the range in meters from trail start; used to highlight the chart. */
+	rulerRange: { distanceFromStartA: number; distanceFromStartB: number } | null;
+	setRulerRange: (range: { distanceFromStartA: number; distanceFromStartB: number } | null) => void;
 
 	userLocation: { lat: number; lng: number; accuracy?: number } | null;
 	isLocating: boolean;

@@ -8,8 +8,8 @@ Interactive web map for the **Croatian Long Distance Trail (CLDT)** — a 2,200+
 
 ## User Features
 
-- **Interactive trail route** — Distance and elevation at any point along the trail
-- **Elevation profile** — Chart showing terrain along the route
+- **Interactive trail route** — Click the route or the elevation chart to see distance and elevation at any point
+- **Elevation profile** — Chart showing terrain along the route; hover to preview on the map, click to pin a point
 - **Distance ruler** — Measure segments between two points
 - **Map layers** — Standard, Topo, Satellite, Terrain, CyclOSM, Croatia Topo
 - **Location tracking** — Optional GPS to see your position on the trail

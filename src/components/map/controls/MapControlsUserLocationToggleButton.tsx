@@ -9,7 +9,7 @@ import { MdPersonPinCircle } from 'react-icons/md';
 import { useTranslations } from 'next-intl';
 import { CONTROL_BTN_BASE, CONTROL_BTN_ACTIVE, CONTROL_BTN_INACTIVE } from './map-controls-constants';
 
-export default function UserLocationToggleButton(): React.ReactElement {
+export default function MapControlsUserLocationToggleButton(): React.ReactElement {
 	const t = useTranslations('location');
 	const containerRef = useRef<HTMLButtonElement>(null);
 	useBlockMapPropagation(containerRef);

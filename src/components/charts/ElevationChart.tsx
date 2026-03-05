@@ -4,13 +4,24 @@
  * Elevation profile chart (distance vs. elevation). Hover syncs with the trail highlight on the map via ChartTooltipSync.
  * Uses Recharts AreaChart; data comes from store enhancedTrailPoints / gpxElevationPoints.
  */
-import React, { useEffect, useMemo, useRef, useState, JSX } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState, JSX } from 'react';
 import { useBlockMapPropagation } from '@/hooks';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, ResponsiveContainer, ReferenceLine, Tooltip } from 'recharts';
+import {
+	AreaChart,
+	Area,
+	XAxis,
+	YAxis,
+	CartesianGrid,
+	ResponsiveContainer,
+	ReferenceLine,
+	ReferenceArea,
+	Tooltip,
+} from 'recharts';
 import { formatElevation, formatDistance } from '@/lib/utils';
 import { useStore, useMapStore, type StoreState, type MapStoreState, type UnitSystem } from '@/lib/store';
 import { MdKeyboardArrowUp, MdKeyboardArrowDown } from 'react-icons/md';
 import { useTranslations } from 'next-intl';
+import { RULER_SET_FROM_CHART_EVENT, type RulerSetFromChartDetail } from '@/lib/ruler-from-chart';
 
 interface ElevationPoint {
 	distance: number;
@@ -23,7 +34,7 @@ interface ElevationChartProps {
 	className?: string;
 }
 
-/** Custom Tooltip that syncs chart hover to map highlight */
+/** Custom Tooltip that syncs the chart hover to map highlight. */
 function ChartTooltipSync(props: {
 	highlightTrailPosition: ((pos: { distance: number; elevation: number }) => void) | undefined;
 	clearTrailHighlight: (() => void) | undefined;
@@ -32,7 +43,10 @@ function ChartTooltipSync(props: {
 	distanceLabel: string;
 	elevationLabel: string;
 	active?: boolean;
-	payload?: Array<{ payload: ElevationPoint }>;
+	payload?: ReadonlyArray<{ payload: ElevationPoint }>;
+	coordinate?: { x: number; y: number };
+	isPinned: boolean;
+	onScaleCalibration?: (coordX: number, distanceKm: number) => void;
 }): React.ReactElement | null {
 	const {
 		highlightTrailPosition,
@@ -43,30 +57,38 @@ function ChartTooltipSync(props: {
 		elevationLabel,
 		active,
 		payload,
+		coordinate,
+		isPinned,
+		onScaleCalibration,
 	} = props;
 	const prevDistanceRef = useRef<number | null>(null);
 	const wasActiveRef = useRef(false);
 
 	useEffect(() => {
 		if (active && payload?.[0]) {
-			wasActiveRef.current = true;
 			const point = payload[0].payload;
-			const distance = point.distance * 1000;
-			if (prevDistanceRef.current !== distance) {
-				prevDistanceRef.current = distance;
-				highlightTrailPosition?.({
-					distance,
-					elevation: point.elevation,
-				});
+			if (coordinate !== undefined && coordinate !== null && typeof onScaleCalibration === 'function') {
+				onScaleCalibration(coordinate.x, point.distance);
+			}
+			wasActiveRef.current = true;
+			if (!isPinned) {
+				const distance = point.distance * 1000;
+				if (prevDistanceRef.current !== distance) {
+					prevDistanceRef.current = distance;
+					highlightTrailPosition?.({
+						distance,
+						elevation: point.elevation,
+					});
+				}
 			}
 		} else {
-			if (wasActiveRef.current) {
+			if (!isPinned && wasActiveRef.current) {
 				wasActiveRef.current = false;
 				prevDistanceRef.current = null;
 				clearTrailHighlight?.();
 			}
 		}
-	}, [active, payload, highlightTrailPosition, clearTrailHighlight]);
+	}, [active, payload, coordinate, highlightTrailPosition, clearTrailHighlight, isPinned, onScaleCalibration]);
 
 	if (!active || !payload?.[0]) {
 		return null;
@@ -84,16 +106,33 @@ function ChartTooltipSync(props: {
 	);
 }
 
+type PinnedPoint = { distanceM: number; elevation: number };
+
 export default function ElevationChart({ className = '' }: ElevationChartProps): JSX.Element | null {
 	const t = useTranslations('elevationChart');
 	const tCommon = useTranslations('common');
 	const [chartData, setChartData] = useState<ElevationPoint[]>([]);
 	const [userProgress, setUserProgress] = useState<number | null>(null);
 	const [isExpanded, setIsExpanded] = useState<boolean>(false);
+	const [pinnedPoint, setPinnedPoint] = useState<PinnedPoint | null>(null);
+	/** Preview range while dragging on chart (km); triggers ReferenceArea. */
+	const [dragPreviewRange, setDragPreviewRange] = useState<{ startKm: number; endKm: number } | null>(null);
+	const chartAreaRef = useRef<HTMLDivElement | null>(null);
+	/** Plot area in SVG pixels: used to map click X to distance. Updated from tooltip coordinate when hovering. */
+	const plotScaleRef = useRef<{ plotLeft: number; plotWidth: number } | null>(null);
+	const dragStartKmRef = useRef<number>(0);
+	const dragEndKmRef = useRef<number>(0);
+	const dragStartPointRef = useRef<{ distanceM: number; elevation: number; closest: ElevationPoint } | null>(null);
+	/** True if the user moved the mouse during this gesture (so treat as drag, not click). */
+	const didDragRef = useRef<boolean>(false);
 
 	const units = useMapStore((state: MapStoreState) => state.units);
 	const direction = useMapStore((state: MapStoreState) => state.direction);
 	const distancePrecision = useMapStore((state: MapStoreState) => state.distancePrecision);
+	const rulerRange = useMapStore((state: MapStoreState) => state.rulerRange);
+	const setRulerRange = useMapStore((state: MapStoreState) => state.setRulerRange);
+	const isRulerEnabled = useMapStore((state: MapStoreState) => state.isRulerEnabled);
+	const setRulerEnabled = useMapStore((state: MapStoreState) => state.setRulerEnabled);
 	const closestPoint = useStore((state: StoreState) => state.closestPoint);
 	const enhancedTrailPoints = useStore((state: StoreState) => state.enhancedTrailPoints);
 	const highlightedTrailPoint = useStore((state: StoreState) => state.highlightedTrailPoint);
@@ -104,6 +143,139 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 	const gpxLoadFailed = useMapStore((state: MapStoreState) => state.gpxLoadFailed);
 	const chartRef = useRef<HTMLDivElement>(null);
 	useBlockMapPropagation(chartRef, [chartData.length]);
+
+	// Unpin when the trail tooltip is closed (e.g., the user clicks close on the map tooltip).
+	useEffect(() => {
+		if (!highlightedTrailPoint) {
+			queueMicrotask(() => setPinnedPoint(null));
+		}
+	}, [highlightedTrailPoint]);
+
+	const handleScaleCalibration = useCallback(
+		(coordX: number, distanceKm: number) => {
+			if (!chartAreaRef.current || !chartData.length) return;
+			const svg = chartAreaRef.current.querySelector('svg');
+			if (!svg) return;
+			const svgRect = svg.getBoundingClientRect();
+			const minDist = chartData[0].distance;
+			const maxDist = chartData[chartData.length - 1].distance;
+			const range = maxDist - minDist;
+			if (range <= 0) return;
+			const plotWidth = svgRect.width * 0.85;
+			const plotLeft = coordX - (plotWidth * (distanceKm - minDist)) / range;
+			plotScaleRef.current = { plotLeft, plotWidth };
+		},
+		[chartData],
+	);
+
+	const getDistanceKmFromClientX = useCallback(
+		(clientX: number): number | null => {
+			if (!chartAreaRef.current || !chartData.length) return null;
+			const svg = chartAreaRef.current.querySelector('svg');
+			if (!svg) return null;
+			const svgRect = svg.getBoundingClientRect();
+			const minDist = chartData[0].distance;
+			const maxDist = chartData[chartData.length - 1].distance;
+			const range = maxDist - minDist;
+			if (range <= 0) return null;
+			const clickX = clientX - svgRect.left;
+			const scale = plotScaleRef.current;
+			let plotLeft: number;
+			let plotWidth: number;
+			if (scale) {
+				plotLeft = scale.plotLeft;
+				plotWidth = scale.plotWidth;
+			} else {
+				plotLeft = svgRect.width * 0.1;
+				plotWidth = svgRect.width * 0.85;
+			}
+			const relativeX = (clickX - plotLeft) / plotWidth;
+			return minDist + Math.max(0, Math.min(1, relativeX)) * range;
+		},
+		[chartData],
+	);
+
+	const handleChartMouseDownCapture = useCallback(
+		(e: React.MouseEvent<HTMLDivElement>) => {
+			e.preventDefault();
+			e.stopPropagation();
+			const distanceKm = getDistanceKmFromClientX(e.clientX);
+			if (distanceKm === null || !chartData.length) return;
+
+			if (isRulerEnabled && rulerRange) {
+				const startKm = Math.min(rulerRange.distanceFromStartA, rulerRange.distanceFromStartB) / 1000;
+				const endKm = Math.max(rulerRange.distanceFromStartA, rulerRange.distanceFromStartB) / 1000;
+				if (distanceKm < startKm || distanceKm > endKm) {
+					setRulerEnabled(false);
+					return;
+				}
+			}
+
+			let closest = chartData[0];
+			let minDiff = Math.abs(chartData[0].distance - distanceKm);
+			for (let i = 1; i < chartData.length; i++) {
+				const diff = Math.abs(chartData[i].distance - distanceKm);
+				if (diff < minDiff) {
+					minDiff = diff;
+					closest = chartData[i];
+				}
+			}
+			const distanceM = closest.distance * 1000;
+			dragStartKmRef.current = distanceKm;
+			dragEndKmRef.current = distanceKm;
+			dragStartPointRef.current = { distanceM, elevation: closest.elevation, closest };
+			didDragRef.current = false;
+
+			const onMouseMove = (moveEvent: MouseEvent): void => {
+				const endKm = getDistanceKmFromClientX(moveEvent.clientX);
+				if (endKm === null) return;
+				didDragRef.current = true;
+				dragEndKmRef.current = endKm;
+				const start = dragStartKmRef.current;
+				setDragPreviewRange({ startKm: Math.min(start, endKm), endKm: Math.max(start, endKm) });
+			};
+			const onMouseUp = (): void => {
+				window.removeEventListener('mousemove', onMouseMove);
+				window.removeEventListener('mouseup', onMouseUp);
+				const startKm = dragStartKmRef.current;
+				const endKm = dragEndKmRef.current;
+				setDragPreviewRange(null);
+				const dragSpanKm = Math.abs(endKm - startKm);
+				const minDragKm = 0.05;
+				const treatAsDrag = didDragRef.current || dragSpanKm >= minDragKm;
+				if (treatAsDrag) {
+					const startM = Math.round(startKm * 1000);
+					const endM = Math.round(endKm * 1000);
+					const distanceFromStartA = Math.min(startM, endM);
+					const distanceFromStartB = Math.max(startM, endM);
+					setRulerRange({ distanceFromStartA, distanceFromStartB });
+					window.dispatchEvent(
+						new CustomEvent(RULER_SET_FROM_CHART_EVENT, {
+							detail: { distanceFromStartA, distanceFromStartB } as RulerSetFromChartDetail,
+						}),
+					);
+				} else {
+					const point = dragStartPointRef.current;
+					if (point && highlightTrailPosition) {
+						setPinnedPoint({ distanceM: point.distanceM, elevation: point.elevation });
+						highlightTrailPosition({ distance: point.distanceM, elevation: point.elevation });
+					}
+				}
+				dragStartPointRef.current = null;
+			};
+			window.addEventListener('mousemove', onMouseMove);
+			window.addEventListener('mouseup', onMouseUp);
+		},
+		[
+			chartData,
+			getDistanceKmFromClientX,
+			highlightTrailPosition,
+			isRulerEnabled,
+			rulerRange,
+			setRulerEnabled,
+			setRulerRange,
+		],
+	);
 
 	const totalDistance = trailMetadata?.totalDistance || 0;
 	const elevationGain = trailMetadata?.elevationGain || 0;
@@ -183,6 +355,16 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 		return closest;
 	}, [highlightedTrailPoint, chartData]);
 
+	const rulerHighlightRange = useMemo((): { startKm: number; endKm: number } | null => {
+		if (dragPreviewRange) return dragPreviewRange;
+		if (rulerRange)
+			return {
+				startKm: rulerRange.distanceFromStartA / 1000,
+				endKm: rulerRange.distanceFromStartB / 1000,
+			};
+		return null;
+	}, [dragPreviewRange, rulerRange]);
+
 	const toggleExpanded = (): void => {
 		setIsExpanded(!isExpanded);
 	};
@@ -203,6 +385,10 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 	const directionText = direction === 'SOBO' ? t('directionNorthSouth') : t('directionSouthNorth');
 
 	const stopMapInteraction = (e: React.PointerEvent): void => {
+		e.stopPropagation();
+	};
+	const stopMapInteractionTouch = (e: React.TouchEvent): void => {
+		e.preventDefault();
 		e.stopPropagation();
 	};
 
@@ -244,20 +430,31 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 				</span>
 			</div>
 			{isExpanded && (
-				<div className="h-[calc(100%-3.5rem)] min-h-[200px]">
+				<div
+					className="h-[calc(100%-3.5rem)] min-h-[200px]"
+					ref={chartAreaRef}
+					role="presentation"
+					onMouseDownCapture={handleChartMouseDownCapture}
+					onTouchStartCapture={stopMapInteractionTouch}
+				>
 					<ResponsiveContainer height="100%" minHeight={200} width="100%">
 						<AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 10 }}>
 							<Tooltip
-								content={
+								content={(props) => (
 									<ChartTooltipSync
+										active={props.active}
 										clearTrailHighlight={clearTrailHighlight}
+										coordinate={props.coordinate}
 										distanceLabel={t('distanceLabel')}
 										distancePrecision={distancePrecision}
 										elevationLabel={t('elevationLabel')}
 										highlightTrailPosition={highlightTrailPosition}
+										isPinned={pinnedPoint !== null}
+										payload={props.payload}
 										units={units}
+										onScaleCalibration={handleScaleCalibration}
 									/>
-								}
+								)}
 								cursor={{ stroke: 'var(--cldt-green)', strokeWidth: 2 }}
 							/>
 							<CartesianGrid strokeDasharray="3 3" />
@@ -269,6 +466,7 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 									offset: -5,
 								}}
 								tickFormatter={(value) => formatDistance(value, units, distancePrecision)}
+								type="number"
 							/>
 							<YAxis
 								domain={yDomain}
@@ -296,6 +494,21 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 								/>
 							)}
 							{userProgress !== null && <ReferenceLine stroke="var(--cldt-green)" strokeWidth={2} x={userProgress} />}
+							{rulerHighlightRange && (
+								<ReferenceArea
+									fill="var(--cldt-green)"
+									fillOpacity={0.35}
+									ifOverflow="visible"
+									stroke="var(--cldt-green)"
+									strokeOpacity={0.9}
+									strokeWidth={2}
+									x1={rulerHighlightRange.startKm}
+									x2={rulerHighlightRange.endKm}
+									y1={yDomain[0]}
+									y2={yDomain[1]}
+									zIndex={1}
+								/>
+							)}
 						</AreaChart>
 					</ResponsiveContainer>
 				</div>

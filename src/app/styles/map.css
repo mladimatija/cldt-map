@@ -3,6 +3,23 @@
 	z-index: var(--z-map) !important;
 }
 
+/* Map overlay panes: ruler and trail tooltips/markers (override above so they stack correctly). */
+.leaflet-pane.ruler-pane {
+	z-index: calc(var(--z-map-tooltips) - 1) !important;
+}
+.leaflet-pane.ruler-markers-pane {
+	z-index: var(--z-map-tooltips) !important;
+}
+.leaflet-pane.trail-point-marker-pane {
+	z-index: calc(var(--z-map-tooltips) + 1) !important;
+}
+.leaflet-pane.ruler-tooltip-pane {
+	z-index: calc(var(--z-map-tooltips) + 2) !important;
+}
+.leaflet-pane.trail-point-tooltip-pane {
+	z-index: calc(var(--z-map-tooltips) + 3) !important;
+}
+
 .leaflet-control {
 	pointer-events: auto;
 }

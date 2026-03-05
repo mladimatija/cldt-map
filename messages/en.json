@@ -27,8 +27,8 @@
 		"associationLink": "Udruga Long Distance Trail Hrvatska (LDTH)",
 		"mapFeatures": "Map features",
 		"mapFeaturesList": {
-			"trail": "Interactive trail route with distance and elevation at any point",
-			"elevation": "Elevation profile chart showing terrain along the trail",
+			"trail": "Click the route or elevation chart to see distance and elevation at any point",
+			"elevation": "Elevation profile chart; hover to preview on the map, click to pin a point",
 			"ruler": "Distance ruler to measure segments between two points",
 			"layers": "Multiple map layers (standard, topo, satellite, terrain, cycling, Croatia Topo)",
 			"location": "Optional location tracking to see your position on the trail",
