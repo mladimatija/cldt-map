@@ -52,6 +52,9 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 
 				isRulerEnabled: config.rulerEnabled,
 				setRulerEnabled: (enabled: boolean) => set({ isRulerEnabled: enabled }),
+				rulerRange: null,
+				setRulerRange: (range: { distanceFromStartA: number; distanceFromStartB: number } | null) =>
+					set({ rulerRange: range }),
 
 				userLocation: null,
 				isLocating: false,

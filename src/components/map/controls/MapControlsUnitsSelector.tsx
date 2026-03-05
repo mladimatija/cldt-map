@@ -9,7 +9,7 @@ interface UnitsSelectorProps {
 	className?: string;
 }
 
-export default function UnitsSelector({ className }: UnitsSelectorProps): React.ReactElement {
+export default function MapControlsUnitsSelector({ className }: UnitsSelectorProps): React.ReactElement {
 	const units = useStore((state: StoreState) => state.units);
 	const setUnits = useStore((state: StoreState) => state.broadcastUnitsChange);
 
