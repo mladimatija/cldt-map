@@ -20,7 +20,7 @@ function dispatchFitMapToRoute(): void {
 	}
 }
 
-export default function ZoomControls(): React.ReactElement {
+export default function MapControlsZoomControls(): React.ReactElement {
 	const t = useTranslations('zoomControls');
 	const map = useMap();
 	const containerRef = useRef<HTMLDivElement>(null);

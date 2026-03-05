@@ -16,7 +16,7 @@ interface LocationButtonProps {
 	checkPermission?: (prompt: boolean) => Promise<void>;
 }
 
-export default function LocationButton({ checkPermission }: LocationButtonProps): React.ReactElement {
+export default function MapControlsLocationButton({ checkPermission }: LocationButtonProps): React.ReactElement {
 	const t = useTranslations('location');
 	const [isAnimating, setIsAnimating] = useState(false);
 	const containerRef = useRef<HTMLButtonElement>(null);

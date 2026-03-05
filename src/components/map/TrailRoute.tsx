@@ -29,7 +29,7 @@ import { useFitToRoute } from '@/hooks';
 interface SectionTooltipStats {
 	/** Distance from current start to section start (m). */
 	startDistM: number;
-	/** Distance from current start to section end (m). */
+	/** Distance from the current start to the section end (m). */
 	endDistM: number;
 	secDistM: number;
 	secAscent: number;
@@ -68,6 +68,11 @@ function buildSectionTooltipHtml(
 	`;
 }
 
+/** Pane for the selected trail point marker (pulsing dot); above ruler, below tooltips. */
+const TRAIL_POINT_MARKER_PANE = 'trailPointMarkerPane';
+/** Pane for the selected trail point tooltip (wide panel); above ruler and its tooltip. */
+const TRAIL_POINT_TOOLTIP_PANE = 'trailPointTooltipPane';
+
 interface TrailRouteProps {
 	pathOptions?: L.PathOptions;
 }
@@ -99,9 +104,23 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 	const clearMarkerAndTooltipRef = useRef<() => void>(() => {});
 	const isTooltipPinnedByClickRef = useRef(false);
 	const lastRouteClickTimeRef = useRef(0);
-	const mapClickHandlerRef = useRef<(() => void) | null>(null);
+	const mapClickHandlerRef = useRef<((e: L.LeafletMouseEvent) => void) | null>(null);
 
 	useFitToRoute(map, routeLayerRef);
+
+	// Panes for trail point marker and tooltip; z-index order set in map.css.
+	useEffect(() => {
+		if (!map.getPane(TRAIL_POINT_MARKER_PANE)) {
+			map.createPane(TRAIL_POINT_MARKER_PANE);
+			const pane = map.getPane(TRAIL_POINT_MARKER_PANE);
+			if (pane) pane.classList.add('trail-point-marker-pane');
+		}
+		if (!map.getPane(TRAIL_POINT_TOOLTIP_PANE)) {
+			map.createPane(TRAIL_POINT_TOOLTIP_PANE);
+			const pane = map.getPane(TRAIL_POINT_TOOLTIP_PANE);
+			if (pane) pane.classList.add('trail-point-tooltip-pane');
+		}
+	}, [map]);
 
 	const selectedTrail = useMapStore((state: MapStoreState) => state.selectedTrail);
 	const direction = useMapStore((state: MapStoreState) => state.direction);
@@ -180,6 +199,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 
 			const markerPosition = L.latLng(point.lat, point.lng);
 			const marker = L.marker(markerPosition, {
+				pane: TRAIL_POINT_MARKER_PANE,
 				icon: L.divIcon({
 					className: 'trail-highlight-marker',
 					html: '<div class="pulse-marker"></div>',
@@ -278,6 +298,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 							: L.point(20, 0);
 
 			const tooltip = L.tooltip({
+				pane: TRAIL_POINT_TOOLTIP_PANE,
 				offset,
 				direction: dir,
 				permanent: isTooltipVisible || tooltipPinnedFromShare,
@@ -436,20 +457,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 					const featureGroup = L.featureGroup();
 					const sectionPolylines: L.Polyline[] = [];
 
-					// Helper: attach shared mousemove/mouseout/click handlers to a polyline.
 					const attachPolylineHandlers = (pl: L.Polyline): void => {
-						pl.on('mousemove', (e) => {
-							if (useMapStore.getState().isRulerEnabled) return;
-							if (useStore.getState().tooltipPinnedFromShare) return;
-							if (highlightTrailPosition) highlightTrailPosition({ lat: e.latlng.lat, lng: e.latlng.lng });
-						});
-						pl.on('mouseout', () => {
-							if (isTooltipPinnedByClickRef.current) return;
-							if (useStore.getState().tooltipPinnedFromShare) return;
-							// Avoid clearing when mouseout fires immediately after a click (e.g. focus change).
-							if (Date.now() - lastRouteClickTimeRef.current < 80) return;
-							if (clearTrailHighlight) clearTrailHighlight();
-						});
 						pl.on('click', (e) => {
 							if (useMapStore.getState().isRulerEnabled) return;
 							lastRouteClickTimeRef.current = Date.now();
@@ -466,7 +474,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 									maxDistance: 2000,
 								});
 								setIsTooltipVisible(true);
-								// Show marker/tooltip immediately so it appears without needing to move the cursor.
+								// Show the marker /tooltip immediately so it appears without needing to move the cursor.
 								const point = useStore.getState().highlightedTrailPoint;
 								if (point) {
 									showMarkerAtPositionRef.current(point);
@@ -481,7 +489,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 						const positionAlongTrailKm = (idx: number): number =>
 							direction === 'SOBO' ? cumDistances[idx] / 1000 : (totalDistanceM - cumDistances[idx]) / 1000;
 
-						// Bucket points by geographic section (0=A, 1=B, 2=C by position along trail). Ascent/descent in direction of travel.
+						// Bucket points by geographic section (0=A, 1=B, 2=C by position along trail). Ascent/descent in a direction of travel.
 						const sectionPointGroups: L.LatLngExpression[][] = TRAIL_SECTIONS.map(() => []);
 						const sectionFirstIdx: number[] = new Array(TRAIL_SECTIONS.length).fill(-1);
 						const sectionLastIdx: number[] = new Array(TRAIL_SECTIONS.length).fill(-1);
@@ -495,7 +503,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 							sectionPointGroups[resolvedIdx].push(directionAdjustedPoints[i]);
 							if (sectionFirstIdx[resolvedIdx] === -1) sectionFirstIdx[resolvedIdx] = i;
 							sectionLastIdx[resolvedIdx] = i;
-							// Share boundary point with next section to avoid visual gaps.
+							// Share the boundary point with the next section to avoid visual gaps.
 							if (
 								i + 1 < directionAdjustedPoints.length &&
 								TRAIL_SECTIONS.findIndex((s) => {
@@ -505,7 +513,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 							) {
 								sectionPointGroups[resolvedIdx].push(directionAdjustedPoints[i + 1]);
 							}
-							// Elevation change in direction of travel: attribute to the section of the segment start (i-1) by position along trail.
+							// Elevation change in a direction of travel: attribute to the section of the segment start (i-1) by position along the trail.
 							if (i > 0 && directionAdjustedElevPoints[i] && directionAdjustedElevPoints[i - 1]) {
 								const elevDiff =
 									directionAdjustedElevPoints[i].elevation - directionAdjustedElevPoints[i - 1].elevation;
@@ -521,7 +529,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 						const currentUnits = useMapStore.getState().units;
 						const currentPrecision = useMapStore.getState().distancePrecision;
 
-						// Draw each geographic section with its own label and color (A=green, B=blue, C=red by position along trail).
+						// Draw each geographic section with its own label and color (A=green, B=blue, C=red by position along the trail).
 						const newSectionMarkers: L.Marker[] = [];
 						const newSectionStats: typeof sectionStatsRef.current = [];
 
@@ -601,11 +609,15 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 						sectionStatsRef.current = [];
 					}
 
-					const handleMapClick = (): void => {
+					const handleMapClick = (e: L.LeafletMouseEvent): void => {
 						if (Date.now() - lastRouteClickTimeRef.current < 100) {
 							return;
 						}
 						if (useStore.getState().tooltipPinnedFromShare) {
+							return;
+						}
+						const tooltipEl = tooltipRef.current?.getElement();
+						if (tooltipEl?.contains(e.originalEvent.target as Node)) {
 							return;
 						}
 						isTooltipPinnedByClickRef.current = false;
@@ -630,7 +642,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 						(directionAdjustedPoints[directionAdjustedPoints.length - 1] as L.LatLngTuple)[1],
 					);
 
-					// Hide start marker when sections are shown so Section A label is visible.
+					// Hide the start marker when sections are shown so Section A label is visible.
 					if (!showSections) {
 						const startIcon = L.divIcon({
 							className: 'trail-endpoint-marker trail-start-marker',

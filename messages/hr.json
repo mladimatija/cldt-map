@@ -27,8 +27,8 @@
 		"associationLink": "Udruga Long Distance Trail Hrvatska (LDTH)",
 		"mapFeatures": "Značajke karte",
 		"mapFeaturesList": {
-			"trail": "Interaktivna ruta staze s udaljenošću i nadmorskom visinom u bilo kojoj točki",
-			"elevation": "Grafikon profila nadmorske visine koji prikazuje teren uz stazu",
+			"trail": "Kliknite rutu ili grafikon nadmorske visine za prikaz udaljenosti i nadmorske visine u bilo kojoj točki",
+			"elevation": "Grafikon profila nadmorske visine; prelazak mišem za pregled na karti, klik za prikvačivanje točke",
 			"ruler": "Ravnalo za mjerenje udaljenosti između dvije točke",
 			"layers": "Više slojeva karte (standardna, topo, satelit, teren, bicikl, Hrvatska Topo)",
 			"location": "Opcionalno praćenje lokacije za prikaz vaše pozicije na stazi",
