@@ -74,7 +74,7 @@ export default function GoToDistance(): React.ReactElement | null {
 	if (gpxLoadFailed || !gpxLoaded || !enhancedTrailPoints?.length || totalKm <= 0) return null;
 
 	return (
-		<div className="z-controls absolute top-4 left-1/2 -translate-x-1/2" ref={containerRef}>
+		<div className="z-controls absolute top-2 left-1/2 -translate-x-1/2" ref={containerRef}>
 			<form className={`flex items-center gap-2 ${MAP_CONTROL_POPOVER}`} onSubmit={handleSubmit}>
 				<label className="sr-only" htmlFor="go-to-distance-input">
 					{t('label')}
