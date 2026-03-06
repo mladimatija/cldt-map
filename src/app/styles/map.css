@@ -173,27 +173,8 @@
 
 .user-location-close-btn {
 	position: absolute;
-	top: -16px;
+	top: -12px;
 	right: -12px;
-	width: 24px;
-	height: 24px;
-	padding: 0;
-	border: none;
-	background: transparent;
-	color: #666;
-	font-size: 20px;
-	line-height: 1;
-	cursor: pointer;
-	border-radius: 4px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	outline: none;
-}
-
-.user-location-close-btn:hover {
-	color: var(--cldt-blue);
-	background: rgba(0, 0, 0, 0.05);
 }
 
 .map-tooltip,
@@ -229,6 +210,14 @@
 	color: var(--map-tooltip-color);
 	font-size: var(--map-tooltip-font-size);
 	line-height: var(--map-tooltip-line-height);
+
+	&:first-of-type {
+		margin-top: 0;
+	}
+
+	&:last-of-type {
+		margin-bottom: 0;
+	}
 }
 
 .map-tooltip .font-medium {
@@ -399,24 +388,9 @@
 	text-align: left;
 }
 
-.map-tooltip.map-tooltip--pwa .map-tooltip__actions {
-	display: flex;
-	flex-wrap: wrap;
-	align-items: center;
-	gap: 0.5rem;
-	justify-content: flex-end;
-	margin-top: 0.5rem;
-}
-
 .map-tooltip.map-tooltip--banner p {
 	text-align: center;
 	padding-right: 1.25rem;
-}
-
-.map-tooltip.map-tooltip--banner .map-tooltip__actions {
-	display: flex;
-	justify-content: center;
-	gap: 0.5rem;
 }
 
 .map-tooltip.map-tooltip--banner .user-location-close-btn {

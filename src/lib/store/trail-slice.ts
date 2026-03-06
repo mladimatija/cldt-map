@@ -174,6 +174,9 @@ export const createTrailSlice: StateCreator<StoreState, [], [], TrailSlice> = (s
 	processTrailData: (points, elevationPoints, startPoint, endPoint, distance, elevGain, elevLoss): void => {
 		set({
 			trailPoints: points,
+			closestPoint: null,
+			closestPointCalculated: false,
+			showClosestPointLine: false,
 			trailMetadata: {
 				startPoint,
 				endPoint,
@@ -221,9 +224,8 @@ export const createTrailSlice: StateCreator<StoreState, [], [], TrailSlice> = (s
 
 		set({ enhancedTrailPoints: enhancedPoints });
 
-		setTimeout(() => {
-			get().calculateClosestPoint();
-		}, 500);
+		// Recalculate immediately to avoid 500ms window where closestPoint is null (causes tooltip flicker).
+		get().calculateClosestPoint();
 	},
 
 	findTrailPointByDistance: (distance): EnhancedTrailPoint | null => {

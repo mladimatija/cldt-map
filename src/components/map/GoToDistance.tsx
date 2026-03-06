@@ -9,12 +9,9 @@ import { useMap } from 'react-leaflet';
 import { useStore, useMapStore, type StoreState, type MapStoreState } from '@/lib/store';
 import { useBlockMapPropagation } from '@/hooks';
 import { useTranslations } from 'next-intl';
-import {
-	MAP_CONTROL_POPOVER,
-	MAP_CONTROL_BTN_OUTLINE,
-	MAP_CONTROL_INPUT,
-} from '@/components/map/controls/map-controls-constants';
+import { MAP_CONTROL_POPOVER, MAP_CONTROL_INPUT } from '@/components/map/controls/map-controls-constants';
 import { kmToMiles, milesToKm } from '@/lib/utils';
+import { Button } from '@/components/ui/Button';
 
 export default function GoToDistance(): React.ReactElement | null {
 	const t = useTranslations('goToDistance');
@@ -96,9 +93,9 @@ export default function GoToDistance(): React.ReactElement | null {
 					}}
 				/>
 				<span className="text-cldt-blue-contrast text-sm font-medium dark:text-white">{unitLabel}</span>
-				<button className={`${MAP_CONTROL_BTN_OUTLINE} ml-auto`} type="submit">
+				<Button className="ml-auto" size="default" type="submit" variant="mapControlOutline">
 					{t('go')}
-				</button>
+				</Button>
 			</form>
 			{error && (
 				<p className="map-tooltip map-tooltip--error mt-1 text-center text-xs" id="go-to-distance-error">

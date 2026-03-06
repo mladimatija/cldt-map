@@ -4,7 +4,7 @@ import React from 'react';
 import { useTranslations } from 'next-intl';
 import { useMapStore, type MapStoreState } from '@/lib/store';
 import { clearGPXCache } from '@/lib/gpx-cache';
-import { MAP_TOOLTIP_BTN_PRIMARY } from '@/components/map/controls/map-controls-constants';
+import { Button } from '@/components/ui/Button';
 
 /**
  * Banner shown when GPX trail data fails to load. Offers dismiss and retry.
@@ -27,14 +27,14 @@ export default function GPXLoadErrorBanner(): React.ReactElement | null {
 
 	return (
 		<div className="map-tooltip map-tooltip--banner animate-slide-in-from-top" role="alert">
-			<button aria-label={t('close')} className="user-location-close-btn" type="button" onClick={handleDismiss}>
+			<Button aria-label={t('close')} className="user-location-close-btn" variant="closeIcon" onClick={handleDismiss}>
 				×
-			</button>
+			</Button>
 			<p>{t('failedToLoadTrail')}</p>
-			<div className="map-tooltip__actions">
-				<button className={MAP_TOOLTIP_BTN_PRIMARY} type="button" onClick={handleRetry}>
+			<div className="flex justify-center gap-2">
+				<Button variant="mapTooltipPrimary" onClick={handleRetry}>
 					{t('retry')}
-				</button>
+				</Button>
 			</div>
 		</div>
 	);
