@@ -483,6 +483,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 		const baseMapKey = baseMapProvider
 			? (PROVIDER_TO_KEY[baseMapProvider as BaseMapProvider] as ShareBaseMapKey | undefined)
 			: undefined;
+		const shareRulerRange = isRulerEnabled ? rulerRange : null;
 		return buildShareViewUrl(window.location.origin + window.location.pathname, {
 			lat: center.lat,
 			lng: center.lng,
@@ -491,6 +492,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 			baseMap: baseMapKey,
 			sections: showSections,
 			dark: darkMode,
+			rulerRange: shareRulerRange,
 		});
 	};
 
@@ -506,10 +508,12 @@ const MapControls: React.FC<MapControlsProps> = ({
 		const baseMapKey = baseMapProvider
 			? (PROVIDER_TO_KEY[baseMapProvider as BaseMapProvider] as ShareBaseMapKey | undefined)
 			: undefined;
+		const shareRulerRange = isRulerEnabled ? rulerRange : null;
 		const styleParams = {
 			baseMap: baseMapKey,
 			sections: showSections,
 			dark: darkMode,
+			rulerRange: shareRulerRange,
 		};
 
 		if (highlightedTrailPoint) {
@@ -696,20 +700,18 @@ const MapControls: React.FC<MapControlsProps> = ({
 
 	const toggleRuler = (): void => {
 		closeOverlayTools();
-		const newState = !isRulerEnabled;
-		setRulerEnabled(newState);
-		if (newState) {
-			map.on('click', stableRulerClick);
-		}
+		setRulerEnabled(!isRulerEnabled);
 	};
 
-	// When ruler is disabled (store), clear map layers and range so callers only need setRulerEnabled(false).
+	// Keep the map click handler in sync with the ruler state (store).
 	useEffect(() => {
-		if (!isRulerEnabled) {
-			clearRulerMarkersAndLayers();
-			setRulerRange(null);
-			map.off('click', stableRulerClick);
+		map.off('click', stableRulerClick);
+		if (isRulerEnabled) {
+			map.on('click', stableRulerClick);
+			return;
 		}
+		clearRulerMarkersAndLayers();
+		setRulerRange(null);
 	}, [isRulerEnabled, map, clearRulerMarkersAndLayers, setRulerRange, stableRulerClick]);
 
 	// When trail direction changes and ruler is active, convert ruler range so the same segment uses the new direction's distance-from-start.
@@ -728,14 +730,12 @@ const MapControls: React.FC<MapControlsProps> = ({
 		lastDirectionRef.current = storeDirection;
 	}, [storeDirection, isRulerEnabled, rulerRange, enhancedTrailPoints, setRulerRange]);
 
-	// When trail data (e.g. after direction change) updates and ruler is active, rebuild ruler from current store range.
+	// When trail data (e.g., after direction change) updates and ruler is active, rebuild the ruler from the current store range.
 	useEffect(() => {
-		if (!isRulerEnabled || !enhancedTrailPoints?.length) return;
-		const range = useMapStore.getState().rulerRange;
-		if (!range) return;
+		if (!isRulerEnabled || !enhancedTrailPoints?.length || !rulerRange) return;
 
-		const pointA = findPointAtDistance(enhancedTrailPoints, range.distanceFromStartA);
-		const pointB = findPointAtDistance(enhancedTrailPoints, range.distanceFromStartB);
+		const pointA = findPointAtDistance(enhancedTrailPoints, rulerRange.distanceFromStartA);
+		const pointB = findPointAtDistance(enhancedTrailPoints, rulerRange.distanceFromStartB);
 		if (!pointA || !pointB) return;
 
 		clearRulerMarkersAndLayers();
@@ -754,8 +754,8 @@ const MapControls: React.FC<MapControlsProps> = ({
 		rulerLayerRef.current = L.polyline(points, RULER_POLYLINE_OPTIONS).addTo(map);
 
 		const opts: RulerSegmentOpts = {
-			units: useMapStore.getState().units,
-			distancePrecision: useMapStore.getState().distancePrecision,
+			units: storeUnits,
+			distancePrecision: storeDistancePrecision,
 			t,
 			tChart,
 		};
@@ -766,7 +766,18 @@ const MapControls: React.FC<MapControlsProps> = ({
 			points,
 			opts,
 		);
-	}, [isRulerEnabled, enhancedTrailPoints, map, t, tChart, clearRulerMarkersAndLayers, applyRulerSegmentAndTooltip]);
+	}, [
+		isRulerEnabled,
+		rulerRange,
+		enhancedTrailPoints,
+		storeUnits,
+		storeDistancePrecision,
+		map,
+		t,
+		tChart,
+		clearRulerMarkersAndLayers,
+		applyRulerSegmentAndTooltip,
+	]);
 
 	rulerClickHandlerRef.current = (e: L.LeafletMouseEvent): void => {
 		const { latlng } = e;
@@ -853,7 +864,6 @@ const MapControls: React.FC<MapControlsProps> = ({
 
 			if (!useMapStore.getState().isRulerEnabled) {
 				setRulerEnabled(true);
-				map.on('click', stableRulerClick);
 			}
 
 			clearRulerMarkersAndLayers();

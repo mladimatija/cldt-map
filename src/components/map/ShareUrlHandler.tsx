@@ -8,8 +8,9 @@ import { useMapStore, useStore, type MapStoreState, type StoreState, TrailState 
 import { KEY_TO_PROVIDER } from '@/components/map/base-map-options';
 
 /**
- * Handles share URL params on load: applies direction, unit, map style (baseMap, sections, dark), and shows trail marker+tooltip at shared location.
- * Uses the same pulsing marker and trail info tooltip as when the user clicks on the trail.
+ * Handles share URL params on "load": applies direction, unit, map style (baseMap, sections, dark), and shows
+ * trail marker+tooltip at the shared location. Uses the same pulsing marker and trail info tooltip as when the user
+ * clicks on the trail.
  */
 export default function ShareUrlHandler(): null {
 	const map = useMap();
@@ -18,9 +19,12 @@ export default function ShareUrlHandler(): null {
 	const clearTrailHighlight = useStore((state: StoreState) => state.clearTrailHighlight);
 	const setTooltipPinnedFromShare = useStore((state: StoreState) => state.setTooltipPinnedFromShare);
 	const setDirection = useMapStore((state: MapStoreState) => state.setDirection);
+	const currentDirection = useMapStore((state: MapStoreState) => state.direction);
 	const setBaseMapProvider = useMapStore((state: MapStoreState) => state.setBaseMapProvider);
 	const setShowSections = useMapStore((state: MapStoreState) => state.setShowSections);
 	const setDarkMode = useMapStore((state: MapStoreState) => state.setDarkMode);
+	const setRulerEnabled = useMapStore((state: MapStoreState) => state.setRulerEnabled);
+	const setRulerRange = useMapStore((state: MapStoreState) => state.setRulerRange);
 	const gpxLoaded = useMapStore((state: MapStoreState) => state.gpxLoaded);
 	const enhancedTrailPoints = useStore((state: TrailState) => state.enhancedTrailPoints);
 
@@ -50,6 +54,13 @@ export default function ShareUrlHandler(): null {
 		const params = parseShareUrlParams();
 		if (!params) return;
 
+		// If the share link sets a direction, apply it first and wait for trail points to match that direction.
+		if (params.dir && params.dir !== currentDirection) {
+			setDirection(params.dir);
+			useStore.getState().broadcastDirectionChange?.(params.dir);
+			return;
+		}
+
 		const needsProgress = params.progress !== undefined;
 		if (needsProgress && (!gpxLoaded || !enhancedTrailPoints?.length)) {
 			return;
@@ -61,10 +72,7 @@ export default function ShareUrlHandler(): null {
 		const applyParams = (): void => {
 			appliedRef.current = true;
 
-			if (params.dir) {
-				setDirection(params.dir);
-				useStore.getState().broadcastDirectionChange?.(params.dir);
-			}
+			// Direction is already applied above (and waited for) if present.
 
 			let popupLatLng: L.LatLngTuple | null = null;
 
@@ -98,6 +106,12 @@ export default function ShareUrlHandler(): null {
 				highlightTrailPosition?.({ lat: popupLatLng[0], lng: popupLatLng[1] });
 				setTooltipPinnedFromShare?.(true);
 			}
+
+			if (params.rulerRange) {
+				// Set range first so map controls can render immediately when enabled.
+				setRulerRange(params.rulerRange);
+				setRulerEnabled(true);
+			}
 		};
 
 		if (map.whenReady) {
@@ -105,9 +119,19 @@ export default function ShareUrlHandler(): null {
 		} else {
 			applyParams();
 		}
-	}, [map, setDirection, gpxLoaded, enhancedTrailPoints, highlightTrailPosition, setTooltipPinnedFromShare]);
+	}, [
+		map,
+		setDirection,
+		currentDirection,
+		gpxLoaded,
+		enhancedTrailPoints,
+		highlightTrailPosition,
+		setTooltipPinnedFromShare,
+		setRulerEnabled,
+		setRulerRange,
+	]);
 
-	// Clear trail highlight on unmount (e.g., when navigating away)
+	// Clear trail highlight on "unmount" (e.g., when navigating away)
 	useEffect(
 		() => () => {
 			clearTrailHighlight?.(true);
