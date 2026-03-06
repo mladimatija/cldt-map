@@ -189,6 +189,8 @@
 		"elevationM": "Nadmorska visina (m)",
 		"elevationFt": "Nadmorska visina (ft)",
 		"title": "Profil staze",
+		"clearPin": "Ukloni točku",
+		"clearRuler": "Ukloni ravnalo",
 		"distance": "Udaljenost",
 		"direction": "Smjer",
 		"gain": "Uspon",

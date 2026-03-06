@@ -188,6 +188,8 @@
 		"elevationM": "Elevation (m)",
 		"elevationFt": "Elevation (ft)",
 		"title": "Elevation Profile",
+		"clearPin": "Clear pin",
+		"clearRuler": "Clear ruler",
 		"distance": "Distance",
 		"direction": "Direction",
 		"gain": "Gain",
