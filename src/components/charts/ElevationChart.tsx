@@ -15,12 +15,14 @@ import {
 	ResponsiveContainer,
 	ReferenceLine,
 	ReferenceArea,
-	Tooltip,
+	Tooltip as RechartsTooltip,
 } from 'recharts';
 import { formatElevation, formatDistance } from '@/lib/utils';
 import { useStore, useMapStore, type StoreState, type MapStoreState, type UnitSystem } from '@/lib/store';
 import { MdKeyboardArrowUp, MdKeyboardArrowDown } from 'react-icons/md';
+import { IoHelpCircleOutline } from 'react-icons/io5';
 import { useTranslations } from 'next-intl';
+import { Tooltip } from '@/components/ui/Tooltip';
 import { RULER_SET_FROM_CHART_EVENT, type RulerSetFromChartDetail } from '@/lib/ruler-from-chart';
 import { Button } from '@/components/ui/Button';
 
@@ -142,6 +144,7 @@ type PinnedPoint = { distanceM: number; elevation: number };
 export default function ElevationChart({ className = '' }: ElevationChartProps): JSX.Element | null {
 	const t = useTranslations('elevationChart');
 	const tCommon = useTranslations('common');
+	const tControls = useTranslations('mapControls');
 	const [chartData, setChartData] = useState<ElevationPoint[]>([]);
 	const [userProgress, setUserProgress] = useState<number | null>(null);
 	const [isExpanded, setIsExpanded] = useState<boolean>(false);
@@ -448,7 +451,41 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 				className="flex cursor-pointer items-center justify-between outline-none focus:outline-none"
 				onClick={toggleExpanded}
 			>
-				<h2 className="text-cldt-blue-contrast text-base font-semibold sm:text-lg">{t('title')}</h2>
+				<div className="flex items-center gap-1.5">
+					<h2 className="text-cldt-blue-contrast text-base font-semibold sm:text-lg">{t('title')}</h2>
+					<span
+						className="hover:text-cldt-blue dark:hover:text-cldt-blue inline-flex shrink-0 cursor-help text-gray-400 dark:text-gray-500"
+						onClick={(e) => e.stopPropagation()}
+						onMouseDown={(e) => e.stopPropagation()}
+					>
+						<Tooltip
+							content={
+								<div className="max-w-[220px] space-y-1 text-left text-xs">
+									<div className="font-medium text-gray-800 dark:text-gray-200">{tControls('helpTitle')}</div>
+									<ul className="list-inside list-disc space-y-0.5 text-gray-600 dark:text-gray-300">
+										<li>{tControls('helpItems.trailClick')}</li>
+										<li>{tControls('helpItems.chartHover')}</li>
+										<li>{tControls('helpItems.chartClickPin')}</li>
+										<li>{tControls('helpItems.chartDragRuler')}</li>
+										<li>
+											{tControls.rich('helpItems.escCancelRuler', {
+												kbd: (chunks) => (
+													<kbd className="rounded border border-gray-200 bg-gray-50 px-1 py-0.5 font-mono text-[11px] text-gray-700 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-200">
+														{chunks}
+													</kbd>
+												),
+											})}
+										</li>
+									</ul>
+								</div>
+							}
+							offset={6}
+							position="bottom"
+						>
+							<IoHelpCircleOutline aria-label={tControls('helpTitle')} className="h-4 w-4" />
+						</Tooltip>
+					</span>
+				</div>
 				<div className="flex items-center gap-2">
 					{pinnedPoint !== null && (
 						<Button
@@ -511,7 +548,7 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 				>
 					<ResponsiveContainer height="100%" minHeight={200} width="100%">
 						<AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 10 }}>
-							<Tooltip
+							<RechartsTooltip
 								content={(props) => (
 									<ChartTooltipSync
 										active={props.active}
