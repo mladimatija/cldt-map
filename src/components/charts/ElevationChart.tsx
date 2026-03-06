@@ -14,14 +14,18 @@ import {
 	CartesianGrid,
 	ResponsiveContainer,
 	ReferenceLine,
+	ReferenceDot,
 	ReferenceArea,
-	Tooltip,
+	Tooltip as RechartsTooltip,
 } from 'recharts';
 import { formatElevation, formatDistance } from '@/lib/utils';
 import { useStore, useMapStore, type StoreState, type MapStoreState, type UnitSystem } from '@/lib/store';
 import { MdKeyboardArrowUp, MdKeyboardArrowDown } from 'react-icons/md';
+import { IoHelpCircleOutline } from 'react-icons/io5';
 import { useTranslations } from 'next-intl';
+import { Tooltip } from '@/components/ui/Tooltip';
 import { RULER_SET_FROM_CHART_EVENT, type RulerSetFromChartDetail } from '@/lib/ruler-from-chart';
+import { Button } from '@/components/ui/Button';
 
 interface ElevationPoint {
 	distance: number;
@@ -63,6 +67,11 @@ function ChartTooltipSync(props: {
 	} = props;
 	const prevDistanceRef = useRef<number | null>(null);
 	const wasActiveRef = useRef(false);
+	const highlightTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+	const clearTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+	const HIGHLIGHT_DEBOUNCE_MS = 80;
+	const CLEAR_DEBOUNCE_MS = 120;
 
 	useEffect(() => {
 		if (active && payload?.[0]) {
@@ -71,23 +80,48 @@ function ChartTooltipSync(props: {
 				onScaleCalibration(coordinate.x, point.distance);
 			}
 			wasActiveRef.current = true;
+			if (clearTimeoutRef.current) {
+				clearTimeout(clearTimeoutRef.current);
+				clearTimeoutRef.current = null;
+			}
 			if (!isPinned) {
 				const distance = point.distance * 1000;
 				if (prevDistanceRef.current !== distance) {
-					prevDistanceRef.current = distance;
-					highlightTrailPosition?.({
-						distance,
-						elevation: point.elevation,
-					});
+					if (highlightTimeoutRef.current) {
+						clearTimeout(highlightTimeoutRef.current);
+						highlightTimeoutRef.current = null;
+					}
+					highlightTimeoutRef.current = setTimeout(() => {
+						prevDistanceRef.current = distance;
+						highlightTrailPosition?.({
+							distance,
+							elevation: point.elevation,
+						});
+						highlightTimeoutRef.current = null;
+					}, HIGHLIGHT_DEBOUNCE_MS);
 				}
 			}
 		} else {
 			if (!isPinned && wasActiveRef.current) {
-				wasActiveRef.current = false;
-				prevDistanceRef.current = null;
-				clearTrailHighlight?.();
+				if (highlightTimeoutRef.current) {
+					clearTimeout(highlightTimeoutRef.current);
+					highlightTimeoutRef.current = null;
+				}
+				if (clearTimeoutRef.current) {
+					clearTimeout(clearTimeoutRef.current);
+				}
+				clearTimeoutRef.current = setTimeout(() => {
+					wasActiveRef.current = false;
+					prevDistanceRef.current = null;
+					clearTrailHighlight?.();
+					clearTimeoutRef.current = null;
+				}, CLEAR_DEBOUNCE_MS);
 			}
 		}
+		return () => {
+			if (highlightTimeoutRef.current) clearTimeout(highlightTimeoutRef.current);
+			if (clearTimeoutRef.current) clearTimeout(clearTimeoutRef.current);
+		};
 	}, [active, payload, coordinate, highlightTrailPosition, clearTrailHighlight, isPinned, onScaleCalibration]);
 
 	if (!active || !payload?.[0]) {
@@ -111,6 +145,7 @@ type PinnedPoint = { distanceM: number; elevation: number };
 export default function ElevationChart({ className = '' }: ElevationChartProps): JSX.Element | null {
 	const t = useTranslations('elevationChart');
 	const tCommon = useTranslations('common');
+	const tControls = useTranslations('mapControls');
 	const [chartData, setChartData] = useState<ElevationPoint[]>([]);
 	const [userProgress, setUserProgress] = useState<number | null>(null);
 	const [isExpanded, setIsExpanded] = useState<boolean>(false);
@@ -392,9 +427,20 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 		e.stopPropagation();
 	};
 
+	const clearPinnedSelection = (): void => {
+		setPinnedPoint(null);
+		clearTrailHighlight?.(true);
+	};
+
+	const clearRulerSelection = (): void => {
+		setDragPreviewRange(null);
+		setRulerRange(null);
+		setRulerEnabled(false);
+	};
+
 	return (
 		<div
-			className={`rounded bg-white p-4 shadow outline-none focus:outline-none focus-visible:outline-none [&_*]:ring-0 [&_*]:outline-none [&_*]:focus:ring-0 [&_*]:focus:outline-none [&_*]:focus-visible:outline-none ${className} transition-[height] duration-300 ease-in-out ${isExpanded ? 'h-[400px]' : 'h-[120px] min-h-[120px] sm:h-[100px] sm:min-h-[100px]'}`}
+			className={`rounded bg-white p-4 shadow outline-none focus:outline-none focus-visible:outline-none dark:border dark:border-[var(--border-color)] dark:bg-[var(--bg-secondary)] [&_*]:ring-0 [&_*]:outline-none [&_*]:focus:ring-0 [&_*]:focus:outline-none [&_*]:focus-visible:outline-none ${className} transition-[height] duration-300 ease-in-out ${isExpanded ? 'h-[400px]' : 'h-[120px] min-h-[120px] sm:h-[100px] sm:min-h-[100px]'}`}
 			key={`elevation-chart-${units}-${direction}`}
 			ref={chartRef}
 			onPointerCancel={stopMapInteraction}
@@ -406,14 +452,78 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 				className="flex cursor-pointer items-center justify-between outline-none focus:outline-none"
 				onClick={toggleExpanded}
 			>
-				<h2 className="text-cldt-blue-contrast text-base font-semibold sm:text-lg">{t('title')}</h2>
-				<div aria-hidden className="text-cldt-blue-contrast shrink-0 text-xl">
-					{isExpanded ? <MdKeyboardArrowUp /> : <MdKeyboardArrowDown />}
+				<div className="flex items-center gap-1.5">
+					<h2 className="text-cldt-blue-contrast mb-0 text-base font-semibold sm:text-lg">{t('title')}</h2>
+					<span
+						className="hover:text-cldt-blue dark:hover:text-cldt-blue inline-flex shrink-0 cursor-help items-center text-gray-400 dark:text-gray-500"
+						onClick={(e) => e.stopPropagation()}
+						onMouseDown={(e) => e.stopPropagation()}
+					>
+						<Tooltip
+							content={
+								<div className="max-w-[220px] space-y-1 text-left text-xs">
+									<div className="font-medium text-gray-800 dark:text-gray-200">{tControls('helpTitle')}</div>
+									<ul className="list-inside list-disc space-y-0.5 text-gray-600 dark:text-gray-300">
+										<li>{tControls('helpItems.trailClick')}</li>
+										<li>{tControls('helpItems.chartHover')}</li>
+										<li>{tControls('helpItems.chartClickPin')}</li>
+										<li>{tControls('helpItems.chartDragRuler')}</li>
+										<li>
+											{tControls.rich('helpItems.escCancelRuler', {
+												kbd: (chunks) => (
+													<kbd className="rounded border border-gray-200 bg-gray-50 px-1 py-0.5 font-mono text-[11px] text-gray-700 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-200">
+														{chunks}
+													</kbd>
+												),
+											})}
+										</li>
+									</ul>
+								</div>
+							}
+							offset={6}
+							position="bottom"
+						>
+							<IoHelpCircleOutline aria-label={tControls('helpTitle')} className="h-4 w-4" />
+						</Tooltip>
+					</span>
+				</div>
+				<div className="flex items-center gap-2">
+					{pinnedPoint !== null && (
+						<Button
+							size="sm"
+							variant="base"
+							onClick={(e) => {
+								e.preventDefault();
+								e.stopPropagation();
+								clearPinnedSelection();
+							}}
+							onMouseDown={(e) => e.stopPropagation()}
+						>
+							{t('clearPin')}
+						</Button>
+					)}
+					{isRulerEnabled && (
+						<Button
+							size="sm"
+							variant="base"
+							onClick={(e) => {
+								e.preventDefault();
+								e.stopPropagation();
+								clearRulerSelection();
+							}}
+							onMouseDown={(e) => e.stopPropagation()}
+						>
+							{t('clearRuler')}
+						</Button>
+					)}
+					<div aria-hidden className="text-cldt-blue-contrast shrink-0 text-xl">
+						{isExpanded ? <MdKeyboardArrowUp /> : <MdKeyboardArrowDown />}
+					</div>
 				</div>
 			</div>
 
 			<div
-				className="my-2 grid grid-cols-2 gap-x-4 gap-y-0.5 text-xs text-gray-700 sm:flex sm:flex-wrap sm:gap-x-4 sm:text-sm"
+				className="my-2 grid grid-cols-2 gap-x-4 gap-y-0.5 text-xs text-gray-700 sm:flex sm:flex-wrap sm:gap-x-4 sm:text-sm dark:text-[var(--text-secondary)]"
 				onClick={toggleExpanded}
 			>
 				<span className="truncate" title={formatDistance(totalDistance, units, distancePrecision)}>
@@ -439,7 +549,7 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 				>
 					<ResponsiveContainer height="100%" minHeight={200} width="100%">
 						<AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 10 }}>
-							<Tooltip
+							<RechartsTooltip
 								content={(props) => (
 									<ChartTooltipSync
 										active={props.active}
@@ -486,12 +596,24 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 								type="monotone"
 							/>
 							{highlightedPoint && (
-								<ReferenceLine
-									stroke="var(--cldt-green)"
-									strokeDasharray="3 3"
-									strokeWidth={2}
-									x={highlightedPoint.distance}
-								/>
+								<>
+									<ReferenceLine
+										stroke={pinnedPoint !== null ? 'var(--cldt-blue)' : 'var(--cldt-green)'}
+										strokeDasharray={pinnedPoint !== null ? undefined : '3 3'}
+										strokeWidth={pinnedPoint !== null ? 3 : 2}
+										x={highlightedPoint.distance}
+									/>
+									{pinnedPoint !== null && (
+										<ReferenceDot
+											fill="var(--cldt-blue)"
+											r={6}
+											stroke="white"
+											strokeWidth={2}
+											x={highlightedPoint.distance}
+											y={highlightedPoint.elevation}
+										/>
+									)}
+								</>
 							)}
 							{userProgress !== null && <ReferenceLine stroke="var(--cldt-green)" strokeWidth={2} x={userProgress} />}
 							{rulerHighlightRange && (

@@ -14,7 +14,13 @@ export const createLocationSlice: StateCreator<StoreState, [], [], LocationSlice
 	locationError: null,
 	showUserMarker: true,
 
-	setUserLocation: (location) => set({ userLocation: location }),
+	setUserLocation: (location) =>
+		set({
+			userLocation: location,
+			closestPoint: null,
+			closestPointCalculated: false,
+			showClosestPointLine: false,
+		}),
 	setIsLocating: (isLocating) => set({ isLocating }),
 	setUserLocationInitialized: (initialized) => set({ userLocationInitialized: initialized }),
 	setInitialLocationSet: (value) => set({ initialLocationSet: value }),

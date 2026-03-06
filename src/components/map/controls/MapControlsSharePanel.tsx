@@ -2,11 +2,8 @@
 
 import React, { useEffect, type RefObject } from 'react';
 import { useTranslations } from 'next-intl';
-import {
-	MAP_CONTROL_POPOVER,
-	MAP_CONTROL_BTN_OUTLINE,
-	MAP_CONTROL_BTN_OUTLINE_SECONDARY,
-} from './map-controls-constants';
+import { MAP_CONTROL_POPOVER } from './map-controls-constants';
+import { Button } from '@/components/ui/Button';
 
 interface MapControlsSharePanelProps {
 	sharePopupRef: RefObject<HTMLDivElement | null>;
@@ -67,12 +64,12 @@ export function MapControlsSharePanel({
 				{t('shareTitle')}
 			</h3>
 			<div className="flex flex-col gap-2">
-				<button className={MAP_CONTROL_BTN_OUTLINE} type="button" onClick={() => copyToClipboard(getShareUrl(), true)}>
+				<Button variant="mapControlOutline" onClick={() => copyToClipboard(getShareUrl(), true)}>
 					{t('copyLink')}
-				</button>
-				<button className={MAP_CONTROL_BTN_OUTLINE_SECONDARY} type="button" onClick={onClose}>
+				</Button>
+				<Button variant="mapControlOutlineSecondary" onClick={onClose}>
 					{t('cancel')}
-				</button>
+				</Button>
 			</div>
 		</div>
 	);

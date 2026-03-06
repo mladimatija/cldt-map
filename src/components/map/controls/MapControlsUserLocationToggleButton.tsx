@@ -3,11 +3,11 @@
 import React, { useRef } from 'react';
 import { useMapStore, type MapStoreState } from '@/lib/store';
 import { useBlockMapPropagation } from '@/hooks';
-import { cn, isWithinMapBoundary } from '@/lib/utils';
+import { isWithinMapBoundary } from '@/lib/utils';
 import { Tooltip } from '@/components/ui/Tooltip';
 import { MdPersonPinCircle } from 'react-icons/md';
 import { useTranslations } from 'next-intl';
-import { CONTROL_BTN_BASE, CONTROL_BTN_ACTIVE, CONTROL_BTN_INACTIVE } from './map-controls-constants';
+import { Button } from '@/components/ui/Button';
 
 export default function MapControlsUserLocationToggleButton(): React.ReactElement {
 	const t = useTranslations('location');
@@ -20,16 +20,6 @@ export default function MapControlsUserLocationToggleButton(): React.ReactElemen
 
 	const withinMapBoundary = userLocation ? isWithinMapBoundary(userLocation.lat, userLocation.lng) : true;
 	const isDisabled = !userLocation || permissionStatus !== 'granted' || !withinMapBoundary;
-
-	const buttonClasses = cn(
-		CONTROL_BTN_BASE,
-		showUserMarker && !isDisabled && CONTROL_BTN_ACTIVE,
-		!showUserMarker && !isDisabled && CONTROL_BTN_INACTIVE,
-		!showUserMarker && !isDisabled && 'border-2 border-cldt-blue',
-		isDisabled && cn(CONTROL_BTN_INACTIVE, 'cursor-not-allowed opacity-50'),
-		!isDisabled && 'cursor-pointer',
-		'group',
-	);
 
 	const handleClick = (): void => {
 		if (!isDisabled) {
@@ -44,13 +34,16 @@ export default function MapControlsUserLocationToggleButton(): React.ReactElemen
 		return showUserMarker ? t('hideMarker') : t('showMarker');
 	};
 
+	const variant = isDisabled ? 'controlRound' : 'controlRoundActive';
+
 	return (
 		<Tooltip content={getTooltipText()} position="left">
-			<button
+			<Button
 				aria-label={showUserMarker ? t('hideMarker') : t('showMarker')}
-				className={buttonClasses}
+				className="group"
 				disabled={isDisabled}
 				ref={containerRef}
+				variant={variant}
 				onClick={handleClick}
 			>
 				{showUserMarker ? (
@@ -61,7 +54,7 @@ export default function MapControlsUserLocationToggleButton(): React.ReactElemen
 						<div className="group-hover:bg-cldt-green group-focus-visible:bg-cldt-green absolute h-[2px] w-7 rotate-45 rounded-full bg-current" />
 					</div>
 				)}
-			</button>
+			</Button>
 		</Tooltip>
 	);
 }

@@ -4,6 +4,8 @@ import React, { useMemo, useState } from 'react';
 import en from '../../../messages/en.json';
 import hr from '../../../messages/hr.json';
 import { routing } from '@/i18n/routing';
+import { Button, buttonVariants } from '@/components/ui/Button';
+import { cn } from '@/lib/utils';
 
 const LOCALE_STORAGE_KEY = 'cldt-map-locale';
 
@@ -29,15 +31,11 @@ export function OfflineClient(): React.ReactElement {
 			<h1 className="text-2xl font-semibold tracking-tight">{t.title}</h1>
 			<p className="mt-3 text-sm text-black/70">{t.description}</p>
 			<div className="mt-6 flex gap-3">
-				<button
-					className="rounded-md bg-black px-4 py-2 text-sm font-medium text-white"
-					type="button"
-					onClick={() => window.location.reload()}
-				>
+				<Button size="default" variant="offlinePrimary" onClick={() => window.location.reload()}>
 					{t.tryAgain}
-				</button>
+				</Button>
 				{/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
-				<a className="rounded-md border border-black/15 px-4 py-2 text-sm font-medium" href="/" rel="noreferrer">
+				<a className={cn(buttonVariants({ variant: 'offlineOutline', size: 'default' }))} href="/" rel="noreferrer">
 					{t.goHome}
 				</a>
 			</div>

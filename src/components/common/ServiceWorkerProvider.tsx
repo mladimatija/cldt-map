@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { IoRefresh } from 'react-icons/io5';
-import { MAP_TOOLTIP_BTN_PRIMARY } from '@/components/map/controls/map-controls-constants';
+import { Button } from '@/components/ui/Button';
 
 interface ServiceWorkerProviderProps {
 	children: React.ReactNode;
@@ -92,10 +92,10 @@ export function ServiceWorkerProvider({ children }: ServiceWorkerProviderProps):
 						<IoRefresh aria-hidden className="h-4 w-4 shrink-0 opacity-80" />
 						<p className="font-medium">{t('updateAvailable')}</p>
 					</div>
-					<div className="map-tooltip__actions">
-						<button className={MAP_TOOLTIP_BTN_PRIMARY} type="button" onClick={onUpdateNow}>
+					<div className="mt-2 flex flex-wrap items-center justify-end gap-2">
+						<Button variant="mapTooltipPrimary" onClick={onUpdateNow}>
 							{t('updateNow')}
-						</button>
+						</Button>
 					</div>
 				</div>
 			)}

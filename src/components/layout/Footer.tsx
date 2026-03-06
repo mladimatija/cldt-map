@@ -1,7 +1,7 @@
 'use client';
 
-/** Bottom bar: copyright, about link, language switcher, GitHub link. Uses ClientIntlProvider for locale. */
-import { Link } from '@/i18n/navigation';
+/** Bottom bar: copyright, about link, language switcher, GitHub link. Uses next-intl Link for locale switching. */
+import { Link, usePathname } from '@/i18n/navigation';
 import { FaGithub } from 'react-icons/fa';
 import { useSiteMetadata } from '@/hooks';
 import { ExternalLink } from '@/components/ui/ExternalLink';
@@ -9,10 +9,17 @@ import { useLocale, useTranslations } from 'next-intl';
 import { JSX } from 'react';
 import { useClientLocale } from '@/components/providers/ClientIntlProvider';
 
+/** Text link styles for footer language switcher (not button variants). */
+const FOOTER_LANG_LINK =
+	'cursor-pointer border-none bg-transparent p-0 font-medium transition-colors outline-none hover:no-underline focus-visible:no-underline text-white hover:text-cldt-green focus-visible:text-cldt-green';
+const FOOTER_LANG_LINK_ACTIVE =
+	'cursor-pointer border-none bg-transparent p-0 font-medium transition-colors outline-none hover:no-underline focus-visible:no-underline text-cldt-green hover:text-cldt-green focus-visible:text-cldt-green';
+
 export function Footer(): JSX.Element {
 	const { authorName, authorUrl, githubUrl, title } = useSiteMetadata();
 	const t = useTranslations('footer');
 	const locale = useLocale();
+	const pathname = usePathname();
 	const { setLocale } = useClientLocale();
 
 	return (
@@ -39,33 +46,27 @@ export function Footer(): JSX.Element {
 				</Link>
 				<span className="mx-2 text-white opacity-70">|</span>
 				<span className="flex items-center gap-1">
-					<button
-						aria-current={locale === 'en' ? 'true' : undefined}
-						className={`cursor-pointer border-none bg-transparent p-0 font-medium transition-colors outline-none hover:no-underline focus-visible:no-underline ${
-							locale === 'en'
-								? 'text-cldt-green hover:text-cldt-green focus-visible:text-cldt-green'
-								: 'hover:text-cldt-green focus-visible:text-cldt-green text-white'
-						}`}
+					<Link
+						aria-current={locale === 'en' ? 'page' : undefined}
+						className={locale === 'en' ? FOOTER_LANG_LINK_ACTIVE : FOOTER_LANG_LINK}
+						href={pathname}
+						locale="en"
 						title={t('switchToEn')}
-						type="button"
 						onClick={() => setLocale('en')}
 					>
 						{t('en')}
-					</button>
+					</Link>
 					<span className="text-white opacity-50">|</span>
-					<button
-						aria-current={locale === 'hr' ? 'true' : undefined}
-						className={`cursor-pointer border-none bg-transparent p-0 font-medium transition-colors outline-none hover:no-underline focus-visible:no-underline ${
-							locale === 'hr'
-								? 'text-cldt-green hover:text-cldt-green focus-visible:text-cldt-green'
-								: 'hover:text-cldt-green focus-visible:text-cldt-green text-white'
-						}`}
+					<Link
+						aria-current={locale === 'hr' ? 'page' : undefined}
+						className={locale === 'hr' ? FOOTER_LANG_LINK_ACTIVE : FOOTER_LANG_LINK}
+						href={pathname}
+						locale="hr"
 						title={t('switchToHr')}
-						type="button"
 						onClick={() => setLocale('hr')}
 					>
 						{t('hr')}
-					</button>
+					</Link>
 				</span>
 				<span className="mx-2 text-white opacity-70">|</span>
 				<ExternalLink

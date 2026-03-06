@@ -2,8 +2,7 @@
 
 import React from 'react';
 import SmartTooltip from '@/components/ui/SmartTooltip';
-import { CONTROL_BTN_BASE, CONTROL_BTN_ACTIVE, CONTROL_BTN_INACTIVE } from './map-controls-constants';
-import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/Button';
 
 interface MapControlButtonProps {
 	content: string;
@@ -29,21 +28,16 @@ export function MapControlsButton({
 }: MapControlButtonProps): React.ReactElement {
 	return (
 		<SmartTooltip content={content} position="left">
-			<button
+			<Button
 				aria-label={ariaLabel}
-				className={cn(
-					CONTROL_BTN_BASE,
-					active ? CONTROL_BTN_ACTIVE : CONTROL_BTN_INACTIVE,
-					disabled && 'cursor-not-allowed opacity-50',
-					className,
-				)}
+				className={className}
 				disabled={disabled}
 				title={title}
-				type="button"
+				variant={active ? 'controlRoundActive' : 'controlRound'}
 				onClick={onClick}
 			>
 				{children}
-			</button>
+			</Button>
 		</SmartTooltip>
 	);
 }

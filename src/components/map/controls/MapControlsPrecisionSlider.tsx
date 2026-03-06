@@ -5,13 +5,8 @@ import { useTranslations } from 'next-intl';
 import SmartTooltip from '@/components/ui/SmartTooltip';
 import { usePopoverFocusTrap } from '@/hooks';
 import { IoOptionsOutline } from 'react-icons/io5';
-import {
-	DISTANCE_PRECISION_MIN,
-	DISTANCE_PRECISION_MAX,
-	CONTROL_BTN_BASE,
-	CONTROL_BTN_INACTIVE,
-} from './map-controls-constants';
-import { cn } from '@/lib/utils';
+import { DISTANCE_PRECISION_MIN, DISTANCE_PRECISION_MAX } from './map-controls-constants';
+import { Button } from '@/components/ui/Button';
 
 interface MapControlsPrecisionSliderProps {
 	containerRef: RefObject<HTMLDivElement | null>;
@@ -61,15 +56,14 @@ export function MapControlsPrecisionSlider({
 				</div>
 			)}
 			<SmartTooltip content={isExpanded ? tooltipExpanded : tooltipContent} offset={16} position="left">
-				<button
+				<Button
 					aria-label={isExpanded ? tooltipExpanded : tooltipContent}
-					className={cn(CONTROL_BTN_BASE, CONTROL_BTN_INACTIVE)}
 					title={decimalTitle}
-					type="button"
+					variant="controlRound"
 					onClick={onToggle}
 				>
 					<IoOptionsOutline aria-hidden className="h-5 w-5" />
-				</button>
+				</Button>
 			</SmartTooltip>
 		</div>
 	);
