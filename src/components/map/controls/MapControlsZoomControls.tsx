@@ -8,6 +8,7 @@ import { useMapStore, type MapStoreState } from '@/lib/store';
 import { IoAddOutline, IoRemoveOutline, IoExpandOutline } from 'react-icons/io5';
 import { MdFullscreen, MdFullscreenExit } from 'react-icons/md';
 import SmartTooltip from '@/components/ui/SmartTooltip';
+import { Button } from '@/components/ui/Button';
 import { useTranslations } from 'next-intl';
 import { dispatchMapFullscreenToggle } from '@/lib/map-events';
 
@@ -59,59 +60,46 @@ export default function MapControlsZoomControls(): React.ReactElement {
 			ref={containerRef}
 		>
 			<SmartTooltip content={t('zoomIn')} position="right">
-				<button
-					aria-label={t('zoomIn')}
-					className="text-cldt-blue hover:border-cldt-green hover:text-cldt-green focus-visible:border-cldt-green focus-visible:text-cldt-green flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-gray-200 bg-white shadow-md transition-all outline-none hover:border-2 focus-visible:border-2"
-					type="button"
-					onClick={zoomIn}
-				>
+				<Button aria-label={t('zoomIn')} variant="controlRound" onClick={zoomIn}>
 					<IoAddOutline aria-hidden className="h-5 w-5" />
-				</button>
+				</Button>
 			</SmartTooltip>
 
 			<SmartTooltip content={t('zoomLevel', { level: mapZoom })} position="right">
-				<button
+				<Button
 					aria-label={t('zoomLevel', { level: mapZoom })}
-					className="text-cldt-blue hover:border-cldt-green hover:text-cldt-green focus-visible:border-cldt-green focus-visible:text-cldt-green flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-gray-200 bg-white shadow-md transition-all outline-none hover:border-2 focus-visible:border-2"
-					type="button"
+					variant="controlRound"
 					onClick={() => null}
 				>
 					<span aria-hidden>
 						Z{Math.floor(mapZoom)}
 						{mapZoom % 1 !== 0 ? '+' : ''}
 					</span>
-				</button>
+				</Button>
 			</SmartTooltip>
 
 			<SmartTooltip content={t('zoomOut')} position="right">
-				<button
-					aria-label={t('zoomOut')}
-					className="text-cldt-blue hover:border-cldt-green hover:text-cldt-green focus-visible:border-cldt-green focus-visible:text-cldt-green flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-gray-200 bg-white shadow-md transition-all outline-none hover:border-2 focus-visible:border-2"
-					type="button"
-					onClick={zoomOut}
-				>
+				<Button aria-label={t('zoomOut')} variant="controlRound" onClick={zoomOut}>
 					<IoRemoveOutline aria-hidden className="h-5 w-5" />
-				</button>
+				</Button>
 			</SmartTooltip>
 
 			<SmartTooltip content={gpxLoaded ? t('fitToRoute') : t('loadRouteFirst')} position="right">
-				<button
+				<Button
 					aria-label={t('fitToRoute')}
-					className="text-cldt-blue hover:border-cldt-green hover:text-cldt-green focus-visible:border-cldt-green focus-visible:text-cldt-green disabled:hover:text-cldt-blue flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-gray-200 bg-white shadow-md transition-all outline-none hover:border-2 focus-visible:border-2 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:border-gray-200"
 					disabled={!gpxLoaded}
-					type="button"
+					variant="controlRound"
 					onClick={fitToRoute}
 				>
 					<IoExpandOutline aria-hidden className="h-5 w-5" />
-				</button>
+				</Button>
 			</SmartTooltip>
 
 			<SmartTooltip content={isFullscreen ? t('exitFullscreen') : t('fullscreen')} position="right">
-				<button
+				<Button
 					aria-label={isFullscreen ? t('exitFullscreen') : t('fullscreen')}
 					aria-pressed={isFullscreen}
-					className="text-cldt-blue hover:border-cldt-green hover:text-cldt-green focus-visible:border-cldt-green focus-visible:text-cldt-green flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-gray-200 bg-white shadow-md transition-all outline-none hover:border-2 focus-visible:border-2"
-					type="button"
+					variant="controlRound"
 					onClick={dispatchMapFullscreenToggle}
 				>
 					{isFullscreen ? (
@@ -119,7 +107,7 @@ export default function MapControlsZoomControls(): React.ReactElement {
 					) : (
 						<MdFullscreen aria-hidden className="h-5 w-5" />
 					)}
-				</button>
+				</Button>
 			</SmartTooltip>
 		</div>
 	);

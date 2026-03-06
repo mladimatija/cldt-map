@@ -5,6 +5,7 @@ import { Link } from '@/i18n/navigation';
 import { FaGithub } from 'react-icons/fa';
 import { useSiteMetadata } from '@/hooks';
 import { ExternalLink } from '@/components/ui/ExternalLink';
+import { Button } from '@/components/ui/Button';
 import { useLocale, useTranslations } from 'next-intl';
 import { JSX } from 'react';
 import { useClientLocale } from '@/components/providers/ClientIntlProvider';
@@ -39,33 +40,25 @@ export function Footer(): JSX.Element {
 				</Link>
 				<span className="mx-2 text-white opacity-70">|</span>
 				<span className="flex items-center gap-1">
-					<button
+					<Button
 						aria-current={locale === 'en' ? 'true' : undefined}
-						className={`cursor-pointer border-none bg-transparent p-0 font-medium transition-colors outline-none hover:no-underline focus-visible:no-underline ${
-							locale === 'en'
-								? 'text-cldt-green hover:text-cldt-green focus-visible:text-cldt-green'
-								: 'hover:text-cldt-green focus-visible:text-cldt-green text-white'
-						}`}
 						title={t('switchToEn')}
 						type="button"
+						variant={locale === 'en' ? 'footerLangActive' : 'footerLang'}
 						onClick={() => setLocale('en')}
 					>
 						{t('en')}
-					</button>
+					</Button>
 					<span className="text-white opacity-50">|</span>
-					<button
+					<Button
 						aria-current={locale === 'hr' ? 'true' : undefined}
-						className={`cursor-pointer border-none bg-transparent p-0 font-medium transition-colors outline-none hover:no-underline focus-visible:no-underline ${
-							locale === 'hr'
-								? 'text-cldt-green hover:text-cldt-green focus-visible:text-cldt-green'
-								: 'hover:text-cldt-green focus-visible:text-cldt-green text-white'
-						}`}
 						title={t('switchToHr')}
 						type="button"
+						variant={locale === 'hr' ? 'footerLangActive' : 'footerLang'}
 						onClick={() => setLocale('hr')}
 					>
 						{t('hr')}
-					</button>
+					</Button>
 				</span>
 				<span className="mx-2 text-white opacity-70">|</span>
 				<ExternalLink

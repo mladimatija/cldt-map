@@ -29,7 +29,9 @@ function ErrorBoundaryFallback({ error }: { error: Error | null }): React.ReactE
 					<p className="text-muted-foreground text-sm">{t('tryRefreshing')}</p>
 				</CardContent>
 				<CardFooter>
-					<Button onClick={() => window.location.reload()}>{t('refreshPage')}</Button>
+					<Button size="default" variant="primary" onClick={() => window.location.reload()}>
+						{t('refreshPage')}
+					</Button>
 				</CardFooter>
 			</Card>
 		</div>

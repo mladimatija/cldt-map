@@ -2,21 +2,7 @@ import React, { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { useMapStore } from '@/lib/store';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
-
-const btnBase =
-	'px-4 py-2 rounded-md font-medium transition-all outline-none cursor-pointer ' +
-	'bg-white border border-gray-200 text-cldt-blue ' +
-	'hover:border-cldt-green hover:text-cldt-green focus-visible:border-cldt-green focus-visible:text-cldt-green';
-
-const btnPrimary =
-	'px-4 py-2 rounded-md font-medium transition-all outline-none cursor-pointer ' +
-	'bg-cldt-blue text-white border border-transparent ' +
-	'hover:bg-cldt-green focus-visible:bg-cldt-green';
-
-const btnSelected =
-	'px-4 py-2 rounded-md font-medium transition-all outline-none cursor-pointer ' +
-	'bg-white border-2 border-cldt-blue text-cldt-blue ' +
-	'hover:border-cldt-green hover:text-cldt-green focus-visible:border-cldt-green focus-visible:text-cldt-green';
+import { Button } from '@/components/ui/Button';
 
 const StoreTest: React.FC = () => {
 	const t = useTranslations('storeTest');
@@ -78,18 +64,18 @@ const StoreTest: React.FC = () => {
 						<p className="mb-2">
 							{t('direction')}: <span className="text-cldt-blue font-semibold">{direction}</span>
 						</p>
-						<button className={btnBase} type="button" onClick={toggleDirection}>
+						<Button size="default" variant="base" onClick={toggleDirection}>
 							{t('toggleDirection')}
-						</button>
+						</Button>
 					</div>
 
 					<div>
 						<p className="mb-2">
 							{t('units')}: <span className="text-cldt-blue font-semibold">{units}</span>
 						</p>
-						<button className={btnBase} type="button" onClick={toggleUnits}>
+						<Button size="default" variant="base" onClick={toggleUnits}>
 							{t('toggleUnits')}
-						</button>
+						</Button>
 					</div>
 
 					<div>
@@ -98,14 +84,14 @@ const StoreTest: React.FC = () => {
 						</p>
 						<div className="flex flex-wrap gap-2">
 							{[0, 1, 2, 3].map((n) => (
-								<button
-									className={distancePrecision === n ? btnSelected : btnBase}
+								<Button
 									key={n}
-									type="button"
+									size="default"
+									variant={distancePrecision === n ? 'selected' : 'base'}
 									onClick={() => setDistancePrecision(n)}
 								>
 									{n}
-								</button>
+								</Button>
 							))}
 						</div>
 					</div>
@@ -115,9 +101,9 @@ const StoreTest: React.FC = () => {
 							{t('showBoundary')}:{' '}
 							<span className="text-cldt-blue font-semibold">{showBoundary ? t('yes') : t('no')}</span>
 						</p>
-						<button className={btnBase} type="button" onClick={toggleBoundary}>
+						<Button size="default" variant="base" onClick={toggleBoundary}>
 							{t('toggleBoundary')}
-						</button>
+						</Button>
 					</div>
 
 					<div>
@@ -125,9 +111,9 @@ const StoreTest: React.FC = () => {
 							{t('showTileBoundary')}:{' '}
 							<span className="text-cldt-blue font-semibold">{showTileBoundary ? t('yes') : t('no')}</span>
 						</p>
-						<button className={btnBase} type="button" onClick={toggleTileBoundary}>
+						<Button size="default" variant="base" onClick={toggleTileBoundary}>
 							{t('toggleTileBoundary')}
-						</button>
+						</Button>
 					</div>
 
 					<div>
@@ -139,21 +125,26 @@ const StoreTest: React.FC = () => {
 							{userLocation ? `${userLocation.lat.toFixed(4)}, ${userLocation.lng.toFixed(4)}` : '—'}
 						</p>
 						<div className="flex flex-wrap gap-2">
-							<button
-								className={fakeUserLocationEnabled ? btnSelected : btnPrimary}
-								type="button"
+							<Button
+								size="default"
+								variant={fakeUserLocationEnabled ? 'selected' : 'primary'}
 								onClick={() => setFakeUserLocationEnabled(!fakeUserLocationEnabled)}
 							>
 								{fakeUserLocationEnabled ? t('disable') : t('enable')}
-							</button>
+							</Button>
 							{fakeUserLocationEnabled && (
 								<>
-									<button className={btnBase} type="button" onClick={() => setFakeUserLocation()}>
+									<Button size="default" variant="base" onClick={() => setFakeUserLocation()}>
 										{t('newRandomLocation')}
-									</button>
-									<button className={btnBase} disabled={trailLoading} type="button" onClick={handleRandomOnTrail}>
+									</Button>
+									<Button
+										disabled={trailLoading}
+										size="default"
+										variant="base"
+										onClick={handleRandomOnTrail}
+									>
 										{trailLoading ? t('loadingTrail') : t('randomOnTrail')}
-									</button>
+									</Button>
 								</>
 							)}
 						</div>
