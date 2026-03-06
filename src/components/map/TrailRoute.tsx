@@ -5,8 +5,10 @@
  * Fetches GPX, builds enhanced points (distance/elevation), and syncs with the main store and map store.
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { createRoot, type Root } from 'react-dom/client';
 import { useMap } from 'react-leaflet';
 import L from 'leaflet';
+import { Button } from '@/components/ui/Button';
 import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
 import {
 	DEFAULT_PATH_OPTIONS,
@@ -73,6 +75,30 @@ const TRAIL_POINT_MARKER_PANE = 'trailPointMarkerPane';
 /** Pane for the selected trail point tooltip (wide panel); above ruler and its tooltip. */
 const TRAIL_POINT_TOOLTIP_PANE = 'trailPointTooltipPane';
 
+interface TrailPointTooltipContentProps {
+	trailInfoHtml: string;
+	onClose: () => void;
+	closeLabel: string;
+}
+
+function TrailPointTooltipContent({ trailInfoHtml, onClose, closeLabel }: TrailPointTooltipContentProps): React.ReactElement {
+	return (
+		<div className="user-location-tooltip-inner">
+			<Button
+				aria-label={closeLabel}
+				className="user-location-close-btn"
+				size="none"
+				type="button"
+				variant="closeIcon"
+				onClick={onClose}
+			>
+				×
+			</Button>
+			<div className="text-sm text-left" dangerouslySetInnerHTML={{ __html: trailInfoHtml }} />
+		</div>
+	);
+}
+
 interface TrailRouteProps {
 	pathOptions?: L.PathOptions;
 }
@@ -97,6 +123,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 	>([]);
 	const markerRef = useRef<L.Marker | null>(null);
 	const tooltipRef = useRef<L.Tooltip | null>(null);
+	const tooltipRootRef = useRef<Root | null>(null);
 	const startMarkerRef = useRef<L.Marker | null>(null);
 	const finishMarkerRef = useRef<L.Marker | null>(null);
 	const [isTooltipVisible, setIsTooltipVisible] = useState(false);
@@ -153,6 +180,10 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 	}
 
 	const clearMarkerAndTooltip = useCallback((): void => {
+		if (tooltipRootRef.current) {
+			tooltipRootRef.current.unmount();
+			tooltipRootRef.current = null;
+		}
 		if (markerRef.current && map) {
 			markerRef.current.removeFrom(map);
 			markerRef.current = null;
@@ -264,12 +295,19 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
         <p><span class="font-medium">${t('tooltipTotalGain')}</span> ${formatElevation(totalElevationGain, currentUnits)}</p>
         <p><span class="font-medium">${t('tooltipTotalLoss')}</span> ${formatElevation(totalElevationLoss, currentUnits)}</p>
       `;
-			const tooltipContent = `
-      <div class="user-location-tooltip-inner">
-        <button aria-label="${t('tooltipClose')}" class="user-location-close-btn" type="button">×</button>
-        <div class="text-sm text-left">${trailInfoHtml}</div>
-      </div>
-    `;
+			const tooltipContainer = document.createElement('div');
+			const tooltipRoot = createRoot(tooltipContainer);
+			tooltipRoot.render(
+				<TrailPointTooltipContent
+					closeLabel={t('tooltipClose')}
+					onClose={() => {
+						clearTrailHighlight?.(true);
+						clearShareUrlParams();
+					}}
+					trailInfoHtml={trailInfoHtml}
+				/>,
+			);
+			tooltipRootRef.current = tooltipRoot;
 
 			const mapContainer = map.getContainer();
 			const containerSize = map.getSize();
@@ -305,20 +343,12 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 				className: 'map-tooltip map-tooltip--wide',
 			})
 				.setLatLng(markerPosition)
-				.setContent(tooltipContent)
+				.setContent(tooltipContainer)
 				.addTo(map);
 
 			const el = tooltip.getElement();
 			if (el) {
 				el.addEventListener('click', (e: MouseEvent) => {
-					const closeBtn = (e.target as HTMLElement).closest('.user-location-close-btn');
-					if (closeBtn) {
-						e.preventDefault();
-						e.stopPropagation();
-						clearTrailHighlight?.(true);
-						clearShareUrlParams();
-						return;
-					}
 					const link = (e.target as HTMLElement).closest('.trail-tooltip-coords-link');
 					if (!link) {
 						return;

@@ -9,6 +9,7 @@ import type { MapStoreState } from '@/lib/store';
 import { cn } from '@/lib/utils';
 import type { TileLayer } from 'leaflet';
 import SmartTooltip from '@/components/ui/SmartTooltip';
+import { Button } from '@/components/ui/Button';
 import { useTranslations } from 'next-intl';
 import { PROVIDER_TO_KEY, mapOptions, resolveProvider } from './base-map-options';
 
@@ -336,9 +337,9 @@ export default function BaseMapSelector({ initialProvider }: BaseMapSelectorProp
 
 	const currentLayerName = t(PROVIDER_TO_KEY[currentLayer] ?? 'standard');
 	const toggleButton = (
-		<button
+		<Button
 			aria-label={`${currentLayerName} Map Style`}
-			className="text-cldt-blue hover:border-cldt-green hover:text-cldt-green focus-visible:border-cldt-green focus-visible:text-cldt-green flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-gray-200 bg-white shadow-md transition-all outline-none hover:border-2 focus-visible:border-2 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+			variant="controlRoundDark"
 			onClick={() => {
 				const willOpen = !isOpen;
 				if (willOpen) {
@@ -350,7 +351,7 @@ export default function BaseMapSelector({ initialProvider }: BaseMapSelectorProp
 			<div className="flex items-center justify-center">
 				{mapOptions.find((option) => option.id === currentLayer)?.icon}
 			</div>
-		</button>
+		</Button>
 	);
 
 	return (
@@ -374,20 +375,12 @@ export default function BaseMapSelector({ initialProvider }: BaseMapSelectorProp
 							const optionDescription = t(`${PROVIDER_TO_KEY[option.id] ?? 'standard'}Description`);
 							const isActive = option.id === currentLayer;
 							return (
-								<button
+								<Button
 									aria-label={`${optionName} - ${optionDescription}`}
-									className={cn(
-										'base-map-option grid w-full cursor-pointer grid-cols-[32px_1fr] items-center gap-2 border-b border-gray-200 p-2.5 text-left transition-colors outline-none last:border-b-0',
-										'dark:bg-(--bg-secondary) dark:text-(--text-primary)',
-										'dark:border-b-(--bg-secondary) dark:last:border-b-0',
-										'hover:bg-gray-100 focus-visible:bg-gray-100 dark:hover:bg-gray-700 dark:focus-visible:bg-gray-700',
-										'border-l-4 border-l-transparent',
-										isActive
-											? 'border-l-cldt-green bg-cldt-light-blue dark:bg-cldt-light-blue/30'
-											: 'hover:border-l-cldt-green focus-visible:border-l-cldt-green dark:hover:border-l-cldt-green dark:focus-visible:border-l-cldt-green',
-									)}
+									className="base-map-option"
 									key={option.id}
 									title={optionName}
+									variant={isActive ? 'mapOptionActive' : 'mapOption'}
 									onClick={() => handleMapChange(option.id)}
 								>
 									<div
@@ -402,7 +395,7 @@ export default function BaseMapSelector({ initialProvider }: BaseMapSelectorProp
 										<span className="text-sm font-medium dark:text-white">{optionName}</span>
 										<span className="text-xs text-gray-500 dark:text-gray-300">{optionDescription}</span>
 									</div>
-								</button>
+								</Button>
 							);
 						})}
 					</div>
