@@ -22,6 +22,7 @@ import { useStore, useMapStore, type StoreState, type MapStoreState, type UnitSy
 import { MdKeyboardArrowUp, MdKeyboardArrowDown } from 'react-icons/md';
 import { useTranslations } from 'next-intl';
 import { RULER_SET_FROM_CHART_EVENT, type RulerSetFromChartDetail } from '@/lib/ruler-from-chart';
+import { Button } from '@/components/ui/Button';
 
 interface ElevationPoint {
 	distance: number;
@@ -392,9 +393,20 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 		e.stopPropagation();
 	};
 
+	const clearPinnedSelection = (): void => {
+		setPinnedPoint(null);
+		clearTrailHighlight?.(true);
+	};
+
+	const clearRulerSelection = (): void => {
+		setDragPreviewRange(null);
+		setRulerRange(null);
+		setRulerEnabled(false);
+	};
+
 	return (
 		<div
-			className={`rounded bg-white p-4 shadow outline-none focus:outline-none focus-visible:outline-none [&_*]:ring-0 [&_*]:outline-none [&_*]:focus:ring-0 [&_*]:focus:outline-none [&_*]:focus-visible:outline-none ${className} transition-[height] duration-300 ease-in-out ${isExpanded ? 'h-[400px]' : 'h-[120px] min-h-[120px] sm:h-[100px] sm:min-h-[100px]'}`}
+			className={`rounded bg-white p-4 shadow outline-none focus:outline-none focus-visible:outline-none dark:border dark:border-[var(--border-color)] dark:bg-[var(--bg-secondary)] [&_*]:ring-0 [&_*]:outline-none [&_*]:focus:ring-0 [&_*]:focus:outline-none [&_*]:focus-visible:outline-none ${className} transition-[height] duration-300 ease-in-out ${isExpanded ? 'h-[400px]' : 'h-[120px] min-h-[120px] sm:h-[100px] sm:min-h-[100px]'}`}
 			key={`elevation-chart-${units}-${direction}`}
 			ref={chartRef}
 			onPointerCancel={stopMapInteraction}
@@ -407,13 +419,43 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 				onClick={toggleExpanded}
 			>
 				<h2 className="text-cldt-blue-contrast text-base font-semibold sm:text-lg">{t('title')}</h2>
-				<div aria-hidden className="text-cldt-blue-contrast shrink-0 text-xl">
-					{isExpanded ? <MdKeyboardArrowUp /> : <MdKeyboardArrowDown />}
+				<div className="flex items-center gap-2">
+					{pinnedPoint !== null && (
+						<Button
+							size="sm"
+							variant="base"
+							onClick={(e) => {
+								e.preventDefault();
+								e.stopPropagation();
+								clearPinnedSelection();
+							}}
+							onMouseDown={(e) => e.stopPropagation()}
+						>
+							{t('clearPin')}
+						</Button>
+					)}
+					{isRulerEnabled && (
+						<Button
+							size="sm"
+							variant="base"
+							onClick={(e) => {
+								e.preventDefault();
+								e.stopPropagation();
+								clearRulerSelection();
+							}}
+							onMouseDown={(e) => e.stopPropagation()}
+						>
+							{t('clearRuler')}
+						</Button>
+					)}
+					<div aria-hidden className="text-cldt-blue-contrast shrink-0 text-xl">
+						{isExpanded ? <MdKeyboardArrowUp /> : <MdKeyboardArrowDown />}
+					</div>
 				</div>
 			</div>
 
 			<div
-				className="my-2 grid grid-cols-2 gap-x-4 gap-y-0.5 text-xs text-gray-700 sm:flex sm:flex-wrap sm:gap-x-4 sm:text-sm"
+				className="my-2 grid grid-cols-2 gap-x-4 gap-y-0.5 text-xs text-gray-700 sm:flex sm:flex-wrap sm:gap-x-4 sm:text-sm dark:text-[var(--text-secondary)]"
 				onClick={toggleExpanded}
 			>
 				<span className="truncate" title={formatDistance(totalDistance, units, distancePrecision)}>
