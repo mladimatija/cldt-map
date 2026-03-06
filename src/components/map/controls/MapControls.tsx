@@ -547,15 +547,33 @@ const MapControls: React.FC<MapControlsProps> = ({
 		setIsSharing((prev) => !prev);
 	};
 
+	const [showCopyToast, setShowCopyToast] = useState(false);
+	const copyToastTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
 	const copyToClipboard = (url: string, withText = false): void => {
 		const text = withText ? `${t('shareText')}\n${url}` : url;
 		navigator.clipboard
 			.writeText(text)
-			.then(() => setIsSharing(false))
+			.then(() => {
+				setShowCopyToast(true);
+				if (copyToastTimeoutRef.current) clearTimeout(copyToastTimeoutRef.current);
+				copyToastTimeoutRef.current = setTimeout(() => {
+					setShowCopyToast(false);
+					setIsSharing(false);
+					copyToastTimeoutRef.current = null;
+				}, 1500);
+			})
 			.catch((err) => {
 				console.error('Could not copy text:', err);
 			});
 	};
+
+	useEffect(
+		() => () => {
+			if (copyToastTimeoutRef.current) clearTimeout(copyToastTimeoutRef.current);
+		},
+		[],
+	);
 
 	// Ruler panes: order set in map.css (ruler-pane, ruler-markers-pane, ruler-tooltip-pane).
 	useEffect(() => {
@@ -1262,6 +1280,15 @@ const MapControls: React.FC<MapControlsProps> = ({
 							sharePopupRef={sharePopupRef}
 							onClose={() => setIsSharing(false)}
 						/>
+					)}
+					{showCopyToast && (
+						<div
+							aria-live="polite"
+							className="map-tooltip map-tooltip--pwa fixed top-4 right-4 z-[var(--z-toast)] animate-slide-in-from-top"
+							role="status"
+						>
+							<p className="font-medium">{t('linkCopied')}</p>
+						</div>
 					)}
 				</div>
 			</div>
