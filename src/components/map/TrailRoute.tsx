@@ -81,20 +81,22 @@ interface TrailPointTooltipContentProps {
 	closeLabel: string;
 }
 
-function TrailPointTooltipContent({ trailInfoHtml, onClose, closeLabel }: TrailPointTooltipContentProps): React.ReactElement {
+function TrailPointTooltipContent({
+	trailInfoHtml,
+	onClose,
+	closeLabel,
+}: TrailPointTooltipContentProps): React.ReactElement {
 	return (
 		<div className="user-location-tooltip-inner">
 			<Button
 				aria-label={closeLabel}
 				className="user-location-close-btn"
-				size="none"
-				type="button"
 				variant="closeIcon"
 				onClick={onClose}
 			>
 				×
 			</Button>
-			<div className="text-sm text-left" dangerouslySetInnerHTML={{ __html: trailInfoHtml }} />
+			<div className="text-left text-sm" dangerouslySetInnerHTML={{ __html: trailInfoHtml }} />
 		</div>
 	);
 }
@@ -300,11 +302,11 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 			tooltipRoot.render(
 				<TrailPointTooltipContent
 					closeLabel={t('tooltipClose')}
+					trailInfoHtml={trailInfoHtml}
 					onClose={() => {
 						clearTrailHighlight?.(true);
 						clearShareUrlParams();
 					}}
-					trailInfoHtml={trailInfoHtml}
 				/>,
 			);
 			tooltipRootRef.current = tooltipRoot;
