@@ -18,7 +18,7 @@ export function RulerHint(): React.ReactElement | null {
 	useEffect(() => {
 		if (typeof window === 'undefined') return;
 		const stored = localStorage.getItem(RULER_HINT_DISMISSED_KEY);
-		setIsDismissed(stored === '1');
+		queueMicrotask(() => setIsDismissed(stored === '1'));
 	}, []);
 
 	const handleDismiss = (): void => {
@@ -44,8 +44,8 @@ export function RulerHint(): React.ReactElement | null {
 				<button
 					aria-label={t('rulerHintDismiss')}
 					className="shrink-0 rounded p-0.5 text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-700 dark:hover:text-gray-200"
-					onClick={handleDismiss}
 					type="button"
+					onClick={handleDismiss}
 				>
 					<IoClose className="h-4 w-4" />
 				</button>
