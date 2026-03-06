@@ -268,6 +268,7 @@ export function buildShareViewUrl(
 		baseMap?: ShareBaseMapKey;
 		sections?: boolean;
 		dark?: boolean;
+		rulerRange?: { distanceFromStartA: number; distanceFromStartB: number } | null;
 	},
 ): string {
 	const url = new URL(baseUrl);
@@ -286,6 +287,13 @@ export function buildShareViewUrl(
 	if (params.dark !== undefined) {
 		url.searchParams.set('dark', params.dark ? '1' : '0');
 	}
+	if (params.rulerRange) {
+		const a = Math.round(params.rulerRange.distanceFromStartA);
+		const b = Math.round(params.rulerRange.distanceFromStartB);
+		if (Number.isFinite(a) && Number.isFinite(b) && a >= 0 && b >= 0) {
+			url.searchParams.set('ruler', `${a},${b}`);
+		}
+	}
 	return url.toString();
 }
 
@@ -303,6 +311,7 @@ export function buildShareProgressUrl(
 		baseMap?: ShareBaseMapKey;
 		sections?: boolean;
 		dark?: boolean;
+		rulerRange?: { distanceFromStartA: number; distanceFromStartB: number } | null;
 	},
 ): string {
 	const url = new URL(baseUrl);
@@ -323,11 +332,29 @@ export function buildShareProgressUrl(
 	if (params.dark !== undefined) {
 		url.searchParams.set('dark', params.dark ? '1' : '0');
 	}
+	if (params.rulerRange) {
+		const a = Math.round(params.rulerRange.distanceFromStartA);
+		const b = Math.round(params.rulerRange.distanceFromStartB);
+		if (Number.isFinite(a) && Number.isFinite(b) && a >= 0 && b >= 0) {
+			url.searchParams.set('ruler', `${a},${b}`);
+		}
+	}
 	return url.toString();
 }
 
 /** Share URL param keys that we add/remove */
-const SHARE_URL_PARAMS = ['lat', 'lng', 'zoom', 'dir', 'progress', 'unit', 'baseMap', 'sections', 'dark'] as const;
+const SHARE_URL_PARAMS = [
+	'lat',
+	'lng',
+	'zoom',
+	'dir',
+	'progress',
+	'unit',
+	'baseMap',
+	'sections',
+	'dark',
+	'ruler',
+] as const;
 
 /**
  * Remove share URL params from the current location (clean URL when the share tooltip is closed)
@@ -371,6 +398,7 @@ export function parseShareUrlParams(): {
 	baseMap?: ShareBaseMapKey;
 	sections?: boolean;
 	dark?: boolean;
+	rulerRange?: { distanceFromStartA: number; distanceFromStartB: number };
 } | null {
 	if (typeof window === 'undefined') return null;
 	const params = new URLSearchParams(window.location.search);
@@ -383,7 +411,20 @@ export function parseShareUrlParams(): {
 	const baseMap = params.get('baseMap');
 	const sections = params.get('sections');
 	const dark = params.get('dark');
-	if (!lat && !lng && !zoom && !progress && !baseMap && !sections && !dark) return null;
+	const ruler = params.get('ruler');
+	if (!lat && !lng && !zoom && !progress && !baseMap && !sections && !dark && !ruler) return null;
+
+	let rulerRange: { distanceFromStartA: number; distanceFromStartB: number } | undefined;
+	if (ruler) {
+		const parts = ruler.split(',');
+		if (parts.length === 2) {
+			const a = parseFloat(parts[0]);
+			const b = parseFloat(parts[1]);
+			if (Number.isFinite(a) && Number.isFinite(b) && a >= 0 && b >= 0) {
+				rulerRange = { distanceFromStartA: a, distanceFromStartB: b };
+			}
+		}
+	}
 	return {
 		...(lat && lng && { lat: parseFloat(lat), lng: parseFloat(lng) }),
 		...(zoom && { zoom: parseFloat(zoom) }),
@@ -402,6 +443,7 @@ export function parseShareUrlParams(): {
 			dark !== undefined && {
 				dark: dark === '1',
 			}),
+		...(rulerRange && { rulerRange }),
 	};
 }
 
