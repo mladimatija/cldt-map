@@ -21,7 +21,7 @@ export default function MapControlsUnitsSelector({ className }: UnitsSelectorPro
 		<Button
 			className={cn('z-controls absolute bottom-4 left-4 bg-white/90 shadow-md hover:bg-white/95', className)}
 			size="sm"
-			variant="outline"
+			variant="base"
 			onClick={toggleUnits}
 		>
 			{units === 'metric' ? 'km' : 'mi'}

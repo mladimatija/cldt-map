@@ -40,6 +40,7 @@ import {
 	IoShareSocialOutline,
 } from 'react-icons/io5';
 import SmartTooltip from '@/components/ui/SmartTooltip';
+import { Button } from '@/components/ui/Button';
 import { useTranslations } from 'next-intl';
 import { MapControlsButton } from './MapControlsButton';
 import { MapControlsSharePanel } from './MapControlsSharePanel';
@@ -1124,13 +1125,12 @@ const MapControls: React.FC<MapControlsProps> = ({
 					})}
 					position="left"
 				>
-					<button
+					<Button
 						aria-label={t('directionTooltip', {
 							direction: direction === 'SOBO' ? t('directionSouthbound') : t('directionNorthbound'),
 						})}
-						className="text-cldt-blue hover:border-cldt-green hover:text-cldt-green focus-visible:border-cldt-green focus-visible:text-cldt-green flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-gray-200 bg-white shadow-md transition-all outline-none hover:border-2 focus-visible:border-2"
 						title={`Change Direction (Currently ${direction === 'SOBO' ? t('directionTitleNorthSouth') : t('directionTitleSouthNorth')})`}
-						type="button"
+						variant="controlRound"
 						onClick={toggleDirection}
 					>
 						{direction === 'SOBO' ? (
@@ -1138,7 +1138,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 						) : (
 							<IoArrowUpOutline aria-hidden className="h-5 w-5" />
 						)}
-					</button>
+					</Button>
 				</SmartTooltip>
 
 				<SmartTooltip
@@ -1147,14 +1147,14 @@ const MapControls: React.FC<MapControlsProps> = ({
 					})}
 					position="left"
 				>
-					<button
+					<Button
 						aria-label={t('unitsTooltip', { units: units === 'metric' ? t('unitsMetric') : t('unitsImperial') })}
-						className="text-cldt-blue-contrast hover:border-cldt-green hover:text-cldt-green focus-visible:border-cldt-green focus-visible:text-cldt-green flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-gray-200 bg-white font-semibold shadow-md transition-all outline-none hover:border-2 focus-visible:border-2"
-						type="button"
+						className="text-cldt-blue-contrast font-semibold"
+						variant="controlRound"
 						onClick={toggleUnits}
 					>
 						<span aria-hidden="true">{units === 'metric' ? 'km' : 'mi'}</span>
-					</button>
+					</Button>
 				</SmartTooltip>
 
 				<MapControlsPrecisionSlider

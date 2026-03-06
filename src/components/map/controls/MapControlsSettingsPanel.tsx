@@ -13,8 +13,7 @@ import {
 	IoSettingsOutline,
 	IoHelpCircleOutline,
 } from 'react-icons/io5';
-import { CONTROL_BTN_BASE, CONTROL_BTN_ACTIVE, CONTROL_BTN_INACTIVE } from './map-controls-constants';
-import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/Button';
 
 interface MapControlsSettingsPanelProps {
 	containerRef: RefObject<HTMLDivElement | null>;
@@ -127,14 +126,13 @@ export function MapControlsSettingsPanel({
 				</div>
 			)}
 			<SmartTooltip content={isExpanded ? tooltipHide : tooltipShow} position="left">
-				<button
+				<Button
 					aria-label={isExpanded ? tooltipHide : tooltipShow}
-					className={cn(CONTROL_BTN_BASE, isExpanded ? CONTROL_BTN_ACTIVE : CONTROL_BTN_INACTIVE)}
-					type="button"
+					variant={isExpanded ? 'controlRoundActive' : 'controlRound'}
 					onClick={onToggle}
 				>
 					<IoSettingsOutline aria-hidden className="h-5 w-5" />
-				</button>
+				</Button>
 			</SmartTooltip>
 		</div>
 	);

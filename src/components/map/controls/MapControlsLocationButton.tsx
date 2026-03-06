@@ -3,12 +3,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useMapStore, type MapStoreState } from '@/lib/store';
 import { useBlockMapPropagation } from '@/hooks';
-import { cn, isWithinMapBoundary } from '@/lib/utils';
+import { isWithinMapBoundary } from '@/lib/utils';
 import { Tooltip } from '@/components/ui/Tooltip';
 import { useMap } from 'react-leaflet';
 import { MdMyLocation, MdLocationSearching } from 'react-icons/md';
 import { useTranslations } from 'next-intl';
-import { CONTROL_BTN_BASE, CONTROL_BTN_ACTIVE, CONTROL_BTN_INACTIVE } from './map-controls-constants';
+import { Button } from '@/components/ui/Button';
 
 type ButtonState = 'default' | 'locating' | 'disabled' | 'active';
 
@@ -100,23 +100,20 @@ export default function MapControlsLocationButton({ checkPermission }: LocationB
 	};
 
 	const buttonState = getButtonState();
-	const buttonClasses = cn(
-		CONTROL_BTN_BASE,
-		buttonState === 'default' && CONTROL_BTN_INACTIVE,
-		buttonState === 'active' && CONTROL_BTN_ACTIVE,
-		buttonState === 'locating' &&
-			'cursor-wait border border-gray-200 bg-cldt-blue/10 dark:border-[var(--border-color)] dark:bg-cldt-blue/20 dark:text-[var(--text-primary)]',
-		buttonState === 'disabled' && cn(CONTROL_BTN_INACTIVE, 'cursor-not-allowed opacity-50'),
-		buttonState !== 'disabled' && buttonState !== 'locating' && 'cursor-pointer',
-	);
+	const variant =
+		buttonState === 'active'
+			? 'controlRoundActive'
+			: buttonState === 'locating'
+				? 'controlRoundLocating'
+				: 'controlRound';
 
 	return (
 		<Tooltip content={getTooltipText()} position="left">
-			<button
+			<Button
 				aria-label={t('getMyLocation')}
-				className={buttonClasses}
 				disabled={(buttonState === 'disabled' && permissionStatus !== 'prompt') || isLocating}
 				ref={containerRef}
+				variant={variant}
 				onClick={handleClick}
 			>
 				{isLocating || isAnimating ? (
@@ -137,7 +134,7 @@ export default function MapControlsLocationButton({ checkPermission }: LocationB
 						className={`dark:hover:text-cldt-green h-6 w-6 dark:text-white ${isLocating || isAnimating ? 'opacity-0' : ''}`}
 					/>
 				)}
-			</button>
+			</Button>
 		</Tooltip>
 	);
 }

@@ -2,7 +2,7 @@
 
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { MAP_TOOLTIP_BTN_PRIMARY, MAP_TOOLTIP_BTN_SECONDARY } from '@/components/map/controls/map-controls-constants';
+import { Button } from '@/components/ui/Button';
 
 const SESSION_DISMISS_KEY = 'cldt-map-pwa-install-dismissed';
 const COOLDOWN_DAYS = 7;
@@ -88,12 +88,12 @@ export default function PwaInstallPrompt(): React.ReactElement | null {
 			<p className="font-medium">{t('installTitle')}</p>
 			<p>{t('installDescription')}</p>
 			<div className="map-tooltip__actions">
-				<button className={MAP_TOOLTIP_BTN_SECONDARY} type="button" onClick={handleDismiss}>
+				<Button variant="mapTooltipSecondary" onClick={handleDismiss}>
 					{t('dismiss')}
-				</button>
-				<button className={MAP_TOOLTIP_BTN_PRIMARY} type="button" onClick={handleInstall}>
+				</Button>
+				<Button variant="mapTooltipPrimary" onClick={handleInstall}>
 					{t('install')}
-				</button>
+				</Button>
 			</div>
 		</div>
 	);
