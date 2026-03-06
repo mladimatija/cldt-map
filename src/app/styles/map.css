@@ -210,6 +210,14 @@
 	color: var(--map-tooltip-color);
 	font-size: var(--map-tooltip-font-size);
 	line-height: var(--map-tooltip-line-height);
+
+	&:first-of-type {
+		margin-top: 0;
+	}
+
+	&:last-of-type {
+		margin-bottom: 0;
+	}
 }
 
 .map-tooltip .font-medium {
