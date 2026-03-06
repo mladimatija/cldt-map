@@ -1284,7 +1284,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 					{showCopyToast && (
 						<div
 							aria-live="polite"
-							className="map-tooltip map-tooltip--pwa fixed top-4 right-4 z-[var(--z-toast)] animate-slide-in-from-top"
+							className="map-tooltip map-tooltip--pwa animate-slide-in-from-top fixed top-4 right-4 z-[var(--z-toast)]"
 							role="status"
 						>
 							<p className="font-medium">{t('linkCopied')}</p>
