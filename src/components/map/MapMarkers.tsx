@@ -1,28 +1,88 @@
 'use client';
 
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Marker, Tooltip, useMap } from 'react-leaflet';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { createRoot, type Root } from 'react-dom/client';
+import { Marker, useMap } from 'react-leaflet';
 import { useTranslations } from 'next-intl';
 import L from 'leaflet';
 import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
 import { isWithinMapBoundary, getNavigateToPointUrl } from '@/lib/utils';
+import { Button } from '@/components/ui/Button';
 
 /** Distance threshold (m) beyond which a user is considered "off trail".
  *  15m allows for typical GPS inaccuracy when the user is actually on the trail. */
 const OFF_TRAIL_DISTANCE_M = 15;
 
-const NAVIGATE_BTN_CLASS = 'user-location-navigate-btn';
-const CLOSE_BTN_CLASS = 'user-location-close-btn';
+interface LocationTooltipContentProps {
+	canNavigate: boolean;
+	closeLabel: string;
+	navigateLabel: string;
+	showClose: boolean;
+	yourLocationText: string;
+	onClose: () => void;
+	onNavigate: () => void;
+}
+
+function LocationTooltipContent({
+	canNavigate,
+	closeLabel,
+	navigateLabel,
+	showClose,
+	yourLocationText,
+	onClose,
+	onNavigate,
+}: LocationTooltipContentProps): React.ReactElement {
+	return (
+		<div
+			className="user-location-tooltip-inner"
+			role="presentation"
+			onClick={(e) => e.stopPropagation()}
+			onMouseDown={(e) => e.stopPropagation()}
+		>
+			{showClose && (
+				<Button aria-label={closeLabel} className="user-location-close-btn" variant="closeIcon" onClick={onClose}>
+					×
+				</Button>
+			)}
+			<div className="font-medium">{yourLocationText}</div>
+			{canNavigate && (
+				<div className="mt-2 flex justify-center gap-2">
+					<Button variant="mapTooltipPrimary" onClick={onNavigate}>
+						{navigateLabel}
+					</Button>
+				</div>
+			)}
+		</div>
+	);
+}
 
 /**
- * User location marker and optional "off trail" tooltip with navigate-to-trail link. Hides marker when outside Croatia or permission denied.
+ * User location marker and optional "off trail" tooltip with the "navigate-to-trail" link.
+ * Hides marker when outside Croatia or permission is denied.
  */
 export default function MapMarkers(): React.ReactElement | null {
 	const t = useTranslations('mapMarkers');
 	const map = useMap();
 	const userMarkerRef = useRef<L.Marker | null>(null);
+	const tooltipRootRef = useRef<Root | null>(null);
 	const [markerReady, setMarkerReady] = useState(false);
+
+	/** Defer "unmount" so we never unmount a root while React is rendering (avoids "synchronously unmount" error). */
+	const safeUnmountTooltipRoot = useCallback((): void => {
+		const root = tooltipRootRef.current;
+		tooltipRootRef.current = null;
+		if (root) {
+			queueMicrotask(() => {
+				try {
+					root.unmount();
+				} catch {
+					// ignore if already unmounted
+				}
+			});
+		}
+	}, []);
 	const [isOffTrailTooltipOpen, setIsOffTrailTooltipOpen] = useState(true);
+	const [isOnTrailTooltipDismissed, setIsOnTrailTooltipDismissed] = useState(false);
 
 	// User location state from store
 	const userLocation = useMapStore((state: MapStoreState) => state.userLocation);
@@ -34,27 +94,46 @@ export default function MapMarkers(): React.ReactElement | null {
 	const withinMapBoundary = userLocation ? isWithinMapBoundary(userLocation.lat, userLocation.lng) : true;
 	const shouldShowLocation = userLocation && showUserMarker && permissionStatus === 'granted' && withinMapBoundary;
 
+	/** Off trail: no trail data, or known distance > threshold. When closestPoint is null but GPX is loaded,
+	 * treat as off trail, so we show the tooltip (close/navigate).
+	 */
 	const isOffTrail =
 		!gpxLoaded ||
 		!userLocation ||
 		permissionStatus !== 'granted' ||
 		!withinMapBoundary ||
-		(closestPoint !== null && closestPoint.distance > OFF_TRAIL_DISTANCE_M);
+		closestPoint === null ||
+		closestPoint.distance > OFF_TRAIL_DISTANCE_M;
 
 	/** True, when we can actually navigate: trail loaded, the closest point known, and user is far from trail. */
 	const canNavigateToTrail =
 		gpxLoaded && userLocation && closestPoint !== null && closestPoint.distance > OFF_TRAIL_DISTANCE_M;
 
-	// Reset tooltip visibility when user becomes off trail (show by default)
+	/** Show close and navigate actions only when we're confidently off trail. When "closestPoint" is null (calculating) or
+	 * on trail, show simple to avoid content flicker when zooming. */
+	const showOffTrailActions = canNavigateToTrail && isOffTrailTooltipOpen;
+
+	// When the user becomes off trail, show the tooltip by default and reset the "on-trail" dismissed state.
 	useEffect(() => {
 		if (isOffTrail) {
-			queueMicrotask(() => setIsOffTrailTooltipOpen(true));
+			setIsOffTrailTooltipOpen(true);
+			setIsOnTrailTooltipDismissed(false);
 		}
 	}, [isOffTrail]);
 
 	const handleMarkerClick = useCallback((): void => {
 		if (isOffTrail) {
 			setIsOffTrailTooltipOpen(true);
+		} else {
+			setIsOnTrailTooltipDismissed(false);
+		}
+	}, [isOffTrail]);
+
+	const handleTooltipClose = useCallback((): void => {
+		if (isOffTrail) {
+			setIsOffTrailTooltipOpen(false);
+		} else {
+			setIsOnTrailTooltipDismissed(true);
 		}
 	}, [isOffTrail]);
 
@@ -63,13 +142,16 @@ export default function MapMarkers(): React.ReactElement | null {
 		setMarkerReady(!!marker);
 	}, []);
 
-	// Create user icon - define it outside the effect so we can use it in the render
-	const userIcon = L.divIcon({
-		className: 'user-location-marker',
-		html: '<div class="user-location-dot"></div>',
-		iconSize: [20, 20],
-		iconAnchor: [10, 10],
-	});
+	const userIcon = useMemo(
+		() =>
+			L.divIcon({
+				className: 'user-location-marker',
+				html: '<div class="user-location-dot" />',
+				iconSize: [20, 20],
+				iconAnchor: [10, 10],
+			}),
+		[],
+	);
 
 	// Update marker when the user location changes
 	useEffect(() => {
@@ -81,53 +163,20 @@ export default function MapMarkers(): React.ReactElement | null {
 		}
 	}, [userLocation, isLocating, map, withinMapBoundary, permissionStatus]);
 
-	// Imperative permanent tooltip when off trail - bind to marker to avoid _source null error
-	useEffect(() => {
-		const marker = userMarkerRef.current;
-		if (!shouldShowLocation || !isOffTrail || !userLocation || !isOffTrailTooltipOpen || !marker || !markerReady) {
-			if (marker) {
-				const existing = marker.getTooltip();
-				if (existing) {
-					marker.closeTooltip();
-					marker.unbindTooltip();
-				}
-			}
-			return;
-		}
+	const showTooltip = (isOffTrail && isOffTrailTooltipOpen) || (!isOffTrail && !isOnTrailTooltipDismissed);
 
-		const tooltipContent = `
-      <div class="user-location-tooltip-inner">
-        <button aria-label="${t('close')}" class="${CLOSE_BTN_CLASS}" type="button">×</button>
-        <div class="font-medium">${t('yourLocation')}</div>
-        ${canNavigateToTrail ? `<button class="${NAVIGATE_BTN_CLASS} mt-1 text-sm text-cldt-blue hover:text-cldt-green hover:underline cursor-pointer block w-full outline-none" type="button">${t('navigateToTrail')}</button>` : ''}
-      </div>
-    `;
-
-		marker.bindTooltip(tooltipContent, {
-			offset: L.point(0, -15),
-			direction: 'top',
-			permanent: true,
-			className: 'map-tooltip map-tooltip--narrow',
-		});
-		marker.openTooltip();
-		const tooltip = marker.getTooltip();
-		const el = tooltip?.getElement();
-		if (el) {
-			L.DomEvent.disableClickPropagation(el);
-			L.DomEvent.disableScrollPropagation(el);
-			const handleClick = (e: MouseEvent): void => {
-				const target = e.target as HTMLElement;
-				const closeBtn = target.closest(`.${CLOSE_BTN_CLASS}`);
-				const navBtn = target.closest(`.${NAVIGATE_BTN_CLASS}`);
-				if (closeBtn) {
-					e.preventDefault();
-					e.stopPropagation();
-					setIsOffTrailTooltipOpen(false);
-					return;
-				}
-				if (navBtn) {
-					e.preventDefault();
-					e.stopPropagation();
+	const renderTooltipContent = useCallback(() => {
+		const root = tooltipRootRef.current;
+		if (!root) return;
+		root.render(
+			<LocationTooltipContent
+				showClose
+				canNavigate={!!canNavigateToTrail && !!showOffTrailActions}
+				closeLabel={t('close')}
+				navigateLabel={t('navigateToTrail')}
+				yourLocationText={t('yourLocation')}
+				onClose={handleTooltipClose}
+				onNavigate={() => {
 					const loc = useMapStore.getState().userLocation;
 					const forceCalc = useStore.getState().forceCalculateClosestPointFromLocation;
 					if (loc && forceCalc) {
@@ -139,21 +188,69 @@ export default function MapMarkers(): React.ReactElement | null {
 						}
 						setIsOffTrailTooltipOpen(false);
 					}
+				}}
+			/>,
+		);
+	}, [canNavigateToTrail, showOffTrailActions, t, handleTooltipClose]);
+
+	// Bind/unbind tooltip when visibility changes. Use a single React container, so we never switch content types.
+	useEffect(() => {
+		const marker = userMarkerRef.current;
+		if (!shouldShowLocation || !userLocation || !marker || !markerReady) {
+			if (marker) {
+				safeUnmountTooltipRoot();
+				const existing = marker.getTooltip();
+				if (existing) {
+					marker.closeTooltip();
+					marker.unbindTooltip();
 				}
-			};
-			el.addEventListener('click', handleClick);
-			return () => {
-				el.removeEventListener('click', handleClick);
+			}
+			return;
+		}
+
+		if (!showTooltip) {
+			safeUnmountTooltipRoot();
+			const existing = marker.getTooltip();
+			if (existing) {
 				marker.closeTooltip();
 				marker.unbindTooltip();
-			};
+			}
+			return;
+		}
+
+		const container = document.createElement('div');
+		tooltipRootRef.current = createRoot(container);
+		renderTooltipContent();
+
+		marker.bindTooltip(container, {
+			offset: L.point(0, -15),
+			direction: 'top',
+			permanent: true,
+			className: 'map-tooltip map-tooltip--wide',
+		});
+		marker.openTooltip();
+
+		const tooltip = marker.getTooltip();
+		const el = tooltip?.getElement();
+		if (el) {
+			L.DomEvent.disableClickPropagation(el);
+			L.DomEvent.disableScrollPropagation(el);
 		}
 
 		return () => {
+			safeUnmountTooltipRoot();
 			marker.closeTooltip();
 			marker.unbindTooltip();
 		};
-	}, [map, markerReady, shouldShowLocation, isOffTrail, canNavigateToTrail, isOffTrailTooltipOpen, userLocation, t]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps -- renderTooltipContent called for initial render; update effect handles subsequent updates
+	}, [markerReady, safeUnmountTooltipRoot, shouldShowLocation, showTooltip, userLocation]);
+
+	// Update tooltip content when state changes, without unbinding (avoids flicker).
+	useEffect(() => {
+		if (showTooltip && tooltipRootRef.current) {
+			renderTooltipContent();
+		}
+	}, [showTooltip, renderTooltipContent]);
 
 	if (!shouldShowLocation) {
 		return null;
@@ -167,12 +264,6 @@ export default function MapMarkers(): React.ReactElement | null {
 			icon={userIcon}
 			position={[userLocation.lat, userLocation.lng]}
 			ref={setMarkerRef}
-		>
-			{!isOffTrail && (
-				<Tooltip className="leaflet-tooltip-styled" direction="top" offset={[0, -15]} permanent={false}>
-					<div className="text-center font-medium">{t('yourLocation')}</div>
-				</Tooltip>
-			)}
-		</Marker>
+		/>
 	);
 }

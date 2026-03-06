@@ -88,12 +88,7 @@ function TrailPointTooltipContent({
 }: TrailPointTooltipContentProps): React.ReactElement {
 	return (
 		<div className="user-location-tooltip-inner">
-			<Button
-				aria-label={closeLabel}
-				className="user-location-close-btn"
-				variant="closeIcon"
-				onClick={onClose}
-			>
+			<Button aria-label={closeLabel} className="user-location-close-btn" variant="closeIcon" onClick={onClose}>
 				×
 			</Button>
 			<div className="text-left text-sm" dangerouslySetInnerHTML={{ __html: trailInfoHtml }} />
