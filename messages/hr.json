@@ -116,7 +116,15 @@
 		"directionTitleSouthNorth": "Jug prema sjeveru",
 		"pointA": "Točka A",
 		"pointB": "Točka B",
-		"rulerDistance": "Udaljenost"
+		"rulerDistance": "Udaljenost",
+		"helpTitle": "Pomoć i kontrole",
+		"helpItems": {
+			"trailClick": "Kliknite stazu za prikaz udaljenosti i visine za točku.",
+			"chartHover": "Prijeđite mišem preko profila visine za pregled odgovarajuće točke na karti.",
+			"chartClickPin": "Kliknite profil visine za fiksiranje točke (ostaje vidljiva dok je ne zatvorite).",
+			"chartDragRuler": "Kliknite i povucite po profilu visine za mjerenje segmenta (Ravnalo udaljenosti).",
+			"escCancelRuler": "Pritisnite <kbd>Esc</kbd> za poništavanje Ravnalа udaljenosti."
+		}
 	},
 	"baseMapSelector": {
 		"standard": "Standardna",

@@ -102,6 +102,28 @@ export function MapControlsSettingsPanel({
 							</SmartTooltip>
 						</span>
 					</label>
+
+					<div className="mt-1 border-t border-gray-200 pt-2 dark:border-gray-600">
+						<div className="flex items-center gap-2 text-xs font-medium text-gray-600 dark:text-gray-200">
+							<IoHelpCircleOutline aria-hidden className="h-4 w-4 shrink-0 text-gray-500 dark:text-gray-200" />
+							<span>{t('helpTitle')}</span>
+						</div>
+						<ul className="mt-1 space-y-1 text-xs leading-snug text-gray-600 dark:text-gray-300">
+							<li>{t('helpItems.trailClick')}</li>
+							<li>{t('helpItems.chartHover')}</li>
+							<li>{t('helpItems.chartClickPin')}</li>
+							<li>{t('helpItems.chartDragRuler')}</li>
+							<li>
+								{t.rich('helpItems.escCancelRuler', {
+									kbd: (chunks) => (
+										<kbd className="rounded border border-gray-200 bg-gray-50 px-1 py-0.5 font-mono text-[11px] text-gray-700 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-200">
+											{chunks}
+										</kbd>
+									),
+								})}
+							</li>
+						</ul>
+					</div>
 				</div>
 			)}
 			<SmartTooltip content={isExpanded ? tooltipHide : tooltipShow} position="left">
