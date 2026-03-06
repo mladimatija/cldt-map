@@ -571,6 +571,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 	useEffect(
 		() => () => {
 			if (copyToastTimeoutRef.current) clearTimeout(copyToastTimeoutRef.current);
+			if (rulerAnnouncementTimeoutRef.current) clearTimeout(rulerAnnouncementTimeoutRef.current);
 		},
 		[],
 	);
@@ -717,9 +718,20 @@ const MapControls: React.FC<MapControlsProps> = ({
 		[units, distancePrecisionState, t, tChart, buildRulerSegmentAndTooltipContent, map],
 	);
 
+	const [rulerAnnouncement, setRulerAnnouncement] = useState<string | null>(null);
+	const rulerAnnouncementTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
 	const toggleRuler = (): void => {
 		closeOverlayTools();
-		setRulerEnabled(!isRulerEnabled);
+		const willBeEnabled = !isRulerEnabled;
+		setRulerEnabled(willBeEnabled);
+		const msg = willBeEnabled ? t('rulerEnable') : t('rulerDisable');
+		if (rulerAnnouncementTimeoutRef.current) clearTimeout(rulerAnnouncementTimeoutRef.current);
+		setRulerAnnouncement(msg);
+		rulerAnnouncementTimeoutRef.current = setTimeout(() => {
+			setRulerAnnouncement(null);
+			rulerAnnouncementTimeoutRef.current = null;
+		}, 1000);
 	};
 
 	// Keep the map click handler in sync with the ruler state (store).
@@ -1288,6 +1300,11 @@ const MapControls: React.FC<MapControlsProps> = ({
 							role="status"
 						>
 							<p className="font-medium">{t('linkCopied')}</p>
+						</div>
+					)}
+					{rulerAnnouncement && (
+						<div aria-live="polite" className="sr-only" role="status">
+							{rulerAnnouncement}
 						</div>
 					)}
 				</div>

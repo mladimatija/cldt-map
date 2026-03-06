@@ -14,6 +14,7 @@ import {
 	CartesianGrid,
 	ResponsiveContainer,
 	ReferenceLine,
+	ReferenceDot,
 	ReferenceArea,
 	Tooltip as RechartsTooltip,
 } from 'recharts';
@@ -595,12 +596,24 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 								type="monotone"
 							/>
 							{highlightedPoint && (
-								<ReferenceLine
-									stroke="var(--cldt-green)"
-									strokeDasharray="3 3"
-									strokeWidth={2}
-									x={highlightedPoint.distance}
-								/>
+								<>
+									<ReferenceLine
+										stroke={pinnedPoint !== null ? 'var(--cldt-blue)' : 'var(--cldt-green)'}
+										strokeDasharray={pinnedPoint !== null ? undefined : '3 3'}
+										strokeWidth={pinnedPoint !== null ? 3 : 2}
+										x={highlightedPoint.distance}
+									/>
+									{pinnedPoint !== null && (
+										<ReferenceDot
+											fill="var(--cldt-blue)"
+											r={6}
+											stroke="white"
+											strokeWidth={2}
+											x={highlightedPoint.distance}
+											y={highlightedPoint.elevation}
+										/>
+									)}
+								</>
 							)}
 							{userProgress !== null && <ReferenceLine stroke="var(--cldt-green)" strokeWidth={2} x={userProgress} />}
 							{rulerHighlightRange && (
