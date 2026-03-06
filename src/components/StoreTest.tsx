@@ -137,12 +137,7 @@ const StoreTest: React.FC = () => {
 									<Button size="default" variant="base" onClick={() => setFakeUserLocation()}>
 										{t('newRandomLocation')}
 									</Button>
-									<Button
-										disabled={trailLoading}
-										size="default"
-										variant="base"
-										onClick={handleRandomOnTrail}
-									>
+									<Button disabled={trailLoading} size="default" variant="base" onClick={handleRandomOnTrail}>
 										{trailLoading ? t('loadingTrail') : t('randomOnTrail')}
 									</Button>
 								</>

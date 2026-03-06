@@ -173,7 +173,7 @@
 
 .user-location-close-btn {
 	position: absolute;
-	top: -16px;
+	top: -12px;
 	right: -12px;
 }
 
@@ -380,24 +380,9 @@
 	text-align: left;
 }
 
-.map-tooltip.map-tooltip--pwa .map-tooltip__actions {
-	display: flex;
-	flex-wrap: wrap;
-	align-items: center;
-	gap: 0.5rem;
-	justify-content: flex-end;
-	margin-top: 0.5rem;
-}
-
 .map-tooltip.map-tooltip--banner p {
 	text-align: center;
 	padding-right: 1.25rem;
-}
-
-.map-tooltip.map-tooltip--banner .map-tooltip__actions {
-	display: flex;
-	justify-content: center;
-	gap: 0.5rem;
 }
 
 .map-tooltip.map-tooltip--banner .user-location-close-btn {

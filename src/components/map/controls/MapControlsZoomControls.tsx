@@ -66,11 +66,7 @@ export default function MapControlsZoomControls(): React.ReactElement {
 			</SmartTooltip>
 
 			<SmartTooltip content={t('zoomLevel', { level: mapZoom })} position="right">
-				<Button
-					aria-label={t('zoomLevel', { level: mapZoom })}
-					variant="controlRound"
-					onClick={() => null}
-				>
+				<Button aria-label={t('zoomLevel', { level: mapZoom })} variant="controlRound" onClick={() => null}>
 					<span aria-hidden>
 						Z{Math.floor(mapZoom)}
 						{mapZoom % 1 !== 0 ? '+' : ''}
@@ -85,12 +81,7 @@ export default function MapControlsZoomControls(): React.ReactElement {
 			</SmartTooltip>
 
 			<SmartTooltip content={gpxLoaded ? t('fitToRoute') : t('loadRouteFirst')} position="right">
-				<Button
-					aria-label={t('fitToRoute')}
-					disabled={!gpxLoaded}
-					variant="controlRound"
-					onClick={fitToRoute}
-				>
+				<Button aria-label={t('fitToRoute')} disabled={!gpxLoaded} variant="controlRound" onClick={fitToRoute}>
 					<IoExpandOutline aria-hidden className="h-5 w-5" />
 				</Button>
 			</SmartTooltip>

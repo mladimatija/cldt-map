@@ -92,7 +92,7 @@ export function ServiceWorkerProvider({ children }: ServiceWorkerProviderProps):
 						<IoRefresh aria-hidden className="h-4 w-4 shrink-0 opacity-80" />
 						<p className="font-medium">{t('updateAvailable')}</p>
 					</div>
-					<div className="map-tooltip__actions">
+					<div className="mt-2 flex flex-wrap items-center justify-end gap-2">
 						<Button variant="mapTooltipPrimary" onClick={onUpdateNow}>
 							{t('updateNow')}
 						</Button>
