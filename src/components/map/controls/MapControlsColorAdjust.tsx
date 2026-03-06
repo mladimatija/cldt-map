@@ -5,14 +5,9 @@ import { useTranslations } from 'next-intl';
 import SmartTooltip from '@/components/ui/SmartTooltip';
 import { usePopoverFocusTrap } from '@/hooks';
 import { IoColorPaletteOutline } from 'react-icons/io5';
-import {
-	CONTROL_BTN_BASE,
-	CONTROL_BTN_ACTIVE,
-	CONTROL_BTN_INACTIVE,
-	MAP_CONTROL_POPOVER,
-	MAP_CONTROL_BTN_OUTLINE,
-} from './map-controls-constants';
+import { MAP_CONTROL_POPOVER } from './map-controls-constants';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/Button';
 
 interface ColorSettings {
 	brightness: number;
@@ -112,28 +107,23 @@ export function MapControlsColorAdjust({
 							onChange={(v) => setColorSettings((s) => ({ ...s, saturation: v }))}
 						/>
 					</div>
-					<button
-						className={cn(MAP_CONTROL_BTN_OUTLINE, 'w-full px-3 py-1.5 text-xs')}
-						type="button"
+					<Button
+						className="w-full px-3 py-1.5 text-xs"
+						variant="mapControlOutline"
 						onClick={() => setColorSettings({ brightness: 100, contrast: 100, saturation: 100 })}
 					>
 						{t('colorReset')}
-					</button>
+					</Button>
 				</div>
 			)}
 			<SmartTooltip content={isEnabled ? tooltipHide : tooltipShow} position="left">
-				<button
+				<Button
 					aria-label={isEnabled ? tooltipHide : tooltipShow}
-					className={cn(
-						CONTROL_BTN_BASE,
-						isEnabled ? CONTROL_BTN_ACTIVE : CONTROL_BTN_INACTIVE,
-						'focus-visible:border-cldt-green focus-visible:text-cldt-green',
-					)}
-					type="button"
+					variant={isEnabled ? 'controlRoundActive' : 'controlRound'}
 					onClick={onToggle}
 				>
 					<IoColorPaletteOutline aria-hidden className="h-5 w-5" />
-				</button>
+				</Button>
 			</SmartTooltip>
 		</div>
 	);

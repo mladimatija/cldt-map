@@ -24,6 +24,9 @@ const MapMarkers = dynamic(() => import('@/components/map/MapMarkers'), { ssr: f
 const ShareUrlHandler = dynamic(() => import('@/components/map/ShareUrlHandler'), { ssr: false });
 const GoToDistance = dynamic(() => import('@/components/map/GoToDistance'), { ssr: false });
 const ElevationChart = dynamic(() => import('@/components/charts/ElevationChart'), { ssr: false });
+const RulerHint = dynamic(() => import('@/components/map/controls/RulerHint').then((m) => ({ default: m.RulerHint })), {
+	ssr: false,
+});
 
 export default function MapContent(): React.ReactElement {
 	const [isLocating, setIsLocating] = useState(false);
@@ -118,6 +121,7 @@ export default function MapContent(): React.ReactElement {
 			</Suspense>
 			<MapMarkers />
 			<MapControls />
+			<RulerHint />
 			<ZoomControls />
 			<LocationControls checkPermission={checkAndRequestLocation} />
 			<ElevationChart className="z-map-overlay absolute right-14 bottom-2 left-14 mx-2 shadow-lg sm:mx-0" />

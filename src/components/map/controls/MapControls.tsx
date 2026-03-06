@@ -40,6 +40,7 @@ import {
 	IoShareSocialOutline,
 } from 'react-icons/io5';
 import SmartTooltip from '@/components/ui/SmartTooltip';
+import { Button } from '@/components/ui/Button';
 import { useTranslations } from 'next-intl';
 import { MapControlsButton } from './MapControlsButton';
 import { MapControlsSharePanel } from './MapControlsSharePanel';
@@ -546,15 +547,34 @@ const MapControls: React.FC<MapControlsProps> = ({
 		setIsSharing((prev) => !prev);
 	};
 
+	const [showCopyToast, setShowCopyToast] = useState(false);
+	const copyToastTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
 	const copyToClipboard = (url: string, withText = false): void => {
 		const text = withText ? `${t('shareText')}\n${url}` : url;
 		navigator.clipboard
 			.writeText(text)
-			.then(() => setIsSharing(false))
+			.then(() => {
+				setShowCopyToast(true);
+				if (copyToastTimeoutRef.current) clearTimeout(copyToastTimeoutRef.current);
+				copyToastTimeoutRef.current = setTimeout(() => {
+					setShowCopyToast(false);
+					setIsSharing(false);
+					copyToastTimeoutRef.current = null;
+				}, 1500);
+			})
 			.catch((err) => {
 				console.error('Could not copy text:', err);
 			});
 	};
+
+	useEffect(
+		() => () => {
+			if (copyToastTimeoutRef.current) clearTimeout(copyToastTimeoutRef.current);
+			if (rulerAnnouncementTimeoutRef.current) clearTimeout(rulerAnnouncementTimeoutRef.current);
+		},
+		[],
+	);
 
 	// Ruler panes: order set in map.css (ruler-pane, ruler-markers-pane, ruler-tooltip-pane).
 	useEffect(() => {
@@ -698,9 +718,20 @@ const MapControls: React.FC<MapControlsProps> = ({
 		[units, distancePrecisionState, t, tChart, buildRulerSegmentAndTooltipContent, map],
 	);
 
+	const [rulerAnnouncement, setRulerAnnouncement] = useState<string | null>(null);
+	const rulerAnnouncementTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
 	const toggleRuler = (): void => {
 		closeOverlayTools();
-		setRulerEnabled(!isRulerEnabled);
+		const willBeEnabled = !isRulerEnabled;
+		setRulerEnabled(willBeEnabled);
+		const msg = willBeEnabled ? t('rulerEnable') : t('rulerDisable');
+		if (rulerAnnouncementTimeoutRef.current) clearTimeout(rulerAnnouncementTimeoutRef.current);
+		setRulerAnnouncement(msg);
+		rulerAnnouncementTimeoutRef.current = setTimeout(() => {
+			setRulerAnnouncement(null);
+			rulerAnnouncementTimeoutRef.current = null;
+		}, 1000);
 	};
 
 	// Keep the map click handler in sync with the ruler state (store).
@@ -1124,13 +1155,12 @@ const MapControls: React.FC<MapControlsProps> = ({
 					})}
 					position="left"
 				>
-					<button
+					<Button
 						aria-label={t('directionTooltip', {
 							direction: direction === 'SOBO' ? t('directionSouthbound') : t('directionNorthbound'),
 						})}
-						className="text-cldt-blue hover:border-cldt-green hover:text-cldt-green focus-visible:border-cldt-green focus-visible:text-cldt-green flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-gray-200 bg-white shadow-md transition-all outline-none hover:border-2 focus-visible:border-2"
 						title={`Change Direction (Currently ${direction === 'SOBO' ? t('directionTitleNorthSouth') : t('directionTitleSouthNorth')})`}
-						type="button"
+						variant="controlRound"
 						onClick={toggleDirection}
 					>
 						{direction === 'SOBO' ? (
@@ -1138,7 +1168,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 						) : (
 							<IoArrowUpOutline aria-hidden className="h-5 w-5" />
 						)}
-					</button>
+					</Button>
 				</SmartTooltip>
 
 				<SmartTooltip
@@ -1147,14 +1177,14 @@ const MapControls: React.FC<MapControlsProps> = ({
 					})}
 					position="left"
 				>
-					<button
+					<Button
 						aria-label={t('unitsTooltip', { units: units === 'metric' ? t('unitsMetric') : t('unitsImperial') })}
-						className="text-cldt-blue-contrast hover:border-cldt-green hover:text-cldt-green focus-visible:border-cldt-green focus-visible:text-cldt-green flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-gray-200 bg-white font-semibold shadow-md transition-all outline-none hover:border-2 focus-visible:border-2"
-						type="button"
+						className="text-cldt-blue-contrast font-semibold"
+						variant="controlRound"
 						onClick={toggleUnits}
 					>
 						<span aria-hidden="true">{units === 'metric' ? 'km' : 'mi'}</span>
-					</button>
+					</Button>
 				</SmartTooltip>
 
 				<MapControlsPrecisionSlider
@@ -1262,6 +1292,20 @@ const MapControls: React.FC<MapControlsProps> = ({
 							sharePopupRef={sharePopupRef}
 							onClose={() => setIsSharing(false)}
 						/>
+					)}
+					{showCopyToast && (
+						<div
+							aria-live="polite"
+							className="map-tooltip map-tooltip--pwa animate-slide-in-from-top fixed top-4 right-4 z-[var(--z-toast)]"
+							role="status"
+						>
+							<p className="font-medium">{t('linkCopied')}</p>
+						</div>
+					)}
+					{rulerAnnouncement && (
+						<div aria-live="polite" className="sr-only" role="status">
+							{rulerAnnouncement}
+						</div>
 					)}
 				</div>
 			</div>
