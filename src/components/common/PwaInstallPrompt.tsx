@@ -87,7 +87,7 @@ export default function PwaInstallPrompt(): React.ReactElement | null {
 		<div aria-label={t('installTitle')} className="map-tooltip map-tooltip--pwa" role="dialog">
 			<p className="font-medium">{t('installTitle')}</p>
 			<p>{t('installDescription')}</p>
-			<div className="map-tooltip__actions">
+			<div className="mt-2 flex flex-wrap items-center justify-end gap-2">
 				<Button variant="mapTooltipSecondary" onClick={handleDismiss}>
 					{t('dismiss')}
 				</Button>

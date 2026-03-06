@@ -64,7 +64,16 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 				setUserLocation: (location: { lat: number; lng: number; accuracy?: number } | null) =>
 					set({ userLocation: location }),
 				setIsLocating: (isLocating: boolean) => set({ isLocating }),
-				setPermissionStatus: (status: 'granted' | 'denied' | 'prompt' | null) => set({ permissionStatus: status }),
+				setPermissionStatus: (status: 'granted' | 'denied' | 'prompt' | null) => {
+					const prev = get().permissionStatus;
+					const updates: { permissionStatus: typeof status; showUserMarker?: boolean } = {
+						permissionStatus: status,
+					};
+					if (status === 'granted' && prev !== 'granted') {
+						updates.showUserMarker = true;
+					}
+					set(updates);
+				},
 				setLocationError: (error: { code: number; message: string } | null) => set({ locationError: error }),
 				setShowUserMarker: (show: boolean) => set({ showUserMarker: show }),
 				fakeUserLocationEnabled: false,
@@ -72,20 +81,29 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					set({ fakeUserLocationEnabled: enabled });
 					if (enabled) {
 						const loc = getRandomLocationInBoundary();
+						const location = { lat: loc.lat, lng: loc.lng, accuracy: 50 };
 						set({
-							userLocation: { lat: loc.lat, lng: loc.lng, accuracy: 50 },
+							userLocation: location,
 							permissionStatus: 'granted' as const,
 						});
+						const main = getMainStore();
+						main.setUserLocation(location);
+						main.forceCalculateClosestPointFromLocation?.(location);
 					} else {
 						set({ userLocation: null });
+						getMainStore().setUserLocation(null);
 					}
 				},
 				setFakeUserLocation: () => {
 					const loc = getRandomLocationInBoundary();
+					const location = { lat: loc.lat, lng: loc.lng, accuracy: 50 };
 					set({
-						userLocation: { lat: loc.lat, lng: loc.lng, accuracy: 50 },
+						userLocation: location,
 						permissionStatus: 'granted' as const,
 					});
+					const main = getMainStore();
+					main.setUserLocation(location);
+					main.forceCalculateClosestPointFromLocation?.(location);
 				},
 				setFakeUserLocationOnTrail: async () => {
 					let points: { lat: number; lng: number }[] = [];
@@ -104,11 +122,15 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					if (points.length === 0) return;
 					const idx = Math.floor(Math.random() * points.length);
 					const { lat, lng } = points[idx];
+					const location = { lat, lng, accuracy: 50 };
 					set({
 						fakeUserLocationEnabled: true,
-						userLocation: { lat, lng, accuracy: 50 },
+						userLocation: location,
 						permissionStatus: 'granted' as const,
 					});
+					const main = getMainStore();
+					main.setUserLocation(location);
+					main.forceCalculateClosestPointFromLocation?.(location);
 				},
 
 				darkMode: config.darkMode,
@@ -207,9 +229,8 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 
 							const mainStore = getMainStore();
 							mainStore.setUserLocation(location);
-							setTimeout(() => {
-								mainStore.calculateClosestPoint?.();
-							}, 100);
+							// Recalculate immediately to avoid tooltip flicker (no null window).
+							mainStore.calculateClosestPoint?.();
 						},
 						setIsLocating: (isLocating) => set({ isLocating }),
 						setLocationError: (error) => set({ locationError: error }),
@@ -221,7 +242,7 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 							if (get().fakeUserLocationEnabled) {
 								return;
 							}
-							set({ permissionStatus: result.state });
+							get().setPermissionStatus(result.state);
 						})
 						.catch((error) => {
 							console.error('Error checking initial permission:', error);
@@ -238,7 +259,7 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					try {
 						const locationService = LocationService.getInstance();
 						const result = await locationService.requestPermission();
-						set({ permissionStatus: result.state });
+						get().setPermissionStatus(result.state);
 
 						if (result.state === 'granted') {
 							await get().getCurrentLocation();

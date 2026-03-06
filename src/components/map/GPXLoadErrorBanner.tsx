@@ -27,16 +27,11 @@ export default function GPXLoadErrorBanner(): React.ReactElement | null {
 
 	return (
 		<div className="map-tooltip map-tooltip--banner animate-slide-in-from-top" role="alert">
-			<Button
-				aria-label={t('close')}
-				className="user-location-close-btn"
-				variant="closeIcon"
-				onClick={handleDismiss}
-			>
+			<Button aria-label={t('close')} className="user-location-close-btn" variant="closeIcon" onClick={handleDismiss}>
 				×
 			</Button>
 			<p>{t('failedToLoadTrail')}</p>
-			<div className="map-tooltip__actions">
+			<div className="flex justify-center gap-2">
 				<Button variant="mapTooltipPrimary" onClick={handleRetry}>
 					{t('retry')}
 				</Button>

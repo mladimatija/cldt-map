@@ -64,6 +64,11 @@ function ChartTooltipSync(props: {
 	} = props;
 	const prevDistanceRef = useRef<number | null>(null);
 	const wasActiveRef = useRef(false);
+	const highlightTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+	const clearTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+	const HIGHLIGHT_DEBOUNCE_MS = 80;
+	const CLEAR_DEBOUNCE_MS = 120;
 
 	useEffect(() => {
 		if (active && payload?.[0]) {
@@ -72,23 +77,48 @@ function ChartTooltipSync(props: {
 				onScaleCalibration(coordinate.x, point.distance);
 			}
 			wasActiveRef.current = true;
+			if (clearTimeoutRef.current) {
+				clearTimeout(clearTimeoutRef.current);
+				clearTimeoutRef.current = null;
+			}
 			if (!isPinned) {
 				const distance = point.distance * 1000;
 				if (prevDistanceRef.current !== distance) {
-					prevDistanceRef.current = distance;
-					highlightTrailPosition?.({
-						distance,
-						elevation: point.elevation,
-					});
+					if (highlightTimeoutRef.current) {
+						clearTimeout(highlightTimeoutRef.current);
+						highlightTimeoutRef.current = null;
+					}
+					highlightTimeoutRef.current = setTimeout(() => {
+						prevDistanceRef.current = distance;
+						highlightTrailPosition?.({
+							distance,
+							elevation: point.elevation,
+						});
+						highlightTimeoutRef.current = null;
+					}, HIGHLIGHT_DEBOUNCE_MS);
 				}
 			}
 		} else {
 			if (!isPinned && wasActiveRef.current) {
-				wasActiveRef.current = false;
-				prevDistanceRef.current = null;
-				clearTrailHighlight?.();
+				if (highlightTimeoutRef.current) {
+					clearTimeout(highlightTimeoutRef.current);
+					highlightTimeoutRef.current = null;
+				}
+				if (clearTimeoutRef.current) {
+					clearTimeout(clearTimeoutRef.current);
+				}
+				clearTimeoutRef.current = setTimeout(() => {
+					wasActiveRef.current = false;
+					prevDistanceRef.current = null;
+					clearTrailHighlight?.();
+					clearTimeoutRef.current = null;
+				}, CLEAR_DEBOUNCE_MS);
 			}
 		}
+		return () => {
+			if (highlightTimeoutRef.current) clearTimeout(highlightTimeoutRef.current);
+			if (clearTimeoutRef.current) clearTimeout(clearTimeoutRef.current);
+		};
 	}, [active, payload, coordinate, highlightTrailPosition, clearTrailHighlight, isPinned, onScaleCalibration]);
 
 	if (!active || !payload?.[0]) {
