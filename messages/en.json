@@ -115,7 +115,15 @@
 		"directionTitleSouthNorth": "South to North",
 		"pointA": "Point A",
 		"pointB": "Point B",
-		"rulerDistance": "Distance"
+		"rulerDistance": "Distance",
+		"helpTitle": "Help & controls",
+		"helpItems": {
+			"trailClick": "Click the trail to show distance and elevation for a point.",
+			"chartHover": "Hover the elevation chart to preview the corresponding point on the map.",
+			"chartClickPin": "Click the elevation chart to pin a point (stays visible until you close it).",
+			"chartDragRuler": "Click and drag on the elevation chart to measure a segment (Distance Ruler).",
+			"escCancelRuler": "Press <kbd>Esc</kbd> to cancel the Distance Ruler."
+		}
 	},
 	"baseMapSelector": {
 		"standard": "Standard",
