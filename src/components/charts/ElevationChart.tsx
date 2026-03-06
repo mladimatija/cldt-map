@@ -453,9 +453,9 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 				onClick={toggleExpanded}
 			>
 				<div className="flex items-center gap-1.5">
-					<h2 className="text-cldt-blue-contrast text-base font-semibold sm:text-lg">{t('title')}</h2>
+					<h2 className="text-cldt-blue-contrast mb-0 text-base font-semibold sm:text-lg">{t('title')}</h2>
 					<span
-						className="hover:text-cldt-blue dark:hover:text-cldt-blue inline-flex shrink-0 cursor-help text-gray-400 dark:text-gray-500"
+						className="hover:text-cldt-blue dark:hover:text-cldt-blue inline-flex shrink-0 cursor-help items-center text-gray-400 dark:text-gray-500"
 						onClick={(e) => e.stopPropagation()}
 						onMouseDown={(e) => e.stopPropagation()}
 					>
