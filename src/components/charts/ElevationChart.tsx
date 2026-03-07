@@ -47,7 +47,7 @@ function ChartTooltipSync(props: {
 	distanceLabel: string;
 	elevationLabel: string;
 	active?: boolean;
-	payload?: ReadonlyArray<{ payload: ElevationPoint }>;
+	payload?: ReadonlyArray<{ payload?: ElevationPoint }>;
 	coordinate?: { x: number; y: number };
 	isPinned: boolean;
 	onScaleCalibration?: (coordX: number, distanceKm: number) => void;
@@ -74,7 +74,7 @@ function ChartTooltipSync(props: {
 	const CLEAR_DEBOUNCE_MS = 120;
 
 	useEffect(() => {
-		if (active && payload?.[0]) {
+		if (active && payload?.[0]?.payload) {
 			const point = payload[0].payload;
 			if (coordinate !== undefined && coordinate !== null && typeof onScaleCalibration === 'function') {
 				onScaleCalibration(coordinate.x, point.distance);
@@ -124,7 +124,7 @@ function ChartTooltipSync(props: {
 		};
 	}, [active, payload, coordinate, highlightTrailPosition, clearTrailHighlight, isPinned, onScaleCalibration]);
 
-	if (!active || !payload?.[0]) {
+	if (!active || !payload?.[0]?.payload) {
 		return null;
 	}
 	const point = payload[0].payload;
