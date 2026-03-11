@@ -51,17 +51,19 @@ export function ClientIntlProvider({
 	timeZone,
 	children,
 }: Props): React.ReactElement {
-	const [locale, setLocaleState] = useState<string>(() =>
-		(routing.locales as readonly string[]).includes(initialLocale) ? initialLocale : routing.defaultLocale,
-	);
+	const [locale, setLocaleState] = useState<string>(() => {
+		const stored = getStoredLocale();
+		if (stored) return stored;
+		return (routing.locales as readonly string[]).includes(initialLocale) ? initialLocale : routing.defaultLocale;
+	});
 
 	// Sync from localStorage on mount (server can't read localStorage, so we correct after hydrate)
 	useEffect(() => {
 		const stored = getStoredLocale();
-		if (stored && stored !== initialLocale) {
+		if (stored && stored !== locale) {
 			queueMicrotask(() => setLocaleState(stored));
 		}
-	}, [initialLocale]);
+	}, [initialLocale, locale]);
 
 	const setLocale = useCallback((targetLocale: 'en' | 'hr') => {
 		setLocaleState(targetLocale);
