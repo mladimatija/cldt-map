@@ -268,6 +268,11 @@
 		"install": "Install",
 		"dismiss": "Not now"
 	},
+	"notFound": {
+		"title": "Sorry, the page you're looking for has been lost to the depths of the internet.",
+		"subtitle": "Luckily, you got lost on this webpage and not on the trail itself :)",
+		"backToMap": "Back to map"
+	},
 	"offline": {
 		"title": "You're offline",
 		"description": "The map needs an internet connection for the first load. If you've visited this page before, some content may still be available from cache.",
