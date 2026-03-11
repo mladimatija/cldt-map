@@ -269,6 +269,11 @@
 		"install": "Instaliraj",
 		"dismiss": "Ne sada"
 	},
+	"notFound": {
+		"title": "Žao nam je, stranica koju tražite izgubljena je u dubinama interneta.",
+		"subtitle": "Srećom, izgubili ste se na ovoj web stranici, a ne na stazi :)",
+		"backToMap": "Natrag na kartu"
+	},
 	"offline": {
 		"title": "Niste na mreži",
 		"description": "Karta za prvo učitavanje treba internetsku vezu. Ako ste stranicu već posjetili, dio sadržaja može biti dostupan iz predmemorije.",
