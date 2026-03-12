@@ -145,6 +145,11 @@ const eslintConfig = [
 		},
 	},
 	...compat.extends('prettier'),
+	{
+		settings: {
+			react: { version: '19' }, // Avoids auto-detection crash
+		},
+	},
 ];
 
 export default eslintConfig;
