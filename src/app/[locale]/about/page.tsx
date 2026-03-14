@@ -39,6 +39,7 @@ export default function AboutPage(): React.ReactNode {
 						<li className="mb-2">{t('mapFeaturesList.trail')}</li>
 						<li className="mb-2">{t('mapFeaturesList.elevation')}</li>
 						<li className="mb-2">{t('mapFeaturesList.ruler')}</li>
+						<li className="mb-2">{t('mapFeaturesList.gpxExport')}</li>
 						<li className="mb-2">{t('mapFeaturesList.layers')}</li>
 						<li className="mb-2">{t('mapFeaturesList.location')}</li>
 						<li className="mb-2">{t('mapFeaturesList.share')}</li>
