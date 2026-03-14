@@ -139,5 +139,20 @@ export function createMapStoreStub(): MapStoreState {
 		setMapFullscreen: noop,
 		requestRawGpxData: noopNull,
 		processTrailData: () => {},
+
+		isOffline: false,
+		setIsOffline: noop,
+		initOfflineDetection: noop,
+		tileCacheDownloading: false,
+		tileCacheDone: 0,
+		tileCacheTotal: 0,
+		tileCacheError: null,
+		tileCacheMeta: null,
+		autoSync: false,
+		startTileDownload: noopAsyncVoid,
+		cancelTileDownload: noop,
+		clearTileCacheForProvider: noopAsyncVoid,
+		loadTileCacheMeta: noopAsyncVoid,
+		setAutoSync: noop,
 	};
 }

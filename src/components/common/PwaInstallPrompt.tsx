@@ -69,7 +69,7 @@ export default function PwaInstallPrompt(): React.ReactElement | null {
 					: { outcome: 'dismissed' as const };
 			if (choice.outcome === 'accepted') setShowBanner(false);
 		} catch {
-			// Simulated event in dev, or prompt no longer valid — just close banner
+			// Simulated event in dev, or prompt no longer valid - just close banner
 			setShowBanner(false);
 		}
 		setDeferredPrompt(null);
