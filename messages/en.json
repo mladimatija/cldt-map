@@ -35,7 +35,8 @@
 			"share": "Share links with your current view or progress on the trail",
 			"units": "Metric and imperial units",
 			"darkMode": "Dark mode and battery saver options",
-			"offlineMaps": "Offline maps - pre-cache the trail corridor for use without a signal"
+			"offlineMaps": "Offline maps - pre-cache the trail corridor for use without a signal",
+			"gpxExport": "GPX export — download the full trail or a ruler-selected segment as a .gpx file for GPS devices"
 		},
 		"dataAttribution": "Data & attribution",
 		"dataAttributionDesc": "Trail data is provided by the Udruga Long Distance Trail Hrvatska (LDTH) organization. Map tiles come from OpenStreetMap, OpenTopoMap, CyclOSM, and other providers. Croatian topographic maps are from the State Geodetic Administration (DGU).",
@@ -306,5 +307,25 @@
 		"today": "today",
 		"yesterday": "yesterday",
 		"daysAgo": "{days} days ago"
+	},
+	"gpxDownload": {
+		"modalTitle": "Download CLDT GPX",
+		"disclaimerIntro": "Welcome to the Croatian Long Distance Trail GPX download section! Here you can download the GPS track and explore it on the interactive map. Please note the following:",
+		"disclaimerItem1": "The trail is currently under construction.",
+		"disclaimerItem2": "The main navigation tool is still the FarOut mobile app.",
+		"disclaimerItem3": "The public GPX file does not contain waypoints, which are essential for trail navigation. These are available within the FarOut mobile app.",
+		"disclaimerItem4": "The only official GPX file is available on our website.",
+		"disclaimerItem5": "We cannot guarantee the accuracy of tracks downloaded from other sources.",
+		"disclaimerItem6": "Our website will always have the most up-to-date version of the track.",
+		"disclaimerItem7": "Use of the track is at your own risk.",
+		"disclaimerItem8": "The Udruga Long Distance Trail Hrvatska disclaims any liability in the event of accidents while using the GPX record and visiting the trail.",
+		"disclaimerItem9": "Resale and use of the CLDT GPX file for financial gain is a criminal offence and is subject to prosecution.",
+		"acknowledgmentLabel": "I am aware of the possible dangers on the trail and will explore and use it responsibly, respecting the Leave No Trace principles.",
+		"downloadButton": "Download",
+		"cancelButton": "Cancel",
+		"downloadFull": "Download GPX",
+		"exportSegment": "Export as GPX",
+		"filenameFullTrail": "cldt-full-trail.gpx",
+		"filenameSegment": "cldt-segment.gpx"
 	}
 }
