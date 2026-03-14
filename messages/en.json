@@ -199,7 +199,10 @@
 		"gain": "Gain",
 		"loss": "Loss",
 		"distanceLabel": "Distance",
-		"elevationLabel": "Elevation"
+		"elevationLabel": "Elevation",
+		"rulerSegment": "Segment",
+		"rulerHikingTime": "Est. time",
+		"rulerSection": "Section"
 	},
 	"trailRoute": {
 		"startingPoint": "Starting point ({direction})",
