@@ -35,7 +35,8 @@
 			"share": "Dijeljenje linkova s trenutnim prikazom ili napretkom na stazi",
 			"units": "Metričke i imperijalne jedinice",
 			"darkMode": "Tamni način rada i opcije za uštedu baterije",
-			"offlineMaps": "Offline karte - preuzmite koridor staze za korištenje bez signala"
+			"offlineMaps": "Offline karte - preuzmite koridor staze za korištenje bez signala",
+			"gpxExport": "GPX izvoz — preuzimanje cijele rute ili odabranog segmenta ravnalom kao .gpx datoteke za GPS uređaje"
 		},
 		"dataAttribution": "Podaci i atribucija",
 		"dataAttributionDesc": "Podatke o stazi pruža organizacija Udruga Long Distance Trail Hrvatska (LDTH). Karte dolaze od OpenStreetMap, OpenTopoMap, CyclOSM i drugih pružatelja. Hrvatske topografske karte su od Državne geodetske uprave (DGU).",
@@ -307,5 +308,25 @@
 		"today": "danas",
 		"yesterday": "jučer",
 		"daysAgo": "prije {days} dana"
+	},
+	"gpxDownload": {
+		"modalTitle": "Preuzmi CLDT GPX",
+		"disclaimerIntro": "Dobrodošli u odjeljak za preuzimanje Croatian Long Distance Trail GPX datoteke! Ovdje možete preuzeti GPS trag, a isti pregledati na interaktivnoj karti. Molimo vas da obratite pozornost na sljedeće:",
+		"disclaimerItem1": "Trail je trenutno u izradi.",
+		"disclaimerItem2": "Glavno sredstvo navigacije i dalje je mobilna aplikacija FarOut.",
+		"disclaimerItem3": "Javna GPX datoteka ne sadrži waypointove, koji su ključni za navigaciju stazom. Isti su sadržani unutar FarOut mobilne aplikacije.",
+		"disclaimerItem4": "Jedina službena GPX datoteka dostupana je na našoj web stranici.",
+		"disclaimerItem5": "Ne možemo garantirati točnost traga preuzetog s drugih izvora.",
+		"disclaimerItem6": "Na našoj web stranici uvijek će biti dostupna najnovija verzija traga.",
+		"disclaimerItem7": "Korištenje traga vrši se na vlastitu odgovornost.",
+		"disclaimerItem8": "Udruga Long Distance Trail Hrvatska odriče se odgovornosti u slučaju nezgoda prilikom korištenja GPX zapisa i boravka na trailu.",
+		"disclaimerItem9": "Preprodaja i korištenje gpx datoteke CLDT-a u svrhu ostvarivanja financijske koristi je kazneno djelo i podliježe sudskom progonu.",
+		"acknowledgmentLabel": "Upoznat/a sam sa mogućim opasnostima na stazi te ću istu istraživati i koristiti odgovorno, poštivajući Leave No Trace principles.",
+		"downloadButton": "Preuzmi",
+		"cancelButton": "Odustani",
+		"downloadFull": "Preuzmi GPX",
+		"exportSegment": "Izvezi kao GPX",
+		"filenameFullTrail": "cldt-cijela-staza.gpx",
+		"filenameSegment": "cldt-segment.gpx"
 	}
 }

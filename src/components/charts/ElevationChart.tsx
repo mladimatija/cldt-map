@@ -21,11 +21,13 @@ import {
 import { formatElevation, formatDistance } from '@/lib/utils';
 import { useStore, useMapStore, type StoreState, type MapStoreState, type UnitSystem } from '@/lib/store';
 import { MdKeyboardArrowUp, MdKeyboardArrowDown } from 'react-icons/md';
-import { IoHelpCircleOutline } from 'react-icons/io5';
+import { IoDownloadOutline, IoHelpCircleOutline } from 'react-icons/io5';
 import { useTranslations } from 'next-intl';
 import { Tooltip } from '@/components/ui/Tooltip';
 import { RULER_SET_FROM_CHART_EVENT, type RulerSetFromChartDetail } from '@/lib/ruler-from-chart';
 import { Button } from '@/components/ui/Button';
+import { GpxDownloadModal } from '@/components/map/GpxDownloadModal';
+import { buildGpxXml, downloadGpxFile, extractGpxSegment } from '@/lib/gpx-export';
 
 interface ElevationPoint {
 	distance: number;
@@ -154,10 +156,13 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 	const tCommon = useTranslations('common');
 	const tControls = useTranslations('mapControls');
 	const tTrail = useTranslations('trailRoute');
+	const tGpx = useTranslations('gpxDownload');
 	const [chartData, setChartData] = useState<ElevationPoint[]>([]);
 	const [userProgress, setUserProgress] = useState<number | null>(null);
 	const [isExpanded, setIsExpanded] = useState<boolean>(false);
 	const [pinnedPoint, setPinnedPoint] = useState<PinnedPoint | null>(null);
+	const [gpxModalOpen, setGpxModalOpen] = useState(false);
+	const [gpxModalMode, setGpxModalMode] = useState<'full' | 'segment'>('full');
 	/** Preview range while dragging on chart (km); triggers ReferenceArea. */
 	const [dragPreviewRange, setDragPreviewRange] = useState<{ startKm: number; endKm: number } | null>(null);
 	const chartAreaRef = useRef<HTMLDivElement | null>(null);
@@ -184,6 +189,7 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 	const trailMetadata = useStore((state: StoreState) => state.trailMetadata);
 	const gpxLoaded = useStore((state: StoreState) => state.gpxLoaded);
 	const gpxLoadFailed = useMapStore((state: MapStoreState) => state.gpxLoadFailed);
+	const rawGpxData = useMapStore((state: MapStoreState) => state.rawGpxData);
 	const chartRef = useRef<HTMLDivElement>(null);
 	useBlockMapPropagation(chartRef, [chartData.length]);
 
@@ -462,226 +468,297 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 		setRulerEnabled(false);
 	};
 
-	return (
-		<div
-			className={`rounded bg-white p-4 shadow outline-none focus:outline-none focus-visible:outline-none dark:border dark:border-[var(--border-color)] dark:bg-[var(--bg-secondary)] [&_*]:ring-0 [&_*]:outline-none [&_*]:focus:ring-0 [&_*]:focus:outline-none [&_*]:focus-visible:outline-none ${className} transition-[height] duration-300 ease-in-out ${isExpanded ? 'h-[400px]' : 'h-[120px] min-h-[120px] sm:h-[100px] sm:min-h-[100px]'}`}
-			key={`elevation-chart-${units}-${direction}`}
-			ref={chartRef}
-			onPointerCancel={stopMapInteraction}
-			onPointerDown={stopMapInteraction}
-			onPointerMove={stopMapInteraction}
-			onPointerUp={stopMapInteraction}
-		>
-			<div
-				className="flex cursor-pointer items-center justify-between outline-none focus:outline-none"
-				onClick={toggleExpanded}
-			>
-				<div className="flex items-center gap-1.5">
-					<h2 className="text-cldt-blue-contrast mb-0 text-base font-semibold sm:text-lg">{t('title')}</h2>
-					<span
-						className="hover:text-cldt-blue dark:hover:text-cldt-blue inline-flex shrink-0 cursor-help items-center text-gray-400 dark:text-gray-500"
-						onClick={(e) => e.stopPropagation()}
-						onMouseDown={(e) => e.stopPropagation()}
-					>
-						<Tooltip
-							content={
-								<div className="max-w-[220px] space-y-1 text-left text-xs">
-									<div className="font-medium text-gray-800 dark:text-gray-200">{tControls('helpTitle')}</div>
-									<ul className="list-inside list-disc space-y-0.5 text-gray-600 dark:text-gray-300">
-										<li>{tControls('helpItems.trailClick')}</li>
-										<li>{tControls('helpItems.chartHover')}</li>
-										<li>{tControls('helpItems.chartClickPin')}</li>
-										<li>{tControls('helpItems.chartDragRuler')}</li>
-										<li>
-											{tControls.rich('helpItems.escCancelRuler', {
-												kbd: (chunks) => (
-													<kbd className="rounded border border-gray-200 bg-gray-50 px-1 py-0.5 font-mono text-[11px] text-gray-700 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-200">
-														{chunks}
-													</kbd>
-												),
-											})}
-										</li>
-									</ul>
-								</div>
-							}
-							offset={6}
-							position="bottom"
-						>
-							<IoHelpCircleOutline aria-label={tControls('helpTitle')} className="h-4 w-4" />
-						</Tooltip>
-					</span>
-				</div>
-				<div className="flex items-center gap-2">
-					{pinnedPoint !== null && (
-						<Button
-							size="sm"
-							variant="base"
-							onClick={(e) => {
-								e.preventDefault();
-								e.stopPropagation();
-								clearPinnedSelection();
-							}}
-							onMouseDown={(e) => e.stopPropagation()}
-						>
-							{t('clearPin')}
-						</Button>
-					)}
-					{isRulerEnabled && (
-						<Button
-							size="sm"
-							variant="base"
-							onClick={(e) => {
-								e.preventDefault();
-								e.stopPropagation();
-								clearRulerSelection();
-							}}
-							onMouseDown={(e) => e.stopPropagation()}
-						>
-							{t('clearRuler')}
-						</Button>
-					)}
-					<div aria-hidden className="text-cldt-blue-contrast shrink-0 text-xl">
-						{isExpanded ? <MdKeyboardArrowUp /> : <MdKeyboardArrowDown />}
-					</div>
-				</div>
-			</div>
+	const openGpxModal = (mode: 'full' | 'segment'): void => {
+		setGpxModalMode(mode);
+		setGpxModalOpen(true);
+	};
 
+	const handleGpxConfirm = (): void => {
+		if (gpxModalMode === 'full') {
+			if (rawGpxData) {
+				downloadGpxFile(rawGpxData, tGpx('filenameFullTrail'));
+			} else if (enhancedTrailPoints?.length) {
+				const gpx = buildGpxXml(
+					enhancedTrailPoints.map((p) => ({ lat: p.lat, lng: p.lng, elevation: p.elevation })),
+					'Croatian Long Distance Trail',
+				);
+				downloadGpxFile(gpx, tGpx('filenameFullTrail'));
+			}
+		} else if (gpxModalMode === 'segment' && rulerRange && enhancedTrailPoints?.length) {
+			const segment = enhancedTrailPoints
+				.filter(
+					(p) =>
+						p.distanceFromStart >= rulerRange.distanceFromStartA &&
+						p.distanceFromStart <= rulerRange.distanceFromStartB,
+				)
+				.sort((a, b) => a.distanceFromStart - b.distanceFromStart);
+			if (segment.length < 2) return;
+			const filename = tGpx('filenameSegment');
+			if (rawGpxData) {
+				const gpx = extractGpxSegment(rawGpxData, segment[0].index, segment[segment.length - 1].index, filename);
+				downloadGpxFile(gpx, filename);
+			} else {
+				const gpx = buildGpxXml(
+					segment.map((p) => ({ lat: p.lat, lng: p.lng, elevation: p.elevation })),
+					filename,
+				);
+				downloadGpxFile(gpx, filename);
+			}
+		}
+	};
+
+	return (
+		<>
 			<div
-				className="my-2 grid grid-cols-2 gap-x-4 gap-y-0.5 text-xs text-gray-700 sm:flex sm:flex-wrap sm:gap-x-4 sm:text-sm dark:text-[var(--text-secondary)]"
-				onClick={toggleExpanded}
+				className={`flex flex-col overflow-hidden rounded bg-white p-4 shadow outline-none focus:outline-none focus-visible:outline-none dark:border dark:border-[var(--border-color)] dark:bg-[var(--bg-secondary)] [&_*]:ring-0 [&_*]:outline-none [&_*]:focus:ring-0 [&_*]:focus:outline-none [&_*]:focus-visible:outline-none ${className} transition-[height] duration-300 ease-in-out ${isExpanded ? 'h-[400px]' : 'h-[120px] min-h-[120px] sm:h-[100px] sm:min-h-[100px]'}`}
+				key={`elevation-chart-${units}-${direction}`}
+				ref={chartRef}
+				onPointerCancel={stopMapInteraction}
+				onPointerDown={stopMapInteraction}
+				onPointerMove={stopMapInteraction}
+				onPointerUp={stopMapInteraction}
 			>
-				<span className="truncate" title={formatDistance(totalDistance, units, distancePrecision)}>
-					{t('distance')}: {formatDistance(totalDistance, units, distancePrecision)}
-				</span>
-				<span className="truncate" title={directionText}>
-					{t('direction')}: {directionText}
-				</span>
-				<span className="truncate" title={formatElevation(elevationGain, units)}>
-					{t('gain')}: {formatElevation(elevationGain, units)}
-				</span>
-				<span className="truncate" title={formatElevation(elevationLoss, units)}>
-					{t('loss')}: {formatElevation(elevationLoss, units)}
-				</span>
-			</div>
-			{rulerStats && (
 				<div
-					className="mb-2 flex flex-wrap gap-x-4 gap-y-0.5 rounded bg-[var(--cldt-green)]/10 px-2 py-1 text-xs text-[color:var(--cldt-green)] sm:text-sm dark:bg-[var(--cldt-green)]/15"
+					className="flex cursor-pointer items-center justify-between outline-none focus:outline-none"
 					onClick={toggleExpanded}
 				>
-					<span className="truncate font-medium">{t('rulerSegment')}:</span>
-					<span className="truncate">{formatDistance(rulerStats.distanceKm, units, distancePrecision)}</span>
-					<span className="truncate">
-						{t('gain')}: {formatElevation(rulerStats.gain, units)}
-					</span>
-					<span className="truncate">
-						{t('loss')}: {formatElevation(rulerStats.loss, units)}
-					</span>
-					<span className="truncate">
-						{t('rulerHikingTime')}: {formatHikingTime(rulerStats.hikingTimeMin)}
-					</span>
-					{rulerStats.sections.length > 0 && (
-						<span className="truncate">
-							{t('rulerSection')}: {rulerStats.sections.map((k) => tTrail(k)).join(' → ')}
+					<div className="flex items-center gap-1.5">
+						<h2 className="text-cldt-blue-contrast mb-0 text-base font-semibold sm:text-lg">{t('title')}</h2>
+						<span
+							className="hover:text-cldt-blue dark:hover:text-cldt-blue inline-flex shrink-0 cursor-help items-center text-gray-400 dark:text-gray-500"
+							onClick={(e) => e.stopPropagation()}
+							onMouseDown={(e) => e.stopPropagation()}
+						>
+							<Tooltip
+								content={
+									<div className="max-w-[220px] space-y-1 text-left text-xs">
+										<div className="font-medium text-gray-800 dark:text-gray-200">{tControls('helpTitle')}</div>
+										<ul className="list-inside list-disc space-y-0.5 text-gray-600 dark:text-gray-300">
+											<li>{tControls('helpItems.trailClick')}</li>
+											<li>{tControls('helpItems.chartHover')}</li>
+											<li>{tControls('helpItems.chartClickPin')}</li>
+											<li>{tControls('helpItems.chartDragRuler')}</li>
+											<li>
+												{tControls.rich('helpItems.escCancelRuler', {
+													kbd: (chunks) => (
+														<kbd className="rounded border border-gray-200 bg-gray-50 px-1 py-0.5 font-mono text-[11px] text-gray-700 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-200">
+															{chunks}
+														</kbd>
+													),
+												})}
+											</li>
+										</ul>
+									</div>
+								}
+								offset={6}
+								position="bottom"
+							>
+								<IoHelpCircleOutline aria-label={tControls('helpTitle')} className="h-4 w-4" />
+							</Tooltip>
 						</span>
-					)}
+					</div>
+					<div className="flex items-center gap-2">
+						{pinnedPoint !== null && (
+							<Button
+								size="sm"
+								variant="base"
+								onClick={(e) => {
+									e.preventDefault();
+									e.stopPropagation();
+									clearPinnedSelection();
+								}}
+								onMouseDown={(e) => e.stopPropagation()}
+							>
+								{t('clearPin')}
+							</Button>
+						)}
+						{isRulerEnabled && (
+							<Button
+								size="sm"
+								variant="base"
+								onClick={(e) => {
+									e.preventDefault();
+									e.stopPropagation();
+									clearRulerSelection();
+								}}
+								onMouseDown={(e) => e.stopPropagation()}
+							>
+								{t('clearRuler')}
+							</Button>
+						)}
+						{gpxLoaded && (
+							<Button
+								size="sm"
+								variant="base"
+								onClick={(e) => {
+									e.preventDefault();
+									e.stopPropagation();
+									openGpxModal('full');
+								}}
+								onMouseDown={(e) => e.stopPropagation()}
+							>
+								<IoDownloadOutline aria-hidden className="mr-1 h-3.5 w-3.5" />
+								{tGpx('downloadFull')}
+							</Button>
+						)}
+						<div aria-hidden className="text-cldt-blue-contrast shrink-0 text-xl">
+							{isExpanded ? <MdKeyboardArrowUp /> : <MdKeyboardArrowDown />}
+						</div>
+					</div>
 				</div>
-			)}
-			{isExpanded && (
+
 				<div
-					className="h-[calc(100%-3.5rem)] min-h-[200px]"
-					ref={chartAreaRef}
-					role="presentation"
-					onMouseDownCapture={handleChartMouseDownCapture}
-					onTouchStartCapture={stopMapInteractionTouch}
+					className="my-2 grid grid-cols-2 gap-x-4 gap-y-0.5 text-xs text-gray-700 sm:flex sm:flex-wrap sm:gap-x-4 sm:text-sm dark:text-[var(--text-secondary)]"
+					onClick={toggleExpanded}
 				>
-					<ResponsiveContainer height="100%" minHeight={200} width="100%">
-						<AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 10 }}>
-							<RechartsTooltip
-								content={(props) => (
-									<ChartTooltipSync
-										active={props.active}
-										clearTrailHighlight={clearTrailHighlight}
-										coordinate={props.coordinate}
-										distanceLabel={t('distanceLabel')}
-										distancePrecision={distancePrecision}
-										elevationLabel={t('elevationLabel')}
-										highlightTrailPosition={highlightTrailPosition}
-										isPinned={pinnedPoint !== null}
-										payload={props.payload}
-										units={units}
-										onScaleCalibration={handleScaleCalibration}
-									/>
-								)}
-								cursor={{ stroke: 'var(--cldt-green)', strokeWidth: 2 }}
-							/>
-							<CartesianGrid strokeDasharray="3 3" />
-							<XAxis
-								dataKey="distance"
-								label={{
-									value: units === 'metric' ? t('distanceKm') : t('distanceMi'),
-									position: 'insideBottomRight',
-									offset: -5,
-								}}
-								tickFormatter={(value) => formatDistance(value, units, distancePrecision)}
-								type="number"
-							/>
-							<YAxis
-								domain={yDomain}
-								label={{
-									value: units === 'metric' ? t('elevationM') : t('elevationFt'),
-									angle: -90,
-									position: 'insideLeft',
-								}}
-								tickFormatter={(value) => formatElevation(value, units)}
-							/>
-							<Area
-								activeDot={{ r: 6, fill: 'var(--cldt-green)' }}
-								dataKey="elevation"
-								dot={false}
-								fill="var(--cldt-light-blue)"
-								stroke="var(--cldt-blue)"
-								type="monotone"
-							/>
-							{highlightedPoint && (
-								<>
-									<ReferenceLine
-										stroke={pinnedPoint !== null ? 'var(--cldt-blue)' : 'var(--cldt-green)'}
-										strokeDasharray={pinnedPoint !== null ? undefined : '3 3'}
-										strokeWidth={pinnedPoint !== null ? 3 : 2}
-										x={highlightedPoint.distance}
-									/>
-									{pinnedPoint !== null && (
-										<ReferenceDot
-											fill="var(--cldt-blue)"
-											r={6}
-											stroke="white"
-											strokeWidth={2}
-											x={highlightedPoint.distance}
-											y={highlightedPoint.elevation}
+					<span className="truncate" title={formatDistance(totalDistance, units, distancePrecision)}>
+						{t('distance')}: {formatDistance(totalDistance, units, distancePrecision)}
+					</span>
+					<span className="truncate" title={directionText}>
+						{t('direction')}: {directionText}
+					</span>
+					<span className="truncate" title={formatElevation(elevationGain, units)}>
+						{t('gain')}: {formatElevation(elevationGain, units)}
+					</span>
+					<span className="truncate" title={formatElevation(elevationLoss, units)}>
+						{t('loss')}: {formatElevation(elevationLoss, units)}
+					</span>
+				</div>
+				{rulerStats && (
+					<div
+						className="mb-2 flex flex-wrap items-center gap-x-4 gap-y-0.5 rounded bg-[var(--cldt-green)]/10 px-2 py-1 text-xs text-[color:var(--cldt-green)] sm:text-sm dark:bg-[var(--cldt-green)]/15"
+						onClick={toggleExpanded}
+					>
+						<span className="truncate font-medium">{t('rulerSegment')}:</span>
+						<span className="truncate">{formatDistance(rulerStats.distanceKm, units, distancePrecision)}</span>
+						<span className="truncate">
+							{t('gain')}: {formatElevation(rulerStats.gain, units)}
+						</span>
+						<span className="truncate">
+							{t('loss')}: {formatElevation(rulerStats.loss, units)}
+						</span>
+						<span className="truncate">
+							{t('rulerHikingTime')}: {formatHikingTime(rulerStats.hikingTimeMin)}
+						</span>
+						{rulerStats.sections.length > 0 && (
+							<span className="truncate">
+								{t('rulerSection')}: {rulerStats.sections.map((k) => tTrail(k)).join(' → ')}
+							</span>
+						)}
+						<Button
+							className="ml-auto shrink-0"
+							size="sm"
+							variant="base"
+							onClick={(e) => {
+								e.preventDefault();
+								e.stopPropagation();
+								openGpxModal('segment');
+							}}
+							onMouseDown={(e) => e.stopPropagation()}
+						>
+							<IoDownloadOutline aria-hidden className="mr-1 h-3.5 w-3.5" />
+							{tGpx('exportSegment')}
+						</Button>
+					</div>
+				)}
+				{isExpanded && (
+					<div
+						className="min-h-[200px] flex-1"
+						ref={chartAreaRef}
+						role="presentation"
+						onMouseDownCapture={handleChartMouseDownCapture}
+						onTouchStartCapture={stopMapInteractionTouch}
+					>
+						<ResponsiveContainer height="100%" minHeight={200} width="100%">
+							<AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 10 }}>
+								<RechartsTooltip
+									content={(props) => (
+										<ChartTooltipSync
+											active={props.active}
+											clearTrailHighlight={clearTrailHighlight}
+											coordinate={props.coordinate}
+											distanceLabel={t('distanceLabel')}
+											distancePrecision={distancePrecision}
+											elevationLabel={t('elevationLabel')}
+											highlightTrailPosition={highlightTrailPosition}
+											isPinned={pinnedPoint !== null}
+											payload={props.payload}
+											units={units}
+											onScaleCalibration={handleScaleCalibration}
 										/>
 									)}
-								</>
-							)}
-							{userProgress !== null && <ReferenceLine stroke="var(--cldt-green)" strokeWidth={2} x={userProgress} />}
-							{rulerHighlightRange && (
-								<ReferenceArea
-									fill="var(--cldt-green)"
-									fillOpacity={0.35}
-									ifOverflow="visible"
-									stroke="var(--cldt-green)"
-									strokeOpacity={0.9}
-									strokeWidth={2}
-									x1={rulerHighlightRange.startKm}
-									x2={rulerHighlightRange.endKm}
-									y1={yDomain[0]}
-									y2={yDomain[1]}
-									zIndex={1}
+									cursor={{ stroke: 'var(--cldt-green)', strokeWidth: 2 }}
 								/>
-							)}
-						</AreaChart>
-					</ResponsiveContainer>
-				</div>
-			)}
-		</div>
+								<CartesianGrid strokeDasharray="3 3" />
+								<XAxis
+									dataKey="distance"
+									label={{
+										value: units === 'metric' ? t('distanceKm') : t('distanceMi'),
+										position: 'insideBottomRight',
+										offset: -5,
+									}}
+									tickFormatter={(value) => formatDistance(value, units, distancePrecision)}
+									type="number"
+								/>
+								<YAxis
+									domain={yDomain}
+									label={{
+										value: units === 'metric' ? t('elevationM') : t('elevationFt'),
+										angle: -90,
+										position: 'insideLeft',
+									}}
+									tickFormatter={(value) => formatElevation(value, units)}
+								/>
+								<Area
+									activeDot={{ r: 6, fill: 'var(--cldt-green)' }}
+									dataKey="elevation"
+									dot={false}
+									fill="var(--cldt-light-blue)"
+									stroke="var(--cldt-blue)"
+									type="monotone"
+								/>
+								{highlightedPoint && (
+									<>
+										<ReferenceLine
+											stroke={pinnedPoint !== null ? 'var(--cldt-blue)' : 'var(--cldt-green)'}
+											strokeDasharray={pinnedPoint !== null ? undefined : '3 3'}
+											strokeWidth={pinnedPoint !== null ? 3 : 2}
+											x={highlightedPoint.distance}
+										/>
+										{pinnedPoint !== null && (
+											<ReferenceDot
+												fill="var(--cldt-blue)"
+												r={6}
+												stroke="white"
+												strokeWidth={2}
+												x={highlightedPoint.distance}
+												y={highlightedPoint.elevation}
+											/>
+										)}
+									</>
+								)}
+								{userProgress !== null && <ReferenceLine stroke="var(--cldt-green)" strokeWidth={2} x={userProgress} />}
+								{rulerHighlightRange && (
+									<ReferenceArea
+										fill="var(--cldt-green)"
+										fillOpacity={0.35}
+										ifOverflow="visible"
+										stroke="var(--cldt-green)"
+										strokeOpacity={0.9}
+										strokeWidth={2}
+										x1={rulerHighlightRange.startKm}
+										x2={rulerHighlightRange.endKm}
+										y1={yDomain[0]}
+										y2={yDomain[1]}
+										zIndex={1}
+									/>
+								)}
+							</AreaChart>
+						</ResponsiveContainer>
+					</div>
+				)}
+			</div>
+			<GpxDownloadModal isOpen={gpxModalOpen} onClose={() => setGpxModalOpen(false)} onConfirm={handleGpxConfirm} />
+		</>
 	);
 }
