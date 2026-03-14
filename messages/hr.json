@@ -200,7 +200,10 @@
 		"gain": "Uspon",
 		"loss": "Spust",
 		"distanceLabel": "Udaljenost",
-		"elevationLabel": "Nadmorska visina"
+		"elevationLabel": "Nadmorska visina",
+		"rulerSegment": "Segment",
+		"rulerHikingTime": "Procijenjeno vrijeme",
+		"rulerSection": "Dionica"
 	},
 	"trailRoute": {
 		"startingPoint": "Početna točka ({direction})",
