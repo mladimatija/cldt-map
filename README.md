@@ -6,7 +6,7 @@
 [![Next.js](https://img.shields.io/badge/Next.js-16.1.6-black?logo=next.js&logoColor=white)](https://nextjs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
 
-Interactive web map for the **Croatian Long Distance Trail (CLDT)** — a 2,200+ km national hiking trail from Ilok to Prevlaka. Explore the route, view elevation profiles, measure distances, and share your position.
+Interactive web map for the **Croatian Long Distance Trail (CLDT)** - a 2,200+ km national hiking trail from Ilok to Prevlaka. Explore the route, view elevation profiles, measure distances, and share your position.
 
 **Live:** [map.cldt.hr](https://map.cldt.hr)
 
@@ -14,18 +14,18 @@ Interactive web map for the **Croatian Long Distance Trail (CLDT)** — a 2,200+
 
 ## User Features
 
-- **Interactive trail route** — Click the route or the elevation chart to see distance and elevation at any point
-- **Elevation profile** — Chart showing terrain along the route; hover to preview on the map, click to pin a point
-- **Distance ruler** — Measure segments between two points
-- **Map layers** — Standard, Topo, Satellite, Terrain, CyclOSM, Croatia Topo
-- **Location tracking** — Optional GPS to see your position on the trail
-- **Share links** — Share current map view or progress on the trail
-- **Units** — Metric (km) and imperial (miles)
-- **Trail sections** — Optional color-coded sections (A/B/C) with boundary markers and stats (persisted)
-- **Dark mode & battery saver** — UI preferences and reduced location updates
-- **Bilingual** — English and Croatian (hr)
-- **Offline support** — Service Worker caches GPX and map tiles
-- **Privacy-first** — Location stays in your browser; no account required
+- **Interactive trail route** - Click the route or the elevation chart to see distance and elevation at any point
+- **Elevation profile** - Chart showing terrain along the route; hover to preview on the map, click to pin a point
+- **Distance ruler** - Measure segments between two points
+- **Map layers** - Standard, Topo, Satellite, Terrain, CyclOSM, Croatia Topo
+- **Location tracking** - Optional GPS to see your position on the trail
+- **Share links** - Share current map view or progress on the trail
+- **Units** - Metric (km) and imperial (miles)
+- **Trail sections** - Optional color-coded sections (A/B/C) with boundary markers and stats (persisted)
+- **Dark mode & battery saver** - UI preferences and reduced location updates
+- **Bilingual** - English and Croatian (hr)
+- **Offline support** - Service Worker caches GPX and map tiles
+- **Privacy-first** - Location stays in your browser; no account required
 
 ---
 
@@ -69,27 +69,27 @@ cp .env.example .env.local
 
 Required:
 
-- `NEXT_PUBLIC_GPX_URL` — URL to the trail GPX file
+- `NEXT_PUBLIC_GPX_URL` - URL to the trail GPX file
 
 Optional overrides (see `src/lib/config.ts`, `src/lib/gpx-cache.ts`):
 
-- `NEXT_PUBLIC_CACHE_VERSION` — Bump to invalidate GPX cache (default `1`)
-- `NEXT_PUBLIC_CORS_PROXY` — Override GPX proxy base (default `/api/proxy?url=`)
-- `NEXT_PUBLIC_DEFAULT_DIRECTION` — `SOBO` or `NOBO`
-- `NEXT_PUBLIC_DEFAULT_UNITS` — `metric` or `imperial`
-- `NEXT_PUBLIC_DEFAULT_DISTANCE_PRECISION` — decimal places
-- `NEXT_PUBLIC_SHOW_BOUNDARY` — show Croatia boundary on load
-- `NEXT_PUBLIC_SHOW_TILE_BOUNDARY` — boundary-clipped tiles
-- `NEXT_PUBLIC_SHOW_USER_MARKER` — show user location by default
-- `NEXT_PUBLIC_DEFAULT_BASE_MAP` — `OpenStreetMap`, `OpenTopoMap`, `Satellite`, `Terrain`, `CyclOSM`, `CroatiaTopo`
-- `NEXT_PUBLIC_DEFAULT_DARK_MODE` — dark mode on load
-- `NEXT_PUBLIC_DEFAULT_BATTERY_SAVER` — battery saver on load
-- `NEXT_PUBLIC_DEFAULT_LARGE_TOUCH_TARGETS` — large touch targets on load (accessibility)
-- `NEXT_PUBLIC_DEFAULT_RULER_ENABLED` — distance ruler on load
-- `NEXT_PUBLIC_DEFAULT_SHOW_SECTIONS` — show trail sections on load (default `false`)
-- `NEXT_PUBLIC_DEFAULT_LOCALE` — `en` or `hr`
-- `NEXT_PUBLIC_DEFAULT_MAP_CENTER` — `lat,lng` (e.g. `44.4268,16.438`)
-- `NEXT_PUBLIC_DEFAULT_MAP_ZOOM` — initial zoom level
+- `NEXT_PUBLIC_CACHE_VERSION` - Bump to invalidate GPX cache (default `1`)
+- `NEXT_PUBLIC_CORS_PROXY` - Override GPX proxy base (default `/api/proxy?url=`)
+- `NEXT_PUBLIC_DEFAULT_DIRECTION` - `SOBO` or `NOBO`
+- `NEXT_PUBLIC_DEFAULT_UNITS` - `metric` or `imperial`
+- `NEXT_PUBLIC_DEFAULT_DISTANCE_PRECISION` - decimal places
+- `NEXT_PUBLIC_SHOW_BOUNDARY` - show Croatia boundary on load
+- `NEXT_PUBLIC_SHOW_TILE_BOUNDARY` - boundary-clipped tiles
+- `NEXT_PUBLIC_SHOW_USER_MARKER` - show user location by default
+- `NEXT_PUBLIC_DEFAULT_BASE_MAP` - `OpenStreetMap`, `OpenTopoMap`, `Satellite`, `Terrain`, `CyclOSM`, `CroatiaTopo`
+- `NEXT_PUBLIC_DEFAULT_DARK_MODE` - dark mode on load
+- `NEXT_PUBLIC_DEFAULT_BATTERY_SAVER` - battery saver on load
+- `NEXT_PUBLIC_DEFAULT_LARGE_TOUCH_TARGETS` - large touch targets on load (accessibility)
+- `NEXT_PUBLIC_DEFAULT_RULER_ENABLED` - distance ruler on load
+- `NEXT_PUBLIC_DEFAULT_SHOW_SECTIONS` - show trail sections on load (default `false`)
+- `NEXT_PUBLIC_DEFAULT_LOCALE` - `en` or `hr`
+- `NEXT_PUBLIC_DEFAULT_MAP_CENTER` - `lat,lng` (e.g. `44.4268,16.438`)
+- `NEXT_PUBLIC_DEFAULT_MAP_ZOOM` - initial zoom level
 
 ### Run
 
@@ -113,7 +113,7 @@ Open [http://localhost:3000](http://localhost:3000).
    | `NEXT_PUBLIC_CACHE_VERSION` | No       | `1` (bump to invalidate cache)        |
    | Other `NEXT_PUBLIC_*`       | No       | See [Environment](#environment) above |
 
-3. **Deploy** — Netlify runs the build and the Essential Next.js plugin handles the output. Node.js 24 is set in `netlify.toml`.
+3. **Deploy** - Netlify runs the build and the Essential Next.js plugin handles the output. Node.js 24 is set in `netlify.toml`.
 
 **If you see "Page not found" or "publish directory cannot be the same as base directory":** In Site settings → Build & deploy → Build settings, clear **Base directory** and **Publish directory** (leave both empty) so `netlify.toml` applies. The config sets `publish = ".next"`.
 
@@ -167,7 +167,7 @@ src/
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT - see [LICENSE](LICENSE).
 
 ---
 

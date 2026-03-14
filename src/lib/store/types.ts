@@ -1,6 +1,7 @@
 import type { LatLng } from 'leaflet';
 import type * as GeoJSON from 'geojson';
 import type { TrailDirection, UnitSystem } from '../types';
+import type { TileCacheMeta } from '../tile-cache';
 
 export type { TrailDirection, UnitSystem };
 
@@ -221,4 +222,25 @@ export interface MapStoreState {
 
 	isMapFullscreen: boolean;
 	setMapFullscreen: (fullscreen: boolean) => void;
+
+	// ── Offline / tile cache ─────────────────────────────────────────────────
+	isOffline: boolean;
+	setIsOffline: (offline: boolean) => void;
+	initOfflineDetection: () => void;
+
+	tileCacheDownloading: boolean;
+	tileCacheDone: number;
+	tileCacheTotal: number;
+	tileCacheError: string | null;
+	tileCacheMeta: TileCacheMeta | null;
+	autoSync: boolean;
+
+	startTileDownload: (
+		points: { lat: number; lng: number; distanceFromStart: number }[],
+		providerName: string,
+	) => Promise<void>;
+	cancelTileDownload: () => void;
+	clearTileCacheForProvider: (providerKey?: string) => Promise<void>;
+	loadTileCacheMeta: (providerKey: string) => Promise<void>;
+	setAutoSync: (enabled: boolean) => void;
 }

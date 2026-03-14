@@ -2,7 +2,7 @@
 
 /**
  * Orchestrates map overlays (controls, trail, markers, elevation chart) and location init.
- * Requests permission and fetches first location once trail is loaded; syncs isLocating from store.
+ * Requests permission and fetches the first location once the trail is loaded; syncs isLocating from store.
  */
 import React, { Suspense, useState, useEffect, useCallback } from 'react';
 import dynamic from 'next/dynamic';
@@ -27,6 +27,10 @@ const ElevationChart = dynamic(() => import('@/components/charts/ElevationChart'
 const RulerHint = dynamic(() => import('@/components/map/controls/RulerHint').then((m) => ({ default: m.RulerHint })), {
 	ssr: false,
 });
+const OfflineIndicator = dynamic(
+	() => import('@/components/map/OfflineIndicator').then((m) => ({ default: m.OfflineIndicator })),
+	{ ssr: false },
+);
 
 export default function MapContent(): React.ReactElement {
 	const [isLocating, setIsLocating] = useState(false);
@@ -113,6 +117,7 @@ export default function MapContent(): React.ReactElement {
 
 	return (
 		<>
+			<OfflineIndicator />
 			<ShareUrlHandler />
 			<GoToDistance />
 			<BaseMapSelector />

@@ -14,6 +14,7 @@ import {
 	IoHelpCircleOutline,
 } from 'react-icons/io5';
 import { Button } from '@/components/ui/Button';
+import { MapControlsTileCachePanel } from './MapControlsTileCachePanel';
 
 interface MapControlsSettingsPanelProps {
 	containerRef: RefObject<HTMLDivElement | null>;
@@ -101,6 +102,8 @@ export function MapControlsSettingsPanel({
 							</SmartTooltip>
 						</span>
 					</label>
+
+					<MapControlsTileCachePanel />
 
 					<div className="mt-1 border-t border-gray-200 pt-2 dark:border-gray-600">
 						<div className="flex items-center gap-2 text-xs font-medium text-gray-600 dark:text-gray-200">
