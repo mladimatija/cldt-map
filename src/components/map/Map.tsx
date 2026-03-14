@@ -53,7 +53,7 @@ export default function Map({
 	const initialProvider =
 		Object.values(BaseMapProvider).find((provider) => provider === defaultBaseMap) || BaseMapProvider.OPEN_STREET_MAP;
 
-	// Stable key per mount — do NOT include locale, so the map stays mounted across language switches.
+	// Stable key per mount - do NOT include locale, so the map stays mounted across language switches.
 	// Only translated text (tooltips, labels) changes via useTranslations; the Leaflet instance must persist.
 	const [mapKey] = useState(() => `map-${Date.now()}-${Math.random().toString(36).slice(2)}`);
 

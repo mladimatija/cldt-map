@@ -122,7 +122,7 @@ const StoreTest: React.FC = () => {
 							<span className="text-cldt-blue font-semibold">{fakeUserLocationEnabled ? t('on') : t('off')}</span>
 						</p>
 						<p className="mb-2 text-sm text-gray-600">
-							{userLocation ? `${userLocation.lat.toFixed(4)}, ${userLocation.lng.toFixed(4)}` : '—'}
+							{userLocation ? `${userLocation.lat.toFixed(4)}, ${userLocation.lng.toFixed(4)}` : '-'}
 						</p>
 						<div className="flex flex-wrap gap-2">
 							<Button
