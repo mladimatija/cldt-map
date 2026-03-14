@@ -16,7 +16,8 @@ Interactive web map for the **Croatian Long Distance Trail (CLDT)** - a 2,200+ k
 
 - **Interactive trail route** - Click the route or the elevation chart to see distance and elevation at any point
 - **Elevation profile** - Chart showing terrain along the route; hover to preview on the map, click to pin a point
-- **Distance ruler** - Measure segments between two points
+- **Distance ruler** - Measure segments; see estimated hiking time, elevation gain/loss, and section name for the selected range
+- **GPX export** - Download the full trail or any ruler-selected segment as a GPX file
 - **Map layers** - Standard, Topo, Satellite, Terrain, CyclOSM, Croatia Topo
 - **Location tracking** - Optional GPS to see your position on the trail
 - **Share links** - Share current map view or progress on the trail
@@ -157,6 +158,7 @@ src/
 │   ├── services/     # LocationService, MapService, base-map-provider
 │   ├── config.ts     # App defaults (env overrides)
 │   ├── gpx-cache.ts  # GPX fetch + localforage cache
+│   ├── gpx-export.ts # GPX XML builder and segment extractor for file downloads
 │   ├── tile-cache.ts # Tile pre-caching, corridor generation, metadata, storage utils
 │   └── utils.ts      # Formatting, URL parsing, boundary check, etc.
 ├── i18n/             # next-intl routing and request config
