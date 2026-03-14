@@ -34,7 +34,8 @@
 			"location": "Opcionalno praćenje lokacije za prikaz vaše pozicije na stazi",
 			"share": "Dijeljenje linkova s trenutnim prikazom ili napretkom na stazi",
 			"units": "Metričke i imperijalne jedinice",
-			"darkMode": "Tamni način rada i opcije za uštedu baterije"
+			"darkMode": "Tamni način rada i opcije za uštedu baterije",
+			"offlineMaps": "Offline karte - preuzmite koridor staze za korištenje bez signala"
 		},
 		"dataAttribution": "Podaci i atribucija",
 		"dataAttributionDesc": "Podatke o stazi pruža organizacija Udruga Long Distance Trail Hrvatska (LDTH). Karte dolaze od OpenStreetMap, OpenTopoMap, CyclOSM i drugih pružatelja. Hrvatske topografske karte su od Državne geodetske uprave (DGU).",

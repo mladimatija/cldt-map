@@ -24,7 +24,7 @@ Interactive web map for the **Croatian Long Distance Trail (CLDT)** - a 2,200+ k
 - **Trail sections** - Optional color-coded sections (A/B/C) with boundary markers and stats (persisted)
 - **Dark mode & battery saver** - UI preferences and reduced location updates
 - **Bilingual** - English and Croatian (hr)
-- **Offline support** - Service Worker caches GPX and map tiles
+- **Offline maps** - Pre-cache the full trail corridor for offline use; per-provider caching, staleness detection, auto-sync on reconnect, and storage quota handling
 - **Privacy-first** - Location stays in your browser; no account required
 
 ---
@@ -157,6 +157,7 @@ src/
 │   ├── services/     # LocationService, MapService, base-map-provider
 │   ├── config.ts     # App defaults (env overrides)
 │   ├── gpx-cache.ts  # GPX fetch + localforage cache
+│   ├── tile-cache.ts # Tile pre-caching, corridor generation, metadata, storage utils
 │   └── utils.ts      # Formatting, URL parsing, boundary check, etc.
 ├── i18n/             # next-intl routing and request config
 ├── types/            # TypeScript definitions
