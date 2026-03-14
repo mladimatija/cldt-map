@@ -34,7 +34,8 @@
 			"location": "Optional location tracking to see your position on the trail",
 			"share": "Share links with your current view or progress on the trail",
 			"units": "Metric and imperial units",
-			"darkMode": "Dark mode and battery saver options"
+			"darkMode": "Dark mode and battery saver options",
+			"offlineMaps": "Offline maps - pre-cache the trail corridor for use without a signal"
 		},
 		"dataAttribution": "Data & attribution",
 		"dataAttributionDesc": "Trail data is provided by the Udruga Long Distance Trail Hrvatska (LDTH) organization. Map tiles come from OpenStreetMap, OpenTopoMap, CyclOSM, and other providers. Croatian topographic maps are from the State Geodetic Administration (DGU).",
