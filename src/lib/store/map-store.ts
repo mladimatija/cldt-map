@@ -5,10 +5,27 @@ import { config } from '../config';
 import { getRandomLocationInBoundary, toLocationError } from '../utils';
 import { LocationService } from '../services/location-service';
 import type { MapStoreState, StoreState, TrailDirection, UnitSystem } from './types';
+import {
+	generateTrailTileUrls,
+	precacheTiles,
+	saveTileCacheMeta,
+	getTileCacheMeta,
+	clearTileCache,
+	getTileUrlTemplate,
+	getProviderCacheKey,
+	isProviderCacheable,
+	estimateStorage,
+	PRECACHE_ZOOM_MIN,
+	PRECACHE_ZOOM_MAX,
+	type TileCacheMeta,
+} from '../tile-cache';
 
 /**
  * Creates the persisted map store. Receives getMainStore so it does not import the main store at module init (avoids circular deps).
  */
+/** Module-level abort controller for tile downloads - one download at a time. */
+let tilePrecacheAbortController: AbortController | null = null;
+
 export function createMapStore(getMainStore: () => StoreState): UseBoundStore<StoreApi<MapStoreState>> {
 	return create<MapStoreState>()(
 		persist(
@@ -147,6 +164,90 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 				isMapFullscreen: false,
 				setMapFullscreen: (fullscreen: boolean) => set({ isMapFullscreen: fullscreen }),
 
+				// ── Offline / tile cache ───────────────────────────────────────────
+				isOffline: false,
+				setIsOffline: (offline: boolean) => set({ isOffline: offline }),
+
+				initOfflineDetection: () => {
+					if (typeof window === 'undefined') return;
+					const update = (): void => {
+						set({ isOffline: !navigator.onLine });
+					};
+					update();
+					window.addEventListener('online', update);
+					window.addEventListener('offline', update);
+				},
+
+				tileCacheDownloading: false,
+				tileCacheDone: 0,
+				tileCacheTotal: 0,
+				tileCacheError: null,
+				tileCacheMeta: null,
+				autoSync: false,
+
+				startTileDownload: async (points, providerName) => {
+					if (typeof window === 'undefined') return;
+					if (!isProviderCacheable(providerName)) {
+						set({ tileCacheError: 'not_cacheable' });
+						return;
+					}
+					const urlTemplate = getTileUrlTemplate(providerName);
+					if (!urlTemplate) {
+						set({ tileCacheError: 'no_template' });
+						return;
+					}
+					const storage = await estimateStorage();
+					if (!storage.available) {
+						set({ tileCacheError: 'quota_exceeded' });
+						return;
+					}
+					const urls = generateTrailTileUrls(points, urlTemplate, PRECACHE_ZOOM_MIN, PRECACHE_ZOOM_MAX);
+					const providerKey = getProviderCacheKey(providerName);
+					tilePrecacheAbortController?.abort();
+					const controller = new AbortController();
+					tilePrecacheAbortController = controller;
+					set({ tileCacheDownloading: true, tileCacheDone: 0, tileCacheTotal: urls.length, tileCacheError: null });
+					const result = await precacheTiles(
+						urls,
+						(done, total) => set({ tileCacheDone: done, tileCacheTotal: total }),
+						controller.signal,
+					);
+					tilePrecacheAbortController = null;
+					if (!result.cancelled) {
+						const meta: TileCacheMeta = {
+							cachedAt: Date.now(),
+							tileCount: result.done,
+							zoomMin: PRECACHE_ZOOM_MIN,
+							zoomMax: PRECACHE_ZOOM_MAX,
+							providerKey,
+						};
+						await saveTileCacheMeta(providerKey, meta);
+						set({ tileCacheMeta: meta, tileCacheDownloading: false });
+					} else {
+						set({ tileCacheDownloading: false });
+					}
+				},
+
+				cancelTileDownload: () => {
+					tilePrecacheAbortController?.abort();
+					tilePrecacheAbortController = null;
+					set({ tileCacheDownloading: false });
+				},
+
+				clearTileCacheForProvider: async (providerKey?: string) => {
+					if (typeof window === 'undefined') return;
+					await clearTileCache(providerKey);
+					set({ tileCacheMeta: null, tileCacheDone: 0, tileCacheTotal: 0 });
+				},
+
+				loadTileCacheMeta: async (providerKey: string) => {
+					if (typeof window === 'undefined') return;
+					const meta = await getTileCacheMeta(providerKey);
+					set({ tileCacheMeta: meta });
+				},
+
+				setAutoSync: (enabled: boolean) => set({ autoSync: enabled }),
+
 				processTrailData: (
 					points: unknown[],
 					elevationPoints: { lat: number; lng: number; elevation: number }[],
@@ -229,7 +330,7 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 
 							const mainStore = getMainStore();
 							mainStore.setUserLocation(location);
-							// Recalculate immediately to avoid tooltip flicker (no null window).
+							// Recalculate immediately to avoid the tooltip flicker (no null window).
 							mainStore.calculateClosestPoint?.();
 						},
 						setIsLocating: (isLocating) => set({ isLocating }),
@@ -287,6 +388,7 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					batterySaverMode: state.batterySaverMode,
 					largeTouchTargets: state.largeTouchTargets,
 					baseMapProvider: state.baseMapProvider,
+					autoSync: state.autoSync,
 				}),
 			},
 		),
