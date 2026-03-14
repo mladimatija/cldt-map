@@ -142,10 +142,18 @@ function ChartTooltipSync(props: {
 
 type PinnedPoint = { distanceM: number; elevation: number };
 
+function formatHikingTime(minutes: number): string {
+	if (minutes < 60) return `${minutes}m`;
+	const h = Math.floor(minutes / 60);
+	const m = minutes % 60;
+	return m === 0 ? `${h}h` : `${h}h ${m}m`;
+}
+
 export default function ElevationChart({ className = '' }: ElevationChartProps): JSX.Element | null {
 	const t = useTranslations('elevationChart');
 	const tCommon = useTranslations('common');
 	const tControls = useTranslations('mapControls');
+	const tTrail = useTranslations('trailRoute');
 	const [chartData, setChartData] = useState<ElevationPoint[]>([]);
 	const [userProgress, setUserProgress] = useState<number | null>(null);
 	const [isExpanded, setIsExpanded] = useState<boolean>(false);
@@ -400,6 +408,22 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 		return null;
 	}, [dragPreviewRange, rulerRange]);
 
+	const rulerStats = useMemo(() => {
+		if (!isRulerEnabled || !rulerRange || !enhancedTrailPoints?.length) return null;
+		const { distanceFromStartA, distanceFromStartB } = rulerRange;
+		const segment = enhancedTrailPoints
+			.filter((p) => p.distanceFromStart >= distanceFromStartA && p.distanceFromStart <= distanceFromStartB)
+			.sort((a, b) => a.distanceFromStart - b.distanceFromStart);
+		if (segment.length < 2) return null;
+		const distanceKm = (distanceFromStartB - distanceFromStartA) / 1000;
+		const gain = segment[segment.length - 1].elevationGainFromStart - segment[0].elevationGainFromStart;
+		const loss = segment[segment.length - 1].elevationLossFromStart - segment[0].elevationLossFromStart;
+		// Naismith's rule: 4 km/h + 1h per 600m ascent
+		const hikingTimeMin = Math.round((distanceKm / 4 + gain / 600) * 60);
+		const sections = [...new Set(segment.map((p) => p.sectionName).filter(Boolean))] as string[];
+		return { distanceKm, gain, loss, hikingTimeMin, sections };
+	}, [isRulerEnabled, rulerRange, enhancedTrailPoints]);
+
 	const toggleExpanded = (): void => {
 		setIsExpanded(!isExpanded);
 	};
@@ -539,6 +563,29 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 					{t('loss')}: {formatElevation(elevationLoss, units)}
 				</span>
 			</div>
+			{rulerStats && (
+				<div
+					className="mb-2 flex flex-wrap gap-x-4 gap-y-0.5 rounded bg-[var(--cldt-green)]/10 px-2 py-1 text-xs text-[color:var(--cldt-green)] sm:text-sm dark:bg-[var(--cldt-green)]/15"
+					onClick={toggleExpanded}
+				>
+					<span className="truncate font-medium">{t('rulerSegment')}:</span>
+					<span className="truncate">{formatDistance(rulerStats.distanceKm, units, distancePrecision)}</span>
+					<span className="truncate">
+						{t('gain')}: {formatElevation(rulerStats.gain, units)}
+					</span>
+					<span className="truncate">
+						{t('loss')}: {formatElevation(rulerStats.loss, units)}
+					</span>
+					<span className="truncate">
+						{t('rulerHikingTime')}: {formatHikingTime(rulerStats.hikingTimeMin)}
+					</span>
+					{rulerStats.sections.length > 0 && (
+						<span className="truncate">
+							{t('rulerSection')}: {rulerStats.sections.map((k) => tTrail(k)).join(' → ')}
+						</span>
+					)}
+				</div>
+			)}
 			{isExpanded && (
 				<div
 					className="h-[calc(100%-3.5rem)] min-h-[200px]"
