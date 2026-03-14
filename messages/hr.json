@@ -34,12 +34,13 @@
 			"location": "Opcionalno praćenje lokacije za prikaz vaše pozicije na stazi",
 			"share": "Dijeljenje linkova s trenutnim prikazom ili napretkom na stazi",
 			"units": "Metričke i imperijalne jedinice",
-			"darkMode": "Tamni način rada i opcije za uštedu baterije"
+			"darkMode": "Tamni način rada i opcije za uštedu baterije",
+			"offlineMaps": "Offline karte - preuzmite koridor staze za korištenje bez signala"
 		},
 		"dataAttribution": "Podaci i atribucija",
 		"dataAttributionDesc": "Podatke o stazi pruža organizacija Udruga Long Distance Trail Hrvatska (LDTH). Karte dolaze od OpenStreetMap, OpenTopoMap, CyclOSM i drugih pružatelja. Hrvatske topografske karte su od Državne geodetske uprave (DGU).",
 		"privacy": "Privatnost",
-		"privacyDesc": "Vaša lokacija se koristi samo kada je omogućite i date dopuštenje. Nikada se ne šalje na server — sve se izvodi u vašem pregledniku. Nije potreban račun ili prijava.",
+		"privacyDesc": "Vaša lokacija se koristi samo kada je omogućite i date dopuštenje. Nikada se ne šalje na server - sve se izvodi u vašem pregledniku. Nije potreban račun ili prijava.",
 		"links": "Linkovi",
 		"officialWebsite": "Službena stranica {companyName}",
 		"sourceCode": "Izvorni kod na GitHubu",
@@ -279,5 +280,29 @@
 		"description": "Karta za prvo učitavanje treba internetsku vezu. Ako ste stranicu već posjetili, dio sadržaja može biti dostupan iz predmemorije.",
 		"tryAgain": "Pokušaj ponovno",
 		"goHome": "Na početnu"
+	},
+	"offlineIndicator": {
+		"offline": "Izvan mreže - koristim predmemoriju"
+	},
+	"tileCache": {
+		"title": "Karte bez interneta",
+		"providerNotCacheable": "Ovaj sloj karte nije moguće predmemorirati za offline korištenje.",
+		"noTrailData": "Prvo učitaj stazu kako bi omogućio offline karte.",
+		"download": "Preuzmi za offline",
+		"downloading": "Preuzimanje {done} / {total} pločica…",
+		"cancel": "Odustani",
+		"clear": "Obriši",
+		"redownload": "Preuzmi ponovo",
+		"lastDownloaded": "Predmemorirano {time}",
+		"tilesCached": "{count} pločica",
+		"cacheStale": "Predmemorija je starija od 30 dana",
+		"quotaExceeded": "Nema dovoljno prostora za pohranu pločica.",
+		"downloadError": "Preuzimanje nije uspjelo. Pokušajte ponovo.",
+		"autoSync": "Automatska sinkronizacija",
+		"autoSyncTooltip": "Automatski preuzima zastarjele pločice kada uređaj dođe online.",
+		"estimatedTiles": "~{count} pločica za preuzimanje",
+		"today": "danas",
+		"yesterday": "jučer",
+		"daysAgo": "prije {days} dana"
 	}
 }
