@@ -22,12 +22,14 @@ export default async function LocaleLayout({ children, params }: Props): Promise
 	}
 	setRequestLocale(locale);
 
-	const [enMessages, hrMessages] = await Promise.all([
+	const [enMessages, hrMessages, deMessages, itMessages] = await Promise.all([
 		import('../../../messages/en.json').then((m) => m.default),
 		import('../../../messages/hr.json').then((m) => m.default),
+		import('../../../messages/de.json').then((m) => m.default),
+		import('../../../messages/it.json').then((m) => m.default),
 	]);
 
-	const allMessages = { en: enMessages, hr: hrMessages };
+	const allMessages = { en: enMessages, hr: hrMessages, de: deMessages, it: itMessages };
 	const initialMessages = allMessages[locale] ?? allMessages[routing.defaultLocale];
 	const timeZone = await getTimeZone();
 
