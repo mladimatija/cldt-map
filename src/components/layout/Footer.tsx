@@ -1,7 +1,7 @@
 'use client';
 
 /** Bottom bar: copyright, about link, language switcher, GitHub link. Uses next-intl Link for locale switching. */
-import { Link, usePathname } from '@/i18n/navigation';
+import { Link } from '@/i18n/navigation';
 import { FaGithub } from 'react-icons/fa';
 import { useSiteMetadata } from '@/hooks';
 import { ExternalLink } from '@/components/ui/ExternalLink';
