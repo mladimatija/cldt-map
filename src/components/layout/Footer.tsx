@@ -5,22 +5,13 @@ import { Link, usePathname } from '@/i18n/navigation';
 import { FaGithub } from 'react-icons/fa';
 import { useSiteMetadata } from '@/hooks';
 import { ExternalLink } from '@/components/ui/ExternalLink';
-import { useLocale, useTranslations } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import { JSX } from 'react';
-import { useClientLocale } from '@/components/providers/ClientIntlProvider';
-
-/** Text link styles for footer language switcher (not button variants). */
-const FOOTER_LANG_LINK =
-	'cursor-pointer border-none bg-transparent p-0 font-medium transition-colors outline-none hover:no-underline focus-visible:no-underline text-white hover:text-cldt-green focus-visible:text-cldt-green';
-const FOOTER_LANG_LINK_ACTIVE =
-	'cursor-pointer border-none bg-transparent p-0 font-medium transition-colors outline-none hover:no-underline focus-visible:no-underline text-cldt-green hover:text-cldt-green focus-visible:text-cldt-green';
+import { LanguageSwitcher } from './LanguageSwitcher';
 
 export function Footer(): JSX.Element {
 	const { authorName, authorUrl, githubUrl, title } = useSiteMetadata();
 	const t = useTranslations('footer');
-	const locale = useLocale();
-	const pathname = usePathname();
-	const { setLocale } = useClientLocale();
 
 	return (
 		<footer className="bg-cldt-blue shadow-t-md sticky bottom-0 flex flex-col gap-2 p-3 text-white sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-x-4">
@@ -45,32 +36,10 @@ export function Footer(): JSX.Element {
 					{t('about')}
 				</Link>
 				<span className="mx-2 text-white opacity-70">|</span>
-				<span className="flex items-center gap-1">
-					<Link
-						aria-current={locale === 'en' ? 'page' : undefined}
-						className={locale === 'en' ? FOOTER_LANG_LINK_ACTIVE : FOOTER_LANG_LINK}
-						href={pathname}
-						locale="en"
-						title={t('switchToEn')}
-						onClick={() => setLocale('en')}
-					>
-						{t('en')}
-					</Link>
-					<span className="text-white opacity-50">|</span>
-					<Link
-						aria-current={locale === 'hr' ? 'page' : undefined}
-						className={locale === 'hr' ? FOOTER_LANG_LINK_ACTIVE : FOOTER_LANG_LINK}
-						href={pathname}
-						locale="hr"
-						title={t('switchToHr')}
-						onClick={() => setLocale('hr')}
-					>
-						{t('hr')}
-					</Link>
-				</span>
+				<LanguageSwitcher />
 				<span className="mx-2 text-white opacity-70">|</span>
 				<ExternalLink
-					className="text-cldt-light-blue focus-visible:text-cldt-light-blue hover:text-cldt-light-blue font-medium text-white transition-colors duration-200 outline-none hover:no-underline focus-visible:no-underline"
+					className="focus-visible:text-cldt-light-blue hover:text-cldt-light-blue font-medium text-white transition-colors duration-200 outline-none hover:no-underline focus-visible:no-underline"
 					href={githubUrl}
 					title={t('githubLabel', { title })}
 				>

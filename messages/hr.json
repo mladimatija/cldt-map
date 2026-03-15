@@ -16,7 +16,11 @@
 		"en": "English",
 		"hr": "Hrvatski",
 		"switchToEn": "Prebaci na engleski",
-		"switchToHr": "Prebaci na hrvatski"
+		"switchToHr": "Prebaci na hrvatski",
+		"de": "Njemački",
+		"it": "Talijanski",
+		"switchToDe": "Prebaci na njemački",
+		"switchToIt": "Prebaci na talijanski"
 	},
 	"about": {
 		"title": "O projektu",

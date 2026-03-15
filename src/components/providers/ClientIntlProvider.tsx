@@ -6,7 +6,7 @@
  */
 import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { NextIntlClientProvider } from 'next-intl';
-import { routing } from '@/i18n/routing';
+import { routing, type Locale } from '@/i18n/routing';
 
 const LOCALE_STORAGE_KEY = 'cldt-map-locale';
 
@@ -25,7 +25,7 @@ type Messages = Record<string, Record<string, unknown>>;
 
 type ClientIntlContextValue = {
 	locale: string;
-	setLocale: (locale: 'en' | 'hr') => void;
+	setLocale: (locale: Locale) => void;
 };
 
 const ClientIntlContext = createContext<ClientIntlContextValue | null>(null);
@@ -65,7 +65,7 @@ export function ClientIntlProvider({
 		}
 	}, [initialLocale, locale]);
 
-	const setLocale = useCallback((targetLocale: 'en' | 'hr') => {
+	const setLocale = useCallback((targetLocale: Locale) => {
 		setLocaleState(targetLocale);
 		setStoredLocale(targetLocale);
 	}, []);

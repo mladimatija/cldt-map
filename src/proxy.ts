@@ -4,12 +4,12 @@
  */
 import createMiddleware from 'next-intl/middleware';
 import { NextRequest } from 'next/server';
-import { routing } from './i18n/routing';
+import { routing, type Locale } from './i18n/routing';
 
 /** Ex-Yu language codes (former Yugoslavia): default to Croatian when no cookie/locale set. */
 const EX_YU_LANGUAGE_CODES = ['hr', 'sr', 'sl', 'bs', 'mk', 'sq', 'cnr'];
 
-function getDefaultLocaleFromRequest(request: NextRequest): 'en' | 'hr' {
+function getDefaultLocaleFromRequest(request: NextRequest): Locale {
 	const acceptLanguage = request.headers.get('accept-language') || '';
 	const parts = acceptLanguage.split(',').map((p) => p.trim().split(';')[0]);
 	for (const part of parts) {

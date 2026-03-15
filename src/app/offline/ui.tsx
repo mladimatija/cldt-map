@@ -3,27 +3,30 @@
 import React, { useMemo, useState } from 'react';
 import en from '../../../messages/en.json';
 import hr from '../../../messages/hr.json';
-import { routing } from '@/i18n/routing';
+import de from '../../../messages/de.json';
+import it from '../../../messages/it.json';
+import { routing, type Locale } from '@/i18n/routing';
 import { Button, buttonVariants } from '@/components/ui/Button';
 import { cn } from '@/lib/utils';
 
 const LOCALE_STORAGE_KEY = 'cldt-map-locale';
 
+type OfflineMessages = { offline: { title: string; description: string; tryAgain: string; goHome: string } };
 const messages = {
-	en: (en as { offline: { title: string; description: string; tryAgain: string; goHome: string } }).offline,
-	hr: (hr as { offline: { title: string; description: string; tryAgain: string; goHome: string } }).offline,
+	en: (en as OfflineMessages).offline,
+	hr: (hr as OfflineMessages).offline,
+	de: (de as OfflineMessages).offline,
+	it: (it as OfflineMessages).offline,
 };
 
-function getOfflineLocale(): 'en' | 'hr' {
+function getOfflineLocale(): Locale {
 	if (typeof window === 'undefined') return routing.defaultLocale;
 	const stored = localStorage.getItem(LOCALE_STORAGE_KEY);
-	return (routing.locales as readonly string[]).includes(stored ?? '')
-		? (stored as 'en' | 'hr')
-		: routing.defaultLocale;
+	return (routing.locales as readonly string[]).includes(stored ?? '') ? (stored as Locale) : routing.defaultLocale;
 }
 
 export function OfflineClient(): React.ReactElement {
-	const [locale] = useState<'en' | 'hr'>(getOfflineLocale);
+	const [locale] = useState<Locale>(getOfflineLocale);
 	const t = useMemo(() => messages[locale] ?? messages.en, [locale]);
 
 	return (

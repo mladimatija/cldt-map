@@ -16,7 +16,11 @@
 		"en": "English",
 		"hr": "Croatian",
 		"switchToEn": "Switch to English",
-		"switchToHr": "Switch to Croatian"
+		"switchToHr": "Switch to Croatian",
+		"de": "German",
+		"it": "Italian",
+		"switchToDe": "Switch to German",
+		"switchToIt": "Switch to Italian"
 	},
 	"about": {
 		"title": "About",
