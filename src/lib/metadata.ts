@@ -14,7 +14,7 @@ export const siteMetadata = {
 	companyName: 'Croatian Long Distance Trail',
 	companyShortName: 'CLDT',
 	companyUrl: 'https://cldt.hr',
-	githubUrl: 'https://github.com/matijaculjak/cldt-map',
+	githubUrl: 'https://github.com/mladimatija/cldt-map',
 	twitterUsername: '',
 	ogImage: '/cldt-logo.svg',
 	locale: 'en_US',
