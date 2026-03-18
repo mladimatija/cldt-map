@@ -162,7 +162,10 @@
 	"mapMarkers": {
 		"yourLocation": "Vaša lokacija",
 		"navigateToTrail": "Navigirajte do najbliže točke na stazi",
-		"close": "Zatvori"
+		"close": "Zatvori",
+		"traveled": "Prijeđeno",
+		"toTrailEnd": "Do kraja staze",
+		"toSectionEnd": "Do kraja dionice"
 	},
 	"error": {
 		"title": "Došlo je do greške",
