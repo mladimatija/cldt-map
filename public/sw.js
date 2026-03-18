@@ -16,14 +16,20 @@ const TILE_HOSTS = [
     'geoportal.dgu.hr',
 ];
 
+/** Returns true if `hostname` is exactly `allowedHost` or a subdomain of it. */
+function isAllowedHost(hostname, allowedHost) {
+    if (!hostname || !allowedHost) return false;
+    return hostname === allowedHost || hostname.endsWith('.' + allowedHost);
+}
+
 /** Returns a stable cache-key string from a tile URL hostname. */
 function getTileProviderKey(hostname) {
-    if (hostname.includes('openstreetmap.org') && !hostname.includes('cyclosm')) return 'osm';
-    if (hostname.includes('opentopomap.org')) return 'topo';
-    if (hostname.includes('arcgisonline.com')) return 'esri';
+    if (isAllowedHost(hostname, 'openstreetmap.org') && !hostname.includes('cyclosm')) return 'osm';
+    if (isAllowedHost(hostname, 'opentopomap.org')) return 'topo';
+    if (isAllowedHost(hostname, 'arcgisonline.com')) return 'esri';
     if (hostname.includes('cyclosm')) return 'cyclosm';
-    if (hostname.includes('cartocdn.com')) return 'carto';
-    if (hostname.includes('geoportal.dgu.hr')) return 'dgu';
+    if (isAllowedHost(hostname, 'cartocdn.com')) return 'carto';
+    if (isAllowedHost(hostname, 'geoportal.dgu.hr')) return 'dgu';
     return 'other';
 }
 
@@ -34,7 +40,7 @@ function getTileCacheName(hostname) {
 
 /** Returns true if the URL looks like a tile request we should cache. */
 function isTileRequest(url) {
-    return TILE_HOSTS.some((host) => url.hostname.includes(host));
+    return TILE_HOSTS.some((host) => isAllowedHost(url.hostname, host));
 }
 
 // ── Lifecycle ────────────────────────────────────────────────────────────────
