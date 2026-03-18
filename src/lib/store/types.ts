@@ -187,6 +187,15 @@ export interface MapStoreState {
 
 	isRulerEnabled: boolean;
 	setRulerEnabled: (enabled: boolean) => void;
+
+	showRadarOverlay: boolean;
+	setShowRadarOverlay: (show: boolean) => void;
+	radarFrames: Array<{ time: number; url: string }>;
+	setRadarFrames: (frames: Array<{ time: number; url: string }>) => void;
+	radarFrameIndex: number;
+	setRadarFrameIndex: (index: number) => void;
+	radarPlaying: boolean;
+	setRadarPlaying: (playing: boolean) => void;
 	/** When the distance ruler has two points, the range in meters from trail start; used to highlight the chart. */
 	rulerRange: { distanceFromStartA: number; distanceFromStartB: number } | null;
 	setRulerRange: (range: { distanceFromStartA: number; distanceFromStartB: number } | null) => void;
