@@ -6,16 +6,25 @@ import { Marker, useMap } from 'react-leaflet';
 import { useTranslations } from 'next-intl';
 import L from 'leaflet';
 import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
-import { isWithinMapBoundary, getNavigateToPointUrl } from '@/lib/utils';
+import { isWithinMapBoundary, getNavigateToPointUrl, formatDistance } from '@/lib/utils';
+import { TRAIL_OFF_TRAIL_THRESHOLD_M } from '@/lib/config';
+import { computeDistanceRemaining } from '@/lib/distance-utils';
 import { Button } from '@/components/ui/Button';
 
-/** Distance threshold (m) beyond which a user is considered "off trail".
- *  15m allows for typical GPS inaccuracy when the user is actually on the trail. */
-const OFF_TRAIL_DISTANCE_M = 15;
+/** @see TRAIL_OFF_TRAIL_THRESHOLD_M in src/lib/config.ts */
+const OFF_TRAIL_DISTANCE_M = TRAIL_OFF_TRAIL_THRESHOLD_M;
+
+interface DistanceInfo {
+	traveled: string;
+	toTrailEnd: string;
+	toSectionEnd: string | null;
+}
 
 interface LocationTooltipContentProps {
 	canNavigate: boolean;
 	closeLabel: string;
+	distanceInfo: DistanceInfo | null;
+	distanceLabels: { traveled: string; toTrailEnd: string; toSectionEnd: string };
 	navigateLabel: string;
 	showClose: boolean;
 	yourLocationText: string;
@@ -26,6 +35,8 @@ interface LocationTooltipContentProps {
 function LocationTooltipContent({
 	canNavigate,
 	closeLabel,
+	distanceInfo,
+	distanceLabels,
 	navigateLabel,
 	showClose,
 	yourLocationText,
@@ -45,6 +56,21 @@ function LocationTooltipContent({
 				</Button>
 			)}
 			<div className="font-medium">{yourLocationText}</div>
+			{distanceInfo && (
+				<div className="mt-1 space-y-0.5 text-xs">
+					<div>
+						{distanceLabels.traveled}: {distanceInfo.traveled}
+					</div>
+					<div>
+						{distanceLabels.toTrailEnd}: {distanceInfo.toTrailEnd}
+					</div>
+					{distanceInfo.toSectionEnd !== null && (
+						<div>
+							{distanceLabels.toSectionEnd}: {distanceInfo.toSectionEnd}
+						</div>
+					)}
+				</div>
+			)}
 			{canNavigate && (
 				<div className="mt-2 flex justify-center gap-2">
 					<Button variant="mapTooltipPrimary" onClick={onNavigate}>
@@ -89,6 +115,9 @@ export default function MapMarkers(): React.ReactElement | null {
 	const isLocating = useMapStore((state: MapStoreState) => state.isLocating);
 	const showUserMarker = useMapStore((state: MapStoreState) => state.showUserMarker);
 	const permissionStatus = useMapStore((state: MapStoreState) => state.permissionStatus);
+	const rulerRange = useMapStore((state: MapStoreState) => state.rulerRange);
+	const units = useMapStore((state: MapStoreState) => state.units);
+	const distancePrecision = useMapStore((state: MapStoreState) => state.distancePrecision);
 	const closestPoint = useStore((state: StoreState) => state.closestPoint);
 	const gpxLoaded = useStore((state: StoreState) => state.gpxLoaded);
 	const withinMapBoundary = userLocation ? isWithinMapBoundary(userLocation.lat, userLocation.lng) : true;
@@ -153,6 +182,17 @@ export default function MapMarkers(): React.ReactElement | null {
 		[],
 	);
 
+	const distanceInfo = useMemo((): DistanceInfo | null => {
+		const result = computeDistanceRemaining(closestPoint, rulerRange, OFF_TRAIL_DISTANCE_M);
+		if (!result) return null;
+		return {
+			traveled: formatDistance(result.traveled, units, distancePrecision, true),
+			toTrailEnd: formatDistance(result.toTrailEnd, units, distancePrecision, true),
+			toSectionEnd:
+				result.toSectionEnd !== null ? formatDistance(result.toSectionEnd, units, distancePrecision, true) : null,
+		};
+	}, [closestPoint, rulerRange, units, distancePrecision]);
+
 	// Update marker when the user location changes
 	useEffect(() => {
 		if (!userLocation || !withinMapBoundary || permissionStatus !== 'granted') {
@@ -173,6 +213,12 @@ export default function MapMarkers(): React.ReactElement | null {
 				showClose
 				canNavigate={!!canNavigateToTrail && !!showOffTrailActions}
 				closeLabel={t('close')}
+				distanceInfo={distanceInfo}
+				distanceLabels={{
+					traveled: t('traveled'),
+					toTrailEnd: t('toTrailEnd'),
+					toSectionEnd: t('toSectionEnd'),
+				}}
 				navigateLabel={t('navigateToTrail')}
 				yourLocationText={t('yourLocation')}
 				onClose={handleTooltipClose}
@@ -191,7 +237,7 @@ export default function MapMarkers(): React.ReactElement | null {
 				}}
 			/>,
 		);
-	}, [canNavigateToTrail, showOffTrailActions, t, handleTooltipClose]);
+	}, [canNavigateToTrail, distanceInfo, showOffTrailActions, t, handleTooltipClose]);
 
 	// Bind/unbind tooltip when visibility changes. Use a single React container, so we never switch content types.
 	useEffect(() => {
