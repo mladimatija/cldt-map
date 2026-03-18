@@ -243,7 +243,7 @@ export default function BaseMapSelector({ initialProvider }: BaseMapSelectorProp
 
 		try {
 			map.eachLayer((layer) => {
-				if (L && layer instanceof L.TileLayer) {
+				if (L && layer instanceof L.TileLayer && layer.options.pane !== 'radarPane') {
 					map.removeLayer(layer);
 				}
 			});

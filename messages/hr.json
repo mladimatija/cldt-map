@@ -41,10 +41,13 @@
 			"darkMode": "Tamni način rada i opcije za uštedu baterije",
 			"offlineMaps": "Offline karte - preuzmite koridor staze za korištenje bez signala",
 			"gpxExport": "GPX izvoz — preuzimanje cijele rute ili odabranog segmenta ravnalom kao .gpx datoteke za GPS uređaje",
-			"printExport": "Ispis i izvoz — spremi trenutni prikaz karte kao PDF ili PNG sliku"
+			"printExport": "Ispis i izvoz — spremi trenutni prikaz karte kao PDF ili PNG sliku",
+			"weather": "Trenutno vrijeme na vašoj lokaciji na stazi — temperatura, vjetar, vjerojatnost padalina, izlazak/zalazak sunca (DHMZ + Open-Meteo)",
+			"trailNotices": "Regionalne obavijesti o stanju na stazi — odbacive obavijesti s upozorenjima za trenutne uvjete na stazi",
+			"radar": "Preklopni sloj radara padalina — animirani RainViewer radar s prošlim i prognoziranim kadrovima, kontrole reproduciranja i legenda boja"
 		},
 		"dataAttribution": "Podaci i atribucija",
-		"dataAttributionDesc": "Podatke o stazi pruža organizacija Udruga Long Distance Trail Hrvatska (LDTH). Karte dolaze od OpenStreetMap, OpenTopoMap, CyclOSM i drugih pružatelja. Hrvatske topografske karte su od Državne geodetske uprave (DGU).",
+		"dataAttributionDesc": "Podatke o stazi pruža organizacija Udruga Long Distance Trail Hrvatska (LDTH). Karte dolaze od OpenStreetMap, OpenTopoMap, CyclOSM i drugih pružatelja. Hrvatske topografske karte su od Državne geodetske uprave (DGU). Meteorološki podaci dolaze od DHMZ-a (Državni hidrometeorološki zavod) i Open-Meteo. Radarske pločice osigurava RainViewer.",
 		"privacy": "Privatnost",
 		"privacyDesc": "Vaša lokacija se koristi samo kada je omogućite i date dopuštenje. Nikada se ne šalje na server - sve se izvodi u vašem pregledniku. Nije potreban račun ili prijava.",
 		"links": "Linkovi",
@@ -100,6 +103,8 @@
 		"rulerHintDismiss": "Zatvori savjet",
 		"tilesEnable": "Omogući karte s granicom",
 		"tilesDisable": "Onemogući karte s granicom",
+		"radarEnable": "Prikaži radar padalina",
+		"radarDisable": "Sakrij radar padalina",
 		"colorShow": "Prikaži alat za prilagodbu boja",
 		"colorHide": "Sakrij alat za prilagodbu boja",
 		"colorMapAppearance": "Izgled karte",
@@ -347,5 +352,34 @@
 		"cancel": "Odustani",
 		"exportButton": "Izvoz / Ispis",
 		"exportButtonLabel": "Otvori opcije izvoza i ispisa"
+	},
+	"trailNotices": {
+		"regionLabel": "Obavijesti o stazi",
+		"dismissLabel": "Zatvori obavijest",
+		"moreInfo": "Više informacija"
+	},
+	"weather": {
+		"loading": "Učitavanje vremenske prognoze…",
+		"temperature": "Temperatura",
+		"feelsLike": "Osjeća se kao",
+		"precipitation": "Padaline",
+		"wind": "Vjetar",
+		"condition": "Stanje",
+		"sunrise": "Izlazak sunca",
+		"sunset": "Zalazak sunca",
+		"clear": "Vedro",
+		"cloudy": "Oblačno",
+		"fog": "Magla",
+		"rain": "Kiša",
+		"snow": "Snijeg",
+		"showers": "Pljuskovi",
+		"snowShowers": "Snježni pljuskovi",
+		"thunderstorm": "Grmljavinska oluja",
+		"legendNone": "Nema",
+		"legendLight": "Slabe",
+		"legendModerate": "Umj.",
+		"legendHeavy": "Jake",
+		"playRadar": "Pokreni radar",
+		"pauseRadar": "Zaustavi radar"
 	}
 }
