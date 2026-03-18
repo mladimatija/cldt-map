@@ -7,7 +7,7 @@ export const DEFAULT_PATH_OPTIONS: L.PathOptions = {
 	opacity: 0.8,
 };
 
-/** Meters – snap to exact start/end when within this. */
+/** Meters - snap to exact start/end when within this. */
 export const TRAIL_EPSILON_M = 10;
 
 /** Estimated tooltip size for positioning. */
