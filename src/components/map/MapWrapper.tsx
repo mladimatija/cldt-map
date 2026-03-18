@@ -51,14 +51,11 @@ export default function MapWrapper(_props?: MapWrapperProps): ReactElement {
 	// Brief minimum loading time to avoid flash (reduced from 2.5s for better UX).
 	// loadingText is set here (not in useState) to avoid SSR/client hydration mismatch.
 	useEffect(() => {
-		setLoadingText(t('initializingMap'));
-		const textUpdateTimer = setTimeout(() => {
-			setLoadingText(t('loadingMapData'));
-		}, 300);
-		const loadingTimer = setTimeout(() => {
-			setIsLoading(false);
-		}, 600);
+		const initTimer = setTimeout(() => setLoadingText(t('initializingMap')), 0);
+		const textUpdateTimer = setTimeout(() => setLoadingText(t('loadingMapData')), 300);
+		const loadingTimer = setTimeout(() => setIsLoading(false), 600);
 		return () => {
+			clearTimeout(initTimer);
 			clearTimeout(loadingTimer);
 			clearTimeout(textUpdateTimer);
 		};
