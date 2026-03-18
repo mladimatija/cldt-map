@@ -406,3 +406,54 @@
 .map-tooltip--error p {
 	color: inherit;
 }
+
+/* ─── Print / PDF layout ──────────────────────────────────────────────────── */
+@media print {
+	@page {
+		size: landscape;
+		margin: 0;
+	}
+
+	/* Hide all UI chrome */
+	header,
+	footer,
+	nav,
+	.leaflet-control-container,
+	.map-controls-top-row,
+	.z-controls,
+	.z-controls-popover,
+	.map-tooltip--banner,
+	.map-tooltip--pwa,
+	[class*='leaflet-control'],
+	.leaflet-top,
+	.leaflet-bottom,
+	.recharts-tooltip-wrapper,
+	.recharts-active-dot,
+	.recharts-tooltip-cursor,
+	.leaflet-pane.ruler-tooltip-pane {
+		display: none !important;
+	}
+
+	/* Make map fill the page */
+	body,
+	html {
+		margin: 0 !important;
+		padding: 0 !important;
+		background: white !important;
+	}
+
+	/* Ensure map container fills page */
+	.leaflet-container {
+		width: 100vw !important;
+		height: 100vh !important;
+		print-color-adjust: exact;
+		-webkit-print-color-adjust: exact;
+	}
+
+	/* Show map tiles in print */
+	.leaflet-tile,
+	.leaflet-tile-container {
+		print-color-adjust: exact;
+		-webkit-print-color-adjust: exact;
+	}
+}

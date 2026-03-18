@@ -37,6 +37,7 @@ import {
 	IoCreateOutline,
 	IoGridOutline,
 	IoMapOutline,
+	IoPrintOutline,
 	IoShareSocialOutline,
 } from 'react-icons/io5';
 import SmartTooltip from '@/components/ui/SmartTooltip';
@@ -48,6 +49,8 @@ import { MapControlsPrecisionSlider } from './MapControlsPrecisionSlider';
 import { MapControlsSettingsPanel } from './MapControlsSettingsPanel';
 import { MapControlsColorAdjust } from './MapControlsColorAdjust';
 import { MapControlsTestLink } from './MapControlsTestLink';
+import { MapControlsExportPanel } from './MapControlsExportPanel';
+import { fitMapToRulerBounds } from '@/lib/export-utils';
 import { RULER_SET_FROM_CHART_EVENT, type RulerSetFromChartDetail } from '@/lib/ruler-from-chart';
 
 function getCroatiaGeoJsonBoundary(): GeoJSON.FeatureCollection {
@@ -177,10 +180,12 @@ const MapControls: React.FC<MapControlsProps> = ({
 	const map = useMap() as ExtendedMap;
 	const t = useTranslations('mapControls');
 	const tChart = useTranslations('elevationChart');
+	const tExport = useTranslations('mapExport');
 	const [direction, setDirectionState] = useState<TrailDirection>(initialDirection);
 	const [units, setUnitsState] = useState<UnitSystem>(initialUnits);
 	const [isShowingBoundary, setIsShowingBoundary] = useState(false);
 	const [isSharing, setIsSharing] = useState(false);
+	const [isExporting, setIsExporting] = useState(false);
 	const [showTilesBoundary, setShowTilesBoundary] = useState(false);
 	const [isColorAdjustEnabled, setIsColorAdjustEnabled] = useState(false);
 	const [distancePrecisionState, setDistancePrecisionState] = useState(config.distancePrecision);
@@ -192,12 +197,14 @@ const MapControls: React.FC<MapControlsProps> = ({
 	const testLinkRef = useRef<HTMLDivElement>(null);
 	const topRightControlsRef = useRef<HTMLDivElement>(null);
 	const sharePopupRef = useRef<HTMLDivElement>(null);
+	const exportPanelRef = useRef<HTMLDivElement>(null);
 
 	useBlockMapPropagation(testLinkRef);
 	useBlockMapPropagation(topRightControlsRef);
 	useBlockMapPropagation(precisionContainerRef);
 	useBlockMapPropagation(settingsContainerRef);
 	useBlockMapPropagation(colorAdjustContainerRef);
+	useBlockMapPropagation(exportPanelRef);
 
 	const setDarkMode = useMapStore((state: MapStoreState) => state.setDarkMode);
 	const setBatterySaverMode = useMapStore((state: MapStoreState) => state.setBatterySaverMode);
@@ -267,6 +274,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 		setIsPrecisionExpanded(false);
 		setIsColorAdjustEnabled(false);
 		setIsSettingsExpanded(false);
+		setIsExporting(false);
 	}, []);
 
 	// Close precision slider when clicking outside
@@ -308,6 +316,19 @@ const MapControls: React.FC<MapControlsProps> = ({
 		document.addEventListener('mousedown', handleClickOutside);
 		return () => document.removeEventListener('mousedown', handleClickOutside);
 	}, [isSharing]);
+
+	useEffect(() => {
+		if (!isExporting) {
+			return;
+		}
+		const handleClickOutside = (e: MouseEvent): void => {
+			if (exportPanelRef.current && !exportPanelRef.current.contains(e.target as Node)) {
+				setIsExporting(false);
+			}
+		};
+		document.addEventListener('mousedown', handleClickOutside);
+		return () => document.removeEventListener('mousedown', handleClickOutside);
+	}, [isExporting]);
 
 	useEffect(() => {
 		const handleKeyDown = (e: KeyboardEvent): void => {
@@ -810,6 +831,14 @@ const MapControls: React.FC<MapControlsProps> = ({
 		applyRulerSegmentAndTooltip,
 	]);
 
+	// Auto-zoom map to the ruler segment whenever the range is set or updated.
+	useEffect(() => {
+		if (!rulerRange) return;
+		const points = useStore.getState().enhancedTrailPoints;
+		if (!points?.length) return;
+		fitMapToRulerBounds(map, rulerRange, points);
+	}, [rulerRange, map]);
+
 	rulerClickHandlerRef.current = (e: L.LeafletMouseEvent): void => {
 		const { latlng } = e;
 
@@ -940,6 +969,47 @@ const MapControls: React.FC<MapControlsProps> = ({
 
 	const toggleColorAdjust = (): void => {
 		setIsColorAdjustEnabled((prev) => !prev);
+	};
+
+	const handlePrint = (): void => {
+		setIsExporting(false);
+		// beforeprint fires after @media print CSS is applied (container resized to paper dimensions)
+		// but before the print dialog - invalidate size and re-fit bounds
+		const onBeforePrint = (): void => {
+			map.invalidateSize({ animate: false });
+			if (rulerRange) {
+				const pts = useStore.getState().enhancedTrailPoints;
+				if (pts?.length) {
+					fitMapToRulerBounds(map, rulerRange, pts, { animate: false, padding: [30, 30] });
+				}
+			}
+		};
+		window.addEventListener('beforeprint', onBeforePrint, { once: true });
+		window.print();
+	};
+
+	const handlePngDownload = (): void => {
+		setIsExporting(false);
+		if (rulerRange && enhancedTrailPoints?.length) {
+			fitMapToRulerBounds(map, rulerRange, enhancedTrailPoints);
+		}
+		setTimeout(async () => {
+			try {
+				const { toBlob } = await import('html-to-image');
+				const mapEl = document.querySelector<HTMLElement>('.leaflet-container');
+				if (!mapEl) return;
+				const blob = await toBlob(mapEl, { cacheBust: true });
+				if (!blob) return;
+				const url = URL.createObjectURL(blob);
+				const link = document.createElement('a');
+				link.download = 'cldt-map.png';
+				link.href = url;
+				link.click();
+				URL.revokeObjectURL(url);
+			} catch (err) {
+				console.error('PNG export failed:', err instanceof Error ? err.message : String(err));
+			}
+		}, 600);
 	};
 
 	useEffect(() => {
@@ -1275,6 +1345,28 @@ const MapControls: React.FC<MapControlsProps> = ({
 						setIsSettingsExpanded((prev) => !prev);
 					}}
 				/>
+
+				<div className="relative inline-block w-10 shrink-0">
+					<MapControlsButton
+						ariaLabel={tExport('exportButtonLabel')}
+						content={tExport('exportButtonLabel')}
+						onClick={() => {
+							closeOverlayTools();
+							setIsExporting((prev) => !prev);
+						}}
+					>
+						<IoPrintOutline aria-hidden className="h-5 w-5" />
+					</MapControlsButton>
+					{isExporting && (
+						<MapControlsExportPanel
+							baseMapProvider={baseMapProvider}
+							containerRef={exportPanelRef}
+							onClose={() => setIsExporting(false)}
+							onPngDownload={handlePngDownload}
+							onPrint={handlePrint}
+						/>
+					)}
+				</div>
 
 				<div className="relative inline-block w-10 shrink-0">
 					<MapControlsButton

@@ -39,13 +39,14 @@
 			"share": "Links teilen mit aktueller Ansicht oder Fortschritt auf dem Trail",
 			"units": "Metrische und imperiale Einheiten",
 			"darkMode": "Dunkelmodus und Energiespar-Optionen",
-			"offlineMaps": "Offline-Karten – Trail-Korridor für die Nutzung ohne Netzempfang vorladen",
-			"gpxExport": "GPX-Export – Lade den gesamten Trail oder einen per Lineal ausgewählten Abschnitt als .gpx-Datei für GPS-Geräte herunter"
+			"offlineMaps": "Offline-Karten - Trail-Korridor für die Nutzung ohne Netzempfang vorladen",
+			"gpxExport": "GPX-Export - Lade den gesamten Trail oder einen per Lineal ausgewählten Abschnitt als .gpx-Datei für GPS-Geräte herunter",
+			"printExport": "Drucken und Exportieren — aktuelle Kartenansicht als PDF oder PNG speichern"
 		},
 		"dataAttribution": "Daten & Urheberrecht",
 		"dataAttributionDesc": "Trail-Daten werden von der Udruga Long Distance Trail Hrvatska (LDTH) bereitgestellt. Kartenkacheln kommen von OpenStreetMap, OpenTopoMap, CyclOSM und anderen Anbietern. Kroatische topografische Karten stammen vom Staatlichen Geodätischen Amt (DGU).",
 		"privacy": "Datenschutz",
-		"privacyDesc": "Dein Standort wird nur verwendet, wenn du ihn aktivierst und die Berechtigung erteilst. Er wird niemals an einen Server gesendet – alles läuft in deinem Browser. Es ist kein Konto oder Login erforderlich.",
+		"privacyDesc": "Dein Standort wird nur verwendet, wenn du ihn aktivierst und die Berechtigung erteilst. Er wird niemals an einen Server gesendet - alles läuft in deinem Browser. Es ist kein Konto oder Login erforderlich.",
 		"links": "Links",
 		"officialWebsite": "Offizielle {companyName}-Website",
 		"sourceCode": "Quellcode auf GitHub",
@@ -289,7 +290,7 @@
 		"goHome": "Zur Startseite"
 	},
 	"offlineIndicator": {
-		"offline": "Offline – gespeicherte Kacheln werden verwendet"
+		"offline": "Offline - gespeicherte Kacheln werden verwendet"
 	},
 	"tileCache": {
 		"title": "Offline-Karten",
@@ -331,5 +332,16 @@
 		"exportSegment": "Als GPX exportieren",
 		"filenameFullTrail": "cldt-full-trail.gpx",
 		"filenameSegment": "cldt-segment.gpx"
+	},
+	"mapExport": {
+		"title": "Export / Drucken",
+		"printButton": "Drucken / PDF",
+		"printLabel": "Karte drucken oder als PDF speichern",
+		"pngButton": "PNG herunterladen",
+		"pngLabel": "Karte als PNG-Bild herunterladen",
+		"pngDisabledTooltip": "PNG-Export ist für diesen Kartenstil aufgrund von CORS-Einschränkungen des Kachel-Servers nicht verfügbar.",
+		"cancel": "Abbrechen",
+		"exportButton": "Export / Drucken",
+		"exportButtonLabel": "Export- und Druckoptionen öffnen"
 	}
 }

@@ -525,7 +525,7 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 					<div className="flex items-center gap-1.5">
 						<h2 className="text-cldt-blue-contrast mb-0 text-base font-semibold sm:text-lg">{t('title')}</h2>
 						<span
-							className="hover:text-cldt-blue dark:hover:text-cldt-blue inline-flex shrink-0 cursor-help items-center text-gray-400 dark:text-gray-500"
+							className="hover:text-cldt-blue dark:hover:text-cldt-blue inline-flex shrink-0 cursor-help items-center text-gray-400 dark:text-gray-500 print:hidden"
 							onClick={(e) => e.stopPropagation()}
 							onMouseDown={(e) => e.stopPropagation()}
 						>
@@ -557,7 +557,7 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 							</Tooltip>
 						</span>
 					</div>
-					<div className="flex items-center gap-2">
+					<div className="flex items-center gap-2 print:hidden">
 						{pinnedPoint !== null && (
 							<Button
 								size="sm"
@@ -608,7 +608,7 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 				</div>
 
 				<div
-					className="my-2 grid grid-cols-2 gap-x-4 gap-y-0.5 text-xs text-gray-700 sm:flex sm:flex-wrap sm:gap-x-4 sm:text-sm dark:text-[var(--text-secondary)]"
+					className={`my-2 grid grid-cols-2 gap-x-4 gap-y-0.5 text-xs text-gray-700 sm:flex sm:flex-wrap sm:gap-x-4 sm:text-sm dark:text-[var(--text-secondary)]${rulerRange ? 'print:hidden' : ''}`}
 					onClick={toggleExpanded}
 				>
 					<span className="truncate" title={formatDistance(totalDistance, units, distancePrecision)}>
@@ -646,7 +646,7 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 							</span>
 						)}
 						<Button
-							className="ml-auto shrink-0"
+							className="ml-auto shrink-0 print:hidden"
 							size="sm"
 							variant="base"
 							onClick={(e) => {
@@ -663,7 +663,7 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 				)}
 				{isExpanded && (
 					<div
-						className="min-h-[200px] flex-1"
+						className={`min-h-[200px] flex-1${rulerRange ? 'print:hidden' : ''}`}
 						ref={chartAreaRef}
 						role="presentation"
 						onMouseDownCapture={handleChartMouseDownCapture}
@@ -674,7 +674,7 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 								<RechartsTooltip
 									content={(props) => (
 										<ChartTooltipSync
-											active={props.active}
+											active={props.active && !rulerRange}
 											clearTrailHighlight={clearTrailHighlight}
 											coordinate={props.coordinate}
 											distanceLabel={t('distanceLabel')}
