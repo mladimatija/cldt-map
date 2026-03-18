@@ -221,8 +221,12 @@
 }
 
 .map-tooltip .font-medium {
-	color: var(--map-tooltip-label-color);
 	font-weight: 500;
+}
+
+.map-tooltip .font-medium:not([role='button']),
+.map-tooltip .font-bold:not([role='button']) {
+	color: var(--map-tooltip-label-color);
 }
 
 .trail-tooltip-coords-link {

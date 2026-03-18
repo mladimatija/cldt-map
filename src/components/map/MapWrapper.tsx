@@ -14,6 +14,10 @@ import { useMapStore } from '@/lib/store';
 import { MAP_FULLSCREEN_TOGGLE_EVENT } from '@/lib/map-events';
 
 const GPXLoadErrorBanner = dynamic(() => import('@/components/map/GPXLoadErrorBanner'), { ssr: false });
+const TrailNoticesBanner = dynamic(
+	() => import('@/components/map/TrailNoticesBanner').then((m) => ({ default: m.TrailNoticesBanner })),
+	{ ssr: false },
+);
 
 interface MapWrapperProps {
 	locale?: string;
@@ -95,6 +99,7 @@ export default function MapWrapper(_props?: MapWrapperProps): ReactElement {
 	return (
 		<div className="relative flex h-full w-full flex-col">
 			<GPXLoadErrorBanner />
+			<TrailNoticesBanner />
 			<div className="relative min-h-0 flex-1 bg-white" ref={mapContainerRef}>
 				<Map defaultBaseMap={config.baseMapProvider} zoomSnap={0} />
 			</div>

@@ -41,10 +41,13 @@
 			"darkMode": "Dunkelmodus und Energiespar-Optionen",
 			"offlineMaps": "Offline-Karten - Trail-Korridor für die Nutzung ohne Netzempfang vorladen",
 			"gpxExport": "GPX-Export - Lade den gesamten Trail oder einen per Lineal ausgewählten Abschnitt als .gpx-Datei für GPS-Geräte herunter",
-			"printExport": "Drucken und Exportieren — aktuelle Kartenansicht als PDF oder PNG speichern"
+			"printExport": "Drucken und Exportieren — aktuelle Kartenansicht als PDF oder PNG speichern",
+			"weather": "Aktuelles Wetter an Ihrem Trailstandort — Temperatur, Wind, Niederschlagswahrscheinlichkeit, Sonnenaufgang/-untergang (DHMZ + Open-Meteo)",
+			"trailNotices": "Regionale Trail-Zustandsbenachrichtigungen — abbaubare Banner mit Warnungen zu aktuellen Bedingungen auf dem Trail",
+			"radar": "Niederschlagsradar-Overlay — animierter RainViewer-Radar mit vergangenen und vorhergesagten Frames, Wiedergabesteuerung und Farblegende"
 		},
 		"dataAttribution": "Daten & Urheberrecht",
-		"dataAttributionDesc": "Trail-Daten werden von der Udruga Long Distance Trail Hrvatska (LDTH) bereitgestellt. Kartenkacheln kommen von OpenStreetMap, OpenTopoMap, CyclOSM und anderen Anbietern. Kroatische topografische Karten stammen vom Staatlichen Geodätischen Amt (DGU).",
+		"dataAttributionDesc": "Trail-Daten werden von der Udruga Long Distance Trail Hrvatska (LDTH) bereitgestellt. Kartenkacheln kommen von OpenStreetMap, OpenTopoMap, CyclOSM und anderen Anbietern. Kroatische topografische Karten stammen vom Staatlichen Geodätischen Amt (DGU). Wetterdaten kommen von DHMZ (Kroatischer Wetterdienst) und Open-Meteo. Radarkacheln werden von RainViewer bereitgestellt.",
 		"privacy": "Datenschutz",
 		"privacyDesc": "Dein Standort wird nur verwendet, wenn du ihn aktivierst und die Berechtigung erteilst. Er wird niemals an einen Server gesendet - alles läuft in deinem Browser. Es ist kein Konto oder Login erforderlich.",
 		"links": "Links",
@@ -99,6 +102,8 @@
 		"rulerHintDismiss": "Hinweis schließen",
 		"tilesEnable": "Grenzausgeschnittene Kartenkacheln aktivieren",
 		"tilesDisable": "Grenzausgeschnittene Kartenkacheln deaktivieren",
+		"radarEnable": "Niederschlagsradar anzeigen",
+		"radarDisable": "Niederschlagsradar ausblenden",
 		"colorShow": "Farbanpassungswerkzeug anzeigen",
 		"colorHide": "Farbanpassungswerkzeug ausblenden",
 		"colorMapAppearance": "Kartenaussehen",
@@ -346,5 +351,34 @@
 		"cancel": "Abbrechen",
 		"exportButton": "Export / Drucken",
 		"exportButtonLabel": "Export- und Druckoptionen öffnen"
+	},
+	"trailNotices": {
+		"regionLabel": "Trail-Hinweise",
+		"dismissLabel": "Hinweis schließen",
+		"moreInfo": "Mehr Informationen"
+	},
+	"weather": {
+		"loading": "Wetter wird geladen…",
+		"temperature": "Temperatur",
+		"feelsLike": "Gefühlt",
+		"precipitation": "Niederschlag",
+		"wind": "Wind",
+		"condition": "Zustand",
+		"sunrise": "Sonnenaufgang",
+		"sunset": "Sonnenuntergang",
+		"clear": "Klar",
+		"cloudy": "Bewölkt",
+		"fog": "Nebel",
+		"rain": "Regen",
+		"snow": "Schnee",
+		"showers": "Schauer",
+		"snowShowers": "Schneeschauer",
+		"thunderstorm": "Gewitter",
+		"legendNone": "Kein",
+		"legendLight": "Leicht",
+		"legendModerate": "Mäß.",
+		"legendHeavy": "Stark",
+		"playRadar": "Radar abspielen",
+		"pauseRadar": "Radar pausieren"
 	}
 }
