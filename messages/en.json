@@ -40,7 +40,8 @@
 			"units": "Metric and imperial units",
 			"darkMode": "Dark mode and battery saver options",
 			"offlineMaps": "Offline maps - pre-cache the trail corridor for use without a signal",
-			"gpxExport": "GPX export — download the full trail or a ruler-selected segment as a .gpx file for GPS devices"
+			"gpxExport": "GPX export — download the full trail or a ruler-selected segment as a .gpx file for GPS devices",
+			"printExport": "Print and export — save the current map view as a PDF or PNG image"
 		},
 		"dataAttribution": "Data & attribution",
 		"dataAttributionDesc": "Trail data is provided by the Udruga Long Distance Trail Hrvatska (LDTH) organization. Map tiles come from OpenStreetMap, OpenTopoMap, CyclOSM, and other providers. Croatian topographic maps are from the State Geodetic Administration (DGU).",
@@ -331,5 +332,16 @@
 		"exportSegment": "Export as GPX",
 		"filenameFullTrail": "cldt-full-trail.gpx",
 		"filenameSegment": "cldt-segment.gpx"
+	},
+	"mapExport": {
+		"title": "Export / Print",
+		"printButton": "Print / PDF",
+		"printLabel": "Print map or save as PDF",
+		"pngButton": "Download PNG",
+		"pngLabel": "Download map as PNG image",
+		"pngDisabledTooltip": "PNG export is unavailable for this map style due to tile server CORS restrictions.",
+		"cancel": "Cancel",
+		"exportButton": "Export / Print",
+		"exportButtonLabel": "Open export and print options"
 	}
 }

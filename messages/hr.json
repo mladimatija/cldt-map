@@ -40,7 +40,8 @@
 			"units": "Metričke i imperijalne jedinice",
 			"darkMode": "Tamni način rada i opcije za uštedu baterije",
 			"offlineMaps": "Offline karte - preuzmite koridor staze za korištenje bez signala",
-			"gpxExport": "GPX izvoz — preuzimanje cijele rute ili odabranog segmenta ravnalom kao .gpx datoteke za GPS uređaje"
+			"gpxExport": "GPX izvoz — preuzimanje cijele rute ili odabranog segmenta ravnalom kao .gpx datoteke za GPS uređaje",
+			"printExport": "Ispis i izvoz — spremi trenutni prikaz karte kao PDF ili PNG sliku"
 		},
 		"dataAttribution": "Podaci i atribucija",
 		"dataAttributionDesc": "Podatke o stazi pruža organizacija Udruga Long Distance Trail Hrvatska (LDTH). Karte dolaze od OpenStreetMap, OpenTopoMap, CyclOSM i drugih pružatelja. Hrvatske topografske karte su od Državne geodetske uprave (DGU).",
@@ -332,5 +333,16 @@
 		"exportSegment": "Izvezi kao GPX",
 		"filenameFullTrail": "cldt-cijela-staza.gpx",
 		"filenameSegment": "cldt-segment.gpx"
+	},
+	"mapExport": {
+		"title": "Izvoz / Ispis",
+		"printButton": "Ispis / PDF",
+		"printLabel": "Ispiši kartu ili spremi kao PDF",
+		"pngButton": "Preuzmi PNG",
+		"pngLabel": "Preuzmi kartu kao PNG sliku",
+		"pngDisabledTooltip": "PNG izvoz nije dostupan za ovaj stil karte zbog CORS ograničenja poslužitelja pločica.",
+		"cancel": "Odustani",
+		"exportButton": "Izvoz / Ispis",
+		"exportButtonLabel": "Otvori opcije izvoza i ispisa"
 	}
 }
