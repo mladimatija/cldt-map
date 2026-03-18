@@ -161,7 +161,10 @@
 	"mapMarkers": {
 		"yourLocation": "La tua posizione",
 		"navigateToTrail": "Naviga al punto più vicino sul sentiero",
-		"close": "Chiudi"
+		"close": "Chiudi",
+		"traveled": "Percorso",
+		"toTrailEnd": "Al termine del sentiero",
+		"toSectionEnd": "Al termine della sezione"
 	},
 	"error": {
 		"title": "Si è verificato un errore",
