@@ -24,6 +24,7 @@ import { TRAIL_SECTIONS } from '@/lib/trail-sections';
 import { fetchGPXWithCache } from '@/lib/gpx-cache';
 import { calculateTrailMetadata, estimatePassageDays } from '@/lib/map';
 import { clearShareUrlParams, formatDistance, formatElevation, parseShareUrlParams } from '@/lib/utils';
+import { fetchWeather, formatTemperature, formatWindSpeed, formatSunTime, type WeatherData } from '@/lib/weather';
 import type { UnitSystem } from '@/lib/types';
 import { useLocale, useTranslations } from 'next-intl';
 import { useFitToRoute } from '@/hooks';
@@ -79,12 +80,29 @@ interface TrailPointTooltipContentProps {
 	trailInfoHtml: string;
 	onClose: () => void;
 	closeLabel: string;
+	weatherData?: WeatherData | null;
+	weatherLoading?: boolean;
+	weatherLabels?: {
+		temperature: string;
+		feelsLike: string;
+		precipitation: string;
+		wind: string;
+		condition: string;
+		sunrise: string;
+		sunset: string;
+		loading: string;
+	};
+	units?: UnitSystem;
 }
 
 function TrailPointTooltipContent({
 	trailInfoHtml,
 	onClose,
 	closeLabel,
+	weatherData,
+	weatherLoading,
+	weatherLabels,
+	units = 'metric',
 }: TrailPointTooltipContentProps): React.ReactElement {
 	return (
 		<div className="user-location-tooltip-inner">
@@ -92,6 +110,34 @@ function TrailPointTooltipContent({
 				×
 			</Button>
 			<div className="text-left text-sm" dangerouslySetInnerHTML={{ __html: trailInfoHtml }} />
+			{weatherLabels && (
+				<div className="mt-1 border-t border-black pt-1 text-left text-sm">
+					{weatherLoading && <div className="text-gray-500">{weatherLabels.loading}</div>}
+					{weatherData && (
+						<>
+							<p>
+								<span className="font-medium">{weatherLabels.temperature}:</span>{' '}
+								{formatTemperature(weatherData.temperatureC, units)} (
+								<span className="font-medium">{weatherLabels.feelsLike}:</span>{' '}
+								{formatTemperature(weatherData.feelsLikeC, units)})
+							</p>
+							<p>
+								<span className="font-medium">{weatherLabels.precipitation}:</span>{' '}
+								{weatherData.precipitationProbabilityPct}%
+							</p>
+							<p>
+								<span className="font-medium">{weatherLabels.wind}:</span>{' '}
+								{formatWindSpeed(weatherData.windspeedKmh, units)}
+							</p>
+							<p>
+								<span className="font-medium">{weatherLabels.sunrise}:</span>{' '}
+								{formatSunTime(weatherData.sunrise, units)} ·{' '}
+								<span className="font-medium">{weatherLabels.sunset}</span> {formatSunTime(weatherData.sunset, units)}
+							</p>
+						</>
+					)}
+				</div>
+			)}
 		</div>
 	);
 }
@@ -103,6 +149,7 @@ interface TrailRouteProps {
 export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: TrailRouteProps): React.ReactElement | null {
 	const t = useTranslations('trailRoute');
 	const tChart = useTranslations('elevationChart');
+	const tWeather = useTranslations('weather');
 	const locale = useLocale();
 	const map = useMap();
 	const routeLayerRef = useRef<L.FeatureGroup | null>(null);
@@ -294,17 +341,43 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
       `;
 			const tooltipContainer = document.createElement('div');
 			const tooltipRoot = createRoot(tooltipContainer);
-			tooltipRoot.render(
-				<TrailPointTooltipContent
-					closeLabel={t('tooltipClose')}
-					trailInfoHtml={trailInfoHtml}
-					onClose={() => {
-						clearTrailHighlight?.(true);
-						clearShareUrlParams();
-					}}
-				/>,
-			);
+			const weatherLabels = {
+				temperature: tWeather('temperature'),
+				feelsLike: tWeather('feelsLike'),
+				precipitation: tWeather('precipitation'),
+				wind: tWeather('wind'),
+				condition: tWeather('condition'),
+				sunrise: tWeather('sunrise'),
+				sunset: tWeather('sunset'),
+				loading: tWeather('loading'),
+			};
+			const onClose = (): void => {
+				clearTrailHighlight?.(true);
+				clearShareUrlParams();
+			};
+			const renderTooltip = (weatherData: WeatherData | null, weatherLoading: boolean): void => {
+				tooltipRoot.render(
+					<TrailPointTooltipContent
+						closeLabel={t('tooltipClose')}
+						trailInfoHtml={trailInfoHtml}
+						units={useMapStore.getState().units}
+						weatherData={weatherData}
+						weatherLabels={weatherLabels}
+						weatherLoading={weatherLoading}
+						onClose={onClose}
+					/>,
+				);
+			};
+
+			renderTooltip(null, true);
 			tooltipRootRef.current = tooltipRoot;
+
+			// Fetch weather and re-render once data arrives; if fetch fails weatherData is null and loading state clears.
+			void fetchWeather(point.lat, point.lng).then((weatherData) => {
+				if (tooltipRootRef.current === tooltipRoot) {
+					renderTooltip(weatherData, false);
+				}
+			});
 
 			const mapContainer = map.getContainer();
 			const containerSize = map.getSize();
@@ -393,7 +466,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 
 			tooltipRef.current = tooltip;
 		},
-		[map, isTooltipVisible, tooltipPinnedFromShare, clearTrailHighlight, t],
+		[map, isTooltipVisible, tooltipPinnedFromShare, clearTrailHighlight, t, tWeather],
 	);
 
 	useEffect(() => {
