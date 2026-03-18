@@ -21,6 +21,7 @@
 		"class-variance-authority": "^0.7.1",
 		"classnames": "^2.5.1",
 		"clsx": "^2.1.1",
+		"html-to-image": "^1.11.13",
 		"leaflet": "^1.9.4",
 		"leaflet-boundary-canvas": "^1.0.0",
 		"localforage": "^1.10.0",

@@ -18,13 +18,14 @@ Interactive web map for the **Croatian Long Distance Trail (CLDT)** - a 2,200+ k
 - **Elevation profile** - Chart showing terrain along the route; hover to preview on the map, click to pin a point
 - **Distance ruler** - Measure segments; see estimated hiking time, elevation gain/loss, and section name for the selected range
 - **GPX export** - Download the full trail or any ruler-selected segment as a GPX file
+- **Print / export** - Print the current map view as a PDF (landscape, segment auto-fitted) or download as a PNG image
 - **Map layers** - Standard, Topo, Satellite, Terrain, CyclOSM, Croatia Topo
 - **Location tracking** - Optional GPS to see your position on the trail
 - **Share links** - Share current map view or progress on the trail
 - **Units** - Metric (km) and imperial (miles)
 - **Trail sections** - Optional color-coded sections (A/B/C) with boundary markers and stats (persisted)
 - **Dark mode & battery saver** - UI preferences and reduced location updates
-- **Bilingual** - English and Croatian (hr)
+- **4 languages** - English (en), Croatian (hr), German (de), Italian (it)
 - **Offline maps** - Pre-cache the full trail corridor for offline use; per-provider caching, staleness detection, auto-sync on reconnect, and storage quota handling
 - **Privacy-first** - Location stays in your browser; no account required
 
@@ -159,6 +160,7 @@ src/
 │   ├── config.ts     # App defaults (env overrides)
 │   ├── gpx-cache.ts  # GPX fetch + localforage cache
 │   ├── gpx-export.ts # GPX XML builder and segment extractor for file downloads
+│   ├── export-utils.ts # Print/PNG export helpers: CORS provider detection, ruler bounds fitting
 │   ├── tile-cache.ts # Tile pre-caching, corridor generation, metadata, storage utils
 │   └── utils.ts      # Formatting, URL parsing, boundary check, etc.
 ├── i18n/             # next-intl routing and request config
