@@ -161,7 +161,10 @@
 	"mapMarkers": {
 		"yourLocation": "Dein Standort",
 		"navigateToTrail": "Zum nächsten Punkt auf dem Trail navigieren",
-		"close": "Schließen"
+		"close": "Schließen",
+		"traveled": "Zurückgelegt",
+		"toTrailEnd": "Bis Streckenende",
+		"toSectionEnd": "Bis Abschnittsende"
 	},
 	"error": {
 		"title": "Ein Fehler ist aufgetreten",
