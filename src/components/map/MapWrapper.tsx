@@ -45,11 +45,13 @@ const Map = dynamic(() => import('@/components/map/Map'), {
 export default function MapWrapper(_props?: MapWrapperProps): ReactElement {
 	const t = useTranslations('mapWrapper');
 	const [isLoading, setIsLoading] = useState(true);
-	const [loadingText, setLoadingText] = useState(t('initializingMap'));
+	const [loadingText, setLoadingText] = useState('');
 	const mapContainerRef = useRef<HTMLDivElement>(null);
 
-	// Brief minimum loading time to avoid flash (reduced from 2.5s for better UX)
+	// Brief minimum loading time to avoid flash (reduced from 2.5s for better UX).
+	// loadingText is set here (not in useState) to avoid SSR/client hydration mismatch.
 	useEffect(() => {
+		setLoadingText(t('initializingMap'));
 		const textUpdateTimer = setTimeout(() => {
 			setLoadingText(t('loadingMapData'));
 		}, 300);
