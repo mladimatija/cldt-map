@@ -67,7 +67,7 @@ export function MapControlsSettingsPanel({
 				<div
 					aria-label={preferencesTitle}
 					aria-modal="true"
-					className="z-controls-popover absolute top-1/2 right-[calc(100%+0.5rem)] flex w-52 -translate-y-1/2 flex-col gap-2 rounded-lg border border-gray-200 bg-white p-3 shadow-md dark:border-gray-600 dark:bg-gray-800"
+					className="z-controls-popover absolute top-1/2 right-[calc(100%+0.5rem)] flex w-80 -translate-y-1/2 flex-col gap-2 rounded-lg border border-gray-200 bg-white p-3 shadow-md dark:border-gray-600 dark:bg-gray-800"
 					ref={popoverRef}
 					role="dialog"
 				>

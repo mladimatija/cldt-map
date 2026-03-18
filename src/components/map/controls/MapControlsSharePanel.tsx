@@ -55,7 +55,7 @@ export function MapControlsSharePanel({
 		<div
 			aria-labelledby="share-panel-title"
 			aria-modal="true"
-			className={`z-controls-popover absolute top-1/2 right-[calc(100%+0.5rem)] flex w-52 -translate-y-1/2 flex-col gap-2 ${MAP_CONTROL_POPOVER}`}
+			className={`z-controls-popover absolute top-1/2 right-[calc(100%+0.5rem)] flex w-80 -translate-y-1/2 flex-col gap-2 ${MAP_CONTROL_POPOVER}`}
 			ref={sharePopupRef}
 			role="dialog"
 			onContextMenu={(e) => e.preventDefault()}
