@@ -31,6 +31,17 @@ const OfflineIndicator = dynamic(
 	() => import('@/components/map/OfflineIndicator').then((m) => ({ default: m.OfflineIndicator })),
 	{ ssr: false },
 );
+const NoticeMarkers = dynamic(
+	() => import('@/components/map/NoticeMarkers').then((m) => ({ default: m.NoticeMarkers })),
+	{ ssr: false },
+);
+const RadarOverlay = dynamic(() => import('@/components/map/RadarOverlay').then((m) => ({ default: m.RadarOverlay })), {
+	ssr: false,
+});
+const RadarControls = dynamic(
+	() => import('@/components/map/RadarControls').then((m) => ({ default: m.RadarControls })),
+	{ ssr: false },
+);
 
 export default function MapContent(): React.ReactElement {
 	const [isLocating, setIsLocating] = useState(false);
@@ -121,15 +132,20 @@ export default function MapContent(): React.ReactElement {
 			<ShareUrlHandler />
 			<GoToDistance />
 			<BaseMapSelector />
+			<RadarOverlay />
 			<Suspense fallback={<MapTrailLoadingFallback />}>
 				<TrailRoute pathOptions={DEFAULT_PATH_OPTIONS} />
 			</Suspense>
 			<MapMarkers />
+			<NoticeMarkers />
 			<MapControls />
 			<RulerHint />
 			<ZoomControls />
 			<LocationControls checkPermission={checkAndRequestLocation} />
-			<ElevationChart className="z-map-overlay absolute right-14 bottom-2 left-14 mx-2 shadow-lg sm:mx-0" />
+			<div className="z-map-overlay absolute right-14 bottom-2 left-14 mx-2 flex flex-col gap-1 sm:mx-0">
+				<RadarControls />
+				<ElevationChart className="shadow-lg" />
+			</div>
 		</>
 	);
 }

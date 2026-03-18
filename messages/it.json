@@ -41,10 +41,13 @@
 			"darkMode": "Modalità scura e opzioni risparmio energetico",
 			"offlineMaps": "Mappe offline - pre-scarica il corridoio del sentiero per l'uso senza segnale",
 			"gpxExport": "Esporta GPX - scarica l'intero percorso o un segmento selezionato con il righello come file .gpx per dispositivi GPS",
-			"printExport": "Stampa ed esporta — salva la vista mappa corrente come PDF o immagine PNG"
+			"printExport": "Stampa ed esporta — salva la vista mappa corrente come PDF o immagine PNG",
+			"weather": "Meteo attuale nella tua posizione sul sentiero — temperatura, vento, probabilità precipitazioni, alba/tramonto (DHMZ + Open-Meteo)",
+			"trailNotices": "Avvisi regionali sulle condizioni del sentiero — banner eliminabili con avvisi sulle condizioni attuali sul percorso",
+			"radar": "Overlay radar precipitazioni — radar RainViewer animato con frame passati e previsionali, controlli play/pausa e legenda colori"
 		},
 		"dataAttribution": "Dati e attribuzioni",
-		"dataAttributionDesc": "I dati del sentiero sono forniti dall'organizzazione Udruga Long Distance Trail Hrvatska (LDTH). Le tessere mappa provengono da OpenStreetMap, OpenTopoMap, CyclOSM e altri provider. Le mappe topografiche croate provengono dall'Amministrazione Geodetica Statale (DGU).",
+		"dataAttributionDesc": "I dati del sentiero sono forniti dall'organizzazione Udruga Long Distance Trail Hrvatska (LDTH). Le tessere mappa provengono da OpenStreetMap, OpenTopoMap, CyclOSM e altri provider. Le mappe topografiche croate provengono dall'Amministrazione Geodetica Statale (DGU). I dati meteo provengono da DHMZ (Servizio Meteorologico Croato) e Open-Meteo. Le tessere radar sono fornite da RainViewer.",
 		"privacy": "Privacy",
 		"privacyDesc": "La tua posizione viene utilizzata solo quando la abiliti e concedi il permesso. Non viene mai inviata a nessun server - tutto funziona nel tuo browser. Non è necessario un account o un accesso.",
 		"links": "Link",
@@ -99,6 +102,8 @@
 		"rulerHintDismiss": "Chiudi suggerimento",
 		"tilesEnable": "Attiva tessere mappa ritagliate",
 		"tilesDisable": "Disattiva tessere mappa ritagliate",
+		"radarEnable": "Mostra radar precipitazioni",
+		"radarDisable": "Nascondi radar precipitazioni",
 		"colorShow": "Mostra strumento colori",
 		"colorHide": "Nascondi strumento colori",
 		"colorMapAppearance": "Aspetto mappa",
@@ -346,5 +351,34 @@
 		"cancel": "Annulla",
 		"exportButton": "Esporta / Stampa",
 		"exportButtonLabel": "Apri opzioni di esportazione e stampa"
+	},
+	"trailNotices": {
+		"regionLabel": "Avvisi sul sentiero",
+		"dismissLabel": "Chiudi avviso",
+		"moreInfo": "Ulteriori informazioni"
+	},
+	"weather": {
+		"loading": "Caricamento meteo…",
+		"temperature": "Temperatura",
+		"feelsLike": "Percepita",
+		"precipitation": "Precipitazioni",
+		"wind": "Vento",
+		"condition": "Condizione",
+		"sunrise": "Alba",
+		"sunset": "Tramonto",
+		"clear": "Sereno",
+		"cloudy": "Nuvoloso",
+		"fog": "Nebbia",
+		"rain": "Pioggia",
+		"snow": "Neve",
+		"showers": "Rovesci",
+		"snowShowers": "Rovesci di neve",
+		"thunderstorm": "Temporale",
+		"legendNone": "Nessuna",
+		"legendLight": "Lieve",
+		"legendModerate": "Mod.",
+		"legendHeavy": "Forte",
+		"playRadar": "Riproduci radar",
+		"pauseRadar": "Metti in pausa radar"
 	}
 }

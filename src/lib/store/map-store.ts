@@ -69,6 +69,15 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 
 				isRulerEnabled: config.rulerEnabled,
 				setRulerEnabled: (enabled: boolean) => set({ isRulerEnabled: enabled }),
+
+				showRadarOverlay: false,
+				setShowRadarOverlay: (show: boolean) => set({ showRadarOverlay: show }),
+				radarFrames: [],
+				setRadarFrames: (frames: Array<{ time: number; url: string }>) => set({ radarFrames: frames }),
+				radarFrameIndex: 0,
+				setRadarFrameIndex: (index: number) => set({ radarFrameIndex: index }),
+				radarPlaying: false,
+				setRadarPlaying: (playing: boolean) => set({ radarPlaying: playing }),
 				rulerRange: null,
 				setRulerRange: (range: { distanceFromStartA: number; distanceFromStartB: number } | null) =>
 					set({ rulerRange: range }),

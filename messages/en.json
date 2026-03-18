@@ -41,10 +41,13 @@
 			"darkMode": "Dark mode and battery saver options",
 			"offlineMaps": "Offline maps - pre-cache the trail corridor for use without a signal",
 			"gpxExport": "GPX export — download the full trail or a ruler-selected segment as a .gpx file for GPS devices",
-			"printExport": "Print and export — save the current map view as a PDF or PNG image"
+			"printExport": "Print and export — save the current map view as a PDF or PNG image",
+			"weather": "Current weather at your trail location — temperature, wind, precipitation probability, sunrise/sunset (DHMZ + Open-Meteo)",
+			"trailNotices": "Regional trail condition notices — dismissible banners with alerts for current conditions on the trail",
+			"radar": "Precipitation radar overlay — animated RainViewer radar with past and nowcast frames, play/pause controls, and colour legend"
 		},
 		"dataAttribution": "Data & attribution",
-		"dataAttributionDesc": "Trail data is provided by the Udruga Long Distance Trail Hrvatska (LDTH) organization. Map tiles come from OpenStreetMap, OpenTopoMap, CyclOSM, and other providers. Croatian topographic maps are from the State Geodetic Administration (DGU).",
+		"dataAttributionDesc": "Trail data is provided by the Udruga Long Distance Trail Hrvatska (LDTH) organization. Map tiles come from OpenStreetMap, OpenTopoMap, CyclOSM, and other providers. Croatian topographic maps are from the State Geodetic Administration (DGU). Weather data comes from DHMZ (Croatian Met Service) and Open-Meteo. Radar tiles are provided by RainViewer.",
 		"privacy": "Privacy",
 		"privacyDesc": "Your location is used only when you enable it and grant permission. It is never sent to any server - everything runs in your browser. No account or login is required.",
 		"links": "Links",
@@ -99,6 +102,8 @@
 		"rulerHintDismiss": "Dismiss hint",
 		"tilesEnable": "Enable boundary-clipped map tiles",
 		"tilesDisable": "Disable boundary-clipped map tiles",
+		"radarEnable": "Show precipitation radar",
+		"radarDisable": "Hide precipitation radar",
 		"colorShow": "Show color adjustment tool",
 		"colorHide": "Hide color adjustment tool",
 		"colorMapAppearance": "Map appearance",
@@ -346,5 +351,34 @@
 		"cancel": "Cancel",
 		"exportButton": "Export / Print",
 		"exportButtonLabel": "Open export and print options"
+	},
+	"trailNotices": {
+		"regionLabel": "Trail notices",
+		"dismissLabel": "Dismiss notice",
+		"moreInfo": "More info"
+	},
+	"weather": {
+		"loading": "Loading weather…",
+		"temperature": "Temperature",
+		"feelsLike": "Feels like",
+		"precipitation": "Precipitation",
+		"wind": "Wind",
+		"condition": "Condition",
+		"sunrise": "Sunrise",
+		"sunset": "Sunset",
+		"clear": "Clear",
+		"cloudy": "Cloudy",
+		"fog": "Fog",
+		"rain": "Rain",
+		"snow": "Snow",
+		"showers": "Showers",
+		"snowShowers": "Snow showers",
+		"thunderstorm": "Thunderstorm",
+		"legendNone": "None",
+		"legendLight": "Light",
+		"legendModerate": "Mod.",
+		"legendHeavy": "Heavy",
+		"playRadar": "Play radar",
+		"pauseRadar": "Pause radar"
 	}
 }

@@ -38,6 +38,7 @@ import {
 	IoGridOutline,
 	IoMapOutline,
 	IoPrintOutline,
+	IoRainyOutline,
 	IoShareSocialOutline,
 } from 'react-icons/io5';
 import SmartTooltip from '@/components/ui/SmartTooltip';
@@ -249,6 +250,8 @@ const MapControls: React.FC<MapControlsProps> = ({
 	const setUnits = useMapStore((state: MapStoreState) => state.setUnits);
 	const setShowBoundary = useMapStore((state: MapStoreState) => state.setShowBoundary);
 	const setShowTileBoundary = useMapStore((state: MapStoreState) => state.setShowTileBoundary);
+	const showRadarOverlay = useMapStore((state: MapStoreState) => state.showRadarOverlay);
+	const setShowRadarOverlay = useMapStore((state: MapStoreState) => state.setShowRadarOverlay);
 	const isRulerEnabled = useMapStore((state: MapStoreState) => state.isRulerEnabled);
 	const setRulerEnabled = useMapStore((state: MapStoreState) => state.setRulerEnabled);
 	const rulerRange = useMapStore((state: MapStoreState) => state.rulerRange);
@@ -1300,6 +1303,15 @@ const MapControls: React.FC<MapControlsProps> = ({
 					onClick={toggleTilesBoundary}
 				>
 					<IoGridOutline aria-hidden className="h-5 w-5" />
+				</MapControlsButton>
+
+				<MapControlsButton
+					active={showRadarOverlay}
+					ariaLabel={showRadarOverlay ? t('radarDisable') : t('radarEnable')}
+					content={showRadarOverlay ? t('radarDisable') : t('radarEnable')}
+					onClick={() => setShowRadarOverlay(!showRadarOverlay)}
+				>
+					<IoRainyOutline aria-hidden className="h-5 w-5" />
 				</MapControlsButton>
 
 				<MapControlsColorAdjust

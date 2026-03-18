@@ -9,6 +9,7 @@ import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/li
 import { isWithinMapBoundary, getNavigateToPointUrl, formatDistance } from '@/lib/utils';
 import { TRAIL_OFF_TRAIL_THRESHOLD_M } from '@/lib/config';
 import { computeDistanceRemaining } from '@/lib/distance-utils';
+import { fetchWeather, formatTemperature, formatWindSpeed, weatherCodeToKey, type WeatherData } from '@/lib/weather';
 import { Button } from '@/components/ui/Button';
 
 /** @see TRAIL_OFF_TRAIL_THRESHOLD_M in src/lib/config.ts */
@@ -20,6 +21,13 @@ interface DistanceInfo {
 	toSectionEnd: string | null;
 }
 
+interface WeatherInfo {
+	condition: string;
+	temperature: string;
+	wind: string;
+	precipitation: string;
+}
+
 interface LocationTooltipContentProps {
 	canNavigate: boolean;
 	closeLabel: string;
@@ -28,6 +36,8 @@ interface LocationTooltipContentProps {
 	navigateLabel: string;
 	showClose: boolean;
 	yourLocationText: string;
+	weatherInfo: WeatherInfo | null;
+	weatherLabels: { temperature: string; wind: string; precipitation: string };
 	onClose: () => void;
 	onNavigate: () => void;
 }
@@ -40,6 +50,8 @@ function LocationTooltipContent({
 	navigateLabel,
 	showClose,
 	yourLocationText,
+	weatherInfo,
+	weatherLabels,
 	onClose,
 	onNavigate,
 }: LocationTooltipContentProps): React.ReactElement {
@@ -71,6 +83,20 @@ function LocationTooltipContent({
 					)}
 				</div>
 			)}
+			{weatherInfo && (
+				<div className="mt-1 space-y-0.5 border-t border-black/10 pt-1">
+					<div>{weatherInfo.condition}</div>
+					<div>
+						{weatherLabels.temperature}: {weatherInfo.temperature}
+					</div>
+					<div>
+						{weatherLabels.wind}: {weatherInfo.wind}
+					</div>
+					<div>
+						{weatherLabels.precipitation}: {weatherInfo.precipitation}
+					</div>
+				</div>
+			)}
 			{canNavigate && (
 				<div className="mt-2 flex justify-center gap-2">
 					<Button variant="mapTooltipPrimary" onClick={onNavigate}>
@@ -88,10 +114,13 @@ function LocationTooltipContent({
  */
 export default function MapMarkers(): React.ReactElement | null {
 	const t = useTranslations('mapMarkers');
+	const tWeather = useTranslations('weather');
 	const map = useMap();
 	const userMarkerRef = useRef<L.Marker | null>(null);
 	const tooltipRootRef = useRef<Root | null>(null);
+	const weatherFetchedAtRef = useRef<number>(0);
 	const [markerReady, setMarkerReady] = useState(false);
+	const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
 
 	/** Defer "unmount" so we never unmount a root while React is rendering (avoids "synchronously unmount" error). */
 	const safeUnmountTooltipRoot = useCallback((): void => {
@@ -193,6 +222,28 @@ export default function MapMarkers(): React.ReactElement | null {
 		};
 	}, [closestPoint, rulerRange, units, distancePrecision]);
 
+	const weatherInfo = useMemo((): WeatherInfo | null => {
+		if (!weatherData) return null;
+		return {
+			condition: tWeather(weatherCodeToKey(weatherData.weatherCode)),
+			temperature: formatTemperature(weatherData.temperatureC, units),
+			wind: formatWindSpeed(weatherData.windspeedKmh, units),
+			precipitation: `${weatherData.precipitationProbabilityPct}%`,
+		};
+	}, [weatherData, units, tWeather]);
+
+	// Fetch weather for the user's location when on-trail; re-fetches after 30 s minimum.
+	useEffect(() => {
+		if (!userLocation || isOffTrail) {
+			setWeatherData(null);
+			weatherFetchedAtRef.current = 0;
+			return;
+		}
+		if (Date.now() - weatherFetchedAtRef.current < 30_000) return;
+		weatherFetchedAtRef.current = Date.now();
+		void fetchWeather(userLocation.lat, userLocation.lng).then(setWeatherData);
+	}, [userLocation, isOffTrail]);
+
 	// Update marker when the user location changes
 	useEffect(() => {
 		if (!userLocation || !withinMapBoundary || permissionStatus !== 'granted') {
@@ -220,6 +271,12 @@ export default function MapMarkers(): React.ReactElement | null {
 					toSectionEnd: t('toSectionEnd'),
 				}}
 				navigateLabel={t('navigateToTrail')}
+				weatherInfo={weatherInfo}
+				weatherLabels={{
+					temperature: tWeather('temperature'),
+					wind: tWeather('wind'),
+					precipitation: tWeather('precipitation'),
+				}}
 				yourLocationText={t('yourLocation')}
 				onClose={handleTooltipClose}
 				onNavigate={() => {
@@ -237,7 +294,7 @@ export default function MapMarkers(): React.ReactElement | null {
 				}}
 			/>,
 		);
-	}, [canNavigateToTrail, distanceInfo, showOffTrailActions, t, handleTooltipClose]);
+	}, [canNavigateToTrail, distanceInfo, showOffTrailActions, t, tWeather, handleTooltipClose, weatherInfo]);
 
 	// Bind/unbind tooltip when visibility changes. Use a single React container, so we never switch content types.
 	useEffect(() => {
