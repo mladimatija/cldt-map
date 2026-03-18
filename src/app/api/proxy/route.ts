@@ -5,6 +5,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 const ALLOWED_HOSTS = ['cldt.hr', 'www.cldt.hr'];
+const ALLOWED_PATH_PREFIXES = ['/']; // Adjust to more specific prefixes (e.g. ['/gpx/', '/maps/']) as needed.
 
 /**
  * Proxy API route to handle CORS issues with external resources
@@ -33,6 +34,20 @@ export async function GET(request: NextRequest): Promise<Response> {
 
 		if (!ALLOWED_HOSTS.includes(targetUrl.hostname)) {
 			return NextResponse.json({ error: `Host not allowed: ${targetUrl.hostname}` }, { status: 403 });
+		}
+
+		// Enforce standard HTTPS port and prevent access to services on other ports.
+		if (targetUrl.port && targetUrl.port !== '443') {
+			return NextResponse.json({ error: 'Only default HTTPS port 443 is allowed' }, { status: 400 });
+		}
+
+		// Basic path hardening: prevent path traversal and restrict to allowed prefixes.
+		const pathname = targetUrl.pathname || '/';
+		if (pathname.includes('..') || pathname.includes('\\')) {
+			return NextResponse.json({ error: 'Path traversal is not allowed' }, { status: 400 });
+		}
+		if (!ALLOWED_PATH_PREFIXES.some((prefix) => pathname.startsWith(prefix))) {
+			return NextResponse.json({ error: `Path not allowed: ${pathname}` }, { status: 403 });
 		}
 
 		const controller = new AbortController();
