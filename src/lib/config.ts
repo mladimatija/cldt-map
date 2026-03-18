@@ -99,3 +99,7 @@ export const config = {
 	/** Show trail sections (color-coded segments and boundary markers) by default */
 	showSections: envBool('NEXT_PUBLIC_DEFAULT_SHOW_SECTIONS', false),
 } as const;
+
+/** Maximum distance in metres from the nearest trail point at which a user is considered "on trail".
+ *  15 m accounts for typical GPS inaccuracy on narrow trails. */
+export const TRAIL_OFF_TRAIL_THRESHOLD_M = 15;

@@ -161,7 +161,10 @@
 	"mapMarkers": {
 		"yourLocation": "Your location",
 		"navigateToTrail": "Navigate to the closest point on the trail",
-		"close": "Close"
+		"close": "Close",
+		"traveled": "Traveled",
+		"toTrailEnd": "To trail end",
+		"toSectionEnd": "To section end"
 	},
 	"error": {
 		"title": "An error occurred",
