@@ -39,13 +39,14 @@
 			"share": "Link di condivisione con la visualizzazione attuale o i progressi sul sentiero",
 			"units": "Unità metriche e imperiali",
 			"darkMode": "Modalità scura e opzioni risparmio energetico",
-			"offlineMaps": "Mappe offline – pre-scarica il corridoio del sentiero per l'uso senza segnale",
-			"gpxExport": "Esporta GPX – scarica l'intero percorso o un segmento selezionato con il righello come file .gpx per dispositivi GPS"
+			"offlineMaps": "Mappe offline - pre-scarica il corridoio del sentiero per l'uso senza segnale",
+			"gpxExport": "Esporta GPX - scarica l'intero percorso o un segmento selezionato con il righello come file .gpx per dispositivi GPS",
+			"printExport": "Stampa ed esporta — salva la vista mappa corrente come PDF o immagine PNG"
 		},
 		"dataAttribution": "Dati e attribuzioni",
 		"dataAttributionDesc": "I dati del sentiero sono forniti dall'organizzazione Udruga Long Distance Trail Hrvatska (LDTH). Le tessere mappa provengono da OpenStreetMap, OpenTopoMap, CyclOSM e altri provider. Le mappe topografiche croate provengono dall'Amministrazione Geodetica Statale (DGU).",
 		"privacy": "Privacy",
-		"privacyDesc": "La tua posizione viene utilizzata solo quando la abiliti e concedi il permesso. Non viene mai inviata a nessun server – tutto funziona nel tuo browser. Non è necessario un account o un accesso.",
+		"privacyDesc": "La tua posizione viene utilizzata solo quando la abiliti e concedi il permesso. Non viene mai inviata a nessun server - tutto funziona nel tuo browser. Non è necessario un account o un accesso.",
 		"links": "Link",
 		"officialWebsite": "Sito ufficiale {companyName}",
 		"sourceCode": "Codice sorgente su GitHub",
@@ -289,7 +290,7 @@
 		"goHome": "Vai alla home"
 	},
 	"offlineIndicator": {
-		"offline": "Offline – utilizzo delle tessere in cache"
+		"offline": "Offline - utilizzo delle tessere in cache"
 	},
 	"tileCache": {
 		"title": "Mappe offline",
@@ -331,5 +332,16 @@
 		"exportSegment": "Esporta come GPX",
 		"filenameFullTrail": "cldt-full-trail.gpx",
 		"filenameSegment": "cldt-segment.gpx"
+	},
+	"mapExport": {
+		"title": "Esporta / Stampa",
+		"printButton": "Stampa / PDF",
+		"printLabel": "Stampa la mappa o salva come PDF",
+		"pngButton": "Scarica PNG",
+		"pngLabel": "Scarica la mappa come immagine PNG",
+		"pngDisabledTooltip": "L'esportazione PNG non è disponibile per questo stile di mappa a causa delle restrizioni CORS del server tile.",
+		"cancel": "Annulla",
+		"exportButton": "Esporta / Stampa",
+		"exportButtonLabel": "Apri opzioni di esportazione e stampa"
 	}
 }
