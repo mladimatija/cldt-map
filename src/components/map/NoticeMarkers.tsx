@@ -2,12 +2,14 @@
 
 import { useEffect, useRef } from 'react';
 import { useMap } from 'react-leaflet';
+import { useLocale } from 'next-intl';
 import L from 'leaflet';
 import { useStore, type StoreState } from '@/lib/store';
-import { loadNotices } from '@/lib/notices';
+import { loadNotices, resolveLocalized } from '@/lib/notices';
 
 export function NoticeMarkers(): null {
 	const map = useMap();
+	const locale = useLocale();
 	const gpxLoaded = useStore((state: StoreState) => state.gpxLoaded);
 	const findTrailPointByDistance = useStore((state: StoreState) => state.findTrailPointByDistance);
 	const markersRef = useRef<L.Marker[]>([]);
@@ -33,9 +35,18 @@ export function NoticeMarkers(): null {
 				});
 
 				const marker = L.marker([point.lat, point.lng], { icon, zIndexOffset: 200 });
-				marker.bindPopup(`<strong>${notice.title}</strong><p class="mt-1">${notice.message}</p>`, {
-					className: 'notice-marker-popup',
-				});
+
+				// Build popup using DOM nodes so notice content is never treated as HTML.
+				const popupEl = document.createElement('div');
+				const titleEl = document.createElement('strong');
+				titleEl.textContent = resolveLocalized(notice.title, locale);
+				popupEl.appendChild(titleEl);
+				const msgEl = document.createElement('p');
+				msgEl.className = 'mt-1';
+				msgEl.textContent = resolveLocalized(notice.message, locale);
+				popupEl.appendChild(msgEl);
+
+				marker.bindPopup(popupEl, { className: 'notice-marker-popup' });
 				marker.addTo(map);
 				markersRef.current.push(marker);
 			}
@@ -45,7 +56,7 @@ export function NoticeMarkers(): null {
 			for (const m of markersRef.current) m.removeFrom(map);
 			markersRef.current = [];
 		};
-	}, [map, gpxLoaded, findTrailPointByDistance]);
+	}, [map, gpxLoaded, findTrailPointByDistance, locale]);
 
 	return null;
 }
