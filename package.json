@@ -37,7 +37,7 @@
 	},
 	"devDependencies": {
 		"@eslint/eslintrc": "^3.3.5",
-		"@tailwindcss/postcss": "^4.2.1",
+		"@tailwindcss/postcss": "^4.2.2",
 		"@types/leaflet": "^1.9.21",
 		"@types/leaflet-boundary-canvas": "^1.0.4",
 		"@types/node": "^25.5.0",
