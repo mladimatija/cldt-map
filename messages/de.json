@@ -319,7 +319,13 @@
 		"estimatedTiles": "~{count} Kacheln zum Herunterladen",
 		"today": "heute",
 		"yesterday": "gestern",
-		"daysAgo": "vor {days} Tagen"
+		"daysAgo": "vor {days} Tagen",
+		"tilesCount": "{count} Kacheln gecacht",
+		"querying": "Abfrage läuft…",
+		"clearAll": "Alles löschen",
+		"confirmClear": "Sind Sie sicher?",
+		"confirmYes": "Ja",
+		"confirmNo": "Nein"
 	},
 	"gpxDownload": {
 		"modalTitle": "CLDT GPX herunterladen",
