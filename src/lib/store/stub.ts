@@ -165,5 +165,7 @@ export function createMapStoreStub(): MapStoreState {
 		showStaleCacheNotification: false,
 		setStaleCacheNotification: noop,
 		initStaleCacheCheck: noopAsyncVoid,
+		walkingPaceKmh: 4,
+		setWalkingPaceKmh: noop,
 	};
 }
