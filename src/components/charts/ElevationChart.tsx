@@ -190,6 +190,7 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 	const gpxLoaded = useStore((state: StoreState) => state.gpxLoaded);
 	const gpxLoadFailed = useMapStore((state: MapStoreState) => state.gpxLoadFailed);
 	const rawGpxData = useMapStore((state: MapStoreState) => state.rawGpxData);
+	const walkingPaceKmh = useMapStore((state: MapStoreState) => state.walkingPaceKmh);
 	const chartRef = useRef<HTMLDivElement>(null);
 	useBlockMapPropagation(chartRef, [chartData.length]);
 
@@ -424,11 +425,10 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 		const distanceKm = (distanceFromStartB - distanceFromStartA) / 1000;
 		const gain = segment[segment.length - 1].elevationGainFromStart - segment[0].elevationGainFromStart;
 		const loss = segment[segment.length - 1].elevationLossFromStart - segment[0].elevationLossFromStart;
-		// Naismith's rule: 4 km/h + 1h per 600m ascent
-		const hikingTimeMin = Math.round((distanceKm / 4 + gain / 600) * 60);
+		const hikingTimeMin = Math.round((distanceKm / walkingPaceKmh + gain / 600) * 60);
 		const sections = [...new Set(segment.map((p) => p.sectionName).filter(Boolean))] as string[];
 		return { distanceKm, gain, loss, hikingTimeMin, sections };
-	}, [isRulerEnabled, rulerRange, enhancedTrailPoints]);
+	}, [isRulerEnabled, rulerRange, enhancedTrailPoints, walkingPaceKmh]);
 
 	const toggleExpanded = (): void => {
 		setIsExpanded(!isExpanded);

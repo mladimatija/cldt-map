@@ -8,7 +8,6 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { useMap } from 'react-leaflet';
 import L from 'leaflet';
-import { Button } from '@/components/ui/Button';
 import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
 import {
 	DEFAULT_PATH_OPTIONS,
@@ -24,7 +23,16 @@ import { TRAIL_SECTIONS } from '@/lib/trail-sections';
 import { fetchGPXWithCache } from '@/lib/gpx-cache';
 import { calculateTrailMetadata, estimatePassageDays } from '@/lib/map';
 import { clearShareUrlParams, formatDistance, formatElevation, parseShareUrlParams } from '@/lib/utils';
-import { fetchWeather, formatTemperature, formatWindSpeed, formatSunTime, type WeatherData } from '@/lib/weather';
+import {
+	fetchWeather,
+	formatTemperature,
+	formatWindSpeed,
+	formatSunTime,
+	weatherCodeToKey,
+	weatherKeyToIcon,
+	type WeatherData,
+} from '@/lib/weather';
+import { TrailTooltipContent, type TrailTooltipData, type TrailTooltipWeather } from './TrailTooltipContent';
 import type { UnitSystem } from '@/lib/types';
 import { useLocale, useTranslations } from 'next-intl';
 import { useFitToRoute } from '@/hooks';
@@ -47,6 +55,7 @@ function buildSectionTooltipHtml(
 	units: UnitSystem,
 	precision: number,
 	t: (key: string) => string,
+	paceKmh: number,
 ): string {
 	const { startDistM, endDistM, secDistM, secAscent, secDescent, sectionIndex } = stats;
 	const section = TRAIL_SECTIONS[sectionIndex];
@@ -56,7 +65,7 @@ function buildSectionTooltipHtml(
 	const distPct = totalDistanceM > 0 ? ((secDistM / totalDistanceM) * 100).toFixed(1) : '0.0';
 	const ascentPct = totalAscentM > 0 ? ((secAscent / totalAscentM) * 100).toFixed(1) : '0.0';
 	const descentPct = totalDescentM > 0 ? ((secDescent / totalDescentM) * 100).toFixed(1) : '0.0';
-	const estimatedDays = estimatePassageDays(secDistM, secAscent);
+	const estimatedDays = estimatePassageDays(secDistM, secAscent, paceKmh);
 	const ofTrail = t('sectionOfTrail');
 	return `
 		<div class="map-tooltip__inner">
@@ -75,72 +84,6 @@ function buildSectionTooltipHtml(
 const TRAIL_POINT_MARKER_PANE = 'trailPointMarkerPane';
 /** Pane for the selected trail point tooltip (wide panel); above ruler and its tooltip. */
 const TRAIL_POINT_TOOLTIP_PANE = 'trailPointTooltipPane';
-
-interface TrailPointTooltipContentProps {
-	trailInfoHtml: string;
-	onClose: () => void;
-	closeLabel: string;
-	weatherData?: WeatherData | null;
-	weatherLoading?: boolean;
-	weatherLabels?: {
-		temperature: string;
-		feelsLike: string;
-		precipitation: string;
-		wind: string;
-		condition: string;
-		sunrise: string;
-		sunset: string;
-		loading: string;
-	};
-	units?: UnitSystem;
-}
-
-function TrailPointTooltipContent({
-	trailInfoHtml,
-	onClose,
-	closeLabel,
-	weatherData,
-	weatherLoading,
-	weatherLabels,
-	units = 'metric',
-}: TrailPointTooltipContentProps): React.ReactElement {
-	return (
-		<div className="user-location-tooltip-inner">
-			<Button aria-label={closeLabel} className="user-location-close-btn" variant="closeIcon" onClick={onClose}>
-				×
-			</Button>
-			<div className="text-left text-sm" dangerouslySetInnerHTML={{ __html: trailInfoHtml }} />
-			{weatherLabels && (
-				<div className="mt-1 border-t border-black pt-1 text-left text-sm">
-					{weatherLoading && <div className="text-gray-500">{weatherLabels.loading}</div>}
-					{weatherData && (
-						<>
-							<p>
-								<span className="font-medium">{weatherLabels.temperature}:</span>{' '}
-								{formatTemperature(weatherData.temperatureC, units)} (
-								<span className="font-medium">{weatherLabels.feelsLike}:</span>{' '}
-								{formatTemperature(weatherData.feelsLikeC, units)})
-							</p>
-							<p>
-								<span className="font-medium">{weatherLabels.precipitation}:</span>{' '}
-								{weatherData.precipitationProbabilityPct}%
-							</p>
-							<p>
-								<span className="font-medium">{weatherLabels.wind}:</span>{' '}
-								{formatWindSpeed(weatherData.windspeedKmh, units)}
-							</p>
-							<p>
-								<span className="font-medium">{weatherLabels.sunrise}:</span>{' '}
-								{formatSunTime(weatherData.sunrise, units)} <span className="font-medium">{weatherLabels.sunset}</span>{' '}
-								{formatSunTime(weatherData.sunset, units)}
-							</p>
-						</>
-					)}
-				</div>
-			)}
-		</div>
-	);
-}
 
 interface TrailRouteProps {
 	pathOptions?: L.PathOptions;
@@ -199,6 +142,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 	const isRulerEnabled = useMapStore((state: MapStoreState) => state.isRulerEnabled);
 	const distancePrecision = useMapStore((state: MapStoreState) => state.distancePrecision);
 	const showSections = useMapStore((state: MapStoreState) => state.showSections);
+	const walkingPaceKmh = useMapStore((state: MapStoreState) => state.walkingPaceKmh);
 
 	const highlightedPoint = useStore((state: StoreState) => state.highlightedTrailPoint);
 	const tooltipPinnedFromShare = useStore((state: StoreState) => state.tooltipPinnedFromShare);
@@ -320,49 +264,69 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 			const accumulatedGainPct = totalElevationGain > 0 ? (elevationGainFromStart / totalElevationGain) * 100 : 0;
 			const accumulatedLossPct = totalElevationLoss > 0 ? (elevationLossFromStart / totalElevationLoss) * 100 : 0;
 
-			const lat = point.lat;
-			const lng = point.lng;
-			const coordsFormatted = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
 			const distKm = distanceFromStart / 1000;
 			const section = TRAIL_SECTIONS.find((s) => distKm >= s.startKm && distKm < s.endKm);
 			const sectionKey = point.sectionName ?? section?.nameKey;
-			const sectionLabel = sectionKey ? t(sectionKey) : '';
-			const trailInfoHtml = `
-        <p><span class="font-bold">${t('tooltipCoordinates')}</span> <span class="trail-tooltip-coords-link font-bold" data-lat="${lat}" data-lng="${lng}" role="button" tabindex="0">${coordsFormatted}</span></p>
-        ${sectionLabel ? `<p><span class="font-medium">${t('tooltipSection')}</span> ${sectionLabel}</p>` : ''}
-        <p><span class="font-medium">${t('tooltipElevation')}</span> ${formatElevation(currentElevation, currentUnits)}</p>
-        <p><span class="font-medium">${t('tooltipDistanceFromStart')}</span> ${formatDistance(distanceFromStart, currentUnits, currentPrecision, true)} (${distanceFromStartPct.toFixed(1)}%)</p>
-        <p><span class="font-medium">${t('tooltipDistanceToEnd')}</span> ${formatDistance(distanceToEnd, currentUnits, currentPrecision, true)} (${distanceToEndPct.toFixed(1)}%)</p>
-        <p><span class="font-medium">${t('tooltipAccumulatedGain')}</span> ${formatElevation(elevationGainFromStart, currentUnits)} (${accumulatedGainPct.toFixed(1)}%)</p>
-        <p><span class="font-medium">${t('tooltipAccumulatedLoss')}</span> ${formatElevation(elevationLossFromStart, currentUnits)} (${accumulatedLossPct.toFixed(1)}%)</p>
-        <p class="border-t border-black mt-1 pt-1"><span class="font-medium">${t('tooltipTotalDistance')}</span> ${formatDistance(totalDistanceKm, currentUnits, currentPrecision)}</p>
-        <p><span class="font-medium">${t('tooltipTotalGain')}</span> ${formatElevation(totalElevationGain, currentUnits)}</p>
-        <p><span class="font-medium">${t('tooltipTotalLoss')}</span> ${formatElevation(totalElevationLoss, currentUnits)}</p>
-      `;
+			const pointData: TrailTooltipData = {
+				lat: point.lat,
+				lng: point.lng,
+				sectionLabel: sectionKey ? t(sectionKey) : null,
+				elevation: formatElevation(currentElevation, currentUnits),
+				distanceFromStart: formatDistance(distanceFromStart, currentUnits, currentPrecision, true),
+				distanceFromStartPct: distanceFromStartPct.toFixed(1),
+				distanceToEnd: formatDistance(distanceToEnd, currentUnits, currentPrecision, true),
+				distanceToEndPct: distanceToEndPct.toFixed(1),
+				distanceToSection: null,
+				accumulatedGain: elevationGainFromStart > 0 ? formatElevation(elevationGainFromStart, currentUnits) : null,
+				accumulatedGainPct: accumulatedGainPct.toFixed(1),
+				accumulatedLoss: elevationLossFromStart > 0 ? formatElevation(elevationLossFromStart, currentUnits) : null,
+				accumulatedLossPct: accumulatedLossPct.toFixed(1),
+			};
+			const tooltipLabels = {
+				close: t('close'),
+				coordinates: t('tooltipCoordinates'),
+				section: t('tooltipSection'),
+				elevation: t('tooltipElevation'),
+				distanceFromStart: t('tooltipDistanceFromStart'),
+				distanceToEnd: t('tooltipDistanceToEnd'),
+				distanceToSection: '',
+				accumulatedGain: t('tooltipAccumulatedGain'),
+				accumulatedLoss: t('tooltipAccumulatedLoss'),
+				temperature: `${tWeather('temperature')}:`,
+				feelsLike: `${tWeather('feelsLike')}:`,
+				precipitation: `${tWeather('precipitation')}:`,
+				wind: `${tWeather('wind')}:`,
+				sunrise: `${tWeather('sunrise')}:`,
+				sunset: tWeather('sunset'),
+				weatherLoading: tWeather('loading'),
+			};
 			const tooltipContainer = document.createElement('div');
 			const tooltipRoot = createRoot(tooltipContainer);
-			const weatherLabels = {
-				temperature: tWeather('temperature'),
-				feelsLike: tWeather('feelsLike'),
-				precipitation: tWeather('precipitation'),
-				wind: tWeather('wind'),
-				condition: tWeather('condition'),
-				sunrise: tWeather('sunrise'),
-				sunset: tWeather('sunset'),
-				loading: tWeather('loading'),
-			};
 			const onClose = (): void => {
 				clearTrailHighlight?.(true);
 				clearShareUrlParams();
 			};
+			const buildWeather = (weatherData: WeatherData | null): TrailTooltipWeather | null => {
+				if (!weatherData) return null;
+				const key = weatherCodeToKey(weatherData.weatherCode);
+				return {
+					icon: weatherKeyToIcon(key),
+					condition: tWeather(key),
+					temperature: formatTemperature(weatherData.temperatureC, currentUnits),
+					feelsLike: formatTemperature(weatherData.feelsLikeC, currentUnits),
+					precipitation: `${weatherData.precipitationProbabilityPct}%`,
+					wind: formatWindSpeed(weatherData.windspeedKmh, currentUnits),
+					sunrise: formatSunTime(weatherData.sunrise, currentUnits),
+					sunset: formatSunTime(weatherData.sunset, currentUnits),
+				};
+			};
 			const renderTooltip = (weatherData: WeatherData | null, weatherLoading: boolean): void => {
 				tooltipRoot.render(
-					<TrailPointTooltipContent
-						closeLabel={t('tooltipClose')}
-						trailInfoHtml={trailInfoHtml}
-						units={useMapStore.getState().units}
-						weatherData={weatherData}
-						weatherLabels={weatherLabels}
+					<TrailTooltipContent
+						showClose
+						labels={tooltipLabels}
+						trailData={pointData}
+						weather={buildWeather(weatherData)}
 						weatherLoading={weatherLoading}
 						onClose={onClose}
 					/>,
@@ -418,27 +382,6 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 
 			const el = tooltip.getElement();
 			if (el) {
-				el.addEventListener('click', (e: MouseEvent) => {
-					const link = (e.target as HTMLElement).closest('.trail-tooltip-coords-link');
-					if (!link) {
-						return;
-					}
-					e.preventDefault();
-					e.stopPropagation();
-					const linkEl = link as HTMLElement;
-					const linkLat = linkEl.dataset.lat;
-					const linkLng = linkEl.dataset.lng;
-					if (linkLat === undefined || linkLng === undefined) {
-						return;
-					}
-					const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-					if (isMobile) {
-						window.location.href = `geo:${linkLat},${linkLng}`;
-					} else {
-						window.open(`https://www.google.com/maps?q=${linkLat},${linkLng}`, '_blank', 'noopener,noreferrer');
-					}
-				});
-
 				requestAnimationFrame(() => {
 					requestAnimationFrame(() => {
 						const rect = el.getBoundingClientRect();
@@ -628,6 +571,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 						const totalDescentM = sectionDescentM.reduce((a, b) => a + b, 0);
 						const currentUnits = useMapStore.getState().units;
 						const currentPrecision = useMapStore.getState().distancePrecision;
+						const currentPaceKmh = useMapStore.getState().walkingPaceKmh;
 
 						// Draw each geographic section with its own label and color (A=green, B=blue, C=red by position along the trail).
 						const newSectionMarkers: L.Marker[] = [];
@@ -677,6 +621,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 								currentUnits,
 								currentPrecision,
 								t,
+								currentPaceKmh,
 							);
 							const marker = L.marker(L.latLng(lat0, lng0), {
 								icon: sectionBoundaryIcon(section.shortName, si),
@@ -911,13 +856,14 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 				currentUnits,
 				currentPrecision,
 				t,
+				walkingPaceKmh,
 			);
 			const tooltip = markers[i].getTooltip();
 			if (tooltip) {
 				tooltip.setContent(tooltipHtml);
 			}
 		}
-	}, [showSections, units, distancePrecision, locale, trailMetadata, t, direction]);
+	}, [showSections, units, distancePrecision, locale, trailMetadata, t, direction, walkingPaceKmh]);
 
 	useEffect(() => {
 		if (isRulerEnabled) {
