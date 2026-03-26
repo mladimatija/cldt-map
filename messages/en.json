@@ -168,11 +168,7 @@
 	},
 	"mapMarkers": {
 		"yourLocation": "Your location",
-		"navigateToTrail": "Navigate to the closest point on the trail",
-		"close": "Close",
-		"traveled": "Traveled",
-		"toTrailEnd": "To trail end",
-		"toSectionEnd": "To section end"
+		"navigateToTrail": "Navigate to the closest point on the trail"
 	},
 	"error": {
 		"title": "An error occurred",
@@ -242,10 +238,7 @@
 		"tooltipDistanceToEnd": "Distance to end:",
 		"tooltipAccumulatedGain": "Accumulated gain:",
 		"tooltipAccumulatedLoss": "Accumulated loss:",
-		"tooltipTotalDistance": "Total distance:",
-		"tooltipTotalGain": "Total gain:",
-		"tooltipTotalLoss": "Total loss:",
-		"tooltipClose": "Close"
+		"close": "Close"
 	},
 	"storeTest": {
 		"title": "Store Persistence Test",
@@ -399,5 +392,15 @@
 		"legendHeavy": "Heavy",
 		"playRadar": "Play radar",
 		"pauseRadar": "Pause radar"
+	},
+	"distanceOverlay": {
+		"traveled": "Traveled",
+		"toTrailEnd": "To trail end",
+		"toSectionEnd": "To section end",
+		"etaToEnd": "ETA to end",
+		"etaToSection": "ETA to section",
+		"approximately": "approximately",
+		"etaAriaHour": "{count, plural, =1 {1 hour} other {# hours}}",
+		"etaAriaMinute": "{count, plural, =1 {1 minute} other {# minutes}}"
 	}
 }

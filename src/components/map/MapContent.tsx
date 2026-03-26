@@ -35,6 +35,10 @@ const StaleCacheNotification = dynamic(
 	() => import('@/components/map/StaleCacheNotification').then((m) => ({ default: m.StaleCacheNotification })),
 	{ ssr: false },
 );
+const DistanceRemainingOverlay = dynamic(
+	() => import('@/components/map/DistanceRemainingOverlay').then((m) => ({ default: m.DistanceRemainingOverlay })),
+	{ ssr: false },
+);
 const NoticeMarkers = dynamic(
 	() => import('@/components/map/NoticeMarkers').then((m) => ({ default: m.NoticeMarkers })),
 	{ ssr: false },
@@ -134,6 +138,7 @@ export default function MapContent(): React.ReactElement {
 		<>
 			<OfflineIndicator />
 			<StaleCacheNotification />
+			<DistanceRemainingOverlay />
 			<ShareUrlHandler />
 			<GoToDistance />
 			<BaseMapSelector />
