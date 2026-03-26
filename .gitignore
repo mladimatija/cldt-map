@@ -58,3 +58,6 @@ Desktop.ini
 
 # Sentry
 .sentryclirc
+
+# Worktrees
+.worktrees/
