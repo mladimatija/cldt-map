@@ -162,5 +162,8 @@ export function createMapStoreStub(): MapStoreState {
 		clearTileCacheForProvider: noopAsyncVoid,
 		loadTileCacheMeta: noopAsyncVoid,
 		setAutoSync: noop,
+		showStaleCacheNotification: false,
+		setStaleCacheNotification: noop,
+		initStaleCacheCheck: noopAsyncVoid,
 	};
 }
