@@ -269,7 +269,12 @@
 		"instruction1": "Toggle some settings (direction, units, boundary, etc.)",
 		"instruction2": "Refresh the page and check if the settings persist",
 		"instruction3": "Close the browser tab and reopen to verify persistence between sessions",
-		"instructionNote": "In the real application, these settings initialize the map controls when loading the page."
+		"instructionNote": "In the real application, these settings initialize the map controls when loading the page.",
+		"staleCacheNotification": "Stale cache notification",
+		"triggerStaleCacheNotification": "Trigger notification",
+		"clearStaleCacheNotification": "Clear notification",
+		"cacheTtlDays": "Cache TTL (days, from env)",
+		"cacheTtlValue": "{days} days"
 	},
 	"zoomControls": {
 		"zoomIn": "Zoom in",
@@ -300,6 +305,11 @@
 	"offlineIndicator": {
 		"offline": "Offline - using cached tiles"
 	},
+	"staleCacheNotification": {
+		"title": "Offline map cache outdated",
+		"description": "Your cached map tiles are over {days} days old. Re-download them in Settings for the most up-to-date map.",
+		"dismiss": "Dismiss"
+	},
 	"tileCache": {
 		"title": "Offline maps",
 		"providerNotCacheable": "This map layer cannot be cached for offline use.",
@@ -311,7 +321,7 @@
 		"redownload": "Re-download",
 		"lastDownloaded": "Cached {time}",
 		"tilesCached": "{count} tiles",
-		"cacheStale": "Cache is over 30 days old",
+		"cacheStale": "Cache is over {days} days old",
 		"quotaExceeded": "Not enough storage space to cache tiles.",
 		"downloadError": "Download failed. Please try again.",
 		"autoSync": "Auto-sync when online",
