@@ -300,6 +300,11 @@
 	"offlineIndicator": {
 		"offline": "Offline - gespeicherte Kacheln werden verwendet"
 	},
+	"staleCacheNotification": {
+		"title": "Offline-Kartencache veraltet",
+		"description": "Ihre gecachten Kartenkacheln sind über {days} Tage alt. Laden Sie sie in den Einstellungen erneut herunter.",
+		"dismiss": "Schließen"
+	},
 	"tileCache": {
 		"title": "Offline-Karten",
 		"providerNotCacheable": "Diese Kartenebene kann nicht für die Offline-Nutzung gespeichert werden.",
@@ -311,7 +316,7 @@
 		"redownload": "Erneut herunterladen",
 		"lastDownloaded": "Gespeichert {time}",
 		"tilesCached": "{count} Kacheln",
-		"cacheStale": "Cache ist älter als 30 Tage",
+		"cacheStale": "Cache ist älter als {days} Tage",
 		"quotaExceeded": "Nicht genügend Speicherplatz zum Speichern von Kacheln.",
 		"downloadError": "Download fehlgeschlagen. Bitte erneut versuchen.",
 		"autoSync": "Automatisch synchronisieren wenn online",

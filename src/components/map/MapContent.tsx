@@ -31,6 +31,10 @@ const OfflineIndicator = dynamic(
 	() => import('@/components/map/OfflineIndicator').then((m) => ({ default: m.OfflineIndicator })),
 	{ ssr: false },
 );
+const StaleCacheNotification = dynamic(
+	() => import('@/components/map/StaleCacheNotification').then((m) => ({ default: m.StaleCacheNotification })),
+	{ ssr: false },
+);
 const NoticeMarkers = dynamic(
 	() => import('@/components/map/NoticeMarkers').then((m) => ({ default: m.NoticeMarkers })),
 	{ ssr: false },
@@ -129,6 +133,7 @@ export default function MapContent(): React.ReactElement {
 	return (
 		<>
 			<OfflineIndicator />
+			<StaleCacheNotification />
 			<ShareUrlHandler />
 			<GoToDistance />
 			<BaseMapSelector />

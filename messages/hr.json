@@ -301,6 +301,11 @@
 	"offlineIndicator": {
 		"offline": "Izvan mreže - koristim predmemoriju"
 	},
+	"staleCacheNotification": {
+		"title": "Predmemorija offline karte zastarjela",
+		"description": "Vaše predmemorirane karte starije su od {days} dana. Preuzmite ih ponovo u Postavkama.",
+		"dismiss": "Zatvori"
+	},
 	"tileCache": {
 		"title": "Karte bez interneta",
 		"providerNotCacheable": "Ovaj sloj karte nije moguće predmemorirati za offline korištenje.",
@@ -312,7 +317,7 @@
 		"redownload": "Preuzmi ponovo",
 		"lastDownloaded": "Predmemorirano {time}",
 		"tilesCached": "{count} pločica",
-		"cacheStale": "Predmemorija je starija od 30 dana",
+		"cacheStale": "Predmemorija je starija od {days} dana",
 		"quotaExceeded": "Nema dovoljno prostora za pohranu pločica.",
 		"downloadError": "Preuzimanje nije uspjelo. Pokušajte ponovo.",
 		"autoSync": "Automatska sinkronizacija",

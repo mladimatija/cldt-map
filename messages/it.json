@@ -300,6 +300,11 @@
 	"offlineIndicator": {
 		"offline": "Offline - utilizzo delle tessere in cache"
 	},
+	"staleCacheNotification": {
+		"title": "Cache mappe offline non aggiornata",
+		"description": "Le tessere della mappa in cache hanno più di {days} giorni. Riscaricale dalle Impostazioni.",
+		"dismiss": "Chiudi"
+	},
 	"tileCache": {
 		"title": "Mappe offline",
 		"providerNotCacheable": "Questo livello mappa non può essere salvato in cache per l'uso offline.",
@@ -311,7 +316,7 @@
 		"redownload": "Riscarica",
 		"lastDownloaded": "Salvato in cache {time}",
 		"tilesCached": "{count} tessere",
-		"cacheStale": "La cache è più vecchia di 30 giorni",
+		"cacheStale": "La cache è più vecchia di {days} giorni",
 		"quotaExceeded": "Spazio di archiviazione insufficiente per salvare le tessere in cache.",
 		"downloadError": "Download fallito. Riprova.",
 		"autoSync": "Sincronizzazione automatica quando online",
