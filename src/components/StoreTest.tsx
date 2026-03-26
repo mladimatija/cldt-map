@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { useMapStore } from '@/lib/store';
+import { tileCacheTtlDays } from '@/lib/config';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 
@@ -23,6 +24,8 @@ const StoreTest: React.FC = () => {
 		setFakeUserLocation,
 		setFakeUserLocationOnTrail,
 		userLocation,
+		showStaleCacheNotification,
+		setStaleCacheNotification,
 	} = useMapStore();
 
 	const toggleDirection = (): void => {
@@ -114,6 +117,24 @@ const StoreTest: React.FC = () => {
 						<Button size="default" variant="base" onClick={toggleTileBoundary}>
 							{t('toggleTileBoundary')}
 						</Button>
+					</div>
+
+					<div>
+						<p className="mb-2">
+							{t('staleCacheNotification')}:{' '}
+							<span className="text-cldt-blue font-semibold">
+								{showStaleCacheNotification ? t('on') : t('off')}
+							</span>
+						</p>
+						<p className="mb-2 text-sm text-gray-600">{t('cacheTtlDays')}: {t('cacheTtlValue', { days: tileCacheTtlDays })}</p>
+						<div className="flex flex-wrap gap-2">
+							<Button size="default" variant="base" onClick={() => setStaleCacheNotification(true)}>
+								{t('triggerStaleCacheNotification')}
+							</Button>
+							<Button size="default" variant="base" onClick={() => setStaleCacheNotification(false)}>
+								{t('clearStaleCacheNotification')}
+							</Button>
+						</div>
 					</div>
 
 					<div>

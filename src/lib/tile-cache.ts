@@ -10,11 +10,12 @@
  */
 import localforage from 'localforage';
 import { DEFAULT_MAP_SERVICES } from '@/lib/services/map-service-config';
+import { tileCacheTtlDays } from '@/lib/config';
 import type { EnhancedTrailPoint } from '@/lib/store/types';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
-export const TILE_CACHE_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
+export const TILE_CACHE_TTL_MS = tileCacheTtlDays * 24 * 60 * 60 * 1000;
 export const PRECACHE_ZOOM_MIN = 8;
 export const PRECACHE_ZOOM_MAX = 14;
 const SEGMENT_DISTANCE_M = 50_000; // 50 km between segment boundaries

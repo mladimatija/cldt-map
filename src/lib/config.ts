@@ -100,6 +100,9 @@ export const config = {
 	showSections: envBool('NEXT_PUBLIC_DEFAULT_SHOW_SECTIONS', false),
 } as const;
 
+/** Number of days after which a tile cache is considered stale (overridable via env). */
+export const tileCacheTtlDays = envInt('NEXT_PUBLIC_TILE_CACHE_TTL_DAYS', 30);
+
 /** Maximum distance in metres from the nearest trail point at which a user is considered "on trail".
  *  15 m accounts for typical GPS inaccuracy on narrow trails. */
 export const TRAIL_OFF_TRAIL_THRESHOLD_M = 15;

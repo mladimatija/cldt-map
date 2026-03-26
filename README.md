@@ -95,6 +95,7 @@ Optional overrides (see `src/lib/config.ts`, `src/lib/gpx-cache.ts`):
 - `NEXT_PUBLIC_DEFAULT_LOCALE` - `en` or `hr`
 - `NEXT_PUBLIC_DEFAULT_MAP_CENTER` - `lat,lng` (e.g. `44.4268,16.438`)
 - `NEXT_PUBLIC_DEFAULT_MAP_ZOOM` - initial zoom level
+- `NEXT_PUBLIC_TILE_CACHE_TTL_DAYS` - days after which offline tile cache is considered stale (default `30`)
 
 ### Run
 
