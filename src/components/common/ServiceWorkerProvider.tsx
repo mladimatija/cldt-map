@@ -21,6 +21,7 @@ export function ServiceWorkerProvider({ children }: ServiceWorkerProviderProps):
 	const refreshingRef = useRef(false);
 
 	const initOfflineDetection = useMapStore((state: MapStoreState) => state.initOfflineDetection);
+	const initStaleCacheCheck = useMapStore((state: MapStoreState) => state.initStaleCacheCheck);
 	const autoSync = useMapStore((state: MapStoreState) => state.autoSync);
 	const loadTileCacheMeta = useMapStore((state: MapStoreState) => state.loadTileCacheMeta);
 	const startTileDownload = useMapStore((state: MapStoreState) => state.startTileDownload);
@@ -83,10 +84,11 @@ export function ServiceWorkerProvider({ children }: ServiceWorkerProviderProps):
 		};
 	}, []);
 
-	// Init offline detection once on mount
+	// Init offline detection and stale cache check once on mount
 	useEffect(() => {
 		initOfflineDetection();
-	}, [initOfflineDetection]);
+		void initStaleCacheCheck();
+	}, [initOfflineDetection, initStaleCacheCheck]);
 
 	// Handle TILE_QUOTA_EXCEEDED message from a service worker
 	useEffect(() => {
