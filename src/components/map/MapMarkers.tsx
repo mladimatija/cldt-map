@@ -6,107 +6,22 @@ import { Marker, useMap } from 'react-leaflet';
 import { useTranslations } from 'next-intl';
 import L from 'leaflet';
 import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
-import { isWithinMapBoundary, getNavigateToPointUrl, formatDistance } from '@/lib/utils';
+import { isWithinMapBoundary, getNavigateToPointUrl, formatDistance, formatElevation } from '@/lib/utils';
 import { TRAIL_OFF_TRAIL_THRESHOLD_M } from '@/lib/config';
 import { computeDistanceRemaining } from '@/lib/distance-utils';
-import { fetchWeather, formatTemperature, formatWindSpeed, weatherCodeToKey, type WeatherData } from '@/lib/weather';
-import { Button } from '@/components/ui/Button';
+import {
+	fetchWeather,
+	formatTemperature,
+	formatWindSpeed,
+	formatSunTime,
+	weatherCodeToKey,
+	weatherKeyToIcon,
+	type WeatherData,
+} from '@/lib/weather';
+import { TrailTooltipContent, type TrailTooltipData, type TrailTooltipWeather } from './TrailTooltipContent';
 
 /** @see TRAIL_OFF_TRAIL_THRESHOLD_M in src/lib/config.ts */
 const OFF_TRAIL_DISTANCE_M = TRAIL_OFF_TRAIL_THRESHOLD_M;
-
-interface DistanceInfo {
-	traveled: string;
-	toTrailEnd: string;
-	toSectionEnd: string | null;
-}
-
-interface WeatherInfo {
-	condition: string;
-	temperature: string;
-	wind: string;
-	precipitation: string;
-}
-
-interface LocationTooltipContentProps {
-	canNavigate: boolean;
-	closeLabel: string;
-	distanceInfo: DistanceInfo | null;
-	distanceLabels: { traveled: string; toTrailEnd: string; toSectionEnd: string };
-	navigateLabel: string;
-	showClose: boolean;
-	yourLocationText: string;
-	weatherInfo: WeatherInfo | null;
-	weatherLabels: { temperature: string; wind: string; precipitation: string };
-	onClose: () => void;
-	onNavigate: () => void;
-}
-
-function LocationTooltipContent({
-	canNavigate,
-	closeLabel,
-	distanceInfo,
-	distanceLabels,
-	navigateLabel,
-	showClose,
-	yourLocationText,
-	weatherInfo,
-	weatherLabels,
-	onClose,
-	onNavigate,
-}: LocationTooltipContentProps): React.ReactElement {
-	return (
-		<div
-			className="user-location-tooltip-inner"
-			role="presentation"
-			onClick={(e) => e.stopPropagation()}
-			onMouseDown={(e) => e.stopPropagation()}
-		>
-			{showClose && (
-				<Button aria-label={closeLabel} className="user-location-close-btn" variant="closeIcon" onClick={onClose}>
-					×
-				</Button>
-			)}
-			<div className="font-medium">{yourLocationText}</div>
-			{distanceInfo && (
-				<div className="mt-1 space-y-0.5 text-xs">
-					<div>
-						{distanceLabels.traveled}: {distanceInfo.traveled}
-					</div>
-					<div>
-						{distanceLabels.toTrailEnd}: {distanceInfo.toTrailEnd}
-					</div>
-					{distanceInfo.toSectionEnd !== null && (
-						<div>
-							{distanceLabels.toSectionEnd}: {distanceInfo.toSectionEnd}
-						</div>
-					)}
-				</div>
-			)}
-			{weatherInfo && (
-				<div className="mt-1 space-y-0.5 border-t border-black/10 pt-1">
-					<div>{weatherInfo.condition}</div>
-					<div>
-						{weatherLabels.temperature}: {weatherInfo.temperature}
-					</div>
-					<div>
-						{weatherLabels.wind}: {weatherInfo.wind}
-					</div>
-					<div>
-						{weatherLabels.precipitation}: {weatherInfo.precipitation}
-					</div>
-				</div>
-			)}
-			{canNavigate && (
-				<div className="mt-2 flex justify-center gap-2">
-					<Button variant="mapTooltipPrimary" onClick={onNavigate}>
-						{navigateLabel}
-					</Button>
-				</div>
-			)}
-		</div>
-	);
-}
 
 /**
  * User location marker and optional "off trail" tooltip with the "navigate-to-trail" link.
@@ -114,13 +29,16 @@ function LocationTooltipContent({
  */
 export default function MapMarkers(): React.ReactElement | null {
 	const t = useTranslations('mapMarkers');
+	const tRoute = useTranslations('trailRoute');
 	const tWeather = useTranslations('weather');
+	const tOverlay = useTranslations('distanceOverlay');
 	const map = useMap();
 	const userMarkerRef = useRef<L.Marker | null>(null);
 	const tooltipRootRef = useRef<Root | null>(null);
 	const weatherFetchedAtRef = useRef<number>(0);
 	const [markerReady, setMarkerReady] = useState(false);
 	const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
+	const [isWeatherLoading, setIsWeatherLoading] = useState(false);
 
 	/** Defer "unmount" so we never unmount a root while React is rendering (avoids "synchronously unmount" error). */
 	const safeUnmountTooltipRoot = useCallback((): void => {
@@ -149,6 +67,8 @@ export default function MapMarkers(): React.ReactElement | null {
 	const distancePrecision = useMapStore((state: MapStoreState) => state.distancePrecision);
 	const closestPoint = useStore((state: StoreState) => state.closestPoint);
 	const gpxLoaded = useStore((state: StoreState) => state.gpxLoaded);
+	const enhancedTrailPoints = useStore((state: StoreState) => state.enhancedTrailPoints);
+	const trailMetadata = useStore((state: StoreState) => state.trailMetadata);
 	const withinMapBoundary = userLocation ? isWithinMapBoundary(userLocation.lat, userLocation.lng) : true;
 	const shouldShowLocation = userLocation && showUserMarker && permissionStatus === 'granted' && withinMapBoundary;
 
@@ -211,24 +131,70 @@ export default function MapMarkers(): React.ReactElement | null {
 		[],
 	);
 
-	const distanceInfo = useMemo((): DistanceInfo | null => {
-		const result = computeDistanceRemaining(closestPoint, rulerRange, OFF_TRAIL_DISTANCE_M);
-		if (!result) return null;
-		return {
-			traveled: formatDistance(result.traveled, units, distancePrecision, true),
-			toTrailEnd: formatDistance(result.toTrailEnd, units, distancePrecision, true),
-			toSectionEnd:
-				result.toSectionEnd !== null ? formatDistance(result.toSectionEnd, units, distancePrecision, true) : null,
-		};
-	}, [closestPoint, rulerRange, units, distancePrecision]);
+	const trailData = useMemo((): TrailTooltipData | null => {
+		if (!closestPoint || closestPoint.distance > OFF_TRAIL_DISTANCE_M || enhancedTrailPoints.length === 0) return null;
+		const distanceResult = computeDistanceRemaining(closestPoint, rulerRange, OFF_TRAIL_DISTANCE_M);
+		if (!distanceResult) return null;
 
-	const weatherInfo = useMemo((): WeatherInfo | null => {
-		if (!weatherData) return null;
+		const target = closestPoint.distanceFromStart;
+		let best = enhancedTrailPoints[0];
+		let bestDiff = Math.abs(best.distanceFromStart - target);
+		for (let i = 1; i < enhancedTrailPoints.length; i++) {
+			const diff = Math.abs(enhancedTrailPoints[i].distanceFromStart - target);
+			if (diff < bestDiff) {
+				bestDiff = diff;
+				best = enhancedTrailPoints[i];
+			}
+		}
+
+		const totalDistanceM = (trailMetadata?.totalDistance ?? 0) * 1000;
+		const totalGain = trailMetadata?.elevationGain ?? 0;
+		const totalLoss = trailMetadata?.elevationLoss ?? 0;
+		const distanceFromStartPct =
+			totalDistanceM > 0 ? ((closestPoint.distanceFromStart / totalDistanceM) * 100).toFixed(1) : '0.0';
+		const distanceToEndPct =
+			totalDistanceM > 0 ? ((closestPoint.distanceToEnd / totalDistanceM) * 100).toFixed(1) : '0.0';
+		const gainPct =
+			totalGain > 0 && best.elevationGainFromStart > 0
+				? ((best.elevationGainFromStart / totalGain) * 100).toFixed(1)
+				: null;
+		const lossPct =
+			totalLoss > 0 && best.elevationLossFromStart > 0
+				? ((best.elevationLossFromStart / totalLoss) * 100).toFixed(1)
+				: null;
+
 		return {
-			condition: tWeather(weatherCodeToKey(weatherData.weatherCode)),
+			lat: best.lat,
+			lng: best.lng,
+			sectionLabel: best.sectionName ? tRoute(best.sectionName) : null,
+			elevation: formatElevation(best.elevation, units),
+			distanceFromStart: formatDistance(distanceResult.traveled, units, distancePrecision, true),
+			distanceFromStartPct,
+			distanceToEnd: formatDistance(distanceResult.toTrailEnd, units, distancePrecision, true),
+			distanceToEndPct,
+			distanceToSection:
+				distanceResult.toSectionEnd !== null
+					? formatDistance(distanceResult.toSectionEnd, units, distancePrecision, true)
+					: null,
+			accumulatedGain: best.elevationGainFromStart > 0 ? formatElevation(best.elevationGainFromStart, units) : null,
+			accumulatedGainPct: gainPct,
+			accumulatedLoss: best.elevationLossFromStart > 0 ? formatElevation(best.elevationLossFromStart, units) : null,
+			accumulatedLossPct: lossPct,
+		};
+	}, [closestPoint, rulerRange, enhancedTrailPoints, trailMetadata, units, distancePrecision, tRoute]);
+
+	const tooltipWeather = useMemo((): TrailTooltipWeather | null => {
+		if (!weatherData) return null;
+		const key = weatherCodeToKey(weatherData.weatherCode);
+		return {
+			icon: weatherKeyToIcon(key),
+			condition: tWeather(key),
 			temperature: formatTemperature(weatherData.temperatureC, units),
-			wind: formatWindSpeed(weatherData.windspeedKmh, units),
+			feelsLike: formatTemperature(weatherData.feelsLikeC, units),
 			precipitation: `${weatherData.precipitationProbabilityPct}%`,
+			wind: formatWindSpeed(weatherData.windspeedKmh, units),
+			sunrise: formatSunTime(weatherData.sunrise, units),
+			sunset: formatSunTime(weatherData.sunset, units),
 		};
 	}, [weatherData, units, tWeather]);
 
@@ -236,12 +202,17 @@ export default function MapMarkers(): React.ReactElement | null {
 	useEffect(() => {
 		if (!userLocation || isOffTrail) {
 			setWeatherData(null);
+			setIsWeatherLoading(false);
 			weatherFetchedAtRef.current = 0;
 			return;
 		}
 		if (Date.now() - weatherFetchedAtRef.current < 30_000) return;
 		weatherFetchedAtRef.current = Date.now();
-		void fetchWeather(userLocation.lat, userLocation.lng).then(setWeatherData);
+		setIsWeatherLoading(true);
+		void fetchWeather(userLocation.lat, userLocation.lng).then((data) => {
+			setWeatherData(data);
+			setIsWeatherLoading(false);
+		});
 	}, [userLocation, isOffTrail]);
 
 	// Update marker when the user location changes
@@ -260,24 +231,32 @@ export default function MapMarkers(): React.ReactElement | null {
 		const root = tooltipRootRef.current;
 		if (!root) return;
 		root.render(
-			<LocationTooltipContent
+			<TrailTooltipContent
 				showClose
 				canNavigate={!!canNavigateToTrail && !!showOffTrailActions}
-				closeLabel={t('close')}
-				distanceInfo={distanceInfo}
-				distanceLabels={{
-					traveled: t('traveled'),
-					toTrailEnd: t('toTrailEnd'),
-					toSectionEnd: t('toSectionEnd'),
+				labels={{
+					close: tRoute('close'),
+					coordinates: tRoute('tooltipCoordinates'),
+					section: tRoute('tooltipSection'),
+					elevation: tRoute('tooltipElevation'),
+					distanceFromStart: `${tOverlay('traveled')}:`,
+					distanceToEnd: `${tOverlay('toTrailEnd')}:`,
+					distanceToSection: `${tOverlay('toSectionEnd')}:`,
+					accumulatedGain: tRoute('tooltipAccumulatedGain'),
+					accumulatedLoss: tRoute('tooltipAccumulatedLoss'),
+					temperature: `${tWeather('temperature')}:`,
+					feelsLike: `${tWeather('feelsLike')}:`,
+					precipitation: `${tWeather('precipitation')}:`,
+					wind: `${tWeather('wind')}:`,
+					sunrise: `${tWeather('sunrise')}:`,
+					sunset: `${tWeather('sunset')}`,
+					weatherLoading: tWeather('loading'),
+					navigate: t('navigateToTrail'),
 				}}
-				navigateLabel={t('navigateToTrail')}
-				weatherInfo={weatherInfo}
-				weatherLabels={{
-					temperature: tWeather('temperature'),
-					wind: tWeather('wind'),
-					precipitation: tWeather('precipitation'),
-				}}
-				yourLocationText={t('yourLocation')}
+				title={t('yourLocation')}
+				trailData={trailData}
+				weather={tooltipWeather}
+				weatherLoading={isWeatherLoading}
 				onClose={handleTooltipClose}
 				onNavigate={() => {
 					const loc = useMapStore.getState().userLocation;
@@ -294,7 +273,18 @@ export default function MapMarkers(): React.ReactElement | null {
 				}}
 			/>,
 		);
-	}, [canNavigateToTrail, distanceInfo, showOffTrailActions, t, tWeather, handleTooltipClose, weatherInfo]);
+	}, [
+		canNavigateToTrail,
+		showOffTrailActions,
+		tRoute,
+		tOverlay,
+		tWeather,
+		t,
+		trailData,
+		tooltipWeather,
+		isWeatherLoading,
+		handleTooltipClose,
+	]);
 
 	// Bind/unbind tooltip when visibility changes. Use a single React container, so we never switch content types.
 	useEffect(() => {
