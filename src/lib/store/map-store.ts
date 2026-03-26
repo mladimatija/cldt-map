@@ -263,16 +263,16 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					set({ showStaleCacheNotification: show });
 				},
 				initStaleCacheCheck: async (): Promise<void> => {
-				if (typeof window === 'undefined') return;
-				try {
-					const providerKey = getProviderCacheKey(get().baseMapProvider);
-					const meta = await getTileCacheMeta(providerKey);
-					set({ showStaleCacheNotification: isCacheStale(meta) });
-				} catch {
-					// Storage unavailable or corrupted — leave flag false
-					set({ showStaleCacheNotification: false });
-				}
-			},
+					if (typeof window === 'undefined') return;
+					try {
+						const providerKey = getProviderCacheKey(get().baseMapProvider);
+						const meta = await getTileCacheMeta(providerKey);
+						set({ showStaleCacheNotification: isCacheStale(meta) });
+					} catch {
+						// Storage unavailable or corrupted — leave flag false
+						set({ showStaleCacheNotification: false });
+					}
+				},
 
 				processTrailData: (
 					points: unknown[],

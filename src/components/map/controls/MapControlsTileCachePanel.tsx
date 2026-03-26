@@ -5,9 +5,9 @@
  * Reads trail data and provider from the store; drives the tile pre-cache workflow.
  * Implements: download, cancel, progress, cache info, clear, re-download, auto-sync, staleness.
  */
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {useTranslations} from 'next-intl';
-import {useMapStore, useStore, type MapStoreState, type StoreState} from '@/lib/store';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslations } from 'next-intl';
+import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
 import {
 	isProviderCacheable,
 	isCacheStale,
@@ -18,8 +18,9 @@ import {
 	PRECACHE_ZOOM_MIN,
 	PRECACHE_ZOOM_MAX,
 } from '@/lib/tile-cache';
-import {Button} from '@/components/ui/Button';
-import {Checkbox} from '@/components/ui/Checkbox';
+import { tileCacheTtlDays } from '@/lib/config';
+import { Button } from '@/components/ui/Button';
+import { Checkbox } from '@/components/ui/Checkbox';
 import SmartTooltip from '@/components/ui/SmartTooltip';
 import {
 	IoCloudDownloadOutline,
@@ -35,7 +36,7 @@ function formatAge(cachedAt: number, t: ReturnType<typeof useTranslations<'tileC
 	const diffDays = Math.floor(diffMs / (24 * 60 * 60 * 1000));
 	if (diffDays === 0) return t('today');
 	if (diffDays === 1) return t('yesterday');
-	return t('daysAgo', {days: diffDays});
+	return t('daysAgo', { days: diffDays });
 }
 
 export function MapControlsTileCachePanel(): React.ReactElement {
@@ -136,7 +137,7 @@ export function MapControlsTileCachePanel(): React.ReactElement {
 	return (
 		<div className="mt-1 border-t border-gray-200 pt-2 dark:border-gray-600">
 			<div className="mb-1.5 flex items-center gap-1.5">
-				<IoCloudDownloadOutline aria-hidden className="h-4 w-4 shrink-0 text-gray-500 dark:text-gray-300"/>
+				<IoCloudDownloadOutline aria-hidden className="h-4 w-4 shrink-0 text-gray-500 dark:text-gray-300" />
 				<span className="text-xs font-medium text-gray-600 dark:text-gray-200">{t('title')}</span>
 			</div>
 
@@ -164,14 +165,14 @@ export function MapControlsTileCachePanel(): React.ReactElement {
 						<div className="space-y-1.5">
 							<div className="flex items-center justify-between gap-2 text-xs text-gray-600 dark:text-gray-300">
 								<span>
-									{t('downloading', {done: tileCacheDone.toLocaleString(), total: tileCacheTotal.toLocaleString()})}
+									{t('downloading', { done: tileCacheDone.toLocaleString(), total: tileCacheTotal.toLocaleString() })}
 								</span>
 								<span className="shrink-0 text-gray-500">{progressPercent}%</span>
 							</div>
 							<div className="h-1.5 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
 								<div
 									className="bg-cldt-blue h-full rounded-full transition-all duration-300"
-									style={{width: `${progressPercent}%`}}
+									style={{ width: `${progressPercent}%` }}
 								/>
 							</div>
 							<Button size="sm" variant="base" onClick={cancelTileDownload}>
@@ -186,23 +187,23 @@ export function MapControlsTileCachePanel(): React.ReactElement {
 							{/* Cache info row */}
 							{hasCache && tileCacheMeta && (
 								<div className="space-y-1">
-									<div
-										className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-gray-600 dark:text-gray-300">
-										<span>{t('lastDownloaded', {time: formatAge(tileCacheMeta.cachedAt, t)})} -
+									<div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-gray-600 dark:text-gray-300">
+										<span>
+											{t('lastDownloaded', { time: formatAge(tileCacheMeta.cachedAt, t) })} -
 											{querying ? (
 												<span className="flex items-center gap-1">
-												<IoEllipsisHorizontal aria-hidden className="h-3 w-3 animate-spin"/>
+													<IoEllipsisHorizontal aria-hidden className="h-3 w-3 animate-spin" />
 													{t('querying')}
-											</span>
+												</span>
 											) : (
-												<span>{t('tilesCount', {count: (liveCount ?? 0).toLocaleString()})}</span>
+												<span>{t('tilesCount', { count: (liveCount ?? 0).toLocaleString() })}</span>
 											)}
 										</span>
 									</div>
 									{stale && (
 										<div className="flex items-center gap-1 text-xs text-amber-600 dark:text-amber-400">
-											<IoWarningOutline aria-hidden className="h-3.5 w-3.5 shrink-0"/>
-											<span>{t('cacheStale')}</span>
+											<IoWarningOutline aria-hidden className="h-3.5 w-3.5 shrink-0" />
+											<span>{t('cacheStale', { days: tileCacheTtlDays })}</span>
 										</div>
 									)}
 									<div className="flex flex-wrap gap-1.5 pt-0.5">
@@ -212,7 +213,7 @@ export function MapControlsTileCachePanel(): React.ReactElement {
 											variant="mapControlOutlineSecondary"
 											onClick={() => void handleClear()}
 										>
-											<IoTrashOutline aria-hidden className="mr-1 h-3 w-3"/>
+											<IoTrashOutline aria-hidden className="mr-1 h-3 w-3" />
 											{t('clear')}
 										</Button>
 										<Button
@@ -221,7 +222,7 @@ export function MapControlsTileCachePanel(): React.ReactElement {
 											variant="mapControlOutline"
 											onClick={() => void handleRedownload()}
 										>
-											<IoRefreshOutline aria-hidden className="mr-1 h-3 w-3"/>
+											<IoRefreshOutline aria-hidden className="mr-1 h-3 w-3" />
 											{t('redownload')}
 										</Button>
 										{!confirmClearAll && (
@@ -231,7 +232,7 @@ export function MapControlsTileCachePanel(): React.ReactElement {
 												variant="mapControlOutlineSecondary"
 												onClick={() => setConfirmClearAll(true)}
 											>
-												<IoTrashOutline aria-hidden className="mr-1 h-3 w-3"/>
+												<IoTrashOutline aria-hidden className="mr-1 h-3 w-3" />
 												{t('clearAll')}
 											</Button>
 										)}
@@ -240,8 +241,8 @@ export function MapControlsTileCachePanel(): React.ReactElement {
 										<div className="flex items-center gap-2 pt-0.5 text-xs text-gray-600 dark:text-gray-300">
 											<span>{t('confirmClear')}</span>
 											<Button
-												ref={confirmYesRef}
 												className="min-h-[44px] text-xs"
+												ref={confirmYesRef}
 												size="sm"
 												variant="mapControlOutlineSecondary"
 												onClick={() => void handleClearAll()}
@@ -271,12 +272,12 @@ export function MapControlsTileCachePanel(): React.ReactElement {
 										variant="mapControlOutline"
 										onClick={handleDownload}
 									>
-										<IoCloudDownloadOutline aria-hidden className="mr-1.5 h-3.5 w-3.5 shrink-0"/>
+										<IoCloudDownloadOutline aria-hidden className="mr-1.5 h-3.5 w-3.5 shrink-0" />
 										{t('download')}
 									</Button>
 									{estimatedTileCount > 0 && (
 										<p className="text-xs text-gray-400 dark:text-gray-500">
-											{t('estimatedTiles', {count: estimatedTileCount.toLocaleString()})}
+											{t('estimatedTiles', { count: estimatedTileCount.toLocaleString() })}
 										</p>
 									)}
 								</div>
@@ -284,7 +285,7 @@ export function MapControlsTileCachePanel(): React.ReactElement {
 
 							{/* Auto-sync toggle */}
 							<label className="flex cursor-pointer items-center gap-2">
-								<Checkbox checked={autoSync} onCheckedChange={(checked) => setAutoSync(checked)}/>
+								<Checkbox checked={autoSync} onCheckedChange={(checked) => setAutoSync(checked)} />
 								<span className="text-sm text-gray-700 dark:text-gray-200">{t('autoSync')}</span>
 								<span
 									className="inline-flex"
@@ -292,8 +293,7 @@ export function MapControlsTileCachePanel(): React.ReactElement {
 									onMouseDown={(e) => e.stopPropagation()}
 								>
 									<SmartTooltip content={t('autoSyncTooltip')} position="top">
-										<IoHelpCircleOutline
-											className="ml-0.5 h-3.5 w-3.5 shrink-0 cursor-help text-gray-400 hover:text-gray-600 dark:text-white"/>
+										<IoHelpCircleOutline className="ml-0.5 h-3.5 w-3.5 shrink-0 cursor-help text-gray-400 hover:text-gray-600 dark:text-white" />
 									</SmartTooltip>
 								</span>
 							</label>
