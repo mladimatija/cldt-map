@@ -166,11 +166,7 @@
 	},
 	"mapMarkers": {
 		"yourLocation": "Vaša lokacija",
-		"navigateToTrail": "Navigirajte do najbliže točke na stazi",
-		"close": "Zatvori",
-		"traveled": "Prijeđeno",
-		"toTrailEnd": "Do kraja staze",
-		"toSectionEnd": "Do kraja dionice"
+		"navigateToTrail": "Navigirajte do najbliže točke na stazi"
 	},
 	"error": {
 		"title": "Došlo je do greške",
@@ -240,10 +236,7 @@
 		"tooltipDistanceToEnd": "Udaljenost do kraja:",
 		"tooltipAccumulatedGain": "Nagomilani uspon:",
 		"tooltipAccumulatedLoss": "Nagomilani spust:",
-		"tooltipTotalDistance": "Ukupna udaljenost:",
-		"tooltipTotalGain": "Ukupni uspon:",
-		"tooltipTotalLoss": "Ukupni spust:",
-		"tooltipClose": "Zatvori"
+		"close": "Zatvori"
 	},
 	"storeTest": {
 		"title": "Test perzistencije Store",
@@ -392,5 +385,15 @@
 		"legendHeavy": "Jake",
 		"playRadar": "Pokreni radar",
 		"pauseRadar": "Zaustavi radar"
+	},
+	"distanceOverlay": {
+		"traveled": "Prijeđeno",
+		"toTrailEnd": "Do kraja staze",
+		"toSectionEnd": "Do kraja dionice",
+		"etaToEnd": "Dolazak na kraj",
+		"etaToSection": "Dolazak do dionice",
+		"approximately": "otprilike",
+		"etaAriaHour": "{count, plural, =1 {1 sat} other {# sati}}",
+		"etaAriaMinute": "{count, plural, =1 {1 minuta} other {# minuta}}"
 	}
 }

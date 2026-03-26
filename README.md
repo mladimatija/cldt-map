@@ -16,7 +16,8 @@ Interactive web map for the **Croatian Long Distance Trail (CLDT)** - a 2,200+ k
 
 - **Interactive trail route** - Click the route or the elevation chart to see distance and elevation at any point
 - **Elevation profile** - Chart showing terrain along the route; hover to preview on the map, click to pin a point
-- **Distance ruler** - Measure segments; see estimated hiking time, elevation gain/loss, and section name for the selected range
+- **Distance ruler** - Measure segments; see estimated hiking time (based on configurable walking pace), elevation gain/loss, and section name for the selected range
+- **Distance & ETA overlay** - Live HUD chip showing traveled distance, distance remaining to trail end (and active ruler section), and estimated time of arrival; updates as you move
 - **GPX export** - Download the full trail or any ruler-selected segment as a GPX file
 - **Print / export** - Print the current map view as a PDF (landscape, segment auto-fitted) or download as a PNG image
 - **Map layers** - Standard, Topo, Satellite, Terrain, CyclOSM, Croatia Topo
@@ -27,6 +28,7 @@ Interactive web map for the **Croatian Long Distance Trail (CLDT)** - a 2,200+ k
 - **Share links** - Share current map view or progress on the trail
 - **Units** - Metric (km) and imperial (miles)
 - **Trail sections** - Optional color-coded sections (A/B/C) with boundary markers and stats (persisted)
+- **Walking pace** - Configurable hiking pace used for all ETA and passage time estimates (Naismith's rule)
 - **Dark mode & battery saver** - UI preferences and reduced location updates
 - **4 languages** - English (en), Croatian (hr), German (de), Italian (it)
 - **Offline maps** - Pre-cache the full trail corridor for offline use; per-provider caching, staleness detection, auto-sync on reconnect, and storage quota handling
@@ -169,7 +171,7 @@ src/
 │   └── utils.ts      # Formatting, URL parsing, boundary check, etc.
 ├── i18n/             # next-intl routing and request config
 ├── types/            # TypeScript definitions
-└── messages/         # en.json, hr.json translations
+└── messages/         # en.json, hr.json, de.json, it.json translations
 ```
 
 ---
