@@ -265,7 +265,12 @@
 		"instruction1": "Einige Einstellungen umschalten (Richtung, Einheiten, Grenze usw.)",
 		"instruction2": "Seite neu laden und prüfen, ob die Einstellungen erhalten bleiben",
 		"instruction3": "Browser-Tab schließen und erneut öffnen, um Persistenz zwischen Sitzungen zu prüfen",
-		"instructionNote": "In der echten Anwendung initialisieren diese Einstellungen die Kartensteuerungen beim Laden der Seite."
+		"instructionNote": "In der echten Anwendung initialisieren diese Einstellungen die Kartensteuerungen beim Laden der Seite.",
+		"staleCacheNotification": "Benachrichtigung über veralteten Cache",
+		"triggerStaleCacheNotification": "Benachrichtigung auslösen",
+		"clearStaleCacheNotification": "Benachrichtigung entfernen",
+		"cacheTtlDays": "Cache-TTL (Tage, aus env)",
+		"cacheTtlValue": "{days} Tage"
 	},
 	"zoomControls": {
 		"zoomIn": "Hineinzoomen",

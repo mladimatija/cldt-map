@@ -265,7 +265,12 @@
 		"instruction1": "Cambia alcune impostazioni (direzione, unità, confine, ecc.)",
 		"instruction2": "Ricarica la pagina e verifica che le impostazioni persistano",
 		"instruction3": "Chiudi la scheda del browser e riaprila per verificare la persistenza tra le sessioni",
-		"instructionNote": "Nell'applicazione reale, queste impostazioni inizializzano i controlli mappa durante il caricamento della pagina."
+		"instructionNote": "Nell'applicazione reale, queste impostazioni inizializzano i controlli mappa durante il caricamento della pagina.",
+		"staleCacheNotification": "Notifica cache obsoleta",
+		"triggerStaleCacheNotification": "Attiva notifica",
+		"clearStaleCacheNotification": "Rimuovi notifica",
+		"cacheTtlDays": "TTL cache (giorni, da env)",
+		"cacheTtlValue": "{days} giorni"
 	},
 	"zoomControls": {
 		"zoomIn": "Ingrandisci",
