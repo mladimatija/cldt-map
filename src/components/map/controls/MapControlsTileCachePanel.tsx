@@ -189,7 +189,8 @@ export function MapControlsTileCachePanel(): React.ReactElement {
 								<div className="space-y-1">
 									<div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-gray-600 dark:text-gray-300">
 										<span>
-											{t('lastDownloaded', { time: formatAge(tileCacheMeta.cachedAt, t) })} -
+											{t('lastDownloaded', { time: formatAge(tileCacheMeta.cachedAt, t) })}
+											{' - '}
 											{querying ? (
 												<span className="flex items-center gap-1">
 													<IoEllipsisHorizontal aria-hidden className="h-3 w-3 animate-spin" />

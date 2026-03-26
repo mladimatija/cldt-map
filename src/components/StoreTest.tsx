@@ -122,11 +122,11 @@ const StoreTest: React.FC = () => {
 					<div>
 						<p className="mb-2">
 							{t('staleCacheNotification')}:{' '}
-							<span className="text-cldt-blue font-semibold">
-								{showStaleCacheNotification ? t('on') : t('off')}
-							</span>
+							<span className="text-cldt-blue font-semibold">{showStaleCacheNotification ? t('on') : t('off')}</span>
 						</p>
-						<p className="mb-2 text-sm text-gray-600">{t('cacheTtlDays')}: {t('cacheTtlValue', { days: tileCacheTtlDays })}</p>
+						<p className="mb-2 text-sm text-gray-600">
+							{t('cacheTtlDays')}: {t('cacheTtlValue', { days: tileCacheTtlDays })}
+						</p>
 						<div className="flex flex-wrap gap-2">
 							<Button size="default" variant="base" onClick={() => setStaleCacheNotification(true)}>
 								{t('triggerStaleCacheNotification')}
