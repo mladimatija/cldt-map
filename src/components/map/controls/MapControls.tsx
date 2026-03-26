@@ -257,6 +257,8 @@ const MapControls: React.FC<MapControlsProps> = ({
 	const rulerRange = useMapStore((state: MapStoreState) => state.rulerRange);
 	const setRulerRange = useMapStore((state: MapStoreState) => state.setRulerRange);
 	const setDistancePrecision = useMapStore((state: MapStoreState) => state.setDistancePrecision);
+	const walkingPaceKmh = useMapStore((state: MapStoreState) => state.walkingPaceKmh);
+	const setWalkingPaceKmh = useMapStore((state: MapStoreState) => state.setWalkingPaceKmh);
 
 	const storeDirection = useMapStore((state: MapStoreState) => state.direction);
 	const enhancedTrailPoints = useStore((state: StoreState) => state.enhancedTrailPoints);
@@ -1345,9 +1347,12 @@ const MapControls: React.FC<MapControlsProps> = ({
 					setDarkMode={setDarkMode}
 					setLargeTouchTargets={setLargeTouchTargets}
 					setShowSections={setShowSections}
+					setWalkingPaceKmh={setWalkingPaceKmh}
 					showSections={showSections}
 					tooltipHide={t('preferencesHide')}
 					tooltipShow={t('preferencesShow')}
+					units={storeUnits}
+					walkingPaceKmh={walkingPaceKmh}
 					onToggle={() => {
 						if (!isSettingsExpanded) {
 							setIsPrecisionExpanded(false);

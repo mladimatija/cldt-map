@@ -50,6 +50,11 @@ html.dark .precision-slider::-moz-range-track {
 	background: var(--border-color, #334155);
 }
 
+.precision-slider:focus-visible {
+	outline: 2px solid var(--cldt-green);
+	outline-offset: 2px;
+}
+
 .transition-height {
 	transition-property: height;
 	transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
