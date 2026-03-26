@@ -398,6 +398,11 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 						set({ isLocating: false });
 					}
 				},
+
+				walkingPaceKmh: 4,
+				setWalkingPaceKmh: (pace: number): void => {
+					set({ walkingPaceKmh: pace });
+				},
 			}),
 			{
 				name: 'cldt-map-storage',
@@ -415,6 +420,7 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					largeTouchTargets: state.largeTouchTargets,
 					baseMapProvider: state.baseMapProvider,
 					autoSync: state.autoSync,
+					walkingPaceKmh: state.walkingPaceKmh,
 				}),
 			},
 		),
