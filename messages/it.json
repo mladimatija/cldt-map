@@ -165,11 +165,7 @@
 	},
 	"mapMarkers": {
 		"yourLocation": "La tua posizione",
-		"navigateToTrail": "Naviga al punto più vicino sul sentiero",
-		"close": "Chiudi",
-		"traveled": "Percorso",
-		"toTrailEnd": "Al termine del sentiero",
-		"toSectionEnd": "Al termine della sezione"
+		"navigateToTrail": "Naviga al punto più vicino sul sentiero"
 	},
 	"error": {
 		"title": "Si è verificato un errore",
@@ -239,10 +235,7 @@
 		"tooltipDistanceToEnd": "Distanza alla fine:",
 		"tooltipAccumulatedGain": "Dislivello + accumulato:",
 		"tooltipAccumulatedLoss": "Dislivello − accumulato:",
-		"tooltipTotalDistance": "Distanza totale:",
-		"tooltipTotalGain": "Dislivello + totale:",
-		"tooltipTotalLoss": "Dislivello − totale:",
-		"tooltipClose": "Chiudi"
+		"close": "Chiudi"
 	},
 	"storeTest": {
 		"title": "Test persistenza store",
@@ -391,5 +384,15 @@
 		"legendHeavy": "Forte",
 		"playRadar": "Riproduci radar",
 		"pauseRadar": "Metti in pausa radar"
+	},
+	"distanceOverlay": {
+		"traveled": "Percorso",
+		"toTrailEnd": "Al termine del percorso",
+		"toSectionEnd": "Al termine della sezione",
+		"etaToEnd": "Arrivo alla fine",
+		"etaToSection": "Arrivo alla sezione",
+		"approximately": "circa",
+		"etaAriaHour": "{count, plural, =1 {1 ora} other {# ore}}",
+		"etaAriaMinute": "{count, plural, =1 {1 minuto} other {# minuti}}"
 	}
 }

@@ -148,6 +148,21 @@ export function weatherCodeToKey(code: number): string {
 	return 'thunderstorm';
 }
 
+const WEATHER_ICONS: Record<string, string> = {
+	clear: '☀️',
+	cloudy: '☁️',
+	fog: '🌫️',
+	rain: '🌧️',
+	snow: '❄️',
+	showers: '🌦️',
+	snowShowers: '🌨️',
+	thunderstorm: '⛈️',
+};
+
+export function weatherKeyToIcon(key: string): string {
+	return WEATHER_ICONS[key] ?? '🌡️';
+}
+
 /**
  * Formats a sunrise/sunset ISO datetime string (e.g. "2026-03-18T06:42") to a
  * time string. Metric units use 24 h format; imperial uses the locale default.
