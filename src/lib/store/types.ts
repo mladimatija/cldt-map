@@ -252,4 +252,8 @@ export interface MapStoreState {
 	clearTileCacheForProvider: (providerKey?: string) => Promise<void>;
 	loadTileCacheMeta: (providerKey: string) => Promise<void>;
 	setAutoSync: (enabled: boolean) => void;
+
+	showStaleCacheNotification: boolean;
+	setStaleCacheNotification: (show: boolean) => void;
+	initStaleCacheCheck: () => Promise<void>;
 }

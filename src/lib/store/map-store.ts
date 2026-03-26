@@ -14,6 +14,7 @@ import {
 	getTileUrlTemplate,
 	getProviderCacheKey,
 	isProviderCacheable,
+	isCacheStale,
 	estimateStorage,
 	PRECACHE_ZOOM_MIN,
 	PRECACHE_ZOOM_MAX,
@@ -256,6 +257,22 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 				},
 
 				setAutoSync: (enabled: boolean) => set({ autoSync: enabled }),
+
+				showStaleCacheNotification: false,
+				setStaleCacheNotification: (show: boolean): void => {
+					set({ showStaleCacheNotification: show });
+				},
+				initStaleCacheCheck: async (): Promise<void> => {
+				if (typeof window === 'undefined') return;
+				try {
+					const providerKey = getProviderCacheKey(get().baseMapProvider);
+					const meta = await getTileCacheMeta(providerKey);
+					set({ showStaleCacheNotification: isCacheStale(meta) });
+				} catch {
+					// Storage unavailable or corrupted — leave flag false
+					set({ showStaleCacheNotification: false });
+				}
+			},
 
 				processTrailData: (
 					points: unknown[],
