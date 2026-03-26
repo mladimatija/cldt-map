@@ -1,4 +1,4 @@
-import type { ClosestPoint } from '@/lib/store/types';
+import type { ClosestPoint, UnitSystem } from '@/lib/store/types';
 
 export interface DistanceRemaining {
 	traveled: number;
@@ -32,4 +32,40 @@ export function computeDistanceRemaining(
 	const toSectionEnd = rulerRange ? Math.max(0, rulerRange.distanceFromStartB - closestPoint.distanceFromStart) : null;
 
 	return { traveled, toTrailEnd, toSectionEnd };
+}
+
+const KM_TO_MILES = 1.60934;
+
+/**
+ * Computes ETA in seconds given a distance in metres and a walking pace in km/h.
+ */
+export function computeEta(distanceM: number, paceKmh: number): number {
+	const distanceKm = distanceM / 1000;
+	const hours = distanceKm / paceKmh;
+	return Math.round(hours * 3600);
+}
+
+/**
+ * Formats a duration in seconds as a human-readable ETA string.
+ * Hours are omitted when < 1h. Always shows minutes.
+ */
+export function formatEta(seconds: number): string {
+	const totalMinutes = Math.round(seconds / 60);
+	const hours = Math.floor(totalMinutes / 60);
+	const minutes = totalMinutes % 60;
+	if (hours === 0) {
+		return `~${minutes}min`;
+	}
+	return `~${hours}h ${minutes}min`;
+}
+
+/**
+ * Formats a walking pace in km/h as a display string in the given unit system.
+ */
+export function formatPace(paceKmh: number, units: UnitSystem): string {
+	if (units === 'imperial') {
+		const mph = paceKmh / KM_TO_MILES;
+		return `${mph.toFixed(1)} mph`;
+	}
+	return `${paceKmh.toFixed(1)} km/h`;
 }
