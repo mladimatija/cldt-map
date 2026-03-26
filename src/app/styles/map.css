@@ -168,7 +168,6 @@
 
 .user-location-tooltip-inner {
 	position: relative;
-	text-align: center;
 }
 
 .user-location-close-btn {
@@ -224,8 +223,8 @@
 	font-weight: 500;
 }
 
-.map-tooltip .font-medium:not([role='button']),
-.map-tooltip .font-bold:not([role='button']) {
+.map-tooltip span.font-medium,
+.map-tooltip span.font-bold {
 	color: var(--map-tooltip-label-color);
 }
 
