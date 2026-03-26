@@ -256,4 +256,7 @@ export interface MapStoreState {
 	showStaleCacheNotification: boolean;
 	setStaleCacheNotification: (show: boolean) => void;
 	initStaleCacheCheck: () => Promise<void>;
+
+	walkingPaceKmh: number;
+	setWalkingPaceKmh: (pace: number) => void;
 }
