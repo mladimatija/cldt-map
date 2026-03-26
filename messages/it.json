@@ -319,7 +319,13 @@
 		"estimatedTiles": "~{count} tessere da scaricare",
 		"today": "oggi",
 		"yesterday": "ieri",
-		"daysAgo": "{days} giorni fa"
+		"daysAgo": "{days} giorni fa",
+		"tilesCount": "{count} tessere nella cache",
+		"querying": "Interrogazione…",
+		"clearAll": "Cancella tutto",
+		"confirmClear": "Sei sicuro?",
+		"confirmYes": "Sì",
+		"confirmNo": "No"
 	},
 	"gpxDownload": {
 		"modalTitle": "Scarica GPX CLDT",
