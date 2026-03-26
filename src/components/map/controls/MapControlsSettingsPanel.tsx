@@ -5,6 +5,8 @@ import { useTranslations } from 'next-intl';
 import { usePopoverFocusTrap } from '@/hooks';
 import SmartTooltip from '@/components/ui/SmartTooltip';
 import { Checkbox } from '@/components/ui/Checkbox';
+import { formatPace } from '@/lib/distance-utils';
+import type { UnitSystem } from '@/lib/store';
 import {
 	IoMoonOutline,
 	IoBatteryHalfOutline,
@@ -30,6 +32,9 @@ interface MapControlsSettingsPanelProps {
 	setLargeTouchTargets: (checked: boolean) => void;
 	showSections: boolean;
 	setShowSections: (checked: boolean) => void;
+	walkingPaceKmh: number;
+	setWalkingPaceKmh: (pace: number) => void;
+	units: UnitSystem;
 	darkModeLabel: string;
 	batterySaverLabel: string;
 	largeTouchTargetsLabel: string;
@@ -52,6 +57,9 @@ export function MapControlsSettingsPanel({
 	setLargeTouchTargets,
 	showSections,
 	setShowSections,
+	walkingPaceKmh,
+	setWalkingPaceKmh,
+	units,
 	darkModeLabel,
 	batterySaverLabel,
 	largeTouchTargetsLabel,
@@ -102,6 +110,44 @@ export function MapControlsSettingsPanel({
 							</SmartTooltip>
 						</span>
 					</label>
+
+					<div className="flex flex-col gap-1">
+						<div className="flex items-center gap-2">
+							<label className="text-sm text-gray-700 dark:text-gray-200" htmlFor="walking-pace-slider">
+								{t('walkingPace')}
+							</label>
+							<span className="text-cldt-blue ml-auto shrink-0 text-sm font-semibold tabular-nums">
+								{formatPace(walkingPaceKmh, units)}
+							</span>
+							{walkingPaceKmh !== 4 && (
+								<button
+									aria-label={t('walkingPaceReset')}
+									className="text-cldt-blue min-h-[var(--min-touch-target)] min-w-[var(--min-touch-target)] cursor-pointer border-0 bg-transparent p-0 text-sm underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[--cldt-green]"
+									type="button"
+									onClick={() => setWalkingPaceKmh(4)}
+								>
+									{t('walkingPaceReset')}
+								</button>
+							)}
+						</div>
+						<input
+							className="precision-slider w-full min-w-0"
+							id="walking-pace-slider"
+							max={10}
+							min={1}
+							step={0.1}
+							type="range"
+							value={walkingPaceKmh}
+							onChange={(e) => setWalkingPaceKmh(Number(e.target.value))}
+						/>
+						<p className="text-xs text-gray-500 dark:text-gray-400">
+							{t('walkingPaceHint', {
+								min: formatPace(1, units),
+								max: formatPace(10, units),
+								default: formatPace(4, units),
+							})}
+						</p>
+					</div>
 
 					<MapControlsTileCachePanel />
 
