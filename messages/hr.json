@@ -266,7 +266,12 @@
 		"instruction1": "Promijeni neke postavke (smjer, jedinice, granica, itd.)",
 		"instruction2": "Osvježi stranicu i provjeri perzistenciju postavki",
 		"instruction3": "Zatvori karticu i ponovno otvori za provjeru perzistencije između sesija",
-		"instructionNote": "U stvarnoj aplikaciji ove postavke inicijaliziraju kontrole karte pri učitavanju stranice."
+		"instructionNote": "U stvarnoj aplikaciji ove postavke inicijaliziraju kontrole karte pri učitavanju stranice.",
+		"staleCacheNotification": "Obavijest o zastarjeloj predmemoriji",
+		"triggerStaleCacheNotification": "Aktiviraj obavijest",
+		"clearStaleCacheNotification": "Ukloni obavijest",
+		"cacheTtlDays": "TTL predmemorije (dani, iz env)",
+		"cacheTtlValue": "{days} dana"
 	},
 	"zoomControls": {
 		"zoomIn": "Povećaj",
