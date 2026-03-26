@@ -320,7 +320,13 @@
 		"estimatedTiles": "~{count} pločica za preuzimanje",
 		"today": "danas",
 		"yesterday": "jučer",
-		"daysAgo": "prije {days} dana"
+		"daysAgo": "prije {days} dana",
+		"tilesCount": "{count} pločica u predmemoriji",
+		"querying": "Dohvaćanje…",
+		"clearAll": "Obriši sve",
+		"confirmClear": "Jeste li sigurni?",
+		"confirmYes": "Da",
+		"confirmNo": "Ne"
 	},
 	"gpxDownload": {
 		"modalTitle": "Preuzmi CLDT GPX",

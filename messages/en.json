@@ -319,7 +319,13 @@
 		"estimatedTiles": "~{count} tiles to download",
 		"today": "today",
 		"yesterday": "yesterday",
-		"daysAgo": "{days} days ago"
+		"daysAgo": "{days} days ago",
+		"tilesCount": "{count} tiles cached",
+		"querying": "Querying…",
+		"clearAll": "Clear all",
+		"confirmClear": "Are you sure?",
+		"confirmYes": "Yes",
+		"confirmNo": "No"
 	},
 	"gpxDownload": {
 		"modalTitle": "Download CLDT GPX",
