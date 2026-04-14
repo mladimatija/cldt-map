@@ -103,7 +103,7 @@ export function TrailTooltipContent({
 			)}
 			{title && <div className="text-center font-medium">{title}</div>}
 			{trailData && (
-				<div className="mt-1 space-y-0.5 text-xs">
+				<div className={`${title ? 'mt-1' : ''}space-y-0.5 text-xs`}>
 					<div>
 						<span className="font-medium">{labels.coordinates}</span>{' '}
 						<button
