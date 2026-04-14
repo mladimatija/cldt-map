@@ -403,9 +403,9 @@
 		"approximately": "otprilike",
 		"etaAriaHour": "{count, plural, =1 {1 sat} other {# sati}}",
 		"etaAriaMinute": "{count, plural, =1 {1 minuta} other {# minuta}}",
-		"elevGain": "Uspon",
-		"elevLoss": "Spust",
-		"elevGainSection": "Uspon (§)",
-		"elevLossSection": "Spust (§)"
+		"elevGain": "Preostali uspon",
+		"elevLoss": "Preostali spust",
+		"elevGainSection": "Preostali uspon (§)",
+		"elevLossSection": "Preostali spust (§)"
 	}
 }
