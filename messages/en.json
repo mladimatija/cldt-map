@@ -401,6 +401,10 @@
 		"etaToSection": "ETA to section",
 		"approximately": "approximately",
 		"etaAriaHour": "{count, plural, =1 {1 hour} other {# hours}}",
-		"etaAriaMinute": "{count, plural, =1 {1 minute} other {# minutes}}"
+		"etaAriaMinute": "{count, plural, =1 {1 minute} other {# minutes}}",
+		"elevGain": "Gain",
+		"elevLoss": "Loss",
+		"elevGainSection": "Gain (§)",
+		"elevLossSection": "Loss (§)"
 	}
 }

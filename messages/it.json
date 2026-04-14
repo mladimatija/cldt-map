@@ -401,6 +401,10 @@
 		"etaToSection": "Arrivo alla sezione",
 		"approximately": "circa",
 		"etaAriaHour": "{count, plural, =1 {1 ora} other {# ore}}",
-		"etaAriaMinute": "{count, plural, =1 {1 minuto} other {# minuti}}"
+		"etaAriaMinute": "{count, plural, =1 {1 minuto} other {# minuti}}",
+		"elevGain": "Salita",
+		"elevLoss": "Discesa",
+		"elevGainSection": "Salita (§)",
+		"elevLossSection": "Discesa (§)"
 	}
 }
