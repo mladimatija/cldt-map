@@ -9,11 +9,11 @@ const BORDER_WHITE = 'border border-gray-200 bg-white';
 const CONTROL_ROUND_SHAPE =
 	'flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full shadow-md transition-all outline-none';
 const MAP_OPTION_GRID =
-	'grid w-full cursor-pointer grid-cols-[32px_1fr] items-center gap-2 border-b border-gray-200 p-2.5 text-left transition-colors outline-none last:border-b-0 dark:border-b-(--bg-secondary) dark:last:border-b-0 hover:bg-gray-100 focus-visible:bg-gray-100 dark:hover:bg-gray-700 dark:focus-visible:bg-gray-700 dark:bg-(--bg-secondary) dark:text-(--text-primary)';
+	'grid w-full cursor-pointer grid-cols-[32px_1fr] items-center gap-2 border-b border-gray-200 p-2.5 text-left transition-colors outline-none last:border-b-0 dark:border-b-[var(--bg-secondary)] dark:last:border-b-0 hover:bg-gray-100 focus-visible:bg-gray-100 dark:hover:bg-[var(--bg-hover)] dark:focus-visible:bg-[var(--bg-hover)] dark:bg-[var(--bg-secondary)] dark:text-[var(--text-primary)]';
 const MAP_OPTION_LEFT_ACCENT =
 	'hover:border-l-cldt-green focus-visible:border-l-cldt-green dark:hover:border-l-cldt-green dark:focus-visible:border-l-cldt-green';
 const SECONDARY_DARK =
-	'dark:border-gray-600 dark:bg-gray-700 dark:!text-white dark:hover:border-gray-500 dark:hover:bg-gray-600';
+	'dark:border-[var(--border-color)] dark:bg-[var(--bg-secondary)] dark:!text-[var(--text-primary)] dark:hover:border-[var(--border-color)] dark:hover:bg-[var(--bg-hover)]';
 /** Shared base for secondary-style outline buttons (map control Cancel, tooltip Dismiss). */
 const SECONDARY_OUTLINE_BASE = `${BORDER_WHITE} font-medium text-gray-700 transition-all hover:border-gray-300 hover:text-gray-900 focus-visible:border-cldt-green focus-visible:ring-cldt-green ${SECONDARY_DARK}`;
 
@@ -35,7 +35,7 @@ const buttonVariants = cva(
 				/** Round map control button (locating / loading state). */
 				controlRoundLocating: `${CONTROL_ROUND_SHAPE} cursor-wait border border-gray-200 bg-cldt-blue/10 dark:border-[var(--border-color)] dark:bg-cldt-blue/20 dark:text-[var(--text-primary)]`,
 				/** Round map control with dark mode styling (e.g., base map trigger). */
-				controlRoundDark: `${CONTROL_ROUND_SHAPE} ${BORDER_WHITE} text-cldt-blue ${CLDT_HOVER_FOCUS} hover:border-2 focus-visible:border-2 dark:border-gray-600 dark:bg-gray-800 dark:text-white`,
+				controlRoundDark: `${CONTROL_ROUND_SHAPE} ${BORDER_WHITE} text-cldt-blue ${CLDT_HOVER_FOCUS} hover:border-2 focus-visible:border-2 dark:border-[var(--border-color)] dark:bg-[var(--bg-secondary)] dark:text-[var(--text-primary)]`,
 				/** Close icon (×) in tooltips/banners; pair with .user-location-close-btn for position/size. */
 				closeIcon:
 					'h-6 w-6 min-w-0 shrink-0 border-none bg-transparent p-0 text-[#666] text-xl leading-none outline-none hover:bg-black/5 hover:text-cldt-blue focus-visible:bg-black/5 focus-visible:text-cldt-blue rounded',

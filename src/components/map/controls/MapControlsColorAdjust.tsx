@@ -28,7 +28,7 @@ function SliderRow({ label, value, min, max, step, onChange }: SliderRowProps): 
 	return (
 		<div>
 			<div className="mb-0.5 flex justify-between">
-				<label className="text-xs text-gray-600 dark:text-gray-400">{label}</label>
+				<label className="text-xs text-gray-600 dark:text-[var(--text-secondary)]">{label}</label>
 				<span className="text-cldt-blue dark:text-cldt-blue text-xs font-medium">{value}%</span>
 			</div>
 			<input
@@ -80,7 +80,9 @@ export function MapControlsColorAdjust({
 					ref={popoverRef}
 					role="dialog"
 				>
-					<h3 className="text-sm font-medium text-gray-700 dark:text-gray-200">{t('colorMapAppearance')}</h3>
+					<h3 className="text-sm font-medium text-gray-700 dark:text-[var(--text-primary)]">
+						{t('colorMapAppearance')}
+					</h3>
 					<div className="flex flex-col gap-2">
 						<SliderRow
 							label={t('colorBrightness')}
