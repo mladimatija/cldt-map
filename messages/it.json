@@ -83,7 +83,7 @@
 		"showSections": "Mostra sezioni sentiero",
 		"showSectionsTooltip": "Colora il sentiero per sezione e mostra i marcatori dei confini con le statistiche.",
 		"walkingPace": "Velocità di camminata",
-		"walkingPaceHint": "Intervallo: {min}–{max}, predefinito: {default}",
+		"walkingPaceHint": "Intervallo: {min} – {max}, predefinito: {default}",
 		"walkingPaceReset": "Reimposta la velocità di camminata al valore predefinito",
 		"directionTooltip": "Attualmente {direction}, clicca per cambiare",
 		"directionSouthbound": "Verso sud (N→S)",
