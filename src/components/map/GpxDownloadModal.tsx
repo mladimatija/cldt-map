@@ -80,7 +80,7 @@ export function GpxDownloadModal({ isOpen, onClose, onConfirm }: GpxDownloadModa
 				ref={dialogRef}
 			>
 				<div className="border-b border-gray-200 px-6 py-4 dark:border-gray-700">
-					<h2 className="text-cldt-blue text-lg font-semibold">{t('modalTitle')}</h2>
+					<h2 className="text-cldt-blue mb-0 text-lg leading-none font-semibold">{t('modalTitle')}</h2>
 				</div>
 
 				<div className="flex-1 overflow-y-auto px-6 py-4">

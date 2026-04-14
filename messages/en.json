@@ -83,7 +83,7 @@
 		"showSections": "Show trail sections",
 		"showSectionsTooltip": "Color-codes the trail by section and shows section boundary markers with stats.",
 		"walkingPace": "Walking pace",
-		"walkingPaceHint": "Range: {min}–{max}, default: {default}",
+		"walkingPaceHint": "Range: {min} – {max}, default: {default}",
 		"walkingPaceReset": "Reset walking pace to default",
 		"directionTooltip": "Currently {direction}, click to switch",
 		"directionSouthbound": "Southbound (N→S)",
