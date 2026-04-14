@@ -21,7 +21,6 @@ export function DistanceRemainingOverlay(): React.ReactElement | null {
 		return `${approx} ${t('etaAriaHour', { count: hours })} ${t('etaAriaMinute', { count: minutes })}`;
 	}
 	const closestPoint = useStore((state: StoreState) => state.closestPoint);
-	const gpxElevationPoints = useStore((state: StoreState) => state.gpxElevationPoints);
 	const enhancedTrailPoints = useStore((state: StoreState) => state.enhancedTrailPoints);
 	const rulerRange = useMapStore((state: MapStoreState) => state.rulerRange);
 	const units = useMapStore((state: MapStoreState) => state.units);
@@ -33,7 +32,9 @@ export function DistanceRemainingOverlay(): React.ReactElement | null {
 
 	if (distanceInfo === null) return null;
 
-	// Find the index in enhancedTrailPoints nearest to closestPoint.distanceFromStart
+	// Find the index in enhancedTrailPoints nearest to closestPoint.distanceFromStart.
+	// enhancedTrailPoints is used as both the elevation source and for section-end lookup so that
+	// fromIndex and any ruler-section index are always valid for the same array.
 	let fromIndex = 0;
 	if (closestPoint !== null && enhancedTrailPoints.length > 0) {
 		let minDiff = Math.abs(enhancedTrailPoints[0].distanceFromStart - closestPoint.distanceFromStart);
@@ -47,8 +48,8 @@ export function DistanceRemainingOverlay(): React.ReactElement | null {
 	}
 
 	const elevInfo =
-		gpxElevationPoints !== null && gpxElevationPoints.length > 0
-			? computeElevationRemaining(gpxElevationPoints, fromIndex, direction, rulerRange, enhancedTrailPoints)
+		enhancedTrailPoints.length > 0
+			? computeElevationRemaining(enhancedTrailPoints, fromIndex, direction, rulerRange, enhancedTrailPoints)
 			: null;
 
 	const etaToEndSeconds = computeEta(distanceInfo.toTrailEnd, walkingPaceKmh);
