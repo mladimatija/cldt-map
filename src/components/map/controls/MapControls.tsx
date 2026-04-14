@@ -188,6 +188,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 	const [isSharing, setIsSharing] = useState(false);
 	const [isExporting, setIsExporting] = useState(false);
 	const [showTilesBoundary, setShowTilesBoundary] = useState(false);
+	const [tileBoundaryReinitKey, setTileBoundaryReinitKey] = useState(0);
 	const [isColorAdjustEnabled, setIsColorAdjustEnabled] = useState(false);
 	const [distancePrecisionState, setDistancePrecisionState] = useState(config.distancePrecision);
 	const [isPrecisionExpanded, setIsPrecisionExpanded] = useState(false);
@@ -268,6 +269,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 	const storeShowTileBoundary = useMapStore((state: MapStoreState) => state.showTileBoundary);
 	const baseMapProvider = useMapStore((state: MapStoreState) => state.baseMapProvider);
 	const gpxLoadFailed = useMapStore((state: MapStoreState) => state.gpxLoadFailed);
+	const prevBaseMapProviderRef = useRef(baseMapProvider);
 
 	const [colorSettings, setColorSettings] = useState({
 		brightness: 100,
@@ -1057,6 +1059,23 @@ const MapControls: React.FC<MapControlsProps> = ({
 		initFromStore();
 	}, [storeDirection, storeUnits, storeShowBoundary, storeShowTileBoundary, storeDistancePrecision, map, t]);
 
+	// When the base map provider changes while tile boundary is active, the old BoundaryCanvas
+	// layer is removed by BaseMapSelector's handleMapChange (which removes all TileLayers).
+	// The ref is stale (non-null but off the map), so the init effect below early-returns.
+	// Clear the stale ref and increment the reinit key to force re-initialization with the new tile URL.
+	useEffect(() => {
+		if (prevBaseMapProviderRef.current === baseMapProvider) {
+			prevBaseMapProviderRef.current = baseMapProvider;
+			return;
+		}
+		prevBaseMapProviderRef.current = baseMapProvider;
+
+		if (storeShowTileBoundary && boundaryCanvasLayerRef.current) {
+			boundaryCanvasLayerRef.current = null;
+			setTileBoundaryReinitKey((k) => k + 1);
+		}
+	}, [baseMapProvider, storeShowTileBoundary]);
+
 	useEffect(() => {
 		if (!storeShowTileBoundary || boundaryCanvasLayerRef.current) {
 			return;
@@ -1134,7 +1153,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 			cancelled = true;
 			clearAllTimeouts();
 		};
-	}, [map, setShowTileBoundary, storeShowTileBoundary]);
+	}, [map, setShowTileBoundary, storeShowTileBoundary, tileBoundaryReinitKey]);
 
 	const setDistancePrecisionHandler = (precision: number): void => {
 		setDistancePrecisionState(precision);
