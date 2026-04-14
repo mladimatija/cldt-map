@@ -83,7 +83,7 @@
 		"showSections": "Prikaži dionice staze",
 		"showSectionsTooltip": "Označava dionice staze bojama i prikazuje oznake granica dionica sa statistikama.",
 		"walkingPace": "Tempo hodanja",
-		"walkingPaceHint": "Raspon: {min}–{max}, zadano: {default}",
+		"walkingPaceHint": "Raspon: {min} – {max}, zadano: {default}",
 		"walkingPaceReset": "Vrati tempo hodanja na zadanu vrijednost",
 		"directionTooltip": "Trenutno {direction}, kliknite za promjenu",
 		"directionSouthbound": "Južni smjer (S→J)",
