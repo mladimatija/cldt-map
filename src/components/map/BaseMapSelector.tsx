@@ -236,6 +236,8 @@ export default function BaseMapSelector({ initialProvider }: BaseMapSelectorProp
 		};
 	}, [map, initializeServices, isBrowser, createFallbackLayer, leafletLoaded, effectiveInitial]);
 
+	const handleMapChangeRef = useRef<(provider: BaseMapProvider) => void>(() => {});
+
 	const handleMapChange = (provider: BaseMapProvider): void => {
 		if (!isBrowser || !L || !leafletLoaded) {
 			return;
@@ -334,6 +336,17 @@ export default function BaseMapSelector({ initialProvider }: BaseMapSelectorProp
 			setIsOpen(false);
 		}
 	};
+
+	// Keep ref in sync so the event listener below always calls the latest version.
+	handleMapChangeRef.current = handleMapChange;
+
+	// When MapControls disables tile boundary it dispatches this event so the correct
+	// base layer (not a hardcoded OSM fallback) is restored.
+	useEffect(() => {
+		const restore = (): void => handleMapChangeRef.current(currentLayer);
+		window.addEventListener('restoreBaseMapLayer', restore);
+		return () => window.removeEventListener('restoreBaseMapLayer', restore);
+	}, [currentLayer]);
 
 	const currentLayerName = t(PROVIDER_TO_KEY[currentLayer] ?? 'standard');
 	const toggleButton = (
