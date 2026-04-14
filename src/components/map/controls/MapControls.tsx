@@ -488,11 +488,10 @@ const MapControls: React.FC<MapControlsProps> = ({
 			} else {
 				if (boundaryCanvasLayerRef.current) {
 					map.removeLayer(boundaryCanvasLayerRef.current);
-
-					L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-						attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-						detectRetina: true,
-					}).addTo(map);
+					boundaryCanvasLayerRef.current = null;
+					// Signal BaseMapSelector to restore the currently selected base layer.
+					// (createAndAddTileBoundaryCanvas removed the original tile layer when it was added.)
+					window.dispatchEvent(new CustomEvent('restoreBaseMapLayer'));
 				}
 			}
 
