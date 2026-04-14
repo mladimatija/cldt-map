@@ -1,12 +1,12 @@
 'use client';
 
-/** Fixed-position HUD chip showing traveled distance, distance remaining, and ETA rows. */
+/** Fixed-position HUD chip showing traveled distance, distance remaining, elevation gain/loss, and ETA rows. */
 import React from 'react';
 import { useTranslations } from 'next-intl';
 import { useStore, useMapStore, type StoreState, type MapStoreState } from '@/lib/store';
 import { TRAIL_OFF_TRAIL_THRESHOLD_M } from '@/lib/config';
-import { computeDistanceRemaining, computeEta, formatEta } from '@/lib/distance-utils';
-import { formatDistance } from '@/lib/utils';
+import { computeDistanceRemaining, computeElevationRemaining, computeEta, formatEta } from '@/lib/distance-utils';
+import { formatDistance, formatElevation } from '@/lib/utils';
 
 export function DistanceRemainingOverlay(): React.ReactElement | null {
 	const t = useTranslations('distanceOverlay');
@@ -21,14 +21,35 @@ export function DistanceRemainingOverlay(): React.ReactElement | null {
 		return `${approx} ${t('etaAriaHour', { count: hours })} ${t('etaAriaMinute', { count: minutes })}`;
 	}
 	const closestPoint = useStore((state: StoreState) => state.closestPoint);
+	const gpxElevationPoints = useStore((state: StoreState) => state.gpxElevationPoints);
+	const enhancedTrailPoints = useStore((state: StoreState) => state.enhancedTrailPoints);
 	const rulerRange = useMapStore((state: MapStoreState) => state.rulerRange);
 	const units = useMapStore((state: MapStoreState) => state.units);
+	const direction = useMapStore((state: MapStoreState) => state.direction);
 	const walkingPaceKmh = useMapStore((state: MapStoreState) => state.walkingPaceKmh);
 	const distancePrecision = useMapStore((state: MapStoreState) => state.distancePrecision);
 
 	const distanceInfo = computeDistanceRemaining(closestPoint, rulerRange, TRAIL_OFF_TRAIL_THRESHOLD_M);
 
 	if (distanceInfo === null) return null;
+
+	// Find the index in enhancedTrailPoints nearest to closestPoint.distanceFromStart
+	let fromIndex = 0;
+	if (closestPoint !== null && enhancedTrailPoints.length > 0) {
+		let minDiff = Math.abs(enhancedTrailPoints[0].distanceFromStart - closestPoint.distanceFromStart);
+		for (let i = 1; i < enhancedTrailPoints.length; i++) {
+			const diff = Math.abs(enhancedTrailPoints[i].distanceFromStart - closestPoint.distanceFromStart);
+			if (diff < minDiff) {
+				minDiff = diff;
+				fromIndex = i;
+			}
+		}
+	}
+
+	const elevInfo =
+		gpxElevationPoints !== null && gpxElevationPoints.length > 0
+			? computeElevationRemaining(gpxElevationPoints, fromIndex, direction, rulerRange, enhancedTrailPoints)
+			: null;
 
 	const etaToEndSeconds = computeEta(distanceInfo.toTrailEnd, walkingPaceKmh);
 	const etaToSectionSeconds =
@@ -51,6 +72,42 @@ export function DistanceRemainingOverlay(): React.ReactElement | null {
 				<div className="flex justify-between gap-4">
 					<span className="text-gray-500 dark:text-gray-400">{t('toSectionEnd')}</span>
 					<span>{formatDistance(distanceInfo.toSectionEnd, units, distancePrecision, true)}</span>
+				</div>
+			)}
+			{elevInfo !== null && (
+				<div className="mt-1 border-t border-gray-200 pt-1 dark:border-gray-700">
+					<div className="flex justify-between gap-4">
+						<span className="text-gray-500 dark:text-gray-400">
+							<span aria-hidden="true">↑ </span>
+							{t('elevGain')}
+						</span>
+						<span>{formatElevation(elevInfo.gainM, units)}</span>
+					</div>
+					<div className="flex justify-between gap-4">
+						<span className="text-gray-500 dark:text-gray-400">
+							<span aria-hidden="true">↓ </span>
+							{t('elevLoss')}
+						</span>
+						<span>{formatElevation(elevInfo.lossM, units)}</span>
+					</div>
+					{elevInfo.sectionGainM !== null && (
+						<div className="flex justify-between gap-4">
+							<span className="text-gray-500 dark:text-gray-400">
+								<span aria-hidden="true">↑ </span>
+								{t('elevGainSection')}
+							</span>
+							<span>{formatElevation(elevInfo.sectionGainM, units)}</span>
+						</div>
+					)}
+					{elevInfo.sectionLossM !== null && (
+						<div className="flex justify-between gap-4">
+							<span className="text-gray-500 dark:text-gray-400">
+								<span aria-hidden="true">↓ </span>
+								{t('elevLossSection')}
+							</span>
+							<span>{formatElevation(elevInfo.sectionLossM, units)}</span>
+						</div>
+					)}
 				</div>
 			)}
 			<div className="mt-1 border-t border-gray-200 pt-1 dark:border-gray-700">
