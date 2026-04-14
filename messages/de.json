@@ -402,9 +402,9 @@
 		"approximately": "ungefähr",
 		"etaAriaHour": "{count, plural, =1 {1 Stunde} other {# Stunden}}",
 		"etaAriaMinute": "{count, plural, =1 {1 Minute} other {# Minuten}}",
-		"elevGain": "Anstieg",
-		"elevLoss": "Abstieg",
-		"elevGainSection": "Anstieg (§)",
-		"elevLossSection": "Abstieg (§)"
+		"elevGain": "Verbleibender Anstieg",
+		"elevLoss": "Verbleibender Abstieg",
+		"elevGainSection": "Verbleibender Anstieg (§)",
+		"elevLossSection": "Verbleibender Abstieg (§)"
 	}
 }

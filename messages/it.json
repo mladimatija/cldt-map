@@ -402,9 +402,9 @@
 		"approximately": "circa",
 		"etaAriaHour": "{count, plural, =1 {1 ora} other {# ore}}",
 		"etaAriaMinute": "{count, plural, =1 {1 minuto} other {# minuti}}",
-		"elevGain": "Salita",
-		"elevLoss": "Discesa",
-		"elevGainSection": "Salita (§)",
-		"elevLossSection": "Discesa (§)"
+		"elevGain": "Salita rimanente",
+		"elevLoss": "Discesa rimanente",
+		"elevGainSection": "Salita rimanente (§)",
+		"elevLossSection": "Discesa rimanente (§)"
 	}
 }
