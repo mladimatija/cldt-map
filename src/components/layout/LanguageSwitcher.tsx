@@ -67,7 +67,7 @@ export function LanguageSwitcher(): React.ReactElement {
 			{isOpen && (
 				<ul
 					aria-label={t('language')}
-					className="absolute right-0 bottom-full z-(--z-controls-popover) mb-2 min-w-[8rem] overflow-hidden rounded-lg border border-gray-200 bg-white py-1 shadow-lg dark:border-gray-600 dark:bg-gray-800"
+					className="absolute right-0 bottom-full z-(--z-controls-popover) mb-2 min-w-[8rem] overflow-hidden rounded-lg border border-gray-200 bg-white py-1 shadow-lg dark:border-[var(--border-color)] dark:bg-[var(--bg-secondary)]"
 					role="listbox"
 				>
 					{routing.locales.map((loc) => {
@@ -79,7 +79,7 @@ export function LanguageSwitcher(): React.ReactElement {
 										'flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-left text-sm transition-colors outline-none',
 										isActive
 											? 'bg-cldt-light-blue text-cldt-green dark:bg-cldt-light-blue/20 font-medium'
-											: 'text-gray-700 hover:bg-gray-100 focus-visible:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700 dark:focus-visible:bg-gray-700',
+											: 'text-gray-700 hover:bg-gray-100 focus-visible:bg-gray-100 dark:text-[var(--text-primary)] dark:hover:bg-[var(--bg-hover)] dark:focus-visible:bg-[var(--bg-hover)]',
 									)}
 									type="button"
 									onClick={() => handleSelect(loc)}

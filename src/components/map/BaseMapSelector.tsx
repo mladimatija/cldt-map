@@ -12,6 +12,7 @@ import SmartTooltip from '@/components/ui/SmartTooltip';
 import { Button } from '@/components/ui/Button';
 import { useTranslations } from 'next-intl';
 import { PROVIDER_TO_KEY, mapOptions, resolveProvider } from './base-map-options';
+import { DARK_PANEL } from './controls/map-controls-constants';
 
 let L: typeof import('leaflet') | null = null;
 
@@ -382,7 +383,12 @@ export default function BaseMapSelector({ initialProvider }: BaseMapSelectorProp
 				)}
 
 				{isOpen && (
-					<div className="z-controls-popover absolute top-0 right-full mr-2 w-72 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-lg dark:border-gray-600 dark:bg-gray-800">
+					<div
+						className={cn(
+							DARK_PANEL,
+							'z-controls-popover absolute top-0 right-full mr-2 w-72 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-lg',
+						)}
+					>
 						{mapOptions.map((option) => {
 							const optionName = t(PROVIDER_TO_KEY[option.id] ?? 'standard');
 							const optionDescription = t(`${PROVIDER_TO_KEY[option.id] ?? 'standard'}Description`);
@@ -406,7 +412,7 @@ export default function BaseMapSelector({ initialProvider }: BaseMapSelectorProp
 									</div>
 									<div className="flex flex-col">
 										<span className="text-sm font-medium dark:text-white">{optionName}</span>
-										<span className="text-xs text-gray-500 dark:text-gray-300">{optionDescription}</span>
+										<span className="text-xs text-gray-500 dark:text-[var(--text-secondary)]">{optionDescription}</span>
 									</div>
 								</Button>
 							);

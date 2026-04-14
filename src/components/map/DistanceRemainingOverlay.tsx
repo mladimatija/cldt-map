@@ -58,34 +58,34 @@ export function DistanceRemainingOverlay(): React.ReactElement | null {
 
 	return (
 		<div
-			className="z-controls absolute top-2 right-14 flex min-w-[10rem] flex-col gap-0.5 rounded-lg bg-white/90 px-3 py-2 text-xs font-medium text-gray-800 shadow dark:bg-gray-800/90 dark:text-gray-100"
+			className="z-controls absolute top-2 right-14 flex min-w-[10rem] flex-col gap-0.5 rounded-lg bg-white/90 px-3 py-2 text-xs font-medium text-gray-800 shadow dark:bg-[var(--bg-secondary)]/90 dark:text-[var(--text-primary)]"
 			role="status"
 		>
 			<div className="flex justify-between gap-4">
-				<span className="text-gray-500 dark:text-gray-400">{t('traveled')}</span>
+				<span className="text-gray-500 dark:text-[var(--text-secondary)]">{t('traveled')}</span>
 				<span>{formatDistance(distanceInfo.traveled, units, distancePrecision, true)}</span>
 			</div>
 			<div className="flex justify-between gap-4">
-				<span className="text-gray-500 dark:text-gray-400">{t('toTrailEnd')}</span>
+				<span className="text-gray-500 dark:text-[var(--text-secondary)]">{t('toTrailEnd')}</span>
 				<span>{formatDistance(distanceInfo.toTrailEnd, units, distancePrecision, true)}</span>
 			</div>
 			{distanceInfo.toSectionEnd !== null && (
 				<div className="flex justify-between gap-4">
-					<span className="text-gray-500 dark:text-gray-400">{t('toSectionEnd')}</span>
+					<span className="text-gray-500 dark:text-[var(--text-secondary)]">{t('toSectionEnd')}</span>
 					<span>{formatDistance(distanceInfo.toSectionEnd, units, distancePrecision, true)}</span>
 				</div>
 			)}
 			{elevInfo !== null && (
-				<div className="mt-1 border-t border-gray-200 pt-1 dark:border-gray-700">
+				<div className="mt-1 border-t border-gray-200 pt-1 dark:border-[var(--border-color)]">
 					<div className="flex justify-between gap-4">
-						<span className="text-gray-500 dark:text-gray-400">
+						<span className="text-gray-500 dark:text-[var(--text-secondary)]">
 							<span aria-hidden="true">↑ </span>
 							{t('elevGain')}
 						</span>
 						<span>{formatElevation(elevInfo.gainM, units)}</span>
 					</div>
 					<div className="flex justify-between gap-4">
-						<span className="text-gray-500 dark:text-gray-400">
+						<span className="text-gray-500 dark:text-[var(--text-secondary)]">
 							<span aria-hidden="true">↓ </span>
 							{t('elevLoss')}
 						</span>
@@ -93,7 +93,7 @@ export function DistanceRemainingOverlay(): React.ReactElement | null {
 					</div>
 					{elevInfo.sectionGainM !== null && (
 						<div className="flex justify-between gap-4">
-							<span className="text-gray-500 dark:text-gray-400">
+							<span className="text-gray-500 dark:text-[var(--text-secondary)]">
 								<span aria-hidden="true">↑ </span>
 								{t('elevGainSection')}
 							</span>
@@ -102,7 +102,7 @@ export function DistanceRemainingOverlay(): React.ReactElement | null {
 					)}
 					{elevInfo.sectionLossM !== null && (
 						<div className="flex justify-between gap-4">
-							<span className="text-gray-500 dark:text-gray-400">
+							<span className="text-gray-500 dark:text-[var(--text-secondary)]">
 								<span aria-hidden="true">↓ </span>
 								{t('elevLossSection')}
 							</span>
@@ -111,14 +111,14 @@ export function DistanceRemainingOverlay(): React.ReactElement | null {
 					)}
 				</div>
 			)}
-			<div className="mt-1 border-t border-gray-200 pt-1 dark:border-gray-700">
+			<div className="mt-1 border-t border-gray-200 pt-1 dark:border-[var(--border-color)]">
 				<div className="flex justify-between gap-4">
-					<span className="text-gray-500 dark:text-gray-400">{t('etaToEnd')}</span>
+					<span className="text-gray-500 dark:text-[var(--text-secondary)]">{t('etaToEnd')}</span>
 					<span aria-label={etaAriaLabel(etaToEndSeconds)}>{formatEta(etaToEndSeconds)}</span>
 				</div>
 				{etaToSectionSeconds !== null && (
 					<div className="flex justify-between gap-4">
-						<span className="text-gray-500 dark:text-gray-400">{t('etaToSection')}</span>
+						<span className="text-gray-500 dark:text-[var(--text-secondary)]">{t('etaToSection')}</span>
 						<span aria-label={etaAriaLabel(etaToSectionSeconds)}>{formatEta(etaToSectionSeconds)}</span>
 					</div>
 				)}

@@ -120,7 +120,7 @@ export default function MapControlsLocationButton({ checkPermission }: LocationB
 					<div className="absolute inset-0 flex items-center justify-center">
 						<div className="relative h-6 w-6">
 							<div className="border-t-cldt-blue border-r-cldt-blue/70 border-b-cldt-blue border-l-cldt-blue/70 absolute top-0 left-0 h-full w-full animate-spin rounded-full border-2"></div>
-							<div className="absolute top-[15%] left-[15%] h-[70%] w-[70%] rounded-full bg-white dark:bg-(--bg-secondary)"></div>
+							<div className="absolute top-[15%] left-[15%] h-[70%] w-[70%] rounded-full bg-white dark:bg-[var(--bg-secondary)]"></div>
 						</div>
 					</div>
 				) : null}

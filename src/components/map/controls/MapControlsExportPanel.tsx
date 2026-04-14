@@ -33,7 +33,7 @@ export function MapControlsExportPanel({
 			ref={containerRef}
 			onContextMenu={(e) => e.preventDefault()}
 		>
-			<h3 className="text-sm font-medium text-gray-700 dark:text-gray-200" id="export-panel-title">
+			<h3 className="text-sm font-medium text-gray-700 dark:text-[var(--text-primary)]" id="export-panel-title">
 				{t('title')}
 			</h3>
 			<div className="flex flex-col gap-2">

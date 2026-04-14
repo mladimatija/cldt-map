@@ -135,17 +135,24 @@ export function MapControlsTileCachePanel(): React.ReactElement {
 	const progressPercent = tileCacheTotal > 0 ? Math.round((tileCacheDone / tileCacheTotal) * 100) : 0;
 
 	return (
-		<div className="mt-1 border-t border-gray-200 pt-2 dark:border-gray-600">
+		<div className="mt-1 border-t border-gray-200 pt-2 dark:border-[var(--border-color)]">
 			<div className="mb-1.5 flex items-center gap-1.5">
-				<IoCloudDownloadOutline aria-hidden className="h-4 w-4 shrink-0 text-gray-500 dark:text-gray-300" />
-				<span className="text-xs font-medium text-gray-600 dark:text-gray-200">{t('title')}</span>
+				<IoCloudDownloadOutline
+					aria-hidden
+					className="h-4 w-4 shrink-0 text-gray-500 dark:text-[var(--text-secondary)]"
+				/>
+				<span className="text-xs font-medium text-gray-600 dark:text-[var(--text-primary)]">{t('title')}</span>
 			</div>
 
 			{/* Provider not cacheable */}
-			{!cacheable && <p className="text-xs text-gray-500 dark:text-gray-400">{t('providerNotCacheable')}</p>}
+			{!cacheable && (
+				<p className="text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('providerNotCacheable')}</p>
+			)}
 
 			{/* Trail isn't loaded */}
-			{cacheable && !gpxLoaded && <p className="text-xs text-gray-500 dark:text-gray-400">{t('noTrailData')}</p>}
+			{cacheable && !gpxLoaded && (
+				<p className="text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('noTrailData')}</p>
+			)}
 
 			{cacheable && gpxLoaded && (
 				<div className="space-y-2">
@@ -163,13 +170,13 @@ export function MapControlsTileCachePanel(): React.ReactElement {
 					{/* Downloading: progress bar */}
 					{tileCacheDownloading && (
 						<div className="space-y-1.5">
-							<div className="flex items-center justify-between gap-2 text-xs text-gray-600 dark:text-gray-300">
+							<div className="flex items-center justify-between gap-2 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
 								<span>
 									{t('downloading', { done: tileCacheDone.toLocaleString(), total: tileCacheTotal.toLocaleString() })}
 								</span>
 								<span className="shrink-0 text-gray-500">{progressPercent}%</span>
 							</div>
-							<div className="h-1.5 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
+							<div className="h-1.5 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-[var(--bg-secondary)]">
 								<div
 									className="bg-cldt-blue h-full rounded-full transition-all duration-300"
 									style={{ width: `${progressPercent}%` }}
@@ -187,7 +194,7 @@ export function MapControlsTileCachePanel(): React.ReactElement {
 							{/* Cache info row */}
 							{hasCache && tileCacheMeta && (
 								<div className="space-y-1">
-									<div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-gray-600 dark:text-gray-300">
+									<div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
 										<span>
 											{t('lastDownloaded', { time: formatAge(tileCacheMeta.cachedAt, t) })}
 											{' - '}
@@ -239,7 +246,7 @@ export function MapControlsTileCachePanel(): React.ReactElement {
 										)}
 									</div>
 									{confirmClearAll && (
-										<div className="flex items-center gap-2 pt-0.5 text-xs text-gray-600 dark:text-gray-300">
+										<div className="flex items-center gap-2 pt-0.5 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
 											<span>{t('confirmClear')}</span>
 											<Button
 												className="min-h-[44px] text-xs"
@@ -277,7 +284,7 @@ export function MapControlsTileCachePanel(): React.ReactElement {
 										{t('download')}
 									</Button>
 									{estimatedTileCount > 0 && (
-										<p className="text-xs text-gray-400 dark:text-gray-500">
+										<p className="text-xs text-gray-400 dark:text-[var(--text-secondary)]">
 											{t('estimatedTiles', { count: estimatedTileCount.toLocaleString() })}
 										</p>
 									)}
@@ -287,7 +294,7 @@ export function MapControlsTileCachePanel(): React.ReactElement {
 							{/* Auto-sync toggle */}
 							<label className="flex cursor-pointer items-center gap-2">
 								<Checkbox checked={autoSync} onCheckedChange={(checked) => setAutoSync(checked)} />
-								<span className="text-sm text-gray-700 dark:text-gray-200">{t('autoSync')}</span>
+								<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">{t('autoSync')}</span>
 								<span
 									className="inline-flex"
 									onClick={(e) => e.stopPropagation()}
