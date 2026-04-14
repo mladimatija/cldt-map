@@ -191,6 +191,8 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 	const gpxLoadFailed = useMapStore((state: MapStoreState) => state.gpxLoadFailed);
 	const rawGpxData = useMapStore((state: MapStoreState) => state.rawGpxData);
 	const walkingPaceKmh = useMapStore((state: MapStoreState) => state.walkingPaceKmh);
+	const darkMode = useMapStore((state: MapStoreState) => state.darkMode);
+	const axisTextColor = darkMode ? 'var(--text-primary)' : undefined;
 	const chartRef = useRef<HTMLDivElement>(null);
 	useBlockMapPropagation(chartRef, [chartData.length]);
 
@@ -438,7 +440,9 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 		const emptyMessage = gpxLoadFailed ? tCommon('failedToLoadTrail') : gpxLoaded ? t('noData') : t('loading');
 		return (
 			<div className={`rounded bg-white p-4 shadow ${className}`} ref={chartRef}>
-				<h2 className="text-cldt-blue-contrast mb-0 text-lg font-semibold">{emptyMessage}</h2>
+				<h2 className="text-cldt-blue-contrast mb-0 text-lg font-semibold dark:text-[var(--text-primary)]">
+					{emptyMessage}
+				</h2>
 			</div>
 		);
 	}
@@ -523,17 +527,21 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 					onClick={toggleExpanded}
 				>
 					<div className="flex items-center gap-1.5">
-						<h2 className="text-cldt-blue-contrast mb-0 text-base font-semibold sm:text-lg">{t('title')}</h2>
+						<h2 className="text-cldt-blue-contrast mb-0 text-base font-semibold sm:text-lg dark:text-[var(--text-primary)]">
+							{t('title')}
+						</h2>
 						<span
-							className="hover:text-cldt-blue dark:hover:text-cldt-blue inline-flex shrink-0 cursor-help items-center text-gray-400 dark:text-gray-500 print:hidden"
+							className="hover:text-cldt-blue dark:hover:text-cldt-blue inline-flex shrink-0 cursor-help items-center text-gray-400 dark:text-[var(--text-secondary)] print:hidden"
 							onClick={(e) => e.stopPropagation()}
 							onMouseDown={(e) => e.stopPropagation()}
 						>
 							<Tooltip
 								content={
 									<div className="max-w-[220px] space-y-1 text-left text-xs">
-										<div className="font-medium text-gray-800 dark:text-gray-200">{tControls('helpTitle')}</div>
-										<ul className="list-inside list-disc space-y-0.5 text-gray-600 dark:text-gray-300">
+										<div className="font-medium text-gray-800 dark:text-[var(--text-primary)]">
+											{tControls('helpTitle')}
+										</div>
+										<ul className="list-inside list-disc space-y-0.5 text-gray-600 dark:text-[var(--text-secondary)]">
 											<li>{tControls('helpItems.trailClick')}</li>
 											<li>{tControls('helpItems.chartHover')}</li>
 											<li>{tControls('helpItems.chartClickPin')}</li>
@@ -541,7 +549,7 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 											<li>
 												{tControls.rich('helpItems.escCancelRuler', {
 													kbd: (chunks) => (
-														<kbd className="rounded border border-gray-200 bg-gray-50 px-1 py-0.5 font-mono text-[11px] text-gray-700 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-200">
+														<kbd className="rounded border border-gray-200 bg-gray-50 px-1 py-0.5 font-mono text-[11px] text-gray-700 dark:border-[var(--border-color)] dark:bg-[var(--bg-primary)] dark:text-[var(--text-primary)]">
 															{chunks}
 														</kbd>
 													),
@@ -601,14 +609,14 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 								{tGpx('downloadFull')}
 							</Button>
 						)}
-						<div aria-hidden className="text-cldt-blue-contrast shrink-0 text-xl">
+						<div aria-hidden className="text-cldt-blue-contrast shrink-0 text-xl dark:text-[var(--text-primary)]">
 							{isExpanded ? <MdKeyboardArrowUp /> : <MdKeyboardArrowDown />}
 						</div>
 					</div>
 				</div>
 
 				<div
-					className={`my-2 grid grid-cols-2 gap-x-4 gap-y-0.5 text-xs text-gray-700 sm:flex sm:flex-wrap sm:gap-x-4 sm:text-sm dark:text-[var(--text-secondary)]${rulerRange ? 'print:hidden' : ''}`}
+					className={`my-2 grid grid-cols-2 gap-x-4 gap-y-0.5 text-xs text-gray-700 sm:flex sm:flex-wrap sm:gap-x-4 sm:text-sm dark:text-[var(--text-primary)]${rulerRange ? 'print:hidden' : ''}`}
 					onClick={toggleExpanded}
 				>
 					<span className="truncate" title={formatDistance(totalDistance, units, distancePrecision)}>
@@ -696,7 +704,9 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 										value: units === 'metric' ? t('distanceKm') : t('distanceMi'),
 										position: 'insideBottomRight',
 										offset: -5,
+										fill: axisTextColor,
 									}}
+									tick={{ fill: axisTextColor }}
 									tickFormatter={(value) => formatDistance(value, units, distancePrecision)}
 									type="number"
 								/>
@@ -706,7 +716,9 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 										value: units === 'metric' ? t('elevationM') : t('elevationFt'),
 										angle: -90,
 										position: 'insideLeft',
+										fill: axisTextColor,
 									}}
+									tick={{ fill: axisTextColor }}
 									tickFormatter={(value) => formatElevation(value, units)}
 								/>
 								<Area

@@ -60,7 +60,7 @@ export function MapControlsSharePanel({
 			role="dialog"
 			onContextMenu={(e) => e.preventDefault()}
 		>
-			<h3 className="text-sm font-medium text-gray-700 dark:text-gray-200" id="share-panel-title">
+			<h3 className="text-sm font-medium text-gray-700 dark:text-[var(--text-primary)]" id="share-panel-title">
 				{t('shareTitle')}
 			</h3>
 			<div className="flex flex-col gap-2">

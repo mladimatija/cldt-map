@@ -76,16 +76,16 @@ export function GpxDownloadModal({ isOpen, onClose, onConfirm }: GpxDownloadModa
 			}}
 		>
 			<div
-				className="flex max-h-[90vh] w-full max-w-lg flex-col overflow-hidden rounded-xl bg-white shadow-2xl dark:bg-gray-900"
+				className="flex max-h-[90vh] w-full max-w-lg flex-col overflow-hidden rounded-xl bg-white shadow-2xl dark:bg-[var(--bg-primary)]"
 				ref={dialogRef}
 			>
-				<div className="border-b border-gray-200 px-6 py-4 dark:border-gray-700">
+				<div className="border-b border-gray-200 px-6 py-4 dark:border-[var(--border-color)]">
 					<h2 className="text-cldt-blue mb-0 text-lg leading-none font-semibold">{t('modalTitle')}</h2>
 				</div>
 
 				<div className="flex-1 overflow-y-auto px-6 py-4">
-					<p className="mb-3 text-sm text-gray-700 dark:text-gray-300">{t('disclaimerIntro')}</p>
-					<ul className="mb-4 space-y-1.5 text-sm text-gray-700 dark:text-gray-300">
+					<p className="mb-3 text-sm text-gray-700 dark:text-[var(--text-secondary)]">{t('disclaimerIntro')}</p>
+					<ul className="mb-4 space-y-1.5 text-sm text-gray-700 dark:text-[var(--text-secondary)]">
 						{DISCLAIMER_ITEM_KEYS.map((key) => (
 							<li className="flex gap-2" key={key}>
 								<span className="text-cldt-blue mt-0.5 shrink-0">•</span>
@@ -94,7 +94,7 @@ export function GpxDownloadModal({ isOpen, onClose, onConfirm }: GpxDownloadModa
 						))}
 					</ul>
 
-					<label className="flex cursor-pointer items-start gap-3 rounded-lg border border-gray-200 p-3 dark:border-gray-700">
+					<label className="flex cursor-pointer items-start gap-3 rounded-lg border border-gray-200 p-3 dark:border-[var(--border-color)]">
 						<input
 							checked={acknowledged}
 							className="accent-cldt-green mt-0.5 h-4 w-4 shrink-0 cursor-pointer"
@@ -102,11 +102,13 @@ export function GpxDownloadModal({ isOpen, onClose, onConfirm }: GpxDownloadModa
 							type="checkbox"
 							onChange={(e) => setAcknowledged(e.target.checked)}
 						/>
-						<span className="text-sm font-medium text-gray-800 dark:text-gray-200">{t('acknowledgmentLabel')}</span>
+						<span className="text-sm font-medium text-gray-800 dark:text-[var(--text-primary)]">
+							{t('acknowledgmentLabel')}
+						</span>
 					</label>
 				</div>
 
-				<div className="flex justify-end gap-3 border-t border-gray-200 px-6 py-4 dark:border-gray-700">
+				<div className="flex justify-end gap-3 border-t border-gray-200 px-6 py-4 dark:border-[var(--border-color)]">
 					<Button size="default" variant="base" onClick={onClose}>
 						{t('cancelButton')}
 					</Button>

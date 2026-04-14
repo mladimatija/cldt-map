@@ -188,7 +188,3 @@ MIT - see [LICENSE](LICENSE).
 - Map tiles: OpenStreetMap, OpenTopoMap, CyclOSM, Esri, DGU
 - Weather data: [DHMZ (Croatian Met Service)](https://meteo.hr), [Open-Meteo](https://open-meteo.com)
 - Radar tiles: [RainViewer](https://www.rainviewer.com)
-
-## TODO
-
-- Refactor how dark mode styles are implemented.

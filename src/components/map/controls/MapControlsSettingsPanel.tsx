@@ -16,6 +16,8 @@ import {
 	IoHelpCircleOutline,
 } from 'react-icons/io5';
 import { Button } from '@/components/ui/Button';
+import { cn } from '@/lib/utils';
+import { MAP_CONTROL_POPOVER } from './map-controls-constants';
 import { MapControlsTileCachePanel } from './MapControlsTileCachePanel';
 
 interface MapControlsSettingsPanelProps {
@@ -75,20 +77,23 @@ export function MapControlsSettingsPanel({
 				<div
 					aria-label={preferencesTitle}
 					aria-modal="true"
-					className="z-controls-popover absolute top-1/2 right-[calc(100%+0.5rem)] flex w-80 -translate-y-1/2 flex-col gap-2 rounded-lg border border-gray-200 bg-white p-3 shadow-md dark:border-gray-600 dark:bg-gray-800"
+					className={cn(
+						MAP_CONTROL_POPOVER,
+						'absolute top-1/2 right-[calc(100%+0.5rem)] flex w-80 -translate-y-1/2 flex-col gap-2',
+					)}
 					ref={popoverRef}
 					role="dialog"
 				>
-					<h3 className="text-sm font-medium text-gray-700 dark:text-gray-200">{preferencesTitle}</h3>
+					<h3 className="text-sm font-medium text-gray-700 dark:text-[var(--text-primary)]">{preferencesTitle}</h3>
 					<label className="flex cursor-pointer items-center gap-2">
 						<Checkbox checked={darkMode} onCheckedChange={(checked) => setDarkMode(checked)} />
 						<IoMoonOutline className="h-4 w-4 shrink-0 text-gray-600 dark:text-white" />
-						<span className="text-sm text-gray-700 dark:text-gray-200">{darkModeLabel}</span>
+						<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">{darkModeLabel}</span>
 					</label>
 					<label className="flex cursor-pointer items-center gap-2">
 						<Checkbox checked={batterySaverMode} onCheckedChange={(checked) => setBatterySaverMode(checked)} />
 						<IoBatteryHalfOutline className="h-4 w-4 shrink-0 text-gray-600 dark:text-white" />
-						<span className="text-sm text-gray-700 dark:text-gray-200">{batterySaverLabel}</span>
+						<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">{batterySaverLabel}</span>
 						<span className="inline-flex" onClick={(e) => e.stopPropagation()} onMouseDown={(e) => e.stopPropagation()}>
 							<SmartTooltip content={batterySaverTooltip} position="top">
 								<IoHelpCircleOutline className="ml-0.5 h-3.5 w-3.5 shrink-0 cursor-help text-gray-400 hover:text-gray-600 dark:text-white" />
@@ -98,12 +103,12 @@ export function MapControlsSettingsPanel({
 					<label className="flex cursor-pointer items-center gap-2">
 						<Checkbox checked={largeTouchTargets} onCheckedChange={(checked) => setLargeTouchTargets(checked)} />
 						<IoHandLeftOutline className="h-4 w-4 shrink-0 text-gray-600 dark:text-white" />
-						<span className="text-sm text-gray-700 dark:text-gray-200">{largeTouchTargetsLabel}</span>
+						<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">{largeTouchTargetsLabel}</span>
 					</label>
 					<label className="flex cursor-pointer items-center gap-2">
 						<Checkbox checked={showSections} onCheckedChange={(checked) => setShowSections(checked)} />
 						<IoLayersOutline className="h-4 w-4 shrink-0 text-gray-600 dark:text-white" />
-						<span className="text-sm text-gray-700 dark:text-gray-200">{t('showSections')}</span>
+						<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">{t('showSections')}</span>
 						<span className="inline-flex" onClick={(e) => e.stopPropagation()} onMouseDown={(e) => e.stopPropagation()}>
 							<SmartTooltip content={t('showSectionsTooltip')} position="top">
 								<IoHelpCircleOutline className="ml-0.5 h-3.5 w-3.5 shrink-0 cursor-help text-gray-400 hover:text-gray-600 dark:text-white" />
@@ -113,7 +118,7 @@ export function MapControlsSettingsPanel({
 
 					<div className="flex flex-col gap-1">
 						<div className="flex items-center gap-2">
-							<label className="text-sm text-gray-700 dark:text-gray-200" htmlFor="walking-pace-slider">
+							<label className="text-sm text-gray-700 dark:text-[var(--text-primary)]" htmlFor="walking-pace-slider">
 								{t('walkingPace')}
 							</label>
 							<span className="text-cldt-blue ml-auto shrink-0 text-sm font-semibold tabular-nums">
@@ -140,7 +145,7 @@ export function MapControlsSettingsPanel({
 							value={walkingPaceKmh}
 							onChange={(e) => setWalkingPaceKmh(Number(e.target.value))}
 						/>
-						<p className="text-xs text-gray-500 dark:text-gray-400">
+						<p className="text-xs text-gray-500 dark:text-[var(--text-secondary)]">
 							{t('walkingPaceHint', {
 								min: formatPace(1, units),
 								max: formatPace(10, units),
@@ -151,12 +156,15 @@ export function MapControlsSettingsPanel({
 
 					<MapControlsTileCachePanel />
 
-					<div className="mt-1 border-t border-gray-200 pt-2 dark:border-gray-600">
-						<div className="flex items-center gap-2 text-xs font-medium text-gray-600 dark:text-gray-200">
-							<IoHelpCircleOutline aria-hidden className="h-4 w-4 shrink-0 text-gray-500 dark:text-gray-200" />
+					<div className="mt-1 border-t border-gray-200 pt-2 dark:border-[var(--border-color)]">
+						<div className="flex items-center gap-2 text-xs font-medium text-gray-600 dark:text-[var(--text-primary)]">
+							<IoHelpCircleOutline
+								aria-hidden
+								className="h-4 w-4 shrink-0 text-gray-500 dark:text-[var(--text-primary)]"
+							/>
 							<span>{t('helpTitle')}</span>
 						</div>
-						<ul className="mt-1 space-y-1 text-xs leading-snug text-gray-600 dark:text-gray-300">
+						<ul className="mt-1 space-y-1 text-xs leading-snug text-gray-600 dark:text-[var(--text-secondary)]">
 							<li>{t('helpItems.trailClick')}</li>
 							<li>{t('helpItems.chartHover')}</li>
 							<li>{t('helpItems.chartClickPin')}</li>
@@ -164,7 +172,7 @@ export function MapControlsSettingsPanel({
 							<li>
 								{t.rich('helpItems.escCancelRuler', {
 									kbd: (chunks) => (
-										<kbd className="rounded border border-gray-200 bg-gray-50 px-1 py-0.5 font-mono text-[11px] text-gray-700 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-200">
+										<kbd className="rounded border border-gray-200 bg-gray-50 px-1 py-0.5 font-mono text-[11px] text-gray-700 dark:border-[var(--border-color)] dark:bg-[var(--bg-primary)] dark:text-[var(--text-primary)]">
 											{chunks}
 										</kbd>
 									),
