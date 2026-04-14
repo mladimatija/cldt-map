@@ -402,6 +402,10 @@
 		"etaToSection": "Dolazak do dionice",
 		"approximately": "otprilike",
 		"etaAriaHour": "{count, plural, =1 {1 sat} other {# sati}}",
-		"etaAriaMinute": "{count, plural, =1 {1 minuta} other {# minuta}}"
+		"etaAriaMinute": "{count, plural, =1 {1 minuta} other {# minuta}}",
+		"elevGain": "Uspon",
+		"elevLoss": "Spust",
+		"elevGainSection": "Uspon (§)",
+		"elevLossSection": "Spust (§)"
 	}
 }
