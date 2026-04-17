@@ -50,10 +50,14 @@ export async function GET(request: NextRequest): Promise<Response> {
 			return NextResponse.json({ error: `Path not allowed: ${pathname}` }, { status: 403 });
 		}
 
+		// Rebuild the outbound URL from validated components to avoid using
+		// user-supplied absolute URLs directly in the request sink.
+		const safeUrl = new URL(`${targetUrl.pathname}${targetUrl.search}`, `https://${targetUrl.hostname}`);
+
 		const controller = new AbortController();
 		const timeoutId = setTimeout(() => controller.abort(), 60000); // 60s for large GPX files
 
-		const response = await fetch(targetUrl.toString(), {
+		const response = await fetch(safeUrl.toString(), {
 			headers: {
 				Accept: 'application/xml, text/xml, */*',
 				'User-Agent': 'Mozilla/5.0 (compatible; CLDT-Map/1.0; +https://github.com/cldt-hr/cldt-map)',
