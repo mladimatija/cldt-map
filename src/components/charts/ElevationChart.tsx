@@ -19,6 +19,7 @@ import {
 	Tooltip as RechartsTooltip,
 } from 'recharts';
 import { formatElevation, formatDistance } from '@/lib/utils';
+import { computeEta, findNearestPointIndex } from '@/lib/distance-utils';
 import { useStore, useMapStore, type StoreState, type MapStoreState, type UnitSystem } from '@/lib/store';
 import { MdKeyboardArrowUp, MdKeyboardArrowDown } from 'react-icons/md';
 import { IoDownloadOutline, IoHelpCircleOutline } from 'react-icons/io5';
@@ -191,6 +192,7 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 	const gpxLoadFailed = useMapStore((state: MapStoreState) => state.gpxLoadFailed);
 	const rawGpxData = useMapStore((state: MapStoreState) => state.rawGpxData);
 	const walkingPaceKmh = useMapStore((state: MapStoreState) => state.walkingPaceKmh);
+	const gradeAdjustedEta = useMapStore((state: MapStoreState) => state.gradeAdjustedEta);
 	const darkMode = useMapStore((state: MapStoreState) => state.darkMode);
 	const axisTextColor = darkMode ? 'var(--text-primary)' : undefined;
 	const chartRef = useRef<HTMLDivElement>(null);
@@ -417,20 +419,40 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 		return null;
 	}, [dragPreviewRange, rulerRange]);
 
-	const rulerStats = useMemo(() => {
+	// Segment geometry — recomputes only when the ruler range or trail data changes.
+	// Does NOT depend on gradeAdjustedEta or walkingPaceKmh so toggling the pace model
+	// never re-runs the O(n) filter pass.
+	const rulerSegment = useMemo(() => {
 		if (!isRulerEnabled || !rulerRange || !enhancedTrailPoints?.length) return null;
 		const { distanceFromStartA, distanceFromStartB } = rulerRange;
-		const segment = enhancedTrailPoints
-			.filter((p) => p.distanceFromStart >= distanceFromStartA && p.distanceFromStart <= distanceFromStartB)
-			.sort((a, b) => a.distanceFromStart - b.distanceFromStart);
+		// enhancedTrailPoints is already ordered by distanceFromStart — no sort needed.
+		const segment = enhancedTrailPoints.filter(
+			(p) => p.distanceFromStart >= distanceFromStartA && p.distanceFromStart <= distanceFromStartB,
+		);
 		if (segment.length < 2) return null;
-		const distanceKm = (distanceFromStartB - distanceFromStartA) / 1000;
+		const distanceM = distanceFromStartB - distanceFromStartA;
+		const distanceKm = distanceM / 1000;
 		const gain = segment[segment.length - 1].elevationGainFromStart - segment[0].elevationGainFromStart;
 		const loss = segment[segment.length - 1].elevationLossFromStart - segment[0].elevationLossFromStart;
-		const hikingTimeMin = Math.round((distanceKm / walkingPaceKmh + gain / 600) * 60);
+		// Use nearest-distance lookup instead of strict equality to avoid floating-point mismatch.
+		const fromIndex = findNearestPointIndex(enhancedTrailPoints, distanceFromStartA);
 		const sections = [...new Set(segment.map((p) => p.sectionName).filter(Boolean))] as string[];
+		return { distanceKm, distanceM, gain, loss, fromIndex, sections };
+	}, [isRulerEnabled, rulerRange, enhancedTrailPoints]);
+
+	// ETA — lightweight memo that only recomputes when pace, direction, or grade toggle changes.
+	const rulerStats = useMemo(() => {
+		if (!rulerSegment) return null;
+		const { distanceM, distanceKm, gain, loss, fromIndex, sections } = rulerSegment;
+		const etaSeconds = computeEta(distanceM, walkingPaceKmh, {
+			elevationPoints: enhancedTrailPoints,
+			fromIndex,
+			direction,
+			gradeAdjusted: gradeAdjustedEta,
+		});
+		const hikingTimeMin = Math.round(etaSeconds / 60);
 		return { distanceKm, gain, loss, hikingTimeMin, sections };
-	}, [isRulerEnabled, rulerRange, enhancedTrailPoints, walkingPaceKmh]);
+	}, [rulerSegment, enhancedTrailPoints, walkingPaceKmh, direction, gradeAdjustedEta]);
 
 	const toggleExpanded = (): void => {
 		setIsExpanded(!isExpanded);
@@ -489,13 +511,12 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 				downloadGpxFile(gpx, tGpx('filenameFullTrail'));
 			}
 		} else if (gpxModalMode === 'segment' && rulerRange && enhancedTrailPoints?.length) {
-			const segment = enhancedTrailPoints
-				.filter(
-					(p) =>
-						p.distanceFromStart >= rulerRange.distanceFromStartA &&
-						p.distanceFromStart <= rulerRange.distanceFromStartB,
-				)
-				.sort((a, b) => a.distanceFromStart - b.distanceFromStart);
+			// enhancedTrailPoints is already sorted by distanceFromStart — no sort needed.
+			const segment = enhancedTrailPoints.filter(
+				(p) =>
+					p.distanceFromStart >= rulerRange.distanceFromStartA &&
+					p.distanceFromStart <= rulerRange.distanceFromStartB,
+			);
 			if (segment.length < 2) return;
 			const filename = tGpx('filenameSegment');
 			if (rawGpxData) {

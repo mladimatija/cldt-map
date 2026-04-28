@@ -259,4 +259,7 @@ export interface MapStoreState {
 
 	walkingPaceKmh: number;
 	setWalkingPaceKmh: (pace: number) => void;
+
+	gradeAdjustedEta: boolean;
+	setGradeAdjustedEta: (enabled: boolean) => void;
 }

@@ -85,6 +85,8 @@
 		"walkingPace": "Gehtempo",
 		"walkingPaceHint": "Bereich: {min} – {max}, Standard: {default}",
 		"walkingPaceReset": "Gehtempo auf Standard zurücksetzen",
+		"gradeAdjustedEtaLabel": "Steigungsangepasste ETA",
+		"gradeAdjustedEtaHint": "Verlangsamt das Tempo bei Anstiegen und steilen Abfahrten.",
 		"directionTooltip": "Aktuell {direction}, klicken zum Wechseln",
 		"directionSouthbound": "Richtung Süden (N→S)",
 		"directionNorthbound": "Richtung Norden (S→N)",

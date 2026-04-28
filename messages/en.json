@@ -85,6 +85,8 @@
 		"walkingPace": "Walking pace",
 		"walkingPaceHint": "Range: {min} – {max}, default: {default}",
 		"walkingPaceReset": "Reset walking pace to default",
+		"gradeAdjustedEtaLabel": "Grade-adjusted ETA",
+		"gradeAdjustedEtaHint": "Slows pace on climbs and steep descents.",
 		"directionTooltip": "Currently {direction}, click to switch",
 		"directionSouthbound": "Southbound (N→S)",
 		"directionNorthbound": "Northbound (S→N)",

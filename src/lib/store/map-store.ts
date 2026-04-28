@@ -403,6 +403,11 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 				setWalkingPaceKmh: (pace: number): void => {
 					set({ walkingPaceKmh: pace });
 				},
+
+				gradeAdjustedEta: false,
+				setGradeAdjustedEta: (enabled: boolean): void => {
+					set({ gradeAdjustedEta: enabled });
+				},
 			}),
 			{
 				name: 'cldt-map-storage',
@@ -421,6 +426,7 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					baseMapProvider: state.baseMapProvider,
 					autoSync: state.autoSync,
 					walkingPaceKmh: state.walkingPaceKmh,
+					gradeAdjustedEta: state.gradeAdjustedEta,
 				}),
 			},
 		),
