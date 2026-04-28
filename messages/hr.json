@@ -85,6 +85,8 @@
 		"walkingPace": "Tempo hodanja",
 		"walkingPaceHint": "Raspon: {min} – {max}, zadano: {default}",
 		"walkingPaceReset": "Vrati tempo hodanja na zadanu vrijednost",
+		"gradeAdjustedEtaLabel": "Procjena vremena prilagođena nagibu",
+		"gradeAdjustedEtaHint": "Usporava tempo na usponima i strmim spustovima.",
 		"directionTooltip": "Trenutno {direction}, kliknite za promjenu",
 		"directionSouthbound": "Južni smjer (S→J)",
 		"directionNorthbound": "Sjeverni smjer (J→S)",

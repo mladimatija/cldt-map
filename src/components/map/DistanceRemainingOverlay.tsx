@@ -1,11 +1,17 @@
 'use client';
 
 /** Fixed-position HUD chip showing traveled distance, distance remaining, elevation gain/loss, and ETA rows. */
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useTranslations } from 'next-intl';
 import { useStore, useMapStore, type StoreState, type MapStoreState } from '@/lib/store';
 import { TRAIL_OFF_TRAIL_THRESHOLD_M } from '@/lib/config';
-import { computeDistanceRemaining, computeElevationRemaining, computeEta, formatEta } from '@/lib/distance-utils';
+import {
+	computeDistanceRemaining,
+	computeElevationRemaining,
+	computeEta,
+	findNearestPointIndex,
+	formatEta,
+} from '@/lib/distance-utils';
 import { formatDistance, formatElevation } from '@/lib/utils';
 
 export function DistanceRemainingOverlay(): React.ReactElement | null {
@@ -26,35 +32,45 @@ export function DistanceRemainingOverlay(): React.ReactElement | null {
 	const units = useMapStore((state: MapStoreState) => state.units);
 	const direction = useMapStore((state: MapStoreState) => state.direction);
 	const walkingPaceKmh = useMapStore((state: MapStoreState) => state.walkingPaceKmh);
+	const gradeAdjustedEta = useMapStore((state: MapStoreState) => state.gradeAdjustedEta);
 	const distancePrecision = useMapStore((state: MapStoreState) => state.distancePrecision);
 
-	const distanceInfo = computeDistanceRemaining(closestPoint, rulerRange, TRAIL_OFF_TRAIL_THRESHOLD_M);
+	// Stable object reference — only recomputes when closestPoint or rulerRange changes.
+	// Without useMemo, computeDistanceRemaining returns a new object literal on every render,
+	// causing the downstream ETA useMemo to fire spuriously.
+	const distanceInfo = useMemo(
+		() => computeDistanceRemaining(closestPoint, rulerRange, TRAIL_OFF_TRAIL_THRESHOLD_M),
+		[closestPoint, rulerRange],
+	);
+
+	// Memoize the nearest-index lookup — only recomputes when the user's snapped position or
+	// the trail array changes, not on every unrelated render.
+	const fromIndex = useMemo(
+		() => findNearestPointIndex(enhancedTrailPoints, closestPoint?.distanceFromStart ?? 0),
+		[enhancedTrailPoints, closestPoint?.distanceFromStart],
+	);
+
+	const elevInfo = useMemo(
+		() =>
+			enhancedTrailPoints.length > 0
+				? computeElevationRemaining(enhancedTrailPoints, fromIndex, direction, rulerRange, enhancedTrailPoints)
+				: null,
+		[enhancedTrailPoints, fromIndex, direction, rulerRange],
+	);
+
+	const { etaToEndSeconds, etaToSectionSeconds } = useMemo(() => {
+		if (distanceInfo === null) return { etaToEndSeconds: 0, etaToSectionSeconds: null };
+		const etaOpts = { elevationPoints: enhancedTrailPoints, fromIndex, direction, gradeAdjusted: gradeAdjustedEta };
+		return {
+			etaToEndSeconds: computeEta(distanceInfo.toTrailEnd, walkingPaceKmh, etaOpts),
+			etaToSectionSeconds:
+				distanceInfo.toSectionEnd !== null
+					? computeEta(distanceInfo.toSectionEnd, walkingPaceKmh, etaOpts)
+					: null,
+		};
+	}, [distanceInfo, enhancedTrailPoints, fromIndex, direction, gradeAdjustedEta, walkingPaceKmh]);
 
 	if (distanceInfo === null) return null;
-
-	// Find the index in enhancedTrailPoints nearest to closestPoint.distanceFromStart.
-	// enhancedTrailPoints is used as both the elevation source and for section-end lookup so that
-	// fromIndex and any ruler-section index are always valid for the same array.
-	let fromIndex = 0;
-	if (closestPoint !== null && enhancedTrailPoints.length > 0) {
-		let minDiff = Math.abs(enhancedTrailPoints[0].distanceFromStart - closestPoint.distanceFromStart);
-		for (let i = 1; i < enhancedTrailPoints.length; i++) {
-			const diff = Math.abs(enhancedTrailPoints[i].distanceFromStart - closestPoint.distanceFromStart);
-			if (diff < minDiff) {
-				minDiff = diff;
-				fromIndex = i;
-			}
-		}
-	}
-
-	const elevInfo =
-		enhancedTrailPoints.length > 0
-			? computeElevationRemaining(enhancedTrailPoints, fromIndex, direction, rulerRange, enhancedTrailPoints)
-			: null;
-
-	const etaToEndSeconds = computeEta(distanceInfo.toTrailEnd, walkingPaceKmh);
-	const etaToSectionSeconds =
-		distanceInfo.toSectionEnd !== null ? computeEta(distanceInfo.toSectionEnd, walkingPaceKmh) : null;
 
 	return (
 		<div
