@@ -14,7 +14,7 @@ export function buildGpxXml(points: GpxExportPoint[], trackName: string): string
 		.join('\n');
 
 	return `<?xml version="1.0" encoding="UTF-8"?>
-<gpx version="1.1" creator="CLDT Map — map.cldt.hr" xmlns="http://www.topografix.com/GPX/1/1">
+<gpx version="1.1" creator="CLDT Map - map.cldt.hr" xmlns="http://www.topografix.com/GPX/1/1">
 \t<trk>
 \t\t<name>${trackName}</name>
 \t\t<trkseg>
@@ -28,7 +28,7 @@ ${trackPoints}
  * Extracts a contiguous slice of track points from a raw GPX XML string by
  * index range and wraps them in a new minimal GPX 1.1 document.
  *
- * Uses string splitting on `<trkpt` to avoid a full DOM parse — the raw GPX
+ * Uses string splitting on `<trkpt` to avoid a full DOM parse - the raw GPX
  * from the proxy is well-formed and consistent, so this is both fast and safe.
  */
 export function extractGpxSegment(rawGpxXml: string, startIndex: number, endIndex: number, trackName: string): string {
@@ -48,7 +48,7 @@ export function extractGpxSegment(rawGpxXml: string, startIndex: number, endInde
 	const trackPoints = segmentParts.map((s) => '\t\t\t<trkpt' + s).join('');
 
 	return `<?xml version="1.0" encoding="UTF-8"?>
-<gpx version="1.1" creator="CLDT Map — map.cldt.hr" xmlns="http://www.topografix.com/GPX/1/1">
+<gpx version="1.1" creator="CLDT Map - map.cldt.hr" xmlns="http://www.topografix.com/GPX/1/1">
 \t<trk>
 \t\t<name>${trackName}</name>
 \t\t<trkseg>
