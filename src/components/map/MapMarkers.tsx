@@ -30,6 +30,7 @@ const OFF_TRAIL_DISTANCE_M = TRAIL_OFF_TRAIL_THRESHOLD_M;
 export default function MapMarkers(): React.ReactElement | null {
 	const t = useTranslations('mapMarkers');
 	const tRoute = useTranslations('trailRoute');
+	const tControls = useTranslations('mapControls');
 	const tWeather = useTranslations('weather');
 	const tOverlay = useTranslations('distanceOverlay');
 	const map = useMap();
@@ -167,7 +168,7 @@ export default function MapMarkers(): React.ReactElement | null {
 			lat: best.lat,
 			lng: best.lng,
 			sectionLabel: best.sectionName ? tRoute(best.sectionName) : null,
-			elevation: formatElevation(best.elevation, units),
+			elevation: `${formatElevation(best.elevation, units)} ${tControls('elevationUnitASL')}`,
 			distanceFromStart: formatDistance(distanceResult.traveled, units, distancePrecision, true),
 			distanceFromStartPct,
 			distanceToEnd: formatDistance(distanceResult.toTrailEnd, units, distancePrecision, true),
@@ -181,7 +182,7 @@ export default function MapMarkers(): React.ReactElement | null {
 			accumulatedLoss: best.elevationLossFromStart > 0 ? formatElevation(best.elevationLossFromStart, units) : null,
 			accumulatedLossPct: lossPct,
 		};
-	}, [closestPoint, rulerRange, enhancedTrailPoints, trailMetadata, units, distancePrecision, tRoute]);
+	}, [closestPoint, rulerRange, enhancedTrailPoints, trailMetadata, units, distancePrecision, tRoute, tControls]);
 
 	const tooltipWeather = useMemo((): TrailTooltipWeather | null => {
 		if (!weatherData) return null;

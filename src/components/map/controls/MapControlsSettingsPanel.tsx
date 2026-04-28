@@ -38,6 +38,8 @@ interface MapControlsSettingsPanelProps {
 	setWalkingPaceKmh: (pace: number) => void;
 	gradeAdjustedEta: boolean;
 	setGradeAdjustedEta: (enabled: boolean) => void;
+	sunsetProjection: boolean;
+	setSunsetProjection: (enabled: boolean) => void;
 	units: UnitSystem;
 	darkModeLabel: string;
 	batterySaverLabel: string;
@@ -65,6 +67,8 @@ export function MapControlsSettingsPanel({
 	setWalkingPaceKmh,
 	gradeAdjustedEta,
 	setGradeAdjustedEta,
+	sunsetProjection,
+	setSunsetProjection,
 	units,
 	darkModeLabel,
 	batterySaverLabel,
@@ -166,6 +170,18 @@ export function MapControlsSettingsPanel({
 							</span>
 							<span className="text-xs text-gray-500 dark:text-[var(--text-secondary)]">
 								{t('gradeAdjustedEtaHint')}
+							</span>
+						</div>
+					</label>
+
+					<label className="flex cursor-pointer items-start gap-2">
+						<Checkbox checked={sunsetProjection} onCheckedChange={(checked) => setSunsetProjection(checked)} />
+						<div className="flex flex-col">
+							<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">
+								{t('sunsetProjectionLabel')}
+							</span>
+							<span className="text-xs text-gray-500 dark:text-[var(--text-secondary)]">
+								{t('sunsetProjectionHint')}
 							</span>
 						</div>
 					</label>
