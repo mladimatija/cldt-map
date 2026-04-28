@@ -36,13 +36,130 @@ export function computeDistanceRemaining(
 
 const KM_TO_MILES = 1.60934;
 
+// --- Grade-adjusted ETA model constants ---
+// Naismith's rule: 1 hour of extra time per 600 m of ascent → 6 s/m
+const NAISMITH_SEC_PER_M_CLIMB = 6;
+// Tobler's hiking function peak-efficiency slope offset
+const TOBLER_OPTIMAL_SLOPE = 0.05;
+// Normalisation factor so that a flat (0%) grade produces a Tobler factor of exactly 1.0,
+// preserving the user's configured pace as the flat-terrain baseline.
+const TOBLER_NORM = Math.exp(-3.5 * TOBLER_OPTIMAL_SLOPE);
+
+/**
+ * Per-segment time in seconds combining Tobler's hiking-function and Naismith's rule.
+ *
+ * The two models are intentionally additive:
+ * - Tobler adjusts the time-to-traverse-distance component based on the slope.
+ * - Naismith adds an independent climb-effort penalty on top.
+ * On sustained ascents this produces a more conservative (realistic) ETA than
+ * either model alone; on descents only Tobler applies.
+ */
+function gradeSegmentSeconds(distSeg: number, dz: number, speedMps: number): number {
+	const slope = dz / distSeg; // distSeg is always > 0 at call sites (guarded before calling)
+	const toblerFactor = Math.exp(-3.5 * Math.abs(slope + TOBLER_OPTIMAL_SLOPE)) / TOBLER_NORM;
+	const effectiveSpeedMps = speedMps * toblerFactor;
+	const tFlat = effectiveSpeedMps > 0 ? distSeg / effectiveSpeedMps : 0;
+	const tClimb = dz > 0 ? dz * NAISMITH_SEC_PER_M_CLIMB : 0;
+	return tFlat + tClimb;
+}
+
+export interface ComputeEtaOptions {
+	elevationPoints?: { elevation: number; distanceFromStart: number }[];
+	fromIndex?: number;
+	direction?: 'SOBO' | 'NOBO';
+	gradeAdjusted?: boolean;
+}
+
 /**
  * Computes ETA in seconds given a distance in metres and a walking pace in km/h.
+ *
+ * When opts.gradeAdjusted is true and a valid elevation profile is supplied,
+ * uses a Naismith + Tobler per-segment integration (see gradeSegmentSeconds).
+ * Falls back to the flat-pace formula when the option is disabled or elevation
+ * data is missing - existing callers that omit opts are unaffected.
  */
-export function computeEta(distanceM: number, paceKmh: number): number {
-	const distanceKm = distanceM / 1000;
-	const hours = distanceKm / paceKmh;
-	return Math.round(hours * 3600);
+export function computeEta(distanceM: number, paceKmh: number, opts?: ComputeEtaOptions): number {
+	// Fast path: flat-pace formula (original behaviour, zero regression for existing callers)
+	if (
+		!opts ||
+		!opts.gradeAdjusted ||
+		!opts.elevationPoints ||
+		opts.elevationPoints.length < 2 ||
+		opts.fromIndex === undefined
+	) {
+		return Math.round((distanceM / 1000 / paceKmh) * 3600);
+	}
+
+	const { elevationPoints, fromIndex, direction = 'SOBO' } = opts;
+	// Clamp fromIndex to a valid array position to prevent NaN propagation when arrays
+	// are briefly out of sync (e.g. during a direction switch).
+	const safeFromIndex = Math.max(0, Math.min(fromIndex, elevationPoints.length - 1));
+	const speedMps = (paceKmh * 1000) / 3600;
+
+	let totalSeconds = 0;
+	let distAccum = 0;
+
+	if (direction === 'SOBO') {
+		for (let i = safeFromIndex; i < elevationPoints.length - 1; i++) {
+			const distSeg = elevationPoints[i + 1].distanceFromStart - elevationPoints[i].distanceFromStart;
+			if (distSeg <= 0) continue; // skip degenerate or reversed segments
+			const dz = elevationPoints[i + 1].elevation - elevationPoints[i].elevation;
+			if (distAccum + distSeg >= distanceM) {
+				const fraction = (distanceM - distAccum) / distSeg;
+				totalSeconds += gradeSegmentSeconds(distSeg * fraction, dz * fraction, speedMps);
+				break;
+			}
+			totalSeconds += gradeSegmentSeconds(distSeg, dz, speedMps);
+			distAccum += distSeg;
+		}
+	} else {
+		// NOBO: walk backward toward index 0
+		for (let i = safeFromIndex; i > 0; i--) {
+			const distSeg = elevationPoints[i].distanceFromStart - elevationPoints[i - 1].distanceFromStart;
+			if (distSeg <= 0) continue; // skip degenerate or reversed segments
+			const dz = elevationPoints[i - 1].elevation - elevationPoints[i].elevation;
+			if (distAccum + distSeg >= distanceM) {
+				const fraction = (distanceM - distAccum) / distSeg;
+				totalSeconds += gradeSegmentSeconds(distSeg * fraction, dz * fraction, speedMps);
+				break;
+			}
+			totalSeconds += gradeSegmentSeconds(distSeg, dz, speedMps);
+			distAccum += distSeg;
+		}
+	}
+
+	return Math.round(totalSeconds);
+}
+
+/**
+ * Finds the index of the point in a sorted array (ascending distanceFromStart) whose
+ * distanceFromStart is nearest to targetM. Uses binary search - O(log n).
+ * Returns 0 when the array is empty.
+ */
+export function findNearestPointIndex(points: { distanceFromStart: number }[], targetM: number): number {
+	if (points.length === 0) return 0;
+	if (points.length === 1) return 0;
+
+	// Binary search for the insertion point of targetM.
+	let lo = 0;
+	let hi = points.length - 1;
+	while (lo < hi) {
+		const mid = (lo + hi) >> 1;
+		if (points[mid].distanceFromStart < targetM) {
+			lo = mid + 1;
+		} else {
+			hi = mid;
+		}
+	}
+	// lo is the first index where distanceFromStart >= targetM.
+	// Compare it with the previous index to pick the nearest.
+	if (
+		lo > 0 &&
+		Math.abs(points[lo - 1].distanceFromStart - targetM) <= Math.abs(points[lo].distanceFromStart - targetM)
+	) {
+		return lo - 1;
+	}
+	return lo;
 }
 
 /**
@@ -99,15 +216,22 @@ export function computeElevationRemaining(
 		return { gainM: 0, lossM: 0, sectionGainM: null, sectionLossM: null };
 	}
 
-	const accumulateDeltas = (startIdx: number, endIdx: number): { gain: number; loss: number } => {
+	// reverse=false: iterate i from startIdx to endIdx-1, delta = [i+1] - [i]
+	// reverse=true:  iterate i from endIdx down to startIdx+1, delta = [i-1] - [i]
+	const accumulateDeltas = (startIdx: number, endIdx: number, reverse = false): { gain: number; loss: number } => {
 		let gain = 0;
 		let loss = 0;
-		for (let i = startIdx; i < endIdx; i++) {
-			const delta = elevationPoints[i + 1].elevation - elevationPoints[i].elevation;
-			if (delta > 0) {
-				gain += delta;
-			} else {
-				loss += Math.abs(delta);
+		if (reverse) {
+			for (let i = endIdx; i > startIdx; i--) {
+				const delta = elevationPoints[i - 1].elevation - elevationPoints[i].elevation;
+				if (delta > 0) gain += delta;
+				else loss += Math.abs(delta);
+			}
+		} else {
+			for (let i = startIdx; i < endIdx; i++) {
+				const delta = elevationPoints[i + 1].elevation - elevationPoints[i].elevation;
+				if (delta > 0) gain += delta;
+				else loss += Math.abs(delta);
 			}
 		}
 		return { gain, loss };
@@ -121,17 +245,8 @@ export function computeElevationRemaining(
 		gainM = gain;
 		lossM = loss;
 	} else {
-		// NOBO: user is heading toward trail start — iterate backward
-		let gain = 0;
-		let loss = 0;
-		for (let i = fromIndex; i > 0; i--) {
-			const delta = elevationPoints[i - 1].elevation - elevationPoints[i].elevation;
-			if (delta > 0) {
-				gain += delta;
-			} else {
-				loss += Math.abs(delta);
-			}
-		}
+		// NOBO: user is heading toward trail start - iterate backward
+		const { gain, loss } = accumulateDeltas(0, fromIndex, true);
 		gainM = gain;
 		lossM = loss;
 	}
@@ -141,16 +256,7 @@ export function computeElevationRemaining(
 	}
 
 	// Find the index in enhancedPoints nearest to rulerRange.distanceFromStartB
-	const targetDist = rulerRange.distanceFromStartB;
-	let sectionEndIdx = 0;
-	let minDiff = Math.abs(enhancedPoints[0].distanceFromStart - targetDist);
-	for (let i = 1; i < enhancedPoints.length; i++) {
-		const diff = Math.abs(enhancedPoints[i].distanceFromStart - targetDist);
-		if (diff < minDiff) {
-			minDiff = diff;
-			sectionEndIdx = i;
-		}
-	}
+	const sectionEndIdx = findNearestPointIndex(enhancedPoints, rulerRange.distanceFromStartB);
 
 	// Clamp sectionEndIdx to elevationPoints bounds
 	const clampedSectionEnd = Math.min(sectionEndIdx, elevationPoints.length - 1);
@@ -165,19 +271,10 @@ export function computeElevationRemaining(
 		sectionGainM = gain;
 		sectionLossM = loss;
 	} else {
-		// NOBO section: from fromIndex backward to sectionEndIdx
-		let gain = 0;
-		let loss = 0;
+		// NOBO section: accumulate backward between the two boundary indices
 		const start = Math.min(fromIndex, clampedSectionEnd);
 		const end = Math.max(fromIndex, clampedSectionEnd);
-		for (let i = end; i > start; i--) {
-			const delta = elevationPoints[i - 1].elevation - elevationPoints[i].elevation;
-			if (delta > 0) {
-				gain += delta;
-			} else {
-				loss += Math.abs(delta);
-			}
-		}
+		const { gain, loss } = accumulateDeltas(start, end, true);
 		sectionGainM = gain;
 		sectionLossM = loss;
 	}
