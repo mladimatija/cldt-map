@@ -135,7 +135,7 @@ export function formatWindSpeed(kmh: number, units: UnitSystem): string {
 
 /**
  * Maps a WMO weather interpretation code to a translation key for the `weather` namespace.
- * Groups are intentionally broad — enough to be meaningful to a hiker at a glance.
+ * Groups are intentionally broad - enough to be meaningful to a hiker at a glance.
  */
 export function weatherCodeToKey(code: number): string {
 	if (code === 0) return 'clear';

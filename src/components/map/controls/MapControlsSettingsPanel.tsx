@@ -36,6 +36,8 @@ interface MapControlsSettingsPanelProps {
 	setShowSections: (checked: boolean) => void;
 	walkingPaceKmh: number;
 	setWalkingPaceKmh: (pace: number) => void;
+	gradeAdjustedEta: boolean;
+	setGradeAdjustedEta: (enabled: boolean) => void;
 	units: UnitSystem;
 	darkModeLabel: string;
 	batterySaverLabel: string;
@@ -61,6 +63,8 @@ export function MapControlsSettingsPanel({
 	setShowSections,
 	walkingPaceKmh,
 	setWalkingPaceKmh,
+	gradeAdjustedEta,
+	setGradeAdjustedEta,
 	units,
 	darkModeLabel,
 	batterySaverLabel,
@@ -153,6 +157,18 @@ export function MapControlsSettingsPanel({
 							})}
 						</p>
 					</div>
+
+					<label className="flex cursor-pointer items-start gap-2">
+						<Checkbox checked={gradeAdjustedEta} onCheckedChange={(checked) => setGradeAdjustedEta(checked)} />
+						<div className="flex flex-col">
+							<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">
+								{t('gradeAdjustedEtaLabel')}
+							</span>
+							<span className="text-xs text-gray-500 dark:text-[var(--text-secondary)]">
+								{t('gradeAdjustedEtaHint')}
+							</span>
+						</div>
+					</label>
 
 					<MapControlsTileCachePanel />
 

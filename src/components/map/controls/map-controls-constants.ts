@@ -11,7 +11,7 @@ export const MAP_CONTROL_INPUT =
 	'w-20 rounded-md border border-gray-200 bg-white px-2 py-1.5 text-sm outline-none focus-visible:border-cldt-green focus-visible:ring-1 focus-visible:ring-cldt-green dark:border-white dark:bg-[var(--bg-secondary)] dark:text-white dark:placeholder-gray-400';
 
 /**
- * Shared dark-mode class fragments — keep in sync with theme.css .dark variables.
+ * Shared dark-mode class fragments - keep in sync with theme.css .dark variables.
  * See docs/dark-mode-styling.md for the unified approach.
  */
 /** Dark panel background + border (panels, popovers, modals). */
