@@ -20,6 +20,7 @@ import {
 	PRECACHE_ZOOM_MAX,
 	type TileCacheMeta,
 } from '../tile-cache';
+import { RulerRange } from '@/lib/distance-utils';
 
 /**
  * Creates the persisted map store. Receives getMainStore so it does not import the main store at module init (avoids circular deps).
@@ -80,8 +81,7 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 				radarPlaying: false,
 				setRadarPlaying: (playing: boolean) => set({ radarPlaying: playing }),
 				rulerRange: null,
-				setRulerRange: (range: { distanceFromStartA: number; distanceFromStartB: number } | null) =>
-					set({ rulerRange: range }),
+				setRulerRange: (range: RulerRange | null) => set({ rulerRange: range }),
 
 				userLocation: null,
 				isLocating: false,

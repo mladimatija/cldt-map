@@ -9,6 +9,7 @@ import { twMerge } from 'tailwind-merge';
 import { useStore, useMapStore } from '@/lib/store';
 import { config } from '@/lib/config';
 import type { TrailDirection, UnitSystem } from '@/lib/types';
+import { RulerRange } from '@/lib/distance-utils';
 
 export type { UnitSystem };
 
@@ -268,7 +269,7 @@ export function buildShareViewUrl(
 		baseMap?: ShareBaseMapKey;
 		sections?: boolean;
 		dark?: boolean;
-		rulerRange?: { distanceFromStartA: number; distanceFromStartB: number } | null;
+		rulerRange?: RulerRange | null;
 	},
 ): string {
 	const url = new URL(baseUrl);
@@ -311,7 +312,7 @@ export function buildShareProgressUrl(
 		baseMap?: ShareBaseMapKey;
 		sections?: boolean;
 		dark?: boolean;
-		rulerRange?: { distanceFromStartA: number; distanceFromStartB: number } | null;
+		rulerRange?: RulerRange | null;
 	},
 ): string {
 	const url = new URL(baseUrl);
@@ -398,7 +399,7 @@ export function parseShareUrlParams(): {
 	baseMap?: ShareBaseMapKey;
 	sections?: boolean;
 	dark?: boolean;
-	rulerRange?: { distanceFromStartA: number; distanceFromStartB: number };
+	rulerRange?: RulerRange;
 } | null {
 	if (typeof window === 'undefined') return null;
 	const params = new URLSearchParams(window.location.search);
@@ -414,7 +415,7 @@ export function parseShareUrlParams(): {
 	const ruler = params.get('ruler');
 	if (!lat && !lng && !zoom && !progress && !baseMap && !sections && !dark && !ruler) return null;
 
-	let rulerRange: { distanceFromStartA: number; distanceFromStartB: number } | undefined;
+	let rulerRange: RulerRange | undefined;
 	if (ruler) {
 		const parts = ruler.split(',');
 		if (parts.length === 2) {
