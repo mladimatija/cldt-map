@@ -260,6 +260,8 @@ const MapControls: React.FC<MapControlsProps> = ({
 	const setDistancePrecision = useMapStore((state: MapStoreState) => state.setDistancePrecision);
 	const walkingPaceKmh = useMapStore((state: MapStoreState) => state.walkingPaceKmh);
 	const setWalkingPaceKmh = useMapStore((state: MapStoreState) => state.setWalkingPaceKmh);
+	const gradeAdjustedEta = useMapStore((state: MapStoreState) => state.gradeAdjustedEta);
+	const setGradeAdjustedEta = useMapStore((state: MapStoreState) => state.setGradeAdjustedEta);
 
 	const storeDirection = useMapStore((state: MapStoreState) => state.direction);
 	const enhancedTrailPoints = useStore((state: StoreState) => state.enhancedTrailPoints);
@@ -1357,12 +1359,14 @@ const MapControls: React.FC<MapControlsProps> = ({
 					containerRef={settingsContainerRef}
 					darkMode={darkMode}
 					darkModeLabel={t('darkMode')}
+					gradeAdjustedEta={gradeAdjustedEta}
 					isExpanded={isSettingsExpanded}
 					largeTouchTargets={largeTouchTargets}
 					largeTouchTargetsLabel={t('largeTouchTargets')}
 					preferencesTitle={t('preferences')}
 					setBatterySaverMode={setBatterySaverMode}
 					setDarkMode={setDarkMode}
+					setGradeAdjustedEta={setGradeAdjustedEta}
 					setLargeTouchTargets={setLargeTouchTargets}
 					setShowSections={setShowSections}
 					setWalkingPaceKmh={setWalkingPaceKmh}

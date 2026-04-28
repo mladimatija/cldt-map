@@ -31,7 +31,7 @@ export function filterActiveNotices(notices: TrailNotice[], now: Date = new Date
 	return notices.filter((n) => !n.expiresAt || new Date(n.expiresAt) > now);
 }
 
-/** Module-level promise cache — ensures the fetch runs at most once per page load. */
+/** Module-level promise cache - ensures the fetch runs at most once per page load. */
 let cachedPromise: Promise<TrailNotice[]> | null = null;
 
 async function fetchNotices(): Promise<TrailNotice[]> {

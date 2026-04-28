@@ -43,7 +43,7 @@ export function RadarOverlay(): null {
 	const setRadarFrameIndex = useMapStore((state: MapStoreState) => state.setRadarFrameIndex);
 	const setRadarPlaying = useMapStore((state: MapStoreState) => state.setRadarPlaying);
 
-	// One Leaflet TileLayer per frame — never recreated during animation.
+	// One Leaflet TileLayer per frame - never recreated during animation.
 	const layersRef = useRef<L.TileLayer[]>([]);
 	// Track the frames array reference so we can detect a refresh.
 	const prevFramesRef = useRef<typeof radarFrames>([]);
@@ -88,7 +88,7 @@ export function RadarOverlay(): null {
 				setRadarFrameIndex(0);
 				setRadarPlaying(true);
 			} catch {
-				// network error — silently ignore
+				// network error - silently ignore
 			}
 		};
 
@@ -103,12 +103,12 @@ export function RadarOverlay(): null {
 		};
 	}, [map, showRadarOverlay, setRadarFrames, setRadarFrameIndex, setRadarPlaying]);
 
-	// Build/rebuild tile layers when the frames array changes, then show the active frame.
-	// On subsequent frame-index changes only the opacity toggle runs — no layer creation.
+	// Build/rebuild tile layers when the frame array changes, then show the active frame.
+	// On subsequent frame-index changes, only the opacity toggle runs - no layer creation.
 	useEffect(() => {
 		if (!showRadarOverlay || !radarFrames.length) return;
 
-		// Rebuild only when the frames reference has changed (initial load or 5-min refresh).
+		// Rebuild only when the frame reference has changed (initial load or 5-min refresh).
 		if (prevFramesRef.current !== radarFrames) {
 			prevFramesRef.current = radarFrames;
 			layersRef.current.forEach((l) => map.removeLayer(l));
