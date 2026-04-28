@@ -41,10 +41,10 @@
 			"darkMode": "Dunkelmodus und Energiespar-Optionen",
 			"offlineMaps": "Offline-Karten - Trail-Korridor für die Nutzung ohne Netzempfang vorladen",
 			"gpxExport": "GPX-Export - Lade den gesamten Trail oder einen per Lineal ausgewählten Abschnitt als .gpx-Datei für GPS-Geräte herunter",
-			"printExport": "Drucken und Exportieren — aktuelle Kartenansicht als PDF oder PNG speichern",
-			"weather": "Aktuelles Wetter an Ihrem Trailstandort — Temperatur, Wind, Niederschlagswahrscheinlichkeit, Sonnenaufgang/-untergang (DHMZ + Open-Meteo)",
-			"trailNotices": "Regionale Trail-Zustandsbenachrichtigungen — abbaubare Banner mit Warnungen zu aktuellen Bedingungen auf dem Trail",
-			"radar": "Niederschlagsradar-Overlay — animierter RainViewer-Radar mit vergangenen und vorhergesagten Frames, Wiedergabesteuerung und Farblegende"
+			"printExport": "Drucken und Exportieren - aktuelle Kartenansicht als PDF oder PNG speichern",
+			"weather": "Aktuelles Wetter an Ihrem Trailstandort - Temperatur, Wind, Niederschlagswahrscheinlichkeit, Sonnenaufgang/-untergang (DHMZ + Open-Meteo)",
+			"trailNotices": "Regionale Trail-Zustandsbenachrichtigungen - abbaubare Banner mit Warnungen zu aktuellen Bedingungen auf dem Trail",
+			"radar": "Niederschlagsradar-Overlay - animierter RainViewer-Radar mit vergangenen und vorhergesagten Frames, Wiedergabesteuerung und Farblegende"
 		},
 		"dataAttribution": "Daten & Urheberrecht",
 		"dataAttributionDesc": "Trail-Daten werden von der Udruga Long Distance Trail Hrvatska (LDTH) bereitgestellt. Kartenkacheln kommen von OpenStreetMap, OpenTopoMap, CyclOSM und anderen Anbietern. Kroatische topografische Karten stammen vom Staatlichen Geodätischen Amt (DGU). Wetterdaten kommen von DHMZ (Kroatischer Wetterdienst) und Open-Meteo. Radarkacheln werden von RainViewer bereitgestellt.",
@@ -85,6 +85,8 @@
 		"walkingPace": "Gehtempo",
 		"walkingPaceHint": "Bereich: {min} – {max}, Standard: {default}",
 		"walkingPaceReset": "Gehtempo auf Standard zurücksetzen",
+		"gradeAdjustedEtaLabel": "Steigungsangepasste ETA",
+		"gradeAdjustedEtaHint": "Verlangsamt das Tempo bei Anstiegen und steilen Abfahrten.",
 		"directionTooltip": "Aktuell {direction}, klicken zum Wechseln",
 		"directionSouthbound": "Richtung Süden (N→S)",
 		"directionNorthbound": "Richtung Norden (S→N)",
