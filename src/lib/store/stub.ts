@@ -169,5 +169,7 @@ export function createMapStoreStub(): MapStoreState {
 		setWalkingPaceKmh: noop,
 		gradeAdjustedEta: true,
 		setGradeAdjustedEta: noop,
+		sunsetProjection: false,
+		setSunsetProjection: noop,
 	};
 }

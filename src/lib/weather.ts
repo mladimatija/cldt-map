@@ -8,9 +8,13 @@ export interface WeatherData {
 	weatherCode: number;
 	sunrise: string;
 	sunset: string;
+	/** UTC offset of the queried location in seconds (e.g. 7200 for UTC+2).
+	 *  Required to correctly convert Open-Meteo's timezone-local ISO strings to UTC. */
+	utcOffsetSeconds: number;
 }
 
 interface OpenMeteoResponse {
+	utc_offset_seconds?: number;
 	current?: {
 		temperature_2m?: number;
 		apparent_temperature?: number;
@@ -73,6 +77,7 @@ async function fetchOpenMeteo(lat: number, lng: number): Promise<WeatherData | n
 			weatherCode: current.weathercode ?? 0,
 			sunrise: daily.sunrise?.[0] ?? '',
 			sunset: daily.sunset?.[0] ?? '',
+			utcOffsetSeconds: json.utc_offset_seconds ?? 0,
 		};
 	} catch {
 		return null;
@@ -106,8 +111,9 @@ export async function fetchWeather(lat: number, lng: number): Promise<WeatherDat
 			return {
 				...dhmz,
 				precipitationProbabilityPct: openMeteo?.precipitationProbabilityPct ?? 0,
-				sunrise: openMeteo?.sunrise ?? '',
-				sunset: openMeteo?.sunset ?? '',
+				sunrise: openMeteo?.sunrise || dhmz.sunrise,
+				sunset: openMeteo?.sunset || dhmz.sunset,
+				utcOffsetSeconds: openMeteo?.utcOffsetSeconds ?? dhmz.utcOffsetSeconds ?? 0,
 			};
 		}
 

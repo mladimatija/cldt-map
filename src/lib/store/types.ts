@@ -263,4 +263,7 @@ export interface MapStoreState {
 
 	gradeAdjustedEta: boolean;
 	setGradeAdjustedEta: (enabled: boolean) => void;
+
+	sunsetProjection: boolean;
+	setSunsetProjection: (enabled: boolean) => void;
 }
