@@ -408,6 +408,11 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 				setGradeAdjustedEta: (enabled: boolean): void => {
 					set({ gradeAdjustedEta: enabled });
 				},
+
+				sunsetProjection: false,
+				setSunsetProjection: (enabled: boolean): void => {
+					set({ sunsetProjection: enabled });
+				},
 			}),
 			{
 				name: 'cldt-map-storage',
@@ -427,6 +432,7 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					autoSync: state.autoSync,
 					walkingPaceKmh: state.walkingPaceKmh,
 					gradeAdjustedEta: state.gradeAdjustedEta,
+					sunsetProjection: state.sunsetProjection,
 				}),
 			},
 		),

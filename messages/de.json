@@ -44,7 +44,8 @@
 			"printExport": "Drucken und Exportieren - aktuelle Kartenansicht als PDF oder PNG speichern",
 			"weather": "Aktuelles Wetter an Ihrem Trailstandort - Temperatur, Wind, Niederschlagswahrscheinlichkeit, Sonnenaufgang/-untergang (DHMZ + Open-Meteo)",
 			"trailNotices": "Regionale Trail-Zustandsbenachrichtigungen - abbaubare Banner mit Warnungen zu aktuellen Bedingungen auf dem Trail",
-			"radar": "Niederschlagsradar-Overlay - animierter RainViewer-Radar mit vergangenen und vorhergesagten Frames, Wiedergabesteuerung und Farblegende"
+			"radar": "Niederschlagsradar-Overlay - animierter RainViewer-Radar mit vergangenen und vorhergesagten Frames, Wiedergabesteuerung und Farblegende",
+			"sunsetPosition": "Sonnenuntergang/Sonnenaufgang-Position - zeigt, wo du bei Sonnenuntergang und Sonnenaufgang auf dem Weg sein wirst; umschaltbare Markierungen auf der Strecke"
 		},
 		"dataAttribution": "Daten & Urheberrecht",
 		"dataAttributionDesc": "Trail-Daten werden von der Udruga Long Distance Trail Hrvatska (LDTH) bereitgestellt. Kartenkacheln kommen von OpenStreetMap, OpenTopoMap, CyclOSM und anderen Anbietern. Kroatische topografische Karten stammen vom Staatlichen Geodätischen Amt (DGU). Wetterdaten kommen von DHMZ (Kroatischer Wetterdienst) und Open-Meteo. Radarkacheln werden von RainViewer bereitgestellt.",
@@ -87,6 +88,12 @@
 		"walkingPaceReset": "Gehtempo auf Standard zurücksetzen",
 		"gradeAdjustedEtaLabel": "Steigungsangepasste ETA",
 		"gradeAdjustedEtaHint": "Verlangsamt das Tempo bei Anstiegen und steilen Abfahrten.",
+		"sunsetProjectionLabel": "Sonnenuntergang/Sonnenaufgang-Position",
+		"sunsetProjectionHint": "Zeigt, wo du bei Sonnenuntergang und Sonnenaufgang auf dem Weg sein wirst.",
+		"sunsetTooltipTitle": "Sonnenuntergang",
+		"sunriseTooltipTitle": "Sonnenaufgang",
+		"sunsetProjectionReachedEnd": "Ziel vor Sonnenuntergang erreicht",
+		"elevationUnitASL": "ü.NN",
 		"directionTooltip": "Aktuell {direction}, klicken zum Wechseln",
 		"directionSouthbound": "Richtung Süden (N→S)",
 		"directionNorthbound": "Richtung Norden (S→N)",
