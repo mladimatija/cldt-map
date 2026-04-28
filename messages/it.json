@@ -85,6 +85,8 @@
 		"walkingPace": "Velocità di camminata",
 		"walkingPaceHint": "Intervallo: {min} – {max}, predefinito: {default}",
 		"walkingPaceReset": "Reimposta la velocità di camminata al valore predefinito",
+		"gradeAdjustedEtaLabel": "ETA adattata alla pendenza",
+		"gradeAdjustedEtaHint": "Rallenta il passo in salita e nelle discese ripide.",
 		"directionTooltip": "Attualmente {direction}, clicca per cambiare",
 		"directionSouthbound": "Verso sud (N→S)",
 		"directionNorthbound": "Verso nord (S→N)",
