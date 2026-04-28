@@ -21,7 +21,7 @@ function persistDismissed(id: string): void {
 		set.add(id);
 		sessionStorage.setItem(DISMISSED_KEY, JSON.stringify([...set]));
 	} catch {
-		// sessionStorage unavailable — dismiss is in-memory only
+		// sessionStorage unavailable - dismiss is in-memory only
 	}
 }
 
