@@ -404,7 +404,7 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					set({ walkingPaceKmh: pace });
 				},
 
-				gradeAdjustedEta: false,
+				gradeAdjustedEta: true,
 				setGradeAdjustedEta: (enabled: boolean): void => {
 					set({ gradeAdjustedEta: enabled });
 				},
