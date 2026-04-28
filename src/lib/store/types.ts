@@ -2,6 +2,7 @@ import type { LatLng } from 'leaflet';
 import type * as GeoJSON from 'geojson';
 import type { TrailDirection, UnitSystem } from '../types';
 import type { TileCacheMeta } from '../tile-cache';
+import { RulerRange } from '@/lib/distance-utils';
 
 export type { TrailDirection, UnitSystem };
 
@@ -197,8 +198,8 @@ export interface MapStoreState {
 	radarPlaying: boolean;
 	setRadarPlaying: (playing: boolean) => void;
 	/** When the distance ruler has two points, the range in meters from trail start; used to highlight the chart. */
-	rulerRange: { distanceFromStartA: number; distanceFromStartB: number } | null;
-	setRulerRange: (range: { distanceFromStartA: number; distanceFromStartB: number } | null) => void;
+	rulerRange: RulerRange | null;
+	setRulerRange: (range: RulerRange | null) => void;
 
 	userLocation: { lat: number; lng: number; accuracy?: number } | null;
 	isLocating: boolean;

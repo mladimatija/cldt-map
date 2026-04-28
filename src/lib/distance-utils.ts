@@ -6,6 +6,11 @@ export interface DistanceRemaining {
 	toSectionEnd: number | null;
 }
 
+export interface RulerRange {
+	distanceFromStartA: number;
+	distanceFromStartB: number;
+}
+
 /**
  * Derives the three distance display values from the user's current closest trail point.
  *
@@ -16,7 +21,7 @@ export interface DistanceRemaining {
  */
 export function computeDistanceRemaining(
 	closestPoint: ClosestPoint | null,
-	rulerRange: { distanceFromStartA: number; distanceFromStartB: number } | null,
+	rulerRange: RulerRange | null,
 	onTrailThresholdM: number,
 ): DistanceRemaining | null {
 	if (closestPoint === null) {
@@ -41,7 +46,7 @@ const KM_TO_MILES = 1.60934;
 const NAISMITH_SEC_PER_M_CLIMB = 6;
 // Tobler's hiking function peak-efficiency slope offset
 const TOBLER_OPTIMAL_SLOPE = 0.05;
-// Normalisation factor so that a flat (0%) grade produces a Tobler factor of exactly 1.0,
+// Normalization factor so that a flat (0%) grade produces a Tobler factor of exactly 1.0,
 // preserving the user's configured pace as the flat-terrain baseline.
 const TOBLER_NORM = Math.exp(-3.5 * TOBLER_OPTIMAL_SLOPE);
 
@@ -66,7 +71,7 @@ function gradeSegmentSeconds(distSeg: number, dz: number, speedMps: number): num
 export interface ComputeEtaOptions {
 	elevationPoints?: { elevation: number; distanceFromStart: number }[];
 	fromIndex?: number;
-	direction?: 'SOBO' | 'NOBO';
+	direction?: TrailDirection;
 	gradeAdjusted?: boolean;
 }
 
@@ -79,7 +84,7 @@ export interface ComputeEtaOptions {
  * data is missing - existing callers that omit opts are unaffected.
  */
 export function computeEta(distanceM: number, paceKmh: number, opts?: ComputeEtaOptions): number {
-	// Fast path: flat-pace formula (original behaviour, zero regression for existing callers)
+	// Fast path: flat-pace formula (original behavior, zero regression for existing callers)
 	if (
 		!opts ||
 		!opts.gradeAdjusted ||
@@ -209,7 +214,7 @@ export function computeElevationRemaining(
 	elevationPoints: { elevation: number }[],
 	fromIndex: number,
 	direction: TrailDirection,
-	rulerRange: { distanceFromStartA: number; distanceFromStartB: number } | null,
+	rulerRange: RulerRange | null,
 	enhancedPoints: { distanceFromStart: number }[],
 ): ElevationRemaining {
 	if (elevationPoints.length === 0) {
