@@ -52,8 +52,8 @@ function createStoreStubApi<S>(getStub: () => S): UseBoundStore<StoreApi<S>> {
 	return api;
 }
 
-const mainStub = createStoreStubApi(createStoreStub) as unknown as MainStore;
-const mapStub = createStoreStubApi(createMapStoreStub) as unknown as MapStore;
+const mainStub = createStoreStubApi(createStoreStub);
+const mapStub = createStoreStubApi(createMapStoreStub);
 
 if (typeof window !== 'undefined') {
 	const { main, map } = createStoredStores();

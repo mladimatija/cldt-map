@@ -1,4 +1,4 @@
-import type { StoreState, MapStoreState, TrailDirection, UnitSystem } from './types';
+import type { StoreState, MapStoreState } from './types';
 import { BaseMapProvider } from '../services/map-service';
 import { INITIAL_TRAIL_STATE } from './trail-slice';
 
@@ -16,10 +16,10 @@ export function createStoreStub(): StoreState {
 		locationError: null,
 		showUserMarker: true,
 		...INITIAL_TRAIL_STATE,
-		direction: 'SOBO' as TrailDirection,
+		direction: 'SOBO',
 		showBoundary: false,
 		showTileBoundary: false,
-		units: 'metric' as UnitSystem,
+		units: 'metric',
 		mapMountTime: null,
 		setUserLocation: () => {},
 		setIsLocating: () => {},
@@ -94,9 +94,9 @@ export function createMapStoreStub(): MapStoreState {
 		setGpxLoadFailed: noop,
 		reloadTrailRequested: 0,
 		setReloadTrailRequested: noop,
-		units: 'metric' as UnitSystem,
+		units: 'metric',
 		setUnits: noop,
-		direction: 'SOBO' as TrailDirection,
+		direction: 'SOBO',
 		setDirection: noop,
 		showBoundary: false,
 		setShowBoundary: noop,
