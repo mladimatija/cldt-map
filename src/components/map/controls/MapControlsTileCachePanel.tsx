@@ -83,7 +83,7 @@ export function MapControlsTileCachePanel(): React.ReactElement {
 		if (!baseMapProvider) return;
 		const key = getProviderCacheKey(baseMapProvider);
 		void loadTileCacheMeta(key);
-		void refreshLiveCount(key);
+		queueMicrotask(() => void refreshLiveCount(key));
 	}, [baseMapProvider, loadTileCacheMeta, refreshLiveCount]);
 
 	// Refresh live count when download finishes
