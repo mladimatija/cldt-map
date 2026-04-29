@@ -263,7 +263,7 @@ export class MapService {
 					attribution: '&copy; <a href="https://dgu.gov.hr/">Državna geodetska uprava</a>',
 					maxZoom: 19,
 					minZoom: 8,
-				}) as unknown as L.TileLayer;
+				});
 			}
 
 			// Find the service configuration for this provider
