@@ -1,7 +1,7 @@
 'use client';
 
 /** Dropdown to switch base map layer (OSM, Topo, Satellite, etc.); syncs with MapService and persisted store. */
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useCallback, useRef } from 'react';
 import { useMap } from 'react-leaflet';
 import { BaseMapProvider } from '@/lib/services/map-service';
 import { useMapService, useBlockMapPropagation, useMapStore } from '@/hooks';
@@ -34,7 +34,7 @@ export default function BaseMapSelector({ initialProvider }: BaseMapSelectorProp
 	useEffect(() => {
 		const resolved = resolveProvider(storedProvider, initialProvider || BaseMapProvider.OPEN_STREET_MAP);
 		if (resolved !== currentLayer) {
-			setCurrentLayer(resolved);
+			queueMicrotask(() => setCurrentLayer(resolved));
 		}
 	}, [storedProvider, currentLayer, initialProvider]);
 
@@ -81,7 +81,7 @@ export default function BaseMapSelector({ initialProvider }: BaseMapSelectorProp
 					console.error('Failed to load Leaflet:', err);
 				});
 		} else if (isBrowser && L) {
-			setLeafletLoaded(true);
+			queueMicrotask(() => setLeafletLoaded(true));
 		}
 	}, [isBrowser]);
 
@@ -339,7 +339,9 @@ export default function BaseMapSelector({ initialProvider }: BaseMapSelectorProp
 	};
 
 	// Keep ref in sync so the event listener below always calls the latest version.
-	handleMapChangeRef.current = handleMapChange;
+	useLayoutEffect(() => {
+		handleMapChangeRef.current = handleMapChange;
+	});
 
 	// When MapControls disables tile boundary it dispatches this event so the correct
 	// base layer (not a hardcoded OSM fallback) is restored.

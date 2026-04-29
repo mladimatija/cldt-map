@@ -95,8 +95,10 @@ export default function MapMarkers(): React.ReactElement | null {
 	// When the user becomes off trail, show the tooltip by default and reset the "on-trail" dismissed state.
 	useEffect(() => {
 		if (isOffTrail) {
-			setIsOffTrailTooltipOpen(true);
-			setIsOnTrailTooltipDismissed(false);
+			queueMicrotask(() => {
+				setIsOffTrailTooltipOpen(true);
+				setIsOnTrailTooltipDismissed(false);
+			});
 		}
 	}, [isOffTrail]);
 
@@ -184,26 +186,28 @@ export default function MapMarkers(): React.ReactElement | null {
 		};
 	}, [closestPoint, rulerRange, enhancedTrailPoints, trailMetadata, units, distancePrecision, tRoute, tControls]);
 
+	// Derive effective weather: null when off-trail or no location
+	const effectiveWeatherData: WeatherData | null = userLocation && !isOffTrail ? weatherData : null;
+	const effectiveIsWeatherLoading = userLocation && !isOffTrail ? isWeatherLoading : false;
+
 	const tooltipWeather = useMemo((): TrailTooltipWeather | null => {
-		if (!weatherData) return null;
-		const key = weatherCodeToKey(weatherData.weatherCode);
+		if (!effectiveWeatherData) return null;
+		const key = weatherCodeToKey(effectiveWeatherData.weatherCode);
 		return {
 			icon: weatherKeyToIcon(key),
 			condition: tWeather(key),
-			temperature: formatTemperature(weatherData.temperatureC, units),
-			feelsLike: formatTemperature(weatherData.feelsLikeC, units),
-			precipitation: `${weatherData.precipitationProbabilityPct}%`,
-			wind: formatWindSpeed(weatherData.windspeedKmh, units),
-			sunrise: formatSunTime(weatherData.sunrise, units),
-			sunset: formatSunTime(weatherData.sunset, units),
+			temperature: formatTemperature(effectiveWeatherData.temperatureC, units),
+			feelsLike: formatTemperature(effectiveWeatherData.feelsLikeC, units),
+			precipitation: `${effectiveWeatherData.precipitationProbabilityPct}%`,
+			wind: formatWindSpeed(effectiveWeatherData.windspeedKmh, units),
+			sunrise: formatSunTime(effectiveWeatherData.sunrise, units),
+			sunset: formatSunTime(effectiveWeatherData.sunset, units),
 		};
-	}, [weatherData, units, tWeather]);
+	}, [effectiveWeatherData, units, tWeather]);
 
 	// Fetch weather for the user's location when on-trail; re-fetches after 30 s minimum.
 	useEffect(() => {
 		if (!userLocation || isOffTrail) {
-			setWeatherData(null);
-			setIsWeatherLoading(false);
 			weatherFetchedAtRef.current = 0;
 			return;
 		}
@@ -257,7 +261,7 @@ export default function MapMarkers(): React.ReactElement | null {
 				title={t('yourLocation')}
 				trailData={trailData}
 				weather={tooltipWeather}
-				weatherLoading={isWeatherLoading}
+				weatherLoading={effectiveIsWeatherLoading}
 				onClose={handleTooltipClose}
 				onNavigate={() => {
 					const loc = useMapStore.getState().userLocation;
@@ -283,7 +287,7 @@ export default function MapMarkers(): React.ReactElement | null {
 		t,
 		trailData,
 		tooltipWeather,
-		isWeatherLoading,
+		effectiveIsWeatherLoading,
 		handleTooltipClose,
 	]);
 

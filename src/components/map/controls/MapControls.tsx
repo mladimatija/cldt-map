@@ -4,7 +4,7 @@
  * Map overlay panel: direction/units, boundary toggles, share links, settings (precision, dark mode, etc.),
  * and optional test link. Uses useBlockMapPropagation so clicks don't drag the map.
  */
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useBlockMapPropagation } from '@/hooks';
 import { useMap } from 'react-leaflet';
 import L from 'leaflet';
@@ -759,6 +759,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 		const msg = willBeEnabled ? t('rulerEnable') : t('rulerDisable');
 		if (rulerAnnouncementTimeoutRef.current) clearTimeout(rulerAnnouncementTimeoutRef.current);
 		setRulerAnnouncement(msg);
+		// eslint-disable-next-line react-hooks/immutability -- ref is intentionally mutated in this event handler to manage timeout cleanup
 		rulerAnnouncementTimeoutRef.current = setTimeout(() => {
 			setRulerAnnouncement(null);
 			rulerAnnouncementTimeoutRef.current = null;
@@ -849,56 +850,59 @@ const MapControls: React.FC<MapControlsProps> = ({
 		fitMapToRulerBounds(map, rulerRange, points);
 	}, [rulerRange, map]);
 
-	rulerClickHandlerRef.current = (e: L.LeafletMouseEvent): void => {
-		const { latlng } = e;
+	// Keep the click handler ref in sync with the latest closure on every render.
+	useLayoutEffect(() => {
+		rulerClickHandlerRef.current = (e: L.LeafletMouseEvent): void => {
+			const { latlng } = e;
 
-		const enhancedTrailPoints = useStore.getState().enhancedTrailPoints;
-		let resolvedLatLng = latlng;
-		let distanceFromStart = 0;
+			const enhancedTrailPoints = useStore.getState().enhancedTrailPoints;
+			let resolvedLatLng = latlng;
+			let distanceFromStart = 0;
 
-		if (enhancedTrailPoints && enhancedTrailPoints.length > 0) {
-			let closest = enhancedTrailPoints[0];
-			let minDist = L.latLng(closest.lat, closest.lng).distanceTo(latlng);
-			for (let i = 1; i < enhancedTrailPoints.length; i++) {
-				const p = enhancedTrailPoints[i];
-				const d = L.latLng(p.lat, p.lng).distanceTo(latlng);
-				if (d < minDist) {
-					minDist = d;
-					closest = p;
+			if (enhancedTrailPoints && enhancedTrailPoints.length > 0) {
+				let closest = enhancedTrailPoints[0];
+				let minDist = L.latLng(closest.lat, closest.lng).distanceTo(latlng);
+				for (let i = 1; i < enhancedTrailPoints.length; i++) {
+					const p = enhancedTrailPoints[i];
+					const d = L.latLng(p.lat, p.lng).distanceTo(latlng);
+					if (d < minDist) {
+						minDist = d;
+						closest = p;
+					}
 				}
+				resolvedLatLng = L.latLng(closest.lat, closest.lng);
+				distanceFromStart = closest.distanceFromStart;
 			}
-			resolvedLatLng = L.latLng(closest.lat, closest.lng);
-			distanceFromStart = closest.distanceFromStart;
-		}
 
-		if (rulerMarkerRef.current.length >= 2) {
-			clearRulerMarkersAndLayers();
-			setRulerRange(null);
-		}
+			if (rulerMarkerRef.current.length >= 2) {
+				clearRulerMarkersAndLayers();
+				setRulerRange(null);
+			}
 
-		const marker = L.marker(resolvedLatLng, RULER_MARKER_OPTIONS).addTo(map);
+			const marker = L.marker(resolvedLatLng, RULER_MARKER_OPTIONS).addTo(map);
 
-		const pointData = { latlng: resolvedLatLng, distanceFromStart };
-		rulerMarkerRef.current.push(marker);
-		rulerPointDataRef.current.push(pointData);
+			const pointData = { latlng: resolvedLatLng, distanceFromStart };
+			rulerMarkerRef.current.push(marker);
+			rulerPointDataRef.current.push(pointData);
 
-		const points = rulerMarkerRef.current.map((m) => m.getLatLng());
+			const points = rulerMarkerRef.current.map((m) => m.getLatLng());
 
-		if (rulerLayerRef.current) {
-			rulerLayerRef.current.setLatLngs(points);
-		} else {
-			rulerLayerRef.current = L.polyline(points, RULER_POLYLINE_OPTIONS).addTo(map);
-		}
+			if (rulerLayerRef.current) {
+				rulerLayerRef.current.setLatLngs(points);
+			} else {
+				rulerLayerRef.current = L.polyline(points, RULER_POLYLINE_OPTIONS).addTo(map);
+			}
 
-		if (rulerPointDataRef.current.length >= 2) {
-			const [dataA, dataB] = rulerPointDataRef.current;
-			applyRulerSegmentAndTooltip(dataA, dataB, enhancedTrailPoints, points as [L.LatLng, L.LatLng]);
-			setRulerRange({
-				distanceFromStartA: dataA.distanceFromStart,
-				distanceFromStartB: dataB.distanceFromStart,
-			});
-		}
-	};
+			if (rulerPointDataRef.current.length >= 2) {
+				const [dataA, dataB] = rulerPointDataRef.current;
+				applyRulerSegmentAndTooltip(dataA, dataB, enhancedTrailPoints, points as [L.LatLng, L.LatLng]);
+				setRulerRange({
+					distanceFromStartA: dataA.distanceFromStart,
+					distanceFromStartB: dataB.distanceFromStart,
+				});
+			}
+		};
+	}); // end useLayoutEffect — keeps rulerClickHandlerRef.current in sync
 
 	useEffect(() => {
 		if (!rulerTooltipRef.current || rulerPointDataRef.current.length < 2) {
