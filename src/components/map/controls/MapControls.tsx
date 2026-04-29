@@ -262,6 +262,8 @@ const MapControls: React.FC<MapControlsProps> = ({
 	const setWalkingPaceKmh = useMapStore((state: MapStoreState) => state.setWalkingPaceKmh);
 	const gradeAdjustedEta = useMapStore((state: MapStoreState) => state.gradeAdjustedEta);
 	const setGradeAdjustedEta = useMapStore((state: MapStoreState) => state.setGradeAdjustedEta);
+	const sunsetProjection = useMapStore((state: MapStoreState) => state.sunsetProjection);
+	const setSunsetProjection = useMapStore((state: MapStoreState) => state.setSunsetProjection);
 
 	const storeDirection = useMapStore((state: MapStoreState) => state.direction);
 	const enhancedTrailPoints = useStore((state: StoreState) => state.enhancedTrailPoints);
@@ -1369,8 +1371,10 @@ const MapControls: React.FC<MapControlsProps> = ({
 					setGradeAdjustedEta={setGradeAdjustedEta}
 					setLargeTouchTargets={setLargeTouchTargets}
 					setShowSections={setShowSections}
+					setSunsetProjection={setSunsetProjection}
 					setWalkingPaceKmh={setWalkingPaceKmh}
 					showSections={showSections}
+					sunsetProjection={sunsetProjection}
 					tooltipHide={t('preferencesHide')}
 					tooltipShow={t('preferencesShow')}
 					units={storeUnits}
