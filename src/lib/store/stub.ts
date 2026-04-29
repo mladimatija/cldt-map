@@ -167,7 +167,9 @@ export function createMapStoreStub(): MapStoreState {
 		initStaleCacheCheck: noopAsyncVoid,
 		walkingPaceKmh: 4,
 		setWalkingPaceKmh: noop,
-		gradeAdjustedEta: false,
+		gradeAdjustedEta: true,
 		setGradeAdjustedEta: noop,
+		sunsetProjection: false,
+		setSunsetProjection: noop,
 	};
 }

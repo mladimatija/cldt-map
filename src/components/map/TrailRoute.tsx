@@ -92,6 +92,7 @@ interface TrailRouteProps {
 export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: TrailRouteProps): React.ReactElement | null {
 	const t = useTranslations('trailRoute');
 	const tChart = useTranslations('elevationChart');
+	const tControls = useTranslations('mapControls');
 	const tWeather = useTranslations('weather');
 	const locale = useLocale();
 	const map = useMap();
@@ -271,7 +272,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 				lat: point.lat,
 				lng: point.lng,
 				sectionLabel: sectionKey ? t(sectionKey) : null,
-				elevation: formatElevation(currentElevation, currentUnits),
+				elevation: `${formatElevation(currentElevation, currentUnits)} ${tControls('elevationUnitASL')}`,
 				distanceFromStart: formatDistance(distanceFromStart, currentUnits, currentPrecision, true),
 				distanceFromStartPct: distanceFromStartPct.toFixed(1),
 				distanceToEnd: formatDistance(distanceToEnd, currentUnits, currentPrecision, true),
@@ -409,7 +410,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 
 			tooltipRef.current = tooltip;
 		},
-		[map, isTooltipVisible, tooltipPinnedFromShare, clearTrailHighlight, t, tWeather],
+		[map, isTooltipVisible, tooltipPinnedFromShare, clearTrailHighlight, t, tControls, tWeather],
 	);
 
 	useEffect(() => {

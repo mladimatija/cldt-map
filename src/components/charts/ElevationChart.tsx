@@ -49,6 +49,7 @@ function ChartTooltipSync(props: {
 	distancePrecision: number;
 	distanceLabel: string;
 	elevationLabel: string;
+	elevationUnitASL: string;
 	active?: boolean;
 	payload?: ReadonlyArray<{ payload?: ElevationPoint }>;
 	coordinate?: { x: number; y: number };
@@ -62,6 +63,7 @@ function ChartTooltipSync(props: {
 		distancePrecision,
 		distanceLabel,
 		elevationLabel,
+		elevationUnitASL,
 		active,
 		payload,
 		coordinate,
@@ -137,7 +139,8 @@ function ChartTooltipSync(props: {
 				<span className="font-medium">{distanceLabel}:</span> {formatDistance(point.distance, units, distancePrecision)}
 			</p>
 			<p>
-				<span className="font-medium">{elevationLabel}:</span> {formatElevation(point.elevation, units)}
+				<span className="font-medium">{elevationLabel}:</span> {formatElevation(point.elevation, units)}{' '}
+				{elevationUnitASL}
 			</p>
 		</div>
 	);
@@ -708,6 +711,7 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 											distanceLabel={t('distanceLabel')}
 											distancePrecision={distancePrecision}
 											elevationLabel={t('elevationLabel')}
+											elevationUnitASL={tControls('elevationUnitASL')}
 											highlightTrailPosition={highlightTrailPosition}
 											isPinned={pinnedPoint !== null}
 											payload={props.payload}

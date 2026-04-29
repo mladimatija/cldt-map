@@ -44,7 +44,8 @@
 			"printExport": "Stampa ed esporta - salva la vista mappa corrente come PDF o immagine PNG",
 			"weather": "Meteo attuale nella tua posizione sul sentiero - temperatura, vento, probabilità precipitazioni, alba/tramonto (DHMZ + Open-Meteo)",
 			"trailNotices": "Avvisi regionali sulle condizioni del sentiero - banner eliminabili con avvisi sulle condizioni attuali sul percorso",
-			"radar": "Overlay radar precipitazioni - radar RainViewer animato con frame passati e previsionali, controlli play/pausa e legenda colori"
+			"radar": "Overlay radar precipitazioni - radar RainViewer animato con frame passati e previsionali, controlli play/pausa e legenda colori",
+			"sunsetPosition": "Posizione tramonto/alba - mostra dove ti troverai sul sentiero al tramonto e all'alba in base al tuo ritmo attuale; indicatori attivabili sulla linea"
 		},
 		"dataAttribution": "Dati e attribuzioni",
 		"dataAttributionDesc": "I dati del sentiero sono forniti dall'organizzazione Udruga Long Distance Trail Hrvatska (LDTH). Le tessere mappa provengono da OpenStreetMap, OpenTopoMap, CyclOSM e altri provider. Le mappe topografiche croate provengono dall'Amministrazione Geodetica Statale (DGU). I dati meteo provengono da DHMZ (Servizio Meteorologico Croato) e Open-Meteo. Le tessere radar sono fornite da RainViewer.",
@@ -87,6 +88,12 @@
 		"walkingPaceReset": "Reimposta la velocità di camminata al valore predefinito",
 		"gradeAdjustedEtaLabel": "ETA adattata alla pendenza",
 		"gradeAdjustedEtaHint": "Rallenta il passo in salita e nelle discese ripide.",
+		"sunsetProjectionLabel": "Posizione al tramonto/alba",
+		"sunsetProjectionHint": "Mostra dove ti troverai sul sentiero al tramonto e all'alba.",
+		"sunsetTooltipTitle": "Tramonto",
+		"sunriseTooltipTitle": "Alba",
+		"sunsetProjectionReachedEnd": "Destinazione raggiunta prima del tramonto",
+		"elevationUnitASL": "s.l.m.",
 		"directionTooltip": "Attualmente {direction}, clicca per cambiare",
 		"directionSouthbound": "Verso sud (N→S)",
 		"directionNorthbound": "Verso nord (S→N)",
