@@ -25,7 +25,7 @@ import { MdKeyboardArrowUp, MdKeyboardArrowDown } from 'react-icons/md';
 import { IoDownloadOutline, IoHelpCircleOutline } from 'react-icons/io5';
 import { useTranslations } from 'next-intl';
 import { Tooltip } from '@/components/ui/Tooltip';
-import { RULER_SET_FROM_CHART_EVENT, type RulerSetFromChartDetail } from '@/lib/ruler-from-chart';
+import { RULER_SET_FROM_CHART_EVENT } from '@/lib/ruler-from-chart';
 import { Button } from '@/components/ui/Button';
 import { GpxDownloadModal } from '@/components/map/GpxDownloadModal';
 import { buildGpxXml, downloadGpxFile, extractGpxSegment } from '@/lib/gpx-export';
@@ -308,7 +308,7 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 					setRulerRange({ distanceFromStartA, distanceFromStartB });
 					window.dispatchEvent(
 						new CustomEvent(RULER_SET_FROM_CHART_EVENT, {
-							detail: { distanceFromStartA, distanceFromStartB } as RulerSetFromChartDetail,
+							detail: { distanceFromStartA, distanceFromStartB },
 						}),
 					);
 				} else {
@@ -423,7 +423,7 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 	}, [dragPreviewRange, rulerRange]);
 
 	// Segment geometry - recomputes only when the ruler range or trail data changes.
-	// Does NOT depend on gradeAdjustedEta or walkingPaceKmh so toggling the pace model
+	// Does NOT depend on gradeAdjustedEta or walkingPaceKmh, so toggling the pace model
 	// never re-runs the O(n) filter pass.
 	const rulerSegment = useMemo(() => {
 		if (!isRulerEnabled || !rulerRange || !enhancedTrailPoints?.length) return null;
