@@ -9,8 +9,8 @@ export async function getGeolocationPermissionState(): Promise<GeolocationPermis
 		return 'prompt';
 	}
 	try {
-		const result = await navigator.permissions.query({ name: 'geolocation' as PermissionName });
-		return result.state as GeolocationPermissionState;
+		const result = await navigator.permissions.query({ name: 'geolocation' });
+		return result.state;
 	} catch {
 		return 'prompt';
 	}
@@ -29,11 +29,11 @@ export function addGeolocationPermissionListener(callback: (state: GeolocationPe
 
 	const setup = (): void => {
 		navigator.permissions
-			.query({ name: 'geolocation' as PermissionName })
+			.query({ name: 'geolocation' })
 			.then((result) => {
 				permissionResult = result;
-				callback(result.state as GeolocationPermissionState);
-				result.onchange = () => callback(result.state as GeolocationPermissionState);
+				callback(result.state);
+				result.onchange = () => callback(result.state);
 			})
 			.catch(() => callback('prompt'));
 	};
