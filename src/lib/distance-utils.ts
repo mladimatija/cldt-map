@@ -6,6 +6,11 @@ export interface DistanceRemaining {
 	toSectionEnd: number | null;
 }
 
+export interface RulerRange {
+	distanceFromStartA: number;
+	distanceFromStartB: number;
+}
+
 /**
  * Derives the three distance display values from the user's current closest trail point.
  *
@@ -16,7 +21,7 @@ export interface DistanceRemaining {
  */
 export function computeDistanceRemaining(
 	closestPoint: ClosestPoint | null,
-	rulerRange: { distanceFromStartA: number; distanceFromStartB: number } | null,
+	rulerRange: RulerRange | null,
 	onTrailThresholdM: number,
 ): DistanceRemaining | null {
 	if (closestPoint === null) {
@@ -41,7 +46,7 @@ const KM_TO_MILES = 1.60934;
 const NAISMITH_SEC_PER_M_CLIMB = 6;
 // Tobler's hiking function peak-efficiency slope offset
 const TOBLER_OPTIMAL_SLOPE = 0.05;
-// Normalisation factor so that a flat (0%) grade produces a Tobler factor of exactly 1.0,
+// Normalization factor so that a flat (0%) grade produces a Tobler factor of exactly 1.0,
 // preserving the user's configured pace as the flat-terrain baseline.
 const TOBLER_NORM = Math.exp(-3.5 * TOBLER_OPTIMAL_SLOPE);
 
@@ -66,7 +71,7 @@ function gradeSegmentSeconds(distSeg: number, dz: number, speedMps: number): num
 export interface ComputeEtaOptions {
 	elevationPoints?: { elevation: number; distanceFromStart: number }[];
 	fromIndex?: number;
-	direction?: 'SOBO' | 'NOBO';
+	direction?: TrailDirection;
 	gradeAdjusted?: boolean;
 }
 
@@ -79,7 +84,7 @@ export interface ComputeEtaOptions {
  * data is missing - existing callers that omit opts are unaffected.
  */
 export function computeEta(distanceM: number, paceKmh: number, opts?: ComputeEtaOptions): number {
-	// Fast path: flat-pace formula (original behaviour, zero regression for existing callers)
+	// Fast path: flat-pace formula (original behavior, zero regression for existing callers)
 	if (
 		!opts ||
 		!opts.gradeAdjusted ||
@@ -162,6 +167,102 @@ export function findNearestPointIndex(points: { distanceFromStart: number }[], t
 	return lo;
 }
 
+export interface ProjectPositionAtTimeOpts {
+	fromIndex: number;
+	deltaSec: number;
+	direction: TrailDirection;
+	paceKmh: number;
+	/** Elevation profile. Include lat/lng fields to receive interpolated coordinates in the result. */
+	elevationPoints: { elevation: number; distanceFromStart: number; lat?: number; lng?: number }[];
+	gradeAdjusted: boolean;
+}
+
+export interface ProjectedPosition {
+	index: number;
+	distanceM: number;
+	elevationM: number;
+	/** Interpolated latitude - present when elevationPoints carry lat/lng fields. */
+	lat?: number;
+	/** Interpolated longitude - present when elevationPoints carry lat/lng fields. */
+	lng?: number;
+}
+
+/**
+ * Projects the trail position reached after deltaSec seconds from fromIndex,
+ * using flat pace or the grade-adjusted model (Naismith + Tobler).
+ * Returns null for invalid inputs. Pins to trail end when time is exhausted.
+ */
+export function projectPositionAtTime(opts: ProjectPositionAtTimeOpts): ProjectedPosition | null {
+	const { fromIndex, deltaSec, direction, paceKmh, elevationPoints, gradeAdjusted } = opts;
+	if (deltaSec <= 0 || !Number.isFinite(fromIndex) || elevationPoints.length < 2) return null;
+
+	const safeFromIndex = Math.max(0, Math.min(fromIndex, elevationPoints.length - 1));
+	const speedMps = (paceKmh * 1000) / 3600;
+	let accumulated = 0; // seconds
+	let distAccum = 0; // metres
+
+	if (direction === 'SOBO') {
+		for (let i = safeFromIndex; i < elevationPoints.length - 1; i++) {
+			const distSeg = elevationPoints[i + 1].distanceFromStart - elevationPoints[i].distanceFromStart;
+			if (distSeg <= 0) continue;
+			const dz = elevationPoints[i + 1].elevation - elevationPoints[i].elevation;
+			const segSec = gradeAdjusted ? gradeSegmentSeconds(distSeg, dz, speedMps) : distSeg / speedMps;
+			if (accumulated + segSec >= deltaSec) {
+				const fraction = (deltaSec - accumulated) / segSec;
+				const a = elevationPoints[i];
+				const b = elevationPoints[i + 1];
+				return {
+					index: i + 1,
+					distanceM: distAccum + distSeg * fraction,
+					elevationM: a.elevation + dz * fraction,
+					lat: a.lat !== undefined && b.lat !== undefined ? a.lat + (b.lat - a.lat) * fraction : undefined,
+					lng: a.lng !== undefined && b.lng !== undefined ? a.lng + (b.lng - a.lng) * fraction : undefined,
+				};
+			}
+			accumulated += segSec;
+			distAccum += distSeg;
+		}
+		// Pinned to trail end - distanceM is distance walked from fromIndex (not from trail start)
+		const last = elevationPoints.length - 1;
+		return {
+			index: last,
+			distanceM: distAccum,
+			elevationM: elevationPoints[last].elevation,
+			lat: elevationPoints[last].lat,
+			lng: elevationPoints[last].lng,
+		};
+	} else {
+		for (let i = safeFromIndex; i > 0; i--) {
+			const distSeg = elevationPoints[i].distanceFromStart - elevationPoints[i - 1].distanceFromStart;
+			if (distSeg <= 0) continue;
+			const dz = elevationPoints[i - 1].elevation - elevationPoints[i].elevation;
+			const segSec = gradeAdjusted ? gradeSegmentSeconds(distSeg, dz, speedMps) : distSeg / speedMps;
+			if (accumulated + segSec >= deltaSec) {
+				const fraction = (deltaSec - accumulated) / segSec;
+				const a = elevationPoints[i];
+				const b = elevationPoints[i - 1];
+				return {
+					index: i - 1,
+					distanceM: distAccum + distSeg * fraction,
+					elevationM: a.elevation + dz * fraction,
+					lat: a.lat !== undefined && b.lat !== undefined ? a.lat + (b.lat - a.lat) * fraction : undefined,
+					lng: a.lng !== undefined && b.lng !== undefined ? a.lng + (b.lng - a.lng) * fraction : undefined,
+				};
+			}
+			accumulated += segSec;
+			distAccum += distSeg;
+		}
+		// Pinned to trail start - distanceM is distance walked from fromIndex
+		return {
+			index: 0,
+			distanceM: distAccum,
+			elevationM: elevationPoints[0].elevation,
+			lat: elevationPoints[0].lat,
+			lng: elevationPoints[0].lng,
+		};
+	}
+}
+
 /**
  * Formats a duration in seconds as a human-readable ETA string.
  * Hours are omitted when < 1h. Always shows minutes.
@@ -209,7 +310,7 @@ export function computeElevationRemaining(
 	elevationPoints: { elevation: number }[],
 	fromIndex: number,
 	direction: TrailDirection,
-	rulerRange: { distanceFromStartA: number; distanceFromStartB: number } | null,
+	rulerRange: RulerRange | null,
 	enhancedPoints: { distanceFromStart: number }[],
 ): ElevationRemaining {
 	if (elevationPoints.length === 0) {

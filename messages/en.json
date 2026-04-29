@@ -44,7 +44,8 @@
 			"printExport": "Print and export - save the current map view as a PDF or PNG image",
 			"weather": "Current weather at your trail location - temperature, wind, precipitation probability, sunrise/sunset (DHMZ + Open-Meteo)",
 			"trailNotices": "Regional trail condition notices - dismissible banners with alerts for current conditions on the trail",
-			"radar": "Precipitation radar overlay - animated RainViewer radar with past and nowcast frames, play/pause controls, and colour legend"
+			"radar": "Precipitation radar overlay - animated RainViewer radar with past and nowcast frames, play/pause controls, and colour legend",
+			"sunsetPosition": "Sunset/sunrise position - projects where you will be on the trail at sunset and sunrise based on your current pace; toggleable markers on the polyline"
 		},
 		"dataAttribution": "Data & attribution",
 		"dataAttributionDesc": "Trail data is provided by the Udruga Long Distance Trail Hrvatska (LDTH) organization. Map tiles come from OpenStreetMap, OpenTopoMap, CyclOSM, and other providers. Croatian topographic maps are from the State Geodetic Administration (DGU). Weather data comes from DHMZ (Croatian Met Service) and Open-Meteo. Radar tiles are provided by RainViewer.",
@@ -87,6 +88,12 @@
 		"walkingPaceReset": "Reset walking pace to default",
 		"gradeAdjustedEtaLabel": "Grade-adjusted ETA",
 		"gradeAdjustedEtaHint": "Slows pace on climbs and steep descents.",
+		"sunsetProjectionLabel": "Sunset/sunrise position",
+		"sunsetProjectionHint": "Shows where you will be on the trail at sunset and sunrise.",
+		"sunsetTooltipTitle": "Sunset",
+		"sunriseTooltipTitle": "Sunrise",
+		"sunsetProjectionReachedEnd": "Destination reached before sunset",
+		"elevationUnitASL": "a.s.l.",
 		"directionTooltip": "Currently {direction}, click to switch",
 		"directionSouthbound": "Southbound (N→S)",
 		"directionNorthbound": "Northbound (S→N)",
