@@ -31,7 +31,7 @@ export default function Map({
 }: MapProps): React.ReactElement {
 	// Use share URL params for the initial view so the map opens at the correct position (no location permission needed)
 	const initialView = useMemo((): { center: LatLngTuple; zoom: number } => {
-		if (typeof window === 'undefined') return { center: mapDefaults.center as LatLngTuple, zoom: mapDefaults.zoom };
+		if (typeof window === 'undefined') return { center: mapDefaults.center, zoom: mapDefaults.zoom };
 		const params = parseShareUrlParams();
 		const hasViewParams =
 			params?.lat !== null && params?.lat !== undefined && params?.lng !== null && params?.lng !== undefined;
@@ -44,9 +44,9 @@ export default function Map({
 		}
 		// For progress params, use zoom from URL if present (avoids jarring fitBounds before ShareUrlHandler flies)
 		if (hasProgressParams && params) {
-			return { center: mapDefaults.center as LatLngTuple, zoom: params.zoom ?? mapDefaults.zoom };
+			return { center: mapDefaults.center, zoom: params.zoom ?? mapDefaults.zoom };
 		}
-		return { center: mapDefaults.center as LatLngTuple, zoom: mapDefaults.zoom };
+		return { center: mapDefaults.center, zoom: mapDefaults.zoom };
 	}, []);
 
 	// Get initial base map provider from defaultBaseMap prop
