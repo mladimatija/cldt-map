@@ -46,7 +46,7 @@
 			"trailNotices": "Regional trail condition notices - dismissible banners with alerts for current conditions on the trail",
 			"radar": "Precipitation radar overlay - animated RainViewer radar with past and nowcast frames, play/pause controls, and colour legend",
 			"sunsetPosition": "Sunset/sunrise position - projects where you will be on the trail at sunset and sunrise based on your current pace; toggleable markers on the polyline",
-			"stagePlanner": "Multi-day stage planner - split any trail range into daily stages by distance or time, view per-stage elevation and ETA stats, export individual stages as GPX files"
+			"stagePlanner": "Multi-day stage planner - split any trail range into daily stages by distance or time, view per-stage elevation and ETA stats, export individual stages as GPX files, or export all stages as a strip-map PDF"
 		},
 		"dataAttribution": "Data & attribution",
 		"dataAttributionDesc": "Trail data is provided by the Udruga Long Distance Trail Hrvatska (LDTH) organization. Map tiles come from OpenStreetMap, OpenTopoMap, CyclOSM, and other providers. Croatian topographic maps are from the State Geodetic Administration (DGU). Weather data comes from DHMZ (Croatian Met Service) and Open-Meteo. Radar tiles are provided by RainViewer.",
@@ -433,6 +433,10 @@
 		"confirmReset": "Are you sure?",
 		"confirmYes": "Yes",
 		"confirmNo": "No",
-		"eta": "ETA"
+		"eta": "ETA",
+		"stripMapPdf": "Strip-map PDF",
+		"stripMapPdfProgress": "{current} / {total}",
+		"stripMapPdfCancel": "Cancel",
+		"pdfStageLabel": "Stage"
 	}
 }
