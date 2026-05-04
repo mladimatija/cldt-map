@@ -12,6 +12,24 @@ Interactive web map for the **Croatian Long Distance Trail (CLDT)** - a 2,200+ k
 
 ---
 
+## Table of Contents
+
+- [User Features](#user-features)
+- [Tech Stack](#tech-stack)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Install](#install)
+  - [Environment](#environment)
+  - [Run](#run)
+- [Deploy to Netlify](#deploy-to-netlify)
+- [Scripts](#scripts)
+- [Project Structure](#project-structure)
+- [Known Bugs](#known-bugs)
+- [License](#license)
+- [Acknowledgments](#acknowledgments)
+
+---
+
 ## User Features
 
 - **Interactive trail route** - Click the route or the elevation chart to see distance and elevation at any point
