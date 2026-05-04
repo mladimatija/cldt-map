@@ -123,6 +123,8 @@
 		"colorContrast": "Contrast",
 		"colorSaturation": "Saturation",
 		"colorReset": "Reset",
+		"stagePlannerShow": "Open stage planner",
+		"stagePlannerHide": "Close stage planner",
 		"preferencesShow": "Show preferences",
 		"preferencesHide": "Hide preferences",
 		"shareMap": "Share map",
@@ -415,5 +417,21 @@
 		"elevLoss": "Remaining loss",
 		"elevGainSection": "Remaining gain (§)",
 		"elevLossSection": "Remaining loss (§)"
+	},
+	"stagePlanner": {
+		"title": "Stage Planner",
+		"startKm": "Start km",
+		"endKm": "End km",
+		"modeKmPerDay": "km/day",
+		"modeStages": "Stages",
+		"balanceByEta": "Balance by ETA",
+		"generatePlan": "Generate plan",
+		"noStages": "No plan generated. Enter a range and generate.",
+		"gpxExport": "GPX (active stage)",
+		"reset": "Reset plan",
+		"confirmReset": "Are you sure?",
+		"confirmYes": "Yes",
+		"confirmNo": "No",
+		"eta": "ETA"
 	}
 }
