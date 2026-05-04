@@ -171,5 +171,8 @@ export function createMapStoreStub(): MapStoreState {
 		setGradeAdjustedEta: noop,
 		sunsetProjection: false,
 		setSunsetProjection: noop,
+		stagePlan: null,
+		setStagePlan: noop,
+		clearStagePlan: noop,
 	};
 }

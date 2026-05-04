@@ -43,12 +43,12 @@ const KM_TO_MILES = 1.60934;
 
 // --- Grade-adjusted ETA model constants ---
 // Naismith's rule: 1 hour of extra time per 600 m of ascent → 6 s/m
-const NAISMITH_SEC_PER_M_CLIMB = 6;
+export const NAISMITH_SEC_PER_M_CLIMB = 6;
 // Tobler's hiking function peak-efficiency slope offset
-const TOBLER_OPTIMAL_SLOPE = 0.05;
+export const TOBLER_OPTIMAL_SLOPE = 0.05;
 // Normalization factor so that a flat (0%) grade produces a Tobler factor of exactly 1.0,
 // preserving the user's configured pace as the flat-terrain baseline.
-const TOBLER_NORM = Math.exp(-3.5 * TOBLER_OPTIMAL_SLOPE);
+export const TOBLER_NORM = Math.exp(-3.5 * TOBLER_OPTIMAL_SLOPE);
 
 /**
  * Per-segment time in seconds combining Tobler's hiking-function and Naismith's rule.
@@ -59,7 +59,7 @@ const TOBLER_NORM = Math.exp(-3.5 * TOBLER_OPTIMAL_SLOPE);
  * On sustained ascents this produces a more conservative (realistic) ETA than
  * either model alone; on descents only Tobler applies.
  */
-function gradeSegmentSeconds(distSeg: number, dz: number, speedMps: number): number {
+export function gradeSegmentSeconds(distSeg: number, dz: number, speedMps: number): number {
 	const slope = dz / distSeg; // distSeg is always > 0 at call sites (guarded before calling)
 	const toblerFactor = Math.exp(-3.5 * Math.abs(slope + TOBLER_OPTIMAL_SLOPE)) / TOBLER_NORM;
 	const effectiveSpeedMps = speedMps * toblerFactor;
