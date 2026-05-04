@@ -433,6 +433,9 @@
 		"confirmReset": "Are you sure?",
 		"confirmYes": "Yes",
 		"confirmNo": "No",
-		"eta": "ETA"
+		"eta": "ETA",
+		"stripMapPdf": "Strip-map PDF",
+		"stripMapPdfProgress": "{current} / {total}",
+		"pdfStageLabel": "Stage"
 	}
 }
