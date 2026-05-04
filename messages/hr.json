@@ -13,7 +13,7 @@
 		"description": "Interaktivna karta Croatian Long Distance Traila (CLDT)",
 		"githubLabel": "{title} na GitHubu",
 		"language": "Jezik",
-		"en": "English",
+		"en": "Engleski",
 		"hr": "Hrvatski",
 		"switchToEn": "Prebaci na engleski",
 		"switchToHr": "Prebaci na hrvatski",
@@ -46,7 +46,7 @@
 			"trailNotices": "Regionalne obavijesti o stanju na stazi - odbacive obavijesti s upozorenjima za trenutne uvjete na stazi",
 			"radar": "Preklopni sloj radara padalina - animirani RainViewer radar s prošlim i prognoziranim kadrovima, kontrole reproduciranja i legenda boja",
 			"sunsetPosition": "Pozicija zalaska/izlaska sunca - prikazuje gdje ćete biti na stazi u trenutku zalaska i izlaska sunca prema trenutnom tempu; markeri na poliliniji",
-			"stagePlanner": "Planer višednevnih etapa - podijelite bilo koji dio staze na dnevne etape prema udaljenosti ili vremenu, pregledajte statistike nadmorske visine i ETA po etapi, izvezite pojedine etape kao GPX datoteke"
+			"stagePlanner": "Planer višednevnih etapa - podijelite bilo koji dio staze na dnevne etape prema udaljenosti ili vremenu, pregledajte statistike nadmorske visine i ETA po etapi, izvezite pojedine etape kao GPX datoteke ili sve etape kao PDF karte etapa"
 		},
 		"dataAttribution": "Podaci i atribucija",
 		"dataAttributionDesc": "Podatke o stazi pruža organizacija Udruga Long Distance Trail Hrvatska (LDTH). Karte dolaze od OpenStreetMap, OpenTopoMap, CyclOSM i drugih pružatelja. Hrvatske topografske karte su od Državne geodetske uprave (DGU). Meteorološki podaci dolaze od DHMZ-a (Državni hidrometeorološki zavod) i Open-Meteo. Radarske pločice osigurava RainViewer.",
@@ -434,6 +434,10 @@
 		"confirmReset": "Jeste li sigurni?",
 		"confirmYes": "Da",
 		"confirmNo": "Ne",
-		"eta": "ETA"
+		"eta": "ETA",
+		"stripMapPdf": "PDF karte etapa",
+		"stripMapPdfProgress": "{current} / {total}",
+		"stripMapPdfCancel": "Odustani",
+		"pdfStageLabel": "Etapa"
 	}
 }
