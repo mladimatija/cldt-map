@@ -30,6 +30,7 @@ Interactive web map for the **Croatian Long Distance Trail (CLDT)** - a 2,200+ k
 - **Trail sections** - Optional color-coded sections (A/B/C) with boundary markers and stats (persisted)
 - **Walking pace** - Configurable hiking pace for all ETA estimates; optional grade-adjusted mode applies Naismith + Tobler per-segment integration for more accurate ETAs on climbs and descents
 - **Sunset/sunrise markers** - Projects where you will be on the trail at sunset and sunrise based on your current pace and direction; toggleable amber/yellow disc markers on the polyline
+- **Multi-day stage planner** - Split any trail range into daily stages by distance (km or miles per day) or fixed stage count; optional ETA-balanced splitting distributes stages by walking time rather than distance; per-stage stats (distance, elevation gain/loss, ETA); active stage highlighted on the map; GPX export per stage
 - **Dark mode & battery saver** - UI preferences and reduced location updates
 - **4 languages** - English (en), Croatian (hr), German (de), Italian (it)
 - **Offline maps** - Pre-cache the full trail corridor for offline use; per-provider caching, staleness detection, auto-sync on reconnect, and storage quota handling
@@ -174,6 +175,12 @@ src/
 ├── types/            # TypeScript definitions
 └── messages/         # en.json, hr.json, de.json, it.json translations
 ```
+
+---
+
+## Known Bugs
+
+- **Stage planner GPX export ignores trail direction**: Exported GPX segments always contain track points in SOBO order regardless of the currently active trail direction. NOBO users will need to reverse the track in their GPS app or software.
 
 ---
 
