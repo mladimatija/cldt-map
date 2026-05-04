@@ -2,6 +2,7 @@
 
 import localforage from 'localforage';
 import { NetworkError } from '@/lib/utils';
+import { parseGpx } from './gpx-parser';
 
 // Configure localforage
 localforage.config({
@@ -185,18 +186,7 @@ export async function fetchAndParseTrailPoints(): Promise<{ lat: number; lng: nu
 	if (result.status === 'error' || !result.data) {
 		return [];
 	}
-	// Parse GPX XML and read <trkpt lat="..." lon="..."> elements.
-	const parser = new DOMParser();
-	const gpxDoc = parser.parseFromString(result.data, 'text/xml');
-	const trackpoints = gpxDoc.getElementsByTagName('trkpt');
-	const points: { lat: number; lng: number }[] = [];
-	for (let i = 0; i < trackpoints.length; i++) {
-		const point = trackpoints[i];
-		const lat = parseFloat(point.getAttribute('lat') || '0');
-		const lng = parseFloat(point.getAttribute('lon') || '0');
-		if (lat && lng) {
-			points.push({ lat, lng });
-		}
-	}
-	return points;
+	const parsed = parseGpx(result.data);
+	const firstTrack = parsed.tracks[0];
+	return firstTrack ? firstTrack.points.map(({ lat, lng }) => ({ lat, lng })) : [];
 }
