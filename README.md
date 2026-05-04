@@ -181,14 +181,24 @@ src/
 │   └── providers/    # ClientIntlProvider
 ├── hooks/            # useMapService, useBlockMapPropagation, useSiteMetadata
 ├── lib/
-│   ├── store/        # Zustand slices, map-store, stub, types
-│   ├── services/     # LocationService, MapService, base-map-provider
-│   ├── config.ts     # App defaults (env overrides)
-│   ├── gpx-cache.ts  # GPX fetch + localforage cache
-│   ├── gpx-export.ts # GPX XML builder and segment extractor for file downloads
-│   ├── export-utils.ts # Print/PNG export helpers: CORS provider detection, ruler bounds fitting
-│   ├── tile-cache.ts # Tile pre-caching, corridor generation, metadata, storage utils
-│   └── utils.ts      # Formatting, URL parsing, boundary check, etc.
+│   ├── store/            # Zustand slices, map-store, stub, types
+│   ├── services/         # LocationService, MapService, base-map-provider
+│   ├── config.ts         # App defaults (env overrides)
+│   ├── distance-utils.ts # ETA, grade-adjusted pace, nearest-point search, ruler formatting
+│   ├── export-utils.ts   # PNG/PDF export: CORS detection, bounds fitting, strip-map PDF generation
+│   ├── gpx-cache.ts      # GPX fetch + localforage cache
+│   ├── gpx-export.ts     # GPX XML builder and segment extractor for file downloads
+│   ├── map-events.ts     # Custom DOM event helpers (ruler-from-chart bridge)
+│   ├── map.ts            # Trail metadata calculation (distance, elevation)
+│   ├── metadata.ts       # Site metadata and Open Graph config
+│   ├── notices.ts        # Trail condition notice loader and types
+│   ├── ruler-from-chart.ts # Custom event types for chart→ruler integration
+│   ├── stage-planner.ts  # Stage splitting (by distance / ETA) and per-stage stats
+│   ├── tile-cache.ts     # Tile pre-caching, corridor generation, metadata, storage utils
+│   ├── trail-sections.ts # Trail section colour and label definitions
+│   ├── types.ts          # Shared TypeScript types (UnitSystem, etc.)
+│   ├── utils.ts          # Formatting, URL parsing, boundary check, unit conversion
+│   └── weather.ts        # Weather fetch, icon mapping, unit converters
 ├── i18n/             # next-intl routing and request config
 ├── types/            # TypeScript definitions
 └── messages/         # en.json, hr.json, de.json, it.json translations
