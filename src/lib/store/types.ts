@@ -266,4 +266,15 @@ export interface MapStoreState {
 
 	sunsetProjection: boolean;
 	setSunsetProjection: (enabled: boolean) => void;
+
+	stagePlan: StagePlan | null;
+	setStagePlan: (plan: StagePlan) => void;
+	clearStagePlan: () => void;
+}
+
+export interface StagePlan {
+	startKm: number;
+	endKm: number;
+	stages: { startKm: number; endKm: number }[];
+	balanceMode: 'distance' | 'eta';
 }
