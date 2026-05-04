@@ -45,7 +45,8 @@
 			"weather": "Current weather at your trail location - temperature, wind, precipitation probability, sunrise/sunset (DHMZ + Open-Meteo)",
 			"trailNotices": "Regional trail condition notices - dismissible banners with alerts for current conditions on the trail",
 			"radar": "Precipitation radar overlay - animated RainViewer radar with past and nowcast frames, play/pause controls, and colour legend",
-			"sunsetPosition": "Sunset/sunrise position - projects where you will be on the trail at sunset and sunrise based on your current pace; toggleable markers on the polyline"
+			"sunsetPosition": "Sunset/sunrise position - projects where you will be on the trail at sunset and sunrise based on your current pace; toggleable markers on the polyline",
+			"stagePlanner": "Multi-day stage planner - split any trail range into daily stages by distance or time, view per-stage elevation and ETA stats, export individual stages as GPX files"
 		},
 		"dataAttribution": "Data & attribution",
 		"dataAttributionDesc": "Trail data is provided by the Udruga Long Distance Trail Hrvatska (LDTH) organization. Map tiles come from OpenStreetMap, OpenTopoMap, CyclOSM, and other providers. Croatian topographic maps are from the State Geodetic Administration (DGU). Weather data comes from DHMZ (Croatian Met Service) and Open-Meteo. Radar tiles are provided by RainViewer.",
@@ -123,6 +124,8 @@
 		"colorContrast": "Contrast",
 		"colorSaturation": "Saturation",
 		"colorReset": "Reset",
+		"stagePlannerShow": "Open stage planner",
+		"stagePlannerHide": "Close stage planner",
 		"preferencesShow": "Show preferences",
 		"preferencesHide": "Hide preferences",
 		"shareMap": "Share map",
@@ -415,5 +418,21 @@
 		"elevLoss": "Remaining loss",
 		"elevGainSection": "Remaining gain (§)",
 		"elevLossSection": "Remaining loss (§)"
+	},
+	"stagePlanner": {
+		"title": "Stage Planner",
+		"startKm": "Start km",
+		"endKm": "End km",
+		"modeKmPerDay": "km/day",
+		"modeStages": "Stages",
+		"balanceByEta": "Balance by ETA",
+		"generatePlan": "Generate plan",
+		"noStages": "No plan generated. Enter a range and generate.",
+		"gpxExport": "GPX (active stage)",
+		"reset": "Reset plan",
+		"confirmReset": "Are you sure?",
+		"confirmYes": "Yes",
+		"confirmNo": "No",
+		"eta": "ETA"
 	}
 }
