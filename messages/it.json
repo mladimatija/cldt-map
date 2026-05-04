@@ -123,6 +123,8 @@
 		"colorContrast": "Contrasto",
 		"colorSaturation": "Saturazione",
 		"colorReset": "Ripristina",
+		"stagePlannerShow": "Apri pianificatore tappe",
+		"stagePlannerHide": "Chiudi pianificatore tappe",
 		"preferencesShow": "Mostra preferenze",
 		"preferencesHide": "Nascondi preferenze",
 		"shareMap": "Condividi mappa",
@@ -415,5 +417,21 @@
 		"elevLoss": "Discesa rimanente",
 		"elevGainSection": "Salita rimanente (§)",
 		"elevLossSection": "Discesa rimanente (§)"
+	},
+	"stagePlanner": {
+		"title": "Pianificatore tappe",
+		"startKm": "Km iniziale",
+		"endKm": "Km finale",
+		"modeKmPerDay": "km/giorno",
+		"modeStages": "Tappe",
+		"balanceByEta": "Bilancia per ETA",
+		"generatePlan": "Genera piano",
+		"noStages": "Nessun piano generato. Inserisci un intervallo e genera.",
+		"gpxExport": "GPX (tappa attiva)",
+		"reset": "Azzera piano",
+		"confirmReset": "Sei sicuro?",
+		"confirmYes": "Sì",
+		"confirmNo": "No",
+		"eta": "ETA"
 	}
 }

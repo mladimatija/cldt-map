@@ -44,6 +44,7 @@ const NoticeMarkers = dynamic(
 	{ ssr: false },
 );
 const SunsetSunriseMarkers = dynamic(() => import('@/components/map/SunsetSunriseMarkers'), { ssr: false });
+const StageBoundaryMarkers = dynamic(() => import('@/components/map/StageBoundaryMarkers'), { ssr: false });
 const RadarOverlay = dynamic(() => import('@/components/map/RadarOverlay').then((m) => ({ default: m.RadarOverlay })), {
 	ssr: false,
 });
@@ -149,6 +150,7 @@ export default function MapContent(): React.ReactElement {
 			</Suspense>
 			<MapMarkers />
 			<SunsetSunriseMarkers />
+			<StageBoundaryMarkers />
 			<NoticeMarkers />
 			<MapControls />
 			<RulerHint />

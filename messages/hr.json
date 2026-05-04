@@ -124,6 +124,8 @@
 		"colorContrast": "Kontrast",
 		"colorSaturation": "Zasićenost",
 		"colorReset": "Vrati",
+		"stagePlannerShow": "Otvori planer etapa",
+		"stagePlannerHide": "Zatvori planer etapa",
 		"preferencesShow": "Prikaži postavke",
 		"preferencesHide": "Sakrij postavke",
 		"shareMap": "Dijeli kartu",
@@ -416,5 +418,21 @@
 		"elevLoss": "Preostali spust",
 		"elevGainSection": "Preostali uspon (§)",
 		"elevLossSection": "Preostali spust (§)"
+	},
+	"stagePlanner": {
+		"title": "Planer etapa",
+		"startKm": "Početni km",
+		"endKm": "Završni km",
+		"modeKmPerDay": "km/dan",
+		"modeStages": "Etape",
+		"balanceByEta": "Uravnoteženo po ETA",
+		"generatePlan": "Generiraj plan",
+		"noStages": "Nema plana. Unesite raspon i generirajte.",
+		"gpxExport": "GPX (aktivna etapa)",
+		"reset": "Resetiraj plan",
+		"confirmReset": "Jeste li sigurni?",
+		"confirmYes": "Da",
+		"confirmNo": "Ne",
+		"eta": "ETA"
 	}
 }

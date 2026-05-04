@@ -123,6 +123,8 @@
 		"colorContrast": "Kontrast",
 		"colorSaturation": "Sättigung",
 		"colorReset": "Zurücksetzen",
+		"stagePlannerShow": "Etappenplaner öffnen",
+		"stagePlannerHide": "Etappenplaner schließen",
 		"preferencesShow": "Einstellungen anzeigen",
 		"preferencesHide": "Einstellungen ausblenden",
 		"shareMap": "Karte teilen",
@@ -415,5 +417,21 @@
 		"elevLoss": "Verbleibender Abstieg",
 		"elevGainSection": "Verbleibender Anstieg (§)",
 		"elevLossSection": "Verbleibender Abstieg (§)"
+	},
+	"stagePlanner": {
+		"title": "Etappenplaner",
+		"startKm": "Start km",
+		"endKm": "End km",
+		"modeKmPerDay": "km/Tag",
+		"modeStages": "Etappen",
+		"balanceByEta": "Nach ETA ausgleichen",
+		"generatePlan": "Plan erstellen",
+		"noStages": "Kein Plan erstellt. Bereich eingeben und generieren.",
+		"gpxExport": "GPX (aktive Etappe)",
+		"reset": "Plan zurücksetzen",
+		"confirmReset": "Sind Sie sicher?",
+		"confirmYes": "Ja",
+		"confirmNo": "Nein",
+		"eta": "ETA"
 	}
 }

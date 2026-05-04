@@ -34,6 +34,7 @@ import type * as GeoJSON from 'geojson';
 import {
 	IoArrowDownOutline,
 	IoArrowUpOutline,
+	IoCalendarOutline,
 	IoCreateOutline,
 	IoGridOutline,
 	IoMapOutline,
@@ -51,6 +52,7 @@ import { MapControlsSettingsPanel } from './MapControlsSettingsPanel';
 import { MapControlsColorAdjust } from './MapControlsColorAdjust';
 import { MapControlsTestLink } from './MapControlsTestLink';
 import { MapControlsExportPanel } from './MapControlsExportPanel';
+import { MapControlsStagePlannerPanel } from './MapControlsStagePlannerPanel';
 import { fitMapToRulerBounds } from '@/lib/export-utils';
 import { RULER_SET_FROM_CHART_EVENT, type RulerSetFromChartDetail } from '@/lib/ruler-from-chart';
 
@@ -187,6 +189,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 	const [isShowingBoundary, setIsShowingBoundary] = useState(false);
 	const [isSharing, setIsSharing] = useState(false);
 	const [isExporting, setIsExporting] = useState(false);
+	const [isStagePlannerExpanded, setIsStagePlannerExpanded] = useState(false);
 	const [showTilesBoundary, setShowTilesBoundary] = useState(false);
 	const [tileBoundaryReinitKey, setTileBoundaryReinitKey] = useState(0);
 	const [isColorAdjustEnabled, setIsColorAdjustEnabled] = useState(false);
@@ -200,6 +203,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 	const topRightControlsRef = useRef<HTMLDivElement>(null);
 	const sharePopupRef = useRef<HTMLDivElement>(null);
 	const exportPanelRef = useRef<HTMLDivElement>(null);
+	const stagePlannerRef = useRef<HTMLDivElement>(null);
 
 	useBlockMapPropagation(testLinkRef);
 	useBlockMapPropagation(topRightControlsRef);
@@ -207,6 +211,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 	useBlockMapPropagation(settingsContainerRef);
 	useBlockMapPropagation(colorAdjustContainerRef);
 	useBlockMapPropagation(exportPanelRef);
+	useBlockMapPropagation(stagePlannerRef);
 
 	const setDarkMode = useMapStore((state: MapStoreState) => state.setDarkMode);
 	const setBatterySaverMode = useMapStore((state: MapStoreState) => state.setBatterySaverMode);
@@ -286,6 +291,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 		setIsColorAdjustEnabled(false);
 		setIsSettingsExpanded(false);
 		setIsExporting(false);
+		setIsStagePlannerExpanded(false);
 	}, []);
 
 	// Close precision slider when clicking outside
@@ -340,6 +346,17 @@ const MapControls: React.FC<MapControlsProps> = ({
 		document.addEventListener('mousedown', handleClickOutside);
 		return () => document.removeEventListener('mousedown', handleClickOutside);
 	}, [isExporting]);
+
+	useEffect(() => {
+		if (!isStagePlannerExpanded) return;
+		const handleClickOutside = (e: MouseEvent): void => {
+			if (stagePlannerRef.current && !stagePlannerRef.current.contains(e.target as Node)) {
+				setIsStagePlannerExpanded(false);
+			}
+		};
+		document.addEventListener('mousedown', handleClickOutside);
+		return () => document.removeEventListener('mousedown', handleClickOutside);
+	}, [isStagePlannerExpanded]);
 
 	useEffect(() => {
 		const handleKeyDown = (e: KeyboardEvent): void => {
@@ -1413,6 +1430,21 @@ const MapControls: React.FC<MapControlsProps> = ({
 							onPrint={handlePrint}
 						/>
 					)}
+				</div>
+
+				<div className="relative inline-block w-10 shrink-0" ref={stagePlannerRef}>
+					<MapControlsButton
+						active={isStagePlannerExpanded}
+						ariaLabel={isStagePlannerExpanded ? t('stagePlannerHide') : t('stagePlannerShow')}
+						content={isStagePlannerExpanded ? t('stagePlannerHide') : t('stagePlannerShow')}
+						onClick={() => {
+							closeOverlayTools();
+							setIsStagePlannerExpanded((prev) => !prev);
+						}}
+					>
+						<IoCalendarOutline aria-hidden className="h-5 w-5" />
+					</MapControlsButton>
+					{isStagePlannerExpanded && <MapControlsStagePlannerPanel />}
 				</div>
 
 				<div className="relative inline-block w-10 shrink-0">
