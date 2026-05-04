@@ -434,6 +434,9 @@
 		"confirmReset": "Jeste li sigurni?",
 		"confirmYes": "Da",
 		"confirmNo": "Ne",
-		"eta": "ETA"
+		"eta": "ETA",
+		"stripMapPdf": "Strip-karta PDF",
+		"stripMapPdfProgress": "{current} / {total}",
+		"pdfStageLabel": "Etapa"
 	}
 }

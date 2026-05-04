@@ -12,6 +12,7 @@ import { usePopoverFocusTrap } from '@/hooks';
 import { splitByDistance, splitByEta, computeStageStats } from '@/lib/stage-planner';
 import { findNearestPointIndex, formatEta } from '@/lib/distance-utils';
 import { buildGpxXml, downloadGpxFile } from '@/lib/gpx-export';
+import { exportStripMapPdf, pointsToBounds } from '@/lib/export-utils';
 
 const MAX_STAGES = 200;
 
@@ -43,6 +44,8 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 	const [balanceByEta, setBalanceByEta] = useState(false);
 	const [activeStageIndex, setActiveStageIndex] = useState<number | null>(null);
 	const [confirmReset, setConfirmReset] = useState(false);
+	const [isPdfExporting, setIsPdfExporting] = useState(false);
+	const [pdfProgress, setPdfProgress] = useState<{ current: number; total: number } | null>(null);
 
 	const toDisplay = (km: number): number => (isImperial ? Math.round(kmToMiles(km) * 10) / 10 : km);
 	const fromDisplay = (display: number): number => (isImperial ? milesToKm(display) : display);
@@ -81,25 +84,11 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 		const endM = stage.endKm * 1000;
 		const startIdx = findNearestPointIndex(enhancedTrailPoints, startM);
 		const endIdx = findNearestPointIndex(enhancedTrailPoints, endM);
-		const pts = enhancedTrailPoints.slice(startIdx, endIdx + 1);
+		const lo = Math.min(startIdx, endIdx);
+		const hi = Math.max(startIdx, endIdx);
+		const pts = enhancedTrailPoints.slice(lo, hi + 1);
 		if (pts.length < 2) return;
-		let minLat = pts[0].lat,
-			maxLat = pts[0].lat,
-			minLng = pts[0].lng,
-			maxLng = pts[0].lng;
-		for (const p of pts) {
-			if (p.lat < minLat) minLat = p.lat;
-			if (p.lat > maxLat) maxLat = p.lat;
-			if (p.lng < minLng) minLng = p.lng;
-			if (p.lng > maxLng) maxLng = p.lng;
-		}
-		map.fitBounds(
-			[
-				[minLat, minLng],
-				[maxLat, maxLng],
-			],
-			{ padding: [50, 50] },
-		);
+		map.fitBounds(pointsToBounds(pts), { padding: [50, 50] });
 	};
 
 	const handleGpxExport = (): void => {
@@ -114,6 +103,32 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 			`CLDT Stage ${activeStageIndex + 1}`,
 		);
 		downloadGpxFile(gpx, `cldt-stage-${activeStageIndex + 1}.gpx`);
+	};
+
+	const handleStripMapPdfExport = async (): Promise<void> => {
+		if (!stagePlan || !enhancedTrailPoints?.length) return;
+		setIsPdfExporting(true);
+		setPdfProgress(null);
+		try {
+			const leafletEl = document.querySelector<HTMLElement>('.leaflet-container') ?? undefined;
+			await exportStripMapPdf(
+				stagePlan,
+				enhancedTrailPoints,
+				enhancedTrailPoints,
+				walkingPaceKmh,
+				gradeAdjustedEta,
+				units,
+				map,
+				(current, total) => setPdfProgress({ current, total }),
+				t('pdfStageLabel'),
+				leafletEl,
+			);
+		} catch (err) {
+			console.error('Strip-map PDF export failed:', err instanceof Error ? err.message : String(err));
+		} finally {
+			setIsPdfExporting(false);
+			setPdfProgress(null);
+		}
 	};
 
 	const handleConfirmReset = (): void => {
@@ -284,6 +299,11 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 					<div className="flex flex-col gap-2">
 						<Button disabled={activeStageIndex === null} variant="mapControlOutline" onClick={handleGpxExport}>
 							{t('gpxExport')}
+						</Button>
+						<Button disabled={isPdfExporting} variant="mapControlOutline" onClick={handleStripMapPdfExport}>
+							{isPdfExporting && pdfProgress
+								? t('stripMapPdfProgress', { current: pdfProgress.current, total: pdfProgress.total })
+								: t('stripMapPdf')}
 						</Button>
 						<Button variant="mapControlOutlineSecondary" onClick={() => setConfirmReset(true)}>
 							{t('reset')}
