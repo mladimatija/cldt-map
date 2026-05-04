@@ -45,7 +45,8 @@
 			"weather": "Trenutno vrijeme na vašoj lokaciji na stazi - temperatura, vjetar, vjerojatnost padalina, izlazak/zalazak sunca (DHMZ + Open-Meteo)",
 			"trailNotices": "Regionalne obavijesti o stanju na stazi - odbacive obavijesti s upozorenjima za trenutne uvjete na stazi",
 			"radar": "Preklopni sloj radara padalina - animirani RainViewer radar s prošlim i prognoziranim kadrovima, kontrole reproduciranja i legenda boja",
-			"sunsetPosition": "Pozicija zalaska/izlaska sunca - prikazuje gdje ćete biti na stazi u trenutku zalaska i izlaska sunca prema trenutnom tempu; markeri na poliliniji"
+			"sunsetPosition": "Pozicija zalaska/izlaska sunca - prikazuje gdje ćete biti na stazi u trenutku zalaska i izlaska sunca prema trenutnom tempu; markeri na poliliniji",
+			"stagePlanner": "Planer višednevnih etapa - podijelite bilo koji dio staze na dnevne etape prema udaljenosti ili vremenu, pregledajte statistike nadmorske visine i ETA po etapi, izvezite pojedine etape kao GPX datoteke"
 		},
 		"dataAttribution": "Podaci i atribucija",
 		"dataAttributionDesc": "Podatke o stazi pruža organizacija Udruga Long Distance Trail Hrvatska (LDTH). Karte dolaze od OpenStreetMap, OpenTopoMap, CyclOSM i drugih pružatelja. Hrvatske topografske karte su od Državne geodetske uprave (DGU). Meteorološki podaci dolaze od DHMZ-a (Državni hidrometeorološki zavod) i Open-Meteo. Radarske pločice osigurava RainViewer.",
@@ -124,6 +125,8 @@
 		"colorContrast": "Kontrast",
 		"colorSaturation": "Zasićenost",
 		"colorReset": "Vrati",
+		"stagePlannerShow": "Otvori planer etapa",
+		"stagePlannerHide": "Zatvori planer etapa",
 		"preferencesShow": "Prikaži postavke",
 		"preferencesHide": "Sakrij postavke",
 		"shareMap": "Dijeli kartu",
@@ -416,5 +419,21 @@
 		"elevLoss": "Preostali spust",
 		"elevGainSection": "Preostali uspon (§)",
 		"elevLossSection": "Preostali spust (§)"
+	},
+	"stagePlanner": {
+		"title": "Planer etapa",
+		"startKm": "Početni km",
+		"endKm": "Završni km",
+		"modeKmPerDay": "km/dan",
+		"modeStages": "Etape",
+		"balanceByEta": "Rasporedi po vremenu dolaska",
+		"generatePlan": "Generiraj plan",
+		"noStages": "Nema plana. Unesite raspon i generirajte.",
+		"gpxExport": "GPX (aktivna etapa)",
+		"reset": "Resetiraj plan",
+		"confirmReset": "Jeste li sigurni?",
+		"confirmYes": "Da",
+		"confirmNo": "Ne",
+		"eta": "ETA"
 	}
 }

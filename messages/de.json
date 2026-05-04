@@ -45,7 +45,8 @@
 			"weather": "Aktuelles Wetter an Ihrem Trailstandort - Temperatur, Wind, Niederschlagswahrscheinlichkeit, Sonnenaufgang/-untergang (DHMZ + Open-Meteo)",
 			"trailNotices": "Regionale Trail-Zustandsbenachrichtigungen - abbaubare Banner mit Warnungen zu aktuellen Bedingungen auf dem Trail",
 			"radar": "Niederschlagsradar-Overlay - animierter RainViewer-Radar mit vergangenen und vorhergesagten Frames, Wiedergabesteuerung und Farblegende",
-			"sunsetPosition": "Sonnenuntergang/Sonnenaufgang-Position - zeigt, wo du bei Sonnenuntergang und Sonnenaufgang auf dem Weg sein wirst; umschaltbare Markierungen auf der Strecke"
+			"sunsetPosition": "Sonnenuntergang/Sonnenaufgang-Position - zeigt, wo du bei Sonnenuntergang und Sonnenaufgang auf dem Weg sein wirst; umschaltbare Markierungen auf der Strecke",
+			"stagePlanner": "Mehrtages-Etappenplaner - teile beliebige Streckenabschnitte nach Distanz oder Zeit in Tagesetappen auf, zeige Höhen- und ETA-Statistiken je Etappe an und exportiere einzelne Etappen als GPX-Dateien"
 		},
 		"dataAttribution": "Daten & Urheberrecht",
 		"dataAttributionDesc": "Trail-Daten werden von der Udruga Long Distance Trail Hrvatska (LDTH) bereitgestellt. Kartenkacheln kommen von OpenStreetMap, OpenTopoMap, CyclOSM und anderen Anbietern. Kroatische topografische Karten stammen vom Staatlichen Geodätischen Amt (DGU). Wetterdaten kommen von DHMZ (Kroatischer Wetterdienst) und Open-Meteo. Radarkacheln werden von RainViewer bereitgestellt.",
@@ -123,6 +124,8 @@
 		"colorContrast": "Kontrast",
 		"colorSaturation": "Sättigung",
 		"colorReset": "Zurücksetzen",
+		"stagePlannerShow": "Etappenplaner öffnen",
+		"stagePlannerHide": "Etappenplaner schließen",
 		"preferencesShow": "Einstellungen anzeigen",
 		"preferencesHide": "Einstellungen ausblenden",
 		"shareMap": "Karte teilen",
@@ -415,5 +418,21 @@
 		"elevLoss": "Verbleibender Abstieg",
 		"elevGainSection": "Verbleibender Anstieg (§)",
 		"elevLossSection": "Verbleibender Abstieg (§)"
+	},
+	"stagePlanner": {
+		"title": "Etappenplaner",
+		"startKm": "Start km",
+		"endKm": "End km",
+		"modeKmPerDay": "km/Tag",
+		"modeStages": "Etappen",
+		"balanceByEta": "Nach ETA ausgleichen",
+		"generatePlan": "Plan erstellen",
+		"noStages": "Kein Plan erstellt. Bereich eingeben und generieren.",
+		"gpxExport": "GPX (aktive Etappe)",
+		"reset": "Plan zurücksetzen",
+		"confirmReset": "Sind Sie sicher?",
+		"confirmYes": "Ja",
+		"confirmNo": "Nein",
+		"eta": "ETA"
 	}
 }

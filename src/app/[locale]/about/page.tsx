@@ -50,6 +50,7 @@ export default function AboutPage(): React.ReactNode {
 						<li className="mb-2">{t('mapFeaturesList.trailNotices')}</li>
 						<li className="mb-2">{t('mapFeaturesList.radar')}</li>
 						<li className="mb-2">{t('mapFeaturesList.sunsetPosition')}</li>
+						<li className="mb-2">{t('mapFeaturesList.stagePlanner')}</li>
 					</ul>
 				</article>
 
