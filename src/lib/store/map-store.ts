@@ -4,7 +4,7 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 import { config } from '../config';
 import { getRandomLocationInBoundary, toLocationError } from '../utils';
 import { LocationService } from '../services/location-service';
-import type { MapStoreState, StoreState, TrailDirection, UnitSystem } from './types';
+import type { MapStoreState, StagePlan, StoreState, TrailDirection, UnitSystem } from './types';
 import {
 	generateTrailTileUrls,
 	precacheTiles,
@@ -413,6 +413,14 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 				setSunsetProjection: (enabled: boolean): void => {
 					set({ sunsetProjection: enabled });
 				},
+
+				stagePlan: null,
+				setStagePlan: (plan: StagePlan): void => {
+					set({ stagePlan: plan });
+				},
+				clearStagePlan: (): void => {
+					set({ stagePlan: null });
+				},
 			}),
 			{
 				name: 'cldt-map-storage',
@@ -433,6 +441,7 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					walkingPaceKmh: state.walkingPaceKmh,
 					gradeAdjustedEta: state.gradeAdjustedEta,
 					sunsetProjection: state.sunsetProjection,
+					stagePlan: state.stagePlan,
 				}),
 			},
 		),
