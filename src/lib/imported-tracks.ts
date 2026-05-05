@@ -51,7 +51,7 @@ export async function saveImportedTrack(
 
 	const track: ImportedTrack = {
 		id,
-		name: (parsed.name ?? 'Imported Track').trim().slice(0, 255).replace(/[\x00-\x1F]/g, ''),
+		name: (parsed.name ?? 'Imported Track').trim().replace(/<[^>]*>/g, '').slice(0, 255).replace(/[\x00-\x1F]/g, ''),
 		points: parsed.points,
 		importedAt: Date.now(),
 		color: TRACK_COLOR_PALETTE[existingColorCount % TRACK_COLOR_PALETTE.length],

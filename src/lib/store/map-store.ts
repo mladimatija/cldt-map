@@ -443,6 +443,11 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					const tracks = await loadImportedTracks();
 					set({ importedTracks: tracks });
 				},
+
+				hoveredImportedTrackId: null,
+				setHoveredImportedTrackId: (id: string | null): void => {
+					set({ hoveredImportedTrackId: id });
+				},
 			}),
 			{
 				name: 'cldt-map-storage',

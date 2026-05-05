@@ -52,6 +52,8 @@ const RadarControls = dynamic(
 	() => import('@/components/map/RadarControls').then((m) => ({ default: m.RadarControls })),
 	{ ssr: false },
 );
+const GpxImportDropzone = dynamic(() => import('@/components/map/GpxImportDropzone'), { ssr: false });
+const ImportedTrackLayer = dynamic(() => import('@/components/map/ImportedTrackLayer'), { ssr: false });
 
 export default function MapContent(): React.ReactElement {
 	const [isLocating, setIsLocating] = useState(false);
@@ -140,6 +142,7 @@ export default function MapContent(): React.ReactElement {
 		<>
 			<OfflineIndicator />
 			<StaleCacheNotification />
+			<GpxImportDropzone />
 			<DistanceRemainingOverlay />
 			<ShareUrlHandler />
 			<GoToDistance />
@@ -148,6 +151,7 @@ export default function MapContent(): React.ReactElement {
 			<Suspense fallback={<MapTrailLoadingFallback />}>
 				<TrailRoute pathOptions={DEFAULT_PATH_OPTIONS} />
 			</Suspense>
+			<ImportedTrackLayer />
 			<MapMarkers />
 			<SunsetSunriseMarkers />
 			<StageBoundaryMarkers />

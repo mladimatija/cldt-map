@@ -277,6 +277,9 @@ export interface MapStoreState {
 	removeImportedTrack: (id: string) => Promise<void>;
 	setImportedTracks: (tracks: ImportedTrack[]) => void;
 	loadImportedTracksFromStorage: () => Promise<void>;
+
+	hoveredImportedTrackId: string | null;
+	setHoveredImportedTrackId: (id: string | null) => void;
 }
 
 export interface StagePlan {
