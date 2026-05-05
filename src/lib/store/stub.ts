@@ -174,5 +174,10 @@ export function createMapStoreStub(): MapStoreState {
 		stagePlan: null,
 		setStagePlan: noop,
 		clearStagePlan: noop,
+		importedTracks: [],
+		addImportedTrack: noop,
+		removeImportedTrack: noopAsyncVoid,
+		setImportedTracks: noop,
+		loadImportedTracksFromStorage: noopAsyncVoid,
 	};
 }

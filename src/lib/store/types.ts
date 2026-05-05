@@ -2,6 +2,7 @@ import type { LatLng } from 'leaflet';
 import type * as GeoJSON from 'geojson';
 import type { TrailDirection, UnitSystem } from '../types';
 import type { TileCacheMeta } from '../tile-cache';
+import type { TrackPoint } from '../gpx-parser';
 import { RulerRange } from '@/lib/distance-utils';
 
 export type { TrailDirection, UnitSystem };
@@ -270,6 +271,12 @@ export interface MapStoreState {
 	stagePlan: StagePlan | null;
 	setStagePlan: (plan: StagePlan) => void;
 	clearStagePlan: () => void;
+
+	importedTracks: ImportedTrack[];
+	addImportedTrack: (track: ImportedTrack) => void;
+	removeImportedTrack: (id: string) => Promise<void>;
+	setImportedTracks: (tracks: ImportedTrack[]) => void;
+	loadImportedTracksFromStorage: () => Promise<void>;
 }
 
 export interface StagePlan {
@@ -277,4 +284,21 @@ export interface StagePlan {
 	endKm: number;
 	stages: { startKm: number; endKm: number }[];
 	balanceMode: 'distance' | 'eta';
+}
+
+export interface ImportedTrack {
+	id: string;           // FNV-1a content hash (hex string)
+	name: string;
+	points: TrackPoint[];
+	importedAt: number;   // Date.now()
+	color: string;        // from TRACK_COLOR_PALETTE cycle
+}
+
+export interface TrackStats {
+	totalDistanceM: number;
+	totalElapsedSec: number;      // 0 if no timestamps
+	totalMovingSec: number;       // 0 if no timestamps
+	avgMovingPaceSecPerKm: number; // 0 if no distance or no timestamps
+	maxDeviationM: number;
+	coveragePercent: number;
 }
