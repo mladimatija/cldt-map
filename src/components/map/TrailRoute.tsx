@@ -21,6 +21,7 @@ import {
 } from '@/components/map/trail-route-constants';
 import { TRAIL_SECTIONS } from '@/lib/trail-sections';
 import { fetchGPXWithCache } from '@/lib/gpx-cache';
+import { parseGpx } from '@/lib/gpx-parser';
 import { calculateTrailMetadata, estimatePassageDays } from '@/lib/map';
 import { clearShareUrlParams, formatDistance, formatElevation, parseShareUrlParams } from '@/lib/utils';
 import {
@@ -452,35 +453,18 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 					return;
 				}
 
-				const parser = new DOMParser();
-				const gpxDoc = parser.parseFromString(result.data, 'text/xml');
-
 				if (setRawGpxData) {
 					setRawGpxData(result.data);
 				}
 
-				const trackpoints = gpxDoc.getElementsByTagName('trkpt');
-				const points: L.LatLngExpression[] = [];
-				const elevationPoints: { lat: number; lng: number; elevation: number }[] = [];
-
-				for (let i = 0; i < trackpoints.length; i++) {
-					const point = trackpoints[i];
-					const lat = parseFloat(point.getAttribute('lat') || '0');
-					const lng = parseFloat(point.getAttribute('lon') || '0');
-
-					if (lat && lng) {
-						points.push([lat, lng] as L.LatLngTuple);
-
-						const elevNode = point.getElementsByTagName('ele')[0];
-						const elevation = elevNode ? parseFloat(elevNode.textContent || '0') : 0;
-
-						elevationPoints.push({
-							lat,
-							lng,
-							elevation,
-						});
-					}
-				}
+				const parsed = parseGpx(result.data);
+				const trackPts = parsed.tracks[0]?.points ?? [];
+				const points: L.LatLngExpression[] = trackPts.map(({ lat, lng }) => [lat, lng] as L.LatLngTuple);
+				const elevationPoints = trackPts.map(({ lat, lng, ele }) => ({
+					lat,
+					lng,
+					elevation: ele ?? 0,
+				}));
 
 				const directionAdjustedPoints = direction === 'NOBO' ? [...points].reverse() : points;
 				const directionAdjustedElevPoints = direction === 'NOBO' ? [...elevationPoints].reverse() : elevationPoints;
