@@ -277,6 +277,9 @@ export interface MapStoreState {
 	removeImportedTrack: (id: string) => Promise<void>;
 	setImportedTracks: (tracks: ImportedTrack[]) => void;
 	loadImportedTracksFromStorage: () => Promise<void>;
+
+	hoveredImportedTrackId: string | null;
+	setHoveredImportedTrackId: (id: string | null) => void;
 }
 
 export interface StagePlan {
@@ -287,17 +290,17 @@ export interface StagePlan {
 }
 
 export interface ImportedTrack {
-	id: string;           // FNV-1a content hash (hex string)
+	id: string; // FNV-1a content hash (hex string)
 	name: string;
 	points: TrackPoint[];
-	importedAt: number;   // Date.now()
-	color: string;        // from TRACK_COLOR_PALETTE cycle
+	importedAt: number; // Date.now()
+	color: string; // from TRACK_COLOR_PALETTE cycle
 }
 
 export interface TrackStats {
 	totalDistanceM: number;
-	totalElapsedSec: number;      // 0 if no timestamps
-	totalMovingSec: number;       // 0 if no timestamps
+	totalElapsedSec: number; // 0 if no timestamps
+	totalMovingSec: number; // 0 if no timestamps
 	avgMovingPaceSecPerKm: number; // 0 if no distance or no timestamps
 	maxDeviationM: number;
 	coveragePercent: number;

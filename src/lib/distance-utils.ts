@@ -288,6 +288,24 @@ export function formatPace(paceKmh: number, units: UnitSystem): string {
 	return `${paceKmh.toFixed(1)} km/h`;
 }
 
+export function formatDistanceM(meters: number, units: UnitSystem): string {
+	if (units === 'imperial') {
+		return `${(meters / 1609.344).toFixed(1)} mi`;
+	}
+	return `${(meters / 1000).toFixed(1)} km`;
+}
+
+function formatMinSec(totalSec: number, unit: string): string {
+	const min = Math.floor(totalSec / 60);
+	const sec = Math.round(totalSec % 60);
+	return `${min}:${sec.toString().padStart(2, '0')}/${unit}`;
+}
+
+export function formatPaceFromSecPerKm(secPerKm: number, units: UnitSystem): string {
+	if (secPerKm === 0) return '—';
+	return units === 'imperial' ? formatMinSec(secPerKm * 1.60934, 'mi') : formatMinSec(secPerKm, 'km');
+}
+
 export interface ElevationRemaining {
 	gainM: number;
 	lossM: number;
