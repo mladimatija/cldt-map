@@ -179,5 +179,7 @@ export function createMapStoreStub(): MapStoreState {
 		removeImportedTrack: noopAsyncVoid,
 		setImportedTracks: noop,
 		loadImportedTracksFromStorage: noopAsyncVoid,
+		hoveredImportedTrackId: null,
+		setHoveredImportedTrackId: noop,
 	};
 }
