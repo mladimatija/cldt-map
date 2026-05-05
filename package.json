@@ -34,7 +34,7 @@
 		"recharts": "^3.8.1",
 		"tailwind-merge": "^3.5.0",
 		"tailwindcss-animate": "^1.0.7",
-		"zustand": "^5.0.12"
+		"zustand": "^5.0.13"
 	},
 	"devDependencies": {
 		"@eslint/eslintrc": "^3.3.5",
