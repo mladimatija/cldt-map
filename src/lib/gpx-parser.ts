@@ -15,7 +15,11 @@ export interface ParsedGpx {
 }
 
 export function parseGpx(xml: string): ParsedGpx {
+	// Reject DOCTYPE to prevent entity-expansion DoS (Billion Laughs)
+	if (/<!DOCTYPE/i.test(xml)) throw new Error('GPX file contains unsupported DOCTYPE');
+
 	const gpxDoc = new DOMParser().parseFromString(xml, 'text/xml');
+	if (gpxDoc.querySelector('parsererror')) throw new Error('GPX file is malformed XML');
 
 	const tracks = Array.from(gpxDoc.getElementsByTagName('trk')).map((trk) => {
 		const nameEl = trk.getElementsByTagName('name')[0];

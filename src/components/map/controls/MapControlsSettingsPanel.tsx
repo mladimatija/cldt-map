@@ -19,6 +19,7 @@ import { Button } from '@/components/ui/Button';
 import { cn } from '@/lib/utils';
 import { MAP_CONTROL_POPOVER } from './map-controls-constants';
 import { MapControlsTileCachePanel } from './MapControlsTileCachePanel';
+import { MapControlsImportsPanel } from './MapControlsImportsPanel';
 
 interface MapControlsSettingsPanelProps {
 	containerRef: RefObject<HTMLDivElement | null>;
@@ -187,6 +188,8 @@ export function MapControlsSettingsPanel({
 					</label>
 
 					<MapControlsTileCachePanel />
+
+					<MapControlsImportsPanel />
 
 					<div className="mt-1 border-t border-gray-200 pt-2 dark:border-[var(--border-color)]">
 						<div className="flex items-center gap-2 text-xs font-medium text-gray-600 dark:text-[var(--text-primary)]">

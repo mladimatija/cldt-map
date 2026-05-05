@@ -49,6 +49,7 @@ Interactive web map for the **Croatian Long Distance Trail (CLDT)** - a 2,200+ k
 - **Walking pace** - Configurable hiking pace for all ETA estimates; optional grade-adjusted mode applies Naismith + Tobler per-segment integration for more accurate ETAs on climbs and descents
 - **Sunset/sunrise markers** - Projects where you will be on the trail at sunset and sunrise based on your current pace and direction; toggleable amber/yellow disc markers on the polyline
 - **Multi-day stage planner** - Split any trail range into daily stages by distance (km or miles per day) or fixed stage count; optional ETA-balanced splitting distributes stages by walking time rather than distance; per-stage stats (distance, elevation gain/loss, ETA); active stage highlighted on the map; GPX export per stage; strip-map PDF export (one landscape page per stage with map snapshot and stats header)
+- **GPX track import** - Drag-and-drop (or file-picker) import of a recorded GPX file; overlays your actual hike as a coloured polyline on the trail map; hover any point to see its distance from the official trail; comparison stats panel shows total distance, elapsed time, moving time, average pace, max deviation from the official route, and % of trail covered within 25 m; multiple imports shown in distinct colours; imports persist across sessions (IndexedDB); remove individual tracks from the map and storage
 - **Dark mode & battery saver** - UI preferences and reduced location updates
 - **4 languages** - English (en), Croatian (hr), German (de), Italian (it)
 - **Offline maps** - Pre-cache the full trail corridor for offline use; per-provider caching, staleness detection, auto-sync on reconnect, and storage quota handling
@@ -67,7 +68,7 @@ Interactive web map for the **Croatian Long Distance Trail (CLDT)** - a 2,200+ k
 | Styling   | Tailwind CSS                   |
 | i18n      | next-intl                      |
 | Charts    | Recharts                       |
-| Data      | localforage (GPX cache), fetch |
+| Data      | localforage (GPX + tile cache + imported tracks), fetch |
 
 ---
 
@@ -188,6 +189,8 @@ src/
 │   ├── export-utils.ts   # PNG/PDF export: CORS detection, bounds fitting, strip-map PDF generation
 │   ├── gpx-cache.ts      # GPX fetch + localforage cache
 │   ├── gpx-export.ts     # GPX XML builder and segment extractor for file downloads
+│   ├── gpx-parser.ts     # Shared GPX XML parser; returns all tracks with timestamps and elevation
+│   ├── imported-tracks.ts # Imported track storage (localforage), deduplication, and comparison stats
 │   ├── map-events.ts     # Custom DOM event helpers (ruler-from-chart bridge)
 │   ├── map.ts            # Trail metadata calculation (distance, elevation)
 │   ├── metadata.ts       # Site metadata and Open Graph config

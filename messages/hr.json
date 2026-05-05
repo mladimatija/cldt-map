@@ -46,7 +46,8 @@
 			"trailNotices": "Regionalne obavijesti o stanju na stazi - odbacive obavijesti s upozorenjima za trenutne uvjete na stazi",
 			"radar": "Preklopni sloj radara padalina - animirani RainViewer radar s prošlim i prognoziranim kadrovima, kontrole reproduciranja i legenda boja",
 			"sunsetPosition": "Pozicija zalaska/izlaska sunca - prikazuje gdje ćete biti na stazi u trenutku zalaska i izlaska sunca prema trenutnom tempu; markeri na poliliniji",
-			"stagePlanner": "Planer višednevnih etapa - podijelite bilo koji dio staze na dnevne etape prema udaljenosti ili vremenu, pregledajte statistike nadmorske visine i ETA po etapi, izvezite pojedine etape kao GPX datoteke ili sve etape kao PDF karte etapa"
+			"stagePlanner": "Planer višednevnih etapa - podijelite bilo koji dio staze na dnevne etape prema udaljenosti ili vremenu, pregledajte statistike nadmorske visine i ETA po etapi, izvezite pojedine etape kao GPX datoteke ili sve etape kao PDF karte etapa",
+			"gpxImport": "Uvoz GPX rute – povuci i ispusti (ili odaberi) snimljenu GPX datoteku i usporedi svoju rutu sa službenom stazom; statistike o udaljenosti, tempu, ukupnom i vremenu kretanja, maksimalnom odstupanju i pokrivenosti staze"
 		},
 		"dataAttribution": "Podaci i atribucija",
 		"dataAttributionDesc": "Podatke o stazi pruža organizacija Udruga Long Distance Trail Hrvatska (LDTH). Karte dolaze od OpenStreetMap, OpenTopoMap, CyclOSM i drugih pružatelja. Hrvatske topografske karte su od Državne geodetske uprave (DGU). Meteorološki podaci dolaze od DHMZ-a (Državni hidrometeorološki zavod) i Open-Meteo. Radarske pločice osigurava RainViewer. Podaci prikazani na ovoj stranici možda ne odražavaju najnovije stanje. U slučaju sumnje, uvijek provjerite službene izvore.",
@@ -419,6 +420,23 @@
 		"elevLoss": "Preostali spust",
 		"elevGainSection": "Preostali uspon (§)",
 		"elevLossSection": "Preostali spust (§)"
+	},
+	"imports": {
+		"title": "Uvezene rute",
+		"dropToImport": "Ispusti GPX datoteku za uvoz",
+		"noImports": "Još nema uvezenih ruta",
+		"removeAriaLabel": "Ukloni {trackName}",
+		"distance": "Udaljenost",
+		"elapsed": "Ukupno",
+		"avgPace": "Prosj. tempo",
+		"errorMalformed": "Nije moguće pročitati GPX datoteku. Provjerite je li valjana GPX datoteka.",
+		"errorTooLarge": "GPX datoteka je prevelika (maks. 10 MB).",
+		"alreadyImported": "Ova ruta je već uvezena.",
+		"pickFile": "Odaberi datoteku",
+		"distanceFromTrail": "{distance} m od staze",
+		"moving": "U pokretu",
+		"maxDeviation": "Maks. odstupanje",
+		"coverage": "Pokrivenost"
 	},
 	"stagePlanner": {
 		"title": "Planer etapa",

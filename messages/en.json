@@ -46,7 +46,8 @@
 			"trailNotices": "Regional trail condition notices - dismissible banners with alerts for current conditions on the trail",
 			"radar": "Precipitation radar overlay - animated RainViewer radar with past and nowcast frames, play/pause controls, and colour legend",
 			"sunsetPosition": "Sunset/sunrise position - projects where you will be on the trail at sunset and sunrise based on your current pace; toggleable markers on the polyline",
-			"stagePlanner": "Multi-day stage planner - split any trail range into daily stages by distance or time, view per-stage elevation and ETA stats, export individual stages as GPX files, or export all stages as a strip-map PDF"
+			"stagePlanner": "Multi-day stage planner - split any trail range into daily stages by distance or time, view per-stage elevation and ETA stats, export individual stages as GPX files, or export all stages as a strip-map PDF",
+			"gpxImport": "GPX track import - drag and drop (or pick) a recorded GPX file to overlay your actual hike on the map; compare your track against the official trail with stats on distance, pace, elapsed time, max deviation, and % of trail covered"
 		},
 		"dataAttribution": "Data & attribution",
 		"dataAttributionDesc": "Trail data is provided by the Udruga Long Distance Trail Hrvatska (LDTH) organization. Map tiles come from OpenStreetMap, OpenTopoMap, CyclOSM, and other providers. Croatian topographic maps are from the State Geodetic Administration (DGU). Weather data comes from DHMZ (Croatian Met Service) and Open-Meteo. Radar tiles are provided by RainViewer. Data displayed on this site may not reflect the latest conditions. When in doubt, always verify with the official sources.",
@@ -418,6 +419,23 @@
 		"elevLoss": "Remaining loss",
 		"elevGainSection": "Remaining gain (§)",
 		"elevLossSection": "Remaining loss (§)"
+	},
+	"imports": {
+		"title": "Imported tracks",
+		"dropToImport": "Drop GPX file to import",
+		"noImports": "No imported tracks yet",
+		"removeAriaLabel": "Remove {trackName}",
+		"distance": "Distance",
+		"elapsed": "Elapsed",
+		"avgPace": "Avg. pace",
+		"errorMalformed": "Could not read GPX file. Check that it is a valid GPX file.",
+		"errorTooLarge": "GPX file is too large (max 10 MB).",
+		"alreadyImported": "This track is already imported.",
+		"pickFile": "Pick file",
+		"distanceFromTrail": "{distance} m from trail",
+		"moving": "Moving",
+		"maxDeviation": "Max deviation",
+		"coverage": "Coverage"
 	},
 	"stagePlanner": {
 		"title": "Stage Planner",

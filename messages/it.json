@@ -46,7 +46,8 @@
 			"trailNotices": "Avvisi regionali sulle condizioni del sentiero - banner eliminabili con avvisi sulle condizioni attuali sul percorso",
 			"radar": "Overlay radar precipitazioni - radar RainViewer animato con frame passati e previsionali, controlli play/pausa e legenda colori",
 			"sunsetPosition": "Posizione tramonto/alba - mostra dove ti troverai sul sentiero al tramonto e all'alba in base al tuo ritmo attuale; indicatori attivabili sulla linea",
-			"stagePlanner": "Pianificatore tappe multi-giorno - suddividi qualsiasi tratto del sentiero in tappe giornaliere per distanza o tempo, visualizza statistiche di dislivello ed ETA per tappa, esporta le singole tappe come file GPX o tutte le tappe come PDF tappe in mappa"
+			"stagePlanner": "Pianificatore tappe multi-giorno - suddividi qualsiasi tratto del sentiero in tappe giornaliere per distanza o tempo, visualizza statistiche di dislivello ed ETA per tappa, esporta le singole tappe come file GPX o tutte le tappe come PDF tappe in mappa",
+			"gpxImport": "Importazione tracce GPX – trascina (o seleziona) un file GPX registrato per sovrapporre la tua escursione alla mappa ufficiale; statistiche su distanza, passo, tempo totale, tempo in movimento, deviazione massima e copertura del percorso"
 		},
 		"dataAttribution": "Dati e attribuzioni",
 		"dataAttributionDesc": "I dati del sentiero sono forniti dall'organizzazione Udruga Long Distance Trail Hrvatska (LDTH). Le tessere mappa provengono da OpenStreetMap, OpenTopoMap, CyclOSM e altri provider. Le mappe topografiche croate provengono dall'Amministrazione Geodetica Statale (DGU). I dati meteo provengono da DHMZ (Servizio Meteorologico Croato) e Open-Meteo. Le tessere radar sono fornite da RainViewer. I dati visualizzati su questo sito potrebbero non riflettere le condizioni più recenti. In caso di dubbio, verificare sempre le fonti ufficiali.",
@@ -418,6 +419,23 @@
 		"elevLoss": "Discesa rimanente",
 		"elevGainSection": "Salita rimanente (§)",
 		"elevLossSection": "Discesa rimanente (§)"
+	},
+	"imports": {
+		"title": "Tracce importate",
+		"dropToImport": "Trascina un file GPX per importarlo",
+		"noImports": "Nessuna traccia importata",
+		"removeAriaLabel": "Rimuovi {trackName}",
+		"distance": "Distanza",
+		"elapsed": "Durata",
+		"avgPace": "Passo medio",
+		"errorMalformed": "Impossibile leggere il file GPX. Verificare che sia un file GPX valido.",
+		"errorTooLarge": "Il file GPX è troppo grande (max. 10 MB).",
+		"alreadyImported": "Questa traccia è già stata importata.",
+		"pickFile": "Scegli file",
+		"distanceFromTrail": "{distance} m dal sentiero",
+		"moving": "Tempo in movimento",
+		"maxDeviation": "Dev. massima",
+		"coverage": "Copertura"
 	},
 	"stagePlanner": {
 		"title": "Pianificatore tappe",

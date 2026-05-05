@@ -46,7 +46,8 @@
 			"trailNotices": "Regionale Trail-Zustandsbenachrichtigungen - abbaubare Banner mit Warnungen zu aktuellen Bedingungen auf dem Trail",
 			"radar": "Niederschlagsradar-Overlay - animierter RainViewer-Radar mit vergangenen und vorhergesagten Frames, Wiedergabesteuerung und Farblegende",
 			"sunsetPosition": "Sonnenuntergang/Sonnenaufgang-Position - zeigt, wo du bei Sonnenuntergang und Sonnenaufgang auf dem Weg sein wirst; umschaltbare Markierungen auf der Strecke",
-			"stagePlanner": "Mehrtages-Etappenplaner - teile beliebige Streckenabschnitte nach Distanz oder Zeit in Tagesetappen auf, zeige Höhen- und ETA-Statistiken je Etappe an, exportiere einzelne Etappen als GPX-Dateien oder alle Etappen als Etappenkarten-PDF"
+			"stagePlanner": "Mehrtages-Etappenplaner - teile beliebige Streckenabschnitte nach Distanz oder Zeit in Tagesetappen auf, zeige Höhen- und ETA-Statistiken je Etappe an, exportiere einzelne Etappen als GPX-Dateien oder alle Etappen als Etappenkarten-PDF",
+			"gpxImport": "GPX-Track-Import – ziehe eine aufgezeichnete GPX-Datei auf die Karte (oder wähle sie aus) und vergleiche deine Route mit dem offiziellen Weg; Statistiken zu Distanz, Tempo, Gesamtzeit, Gehzeit, max. Abweichung und Streckenabdeckung"
 		},
 		"dataAttribution": "Daten & Urheberrecht",
 		"dataAttributionDesc": "Trail-Daten werden von der Udruga Long Distance Trail Hrvatska (LDTH) bereitgestellt. Kartenkacheln kommen von OpenStreetMap, OpenTopoMap, CyclOSM und anderen Anbietern. Kroatische topografische Karten stammen vom Staatlichen Geodätischen Amt (DGU). Wetterdaten kommen von DHMZ (Kroatischer Wetterdienst) und Open-Meteo. Radarkacheln werden von RainViewer bereitgestellt. Die auf dieser Seite angezeigten Daten entsprechen möglicherweise nicht dem aktuellen Stand. Im Zweifelsfall bitte immer die offiziellen Quellen prüfen.",
@@ -418,6 +419,23 @@
 		"elevLoss": "Verbleibender Abstieg",
 		"elevGainSection": "Verbleibender Anstieg (§)",
 		"elevLossSection": "Verbleibender Abstieg (§)"
+	},
+	"imports": {
+		"title": "Importierte Tracks",
+		"dropToImport": "GPX-Datei zum Importieren ablegen",
+		"noImports": "Noch keine importierten Tracks",
+		"removeAriaLabel": "{trackName} entfernen",
+		"distance": "Distanz",
+		"elapsed": "Dauer",
+		"avgPace": "Ø Tempo",
+		"errorMalformed": "GPX-Datei konnte nicht gelesen werden. Bitte prüfen Sie, ob es sich um eine gültige GPX-Datei handelt.",
+		"errorTooLarge": "GPX-Datei ist zu groß (max. 10 MB).",
+		"alreadyImported": "Dieser Track wurde bereits importiert.",
+		"pickFile": "Datei wählen",
+		"distanceFromTrail": "{distance} m vom Weg",
+		"moving": "Gehzeit",
+		"maxDeviation": "Max. Abweichung",
+		"coverage": "Abdeckung"
 	},
 	"stagePlanner": {
 		"title": "Etappenplaner",

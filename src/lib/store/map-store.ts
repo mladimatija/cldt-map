@@ -23,7 +23,6 @@ import {
 import { RulerRange } from '@/lib/distance-utils';
 import { loadImportedTracks, removeImportedTrack } from '../imported-tracks';
 
-
 /**
  * Creates the persisted map store. Receives getMainStore so it does not import the main store at module init (avoids circular deps).
  */
@@ -442,6 +441,11 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					if (typeof window === 'undefined') return;
 					const tracks = await loadImportedTracks();
 					set({ importedTracks: tracks });
+				},
+
+				hoveredImportedTrackId: null,
+				setHoveredImportedTrackId: (id: string | null): void => {
+					set({ hoveredImportedTrackId: id });
 				},
 			}),
 			{
