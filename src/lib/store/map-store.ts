@@ -4,7 +4,7 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 import { config } from '../config';
 import { getRandomLocationInBoundary, toLocationError } from '../utils';
 import { LocationService } from '../services/location-service';
-import type { MapStoreState, StagePlan, StoreState, TrailDirection, UnitSystem } from './types';
+import type { ImportedTrack, MapStoreState, StagePlan, StoreState, TrailDirection, UnitSystem } from './types';
 import {
 	generateTrailTileUrls,
 	precacheTiles,
@@ -21,6 +21,8 @@ import {
 	type TileCacheMeta,
 } from '../tile-cache';
 import { RulerRange } from '@/lib/distance-utils';
+import { loadImportedTracks, removeImportedTrack } from '../imported-tracks';
+
 
 /**
  * Creates the persisted map store. Receives getMainStore so it does not import the main store at module init (avoids circular deps).
@@ -420,6 +422,26 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 				},
 				clearStagePlan: (): void => {
 					set({ stagePlan: null });
+				},
+				importedTracks: [],
+
+				addImportedTrack: (track: ImportedTrack): void => {
+					set((state) => ({ importedTracks: [...state.importedTracks, track] }));
+				},
+
+				removeImportedTrack: async (id: string): Promise<void> => {
+					await removeImportedTrack(id);
+					set((state) => ({ importedTracks: state.importedTracks.filter((t) => t.id !== id) }));
+				},
+
+				setImportedTracks: (tracks: ImportedTrack[]): void => {
+					set({ importedTracks: tracks });
+				},
+
+				loadImportedTracksFromStorage: async (): Promise<void> => {
+					if (typeof window === 'undefined') return;
+					const tracks = await loadImportedTracks();
+					set({ importedTracks: tracks });
 				},
 			}),
 			{
