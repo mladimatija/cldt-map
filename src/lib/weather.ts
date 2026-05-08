@@ -1,5 +1,12 @@
 import type { UnitSystem } from '@/lib/types';
 
+export interface HourlyEntry {
+	time: Date;
+	tempC: number;
+	precipPct: number;
+	windKmh: number;
+}
+
 export interface WeatherData {
 	temperatureC: number;
 	feelsLikeC: number;
@@ -11,6 +18,7 @@ export interface WeatherData {
 	/** UTC offset of the queried location in seconds (e.g. 7200 for UTC+2).
 	 *  Required to correctly convert Open-Meteo's timezone-local ISO strings to UTC. */
 	utcOffsetSeconds: number;
+	hourly?: HourlyEntry[];
 }
 
 interface OpenMeteoResponse {
@@ -23,7 +31,9 @@ interface OpenMeteoResponse {
 	};
 	hourly?: {
 		time?: string[];
+		temperature_2m?: number[];
 		precipitation_probability?: number[];
+		wind_speed_10m?: number[];
 	};
 	daily?: {
 		sunrise?: string[];
@@ -38,9 +48,10 @@ async function fetchOpenMeteo(lat: number, lng: number): Promise<WeatherData | n
 			latitude: lat.toFixed(5),
 			longitude: lng.toFixed(5),
 			current: 'temperature_2m,apparent_temperature,windspeed_10m,weathercode',
-			hourly: 'precipitation_probability',
+			hourly: 'temperature_2m,precipitation_probability,wind_speed_10m',
 			daily: 'sunrise,sunset',
 			forecast_days: '1',
+			forecast_hours: '12',
 			timezone: 'auto',
 		});
 		const res = await fetch(`https://api.open-meteo.com/v1/forecast?${params.toString()}`);
@@ -69,6 +80,24 @@ async function fetchOpenMeteo(lat: number, lng: number): Promise<WeatherData | n
 			precipPct = hourlyProb[closestIdx] ?? 0;
 		}
 
+		// Parse the full hourly forecast into HourlyEntry[].
+		let hourly: HourlyEntry[] | undefined;
+		try {
+			const hTemps = json.hourly?.temperature_2m ?? [];
+			const hProbs = json.hourly?.precipitation_probability ?? [];
+			const hWinds = json.hourly?.wind_speed_10m ?? [];
+			if (hourlyTimes.length > 0) {
+				hourly = hourlyTimes.slice(0, 12).map((t, i) => ({
+					time: new Date(t),
+					tempC: hTemps[i] ?? 0,
+					precipPct: hProbs[i] ?? 0,
+					windKmh: hWinds[i] ?? 0,
+				}));
+			}
+		} catch {
+			// If parsing fails, hourly stays undefined.
+		}
+
 		return {
 			temperatureC: current.temperature_2m ?? 0,
 			feelsLikeC: current.apparent_temperature ?? 0,
@@ -78,6 +107,7 @@ async function fetchOpenMeteo(lat: number, lng: number): Promise<WeatherData | n
 			sunrise: daily.sunrise?.[0] ?? '',
 			sunset: daily.sunset?.[0] ?? '',
 			utcOffsetSeconds: json.utc_offset_seconds ?? 0,
+			hourly,
 		};
 	} catch {
 		return null;
@@ -114,6 +144,7 @@ export async function fetchWeather(lat: number, lng: number): Promise<WeatherDat
 				sunrise: openMeteo?.sunrise || dhmz.sunrise,
 				sunset: openMeteo?.sunset || dhmz.sunset,
 				utcOffsetSeconds: openMeteo?.utcOffsetSeconds ?? dhmz.utcOffsetSeconds ?? 0,
+				hourly: openMeteo?.hourly,
 			};
 		}
 
@@ -121,6 +152,42 @@ export async function fetchWeather(lat: number, lng: number): Promise<WeatherDat
 	} catch {
 		return null;
 	}
+}
+
+/**
+ * Finds the longest contiguous block of hourly entries where precipitation
+ * probability is strictly below the threshold.
+ *
+ * @returns `{ startIdx, endIdx }` (inclusive) for the first-longest qualifying
+ *          window, or `null` if no window of at least `minHours` entries exists.
+ */
+export function findBestWindow(
+	hourly: HourlyEntry[],
+	thresholdPct = 30,
+	minHours = 2,
+): { startIdx: number; endIdx: number } | null {
+	let bestStart = -1;
+	let bestLen = 0;
+	let curStart = -1;
+	let curLen = 0;
+
+	for (let i = 0; i < hourly.length; i++) {
+		if (hourly[i].precipPct < thresholdPct) {
+			if (curLen === 0) curStart = i;
+			curLen++;
+			if (curLen > bestLen) {
+				bestStart = curStart;
+				bestLen = curLen;
+			}
+		} else {
+			curLen = 0;
+		}
+	}
+
+	if (bestLen >= minHours) {
+		return { startIdx: bestStart, endIdx: bestStart + bestLen - 1 };
+	}
+	return null;
 }
 
 /** Formats a temperature value (in °C) according to the user's unit system. */
