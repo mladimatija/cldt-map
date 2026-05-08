@@ -405,7 +405,12 @@
 		"legendModerate": "Umj.",
 		"legendHeavy": "Jake",
 		"playRadar": "Pokreni radar",
-		"pauseRadar": "Zaustavi radar"
+		"pauseRadar": "Zaustavi radar",
+		"hourly": {
+			"precipAt": "{pct}% padalina u {time}",
+			"drierWindow": "Suši prozor: {start} – {end}",
+			"bestToStartBy": "Najbolje krenuti do {time}"
+		}
 	},
 	"distanceOverlay": {
 		"traveled": "Prijeđeno",

@@ -404,7 +404,12 @@
 		"legendModerate": "Mod.",
 		"legendHeavy": "Heavy",
 		"playRadar": "Play radar",
-		"pauseRadar": "Pause radar"
+		"pauseRadar": "Pause radar",
+		"hourly": {
+			"precipAt": "{pct}% precipitation at {time}",
+			"drierWindow": "Drier window: {start} – {end}",
+			"bestToStartBy": "Best to start by {time}"
+		}
 	},
 	"distanceOverlay": {
 		"traveled": "Traveled",

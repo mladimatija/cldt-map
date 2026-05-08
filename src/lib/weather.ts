@@ -236,6 +236,37 @@ export function weatherKeyToIcon(key: string): string {
 	return WEATHER_ICONS[key] ?? '🌡️';
 }
 
+/** Formats an hour label compactly: "14:00" for metric, "2 PM" for imperial. */
+export function formatHourlyTime(date: Date, units: UnitSystem): string {
+	if (units === 'imperial') {
+		return date.toLocaleTimeString('en-US', { hour: 'numeric', hour12: true });
+	}
+	return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+}
+
+/**
+ * Computes the best-window hint parameters from hourly data and an optional window.
+ *
+ * @returns A discriminated union describing the hint, or `null` when no window exists.
+ * - `{ type: 'drierWindow'; start: Date; end: Date }` — window starts within 30 min of now
+ * - `{ type: 'bestToStartBy'; time: Date }` — window starts later
+ */
+export function computeBestWindowHintParams(
+	hourly: HourlyEntry[],
+	window: { startIdx: number; endIdx: number } | null,
+): { type: 'drierWindow'; start: Date; end: Date } | { type: 'bestToStartBy'; time: Date } | null {
+	if (!window) return null;
+	const windowStart = hourly[window.startIdx].time;
+	const windowEnd = hourly[window.endIdx].time;
+	const now = Date.now();
+	const diffMs = windowStart.getTime() - now;
+
+	if (diffMs <= 30 * 60 * 1000) {
+		return { type: 'drierWindow', start: windowStart, end: windowEnd };
+	}
+	return { type: 'bestToStartBy', time: windowStart };
+}
+
 /**
  * Formats a sunrise/sunset ISO datetime string (e.g. "2026-03-18T06:42") to a
  * time string. Metric units use 24 h format; imperial uses the locale default.
