@@ -42,7 +42,7 @@
 			"offlineMaps": "Offline maps - pre-cache the trail corridor for use without a signal",
 			"gpxExport": "GPX export - download the full trail or a ruler-selected segment as a .gpx file for GPS devices",
 			"printExport": "Print and export - save the current map view as a PDF or PNG image",
-			"weather": "Current weather at your trail location - temperature, wind, precipitation probability, sunrise/sunset (DHMZ + Open-Meteo)",
+			"weather": "Current weather at your trail location - temperature, wind, precipitation probability, sunrise/sunset; 12-hour hourly forecast with precipitation bars and best-window hint (DHMZ + Open-Meteo)",
 			"trailNotices": "Regional trail condition notices - dismissible banners with alerts for current conditions on the trail",
 			"radar": "Precipitation radar overlay - animated RainViewer radar with past and nowcast frames, play/pause controls, and colour legend",
 			"sunsetPosition": "Sunset/sunrise position - projects where you will be on the trail at sunset and sunrise based on your current pace; toggleable markers on the polyline",
@@ -86,7 +86,7 @@
 		"showSections": "Show trail sections",
 		"showSectionsTooltip": "Color-codes the trail by section and shows section boundary markers with stats.",
 		"walkingPace": "Walking pace",
-		"walkingPaceHint": "Range: {min} – {max}, default: {default}",
+		"walkingPaceHint": "Range: {min} - {max}, default: {default}",
 		"walkingPaceReset": "Reset walking pace to default",
 		"gradeAdjustedEtaLabel": "Grade-adjusted ETA",
 		"gradeAdjustedEtaHint": "Slows pace on climbs and steep descents.",
@@ -404,7 +404,12 @@
 		"legendModerate": "Mod.",
 		"legendHeavy": "Heavy",
 		"playRadar": "Play radar",
-		"pauseRadar": "Pause radar"
+		"pauseRadar": "Pause radar",
+		"hourly": {
+			"precipAt": "{pct}% precipitation at {time}",
+			"drierWindow": "Drier window: {start} - {end}",
+			"bestToStartBy": "Best to start by {time}"
+		}
 	},
 	"distanceOverlay": {
 		"traveled": "Traveled",

@@ -7,6 +7,19 @@
  */
 import React from 'react';
 import { Button } from '@/components/ui/Button';
+import { HourlyWeatherStrip } from './HourlyWeatherStrip';
+
+export interface HourlyColumnData {
+	hourLabel: string;
+	precipPct: number;
+	precipSrText: string;
+	temperature: string;
+}
+
+export interface HourlyStripData {
+	columns: HourlyColumnData[];
+	bestWindowHint?: string;
+}
 
 export interface TrailTooltipData {
 	lat: number;
@@ -65,6 +78,7 @@ interface TrailTooltipContentProps {
 	labels: TrailTooltipLabels;
 	showClose?: boolean;
 	canNavigate?: boolean;
+	hourlyStrip?: HourlyStripData;
 	onClose: () => void;
 	onNavigate?: () => void;
 }
@@ -86,6 +100,7 @@ export function TrailTooltipContent({
 	labels,
 	showClose,
 	canNavigate,
+	hourlyStrip,
 	onClose,
 	onNavigate,
 }: TrailTooltipContentProps): React.ReactElement {
@@ -177,6 +192,11 @@ export function TrailTooltipContent({
 							)}
 						</>
 					)}
+				</div>
+			)}
+			{hourlyStrip && (
+				<div className="mt-1 border-t border-black pt-1">
+					<HourlyWeatherStrip data={hourlyStrip} />
 				</div>
 			)}
 			{canNavigate === true && onNavigate && (

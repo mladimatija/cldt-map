@@ -42,12 +42,12 @@
 			"offlineMaps": "Offline-Karten - Trail-Korridor für die Nutzung ohne Netzempfang vorladen",
 			"gpxExport": "GPX-Export - Lade den gesamten Trail oder einen per Lineal ausgewählten Abschnitt als .gpx-Datei für GPS-Geräte herunter",
 			"printExport": "Drucken und Exportieren - aktuelle Kartenansicht als PDF oder PNG speichern",
-			"weather": "Aktuelles Wetter an Ihrem Trailstandort - Temperatur, Wind, Niederschlagswahrscheinlichkeit, Sonnenaufgang/-untergang (DHMZ + Open-Meteo)",
+			"weather": "Aktuelles Wetter an Ihrem Trailstandort - Temperatur, Wind, Niederschlagswahrscheinlichkeit, Sonnenaufgang/-untergang; 12-Stunden-Vorhersage mit Niederschlagsbalken und Empfehlung des besten Zeitfensters (DHMZ + Open-Meteo)",
 			"trailNotices": "Regionale Trail-Zustandsbenachrichtigungen - abbaubare Banner mit Warnungen zu aktuellen Bedingungen auf dem Trail",
 			"radar": "Niederschlagsradar-Overlay - animierter RainViewer-Radar mit vergangenen und vorhergesagten Frames, Wiedergabesteuerung und Farblegende",
 			"sunsetPosition": "Sonnenuntergang/Sonnenaufgang-Position - zeigt, wo du bei Sonnenuntergang und Sonnenaufgang auf dem Weg sein wirst; umschaltbare Markierungen auf der Strecke",
 			"stagePlanner": "Mehrtages-Etappenplaner - teile beliebige Streckenabschnitte nach Distanz oder Zeit in Tagesetappen auf, zeige Höhen- und ETA-Statistiken je Etappe an, exportiere einzelne Etappen als GPX-Dateien oder alle Etappen als Etappenkarten-PDF",
-			"gpxImport": "GPX-Track-Import – ziehe eine aufgezeichnete GPX-Datei auf die Karte (oder wähle sie aus) und vergleiche deine Route mit dem offiziellen Weg; Statistiken zu Distanz, Tempo, Gesamtzeit, Gehzeit, max. Abweichung und Streckenabdeckung"
+			"gpxImport": "GPX-Track-Import - ziehe eine aufgezeichnete GPX-Datei auf die Karte (oder wähle sie aus) und vergleiche deine Route mit dem offiziellen Weg; Statistiken zu Distanz, Tempo, Gesamtzeit, Gehzeit, max. Abweichung und Streckenabdeckung"
 		},
 		"dataAttribution": "Daten & Urheberrecht",
 		"dataAttributionDesc": "Trail-Daten werden von der Udruga Long Distance Trail Hrvatska (LDTH) bereitgestellt. Kartenkacheln kommen von OpenStreetMap, OpenTopoMap, CyclOSM und anderen Anbietern. Kroatische topografische Karten stammen vom Staatlichen Geodätischen Amt (DGU). Wetterdaten kommen von DHMZ (Kroatischer Wetterdienst) und Open-Meteo. Radarkacheln werden von RainViewer bereitgestellt. Die auf dieser Seite angezeigten Daten entsprechen möglicherweise nicht dem aktuellen Stand. Im Zweifelsfall bitte immer die offiziellen Quellen prüfen.",
@@ -86,7 +86,7 @@
 		"showSections": "Abschnitte anzeigen",
 		"showSectionsTooltip": "Markiert den Trail farbig nach Abschnitt und zeigt Abschnittsmarkierungen mit Statistiken.",
 		"walkingPace": "Gehtempo",
-		"walkingPaceHint": "Bereich: {min} – {max}, Standard: {default}",
+		"walkingPaceHint": "Bereich: {min} - {max}, Standard: {default}",
 		"walkingPaceReset": "Gehtempo auf Standard zurücksetzen",
 		"gradeAdjustedEtaLabel": "Steigungsangepasste ETA",
 		"gradeAdjustedEtaHint": "Verlangsamt das Tempo bei Anstiegen und steilen Abfahrten.",
@@ -404,7 +404,12 @@
 		"legendModerate": "Mäß.",
 		"legendHeavy": "Stark",
 		"playRadar": "Radar abspielen",
-		"pauseRadar": "Radar pausieren"
+		"pauseRadar": "Radar pausieren",
+		"hourly": {
+			"precipAt": "{pct}% Niederschlag um {time}",
+			"drierWindow": "Trockenes Fenster: {start} - {end}",
+			"bestToStartBy": "Am besten starten bis {time}"
+		}
 	},
 	"distanceOverlay": {
 		"traveled": "Zurückgelegt",

@@ -287,7 +287,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 								>
 									<span className="w-6 shrink-0 font-medium">{i + 1}</span>
 									<span className="min-w-0 flex-1 truncate text-gray-500 dark:text-gray-400">
-										{toDisplay(stage.startKm).toFixed(0)}–{toDisplay(stage.endKm).toFixed(0)} {distanceUnitLabel}
+										{toDisplay(stage.startKm).toFixed(0)}-{toDisplay(stage.endKm).toFixed(0)} {distanceUnitLabel}
 									</span>
 									{stats && (
 										<>

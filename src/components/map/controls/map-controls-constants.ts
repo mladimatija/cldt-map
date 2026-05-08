@@ -1,4 +1,4 @@
-/** Distance precision slider range (0–3 decimal places). Value comes from config.distancePrecision / store. */
+/** Distance precision slider range (0-3 decimal places). Value comes from config.distancePrecision / store. */
 export const DISTANCE_PRECISION_MIN = 0;
 export const DISTANCE_PRECISION_MAX = 3;
 

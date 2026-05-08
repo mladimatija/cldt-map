@@ -42,12 +42,12 @@
 			"offlineMaps": "Mappe offline - pre-scarica il corridoio del sentiero per l'uso senza segnale",
 			"gpxExport": "Esporta GPX - scarica l'intero percorso o un segmento selezionato con il righello come file .gpx per dispositivi GPS",
 			"printExport": "Stampa ed esporta - salva la vista mappa corrente come PDF o immagine PNG",
-			"weather": "Meteo attuale nella tua posizione sul sentiero - temperatura, vento, probabilità precipitazioni, alba/tramonto (DHMZ + Open-Meteo)",
+			"weather": "Meteo attuale nella tua posizione sul sentiero - temperatura, vento, probabilità precipitazioni, alba/tramonto; previsione oraria 12 ore con barre precipitazioni e suggerimento finestra migliore (DHMZ + Open-Meteo)",
 			"trailNotices": "Avvisi regionali sulle condizioni del sentiero - banner eliminabili con avvisi sulle condizioni attuali sul percorso",
 			"radar": "Overlay radar precipitazioni - radar RainViewer animato con frame passati e previsionali, controlli play/pausa e legenda colori",
 			"sunsetPosition": "Posizione tramonto/alba - mostra dove ti troverai sul sentiero al tramonto e all'alba in base al tuo ritmo attuale; indicatori attivabili sulla linea",
 			"stagePlanner": "Pianificatore tappe multi-giorno - suddividi qualsiasi tratto del sentiero in tappe giornaliere per distanza o tempo, visualizza statistiche di dislivello ed ETA per tappa, esporta le singole tappe come file GPX o tutte le tappe come PDF tappe in mappa",
-			"gpxImport": "Importazione tracce GPX – trascina (o seleziona) un file GPX registrato per sovrapporre la tua escursione alla mappa ufficiale; statistiche su distanza, passo, tempo totale, tempo in movimento, deviazione massima e copertura del percorso"
+			"gpxImport": "Importazione tracce GPX - trascina (o seleziona) un file GPX registrato per sovrapporre la tua escursione alla mappa ufficiale; statistiche su distanza, passo, tempo totale, tempo in movimento, deviazione massima e copertura del percorso"
 		},
 		"dataAttribution": "Dati e attribuzioni",
 		"dataAttributionDesc": "I dati del sentiero sono forniti dall'organizzazione Udruga Long Distance Trail Hrvatska (LDTH). Le tessere mappa provengono da OpenStreetMap, OpenTopoMap, CyclOSM e altri provider. Le mappe topografiche croate provengono dall'Amministrazione Geodetica Statale (DGU). I dati meteo provengono da DHMZ (Servizio Meteorologico Croato) e Open-Meteo. Le tessere radar sono fornite da RainViewer. I dati visualizzati su questo sito potrebbero non riflettere le condizioni più recenti. In caso di dubbio, verificare sempre le fonti ufficiali.",
@@ -86,7 +86,7 @@
 		"showSections": "Mostra sezioni sentiero",
 		"showSectionsTooltip": "Colora il sentiero per sezione e mostra i marcatori dei confini con le statistiche.",
 		"walkingPace": "Velocità di camminata",
-		"walkingPaceHint": "Intervallo: {min} – {max}, predefinito: {default}",
+		"walkingPaceHint": "Intervallo: {min} - {max}, predefinito: {default}",
 		"walkingPaceReset": "Reimposta la velocità di camminata al valore predefinito",
 		"gradeAdjustedEtaLabel": "ETA adattata alla pendenza",
 		"gradeAdjustedEtaHint": "Rallenta il passo in salita e nelle discese ripide.",
@@ -404,7 +404,12 @@
 		"legendModerate": "Mod.",
 		"legendHeavy": "Forte",
 		"playRadar": "Riproduci radar",
-		"pauseRadar": "Metti in pausa radar"
+		"pauseRadar": "Metti in pausa radar",
+		"hourly": {
+			"precipAt": "{pct}% precipitazioni alle {time}",
+			"drierWindow": "Finestra asciutta: {start} - {end}",
+			"bestToStartBy": "Meglio partire entro le {time}"
+		}
 	},
 	"distanceOverlay": {
 		"traveled": "Percorso",
