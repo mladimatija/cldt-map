@@ -26,6 +26,11 @@ import { calculateTrailMetadata, estimatePassageDays } from '@/lib/map';
 import { clearShareUrlParams, formatDistance, formatElevation, parseShareUrlParams } from '@/lib/utils';
 import {
 	fetchWeather,
+	findBestWindow,
+	computeBestWindowHintParams,
+	formatHourlyTime,
+	formatHourlyTimeShort,
+	formatCompactTemp,
 	formatTemperature,
 	formatWindSpeed,
 	formatSunTime,
@@ -33,7 +38,13 @@ import {
 	weatherKeyToIcon,
 	type WeatherData,
 } from '@/lib/weather';
-import { TrailTooltipContent, type TrailTooltipData, type TrailTooltipWeather } from './TrailTooltipContent';
+import {
+	TrailTooltipContent,
+	type TrailTooltipData,
+	type TrailTooltipWeather,
+	type HourlyStripData,
+	type HourlyColumnData,
+} from './TrailTooltipContent';
 import type { UnitSystem } from '@/lib/types';
 import { useLocale, useTranslations } from 'next-intl';
 import { useFitToRoute } from '@/hooks';
@@ -322,10 +333,40 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 					sunset: formatSunTime(weatherData.sunset, currentUnits),
 				};
 			};
+			const buildHourlyStrip = (weatherData: WeatherData | null): HourlyStripData | undefined => {
+				if (!weatherData?.hourly?.length) return undefined;
+				const hourly = weatherData.hourly;
+				const columns: HourlyColumnData[] = hourly.map((entry) => ({
+					hourLabel: formatHourlyTimeShort(entry.time, currentUnits),
+					precipPct: entry.precipPct,
+					precipSrText: tWeather('hourly.precipAt', {
+						pct: entry.precipPct,
+						time: formatHourlyTime(entry.time, currentUnits),
+					}),
+					temperature: formatCompactTemp(entry.tempC, currentUnits),
+				}));
+				const bestWindow = findBestWindow(hourly);
+				const hintParams = computeBestWindowHintParams(hourly, bestWindow);
+				let bestWindowHint: string | undefined;
+				if (hintParams) {
+					if (hintParams.type === 'drierWindow') {
+						bestWindowHint = tWeather('hourly.drierWindow', {
+							start: formatHourlyTime(hintParams.start, currentUnits),
+							end: formatHourlyTime(hintParams.end, currentUnits),
+						});
+					} else {
+						bestWindowHint = tWeather('hourly.bestToStartBy', {
+							time: formatHourlyTime(hintParams.time, currentUnits),
+						});
+					}
+				}
+				return { columns, bestWindowHint };
+			};
 			const renderTooltip = (weatherData: WeatherData | null, weatherLoading: boolean): void => {
 				tooltipRoot.render(
 					<TrailTooltipContent
 						showClose
+						hourlyStrip={buildHourlyStrip(weatherData)}
 						labels={tooltipLabels}
 						trailData={pointData}
 						weather={buildWeather(weatherData)}
