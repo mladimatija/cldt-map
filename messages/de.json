@@ -404,7 +404,12 @@
 		"legendModerate": "Mäß.",
 		"legendHeavy": "Stark",
 		"playRadar": "Radar abspielen",
-		"pauseRadar": "Radar pausieren"
+		"pauseRadar": "Radar pausieren",
+		"hourly": {
+			"precipAt": "{pct}% Niederschlag um {time}",
+			"drierWindow": "Trockenes Fenster: {start} – {end}",
+			"bestToStartBy": "Am besten starten bis {time}"
+		}
 	},
 	"distanceOverlay": {
 		"traveled": "Zurückgelegt",
