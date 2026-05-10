@@ -14,6 +14,7 @@ import {
 	IoLayersOutline,
 	IoSettingsOutline,
 	IoHelpCircleOutline,
+	IoWarningOutline,
 } from 'react-icons/io5';
 import { Button } from '@/components/ui/Button';
 import { cn } from '@/lib/utils';
@@ -41,6 +42,8 @@ interface MapControlsSettingsPanelProps {
 	setGradeAdjustedEta: (enabled: boolean) => void;
 	sunsetProjection: boolean;
 	setSunsetProjection: (enabled: boolean) => void;
+	severeWeatherLayer: boolean;
+	setSevereWeatherLayer: (enabled: boolean) => void;
 	units: UnitSystem;
 	darkModeLabel: string;
 	batterySaverLabel: string;
@@ -70,6 +73,8 @@ export function MapControlsSettingsPanel({
 	setGradeAdjustedEta,
 	sunsetProjection,
 	setSunsetProjection,
+	severeWeatherLayer,
+	setSevereWeatherLayer,
 	units,
 	darkModeLabel,
 	batterySaverLabel,
@@ -78,6 +83,7 @@ export function MapControlsSettingsPanel({
 	tooltipHide,
 }: MapControlsSettingsPanelProps): React.ReactElement {
 	const t = useTranslations('mapControls');
+	const tWeather = useTranslations('severeWeather');
 	const popoverRef = usePopoverFocusTrap(isExpanded);
 
 	return (
@@ -120,6 +126,16 @@ export function MapControlsSettingsPanel({
 						<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">{t('showSections')}</span>
 						<span className="inline-flex" onClick={(e) => e.stopPropagation()} onMouseDown={(e) => e.stopPropagation()}>
 							<SmartTooltip content={t('showSectionsTooltip')} position="top">
+								<IoHelpCircleOutline className="ml-0.5 h-3.5 w-3.5 shrink-0 cursor-help text-gray-400 hover:text-gray-600 dark:text-white" />
+							</SmartTooltip>
+						</span>
+					</label>
+					<label className="flex cursor-pointer items-center gap-2">
+						<Checkbox checked={severeWeatherLayer} onCheckedChange={(checked) => setSevereWeatherLayer(checked)} />
+						<IoWarningOutline className="h-4 w-4 shrink-0 text-gray-600 dark:text-white" />
+						<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">{tWeather('layerLabel')}</span>
+						<span className="inline-flex" onClick={(e) => e.stopPropagation()} onMouseDown={(e) => e.stopPropagation()}>
+							<SmartTooltip content={tWeather('layerTooltip')} position="top">
 								<IoHelpCircleOutline className="ml-0.5 h-3.5 w-3.5 shrink-0 cursor-help text-gray-400 hover:text-gray-600 dark:text-white" />
 							</SmartTooltip>
 						</span>

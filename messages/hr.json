@@ -462,5 +462,18 @@
 		"stripMapPdfProgress": "{current} / {total}",
 		"stripMapPdfCancel": "Odustani",
 		"pdfStageLabel": "Etapa"
+	},
+	"severeWeather": {
+		"layerLabel": "Upozorenja za opasno vrijeme",
+		"layerTooltip": "Prikaži ili sakrij područja upozorenja za opasno vrijeme na karti",
+		"severity": "Ozbiljnost:",
+		"event": "Događaj:",
+		"validUntil": "Vrijedi do:",
+		"source": "Izvor:",
+		"bannerPrefix": "Upozorenje za vrijeme:",
+		"severityYellow": "Manji",
+		"severityOrange": "Umjeren",
+		"severityRed": "Ozbiljan",
+		"dismiss": "Odbaci"
 	}
 }

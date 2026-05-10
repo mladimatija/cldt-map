@@ -461,5 +461,18 @@
 		"stripMapPdfProgress": "{current} / {total}",
 		"stripMapPdfCancel": "Abbrechen",
 		"pdfStageLabel": "Etappe"
+	},
+	"severeWeather": {
+		"layerLabel": "Unwetterwarnungen",
+		"layerTooltip": "Unwetterwarnbereiche auf der Karte ein- oder ausblenden",
+		"severity": "Schweregrad:",
+		"event": "Ereignis:",
+		"validUntil": "Gültig bis:",
+		"source": "Quelle:",
+		"bannerPrefix": "Wetterwarnung:",
+		"severityYellow": "Gering",
+		"severityOrange": "Mäßig",
+		"severityRed": "Schwer",
+		"dismiss": "Schließen"
 	}
 }

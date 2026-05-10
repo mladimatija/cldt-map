@@ -18,6 +18,10 @@ const TrailNoticesBanner = dynamic(
 	() => import('@/components/map/TrailNoticesBanner').then((m) => ({ default: m.TrailNoticesBanner })),
 	{ ssr: false },
 );
+const SevereWeatherBanner = dynamic(
+	() => import('@/components/map/SevereWeatherBanner').then((m) => ({ default: m.SevereWeatherBanner })),
+	{ ssr: false },
+);
 
 interface MapWrapperProps {
 	locale?: string;
@@ -100,6 +104,7 @@ export default function MapWrapper(_props?: MapWrapperProps): ReactElement {
 		<div className="relative flex h-full w-full flex-col">
 			<GPXLoadErrorBanner />
 			<TrailNoticesBanner />
+			<SevereWeatherBanner />
 			<div className="relative min-h-0 flex-1 bg-white" ref={mapContainerRef}>
 				<Map defaultBaseMap={config.baseMapProvider} zoomSnap={0} />
 			</div>

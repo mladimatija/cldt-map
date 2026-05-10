@@ -461,5 +461,18 @@
 		"stripMapPdfProgress": "{current} / {total}",
 		"stripMapPdfCancel": "Cancel",
 		"pdfStageLabel": "Stage"
+	},
+	"severeWeather": {
+		"layerLabel": "Severe weather warnings",
+		"layerTooltip": "Show or hide severe weather warning areas on the map",
+		"severity": "Severity:",
+		"event": "Event:",
+		"validUntil": "Valid until:",
+		"source": "Source:",
+		"bannerPrefix": "Weather warning:",
+		"severityYellow": "Minor",
+		"severityOrange": "Moderate",
+		"severityRed": "Severe",
+		"dismiss": "Dismiss"
 	}
 }

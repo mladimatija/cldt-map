@@ -461,5 +461,18 @@
 		"stripMapPdfProgress": "{current} / {total}",
 		"stripMapPdfCancel": "Annulla",
 		"pdfStageLabel": "Tappa"
+	},
+	"severeWeather": {
+		"layerLabel": "Avvisi meteo severi",
+		"layerTooltip": "Mostra o nascondi le aree di allerta meteo sulla mappa",
+		"severity": "Gravità:",
+		"event": "Evento:",
+		"validUntil": "Valido fino a:",
+		"source": "Fonte:",
+		"bannerPrefix": "Allerta meteo:",
+		"severityYellow": "Minore",
+		"severityOrange": "Moderato",
+		"severityRed": "Grave",
+		"dismiss": "Chiudi"
 	}
 }
