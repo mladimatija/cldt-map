@@ -336,6 +336,10 @@
 		"downloadError": "Download failed. Please try again.",
 		"autoSync": "Auto-sync when online",
 		"autoSyncTooltip": "Automatically re-downloads stale tiles when your device comes back online.",
+		"predictive": {
+			"label": "Predictive pre-cache",
+			"hint": "Cache tiles ahead while on Wi-Fi."
+		},
 		"estimatedTiles": "~{count} tiles to download",
 		"today": "today",
 		"yesterday": "yesterday",

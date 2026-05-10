@@ -248,6 +248,7 @@ export interface MapStoreState {
 	tileCacheError: string | null;
 	tileCacheMeta: TileCacheMeta | null;
 	autoSync: boolean;
+	predictivePrecache: boolean;
 
 	startTileDownload: (
 		points: { lat: number; lng: number; distanceFromStart: number }[],
@@ -257,6 +258,9 @@ export interface MapStoreState {
 	clearTileCacheForProvider: (providerKey?: string) => Promise<void>;
 	loadTileCacheMeta: (providerKey: string) => Promise<void>;
 	setAutoSync: (enabled: boolean) => void;
+	setPredictivePrecache: (enabled: boolean) => void;
+	maybeRunPredictivePrecache: (opts?: { source: 'online' | 'gps' | 'network' | 'battery' }) => Promise<void>;
+	handleQuotaExceeded: () => void;
 
 	showStaleCacheNotification: boolean;
 	setStaleCacheNotification: (show: boolean) => void;

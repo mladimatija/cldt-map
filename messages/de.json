@@ -336,6 +336,10 @@
 		"downloadError": "Download fehlgeschlagen. Bitte erneut versuchen.",
 		"autoSync": "Automatisch synchronisieren wenn online",
 		"autoSyncTooltip": "Lädt veraltete Kacheln automatisch herunter, wenn das Gerät wieder online ist.",
+		"predictive": {
+			"label": "Vorausschauendes Pre-Caching",
+			"hint": "Tiles im Voraus laden, wenn WLAN verfügbar ist."
+		},
 		"estimatedTiles": "~{count} Kacheln zum Herunterladen",
 		"today": "heute",
 		"yesterday": "gestern",

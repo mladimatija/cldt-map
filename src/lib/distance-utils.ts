@@ -346,7 +346,7 @@ export const CALM_WIND_THRESHOLD_KMH = 3;
 
 /**
  * Computes the wind-vs-bearing payload for a tooltip compass. Returns `null`
- * when the compass should be hidden — calm conditions or missing wind direction.
+ * when the compass should be hidden - calm conditions or missing wind direction.
  * Callers format the visible label themselves (i18n lives at the call site).
  */
 export function buildWindCompassPayload(

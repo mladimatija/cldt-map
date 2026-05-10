@@ -53,7 +53,7 @@ Interactive web map for the **Croatian Long Distance Trail (CLDT)** - a 2,200+ k
 - **GPX track import** - Drag-and-drop (or file-picker) import of a recorded GPX file; overlays your actual hike as a coloured polyline on the trail map; hover any point to see its distance from the official trail; comparison stats panel shows total distance, elapsed time, moving time, average pace, max deviation from the official route, and % of trail covered within 25 m; multiple imports shown in distinct colours; imports persist across sessions (IndexedDB); remove individual tracks from the map and storage
 - **Dark mode & battery saver** - UI preferences and reduced location updates
 - **4 languages** - English (en), Croatian (hr), German (de), Italian (it)
-- **Offline maps** - Pre-cache the full trail corridor for offline use; per-provider caching, staleness detection, auto-sync on reconnect, and storage quota handling
+- **Offline maps** - Pre-cache the full trail corridor for offline use; per-provider caching, staleness detection, auto-sync on reconnect, predictive corridor pre-cache on Wi-Fi when on-trail, and storage quota handling
 - **Privacy-first** - Location stays in your browser; no account required
 
 ---

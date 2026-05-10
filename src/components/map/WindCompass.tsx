@@ -9,7 +9,7 @@
  * - relativeAngle is in (-180, 180] and points toward the wind's source.
  *   0 = wind from the direction of travel (headwind); ±180 = wind from behind
  *   (tailwind).
- * - The reference arrow always points up — it represents the trail bearing.
+ * - The reference arrow always points up - it represents the trail bearing.
  * - The colored wind arrow is rotated by `relativeAngle` (clockwise, SVG-positive),
  *   so it visually points to where the wind is coming from.
  */
