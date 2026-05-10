@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import type { HourlyStripData } from './TrailTooltipContent';
+import type { HourlyStripData } from '@/lib/weather';
 
 function precipBarColor(precipPct: number): string {
 	if (precipPct < 30) return 'bg-[var(--cldt-blue)]';
@@ -11,13 +11,14 @@ function precipBarColor(precipPct: number): string {
 
 interface HourlyWeatherStripProps {
 	data: HourlyStripData;
+	ariaLabel?: string;
 }
 
-export function HourlyWeatherStrip({ data }: HourlyWeatherStripProps): React.ReactElement {
+export function HourlyWeatherStrip({ data, ariaLabel }: HourlyWeatherStripProps): React.ReactElement {
 	const { columns, bestWindowHint } = data;
 
 	return (
-		<div className="overflow-hidden text-xs">
+		<div aria-label={ariaLabel} className="overflow-hidden text-xs" role="group">
 			<div
 				className="gap-px"
 				style={{
@@ -28,7 +29,7 @@ export function HourlyWeatherStrip({ data }: HourlyWeatherStripProps): React.Rea
 				{columns.map((col) => (
 					<div className="flex flex-col items-center" key={col.hourLabel}>
 						<span className="sr-only">{col.precipSrText}</span>
-						<span className="text-[10px] leading-tight">{col.hourLabel}</span>
+						<span className="text-xs leading-tight">{col.hourLabel}</span>
 						<div className="relative mt-0.5 h-7 w-full">
 							<div
 								aria-hidden="true"
@@ -36,11 +37,11 @@ export function HourlyWeatherStrip({ data }: HourlyWeatherStripProps): React.Rea
 								style={{ height: `${Math.max(col.precipPct, 2)}%` }}
 							/>
 						</div>
-						<span className="mt-0.5 text-[10px] leading-tight">{col.temperature}</span>
+						<span className="mt-0.5 text-xs leading-tight">{col.temperature}</span>
 					</div>
 				))}
 			</div>
-			{bestWindowHint && <div className="mt-1 text-center text-[11px] font-medium">{bestWindowHint}</div>}
+			{bestWindowHint && <div className="mt-1 text-center text-xs font-medium">{bestWindowHint}</div>}
 		</div>
 	);
 }

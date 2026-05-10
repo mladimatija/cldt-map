@@ -83,10 +83,10 @@ export function MapControlsImportsPanel(): React.ReactElement {
 								</button>
 								<div className="mt-1 flex flex-wrap gap-x-3 gap-y-0.5 pl-5 text-xs text-gray-500 dark:text-[var(--text-secondary)]">
 									<span>
-										{t('distance')}: {stats ? formatDistanceM(stats.totalDistanceM, units) : '—'}
+										{t('distance')}: {stats ? formatDistanceM(stats.totalDistanceM, units) : '-'}
 									</span>
 									<span>
-										{t('elapsed')}: {stats && stats.totalElapsedSec > 0 ? formatEta(stats.totalElapsedSec) : '—'}
+										{t('elapsed')}: {stats && stats.totalElapsedSec > 0 ? formatEta(stats.totalElapsedSec) : '-'}
 									</span>
 									{stats && stats.totalMovingSec > 0 && (
 										<span>
@@ -94,13 +94,13 @@ export function MapControlsImportsPanel(): React.ReactElement {
 										</span>
 									)}
 									<span>
-										{t('avgPace')}: {stats ? formatPaceFromSecPerKm(stats.avgMovingPaceSecPerKm, units) : '—'}
+										{t('avgPace')}: {stats ? formatPaceFromSecPerKm(stats.avgMovingPaceSecPerKm, units) : '-'}
 									</span>
 									<span>
-										{t('maxDeviation')}: {stats ? `${Math.round(stats.maxDeviationM)} m` : '—'}
+										{t('maxDeviation')}: {stats ? `${Math.round(stats.maxDeviationM)} m` : '-'}
 									</span>
 									<span>
-										{t('coverage')}: {stats ? `${stats.coveragePercent.toFixed(0)}%` : '—'}
+										{t('coverage')}: {stats ? `${stats.coveragePercent.toFixed(0)}%` : '-'}
 									</span>
 								</div>
 								<div className="mt-1 pl-5">

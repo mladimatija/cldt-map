@@ -11,11 +11,7 @@ import { TRAIL_OFF_TRAIL_THRESHOLD_M } from '@/lib/config';
 import { computeDistanceRemaining } from '@/lib/distance-utils';
 import {
 	fetchWeather,
-	findBestWindow,
-	computeBestWindowHintParams,
-	formatHourlyTime,
-	formatHourlyTimeShort,
-	formatCompactTemp,
+	buildHourlyStripData,
 	formatTemperature,
 	formatWindSpeed,
 	formatSunTime,
@@ -23,13 +19,7 @@ import {
 	weatherKeyToIcon,
 	type WeatherData,
 } from '@/lib/weather';
-import {
-	TrailTooltipContent,
-	type TrailTooltipData,
-	type TrailTooltipWeather,
-	type HourlyStripData,
-	type HourlyColumnData,
-} from './TrailTooltipContent';
+import { TrailTooltipContent, type TrailTooltipData, type TrailTooltipWeather } from './TrailTooltipContent';
 
 /** @see TRAIL_OFF_TRAIL_THRESHOLD_M in src/lib/config.ts */
 const OFF_TRAIL_DISTANCE_M = TRAIL_OFF_TRAIL_THRESHOLD_M;
@@ -216,35 +206,10 @@ export default function MapMarkers(): React.ReactElement | null {
 		};
 	}, [effectiveWeatherData, units, tWeather]);
 
-	const tooltipHourlyStrip = useMemo((): HourlyStripData | undefined => {
-		if (!effectiveWeatherData?.hourly?.length) return undefined;
-		const hourly = effectiveWeatherData.hourly;
-		const columns: HourlyColumnData[] = hourly.map((entry) => ({
-			hourLabel: formatHourlyTimeShort(entry.time, units),
-			precipPct: entry.precipPct,
-			precipSrText: tWeather('hourly.precipAt', {
-				pct: entry.precipPct,
-				time: formatHourlyTime(entry.time, units),
-			}),
-			temperature: formatCompactTemp(entry.tempC, units),
-		}));
-		const bestWindow = findBestWindow(hourly);
-		const hintParams = computeBestWindowHintParams(hourly, bestWindow);
-		let bestWindowHint: string | undefined;
-		if (hintParams) {
-			if (hintParams.type === 'drierWindow') {
-				bestWindowHint = tWeather('hourly.drierWindow', {
-					start: formatHourlyTime(hintParams.start, units),
-					end: formatHourlyTime(hintParams.end, units),
-				});
-			} else {
-				bestWindowHint = tWeather('hourly.bestToStartBy', {
-					time: formatHourlyTime(hintParams.time, units),
-				});
-			}
-		}
-		return { columns, bestWindowHint };
-	}, [effectiveWeatherData, units, tWeather]);
+	const tooltipHourlyStrip = useMemo(
+		() => buildHourlyStripData(effectiveWeatherData, units, tWeather),
+		[effectiveWeatherData, units, tWeather],
+	);
 
 	// Fetch weather for the user's location when on-trail; re-fetches after 30 s minimum.
 	useEffect(() => {

@@ -50,7 +50,6 @@ async function fetchOpenMeteo(lat: number, lng: number): Promise<WeatherData | n
 			current: 'temperature_2m,apparent_temperature,windspeed_10m,weathercode',
 			hourly: 'temperature_2m,precipitation_probability,wind_speed_10m',
 			daily: 'sunrise,sunset',
-			forecast_days: '1',
 			forecast_hours: '12',
 			timezone: 'auto',
 		});
@@ -80,22 +79,17 @@ async function fetchOpenMeteo(lat: number, lng: number): Promise<WeatherData | n
 			precipPct = hourlyProb[closestIdx] ?? 0;
 		}
 
-		// Parse the full hourly forecast into HourlyEntry[].
 		let hourly: HourlyEntry[] | undefined;
-		try {
-			const hTemps = json.hourly?.temperature_2m ?? [];
-			const hProbs = json.hourly?.precipitation_probability ?? [];
-			const hWinds = json.hourly?.wind_speed_10m ?? [];
-			if (hourlyTimes.length > 0) {
-				hourly = hourlyTimes.slice(0, 12).map((t, i) => ({
-					time: new Date(t),
-					tempC: hTemps[i] ?? 0,
-					precipPct: hProbs[i] ?? 0,
-					windKmh: hWinds[i] ?? 0,
-				}));
-			}
-		} catch {
-			// If parsing fails, hourly stays undefined.
+		const hTemps = json.hourly?.temperature_2m ?? [];
+		const hProbs = json.hourly?.precipitation_probability ?? [];
+		const hWinds = json.hourly?.wind_speed_10m ?? [];
+		if (hourlyTimes.length > 0) {
+			hourly = hourlyTimes.slice(0, 12).map((t, i) => ({
+				time: new Date(t),
+				tempC: hTemps[i] ?? 0,
+				precipPct: hProbs[i] ?? 0,
+				windKmh: hWinds[i] ?? 0,
+			}));
 		}
 
 		return {
@@ -264,16 +258,16 @@ export function formatCompactTemp(celsius: number, units: UnitSystem): string {
  * Computes the best-window hint parameters from hourly data and an optional window.
  *
  * @returns A discriminated union describing the hint, or `null` when no window exists.
- * - `{ type: 'drierWindow'; start: Date; end: Date }` — window starts within 30 min of now
- * - `{ type: 'bestToStartBy'; time: Date }` — window starts later
+ * - `{ type: 'drierWindow'; start: Date; end: Date }` - window starts within 30 min of now
+ * - `{ type: 'bestToStartBy'; time: Date }` - window starts later
  */
 export function computeBestWindowHintParams(
 	hourly: HourlyEntry[],
-	window: { startIdx: number; endIdx: number } | null,
+	bestWindow: { startIdx: number; endIdx: number } | null,
 ): { type: 'drierWindow'; start: Date; end: Date } | { type: 'bestToStartBy'; time: Date } | null {
-	if (!window) return null;
-	const windowStart = hourly[window.startIdx].time;
-	const windowEnd = hourly[window.endIdx].time;
+	if (!bestWindow) return null;
+	const windowStart = hourly[bestWindow.startIdx].time;
+	const windowEnd = hourly[bestWindow.endIdx].time;
 	const now = Date.now();
 	const diffMs = windowStart.getTime() - now;
 
@@ -298,4 +292,51 @@ export function formatSunTime(isoString: string, units: UnitSystem = 'metric'): 
 	} catch {
 		return isoString.slice(11, 16);
 	}
+}
+
+export interface HourlyColumnData {
+	hourLabel: string;
+	precipPct: number;
+	precipSrText: string;
+	temperature: string;
+}
+
+export interface HourlyStripData {
+	columns: HourlyColumnData[];
+	bestWindowHint?: string;
+	ariaLabel?: string;
+}
+
+export function buildHourlyStripData(
+	weatherData: WeatherData | null,
+	units: UnitSystem,
+	tWeather: (key: string, params?: Record<string, string | number>) => string,
+): HourlyStripData | undefined {
+	if (!weatherData?.hourly?.length) return undefined;
+	const hourly = weatherData.hourly;
+	const columns: HourlyColumnData[] = hourly.map((entry) => ({
+		hourLabel: formatHourlyTimeShort(entry.time, units),
+		precipPct: entry.precipPct,
+		precipSrText: tWeather('hourly.precipAt', {
+			pct: entry.precipPct,
+			time: formatHourlyTime(entry.time, units),
+		}),
+		temperature: formatCompactTemp(entry.tempC, units),
+	}));
+	const bestWindowResult = findBestWindow(hourly);
+	const hintParams = computeBestWindowHintParams(hourly, bestWindowResult);
+	let bestWindowHint: string | undefined;
+	if (hintParams) {
+		if (hintParams.type === 'drierWindow') {
+			bestWindowHint = tWeather('hourly.drierWindow', {
+				start: formatHourlyTime(hintParams.start, units),
+				end: formatHourlyTime(hintParams.end, units),
+			});
+		} else {
+			bestWindowHint = tWeather('hourly.bestToStartBy', {
+				time: formatHourlyTime(hintParams.time, units),
+			});
+		}
+	}
+	return { columns, bestWindowHint, ariaLabel: tWeather('hourly.stripLabel') };
 }

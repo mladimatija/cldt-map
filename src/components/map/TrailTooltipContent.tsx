@@ -8,18 +8,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/Button';
 import { HourlyWeatherStrip } from './HourlyWeatherStrip';
-
-export interface HourlyColumnData {
-	hourLabel: string;
-	precipPct: number;
-	precipSrText: string;
-	temperature: string;
-}
-
-export interface HourlyStripData {
-	columns: HourlyColumnData[];
-	bestWindowHint?: string;
-}
+import type { HourlyStripData } from '@/lib/weather';
 
 export interface TrailTooltipData {
 	lat: number;
@@ -49,7 +38,7 @@ export interface TrailTooltipWeather {
 	sunset: string;
 }
 
-/** All label strings — callers are responsible for including trailing punctuation (e.g. ":"). */
+/** All label strings - callers are responsible for including trailing punctuation (e.g. ":"). */
 export interface TrailTooltipLabels {
 	close: string;
 	coordinates: string;
@@ -196,7 +185,7 @@ export function TrailTooltipContent({
 			)}
 			{hourlyStrip && (
 				<div className="mt-1 border-t border-black pt-1">
-					<HourlyWeatherStrip data={hourlyStrip} />
+					<HourlyWeatherStrip ariaLabel={hourlyStrip.ariaLabel} data={hourlyStrip} />
 				</div>
 			)}
 			{canNavigate === true && onNavigate && (

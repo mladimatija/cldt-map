@@ -27,7 +27,7 @@ const formatHHMM = (isoString: string): string => isoString.slice(11, 16);
 /**
  * Converts an Open-Meteo local ISO string (no timezone suffix, in the trail location's timezone)
  * to a UTC millisecond timestamp. Without this, new Date(isoString) parses in the browser's
- * local timezone — wrong outside the trail's timezone.
+ * local timezone - wrong outside the trail's timezone.
  */
 const isoLocalToUtcMs = (isoLocal: string, utcOffsetSeconds: number): number =>
 	new Date(isoLocal + 'Z').getTime() - utcOffsetSeconds * 1000;

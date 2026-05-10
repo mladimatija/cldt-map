@@ -181,5 +181,10 @@ export function createMapStoreStub(): MapStoreState {
 		loadImportedTracksFromStorage: noopAsyncVoid,
 		hoveredImportedTrackId: null,
 		setHoveredImportedTrackId: noop,
+
+		severeWeatherLayer: false,
+		setSevereWeatherLayer: noop,
+		severeWeatherData: null,
+		setSevereWeatherData: noop,
 	};
 }

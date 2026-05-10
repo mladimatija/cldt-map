@@ -83,6 +83,7 @@
 		"batterySaverTooltip": "Reduces location update frequency and animations to save battery.",
 		"largeTouchTargets": "Large touch targets",
 		"largeTouchTargetsTooltip": "Increases button size for easier tapping on mobile.",
+		"layersSection": "Layers",
 		"showSections": "Show trail sections",
 		"showSectionsTooltip": "Color-codes the trail by section and shows section boundary markers with stats.",
 		"walkingPace": "Walking pace",
@@ -408,7 +409,8 @@
 		"hourly": {
 			"precipAt": "{pct}% precipitation at {time}",
 			"drierWindow": "Drier window: {start} - {end}",
-			"bestToStartBy": "Best to start by {time}"
+			"bestToStartBy": "Best to start by {time}",
+			"stripLabel": "12-hour forecast"
 		}
 	},
 	"distanceOverlay": {
@@ -461,5 +463,18 @@
 		"stripMapPdfProgress": "{current} / {total}",
 		"stripMapPdfCancel": "Cancel",
 		"pdfStageLabel": "Stage"
+	},
+	"severeWeather": {
+		"layerLabel": "Severe weather warnings",
+		"layerTooltip": "Show or hide severe weather warning areas on the map",
+		"severity": "Severity:",
+		"event": "Event:",
+		"validUntil": "Valid until:",
+		"source": "Source:",
+		"bannerPrefix": "Weather warning:",
+		"severityYellow": "Minor",
+		"severityOrange": "Moderate",
+		"severityRed": "Severe",
+		"dismiss": "Dismiss"
 	}
 }
