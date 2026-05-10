@@ -8,7 +8,7 @@ import L from 'leaflet';
 import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
 import { isWithinMapBoundary, getNavigateToPointUrl, formatDistance, formatElevation } from '@/lib/utils';
 import { TRAIL_OFF_TRAIL_THRESHOLD_M } from '@/lib/config';
-import { computeDistanceRemaining } from '@/lib/distance-utils';
+import { buildWindCompassPayload, computeDistanceRemaining, findNearestPointIndex } from '@/lib/distance-utils';
 import {
 	fetchWeather,
 	buildHourlyStripData,
@@ -19,7 +19,12 @@ import {
 	weatherKeyToIcon,
 	type WeatherData,
 } from '@/lib/weather';
-import { TrailTooltipContent, type TrailTooltipData, type TrailTooltipWeather } from './TrailTooltipContent';
+import {
+	TrailTooltipContent,
+	type TrailTooltipData,
+	type TrailTooltipWeather,
+	type TrailTooltipWindCompass,
+} from './TrailTooltipContent';
 
 /** @see TRAIL_OFF_TRAIL_THRESHOLD_M in src/lib/config.ts */
 const OFF_TRAIL_DISTANCE_M = TRAIL_OFF_TRAIL_THRESHOLD_M;
@@ -135,21 +140,18 @@ export default function MapMarkers(): React.ReactElement | null {
 		[],
 	);
 
+	/** Index of the trail point nearest the user's projected position; shared by tooltip memos. */
+	const nearestEnhancedPointIdx = useMemo(() => {
+		if (!closestPoint || enhancedTrailPoints.length === 0) return -1;
+		return findNearestPointIndex(enhancedTrailPoints, closestPoint.distanceFromStart);
+	}, [closestPoint, enhancedTrailPoints]);
+
 	const trailData = useMemo((): TrailTooltipData | null => {
 		if (!closestPoint || closestPoint.distance > OFF_TRAIL_DISTANCE_M || enhancedTrailPoints.length === 0) return null;
 		const distanceResult = computeDistanceRemaining(closestPoint, rulerRange, OFF_TRAIL_DISTANCE_M);
-		if (!distanceResult) return null;
+		if (!distanceResult || nearestEnhancedPointIdx < 0) return null;
 
-		const target = closestPoint.distanceFromStart;
-		let best = enhancedTrailPoints[0];
-		let bestDiff = Math.abs(best.distanceFromStart - target);
-		for (let i = 1; i < enhancedTrailPoints.length; i++) {
-			const diff = Math.abs(enhancedTrailPoints[i].distanceFromStart - target);
-			if (diff < bestDiff) {
-				bestDiff = diff;
-				best = enhancedTrailPoints[i];
-			}
-		}
+		const best = enhancedTrailPoints[nearestEnhancedPointIdx];
 
 		const totalDistanceM = (trailMetadata?.totalDistance ?? 0) * 1000;
 		const totalGain = trailMetadata?.elevationGain ?? 0;
@@ -185,7 +187,17 @@ export default function MapMarkers(): React.ReactElement | null {
 			accumulatedLoss: best.elevationLossFromStart > 0 ? formatElevation(best.elevationLossFromStart, units) : null,
 			accumulatedLossPct: lossPct,
 		};
-	}, [closestPoint, rulerRange, enhancedTrailPoints, trailMetadata, units, distancePrecision, tRoute, tControls]);
+	}, [
+		closestPoint,
+		rulerRange,
+		enhancedTrailPoints,
+		nearestEnhancedPointIdx,
+		trailMetadata,
+		units,
+		distancePrecision,
+		tRoute,
+		tControls,
+	]);
 
 	// Derive effective weather: null when off-trail or no location
 	const effectiveWeatherData: WeatherData | null = userLocation && !isOffTrail ? weatherData : null;
@@ -210,6 +222,21 @@ export default function MapMarkers(): React.ReactElement | null {
 		() => buildHourlyStripData(effectiveWeatherData, units, tWeather),
 		[effectiveWeatherData, units, tWeather],
 	);
+
+	/** Wind-vs-trail compass payload. Null when off-trail, calm, or wind direction unavailable. */
+	const tooltipWindCompass = useMemo((): TrailTooltipWindCompass | null => {
+		if (!effectiveWeatherData || nearestEnhancedPointIdx < 0) return null;
+		const payload = buildWindCompassPayload(
+			effectiveWeatherData.windFromDeg,
+			effectiveWeatherData.windspeedKmh,
+			enhancedTrailPoints[nearestEnhancedPointIdx].bearingDeg,
+		);
+		if (!payload) return null;
+		return {
+			relativeAngle: payload.relativeAngle,
+			label: `${tWeather(`wind.${payload.cls}`)} ${Math.round(Math.abs(payload.relativeAngle))}°`,
+		};
+	}, [effectiveWeatherData, enhancedTrailPoints, nearestEnhancedPointIdx, tWeather]);
 
 	// Fetch weather for the user's location when on-trail; re-fetches after 30 s minimum.
 	useEffect(() => {
@@ -259,7 +286,7 @@ export default function MapMarkers(): React.ReactElement | null {
 					temperature: `${tWeather('temperature')}:`,
 					feelsLike: `${tWeather('feelsLike')}:`,
 					precipitation: `${tWeather('precipitation')}:`,
-					wind: `${tWeather('wind')}:`,
+					wind: `${tWeather('wind.label')}:`,
 					sunrise: `${tWeather('sunrise')}:`,
 					sunset: `${tWeather('sunset')}`,
 					weatherLoading: tWeather('loading'),
@@ -269,6 +296,7 @@ export default function MapMarkers(): React.ReactElement | null {
 				trailData={trailData}
 				weather={tooltipWeather}
 				weatherLoading={effectiveIsWeatherLoading}
+				windCompass={tooltipWindCompass ?? undefined}
 				onClose={handleTooltipClose}
 				onNavigate={() => {
 					const loc = useMapStore.getState().userLocation;
@@ -295,6 +323,7 @@ export default function MapMarkers(): React.ReactElement | null {
 		trailData,
 		tooltipWeather,
 		tooltipHourlyStrip,
+		tooltipWindCompass,
 		effectiveIsWeatherLoading,
 		handleTooltipClose,
 	]);

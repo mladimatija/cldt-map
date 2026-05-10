@@ -34,7 +34,13 @@ import {
 	weatherKeyToIcon,
 	type WeatherData,
 } from '@/lib/weather';
-import { TrailTooltipContent, type TrailTooltipData, type TrailTooltipWeather } from './TrailTooltipContent';
+import {
+	TrailTooltipContent,
+	type TrailTooltipData,
+	type TrailTooltipWeather,
+	type TrailTooltipWindCompass,
+} from './TrailTooltipContent';
+import { buildWindCompassPayload } from '@/lib/distance-utils';
 import type { UnitSystem } from '@/lib/types';
 import { useLocale, useTranslations } from 'next-intl';
 import { useFitToRoute } from '@/hooks';
@@ -168,6 +174,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 		elevationGainFromStart?: number;
 		elevationLossFromStart?: number;
 		sectionName?: string;
+		bearingDeg: number;
 	}
 
 	const clearMarkerAndTooltip = useCallback((): void => {
@@ -298,7 +305,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 				temperature: `${tWeather('temperature')}:`,
 				feelsLike: `${tWeather('feelsLike')}:`,
 				precipitation: `${tWeather('precipitation')}:`,
-				wind: `${tWeather('wind')}:`,
+				wind: `${tWeather('wind.label')}:`,
 				sunrise: `${tWeather('sunrise')}:`,
 				sunset: tWeather('sunset'),
 				weatherLoading: tWeather('loading'),
@@ -323,6 +330,15 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 					sunset: formatSunTime(weatherData.sunset, currentUnits),
 				};
 			};
+			const buildWindCompass = (weatherData: WeatherData | null): TrailTooltipWindCompass | null => {
+				if (!weatherData) return null;
+				const payload = buildWindCompassPayload(weatherData.windFromDeg, weatherData.windspeedKmh, point.bearingDeg);
+				if (!payload) return null;
+				return {
+					relativeAngle: payload.relativeAngle,
+					label: `${tWeather(`wind.${payload.cls}`)} ${Math.round(Math.abs(payload.relativeAngle))}°`,
+				};
+			};
 			const renderTooltip = (weatherData: WeatherData | null, weatherLoading: boolean): void => {
 				tooltipRoot.render(
 					<TrailTooltipContent
@@ -332,6 +348,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 						trailData={pointData}
 						weather={buildWeather(weatherData)}
 						weatherLoading={weatherLoading}
+						windCompass={buildWindCompass(weatherData) ?? undefined}
 						onClose={onClose}
 					/>,
 				);

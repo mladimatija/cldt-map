@@ -54,6 +54,9 @@ export interface EnhancedTrailPoint {
 	elevationLossFromStart: number;
 	index: number;
 	sectionName?: string;
+	/** Bearing in degrees (0–360, clockwise from north) from this point to the next.
+	 * The last point inherits the previous point's bearing; single-point trails get 0. */
+	bearingDeg: number;
 }
 
 export interface TrailMetadata {

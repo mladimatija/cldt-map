@@ -12,6 +12,9 @@ export interface WeatherData {
 	feelsLikeC: number;
 	precipitationProbabilityPct: number;
 	windspeedKmh: number;
+	/** Meteorological "wind from" direction in degrees (0–360, clockwise from north).
+	 *  Null when not provided (e.g. DHMZ alone, without an Open-Meteo fallback). */
+	windFromDeg: number | null;
 	weatherCode: number;
 	sunrise: string;
 	sunset: string;
@@ -27,6 +30,7 @@ interface OpenMeteoResponse {
 		temperature_2m?: number;
 		apparent_temperature?: number;
 		windspeed_10m?: number;
+		winddirection_10m?: number;
 		weathercode?: number;
 	};
 	hourly?: {
@@ -47,7 +51,7 @@ async function fetchOpenMeteo(lat: number, lng: number): Promise<WeatherData | n
 		const params = new URLSearchParams({
 			latitude: lat.toFixed(5),
 			longitude: lng.toFixed(5),
-			current: 'temperature_2m,apparent_temperature,windspeed_10m,weathercode',
+			current: 'temperature_2m,apparent_temperature,windspeed_10m,winddirection_10m,weathercode',
 			hourly: 'temperature_2m,precipitation_probability,wind_speed_10m',
 			daily: 'sunrise,sunset',
 			forecast_hours: '12',
@@ -97,6 +101,7 @@ async function fetchOpenMeteo(lat: number, lng: number): Promise<WeatherData | n
 			feelsLikeC: current.apparent_temperature ?? 0,
 			precipitationProbabilityPct: precipPct,
 			windspeedKmh: current.windspeed_10m ?? 0,
+			windFromDeg: current.winddirection_10m ?? null,
 			weatherCode: current.weathercode ?? 0,
 			sunrise: daily.sunrise?.[0] ?? '',
 			sunset: daily.sunset?.[0] ?? '',
@@ -135,6 +140,7 @@ export async function fetchWeather(lat: number, lng: number): Promise<WeatherDat
 			return {
 				...dhmz,
 				precipitationProbabilityPct: openMeteo?.precipitationProbabilityPct ?? 0,
+				windFromDeg: openMeteo?.windFromDeg ?? null,
 				sunrise: openMeteo?.sunrise || dhmz.sunrise,
 				sunset: openMeteo?.sunset || dhmz.sunset,
 				utcOffsetSeconds: openMeteo?.utcOffsetSeconds ?? dhmz.utcOffsetSeconds ?? 0,

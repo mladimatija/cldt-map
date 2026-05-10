@@ -8,6 +8,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/Button';
 import { HourlyWeatherStrip } from './HourlyWeatherStrip';
+import { WindCompass } from './WindCompass';
 import type { HourlyStripData } from '@/lib/weather';
 
 export interface TrailTooltipData {
@@ -59,6 +60,11 @@ export interface TrailTooltipLabels {
 	navigate?: string;
 }
 
+export interface TrailTooltipWindCompass {
+	relativeAngle: number;
+	label: string;
+}
+
 interface TrailTooltipContentProps {
 	title?: string;
 	trailData: TrailTooltipData | null;
@@ -68,6 +74,7 @@ interface TrailTooltipContentProps {
 	showClose?: boolean;
 	canNavigate?: boolean;
 	hourlyStrip?: HourlyStripData;
+	windCompass?: TrailTooltipWindCompass;
 	onClose: () => void;
 	onNavigate?: () => void;
 }
@@ -90,6 +97,7 @@ export function TrailTooltipContent({
 	showClose,
 	canNavigate,
 	hourlyStrip,
+	windCompass,
 	onClose,
 	onNavigate,
 }: TrailTooltipContentProps): React.ReactElement {
@@ -173,6 +181,11 @@ export function TrailTooltipContent({
 							<div>
 								<span className="font-medium">{labels.wind}</span> {weather.wind}
 							</div>
+							{windCompass && (
+								<div className="mt-1">
+									<WindCompass label={windCompass.label} relativeAngle={windCompass.relativeAngle} />
+								</div>
+							)}
 							{(weather.sunrise || weather.sunset) && (
 								<div>
 									<span className="font-medium">{labels.sunrise}</span> {weather.sunrise}{' '}

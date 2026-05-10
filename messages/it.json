@@ -388,7 +388,12 @@
 		"temperature": "Temperatura",
 		"feelsLike": "Percepita",
 		"precipitation": "Precipitazioni",
-		"wind": "Vento",
+		"wind": {
+			"label": "Vento",
+			"headwind": "Vento contrario",
+			"tailwind": "Vento a favore",
+			"crosswind": "Vento laterale"
+		},
 		"condition": "Condizione",
 		"sunrise": "Alba",
 		"sunset": "Tramonto",

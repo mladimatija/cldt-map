@@ -388,7 +388,12 @@
 		"temperature": "Temperature",
 		"feelsLike": "Feels like",
 		"precipitation": "Precipitation",
-		"wind": "Wind",
+		"wind": {
+			"label": "Wind",
+			"headwind": "Headwind",
+			"tailwind": "Tailwind",
+			"crosswind": "Crosswind"
+		},
 		"condition": "Condition",
 		"sunrise": "Sunrise",
 		"sunset": "Sunset",
