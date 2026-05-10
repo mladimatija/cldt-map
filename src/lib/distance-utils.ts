@@ -295,6 +295,70 @@ export function formatDistanceM(meters: number, units: UnitSystem): string {
 	return `${(meters / 1000).toFixed(1)} km`;
 }
 
+/**
+ * Computes the initial great-circle bearing (in degrees, 0–360, clockwise from north)
+ * from point 1 to point 2. Uses the spherical "forward azimuth" formula.
+ */
+export function computeBearing(lat1: number, lng1: number, lat2: number, lng2: number): number {
+	const φ1 = (lat1 * Math.PI) / 180;
+	const φ2 = (lat2 * Math.PI) / 180;
+	const Δλ = ((lng2 - lng1) * Math.PI) / 180;
+	const y = Math.sin(Δλ) * Math.cos(φ2);
+	const x = Math.cos(φ1) * Math.sin(φ2) - Math.sin(φ1) * Math.cos(φ2) * Math.cos(Δλ);
+	return ((Math.atan2(y, x) * 180) / Math.PI + 360) % 360;
+}
+
+/**
+ * Returns the angular offset of the wind source relative to the trail bearing,
+ * in the range (-180, 180]. Both inputs are degrees clockwise from north.
+ * `windFromDeg` is the meteorological "wind from" direction (Open-Meteo's
+ * `winddirection_10m`): the direction the wind is blowing FROM.
+ *
+ * - 0 means the wind comes from the direction of travel (head-on → headwind).
+ * - ±180 means the wind comes from behind the hiker (→ tailwind).
+ * - ±90 means a pure crosswind from the right (-90) or left (+90).
+ *
+ * The output is the rotation to apply to the compass arrow so that it points
+ * toward the wind's source while the trail bearing is fixed pointing up.
+ */
+export function relativeWindAngle(windFromDeg: number, trailBearingDeg: number): number {
+	return ((windFromDeg - trailBearingDeg + 540) % 360) - 180;
+}
+
+export type WindClass = 'tailwind' | 'crosswind' | 'headwind';
+
+/**
+ * Classifies a relative-wind angle (output of `relativeWindAngle`) into
+ * headwind / crosswind / tailwind. Because the angle measures wind-source
+ * relative to travel direction, small angles mean the wind comes from where
+ * the hiker is heading (headwind); large angles mean it comes from behind
+ * (tailwind).
+ */
+export function classifyWind(relativeAngle: number): WindClass {
+	const a = Math.abs(relativeAngle);
+	if (a <= 45) return 'headwind';
+	if (a >= 135) return 'tailwind';
+	return 'crosswind';
+}
+
+/** Wind speeds below this (km/h) are treated as calm and the compass is hidden. */
+export const CALM_WIND_THRESHOLD_KMH = 3;
+
+/**
+ * Computes the wind-vs-bearing payload for a tooltip compass. Returns `null`
+ * when the compass should be hidden — calm conditions or missing wind direction.
+ * Callers format the visible label themselves (i18n lives at the call site).
+ */
+export function buildWindCompassPayload(
+	windFromDeg: number | null,
+	windspeedKmh: number,
+	trailBearingDeg: number,
+): { relativeAngle: number; cls: WindClass } | null {
+	if (windFromDeg === null || windspeedKmh < CALM_WIND_THRESHOLD_KMH) return null;
+	const relativeAngle = relativeWindAngle(windFromDeg, trailBearingDeg);
+	return { relativeAngle, cls: classifyWind(relativeAngle) };
+}
+
 function formatMinSec(totalSec: number, unit: string): string {
 	const min = Math.floor(totalSec / 60);
 	const sec = Math.round(totalSec % 60);

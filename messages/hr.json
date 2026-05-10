@@ -389,7 +389,12 @@
 		"temperature": "Temperatura",
 		"feelsLike": "Osjeća se kao",
 		"precipitation": "Padaline",
-		"wind": "Vjetar",
+		"wind": {
+			"label": "Vjetar",
+			"headwind": "Čeoni vjetar",
+			"tailwind": "Leđni vjetar",
+			"crosswind": "Bočni vjetar"
+		},
 		"condition": "Stanje",
 		"sunrise": "Izlazak sunca",
 		"sunset": "Zalazak sunca",

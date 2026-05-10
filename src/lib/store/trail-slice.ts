@@ -5,6 +5,7 @@ import { isWithinMapBoundary } from '../utils';
 import type { StoreState, TrailSlice, TrailState, ClosestPoint, EnhancedTrailPoint } from './types';
 import { L } from './leaflet';
 import { TRAIL_SECTIONS } from '../trail-sections';
+import { computeBearing } from '../distance-utils';
 
 type GpxElevationPoint = { lat: number; lng: number; elevation: number };
 
@@ -210,6 +211,11 @@ export const createTrailSlice: StateCreator<StoreState, [], [], TrailSlice> = (s
 			const distKm = cumulativeDistance / 1000;
 			const section = TRAIL_SECTIONS.find((s) => distKm >= s.startKm && distKm < s.endKm);
 
+			// Bearing to the next point; last point's value is overwritten in a final pass below
+			// (single-point trails keep 0).
+			const bearingDeg =
+				i < points.length - 1 ? computeBearing(points[i].lat, points[i].lng, points[i + 1].lat, points[i + 1].lng) : 0;
+
 			enhancedPoints.push({
 				lat: points[i].lat,
 				lng: points[i].lng,
@@ -219,7 +225,13 @@ export const createTrailSlice: StateCreator<StoreState, [], [], TrailSlice> = (s
 				elevationLossFromStart: cumulativeElevLoss,
 				index: i,
 				sectionName: section?.nameKey,
+				bearingDeg,
 			});
+		}
+
+		// Last point inherits previous bearing (single-point trails keep 0).
+		if (enhancedPoints.length >= 2) {
+			enhancedPoints[enhancedPoints.length - 1].bearingDeg = enhancedPoints[enhancedPoints.length - 2].bearingDeg;
 		}
 
 		set({ enhancedTrailPoints: enhancedPoints });
