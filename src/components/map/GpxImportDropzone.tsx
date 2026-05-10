@@ -87,7 +87,7 @@ export default function GpxImportDropzone(): React.ReactElement {
 
 	return (
 		<>
-			{/* Hidden file picker — triggered from MapControlsImportsPanel */}
+			{/* Hidden file picker - triggered from MapControlsImportsPanel */}
 			<input
 				accept=".gpx"
 				aria-label={t('pickFile')}

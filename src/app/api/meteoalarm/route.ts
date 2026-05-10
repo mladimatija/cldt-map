@@ -13,6 +13,7 @@ import type { Feature, FeatureCollection, Polygon, Position } from 'geojson';
 
 const METEOALARM_URL = 'https://feeds.meteoalarm.org/api/v1/warnings/feeds-croatia';
 const FETCH_TIMEOUT_MS = 30_000;
+const MAX_BODY_BYTES = 5 * 1024 * 1024;
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -27,36 +28,64 @@ interface MeteoalarmProperties {
 }
 
 /* ------------------------------------------------------------------ */
-/*  XML helpers (regex-based, same pattern as /api/dhmz-weather)       */
+/*  XML helpers (regex-based, pre-compiled per tag)                    */
 /* ------------------------------------------------------------------ */
 
-/** Extract the text content of the first matching XML tag (no nesting). */
+const tagRegexCache = new Map<string, RegExp>();
+const openRegexCache = new Map<string, RegExp>();
+const openRegexGlobalCache = new Map<string, RegExp>();
+const closeRegexCache = new Map<string, RegExp>();
+
+function getTagRegex(tag: string): RegExp {
+	let r = tagRegexCache.get(tag);
+	if (!r) {
+		r = new RegExp(`<${tag}[^>]*>([^<]*)<\\/${tag}>`);
+		tagRegexCache.set(tag, r);
+	}
+	return r;
+}
+
+function getOpenRegex(tag: string, global = false): RegExp {
+	const cache = global ? openRegexGlobalCache : openRegexCache;
+	let r = cache.get(tag);
+	if (!r) {
+		r = new RegExp(`<${tag}[^>]*>`, global ? 'g' : undefined);
+		cache.set(tag, r);
+	}
+	if (global) r.lastIndex = 0;
+	return r;
+}
+
+function getCloseRegex(tag: string): RegExp {
+	let r = closeRegexCache.get(tag);
+	if (!r) {
+		r = new RegExp(`<\\/${tag}>`);
+		closeRegexCache.set(tag, r);
+	}
+	return r;
+}
+
 function extractTag(xml: string, tag: string): string {
-	const match = xml.match(new RegExp(`<${tag}[^>]*>([^<]*)<\\/${tag}>`));
+	const match = xml.match(getTagRegex(tag));
 	return match?.[1]?.trim() ?? '';
 }
 
-/** Extract the full block between the first <tag>…</tag> (supports nested content). */
 function extractBlock(xml: string, tag: string): string {
-	const open = new RegExp(`<${tag}[^>]*>`);
-	const close = new RegExp(`<\\/${tag}>`);
-	const startMatch = open.exec(xml);
+	const startMatch = getOpenRegex(tag).exec(xml);
 	if (!startMatch) return '';
-	const closeMatch = close.exec(xml.slice(startMatch.index + startMatch[0].length));
+	const closeMatch = getCloseRegex(tag).exec(xml.slice(startMatch.index + startMatch[0].length));
 	if (!closeMatch) return '';
 	const endIndex = startMatch.index + startMatch[0].length + closeMatch.index + closeMatch[0].length;
 	return xml.slice(startMatch.index, endIndex);
 }
 
-/** Extract all matching blocks for a given tag. */
 function extractAllBlocks(xml: string, tag: string): string[] {
 	const blocks: string[] = [];
-	const open = new RegExp(`<${tag}[^>]*>`, 'g');
-	const close = new RegExp(`<\\/${tag}>`);
+	const open = getOpenRegex(tag, true);
 	let match: RegExpExecArray | null;
 	while ((match = open.exec(xml)) !== null) {
 		const rest = xml.slice(match.index + match[0].length);
-		const closeMatch = close.exec(rest);
+		const closeMatch = getCloseRegex(tag).exec(rest);
 		if (!closeMatch) continue;
 		const endIndex = match.index + match[0].length + closeMatch.index + closeMatch[0].length;
 		blocks.push(xml.slice(match.index, endIndex));
@@ -181,9 +210,7 @@ function parseEntries(xml: string): Feature<Polygon, MeteoalarmProperties>[] {
 /*  Empty collection (reused in error paths)                           */
 /* ------------------------------------------------------------------ */
 
-function emptyCollection(): FeatureCollection {
-	return { type: 'FeatureCollection', features: [] };
-}
+const EMPTY_COLLECTION: FeatureCollection = { type: 'FeatureCollection', features: [] };
 
 /* ------------------------------------------------------------------ */
 /*  Route handler                                                      */
@@ -206,10 +233,20 @@ export async function GET(): Promise<Response> {
 
 		if (!res.ok) {
 			console.error(`[meteoalarm] Upstream returned ${res.status}`);
-			return NextResponse.json(emptyCollection(), { headers: CACHE_HEADERS });
+			return NextResponse.json(EMPTY_COLLECTION, { headers: CACHE_HEADERS });
+		}
+
+		const contentLength = parseInt(res.headers.get('content-length') ?? '0', 10);
+		if (contentLength > MAX_BODY_BYTES) {
+			console.error(`[meteoalarm] Response too large: ${contentLength}`);
+			return NextResponse.json(EMPTY_COLLECTION, { headers: CACHE_HEADERS });
 		}
 
 		const xml = await res.text();
+		if (xml.length > MAX_BODY_BYTES) {
+			console.error('[meteoalarm] Body exceeded size limit');
+			return NextResponse.json(EMPTY_COLLECTION, { headers: CACHE_HEADERS });
+		}
 		const features = parseEntries(xml);
 
 		const collection: FeatureCollection = {
@@ -220,6 +257,6 @@ export async function GET(): Promise<Response> {
 		return NextResponse.json(collection, { headers: CACHE_HEADERS });
 	} catch (err) {
 		console.error('[meteoalarm]', err);
-		return NextResponse.json(emptyCollection(), { headers: CACHE_HEADERS });
+		return NextResponse.json(EMPTY_COLLECTION, { headers: CACHE_HEADERS });
 	}
 }

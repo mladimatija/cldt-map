@@ -9,6 +9,7 @@ import dynamic from 'next/dynamic';
 import { useTranslations } from 'next-intl';
 import { useMapStore, type MapStoreState } from '@/lib/store';
 import { DEFAULT_PATH_OPTIONS } from '@/components/map/trail-route-constants';
+import { useSevereWeatherFetch } from '@/hooks/useSevereWeatherFetch';
 
 function MapTrailLoadingFallback(): React.ReactElement {
 	const t = useTranslations('mapWrapper');
@@ -54,6 +55,10 @@ const RadarControls = dynamic(
 );
 const GpxImportDropzone = dynamic(() => import('@/components/map/GpxImportDropzone'), { ssr: false });
 const ImportedTrackLayer = dynamic(() => import('@/components/map/ImportedTrackLayer'), { ssr: false });
+const SevereWeatherLayer = dynamic(
+	() => import('@/components/map/SevereWeatherLayer').then((m) => ({ default: m.SevereWeatherLayer })),
+	{ ssr: false },
+);
 
 export default function MapContent(): React.ReactElement {
 	const [isLocating, setIsLocating] = useState(false);
@@ -64,6 +69,8 @@ export default function MapContent(): React.ReactElement {
 	const permissionStatus = useMapStore((state: MapStoreState) => state.permissionStatus);
 	const initLocationService = useMapStore((state: MapStoreState) => state.initLocationService);
 	const requestLocationPermission = useMapStore((state: MapStoreState) => state.requestLocationPermission);
+
+	useSevereWeatherFetch();
 
 	// Initialize location service once when the component mounts
 	useEffect(() => {
@@ -156,6 +163,7 @@ export default function MapContent(): React.ReactElement {
 			<SunsetSunriseMarkers />
 			<StageBoundaryMarkers />
 			<NoticeMarkers />
+			<SevereWeatherLayer />
 			<MapControls />
 			<RulerHint />
 			<ZoomControls />

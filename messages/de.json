@@ -83,6 +83,7 @@
 		"batterySaverTooltip": "Reduziert die Häufigkeit von Standortaktualisierungen und Animationen, um Energie zu sparen.",
 		"largeTouchTargets": "Große Touch-Ziele",
 		"largeTouchTargetsTooltip": "Vergrößert Schaltflächen für einfacheres Tippen auf Mobilgeräten.",
+		"layersSection": "Ebenen",
 		"showSections": "Abschnitte anzeigen",
 		"showSectionsTooltip": "Markiert den Trail farbig nach Abschnitt und zeigt Abschnittsmarkierungen mit Statistiken.",
 		"walkingPace": "Gehtempo",
@@ -408,7 +409,8 @@
 		"hourly": {
 			"precipAt": "{pct}% Niederschlag um {time}",
 			"drierWindow": "Trockenes Fenster: {start} - {end}",
-			"bestToStartBy": "Am besten starten bis {time}"
+			"bestToStartBy": "Am besten starten bis {time}",
+			"stripLabel": "12-Stunden-Vorhersage"
 		}
 	},
 	"distanceOverlay": {
@@ -461,5 +463,18 @@
 		"stripMapPdfProgress": "{current} / {total}",
 		"stripMapPdfCancel": "Abbrechen",
 		"pdfStageLabel": "Etappe"
+	},
+	"severeWeather": {
+		"layerLabel": "Unwetterwarnungen",
+		"layerTooltip": "Unwetterwarnbereiche auf der Karte ein- oder ausblenden",
+		"severity": "Schweregrad:",
+		"event": "Ereignis:",
+		"validUntil": "Gültig bis:",
+		"source": "Quelle:",
+		"bannerPrefix": "Wetterwarnung:",
+		"severityYellow": "Gering",
+		"severityOrange": "Mäßig",
+		"severityRed": "Schwer",
+		"dismiss": "Schließen"
 	}
 }

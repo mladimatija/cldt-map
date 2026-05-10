@@ -83,6 +83,7 @@
 		"batterySaverTooltip": "Smanjuje učestalost ažuriranja lokacije i animacije radi uštede baterije.",
 		"largeTouchTargets": "Velike dodirne površine",
 		"largeTouchTargetsTooltip": "Povećava veličinu gumba radi lakšeg dodirivanja na mobilnim uređajima.",
+		"layersSection": "Slojevi",
 		"showSections": "Prikaži dionice staze",
 		"showSectionsTooltip": "Označava dionice staze bojama i prikazuje oznake granica dionica sa statistikama.",
 		"walkingPace": "Tempo hodanja",
@@ -409,7 +410,8 @@
 		"hourly": {
 			"precipAt": "{pct}% padalina u {time}",
 			"drierWindow": "Suši prozor: {start} - {end}",
-			"bestToStartBy": "Najbolje krenuti do {time}"
+			"bestToStartBy": "Najbolje krenuti do {time}",
+			"stripLabel": "12-satna prognoza"
 		}
 	},
 	"distanceOverlay": {
@@ -462,5 +464,18 @@
 		"stripMapPdfProgress": "{current} / {total}",
 		"stripMapPdfCancel": "Odustani",
 		"pdfStageLabel": "Etapa"
+	},
+	"severeWeather": {
+		"layerLabel": "Upozorenja za opasno vrijeme",
+		"layerTooltip": "Prikaži ili sakrij područja upozorenja za opasno vrijeme na karti",
+		"severity": "Ozbiljnost:",
+		"event": "Događaj:",
+		"validUntil": "Vrijedi do:",
+		"source": "Izvor:",
+		"bannerPrefix": "Upozorenje za vrijeme:",
+		"severityYellow": "Manji",
+		"severityOrange": "Umjeren",
+		"severityRed": "Ozbiljan",
+		"dismiss": "Odbaci"
 	}
 }

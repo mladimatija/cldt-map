@@ -269,6 +269,8 @@ const MapControls: React.FC<MapControlsProps> = ({
 	const setGradeAdjustedEta = useMapStore((state: MapStoreState) => state.setGradeAdjustedEta);
 	const sunsetProjection = useMapStore((state: MapStoreState) => state.sunsetProjection);
 	const setSunsetProjection = useMapStore((state: MapStoreState) => state.setSunsetProjection);
+	const severeWeatherLayer = useMapStore((state: MapStoreState) => state.severeWeatherLayer);
+	const setSevereWeatherLayer = useMapStore((state: MapStoreState) => state.setSevereWeatherLayer);
 
 	const storeDirection = useMapStore((state: MapStoreState) => state.direction);
 	const enhancedTrailPoints = useStore((state: StoreState) => state.enhancedTrailPoints);
@@ -919,7 +921,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 				});
 			}
 		};
-	}); // end useLayoutEffect — keeps rulerClickHandlerRef.current in sync
+	}); // end useLayoutEffect - keeps rulerClickHandlerRef.current in sync
 
 	useEffect(() => {
 		if (!rulerTooltipRef.current || rulerPointDataRef.current.length < 2) {
@@ -1391,9 +1393,11 @@ const MapControls: React.FC<MapControlsProps> = ({
 					setDarkMode={setDarkMode}
 					setGradeAdjustedEta={setGradeAdjustedEta}
 					setLargeTouchTargets={setLargeTouchTargets}
+					setSevereWeatherLayer={setSevereWeatherLayer}
 					setShowSections={setShowSections}
 					setSunsetProjection={setSunsetProjection}
 					setWalkingPaceKmh={setWalkingPaceKmh}
+					severeWeatherLayer={severeWeatherLayer}
 					showSections={showSections}
 					sunsetProjection={sunsetProjection}
 					tooltipHide={t('preferencesHide')}

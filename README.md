@@ -41,6 +41,7 @@ Interactive web map for the **Croatian Long Distance Trail (CLDT)** - a 2,200+ k
 - **Map layers** - Standard, Topo, Satellite, Terrain, CyclOSM, Croatia Topo
 - **Weather at trail location** - Current conditions (temperature, feels like, wind, precipitation probability, sunrise/sunset) shown in the location tooltip; 12-hour hourly forecast strip with per-hour temperature, precipitation bars, and wind; automatic "best window" hint identifying the longest dry period; sourced from DHMZ (Croatian Met Service) with Open-Meteo as fallback
 - **Trail condition notices** - Regional banner alerts fetched from a JSON feed; dismissible per session
+- **Severe weather alerts** - Meteoalarm CAP warnings for Croatia rendered as colour-coded polygons (yellow/orange/red by severity); toggleable map layer; automatic GPS-triggered banner when you enter a warning area; non-dismissible for red/severe warnings; data refreshed every 15 minutes
 - **Precipitation radar** - RainViewer radar overlay with animated past + nowcast frames, play/pause controls, and a colour-scale legend
 - **Location tracking** - Optional GPS to see your position on the trail
 - **Share links** - Share current map view or progress on the trail

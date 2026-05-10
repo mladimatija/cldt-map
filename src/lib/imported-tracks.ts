@@ -21,7 +21,7 @@ const importedTracksStore = localforage.createInstance({
 
 export const TRACK_COLOR_PALETTE = ['#e74c3c', '#3498db', '#2ecc71', '#f39c12', '#9b59b6'];
 
-// FNV-1a 32-bit — per DR-023: sufficient for content-addressable deduplication of user-local files
+// FNV-1a 32-bit - per DR-023: sufficient for content-addressable deduplication of user-local files
 function fnv1aHash(str: string): string {
 	let h = 0x811c9dc5;
 	for (let i = 0; i < str.length; i++) {
@@ -138,7 +138,7 @@ export function computeTrackStats(track: ImportedTrack, enhancedPoints: { lat: n
 			let nearestIdx = hint;
 			let nearestDist = haversineM(pt.lat, pt.lng, enhancedPoints[hint].lat, enhancedPoints[hint].lng);
 
-			// Forward scan from hint — break early when distances diverge significantly
+			// Forward scan from hint - break early when distances diverge significantly
 			for (let j = hint + 1; j < enhancedPoints.length; j++) {
 				const d = haversineM(pt.lat, pt.lng, enhancedPoints[j].lat, enhancedPoints[j].lng);
 				if (d < nearestDist) {

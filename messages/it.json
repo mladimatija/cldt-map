@@ -83,6 +83,7 @@
 		"batterySaverTooltip": "Riduce la frequenza degli aggiornamenti di posizione e le animazioni per risparmiare batteria.",
 		"largeTouchTargets": "Pulsanti grandi",
 		"largeTouchTargetsTooltip": "Ingrandisce i pulsanti per facilitare il tocco su dispositivi mobili.",
+		"layersSection": "Livelli",
 		"showSections": "Mostra sezioni sentiero",
 		"showSectionsTooltip": "Colora il sentiero per sezione e mostra i marcatori dei confini con le statistiche.",
 		"walkingPace": "Velocità di camminata",
@@ -408,7 +409,8 @@
 		"hourly": {
 			"precipAt": "{pct}% precipitazioni alle {time}",
 			"drierWindow": "Finestra asciutta: {start} - {end}",
-			"bestToStartBy": "Meglio partire entro le {time}"
+			"bestToStartBy": "Meglio partire entro le {time}",
+			"stripLabel": "Previsione 12 ore"
 		}
 	},
 	"distanceOverlay": {
@@ -461,5 +463,18 @@
 		"stripMapPdfProgress": "{current} / {total}",
 		"stripMapPdfCancel": "Annulla",
 		"pdfStageLabel": "Tappa"
+	},
+	"severeWeather": {
+		"layerLabel": "Avvisi meteo severi",
+		"layerTooltip": "Mostra o nascondi le aree di allerta meteo sulla mappa",
+		"severity": "Gravità:",
+		"event": "Evento:",
+		"validUntil": "Valido fino a:",
+		"source": "Fonte:",
+		"bannerPrefix": "Allerta meteo:",
+		"severityYellow": "Minore",
+		"severityOrange": "Moderato",
+		"severityRed": "Grave",
+		"dismiss": "Chiudi"
 	}
 }

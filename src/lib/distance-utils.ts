@@ -302,7 +302,7 @@ function formatMinSec(totalSec: number, unit: string): string {
 }
 
 export function formatPaceFromSecPerKm(secPerKm: number, units: UnitSystem): string {
-	if (secPerKm === 0) return '—';
+	if (secPerKm === 0) return '-';
 	return units === 'imperial' ? formatMinSec(secPerKm * 1.60934, 'mi') : formatMinSec(secPerKm, 'km');
 }
 

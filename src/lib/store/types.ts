@@ -280,6 +280,12 @@ export interface MapStoreState {
 
 	hoveredImportedTrackId: string | null;
 	setHoveredImportedTrackId: (id: string | null) => void;
+
+	// ── Severe weather ──────────────────────────────────────────────────
+	severeWeatherLayer: boolean;
+	setSevereWeatherLayer: (enabled: boolean) => void;
+	severeWeatherData: GeoJSON.FeatureCollection | null;
+	setSevereWeatherData: (data: GeoJSON.FeatureCollection | null) => void;
 }
 
 export interface StagePlan {
