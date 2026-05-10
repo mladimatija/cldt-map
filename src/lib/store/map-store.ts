@@ -447,6 +447,15 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 				setHoveredImportedTrackId: (id: string | null): void => {
 					set({ hoveredImportedTrackId: id });
 				},
+
+				severeWeatherLayer: false,
+				setSevereWeatherLayer: (enabled: boolean): void => {
+					set({ severeWeatherLayer: enabled });
+				},
+				severeWeatherData: null,
+				setSevereWeatherData: (data: GeoJSON.FeatureCollection | null): void => {
+					set({ severeWeatherData: data });
+				},
 			}),
 			{
 				name: 'cldt-map-storage',
@@ -468,6 +477,7 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					gradeAdjustedEta: state.gradeAdjustedEta,
 					sunsetProjection: state.sunsetProjection,
 					stagePlan: state.stagePlan,
+					severeWeatherLayer: state.severeWeatherLayer,
 				}),
 			},
 		),
