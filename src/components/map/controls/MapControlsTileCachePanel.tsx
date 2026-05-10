@@ -50,12 +50,14 @@ export function MapControlsTileCachePanel(): React.ReactElement {
 	const tileCacheError = useMapStore((s: MapStoreState) => s.tileCacheError);
 	const tileCacheMeta = useMapStore((s: MapStoreState) => s.tileCacheMeta);
 	const autoSync = useMapStore((s: MapStoreState) => s.autoSync);
+	const predictivePrecache = useMapStore((s: MapStoreState) => s.predictivePrecache);
 	const gpxLoaded = useMapStore((s: MapStoreState) => s.gpxLoaded);
 	const startTileDownload = useMapStore((s: MapStoreState) => s.startTileDownload);
 	const cancelTileDownload = useMapStore((s: MapStoreState) => s.cancelTileDownload);
 	const clearTileCacheForProvider = useMapStore((s: MapStoreState) => s.clearTileCacheForProvider);
 	const loadTileCacheMeta = useMapStore((s: MapStoreState) => s.loadTileCacheMeta);
 	const setAutoSync = useMapStore((s: MapStoreState) => s.setAutoSync);
+	const setPredictivePrecache = useMapStore((s: MapStoreState) => s.setPredictivePrecache);
 	const enhancedTrailPoints = useStore((s: StoreState) => s.enhancedTrailPoints);
 
 	// Live tile count local state
@@ -301,7 +303,34 @@ export function MapControlsTileCachePanel(): React.ReactElement {
 									onMouseDown={(e) => e.stopPropagation()}
 								>
 									<SmartTooltip content={t('autoSyncTooltip')} position="top">
-										<IoHelpCircleOutline className="ml-0.5 h-3.5 w-3.5 shrink-0 cursor-help text-gray-400 hover:text-gray-600 dark:text-white" />
+										<IoHelpCircleOutline
+											aria-hidden
+											className="ml-0.5 h-3.5 w-3.5 shrink-0 cursor-help text-gray-400 hover:text-gray-600 dark:text-[var(--text-primary)]"
+										/>
+									</SmartTooltip>
+								</span>
+							</label>
+
+							{/* Predictive pre-cache toggle */}
+							<label
+								className={`flex items-center gap-2 ${hasCache ? 'cursor-pointer' : 'pointer-events-none cursor-not-allowed opacity-50'}`}
+							>
+								<Checkbox
+									checked={predictivePrecache}
+									disabled={!hasCache}
+									onCheckedChange={(checked) => setPredictivePrecache(checked)}
+								/>
+								<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">{t('predictive.label')}</span>
+								<span
+									className="inline-flex"
+									onClick={(e) => e.stopPropagation()}
+									onMouseDown={(e) => e.stopPropagation()}
+								>
+									<SmartTooltip content={t('predictive.hint')} position="top">
+										<IoHelpCircleOutline
+											aria-hidden
+											className="ml-0.5 h-3.5 w-3.5 shrink-0 cursor-help text-gray-400 hover:text-gray-600 dark:text-[var(--text-primary)]"
+										/>
 									</SmartTooltip>
 								</span>
 							</label>

@@ -1,7 +1,7 @@
 import type * as GeoJSON from 'geojson';
 import { create, type StoreApi, type UseBoundStore } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import { config } from '../config';
+import { config, TRAIL_OFF_TRAIL_THRESHOLD_M } from '../config';
 import { getRandomLocationInBoundary, toLocationError } from '../utils';
 import { LocationService } from '../services/location-service';
 import type { ImportedTrack, MapStoreState, StagePlan, StoreState, TrailDirection, UnitSystem } from './types';
@@ -16,19 +16,28 @@ import {
 	isProviderCacheable,
 	isCacheStale,
 	estimateStorage,
+	runPredictivePrecache,
+	abortPredictivePrecache,
+	resetPredictivePrecacheBuckets,
 	PRECACHE_ZOOM_MIN,
 	PRECACHE_ZOOM_MAX,
 	type TileCacheMeta,
+	type NavigatorWithConnection,
+	type NavigatorWithBattery,
 } from '../tile-cache';
-import { RulerRange } from '@/lib/distance-utils';
+import { findNearestPointIndex, RulerRange } from '@/lib/distance-utils';
 import { loadImportedTracks, removeImportedTrack } from '../imported-tracks';
+
+/** Module-level abort controller for tile downloads - one download at a time. */
+let tilePrecacheAbortController: AbortController | null = null;
+
+/** Last time a GPS-source predictive pre-cache check was evaluated. Module-scoped so the debounce survives selector subscriptions. */
+let lastPredictiveCheckAt = 0;
+const PREDICTIVE_GPS_DEBOUNCE_MS = 30_000;
 
 /**
  * Creates the persisted map store. Receives getMainStore so it does not import the main store at module init (avoids circular deps).
  */
-/** Module-level abort controller for tile downloads - one download at a time. */
-let tilePrecacheAbortController: AbortController | null = null;
-
 export function createMapStore(getMainStore: () => StoreState): UseBoundStore<StoreApi<MapStoreState>> {
 	return create<MapStoreState>()(
 		persist(
@@ -63,7 +72,16 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 				setDistancePrecision: (precision: number) => set({ distancePrecision: precision }),
 
 				direction: config.direction,
-				setDirection: (direction: TrailDirection) => set({ direction }),
+				setDirection: (direction: TrailDirection) => {
+					// Reverse-of-travel invalidates the predictive throttle: a NOBO 0–20 km bucket
+					// is a different forward corridor than a SOBO 0–20 km bucket. Clearing the
+					// bucket set + debounce timestamp lets the next GPS update re-arm a run.
+					if (get().direction !== direction) {
+						resetPredictivePrecacheBuckets();
+						lastPredictiveCheckAt = 0;
+					}
+					set({ direction });
+				},
 
 				showBoundary: config.showBoundary,
 				setShowBoundary: (show: boolean) => set({ showBoundary: show }),
@@ -195,6 +213,7 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 				tileCacheError: null,
 				tileCacheMeta: null,
 				autoSync: false,
+				predictivePrecache: false,
 
 				startTileDownload: async (points, providerName) => {
 					if (typeof window === 'undefined') return;
@@ -258,6 +277,96 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 				},
 
 				setAutoSync: (enabled: boolean) => set({ autoSync: enabled }),
+
+				setPredictivePrecache: (enabled: boolean) => {
+					set({ predictivePrecache: enabled });
+					if (!enabled) abortPredictivePrecache();
+				},
+
+				/** Single entry point for SW `TILE_QUOTA_EXCEEDED` - sets the error flag and aborts the predictive run. */
+				handleQuotaExceeded: () => {
+					set({ tileCacheError: 'quota_exceeded' });
+					abortPredictivePrecache();
+				},
+
+				/**
+				 * Evaluates favourable conditions and either starts a predictive run or aborts the
+				 * in-flight one. Conditions: toggle on, active provider's offline tiles are initialised
+				 * (proxied by `tileCacheMeta !== null` - a prior baseline download exists), no recent
+				 * quota error, GPS active and on-trail, Wi-Fi connection, battery ≥ 50 % or charging.
+				 * Battery values are read locally only and never transmitted.
+				 *
+				 * Inexpensive synchronous guards run before the async `getBattery()` so the high-frequency
+				 * GPS path doesn't pay an IPC round-trip for calls that would fail trivially.
+				 */
+				maybeRunPredictivePrecache: async (opts) => {
+					if (typeof window === 'undefined') return;
+					const source = opts?.source ?? 'gps';
+					const state = get();
+
+					// Fast-fail synchronous guards. If any fails, also abort any in-flight run (REQ-005).
+					if (
+						!state.predictivePrecache ||
+						!state.tileCacheMeta ||
+						!isProviderCacheable(state.baseMapProvider) ||
+						state.tileCacheError === 'quota_exceeded'
+					) {
+						abortPredictivePrecache();
+						return;
+					}
+
+					// GPS-source debounce. Change-event sources always re-evaluate.
+					if (source === 'gps') {
+						const now = Date.now();
+						if (now - lastPredictiveCheckAt < PREDICTIVE_GPS_DEBOUNCE_MS) return;
+						lastPredictiveCheckAt = now;
+					}
+
+					// GPS / on-trail (inexpensive sync). Off-trail or unknown position → abort + stop.
+					const main = getMainStore();
+					const closest = main.closestPoint;
+					const enhanced = main.enhancedTrailPoints ?? [];
+					if (!state.userLocation || !closest || closest.distance > TRAIL_OFF_TRAIL_THRESHOLD_M || !enhanced.length) {
+						abortPredictivePrecache();
+						return;
+					}
+
+					// Wi-Fi only - cellular pre-cache is explicitly out of scope. When the Network
+					// Information API is absent, `conn?.type` is undefined and this check aborts
+					// as intended.
+					const conn = (navigator as NavigatorWithConnection).connection;
+					if (conn?.type !== 'wifi') {
+						abortPredictivePrecache();
+						return;
+					}
+
+					// Battery (async, evaluated last). Missing API → unfavourable.
+					const navWithBattery = navigator as NavigatorWithBattery;
+					if (typeof navWithBattery.getBattery !== 'function') {
+						abortPredictivePrecache();
+						return;
+					}
+					let battery: { level: number; charging: boolean };
+					try {
+						battery = await navWithBattery.getBattery();
+					} catch {
+						abortPredictivePrecache();
+						return;
+					}
+					if (!battery.charging && battery.level < 0.5) {
+						abortPredictivePrecache();
+						return;
+					}
+
+					// All favourable - start (or restart) a run.
+					const fromIdx = findNearestPointIndex(enhanced, closest.distanceFromStart);
+					void runPredictivePrecache({
+						points: enhanced,
+						fromIdx,
+						direction: state.direction,
+						providerName: state.baseMapProvider,
+					});
+				},
 
 				showStaleCacheNotification: false,
 				setStaleCacheNotification: (show: boolean): void => {
@@ -473,6 +582,7 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					largeTouchTargets: state.largeTouchTargets,
 					baseMapProvider: state.baseMapProvider,
 					autoSync: state.autoSync,
+					predictivePrecache: state.predictivePrecache,
 					walkingPaceKmh: state.walkingPaceKmh,
 					gradeAdjustedEta: state.gradeAdjustedEta,
 					sunsetProjection: state.sunsetProjection,

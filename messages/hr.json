@@ -337,6 +337,10 @@
 		"downloadError": "Preuzimanje nije uspjelo. Pokušajte ponovo.",
 		"autoSync": "Automatska sinkronizacija",
 		"autoSyncTooltip": "Automatski preuzima zastarjele pločice kada uređaj dođe online.",
+		"predictive": {
+			"label": "Prediktivno pred-učitavanje",
+			"hint": "Učitaj pločice unaprijed dok je dostupan Wi-Fi."
+		},
 		"estimatedTiles": "~{count} pločica za preuzimanje",
 		"today": "danas",
 		"yesterday": "jučer",

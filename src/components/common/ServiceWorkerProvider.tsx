@@ -5,7 +5,13 @@ import { useTranslations } from 'next-intl';
 import { IoRefresh } from 'react-icons/io5';
 import { Button } from '@/components/ui/Button';
 import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
-import { getProviderCacheKey, isCacheStale } from '@/lib/tile-cache';
+import {
+	getProviderCacheKey,
+	isCacheStale,
+	type BatteryManager,
+	type NavigatorWithBattery,
+	type NavigatorWithConnection,
+} from '@/lib/tile-cache';
 
 interface ServiceWorkerProviderProps {
 	children: React.ReactNode;
@@ -27,6 +33,8 @@ export function ServiceWorkerProvider({ children }: ServiceWorkerProviderProps):
 	const loadTileCacheMeta = useMapStore((state: MapStoreState) => state.loadTileCacheMeta);
 	const startTileDownload = useMapStore((state: MapStoreState) => state.startTileDownload);
 	const baseMapProvider = useMapStore((state: MapStoreState) => state.baseMapProvider);
+	const maybeRunPredictivePrecache = useMapStore((state: MapStoreState) => state.maybeRunPredictivePrecache);
+	const handleQuotaExceeded = useMapStore((state: MapStoreState) => state.handleQuotaExceeded);
 	const enhancedTrailPoints = useStore((state: StoreState) => state.enhancedTrailPoints);
 
 	// Only run service worker logic on the client side
@@ -74,8 +82,8 @@ export function ServiceWorkerProvider({ children }: ServiceWorkerProviderProps):
 					listenForInstall(reg);
 				});
 			})
-			.catch((error) => {
-				console.error('ServiceWorker registration failed:', error);
+			.catch((error: unknown) => {
+				console.error('ServiceWorker registration failed:', error instanceof Error ? error.message : String(error));
 			});
 
 		navigator.serviceWorker.addEventListener('controllerchange', onControllerChange);
@@ -97,8 +105,10 @@ export function ServiceWorkerProvider({ children }: ServiceWorkerProviderProps):
 		if (typeof window === 'undefined' || !('serviceWorker' in navigator)) return;
 
 		const handleMessage = (event: MessageEvent): void => {
+			// Only act on messages from a real SW (not stray window.postMessage).
+			if (!(event.source instanceof ServiceWorker)) return;
 			if (event.data?.type === 'TILE_QUOTA_EXCEEDED') {
-				useMapStore.setState({ tileCacheError: 'quota_exceeded' });
+				handleQuotaExceeded();
 			}
 		};
 
@@ -106,13 +116,14 @@ export function ServiceWorkerProvider({ children }: ServiceWorkerProviderProps):
 		return () => {
 			navigator.serviceWorker.removeEventListener('message', handleMessage);
 		};
-	}, []);
+	}, [handleQuotaExceeded]);
 
 	// Background sync: re-download tiles when coming back online (if autoSync enabled)
 	useEffect(() => {
 		if (typeof window === 'undefined') return;
 
 		const handleOnline = (): void => {
+			void maybeRunPredictivePrecache({ source: 'online' });
 			if (!autoSync) return;
 			if (!enhancedTrailPoints?.length) return;
 			if (!baseMapProvider) return;
@@ -130,7 +141,55 @@ export function ServiceWorkerProvider({ children }: ServiceWorkerProviderProps):
 		return () => {
 			window.removeEventListener('online', handleOnline);
 		};
-	}, [autoSync, enhancedTrailPoints, baseMapProvider, loadTileCacheMeta, startTileDownload]);
+	}, [
+		autoSync,
+		enhancedTrailPoints,
+		baseMapProvider,
+		loadTileCacheMeta,
+		startTileDownload,
+		maybeRunPredictivePrecache,
+	]);
+
+	// Network type changes (Wi-Fi <-> cellular) trigger predictive checks
+	useEffect(() => {
+		if (typeof window === 'undefined') return;
+		const conn = (navigator as NavigatorWithConnection).connection;
+		if (!conn || typeof conn.addEventListener !== 'function') return;
+		const handler = (): void => {
+			void maybeRunPredictivePrecache({ source: 'network' });
+		};
+		conn.addEventListener('change', handler);
+		return () => {
+			conn.removeEventListener?.('change', handler); // some platforms expose addEventListener but not removeEventListener
+		};
+	}, [maybeRunPredictivePrecache]);
+
+	// Battery level / charging state changes trigger predictive checks.
+	// Battery values are read locally only and never transmitted (privacy: the API
+	// is deprecated/restricted in some browsers, treated as unavailable in those).
+	useEffect(() => {
+		if (typeof window === 'undefined') return;
+		const navWithBattery = navigator as NavigatorWithBattery;
+		if (typeof navWithBattery.getBattery !== 'function') return;
+		let battery: BatteryManager | null = null;
+		const handler = (): void => {
+			void maybeRunPredictivePrecache({ source: 'battery' });
+		};
+		navWithBattery
+			.getBattery()
+			.then((b) => {
+				battery = b;
+				b.addEventListener('levelchange', handler);
+				b.addEventListener('chargingchange', handler);
+			})
+			.catch(() => {
+				// getBattery rejected - battery API unavailable, skip silently.
+			});
+		return () => {
+			battery?.removeEventListener('levelchange', handler);
+			battery?.removeEventListener('chargingchange', handler);
+		};
+	}, [maybeRunPredictivePrecache]);
 
 	const onUpdateNow = (): void => {
 		const reg = registrationRef.current;

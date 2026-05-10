@@ -72,6 +72,7 @@ export default function MapMarkers(): React.ReactElement | null {
 	const rulerRange = useMapStore((state: MapStoreState) => state.rulerRange);
 	const units = useMapStore((state: MapStoreState) => state.units);
 	const distancePrecision = useMapStore((state: MapStoreState) => state.distancePrecision);
+	const maybeRunPredictivePrecache = useMapStore((state: MapStoreState) => state.maybeRunPredictivePrecache);
 	const closestPoint = useStore((state: StoreState) => state.closestPoint);
 	const gpxLoaded = useStore((state: StoreState) => state.gpxLoaded);
 	const enhancedTrailPoints = useStore((state: StoreState) => state.enhancedTrailPoints);
@@ -262,6 +263,12 @@ export default function MapMarkers(): React.ReactElement | null {
 			map.setView([userLocation.lat, userLocation.lng], 14);
 		}
 	}, [userLocation, isLocating, map, withinMapBoundary, permissionStatus]);
+
+	// Trigger GPS-source predictive pre-cache check on each location update (debounced internally)
+	useEffect(() => {
+		if (!userLocation) return;
+		void maybeRunPredictivePrecache({ source: 'gps' });
+	}, [userLocation, maybeRunPredictivePrecache]);
 
 	const showTooltip = (isOffTrail && isOffTrailTooltipOpen) || (!isOffTrail && !isOnTrailTooltipDismissed);
 

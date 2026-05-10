@@ -336,6 +336,10 @@
 		"downloadError": "Download fallito. Riprova.",
 		"autoSync": "Sincronizzazione automatica quando online",
 		"autoSyncTooltip": "Riscarica automaticamente le tessere non aggiornate quando il dispositivo torna online.",
+		"predictive": {
+			"label": "Pre-cache predittivo",
+			"hint": "Carica i tile in anticipo quando il Wi-Fi è disponibile."
+		},
 		"estimatedTiles": "~{count} tessere da scaricare",
 		"today": "oggi",
 		"yesterday": "ieri",

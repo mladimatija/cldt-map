@@ -11,6 +11,7 @@
 import localforage from 'localforage';
 import { DEFAULT_MAP_SERVICES } from '@/lib/services/map-service-config';
 import { tileCacheTtlDays } from '@/lib/config';
+import { findNearestPointIndex } from '@/lib/distance-utils';
 import type { EnhancedTrailPoint } from '@/lib/store/types';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
@@ -216,6 +217,123 @@ export async function precacheTiles(
 
 	onProgress(total, total);
 	return { done: total, total, cancelled: false };
+}
+
+// ── Predictive pre-cache ──────────────────────────────────────────────────────
+
+/** Default look-ahead distance (km) for the predictive runner. */
+const PRECACHE_AHEAD_KM = 20;
+/** Throttle bucket size - kept equal to PRECACHE_AHEAD_KM so each forward window maps to exactly one bucket. */
+const PREDICTIVE_BUCKET_KM = PRECACHE_AHEAD_KM;
+
+/**
+ * Module-scoped throttle. Survives React re-renders and selector resubscriptions.
+ * Bucket key is `${direction}:${floor(positionKm / 20) * 20}` - position-snapped
+ * (not forward-segment identity), which is good enough for the spec's "same
+ * forward 20 km" intent and avoids redundant runs as the user progresses through
+ * a bucket. Cleared via `resetPredictivePrecacheBuckets()` on direction change.
+ */
+const visitedPrecacheBuckets = new Set<string>();
+
+/**
+ * Module-scoped AbortController for the in-flight predictive run. Predictive runs
+ * are coordinated outside React, so the controller lives at module scope rather
+ * than in component state. `abortPredictivePrecache()` is idempotent.
+ */
+let predictivePrecacheAbortController: AbortController | null = null;
+
+export function resetPredictivePrecacheBuckets(): void {
+	visitedPrecacheBuckets.clear();
+}
+
+export function abortPredictivePrecache(): void {
+	predictivePrecacheAbortController?.abort();
+	predictivePrecacheAbortController = null;
+}
+
+// Shared Navigator extension types - also consumed by ServiceWorkerProvider.
+export type NavigatorWithConnection = Navigator & {
+	connection?: {
+		type?: string;
+		effectiveType?: string;
+		addEventListener?: (type: 'change', handler: () => void) => void;
+		removeEventListener?: (type: 'change', handler: () => void) => void;
+	};
+};
+
+export interface BatteryManager {
+	level: number;
+	charging: boolean;
+	addEventListener(type: 'levelchange' | 'chargingchange', handler: () => void): void;
+	removeEventListener(type: 'levelchange' | 'chargingchange', handler: () => void): void;
+}
+
+export type NavigatorWithBattery = Navigator & {
+	getBattery?: () => Promise<BatteryManager>;
+};
+
+export interface PredictivePrecacheArgs {
+	points: Pick<EnhancedTrailPoint, 'lat' | 'lng' | 'distanceFromStart'>[];
+	fromIdx: number;
+	direction: 'SOBO' | 'NOBO';
+	providerName: string;
+	kmAhead?: number;
+}
+
+/**
+ * Caches tiles ahead of the user along the trail. Reuses corridor generation +
+ * `precacheTiles` but with a smaller slice (default 20 km). No UI progress is
+ * surfaced - runs silently. Idempotent within a 20 km bucket per direction
+ * (call `resetPredictivePrecacheBuckets()` on direction change).
+ */
+export async function runPredictivePrecache({
+	points,
+	fromIdx,
+	direction,
+	providerName,
+	kmAhead = PRECACHE_AHEAD_KM,
+}: PredictivePrecacheArgs): Promise<PrecacheResult | null> {
+	if (!isProviderCacheable(providerName)) return null;
+	const urlTemplate = getTileUrlTemplate(providerName);
+	if (!urlTemplate) return null;
+	if (!points.length || fromIdx < 0 || fromIdx >= points.length) return null;
+
+	const fromKm = points[fromIdx].distanceFromStart / 1000;
+	const bucketStartKm = Math.floor(fromKm / PREDICTIVE_BUCKET_KM) * PREDICTIVE_BUCKET_KM;
+	const bucketKey = `${direction}:${bucketStartKm}`;
+	if (visitedPrecacheBuckets.has(bucketKey)) return null;
+	visitedPrecacheBuckets.add(bucketKey);
+
+	const aheadM = kmAhead * 1000;
+	const baseDist = points[fromIdx].distanceFromStart;
+	let slice: typeof points;
+	if (direction === 'SOBO') {
+		const targetIdx = findNearestPointIndex(points, baseDist + aheadM);
+		slice = points.slice(fromIdx, targetIdx + 1);
+	} else {
+		const targetIdx = findNearestPointIndex(points, baseDist - aheadM);
+		slice = points.slice(targetIdx, fromIdx + 1).reverse();
+	}
+	if (slice.length < 2) return null;
+
+	const urls = generateTrailTileUrls(slice, urlTemplate, PRECACHE_ZOOM_MIN, PRECACHE_ZOOM_MAX);
+	if (!urls.length) return null;
+
+	const storage = await estimateStorage();
+	if (!storage.available) return null;
+
+	predictivePrecacheAbortController?.abort();
+	const controller = new AbortController();
+	predictivePrecacheAbortController = controller;
+	try {
+		return await precacheTiles(urls, () => {}, controller.signal);
+	} catch {
+		return null;
+	} finally {
+		if (predictivePrecacheAbortController === controller) {
+			predictivePrecacheAbortController = null;
+		}
+	}
 }
 
 // ── Cache info & management ───────────────────────────────────────────────────
