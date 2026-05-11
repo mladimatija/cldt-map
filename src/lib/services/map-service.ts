@@ -51,7 +51,7 @@ export class MapService {
 	 */
 	public getMap(): L.Map {
 		if (!this.map) {
-			throw new MapError('ERR_MAP_NOT_INITIALIZED', 'Map is not initialized');
+			throw new MapError('Map is not initialized', 'ERR_MAP_NOT_INITIALIZED');
 		}
 		return this.map;
 	}
@@ -116,7 +116,7 @@ export class MapService {
 	 */
 	public addService(config: BaseMapConfig): void {
 		if (!this.validateServiceConfig(config)) {
-			throw new MapError('ERR_INVALID_CONFIG', 'Invalid map service configuration');
+			throw new MapError('Invalid map service configuration', 'ERR_INVALID_CONFIG');
 		}
 		this.services.push(config);
 	}
@@ -138,7 +138,7 @@ export class MapService {
 	public updateService(name: string, updates: Partial<BaseMapConfig>): void {
 		const index = this.services.findIndex((service) => service.name === name);
 		if (index === -1) {
-			throw new MapError('ERR_SERVICE_NOT_FOUND', `Service "${name}" not found`);
+			throw new MapError(`Service "${name}" not found`, 'ERR_SERVICE_NOT_FOUND');
 		}
 
 		const updatedService = {
@@ -147,7 +147,7 @@ export class MapService {
 		};
 
 		if (!this.validateServiceConfig(updatedService)) {
-			throw new MapError('ERR_INVALID_CONFIG', 'Invalid map service configuration');
+			throw new MapError('Invalid map service configuration', 'ERR_INVALID_CONFIG');
 		}
 
 		this.services[index] = updatedService;
@@ -191,7 +191,7 @@ export class MapService {
 		if (typeof service === 'string') {
 			const foundService = this.getService(service);
 			if (!foundService) {
-				throw new MapError('ERR_SERVICE_NOT_FOUND', `Service "${service}" not found`);
+				throw new MapError(`Service "${service}" not found`, 'ERR_SERVICE_NOT_FOUND');
 			}
 			config = foundService;
 		} else {
@@ -304,7 +304,7 @@ export class MapService {
 		polyline: L.LatLng[],
 	): { point: L.LatLng; distance: number; index: number } {
 		if (polyline.length === 0) {
-			throw new MapError('ERR_EMPTY_POLYLINE', 'Cannot find nearest point on empty polyline');
+			throw new MapError('Cannot find nearest point on empty polyline', 'ERR_EMPTY_POLYLINE');
 		}
 
 		let minDistance = Infinity;
