@@ -57,6 +57,10 @@ export interface EnhancedTrailPoint {
 	/** Bearing in degrees (0-360, clockwise from north) from this point to the next.
 	 * The last point inherits the previous point's bearing; single-point trails get 0. */
 	bearingDeg: number;
+	/** Signed grade percent: positive when ascending in the current direction, negative when descending. */
+	gradePct: number;
+	/** Bucketed |gradePct|: 0 flat, 1 moderate, 2 steep, 3 very steep, 4 extreme. */
+	gradeBand: 0 | 1 | 2 | 3 | 4;
 }
 
 export interface TrailMetadata {
@@ -231,6 +235,8 @@ export interface MapStoreState {
 	setLargeTouchTargets: (enabled: boolean) => void;
 	showSections: boolean;
 	setShowSections: (show: boolean) => void;
+	gradeTintedTrail: boolean;
+	setGradeTintedTrail: (enabled: boolean) => void;
 	baseMapProvider: string;
 	setBaseMapProvider: (provider: string) => void;
 

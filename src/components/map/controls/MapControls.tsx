@@ -224,10 +224,12 @@ const MapControls: React.FC<MapControlsProps> = ({
 	const setBatterySaverMode = useMapStore((state: MapStoreState) => state.setBatterySaverMode);
 	const setLargeTouchTargets = useMapStore((state: MapStoreState) => state.setLargeTouchTargets);
 	const setShowSections = useMapStore((state: MapStoreState) => state.setShowSections);
+	const setGradeTintedTrail = useMapStore((state: MapStoreState) => state.setGradeTintedTrail);
 	const darkMode = useMapStore((state: MapStoreState) => state.darkMode);
 	const batterySaverMode = useMapStore((state: MapStoreState) => state.batterySaverMode);
 	const largeTouchTargets = useMapStore((state: MapStoreState) => state.largeTouchTargets);
 	const showSections = useMapStore((state: MapStoreState) => state.showSections);
+	const gradeTintedTrail = useMapStore((state: MapStoreState) => state.gradeTintedTrail);
 	const userLocation = useMapStore((state: MapStoreState) => state.userLocation);
 	const permissionStatus = useMapStore((state: MapStoreState) => state.permissionStatus);
 	const highlightedTrailPoint = useStore((state: StoreState) => state.highlightedTrailPoint);
@@ -1410,6 +1412,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 					darkMode={darkMode}
 					darkModeLabel={t('darkMode')}
 					gradeAdjustedEta={gradeAdjustedEta}
+					gradeTintedTrail={gradeTintedTrail}
 					isExpanded={isSettingsExpanded}
 					largeTouchTargets={largeTouchTargets}
 					largeTouchTargetsLabel={t('largeTouchTargets')}
@@ -1417,6 +1420,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 					setBatterySaverMode={setBatterySaverMode}
 					setDarkMode={setDarkMode}
 					setGradeAdjustedEta={setGradeAdjustedEta}
+					setGradeTintedTrail={setGradeTintedTrail}
 					setLargeTouchTargets={setLargeTouchTargets}
 					setSevereWeatherLayer={setSevereWeatherLayer}
 					setShowSections={setShowSections}

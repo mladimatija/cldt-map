@@ -48,7 +48,8 @@
 			"sunsetPosition": "Sonnenuntergang/Sonnenaufgang-Position - zeigt, wo du bei Sonnenuntergang und Sonnenaufgang auf dem Weg sein wirst; umschaltbare Markierungen auf der Strecke",
 			"stagePlanner": "Mehrtages-Etappenplaner - teile beliebige Streckenabschnitte nach Distanz oder Zeit in Tagesetappen auf, zeige Höhen- und ETA-Statistiken je Etappe an, exportiere einzelne Etappen als GPX-Dateien oder alle Etappen als Etappenkarten-PDF",
 			"gpxImport": "GPX-Track-Import - ziehe eine aufgezeichnete GPX-Datei auf die Karte (oder wähle sie aus) und vergleiche deine Route mit dem offiziellen Weg; Statistiken zu Distanz, Tempo, Gesamtzeit, Gehzeit, max. Abweichung und Streckenabdeckung",
-			"emergency": "Notfallpanel 112 - langes Drücken des roten SOS-Buttons (unten rechts) öffnet ein offline-first Panel mit deinen GPS-Koordinaten, Plus Code, Etappe und Kilometer auf dem Weg sowie Richtung und Entfernung zur nächsten Straßenanbindung und HGSS-Bergrettungsstation; jedes Feld in die Zwischenablage kopieren und an die Telefon-App (112 anrufen) oder Karten-App (In Karten öffnen) übergeben; vollständig offline, sobald die Daten im Cache sind"
+			"emergency": "Notfallpanel 112 - langes Drücken des roten SOS-Buttons (unten rechts) öffnet ein offline-first Panel mit deinen GPS-Koordinaten, Plus Code, Etappe und Kilometer auf dem Weg sowie Richtung und Entfernung zur nächsten Straßenanbindung und HGSS-Bergrettungsstation; jedes Feld in die Zwischenablage kopieren und an die Telefon-App (112 anrufen) oder Karten-App (In Karten öffnen) übergeben; vollständig offline, sobald die Daten im Cache sind",
+			"trailStyle": "Wegstil - wähle im Ebenen-Panel, wie die Route eingefärbt wird: Standard (eine Farbe), Abschnitte (Zonen A/B/C mit Grenzmarkern und Statistik pro Abschnitt) oder Steigung (Gradienten-Färbung in fünf Stufen, warme Töne für Anstiege und kühle für Abstiege in der aktuellen Gehrichtung; Farblegende im Panel; wird beim Wechsel der SOBO/NOBO-Richtung neu berechnet)"
 		},
 		"dataAttribution": "Daten & Urheberrecht",
 		"dataAttributionDesc": "Trail-Daten werden von der Udruga Long Distance Trail Hrvatska (LDTH) bereitgestellt. Kartenkacheln kommen von OpenStreetMap, OpenTopoMap, CyclOSM und anderen Anbietern. Kroatische topografische Karten stammen vom Staatlichen Geodätischen Amt (DGU). Wetterdaten kommen von DHMZ (Kroatischer Wetterdienst) und Open-Meteo. Radarkacheln werden von RainViewer bereitgestellt. Die auf dieser Seite angezeigten Daten entsprechen möglicherweise nicht dem aktuellen Stand. Im Zweifelsfall bitte immer die offiziellen Quellen prüfen.",
@@ -87,6 +88,22 @@
 		"layersSection": "Ebenen",
 		"showSections": "Abschnitte anzeigen",
 		"showSectionsTooltip": "Markiert den Trail farbig nach Abschnitt und zeigt Abschnittsmarkierungen mit Statistiken.",
+		"layers": {
+			"trailStyle": {
+				"legend": "Trail-Stil",
+				"default": "Standard",
+				"sections": "Abschnitte",
+				"grade": "Steigung",
+				"tooltip": "Wähle, wie die Trail-Linie eingefärbt wird.",
+				"legendTitle": "Steigung",
+				"legendFlat": "flach",
+				"legendModerate": "mäßig",
+				"legendSteep": "steil",
+				"legendVerySteep": "sehr steil",
+				"legendExtreme": "extrem",
+				"legendNote": "warm = Aufstieg, kühl = Abstieg"
+			}
+		},
 		"walkingPace": "Gehtempo",
 		"walkingPaceHint": "Bereich: {min} - {max}, Standard: {default}",
 		"walkingPaceReset": "Gehtempo auf Standard zurücksetzen",

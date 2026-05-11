@@ -48,7 +48,8 @@
 			"sunsetPosition": "Sunset/sunrise position - projects where you will be on the trail at sunset and sunrise based on your current pace; toggleable markers on the polyline",
 			"stagePlanner": "Multi-day stage planner - split any trail range into daily stages by distance or time, view per-stage elevation and ETA stats, export individual stages as GPX files, or export all stages as a strip-map PDF",
 			"gpxImport": "GPX track import - drag and drop (or pick) a recorded GPX file to overlay your actual hike on the map; compare your track against the official trail with stats on distance, pace, elapsed time, max deviation, and % of trail covered",
-			"emergency": "Emergency 112 panel - long-press the red SOS button (bottom-right) for an offline-first panel showing your GPS coordinates, Plus Code, trail section and km, and the bearing and distance to the nearest road access and HGSS mountain rescue station; copy any field to the clipboard and hand off to your phone dialer (Call 112) or maps app (Open in maps); fully offline once cached"
+			"emergency": "Emergency 112 panel - long-press the red SOS button (bottom-right) for an offline-first panel showing your GPS coordinates, Plus Code, trail section and km, and the bearing and distance to the nearest road access and HGSS mountain rescue station; copy any field to the clipboard and hand off to your phone dialer (Call 112) or maps app (Open in maps); fully offline once cached",
+			"trailStyle": "Trail style - choose how the route polyline is coloured from the layers panel: Default (single colour), Sections (A/B/C zones with boundary markers and per-section stats), or Grade (Strava-style gradient tinting with five bands; warm for ascents and cool for descents in the active travel direction; colour-ramp legend in the panel; recomputed when the SOBO/NOBO direction is toggled)"
 		},
 		"dataAttribution": "Data & attribution",
 		"dataAttributionDesc": "Trail data is provided by the Udruga Long Distance Trail Hrvatska (LDTH) organization. Map tiles come from OpenStreetMap, OpenTopoMap, CyclOSM, and other providers. Croatian topographic maps are from the State Geodetic Administration (DGU). Weather data comes from DHMZ (Croatian Met Service) and Open-Meteo. Radar tiles are provided by RainViewer. Data displayed on this site may not reflect the latest conditions. When in doubt, always verify with the official sources.",
@@ -87,6 +88,22 @@
 		"layersSection": "Layers",
 		"showSections": "Show trail sections",
 		"showSectionsTooltip": "Color-codes the trail by section and shows section boundary markers with stats.",
+		"layers": {
+			"trailStyle": {
+				"legend": "Trail style",
+				"default": "Default",
+				"sections": "Sections",
+				"grade": "Grade",
+				"tooltip": "Choose how the trail polyline is colored.",
+				"legendTitle": "Grade",
+				"legendFlat": "flat",
+				"legendModerate": "moderate",
+				"legendSteep": "steep",
+				"legendVerySteep": "very steep",
+				"legendExtreme": "extreme",
+				"legendNote": "warm = ascent, cool = descent"
+			}
+		},
 		"walkingPace": "Walking pace",
 		"walkingPaceHint": "Range: {min} - {max}, default: {default}",
 		"walkingPaceReset": "Reset walking pace to default",
