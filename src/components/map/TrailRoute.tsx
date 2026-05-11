@@ -4,7 +4,7 @@
  * Renders the CLDT trail polyline, start/finish markers, and trail info tooltip on map click or share URL.
  * Fetches GPX, builds enhanced points (distance/elevation), and syncs with the main store and map store.
  */
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { useMap } from 'react-leaflet';
 import L from 'leaflet';
@@ -97,6 +97,17 @@ function buildSectionTooltipHtml(
  */
 /** Disjoint polyline runs indexed by [band 0..4][sign: 0 ascent or flat, 1 descent]. */
 type GradeBandRuns = L.LatLng[][][][];
+
+interface TrailPoint {
+	lat: number;
+	lng: number;
+	elevation?: number;
+	distanceFromStart?: number;
+	elevationGainFromStart?: number;
+	elevationLossFromStart?: number;
+	sectionName?: string;
+	bearingDeg: number;
+}
 
 function buildGradeBandSegments(enhancedPoints: EnhancedTrailPoint[], pointLatLngs: L.LatLng[]): GradeBandRuns {
 	const runs: GradeBandRuns = Array.from({ length: 5 }, () => [[], []]);
@@ -213,16 +224,36 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 	const reloadTrailRequested = useMapStore((state: MapStoreState) => state.reloadTrailRequested);
 	const processTrailData = useMapStore((state: MapStoreState) => state.processTrailData);
 
-	interface TrailPoint {
-		lat: number;
-		lng: number;
-		elevation?: number;
-		distanceFromStart?: number;
-		elevationGainFromStart?: number;
-		elevationLossFromStart?: number;
-		sectionName?: string;
-		bearingDeg: number;
-	}
+	// Mirror tooltip-visibility state into refs so showMarkerAtPosition can read the
+	// latest value without depending on it. Without this, every visibility toggle
+	// changes the callback identity and causes the marker/tooltip to be torn down
+	// and rebuilt by the highlight-watching effect.
+	const isTooltipVisibleRef = useRef(false);
+	isTooltipVisibleRef.current = isTooltipVisible;
+	const tooltipPinnedFromShareRef = useRef(tooltipPinnedFromShare);
+	tooltipPinnedFromShareRef.current = tooltipPinnedFromShare;
+
+	const tooltipLabels = useMemo(
+		() => ({
+			close: t('close'),
+			coordinates: t('tooltipCoordinates'),
+			section: t('tooltipSection'),
+			elevation: t('tooltipElevation'),
+			distanceFromStart: t('tooltipDistanceFromStart'),
+			distanceToEnd: t('tooltipDistanceToEnd'),
+			distanceToSection: '',
+			accumulatedGain: t('tooltipAccumulatedGain'),
+			accumulatedLoss: t('tooltipAccumulatedLoss'),
+			temperature: `${tWeather('temperature')}:`,
+			feelsLike: `${tWeather('feelsLike')}:`,
+			precipitation: `${tWeather('precipitation')}:`,
+			wind: `${tWeather('wind.label')}:`,
+			sunrise: `${tWeather('sunrise')}:`,
+			sunset: tWeather('sunset'),
+			weatherLoading: tWeather('loading'),
+		}),
+		[t, tWeather],
+	);
 
 	const clearMarkerAndTooltip = useCallback((): void => {
 		if (tooltipRootRef.current) {
@@ -339,24 +370,6 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 				accumulatedLoss: elevationLossFromStart > 0 ? formatElevation(elevationLossFromStart, currentUnits) : null,
 				accumulatedLossPct: accumulatedLossPct.toFixed(1),
 			};
-			const tooltipLabels = {
-				close: t('close'),
-				coordinates: t('tooltipCoordinates'),
-				section: t('tooltipSection'),
-				elevation: t('tooltipElevation'),
-				distanceFromStart: t('tooltipDistanceFromStart'),
-				distanceToEnd: t('tooltipDistanceToEnd'),
-				distanceToSection: '',
-				accumulatedGain: t('tooltipAccumulatedGain'),
-				accumulatedLoss: t('tooltipAccumulatedLoss'),
-				temperature: `${tWeather('temperature')}:`,
-				feelsLike: `${tWeather('feelsLike')}:`,
-				precipitation: `${tWeather('precipitation')}:`,
-				wind: `${tWeather('wind.label')}:`,
-				sunrise: `${tWeather('sunrise')}:`,
-				sunset: tWeather('sunset'),
-				weatherLoading: tWeather('loading'),
-			};
 			const tooltipContainer = document.createElement('div');
 			const tooltipRoot = createRoot(tooltipContainer);
 			const onClose = (): void => {
@@ -441,7 +454,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 				pane: TRAIL_POINT_TOOLTIP_PANE,
 				offset,
 				direction: dir,
-				permanent: isTooltipVisible || tooltipPinnedFromShare,
+				permanent: isTooltipVisibleRef.current || tooltipPinnedFromShareRef.current,
 				className: 'map-tooltip map-tooltip--wide',
 			})
 				.setLatLng(markerPosition)
@@ -477,7 +490,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 
 			tooltipRef.current = tooltip;
 		},
-		[map, isTooltipVisible, tooltipPinnedFromShare, clearTrailHighlight, t, tControls, tWeather],
+		[map, clearTrailHighlight, t, tControls, tWeather, tooltipLabels],
 	);
 
 	useEffect(() => {
