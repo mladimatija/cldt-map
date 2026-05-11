@@ -5,11 +5,12 @@
  * and optional test link. Uses useBlockMapPropagation so clicks don't drag the map.
  */
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { useBlockMapPropagation } from '@/hooks';
+import { useBlockMapPropagation, useClickOutside } from '@/hooks';
 import { useMap } from 'react-leaflet';
 import L from 'leaflet';
 import geoData from '@/../public/data/geoJsonHr.json';
 import { calculateTrailMetadata } from '@/lib/map';
+import { findNearestPointIndex } from '@/lib/distance-utils';
 import {
 	type EnhancedTrailPoint,
 	type MapStoreState,
@@ -102,16 +103,8 @@ function createCroatiaBoundaryLayer(map: L.Map, borderLabel: string): L.GeoJSON 
 }
 
 function findPointAtDistance(enhancedTrailPoints: EnhancedTrailPoint[], distanceM: number): EnhancedTrailPoint | null {
-	let closest = enhancedTrailPoints[0];
-	let minDiff = Math.abs(closest.distanceFromStart - distanceM);
-	for (let i = 1; i < enhancedTrailPoints.length; i++) {
-		const d = Math.abs(enhancedTrailPoints[i].distanceFromStart - distanceM);
-		if (d < minDiff) {
-			minDiff = d;
-			closest = enhancedTrailPoints[i];
-		}
-	}
-	return closest;
+	if (enhancedTrailPoints.length === 0) return null;
+	return enhancedTrailPoints[findNearestPointIndex(enhancedTrailPoints, distanceM)];
 }
 
 const RULER_MARKER_ICON = L.divIcon({
@@ -169,8 +162,6 @@ function createAndAddTileBoundaryCanvas(map: L.Map, urlTemplate: string): L.Tile
 interface MapControlsProps {
 	onToggleDirection?: (direction: TrailDirection) => void;
 	onToggleUnits?: (units: UnitSystem) => void;
-	initialDirection?: TrailDirection;
-	initialUnits?: UnitSystem;
 }
 
 interface ExtendedMap extends L.Map {
@@ -180,15 +171,11 @@ interface ExtendedMap extends L.Map {
 const MapControls: React.FC<MapControlsProps> = ({
 	onToggleDirection = () => {},
 	onToggleUnits = () => {},
-	initialDirection = 'SOBO',
-	initialUnits = 'metric',
 }): React.ReactElement => {
 	const map = useMap() as ExtendedMap;
 	const t = useTranslations('mapControls');
 	const tChart = useTranslations('elevationChart');
 	const tExport = useTranslations('mapExport');
-	const [direction, setDirectionState] = useState<TrailDirection>(initialDirection);
-	const [units, setUnitsState] = useState<UnitSystem>(initialUnits);
 	const [isShowingBoundary, setIsShowingBoundary] = useState(false);
 	const [isSharing, setIsSharing] = useState(false);
 	const [isExporting, setIsExporting] = useState(false);
@@ -301,6 +288,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 		setIsPrecisionExpanded(false);
 		setIsColorAdjustEnabled(false);
 		setIsSettingsExpanded(false);
+		setIsSharing(false);
 		setIsExporting(false);
 		setIsStagePlannerExpanded(false);
 		setIsEmergencyOpen(false);
@@ -311,80 +299,12 @@ const MapControls: React.FC<MapControlsProps> = ({
 		void prefetchEmergencyData();
 	}, []);
 
-	// Close precision slider when clicking outside
-	useEffect(() => {
-		if (!isPrecisionExpanded) {
-			return;
-		}
-		const handleClickOutside = (e: MouseEvent): void => {
-			if (precisionContainerRef.current && !precisionContainerRef.current.contains(e.target as Node)) {
-				setIsPrecisionExpanded(false);
-			}
-		};
-		document.addEventListener('mousedown', handleClickOutside);
-		return () => document.removeEventListener('mousedown', handleClickOutside);
-	}, [isPrecisionExpanded]);
-
-	useEffect(() => {
-		if (!isColorAdjustEnabled) {
-			return;
-		}
-		const handleClickOutside = (e: MouseEvent): void => {
-			if (colorAdjustContainerRef.current && !colorAdjustContainerRef.current.contains(e.target as Node)) {
-				setIsColorAdjustEnabled(false);
-			}
-		};
-		document.addEventListener('mousedown', handleClickOutside);
-		return () => document.removeEventListener('mousedown', handleClickOutside);
-	}, [isColorAdjustEnabled]);
-
-	useEffect(() => {
-		if (!isSharing) {
-			return;
-		}
-		const handleClickOutside = (e: MouseEvent): void => {
-			if (sharePopupRef.current && !sharePopupRef.current.contains(e.target as Node)) {
-				setIsSharing(false);
-			}
-		};
-		document.addEventListener('mousedown', handleClickOutside);
-		return () => document.removeEventListener('mousedown', handleClickOutside);
-	}, [isSharing]);
-
-	useEffect(() => {
-		if (!isExporting) {
-			return;
-		}
-		const handleClickOutside = (e: MouseEvent): void => {
-			if (exportPanelRef.current && !exportPanelRef.current.contains(e.target as Node)) {
-				setIsExporting(false);
-			}
-		};
-		document.addEventListener('mousedown', handleClickOutside);
-		return () => document.removeEventListener('mousedown', handleClickOutside);
-	}, [isExporting]);
-
-	useEffect(() => {
-		if (!isStagePlannerExpanded) return;
-		const handleClickOutside = (e: MouseEvent): void => {
-			if (stagePlannerRef.current && !stagePlannerRef.current.contains(e.target as Node)) {
-				setIsStagePlannerExpanded(false);
-			}
-		};
-		document.addEventListener('mousedown', handleClickOutside);
-		return () => document.removeEventListener('mousedown', handleClickOutside);
-	}, [isStagePlannerExpanded]);
-
-	useEffect(() => {
-		if (!isEmergencyOpen) return;
-		const handleClickOutside = (e: MouseEvent): void => {
-			if (emergencyContainerRef.current && !emergencyContainerRef.current.contains(e.target as Node)) {
-				setIsEmergencyOpen(false);
-			}
-		};
-		document.addEventListener('mousedown', handleClickOutside);
-		return () => document.removeEventListener('mousedown', handleClickOutside);
-	}, [isEmergencyOpen]);
+	useClickOutside(precisionContainerRef, isPrecisionExpanded, () => setIsPrecisionExpanded(false));
+	useClickOutside(colorAdjustContainerRef, isColorAdjustEnabled, () => setIsColorAdjustEnabled(false));
+	useClickOutside(sharePopupRef, isSharing, () => setIsSharing(false));
+	useClickOutside(exportPanelRef, isExporting, () => setIsExporting(false));
+	useClickOutside(stagePlannerRef, isStagePlannerExpanded, () => setIsStagePlannerExpanded(false));
+	useClickOutside(emergencyContainerRef, isEmergencyOpen, () => setIsEmergencyOpen(false));
 
 	useEffect(() => {
 		const handleKeyDown = (e: KeyboardEvent): void => {
@@ -399,14 +319,9 @@ const MapControls: React.FC<MapControlsProps> = ({
 	}, [isSharing, isRulerEnabled, isEmergencyOpen, closeOverlayTools, setRulerEnabled]);
 
 	useEffect(() => {
-		const handleCloseOverlays = (): void => {
-			setIsPrecisionExpanded(false);
-			setIsColorAdjustEnabled(false);
-			setIsSharing(false);
-		};
-		window.addEventListener('closeMapControlOverlays', handleCloseOverlays);
-		return () => window.removeEventListener('closeMapControlOverlays', handleCloseOverlays);
-	}, []);
+		window.addEventListener('closeMapControlOverlays', closeOverlayTools);
+		return () => window.removeEventListener('closeMapControlOverlays', closeOverlayTools);
+	}, [closeOverlayTools]);
 
 	useEffect(() => {
 		const mapElement = document.querySelector('.leaflet-container') as HTMLElement;
@@ -461,9 +376,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 
 	const toggleDirection = (): void => {
 		closeOverlayTools();
-		const newDirection = direction === 'SOBO' ? 'NOBO' : 'SOBO';
-		setDirectionState(newDirection);
-
+		const newDirection = storeDirection === 'SOBO' ? 'NOBO' : 'SOBO';
 		setDirection(newDirection);
 		useStore.getState().broadcastDirectionChange(newDirection);
 		onToggleDirection(newDirection);
@@ -471,9 +384,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 
 	const toggleUnits = (): void => {
 		closeOverlayTools();
-		const newUnits = units === 'metric' ? 'imperial' : 'metric';
-		setUnitsState(newUnits);
-
+		const newUnits = storeUnits === 'metric' ? 'imperial' : 'metric';
 		setUnits(newUnits);
 		useStore.getState().broadcastUnitsChange(newUnits);
 		onToggleUnits(newUnits);
@@ -551,7 +462,14 @@ const MapControls: React.FC<MapControlsProps> = ({
 
 			setShowTilesBoundary(!shouldShow);
 
-			alert(t('tileBoundaryError', { action: shouldShow ? t('tileBoundaryEnabling') : t('tileBoundaryDisabling') }));
+			setTileBoundaryError(
+				t('tileBoundaryError', { action: shouldShow ? t('tileBoundaryEnabling') : t('tileBoundaryDisabling') }),
+			);
+			if (tileBoundaryErrorTimeoutRef.current) clearTimeout(tileBoundaryErrorTimeoutRef.current);
+			tileBoundaryErrorTimeoutRef.current = setTimeout(() => {
+				setTileBoundaryError(null);
+				tileBoundaryErrorTimeoutRef.current = null;
+			}, 4000);
 		}
 	};
 
@@ -580,7 +498,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 		const totalKm = state.trailMetadata?.totalDistance ?? 0;
 		if (totalKm <= 0) return null;
 
-		const unit = units === 'imperial' ? 'mi' : 'km';
+		const unit = storeUnits === 'imperial' ? 'mi' : 'km';
 		const zoom = map.getZoom();
 
 		const baseMapKey = baseMapProvider
@@ -625,7 +543,9 @@ const MapControls: React.FC<MapControlsProps> = ({
 	};
 
 	const [showCopyToast, setShowCopyToast] = useState(false);
+	const [tileBoundaryError, setTileBoundaryError] = useState<string | null>(null);
 	const copyToastTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+	const tileBoundaryErrorTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
 	const copyToClipboard = (url: string, withText = false): void => {
 		const text = withText ? `${t('shareText')}\n${url}` : url;
@@ -762,7 +682,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 				rulerSegmentHighlightRef.current = null;
 			}
 			const opts: RulerSegmentOpts = optsOverride ?? {
-				units,
+				units: storeUnits,
 				distancePrecision: distancePrecisionState,
 				t,
 				tChart,
@@ -792,7 +712,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 				}).addTo(map);
 			}
 		},
-		[units, distancePrecisionState, t, tChart, buildRulerSegmentAndTooltipContent, map],
+		[storeUnits, distancePrecisionState, t, tChart, buildRulerSegmentAndTooltipContent, map],
 	);
 
 	const [rulerAnnouncement, setRulerAnnouncement] = useState<string | null>(null);
@@ -957,10 +877,10 @@ const MapControls: React.FC<MapControlsProps> = ({
 		const [dataA, dataB] = rulerPointDataRef.current;
 		const enhancedTrailPoints = useStore.getState().enhancedTrailPoints;
 		const points = rulerMarkerRef.current.map((m) => m.getLatLng()) as [L.LatLng, L.LatLng];
-		const opts = { units, distancePrecision: distancePrecisionState, t, tChart };
+		const opts = { units: storeUnits, distancePrecision: distancePrecisionState, t, tChart };
 		const { content } = buildRulerSegmentAndTooltipContent(dataA, dataB, enhancedTrailPoints, points, opts);
 		rulerTooltipRef.current.setContent(content);
-	}, [units, distancePrecisionState, t, tChart, buildRulerSegmentAndTooltipContent]);
+	}, [storeUnits, distancePrecisionState, t, tChart, buildRulerSegmentAndTooltipContent]);
 
 	// When a user drags a range on the elevation chart, enable ruler and set the two points.
 	useEffect(() => {
@@ -1075,12 +995,10 @@ const MapControls: React.FC<MapControlsProps> = ({
 	useEffect(() => {
 		const initFromStore = (): void => {
 			if (typeof storeDirection !== 'undefined') {
-				setDirectionState(storeDirection);
 				useStore.getState().broadcastDirectionChange(storeDirection);
 			}
 
 			if (typeof storeUnits !== 'undefined') {
-				setUnitsState(storeUnits);
 				useStore.getState().setUnits(storeUnits);
 			}
 
@@ -1298,19 +1216,19 @@ const MapControls: React.FC<MapControlsProps> = ({
 			>
 				<SmartTooltip
 					content={t('directionTooltip', {
-						direction: direction === 'SOBO' ? t('directionSouthbound') : t('directionNorthbound'),
+						direction: storeDirection === 'SOBO' ? t('directionSouthbound') : t('directionNorthbound'),
 					})}
 					position="left"
 				>
 					<Button
 						aria-label={t('directionTooltip', {
-							direction: direction === 'SOBO' ? t('directionSouthbound') : t('directionNorthbound'),
+							direction: storeDirection === 'SOBO' ? t('directionSouthbound') : t('directionNorthbound'),
 						})}
-						title={`Change Direction (Currently ${direction === 'SOBO' ? t('directionTitleNorthSouth') : t('directionTitleSouthNorth')})`}
+						title={`Change Direction (Currently ${storeDirection === 'SOBO' ? t('directionTitleNorthSouth') : t('directionTitleSouthNorth')})`}
 						variant="controlRound"
 						onClick={toggleDirection}
 					>
-						{direction === 'SOBO' ? (
+						{storeDirection === 'SOBO' ? (
 							<IoArrowDownOutline aria-hidden className="h-5 w-5" />
 						) : (
 							<IoArrowUpOutline aria-hidden className="h-5 w-5" />
@@ -1320,17 +1238,17 @@ const MapControls: React.FC<MapControlsProps> = ({
 
 				<SmartTooltip
 					content={t('unitsTooltip', {
-						units: units === 'metric' ? t('unitsMetric') : t('unitsImperial'),
+						units: storeUnits === 'metric' ? t('unitsMetric') : t('unitsImperial'),
 					})}
 					position="left"
 				>
 					<Button
-						aria-label={t('unitsTooltip', { units: units === 'metric' ? t('unitsMetric') : t('unitsImperial') })}
+						aria-label={t('unitsTooltip', { units: storeUnits === 'metric' ? t('unitsMetric') : t('unitsImperial') })}
 						className="text-cldt-blue-contrast font-semibold"
 						variant="controlRound"
 						onClick={toggleUnits}
 					>
-						<span aria-hidden="true">{units === 'metric' ? 'km' : 'mi'}</span>
+						<span aria-hidden="true">{storeUnits === 'metric' ? 'km' : 'mi'}</span>
 					</Button>
 				</SmartTooltip>
 
@@ -1504,6 +1422,15 @@ const MapControls: React.FC<MapControlsProps> = ({
 							role="status"
 						>
 							<p className="font-medium">{t('linkCopied')}</p>
+						</div>
+					)}
+					{tileBoundaryError && (
+						<div
+							aria-live="assertive"
+							className="map-tooltip map-tooltip--pwa animate-slide-in-from-top fixed top-4 right-4 z-[var(--z-toast)]"
+							role="alert"
+						>
+							<p className="font-medium">{tileBoundaryError}</p>
 						</div>
 					)}
 					{rulerAnnouncement && (
