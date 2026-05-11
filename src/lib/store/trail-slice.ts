@@ -5,9 +5,7 @@ import { isWithinMapBoundary } from '../utils';
 import type { StoreState, TrailSlice, TrailState, ClosestPoint, EnhancedTrailPoint } from './types';
 import { L } from './leaflet';
 import { TRAIL_SECTIONS } from '../trail-sections';
-import { computeBearing } from '../distance-utils';
-
-type GpxElevationPoint = { lat: number; lng: number; elevation: number };
+import { computeBearing, findNearestPointIndex } from '../distance-utils';
 
 /** Bucket an absolute grade percent into one of five bands per the design system §4.20 ramp. */
 function bucketGradePct(absGradePct: number): 0 | 1 | 2 | 3 | 4 {
@@ -19,51 +17,50 @@ function bucketGradePct(absGradePct: number): 0 | 1 | 2 | 3 | 4 {
 }
 
 /**
- * Compute closest point on trail to a given location. Pure helper used by
- * calculateClosestPoint and forceCalculateClosestPointFromLocation.
+ * Find the index of the trail point closest to (targetLat, targetLng) by raw
+ * squared lat/lng delta. No allocations, no sqrt - the metric distance must be
+ * computed separately on the returned index if needed. Returns 0 for empty input.
+ */
+function nearestIndexByCoords(
+	points: { lat: number; lng: number }[],
+	targetLat: number,
+	targetLng: number,
+): number {
+	let closestIndex = 0;
+	let closestSq = Infinity;
+	for (let i = 0; i < points.length; i++) {
+		const dlat = points[i].lat - targetLat;
+		const dlng = points[i].lng - targetLng;
+		const d2 = dlat * dlat + dlng * dlng;
+		if (d2 < closestSq) {
+			closestSq = d2;
+			closestIndex = i;
+		}
+	}
+	return closestIndex;
+}
+
+/**
+ * Compute the closest point on the trail to a given location. Pure helper
+ * used by calculateClosestPoint and forceCalculateClosestPointFromLocation.
+ * Uses squared lat/lng deltas to rank candidates without sqrt, then resolves
+ * the metric distance and pre-computed derived values from the enhanced point.
  */
 function computeClosestPointData(
 	points: LatLng[],
+	enhancedPoints: EnhancedTrailPoint[],
+	totalDistanceM: number,
 	userLatLng: LatLng,
-	gpxElevationPoints: GpxElevationPoint[] | null,
 ): ClosestPoint | null {
-	let closestPoint: LatLng | null = null;
-	let closestDistance = Infinity;
-	let closestIndex = -1;
+	if (points.length === 0) return null;
 
-	points.forEach((point, index) => {
-		const distance = userLatLng.distanceTo(point);
-		if (distance < closestDistance) {
-			closestDistance = distance;
-			closestPoint = point;
-			closestIndex = index;
-		}
-	});
-
-	if (!closestPoint || closestIndex === -1) {
-		return null;
-	}
-
-	let distanceFromStart = 0;
-	let distanceToEnd = 0;
-	for (let i = 1; i <= closestIndex; i++) {
-		distanceFromStart += points[i - 1].distanceTo(points[i]);
-	}
-	for (let i = closestIndex; i < points.length - 1; i++) {
-		distanceToEnd += points[i].distanceTo(points[i + 1]);
-	}
-
-	let elevationGainSoFar = 0;
-	if (gpxElevationPoints && gpxElevationPoints.length > 0) {
-		for (let i = 1; i <= closestIndex; i++) {
-			if (gpxElevationPoints[i] && gpxElevationPoints[i - 1]) {
-				const elevDiff = gpxElevationPoints[i].elevation - gpxElevationPoints[i - 1].elevation;
-				if (elevDiff > 0) {
-					elevationGainSoFar += elevDiff;
-				}
-			}
-		}
-	}
+	const closestIndex = nearestIndexByCoords(points, userLatLng.lat, userLatLng.lng);
+	const closestPoint = points[closestIndex];
+	const closestDistance = userLatLng.distanceTo(closestPoint);
+	const enhanced = enhancedPoints[closestIndex];
+	const distanceFromStart = enhanced?.distanceFromStart ?? 0;
+	const distanceToEnd = Math.max(0, totalDistanceM - distanceFromStart);
+	const elevationGainSoFar = enhanced?.elevationGainFromStart ?? 0;
 
 	return {
 		point: closestPoint,
@@ -135,7 +132,13 @@ export const createTrailSlice: StateCreator<StoreState, [], [], TrailSlice> = (s
 			return;
 		}
 		const userLatLng = L.latLng(state.userLocation.lat, state.userLocation.lng);
-		const closestPointData = computeClosestPointData(state.trailPoints, userLatLng, state.gpxElevationPoints);
+		const totalDistanceM = (state.trailMetadata?.totalDistance ?? 0) * 1000;
+		const closestPointData = computeClosestPointData(
+			state.trailPoints,
+			state.enhancedTrailPoints,
+			totalDistanceM,
+			userLatLng,
+		);
 		if (closestPointData) {
 			set({
 				closestPoint: closestPointData,
@@ -162,7 +165,8 @@ export const createTrailSlice: StateCreator<StoreState, [], [], TrailSlice> = (s
 			return;
 		}
 		const userLatLng = L.latLng(location.lat, location.lng);
-		const closestPointData = computeClosestPointData(points, userLatLng, state.gpxElevationPoints);
+		const totalDistanceM = (state.trailMetadata?.totalDistance ?? 0) * 1000;
+		const closestPointData = computeClosestPointData(points, state.enhancedTrailPoints, totalDistanceM, userLatLng);
 		if (closestPointData) {
 			set({
 				closestPoint: closestPointData,
@@ -183,7 +187,7 @@ export const createTrailSlice: StateCreator<StoreState, [], [], TrailSlice> = (s
 
 	// Caller is expected to pass `points` and `elevationPoints` already direction-adjusted
 	// (ascending index = advancing in current travel direction). The raw elevation delta to the
-	// next point therefore yields a direction-relative gradePct: positive = ascent in current direction.
+	// next point therefore yields a direction-relative gradePct: positive = ascent in the current direction.
 	processTrailData: (points, elevationPoints, startPoint, endPoint, distance, elevGain, elevLoss): void => {
 		set({
 			trailPoints: points,
@@ -284,18 +288,7 @@ export const createTrailSlice: StateCreator<StoreState, [], [], TrailSlice> = (s
 			return enhancedTrailPoints[enhancedTrailPoints.length - 1];
 		}
 
-		let closestPoint = enhancedTrailPoints[0];
-		let minDiff = Math.abs(closestPoint.distanceFromStart - distance);
-
-		for (let i = 1; i < enhancedTrailPoints.length; i++) {
-			const diff = Math.abs(enhancedTrailPoints[i].distanceFromStart - distance);
-			if (diff < minDiff) {
-				minDiff = diff;
-				closestPoint = enhancedTrailPoints[i];
-			}
-		}
-
-		return closestPoint;
+		return enhancedTrailPoints[findNearestPointIndex(enhancedTrailPoints, distance)];
 	},
 
 	findTrailPointByCoordinates: (lat, lng, maxDistanceM = 150): EnhancedTrailPoint | null => {
@@ -309,22 +302,10 @@ export const createTrailSlice: StateCreator<StoreState, [], [], TrailSlice> = (s
 			return null;
 		}
 
-		const targetPoint = L.latLng(lat, lng);
-
-		let closestPoint = enhancedTrailPoints[0];
-		let minDistance = L.latLng(closestPoint.lat, closestPoint.lng).distanceTo(targetPoint);
-
-		for (let i = 1; i < enhancedTrailPoints.length; i++) {
-			const pointLatLng = L.latLng(enhancedTrailPoints[i].lat, enhancedTrailPoints[i].lng);
-			const distance = pointLatLng.distanceTo(targetPoint);
-
-			if (distance < minDistance) {
-				minDistance = distance;
-				closestPoint = enhancedTrailPoints[i];
-			}
-		}
-
-		if (minDistance <= maxDistanceM) {
+		const closestIndex = nearestIndexByCoords(enhancedTrailPoints, lat, lng);
+		const closestPoint = enhancedTrailPoints[closestIndex];
+		const exactDistance = L.latLng(closestPoint.lat, closestPoint.lng).distanceTo(L.latLng(lat, lng));
+		if (exactDistance <= maxDistanceM) {
 			return closestPoint;
 		}
 		return null;
