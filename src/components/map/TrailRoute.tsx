@@ -227,11 +227,16 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 	// Mirror tooltip-visibility state into refs so showMarkerAtPosition can read the
 	// latest value without depending on it. Without this, every visibility toggle
 	// changes the callback identity and causes the marker/tooltip to be torn down
-	// and rebuilt by the highlight-watching effect.
+	// and rebuilt by the highlight-watching effect. The refs are updated in an
+	// effect so we don't write to them during render (react-hooks/refs rule).
+	// showMarkerAtPosition is only invoked from event handlers and effect-scheduled
+	// callbacks, so the post-commit ref update is in sync by the time it runs.
 	const isTooltipVisibleRef = useRef(false);
-	isTooltipVisibleRef.current = isTooltipVisible;
 	const tooltipPinnedFromShareRef = useRef(tooltipPinnedFromShare);
-	tooltipPinnedFromShareRef.current = tooltipPinnedFromShare;
+	useEffect(() => {
+		isTooltipVisibleRef.current = isTooltipVisible;
+		tooltipPinnedFromShareRef.current = tooltipPinnedFromShare;
+	}, [isTooltipVisible, tooltipPinnedFromShare]);
 
 	const tooltipLabels = useMemo(
 		() => ({
