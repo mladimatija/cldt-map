@@ -53,6 +53,9 @@ import { MapControlsColorAdjust } from './MapControlsColorAdjust';
 import { MapControlsTestLink } from './MapControlsTestLink';
 import { MapControlsExportPanel } from './MapControlsExportPanel';
 import { MapControlsStagePlannerPanel } from './MapControlsStagePlannerPanel';
+import { MapControlsEmergencyButton } from './MapControlsEmergencyButton';
+import { MapControlsEmergencyPanel } from './MapControlsEmergencyPanel';
+import { prefetchEmergencyData } from '@/lib/emergency-data';
 import { fitMapToRulerBounds } from '@/lib/export-utils';
 import { RULER_SET_FROM_CHART_EVENT, type RulerSetFromChartDetail } from '@/lib/ruler-from-chart';
 
@@ -190,6 +193,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 	const [isSharing, setIsSharing] = useState(false);
 	const [isExporting, setIsExporting] = useState(false);
 	const [isStagePlannerExpanded, setIsStagePlannerExpanded] = useState(false);
+	const [isEmergencyOpen, setIsEmergencyOpen] = useState(false);
 	const [showTilesBoundary, setShowTilesBoundary] = useState(false);
 	const [tileBoundaryReinitKey, setTileBoundaryReinitKey] = useState(0);
 	const [isColorAdjustEnabled, setIsColorAdjustEnabled] = useState(false);
@@ -204,6 +208,8 @@ const MapControls: React.FC<MapControlsProps> = ({
 	const sharePopupRef = useRef<HTMLDivElement>(null);
 	const exportPanelRef = useRef<HTMLDivElement>(null);
 	const stagePlannerRef = useRef<HTMLDivElement>(null);
+	const emergencyContainerRef = useRef<HTMLDivElement>(null);
+	const emergencyPanelRef = useRef<HTMLDivElement>(null);
 
 	useBlockMapPropagation(testLinkRef);
 	useBlockMapPropagation(topRightControlsRef);
@@ -212,6 +218,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 	useBlockMapPropagation(colorAdjustContainerRef);
 	useBlockMapPropagation(exportPanelRef);
 	useBlockMapPropagation(stagePlannerRef);
+	useBlockMapPropagation(emergencyContainerRef);
 
 	const setDarkMode = useMapStore((state: MapStoreState) => state.setDarkMode);
 	const setBatterySaverMode = useMapStore((state: MapStoreState) => state.setBatterySaverMode);
@@ -294,6 +301,12 @@ const MapControls: React.FC<MapControlsProps> = ({
 		setIsSettingsExpanded(false);
 		setIsExporting(false);
 		setIsStagePlannerExpanded(false);
+		setIsEmergencyOpen(false);
+	}, []);
+
+	// Warm the SW cache for emergency JSONs so the panel opens instantly offline.
+	useEffect(() => {
+		void prefetchEmergencyData();
 	}, []);
 
 	// Close precision slider when clicking outside
@@ -361,15 +374,27 @@ const MapControls: React.FC<MapControlsProps> = ({
 	}, [isStagePlannerExpanded]);
 
 	useEffect(() => {
+		if (!isEmergencyOpen) return;
+		const handleClickOutside = (e: MouseEvent): void => {
+			if (emergencyContainerRef.current && !emergencyContainerRef.current.contains(e.target as Node)) {
+				setIsEmergencyOpen(false);
+			}
+		};
+		document.addEventListener('mousedown', handleClickOutside);
+		return () => document.removeEventListener('mousedown', handleClickOutside);
+	}, [isEmergencyOpen]);
+
+	useEffect(() => {
 		const handleKeyDown = (e: KeyboardEvent): void => {
 			if (e.key !== 'Escape') return;
 			closeOverlayTools();
 			if (isSharing) setIsSharing(false);
+			else if (isEmergencyOpen) setIsEmergencyOpen(false);
 			else if (isRulerEnabled) setRulerEnabled(false);
 		};
 		document.addEventListener('keydown', handleKeyDown);
 		return () => document.removeEventListener('keydown', handleKeyDown);
-	}, [isSharing, isRulerEnabled, closeOverlayTools, setRulerEnabled]);
+	}, [isSharing, isRulerEnabled, isEmergencyOpen, closeOverlayTools, setRulerEnabled]);
 
 	useEffect(() => {
 		const handleCloseOverlays = (): void => {
@@ -1483,6 +1508,23 @@ const MapControls: React.FC<MapControlsProps> = ({
 						</div>
 					)}
 				</div>
+			</div>
+
+			<div
+				className={`map-controls-emergency z-controls absolute right-2 bottom-4 ${controlsDisabledClass}`}
+				ref={emergencyContainerRef}
+				onContextMenu={(e) => e.preventDefault()}
+			>
+				<MapControlsEmergencyButton
+					expanded={isEmergencyOpen}
+					onOpen={() => {
+						closeOverlayTools();
+						setIsEmergencyOpen(true);
+					}}
+				/>
+				{isEmergencyOpen && (
+					<MapControlsEmergencyPanel containerRef={emergencyPanelRef} onClose={() => setIsEmergencyOpen(false)} />
+				)}
 			</div>
 		</>
 	);

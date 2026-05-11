@@ -54,6 +54,7 @@ Interactive web map for the **Croatian Long Distance Trail (CLDT)** - a 2,200+ k
 - **Dark mode & battery saver** - UI preferences and reduced location updates
 - **4 languages** - English (en), Croatian (hr), German (de), Italian (it)
 - **Offline maps** - Pre-cache the full trail corridor for offline use; per-provider caching, staleness detection, auto-sync on reconnect, predictive corridor pre-cache on Wi-Fi when on-trail, and storage quota handling
+- **Emergency 112 panel** - Long-press the red SOS button (bottom-right) for an offline-first emergency panel with current GPS coordinates, Plus Code, trail section/km, bearing and distance to the nearest road access and HGSS mountain rescue station, copy-to-clipboard for each field, and one-tap "Call 112" / "Open in maps" handoff. Works fully offline using bundled datasets (`public/data/road-access.json` from build-time OSM intersections, `public/data/hgss-stations.json` hand-curated)
 - **Privacy-first** - Location stays in your browser; no account required
 
 ---
@@ -151,15 +152,16 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ## Scripts
 
-| Command                 | Description                  |
-| ----------------------- | ---------------------------- |
-| `npm run dev`           | Start development server     |
-| `npm run build`         | Build for production         |
-| `npm run start`         | Start production server      |
-| `npm run lint`          | Run ESLint                   |
-| `npm run format`        | Format with Prettier         |
-| `npm run format:check`  | Check Prettier formatting    |
-| `npm run clean-install` | Clean reinstall dependencies |
+| Command                        | Description                                                                                                                                                                                                       |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `npm run dev`                  | Start development server                                                                                                                                                                                          |
+| `npm run build`                | Build for production                                                                                                                                                                                              |
+| `npm run start`                | Start production server                                                                                                                                                                                           |
+| `npm run lint`                 | Run ESLint                                                                                                                                                                                                        |
+| `npm run format`               | Format with Prettier                                                                                                                                                                                              |
+| `npm run format:check`         | Check Prettier formatting                                                                                                                                                                                         |
+| `npm run clean-install`        | Clean reinstall dependencies                                                                                                                                                                                      |
+| `npm run build:emergency-data` | Regenerate `public/data/road-access.json` from the trail GPX intersected with OSM roads (Overpass API). Run when the GPX changes; commit the result. `public/data/hgss-stations.json` is hand-curated separately. |
 
 ---
 
