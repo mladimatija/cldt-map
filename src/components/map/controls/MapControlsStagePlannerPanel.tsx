@@ -216,6 +216,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 						<label className="flex cursor-pointer items-center gap-1">
 							<input
 								checked={mode === 'kmPerDay'}
+								className="accent-cldt-blue focus-visible:ring-cldt-green h-4 w-4 cursor-pointer focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:outline-none"
 								name="stage-mode"
 								type="radio"
 								value="kmPerDay"
@@ -226,6 +227,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 						<label className="flex cursor-pointer items-center gap-1">
 							<input
 								checked={mode === 'stages'}
+								className="accent-cldt-blue focus-visible:ring-cldt-green h-4 w-4 cursor-pointer focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:outline-none"
 								name="stage-mode"
 								type="radio"
 								value="stages"
@@ -291,10 +293,10 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 									</span>
 									{stats && (
 										<>
-											<span className="shrink-0 text-green-600 dark:text-green-400">
+											<span className="text-cldt-green shrink-0">
 												↑{formatElevation(isNobo ? stats.lossM : stats.gainM, units)}
 											</span>
-											<span className="shrink-0 text-red-500 dark:text-red-400">
+											<span className="text-cldt-red shrink-0">
 												↓{formatElevation(isNobo ? stats.gainM : stats.lossM, units)}
 											</span>
 											<span className="shrink-0 text-gray-500 tabular-nums dark:text-gray-400">

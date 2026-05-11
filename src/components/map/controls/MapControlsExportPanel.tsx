@@ -29,8 +29,10 @@ export function MapControlsExportPanel({
 	return (
 		<div
 			aria-labelledby="export-panel-title"
+			aria-modal="true"
 			className={`z-controls-popover absolute top-1/2 right-[calc(100%+0.5rem)] flex w-80 -translate-y-1/2 flex-col gap-2 ${MAP_CONTROL_POPOVER}`}
 			ref={containerRef}
+			role="dialog"
 			onContextMenu={(e) => e.preventDefault()}
 		>
 			<h3 className="text-sm font-medium text-gray-700 dark:text-[var(--text-primary)]" id="export-panel-title">
