@@ -46,7 +46,7 @@ Interactive web map for the **Croatian Long Distance Trail (CLDT)** - a 2,200+ k
 - **Location tracking** - Optional GPS to see your position on the trail
 - **Share links** - Share current map view or progress on the trail
 - **Units** - Metric (km) and imperial (miles)
-- **Trail sections** - Optional color-coded sections (A/B/C) with boundary markers and stats (persisted)
+- **Trail style** - Choose how the route polyline is coloured from the layers panel: Default (single colour), Sections (A/B/C coloured zones with boundary markers and per-section stats), or Grade (Strava-style gradient tinting with five bands - warm colours for ascents, cool for descents in the active travel direction; colour-ramp legend in the panel; recomputed automatically when the SOBO/NOBO direction toggles); the three options are mutually exclusive
 - **Walking pace** - Configurable hiking pace for all ETA estimates; optional grade-adjusted mode applies Naismith + Tobler per-segment integration for more accurate ETAs on climbs and descents
 - **Sunset/sunrise markers** - Projects where you will be on the trail at sunset and sunrise based on your current pace and direction; toggleable amber/yellow disc markers on the polyline
 - **Multi-day stage planner** - Split any trail range into daily stages by distance (km or miles per day) or fixed stage count; optional ETA-balanced splitting distributes stages by walking time rather than distance; per-stage stats (distance, elevation gain/loss, ETA); active stage highlighted on the map; GPX export per stage; strip-map PDF export (one landscape page per stage with map snapshot and stats header)
