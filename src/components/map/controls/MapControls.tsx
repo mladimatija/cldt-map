@@ -207,16 +207,8 @@ const MapControls: React.FC<MapControlsProps> = ({
 	useBlockMapPropagation(stagePlannerRef);
 	useBlockMapPropagation(emergencyContainerRef);
 
-	const setDarkMode = useMapStore((state: MapStoreState) => state.setDarkMode);
-	const setBatterySaverMode = useMapStore((state: MapStoreState) => state.setBatterySaverMode);
-	const setLargeTouchTargets = useMapStore((state: MapStoreState) => state.setLargeTouchTargets);
-	const setShowSections = useMapStore((state: MapStoreState) => state.setShowSections);
-	const setGradeTintedTrail = useMapStore((state: MapStoreState) => state.setGradeTintedTrail);
 	const darkMode = useMapStore((state: MapStoreState) => state.darkMode);
-	const batterySaverMode = useMapStore((state: MapStoreState) => state.batterySaverMode);
-	const largeTouchTargets = useMapStore((state: MapStoreState) => state.largeTouchTargets);
 	const showSections = useMapStore((state: MapStoreState) => state.showSections);
-	const gradeTintedTrail = useMapStore((state: MapStoreState) => state.gradeTintedTrail);
 	const userLocation = useMapStore((state: MapStoreState) => state.userLocation);
 	const permissionStatus = useMapStore((state: MapStoreState) => state.permissionStatus);
 	const highlightedTrailPoint = useStore((state: StoreState) => state.highlightedTrailPoint);
@@ -259,14 +251,6 @@ const MapControls: React.FC<MapControlsProps> = ({
 	const rulerRange = useMapStore((state: MapStoreState) => state.rulerRange);
 	const setRulerRange = useMapStore((state: MapStoreState) => state.setRulerRange);
 	const setDistancePrecision = useMapStore((state: MapStoreState) => state.setDistancePrecision);
-	const walkingPaceKmh = useMapStore((state: MapStoreState) => state.walkingPaceKmh);
-	const setWalkingPaceKmh = useMapStore((state: MapStoreState) => state.setWalkingPaceKmh);
-	const gradeAdjustedEta = useMapStore((state: MapStoreState) => state.gradeAdjustedEta);
-	const setGradeAdjustedEta = useMapStore((state: MapStoreState) => state.setGradeAdjustedEta);
-	const sunsetProjection = useMapStore((state: MapStoreState) => state.sunsetProjection);
-	const setSunsetProjection = useMapStore((state: MapStoreState) => state.setSunsetProjection);
-	const severeWeatherLayer = useMapStore((state: MapStoreState) => state.severeWeatherLayer);
-	const setSevereWeatherLayer = useMapStore((state: MapStoreState) => state.setSevereWeatherLayer);
 
 	const storeDirection = useMapStore((state: MapStoreState) => state.direction);
 	const enhancedTrailPoints = useStore((state: StoreState) => state.enhancedTrailPoints);
@@ -1323,34 +1307,8 @@ const MapControls: React.FC<MapControlsProps> = ({
 				/>
 
 				<MapControlsSettingsPanel
-					batterySaverLabel={t('batterySaver')}
-					batterySaverMode={batterySaverMode}
-					batterySaverTooltip={t('batterySaverTooltip')}
 					containerRef={settingsContainerRef}
-					darkMode={darkMode}
-					darkModeLabel={t('darkMode')}
-					gradeAdjustedEta={gradeAdjustedEta}
-					gradeTintedTrail={gradeTintedTrail}
 					isExpanded={isSettingsExpanded}
-					largeTouchTargets={largeTouchTargets}
-					largeTouchTargetsLabel={t('largeTouchTargets')}
-					preferencesTitle={t('preferences')}
-					setBatterySaverMode={setBatterySaverMode}
-					setDarkMode={setDarkMode}
-					setGradeAdjustedEta={setGradeAdjustedEta}
-					setGradeTintedTrail={setGradeTintedTrail}
-					setLargeTouchTargets={setLargeTouchTargets}
-					setSevereWeatherLayer={setSevereWeatherLayer}
-					setShowSections={setShowSections}
-					setSunsetProjection={setSunsetProjection}
-					setWalkingPaceKmh={setWalkingPaceKmh}
-					severeWeatherLayer={severeWeatherLayer}
-					showSections={showSections}
-					sunsetProjection={sunsetProjection}
-					tooltipHide={t('preferencesHide')}
-					tooltipShow={t('preferencesShow')}
-					units={storeUnits}
-					walkingPaceKmh={walkingPaceKmh}
 					onToggle={() => {
 						if (!isSettingsExpanded) {
 							setIsPrecisionExpanded(false);
