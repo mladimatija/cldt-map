@@ -481,22 +481,10 @@ export function parseShareUrlParams(): {
  * @returns Boolean indicating if the point is within the map boundary
  */
 export function isWithinMapBoundary(latitude: number, longitude: number): boolean {
-	try {
-		// Simple bounding box check for Croatia:
-		// 42.3 to 46.5 latitude
-		// 13.5 to 19.5 longitude
-		return (
-			latitude >= BOUNDARY_LAT_MIN &&
-			latitude <= BOUNDARY_LAT_MAX &&
-			longitude >= BOUNDARY_LNG_MIN &&
-			longitude <= BOUNDARY_LNG_MAX
-		);
-
-		// Note: For a more accurate check, you'd want to use:
-		// 1. GeoJSON boundary data with a point-in-polygon algorithm
-		// 2. Or a library like Turf.js with booleanPointInPolygon
-	} catch (error) {
-		console.error('Error checking if point is within map boundary:', error);
-		return true; // Default to true to avoid blocking functionality
-	}
+	return (
+		latitude >= BOUNDARY_LAT_MIN &&
+		latitude <= BOUNDARY_LAT_MAX &&
+		longitude >= BOUNDARY_LNG_MIN &&
+		longitude <= BOUNDARY_LNG_MAX
+	);
 }
