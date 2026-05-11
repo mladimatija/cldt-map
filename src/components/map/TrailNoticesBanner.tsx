@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { loadNotices, resolveLocalized, type TrailNotice, type NoticeSeverity } from '@/lib/notices';
+import { isSafeUrl } from '@/lib/utils';
 
 const DISMISSED_KEY = 'cldt-dismissed-notices';
 
@@ -67,7 +68,7 @@ export function TrailNoticesBanner(): React.ReactElement | null {
 					<div className="min-w-0 flex-1">
 						<span className="font-semibold">{resolveLocalized(n.title, locale)}</span>
 						{n.message && <span className="ml-2">{resolveLocalized(n.message, locale)}</span>}
-						{n.url && (
+						{isSafeUrl(n.url) && (
 							<a className="ml-2 text-white underline" href={n.url} rel="noopener noreferrer" target="_blank">
 								{t('moreInfo')}
 							</a>

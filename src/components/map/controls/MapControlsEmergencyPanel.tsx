@@ -15,6 +15,7 @@ import {
 	type HgssStation,
 	type RoadAccessEntry,
 } from '@/lib/emergency-data';
+import { isSafeUrl } from '@/lib/utils';
 
 const FOCUSABLE_SELECTOR = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
 const COPY_RESET_MS = 1500;
@@ -421,7 +422,7 @@ export function MapControlsEmergencyPanel({
 										<span className="font-mono">{formatPhoneDisplay(nearestHgss.entry.phone)}</span>
 									</a>
 								)}
-								{nearestHgss.entry.url && (
+								{isSafeUrl(nearestHgss.entry.url) && (
 									<a
 										aria-label={t('openStationPage', { name: nearestHgss.entry.name })}
 										className="text-cldt-blue hover:text-cldt-green focus-visible:text-cldt-green focus-visible:ring-cldt-green inline-flex items-center gap-1 outline-none focus-visible:ring-1 focus-visible:ring-offset-1"
