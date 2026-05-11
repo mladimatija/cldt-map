@@ -15,6 +15,15 @@ import { useSiteMetadata } from './useSiteMetadata';
 
 import { useFitToRoute } from './useFitToRoute';
 import { usePopoverFocusTrap } from './usePopoverFocusTrap';
+import { useClickOutside } from './useClickOutside';
 
 // Export all hooks
-export { useMapService, useSiteMetadata, useMapStore, useBlockMapPropagation, useFitToRoute, usePopoverFocusTrap };
+export {
+	useMapService,
+	useSiteMetadata,
+	useMapStore,
+	useBlockMapPropagation,
+	useFitToRoute,
+	usePopoverFocusTrap,
+	useClickOutside,
+};
