@@ -160,7 +160,7 @@ export function MapControlsTileCachePanel(): React.ReactElement {
 				<div className="space-y-2">
 					{/* Error state */}
 					{tileCacheError && !tileCacheDownloading && (
-						<p className="text-xs text-red-600 dark:text-red-400">
+						<p className="text-cldt-red text-xs">
 							{tileCacheError === 'quota_exceeded'
 								? t('quotaExceeded')
 								: tileCacheError === 'not_cacheable'
@@ -202,7 +202,7 @@ export function MapControlsTileCachePanel(): React.ReactElement {
 											{' - '}
 											{querying ? (
 												<span className="flex items-center gap-1">
-													<IoEllipsisHorizontal aria-hidden className="h-3 w-3 animate-spin" />
+													<IoEllipsisHorizontal aria-hidden className="h-3 w-3 animate-spin motion-reduce:animate-none" />
 													{t('querying')}
 												</span>
 											) : (

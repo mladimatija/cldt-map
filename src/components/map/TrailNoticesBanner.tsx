@@ -27,10 +27,10 @@ function persistDismissed(id: string): void {
 }
 
 const SEVERITY_CLASSES: Record<NoticeSeverity, string> = {
-	emergency: 'bg-red-600 text-white',
-	closure: 'bg-red-500 text-white',
+	emergency: 'bg-cldt-red text-white',
+	closure: 'bg-cldt-red/90 text-white',
 	warning: 'bg-amber-400 text-amber-900',
-	info: 'bg-blue-500 text-white',
+	info: 'bg-cldt-blue text-white',
 };
 
 function canDismiss(notice: TrailNotice): boolean {
@@ -77,7 +77,7 @@ export function TrailNoticesBanner(): React.ReactElement | null {
 					{canDismiss(n) && (
 						<button
 							aria-label={t('dismissLabel')}
-							className="shrink-0 leading-none font-bold opacity-80 hover:opacity-100"
+							className="focus-visible:ring-cldt-green shrink-0 leading-none font-bold opacity-80 outline-none hover:opacity-100 focus-visible:ring-2 focus-visible:ring-offset-1"
 							type="button"
 							onClick={() => handleDismiss(n.id)}
 						>
