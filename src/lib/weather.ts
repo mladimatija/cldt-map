@@ -12,7 +12,7 @@ export interface WeatherData {
 	feelsLikeC: number;
 	precipitationProbabilityPct: number;
 	windspeedKmh: number;
-	/** Meteorological "wind from" direction in degrees (0–360, clockwise from north).
+	/** Meteorological "wind from" direction in degrees (0-360, clockwise from north).
 	 *  Null when not provided (e.g. DHMZ alone, without an Open-Meteo fallback). */
 	windFromDeg: number | null;
 	weatherCode: number;
