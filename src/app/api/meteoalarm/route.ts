@@ -3,9 +3,12 @@
  * Fetches warnings, parses CAP XML with regex (no DOM library),
  * and returns a normalized GeoJSON FeatureCollection.
  */
-import { NextResponse } from 'next/server';
+import { NextResponse, type NextRequest } from 'next/server';
 
 import type { Feature, FeatureCollection, Polygon, Position } from 'geojson';
+
+import { enforceRateLimit } from '@/lib/api-defense';
+import { escapeRegex } from '@/lib/utils';
 
 /* ------------------------------------------------------------------ */
 /*  Constants                                                          */
@@ -39,7 +42,8 @@ const closeRegexCache = new Map<string, RegExp>();
 function getTagRegex(tag: string): RegExp {
 	let r = tagRegexCache.get(tag);
 	if (!r) {
-		r = new RegExp(`<${tag}[^>]*>([^<]*)<\\/${tag}>`);
+		const safe = escapeRegex(tag);
+		r = new RegExp(`<${safe}[^>]*>([^<]*)<\\/${safe}>`);
 		tagRegexCache.set(tag, r);
 	}
 	return r;
@@ -49,7 +53,8 @@ function getOpenRegex(tag: string, global = false): RegExp {
 	const cache = global ? openRegexGlobalCache : openRegexCache;
 	let r = cache.get(tag);
 	if (!r) {
-		r = new RegExp(`<${tag}[^>]*>`, global ? 'g' : undefined);
+		const safe = escapeRegex(tag);
+		r = new RegExp(`<${safe}[^>]*>`, global ? 'g' : undefined);
 		cache.set(tag, r);
 	}
 	if (global) r.lastIndex = 0;
@@ -59,7 +64,8 @@ function getOpenRegex(tag: string, global = false): RegExp {
 function getCloseRegex(tag: string): RegExp {
 	let r = closeRegexCache.get(tag);
 	if (!r) {
-		r = new RegExp(`<\\/${tag}>`);
+		const safe = escapeRegex(tag);
+		r = new RegExp(`<\\/${safe}>`);
 		closeRegexCache.set(tag, r);
 	}
 	return r;
@@ -220,7 +226,10 @@ const CACHE_HEADERS = {
 	'Cache-Control': 'public, max-age=900, s-maxage=900',
 };
 
-export async function GET(): Promise<Response> {
+export async function GET(request: NextRequest): Promise<Response> {
+	const limited = enforceRateLimit(request, { name: 'meteoalarm', windowMs: 60_000, max: 60 });
+	if (limited) return limited;
+
 	try {
 		const controller = new AbortController();
 		const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
@@ -256,7 +265,7 @@ export async function GET(): Promise<Response> {
 
 		return NextResponse.json(collection, { headers: CACHE_HEADERS });
 	} catch (err) {
-		console.error('[meteoalarm]', err);
+		console.error('[meteoalarm]', err instanceof Error ? err.message : String(err));
 		return NextResponse.json(EMPTY_COLLECTION, { headers: CACHE_HEADERS });
 	}
 }

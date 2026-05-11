@@ -41,6 +41,15 @@ export function isSafeUrl(u: string | undefined | null): boolean {
 	}
 }
 
+/**
+ * Escape a string for safe interpolation into a RegExp source. Use before
+ * `new RegExp(...)` whenever the pattern is built from a value that could be
+ * influenced by external input.
+ */
+export function escapeRegex(value: string): string {
+	return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
 // --------------------------------------
 // Error handling utilities
 // --------------------------------------
