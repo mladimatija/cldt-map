@@ -30,7 +30,7 @@ export function HourlyWeatherStrip({ data, ariaLabel }: HourlyWeatherStripProps)
 					<div className="flex flex-col items-center" key={col.hourLabel}>
 						<span className="sr-only">{col.precipSrText}</span>
 						<span className="text-xs leading-tight">{col.hourLabel}</span>
-						<div className="relative mt-0.5 h-7 w-full">
+						<div className="relative mt-0.5 h-7 w-full" title={col.precipSrText}>
 							<div
 								aria-hidden="true"
 								className={`absolute right-0.5 bottom-0 left-0.5 ${precipBarColor(col.precipPct)}`}

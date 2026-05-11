@@ -510,6 +510,9 @@
 			"plusCode": "Copy Plus Code",
 			"section": "Copy section and km"
 		},
+		"callStation": "Call {name}",
+		"openStationPage": "Open page for {name}",
+		"stationDetails": "Station details",
 		"compass": {
 			"N": "N",
 			"NE": "NE",

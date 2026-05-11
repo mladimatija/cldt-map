@@ -3,7 +3,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState, type RefObject } from 'react';
 import { useTranslations } from 'next-intl';
 import { OpenLocationCode } from 'open-location-code';
-import { IoCopyOutline, IoWarningOutline } from 'react-icons/io5';
+import { IoCallOutline, IoCopyOutline, IoOpenOutline, IoWarningOutline } from 'react-icons/io5';
 import { MAP_CONTROL_POPOVER } from './map-controls-constants';
 import { Button, buttonVariants } from '@/components/ui/Button';
 import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
@@ -99,11 +99,18 @@ const olc = new OpenLocationCode();
 // proper-noun roadRefs like 'D2' or 'Ulica X' pass through as-is.
 const LOCALISABLE_ROAD_TYPES = new Set(['unclassified', 'residential', 'road']);
 
+// Format an E.164-ish phone (e.g. +385917210000) for display: "+385 91 721 0000".
+function formatPhoneDisplay(phone: string): string {
+	const m = /^\+(\d{1,3})(\d{2,3})(\d{3})(\d{3,4})$/.exec(phone);
+	return m ? `+${m[1]} ${m[2]} ${m[3]} ${m[4]}` : phone;
+}
+
 export function MapControlsEmergencyPanel({
 	containerRef,
 	onClose,
 }: MapControlsEmergencyPanelProps): React.ReactElement {
 	const t = useTranslations('emergency');
+	const tTrail = useTranslations('trailRoute');
 
 	const userLocation = useMapStore((s: MapStoreState) => s.userLocation);
 	const permissionStatus = useMapStore((s: MapStoreState) => s.permissionStatus);
@@ -244,14 +251,28 @@ export function MapControlsEmergencyPanel({
 	const sectionString = useMemo((): string => {
 		const { sectionName, km } = sectionInfo;
 		if (sectionName === null && km === null) return '';
-		const parts = [sectionName, km !== null ? t('kmFromStart', { km: km.toFixed(2) }) : null].filter(
+		// trail-slice stores the section as an i18n key (e.g. 'sectionA') in the trailRoute namespace.
+		const localisedName = sectionName ? tTrail(sectionName) : null;
+		const parts = [localisedName, km !== null ? t('kmFromStart', { km: km.toFixed(2) }) : null].filter(
 			(p): p is string => p !== null,
 		);
 		return parts.join(' - ');
-	}, [sectionInfo, t]);
+	}, [sectionInfo, t, tTrail]);
 
 	const hasPosition = displayPosition.source !== null;
-	const geoHref = hasPosition ? `geo:${displayPosition.lat.toFixed(6)},${displayPosition.lng.toFixed(6)}` : undefined;
+	const mapsHref = useMemo(() => {
+		if (!hasPosition) return undefined;
+		const lat = displayPosition.lat.toFixed(6);
+		const lng = displayPosition.lng.toFixed(6);
+		// geo: URIs are mobile-only (no desktop browser registers a handler). On desktop,
+		// fall back to an OSM web URL that any browser can open.
+		const isMobile =
+			typeof window !== 'undefined' &&
+			(window.matchMedia('(pointer: coarse)').matches || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent));
+		return isMobile
+			? `geo:${lat},${lng}?q=${lat},${lng}`
+			: `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lng}#map=16/${lat}/${lng}`;
+	}, [hasPosition, displayPosition]);
 
 	return (
 		<div
@@ -261,21 +282,15 @@ export function MapControlsEmergencyPanel({
 			role="dialog"
 			onContextMenu={(e) => e.preventDefault()}
 		>
-			<div className="flex items-center justify-between">
-				<h3 className="text-cldt-red text-sm font-semibold dark:text-[var(--text-primary)]" id="emergency-panel-title">
-					{t('title')}
-				</h3>
-				<button
-					aria-label={t('close')}
-					className="cursor-pointer rounded text-gray-500 outline-none hover:bg-black/5 hover:text-gray-800 focus-visible:bg-black/5 focus-visible:text-gray-800 dark:text-[var(--text-secondary)] dark:hover:bg-white/10 dark:hover:text-[var(--text-primary)] dark:focus-visible:bg-white/10 dark:focus-visible:text-[var(--text-primary)]"
-					type="button"
-					onClick={onClose}
-				>
-					<span aria-hidden="true" className="text-lg leading-none">
-						&times;
-					</span>
-				</button>
-			</div>
+			<Button aria-label={t('close')} className="absolute top-0 right-0" variant="closeIcon" onClick={onClose}>
+				×
+			</Button>
+			<h3
+				className="text-cldt-red pr-7 text-sm font-semibold dark:text-[var(--text-primary)]"
+				id="emergency-panel-title"
+			>
+				{t('title')}
+			</h3>
 
 			{gpsUnavailable && (
 				<div className="-mx-3 -mt-3 mb-0 flex items-start gap-2 bg-amber-100 px-3 py-2 text-xs text-amber-900 dark:bg-amber-950 dark:text-amber-200">
@@ -355,7 +370,7 @@ export function MapControlsEmergencyPanel({
 								&#8593;
 							</span>
 							<span aria-hidden="true" className="font-medium">
-								{roadCompass}
+								{t(`compass.${roadCompass}`)}
 							</span>
 						</span>
 					</div>
@@ -368,30 +383,58 @@ export function MapControlsEmergencyPanel({
 			<section className="flex flex-col gap-1 text-xs text-gray-700 dark:text-[var(--text-primary)]">
 				<h4 className="font-medium text-gray-600 dark:text-[var(--text-secondary)]">{t('nearestRescue')}</h4>
 				{nearestHgss && hgssCompass ? (
-					<div className="flex items-center justify-between gap-2">
-						<span>
-							{nearestHgss.entry.name}
-							<span className="ml-1 text-gray-500 dark:text-[var(--text-secondary)]">
-								· {formatDistanceM(nearestHgss.distanceM, units)}
+					<div className="flex flex-col gap-1">
+						<div className="flex items-center justify-between gap-2">
+							<span>
+								{nearestHgss.entry.name}
+								<span className="ml-1 text-gray-500 dark:text-[var(--text-secondary)]">
+									· {formatDistanceM(nearestHgss.distanceM, units)}
+								</span>
 							</span>
-						</span>
-						<span
-							aria-label={t(`compass.${hgssCompass}`)}
-							className="inline-flex items-center gap-1 text-xs"
-							role="img"
-							title={t(`compass.${hgssCompass}`)}
-						>
 							<span
-								aria-hidden="true"
-								className="text-cldt-blue inline-block"
-								style={{ transform: `rotate(${nearestHgss.bearingDeg}deg)` }}
+								aria-label={t(`compass.${hgssCompass}`)}
+								className="inline-flex items-center gap-1 text-xs"
+								role="img"
+								title={t(`compass.${hgssCompass}`)}
 							>
-								&#8593;
+								<span
+									aria-hidden="true"
+									className="text-cldt-blue inline-block"
+									style={{ transform: `rotate(${nearestHgss.bearingDeg}deg)` }}
+								>
+									&#8593;
+								</span>
+								<span aria-hidden="true" className="font-medium">
+									{t(`compass.${hgssCompass}`)}
+								</span>
 							</span>
-							<span aria-hidden="true" className="font-medium">
-								{hgssCompass}
-							</span>
-						</span>
+						</div>
+						{(nearestHgss.entry.phone || nearestHgss.entry.url) && (
+							<div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
+								{nearestHgss.entry.phone && (
+									<a
+										aria-label={t('callStation', { name: nearestHgss.entry.name })}
+										className="text-cldt-blue hover:text-cldt-green focus-visible:text-cldt-green focus-visible:ring-cldt-green inline-flex items-center gap-1 outline-none focus-visible:ring-1 focus-visible:ring-offset-1"
+										href={`tel:${nearestHgss.entry.phone}`}
+									>
+										<IoCallOutline aria-hidden className="h-3.5 w-3.5" />
+										<span className="font-mono">{formatPhoneDisplay(nearestHgss.entry.phone)}</span>
+									</a>
+								)}
+								{nearestHgss.entry.url && (
+									<a
+										aria-label={t('openStationPage', { name: nearestHgss.entry.name })}
+										className="text-cldt-blue hover:text-cldt-green focus-visible:text-cldt-green focus-visible:ring-cldt-green inline-flex items-center gap-1 outline-none focus-visible:ring-1 focus-visible:ring-offset-1"
+										href={nearestHgss.entry.url}
+										rel="noopener noreferrer"
+										target="_blank"
+									>
+										<IoOpenOutline aria-hidden className="h-3.5 w-3.5" />
+										<span>{t('stationDetails')}</span>
+									</a>
+								)}
+							</div>
+						)}
 					</div>
 				) : (
 					<span className="text-gray-500 dark:text-[var(--text-secondary)]">-</span>
@@ -407,11 +450,13 @@ export function MapControlsEmergencyPanel({
 				>
 					{t('callButton')}
 				</a>
-				{geoHref ? (
+				{mapsHref ? (
 					<a
 						aria-label={t('mapsButton')}
 						className={`${buttonVariants({ variant: 'mapControlOutline', size: 'default' })} h-10`}
-						href={geoHref}
+						href={mapsHref}
+						rel="noopener noreferrer"
+						target="_blank"
 					>
 						{t('mapsButton')}
 					</a>

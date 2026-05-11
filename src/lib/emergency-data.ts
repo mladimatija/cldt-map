@@ -9,6 +9,9 @@ export interface HgssStation {
 	name: string;
 	lat: number;
 	lng: number;
+
+	phone?: string;
+	url?: string;
 }
 
 const isFiniteLatLng = <T extends { lat: number; lng: number }>(e: T): boolean =>
