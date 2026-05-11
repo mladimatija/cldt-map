@@ -1,7 +1,7 @@
 import type * as GeoJSON from 'geojson';
 
 /**
- * Ray-casting even–odd algorithm for a single ring (array of [lng, lat] positions).
+ * Ray-casting even-odd algorithm for a single ring (array of [lng, lat] positions).
  */
 function pointInRing(lng: number, lat: number, ring: GeoJSON.Position[]): boolean {
 	let inside = false;

@@ -26,7 +26,7 @@ function buildPopupContent(feature: GeoJSON.Feature, t: (key: string) => string)
 
 	const validWindow =
 		validFrom && validUntil
-			? `${new Date(validFrom).toLocaleString()} – ${new Date(validUntil).toLocaleString()}`
+			? `${new Date(validFrom).toLocaleString()} - ${new Date(validUntil).toLocaleString()}`
 			: validUntil
 				? new Date(validUntil).toLocaleString()
 				: undefined;

@@ -296,7 +296,7 @@ export function formatDistanceM(meters: number, units: UnitSystem): string {
 }
 
 /**
- * Computes the initial great-circle bearing (in degrees, 0–360, clockwise from north)
+ * Computes the initial great-circle bearing (in degrees, 0-360, clockwise from north)
  * from point 1 to point 2. Uses the spherical "forward azimuth" formula.
  */
 export function computeBearing(lat1: number, lng1: number, lat2: number, lng2: number): number {
