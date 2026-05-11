@@ -1,10 +1,19 @@
 // Service worker for CLDT Map (app shell + tiles)
-const CACHE_VERSION = 4;
+const CACHE_VERSION = 5;
 const CACHE_NAME = `cldt-map-cache-v${CACHE_VERSION}`;
 const OFFLINE_URL = '/offline';
 const TILE_CACHE_PREFIX = 'cldt-tiles-';
 
-const CORE_ASSETS = ['/', OFFLINE_URL, '/manifest.webmanifest', '/cldt-logo.svg', '/icon-192.png', '/icon-512.png'];
+const CORE_ASSETS = [
+	'/',
+	OFFLINE_URL,
+	'/manifest.webmanifest',
+	'/cldt-logo.svg',
+	'/icon-192.png',
+	'/icon-512.png',
+	'/data/road-access.json',
+	'/data/hgss-stations.json',
+];
 
 // Tile hosts to cache - keyed by substring match
 const TILE_HOSTS = [

@@ -460,3 +460,33 @@
 		-webkit-print-color-adjust: exact;
 	}
 }
+
+/* SOS button pulsing white ring */
+.sos-pulse-ring {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	border-radius: 50%;
+	border: 2px solid white;
+	pointer-events: none;
+	animation: sos-pulse 1s ease-out infinite;
+}
+
+@keyframes sos-pulse {
+	0% {
+		transform: scale(1);
+		opacity: 0.4;
+	}
+	100% {
+		transform: scale(1.6);
+		opacity: 0;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.sos-pulse-ring {
+		animation: none;
+	}
+}

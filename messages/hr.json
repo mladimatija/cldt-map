@@ -47,7 +47,8 @@
 			"radar": "Preklopni sloj radara padalina - animirani RainViewer radar s prošlim i prognoziranim kadrovima, kontrole reproduciranja i legenda boja",
 			"sunsetPosition": "Pozicija zalaska/izlaska sunca - prikazuje gdje ćete biti na stazi u trenutku zalaska i izlaska sunca prema trenutnom tempu; markeri na poliliniji",
 			"stagePlanner": "Planer višednevnih etapa - podijelite bilo koji dio staze na dnevne etape prema udaljenosti ili vremenu, pregledajte statistike nadmorske visine i ETA po etapi, izvezite pojedine etape kao GPX datoteke ili sve etape kao PDF karte etapa",
-			"gpxImport": "Uvoz GPX rute - povuci i ispusti (ili odaberi) snimljenu GPX datoteku i usporedi svoju rutu sa službenom stazom; statistike o udaljenosti, tempu, ukupnom i vremenu kretanja, maksimalnom odstupanju i pokrivenosti staze"
+			"gpxImport": "Uvoz GPX rute - povuci i ispusti (ili odaberi) snimljenu GPX datoteku i usporedi svoju rutu sa službenom stazom; statistike o udaljenosti, tempu, ukupnom i vremenu kretanja, maksimalnom odstupanju i pokrivenosti staze",
+			"emergency": "Hitna ploča 112 - dugim pritiskom crvenog SOS gumba (donji desni kut) otvara se offline-first ploča s tvojim GPS koordinatama, Plus kodom, etapom i kilometrom staze te smjerom i udaljenošću do najbližeg pristupa cesti i HGSS stanice; kopiraj svako polje i pokreni biranje (Nazovi 112) ili karte (Otvori u kartama); radi potpuno offline jednom kad se podaci spreme u predmemoriju"
 		},
 		"dataAttribution": "Podaci i atribucija",
 		"dataAttributionDesc": "Podatke o stazi pruža organizacija Udruga Long Distance Trail Hrvatska (LDTH). Karte dolaze od OpenStreetMap, OpenTopoMap, CyclOSM i drugih pružatelja. Hrvatske topografske karte su od Državne geodetske uprave (DGU). Meteorološki podaci dolaze od DHMZ-a (Državni hidrometeorološki zavod) i Open-Meteo. Radarske pločice osigurava RainViewer. Podaci prikazani na ovoj stranici možda ne odražavaju najnovije stanje. U slučaju sumnje, uvijek provjerite službene izvore.",
@@ -486,5 +487,44 @@
 		"severityOrange": "Umjeren",
 		"severityRed": "Ozbiljan",
 		"dismiss": "Odbaci"
+	},
+	"emergency": {
+		"title": "Hitno · 112",
+		"buttonAriaLabel": "Otvori hitnu ploču - držite za aktivaciju",
+		"holdToOpen": "Držite za otvaranje hitne ploče",
+		"close": "Zatvori hitnu ploču",
+		"position": "Položaj",
+		"plusCode": "Plus kod",
+		"section": "Etapa",
+		"kmFromStart": "{km} km od početka",
+		"nearestRoad": "Najbliži pristup cesti",
+		"nearestRescue": "Gorska služba spašavanja (HGSS)",
+		"callButton": "Nazovi 112",
+		"mapsButton": "Otvori u kartama",
+		"crossroadsAt": "Križanje na {distance} - {ref}",
+		"gpsUnavailable": "GPS nije dostupan - korišten posljednji poznati položaj",
+		"gpsNoPosition": "GPS nije dostupan - nema podataka o položaju",
+		"copyTooltipDefault": "Kopiraj",
+		"copyTooltipSuccess": "Kopirano",
+		"copyAriaLabel": {
+			"coords": "Kopiraj koordinate",
+			"plusCode": "Kopiraj Plus kod",
+			"section": "Kopiraj etapu i km"
+		},
+		"compass": {
+			"N": "S",
+			"NE": "SI",
+			"E": "I",
+			"SE": "JI",
+			"S": "J",
+			"SW": "JZ",
+			"W": "Z",
+			"NW": "SZ"
+		},
+		"roadType": {
+			"unclassified": "Neklasificirana cesta",
+			"residential": "Stambena ulica",
+			"road": "Cesta"
+		}
 	}
 }
