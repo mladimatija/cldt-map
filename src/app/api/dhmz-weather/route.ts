@@ -4,6 +4,10 @@
  * and returns a WeatherData-compatible JSON response.
  */
 import { NextRequest, NextResponse } from 'next/server';
+import { enforceRateLimit, fetchWithSizeCap } from '@/lib/api-defense';
+import { escapeRegex } from '@/lib/utils';
+
+const MAX_BODY_BYTES = 5 * 1024 * 1024;
 
 function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number): number {
 	const R = 6371;
@@ -44,7 +48,8 @@ function apparentTemp(tempC: number, windKmh: number): number {
 
 /** Extract the text content of the first matching XML tag (no nesting assumed). */
 function extractTag(xml: string, tag: string): string {
-	const match = xml.match(new RegExp(`<${tag}[^>]*>([^<]*)<\\/${tag}>`));
+	const safe = escapeRegex(tag);
+	const match = xml.match(new RegExp(`<${safe}[^>]*>([^<]*)<\\/${safe}>`));
 	return match?.[1]?.trim() ?? '';
 }
 
@@ -79,6 +84,9 @@ function parseStations(xml: string): Station[] {
 }
 
 export async function GET(request: NextRequest): Promise<Response> {
+	const limited = enforceRateLimit(request, { name: 'dhmz-weather', windowMs: 60_000, max: 60 });
+	if (limited) return limited;
+
 	const { searchParams } = new URL(request.url);
 	const lat = parseFloat(searchParams.get('lat') ?? '');
 	const lng = parseFloat(searchParams.get('lng') ?? '');
@@ -88,15 +96,16 @@ export async function GET(request: NextRequest): Promise<Response> {
 	}
 
 	try {
-		const res = await fetch('https://vrijeme.hr/hrvatska_n.xml', {
-			next: { revalidate: 300 },
-		});
-		if (!res.ok) {
-			return NextResponse.json({ error: `DHMZ returned ${res.status}` }, { status: 502 });
+		const fetched = await fetchWithSizeCap(
+			'https://vrijeme.hr/hrvatska_n.xml',
+			{ next: { revalidate: 300 } },
+			MAX_BODY_BYTES,
+		);
+		if (!fetched.ok) {
+			return NextResponse.json({ error: fetched.reason }, { status: fetched.status });
 		}
 
-		const xml = await res.text();
-		const stations = parseStations(xml);
+		const stations = parseStations(fetched.body);
 
 		let nearest: Station | null = null;
 		let minDist = Infinity;
@@ -127,7 +136,7 @@ export async function GET(request: NextRequest): Promise<Response> {
 			{ headers: { 'Cache-Control': 'public, max-age=300' } },
 		);
 	} catch (err) {
-		console.error('[dhmz-weather]', err);
+		console.error('[dhmz-weather]', err instanceof Error ? err.message : String(err));
 		return NextResponse.json({ error: 'Failed to fetch DHMZ data' }, { status: 500 });
 	}
 }
