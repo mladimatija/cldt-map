@@ -7,10 +7,8 @@ import { L } from './leaflet';
 export const createLocationSlice: StateCreator<StoreState, [], [], LocationSlice> = (set, get) => ({
 	userLocation: null,
 	isLocating: false,
-	userLocationInitialized: false,
 	initialLocationSet: false,
 	permissionStatus: null,
-	showPermissionNotification: false,
 	locationError: null,
 	showUserMarker: true,
 
@@ -22,19 +20,13 @@ export const createLocationSlice: StateCreator<StoreState, [], [], LocationSlice
 			showClosestPointLine: false,
 		}),
 	setIsLocating: (isLocating) => set({ isLocating }),
-	setUserLocationInitialized: (initialized) => set({ userLocationInitialized: initialized }),
-	setInitialLocationSet: (value) => set({ initialLocationSet: value }),
 	setPermissionStatus: (status) => set({ permissionStatus: status }),
-	setShowPermissionNotification: (show) => set({ showPermissionNotification: show }),
 	setLocationError: (error) => set({ locationError: error }),
 	setShowUserMarker: (show) => set({ showUserMarker: show }),
 
 	handleLocationUpdate: (location): void => {
 		const state = get();
 
-		if (!state.userLocationInitialized) {
-			set({ userLocationInitialized: true });
-		}
 		if (state.initialLocationSet) {
 			return;
 		}
@@ -60,10 +52,6 @@ export const createLocationSlice: StateCreator<StoreState, [], [], LocationSlice
 				get().calculateClosestPoint();
 			}
 		}, 500);
-	},
-
-	togglePermissionNotification: (visible): void => {
-		set({ showPermissionNotification: visible });
 	},
 
 	getCurrentLocation: async (): Promise<void> => {

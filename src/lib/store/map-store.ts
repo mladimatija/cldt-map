@@ -1,4 +1,5 @@
 import type * as GeoJSON from 'geojson';
+import type { LatLng } from 'leaflet';
 import { create, type StoreApi, type UseBoundStore } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { config, TRAIL_OFF_TRAIL_THRESHOLD_M } from '../config';
@@ -391,10 +392,10 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 				},
 
 				processTrailData: (
-					points: unknown[],
+					points: LatLng[],
 					elevationPoints: { lat: number; lng: number; elevation: number }[],
-					startPoint: unknown,
-					endPoint: unknown,
+					startPoint: LatLng | null,
+					endPoint: LatLng | null,
 					totalDistance: number,
 					elevationGain: number,
 					elevationLoss: number,
