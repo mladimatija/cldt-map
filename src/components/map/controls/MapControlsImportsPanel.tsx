@@ -72,7 +72,7 @@ export function MapControlsImportsPanel(): React.ReactElement {
 								onMouseLeave={() => setHoveredImportedTrackId(null)}
 							>
 								<button
-									className="flex w-full cursor-pointer items-center gap-2 border-0 bg-transparent p-0 text-left"
+									className="focus-visible:ring-cldt-green flex w-full cursor-pointer items-center gap-2 rounded border-0 bg-transparent p-0 text-left outline-none focus-visible:ring-2 focus-visible:ring-offset-1"
 									type="button"
 									onClick={() => fitToTrack(track)}
 								>

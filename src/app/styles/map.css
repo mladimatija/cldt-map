@@ -198,7 +198,7 @@
 	color: var(--cldt-blue);
 	font-size: 16px;
 	font-weight: 600;
-	border-bottom: 1px solid #eee;
+	border-bottom: 1px solid var(--border-color, #eee);
 	padding: 0 0 6px;
 }
 
@@ -330,10 +330,10 @@
 }
 
 .trail-section-marker-inner.trail-section-0 {
-	background-color: #5ec687;
+	background-color: var(--cldt-green);
 }
 .trail-section-marker-inner.trail-section-1 {
-	background-color: #00a6c7;
+	background-color: var(--cldt-blue);
 }
 .trail-section-marker-inner.trail-section-2 {
 	background-color: var(--cldt-red);
@@ -345,10 +345,10 @@
 
 /* Section tooltip: colored title (A/B/C) */
 .map-tooltip__inner .trail-section-title-0 {
-	color: #5ec687;
+	color: var(--cldt-green);
 }
 .map-tooltip__inner .trail-section-title-1 {
-	color: #00a6c7;
+	color: var(--cldt-blue);
 }
 .map-tooltip__inner .trail-section-title-2 {
 	color: var(--cldt-red);
@@ -487,6 +487,9 @@
 
 @media (prefers-reduced-motion: reduce) {
 	.sos-pulse-ring {
+		animation: none;
+	}
+	.pulse-marker {
 		animation: none;
 	}
 }
