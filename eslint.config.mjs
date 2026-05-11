@@ -150,6 +150,13 @@ const eslintConfig = [
 			react: { version: '19' }, // Avoids auto-detection crash
 		},
 	},
+	{
+		// Build/CLI scripts run in Node and use console for progress output.
+		files: ['scripts/**/*.ts', 'scripts/**/*.mjs'],
+		rules: {
+			'no-console': 'off',
+		},
+	},
 ];
 
 export default eslintConfig;

@@ -73,8 +73,8 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 
 				direction: config.direction,
 				setDirection: (direction: TrailDirection) => {
-					// Reverse-of-travel invalidates the predictive throttle: a NOBO 0–20 km bucket
-					// is a different forward corridor than a SOBO 0–20 km bucket. Clearing the
+					// Reverse-of-travel invalidates the predictive throttle: a NOBO 0-20 km bucket
+					// is a different forward corridor than a SOBO 0-20 km bucket. Clearing the
 					// bucket set + debounce timestamp lets the next GPS update re-arm a run.
 					if (get().direction !== direction) {
 						resetPredictivePrecacheBuckets();
