@@ -461,6 +461,16 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 		setIsExpanded(!isExpanded);
 	};
 
+	const { highestPoint, lowestPoint } = useMemo(() => {
+		let high = -Infinity;
+		let low = Infinity;
+		for (const p of chartData) {
+			if (p.elevation > high) high = p.elevation;
+			if (p.elevation < low) low = p.elevation;
+		}
+		return { highestPoint: high, lowestPoint: low };
+	}, [chartData]);
+
 	if (chartData.length === 0) {
 		const emptyMessage = gpxLoadFailed ? tCommon('failedToLoadTrail') : gpxLoaded ? t('noData') : t('loading');
 		return (
@@ -472,8 +482,6 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 		);
 	}
 
-	const highestPoint = Math.max(...chartData.map((p) => p.elevation));
-	const lowestPoint = Math.min(...chartData.map((p) => p.elevation));
 	const yDomainPadding = (highestPoint - lowestPoint) * 0.1;
 	const yDomain: [number, number] = [Math.max(0, lowestPoint - yDomainPadding), highestPoint + yDomainPadding];
 	const directionText = direction === 'SOBO' ? t('directionNorthSouth') : t('directionSouthNorth');
