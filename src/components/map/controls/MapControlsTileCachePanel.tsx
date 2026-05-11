@@ -202,7 +202,10 @@ export function MapControlsTileCachePanel(): React.ReactElement {
 											{' - '}
 											{querying ? (
 												<span className="flex items-center gap-1">
-													<IoEllipsisHorizontal aria-hidden className="h-3 w-3 animate-spin motion-reduce:animate-none" />
+													<IoEllipsisHorizontal
+														aria-hidden
+														className="h-3 w-3 animate-spin motion-reduce:animate-none"
+													/>
 													{t('querying')}
 												</span>
 											) : (

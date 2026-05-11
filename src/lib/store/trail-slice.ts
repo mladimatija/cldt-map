@@ -21,11 +21,7 @@ function bucketGradePct(absGradePct: number): 0 | 1 | 2 | 3 | 4 {
  * squared lat/lng delta. No allocations, no sqrt - the metric distance must be
  * computed separately on the returned index if needed. Returns 0 for empty input.
  */
-function nearestIndexByCoords(
-	points: { lat: number; lng: number }[],
-	targetLat: number,
-	targetLng: number,
-): number {
+function nearestIndexByCoords(points: { lat: number; lng: number }[], targetLat: number, targetLng: number): number {
 	let closestIndex = 0;
 	let closestSq = Infinity;
 	for (let i = 0; i < points.length; i++) {
