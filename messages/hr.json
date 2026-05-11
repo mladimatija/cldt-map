@@ -48,7 +48,8 @@
 			"sunsetPosition": "Pozicija zalaska/izlaska sunca - prikazuje gdje ćete biti na stazi u trenutku zalaska i izlaska sunca prema trenutnom tempu; markeri na poliliniji",
 			"stagePlanner": "Planer višednevnih etapa - podijelite bilo koji dio staze na dnevne etape prema udaljenosti ili vremenu, pregledajte statistike nadmorske visine i ETA po etapi, izvezite pojedine etape kao GPX datoteke ili sve etape kao PDF karte etapa",
 			"gpxImport": "Uvoz GPX rute - povuci i ispusti (ili odaberi) snimljenu GPX datoteku i usporedi svoju rutu sa službenom stazom; statistike o udaljenosti, tempu, ukupnom i vremenu kretanja, maksimalnom odstupanju i pokrivenosti staze",
-			"emergency": "Hitna ploča 112 - dugim pritiskom crvenog SOS gumba (donji desni kut) otvara se offline-first ploča s tvojim GPS koordinatama, Plus kodom, etapom i kilometrom staze te smjerom i udaljenošću do najbližeg pristupa cesti i HGSS stanice; kopiraj svako polje i pokreni biranje (Nazovi 112) ili karte (Otvori u kartama); radi potpuno offline jednom kad se podaci spreme u predmemoriju"
+			"emergency": "Hitna ploča 112 - dugim pritiskom crvenog SOS gumba (donji desni kut) otvara se offline-first ploča s tvojim GPS koordinatama, Plus kodom, etapom i kilometrom staze te smjerom i udaljenošću do najbližeg pristupa cesti i HGSS stanice; kopiraj svako polje i pokreni biranje (Nazovi 112) ili karte (Otvori u kartama); radi potpuno offline jednom kad se podaci spreme u predmemoriju",
+			"trailStyle": "Stil staze - odaberi kako će ruta biti obojana u ploči slojeva: Zadano (jedna boja), Dionice (zone A/B/C s graničnim oznakama i statistikom po dionici) ili Nagib (gradijentno bojanje u pet pojaseva, topli tonovi za uspone i hladni za silazne dijelove u trenutnom smjeru hodanja; legenda u ploči; ponovno se izračunava pri promjeni smjera SOBO/NOBO)"
 		},
 		"dataAttribution": "Podaci i atribucija",
 		"dataAttributionDesc": "Podatke o stazi pruža organizacija Udruga Long Distance Trail Hrvatska (LDTH). Karte dolaze od OpenStreetMap, OpenTopoMap, CyclOSM i drugih pružatelja. Hrvatske topografske karte su od Državne geodetske uprave (DGU). Meteorološki podaci dolaze od DHMZ-a (Državni hidrometeorološki zavod) i Open-Meteo. Radarske pločice osigurava RainViewer. Podaci prikazani na ovoj stranici možda ne odražavaju najnovije stanje. U slučaju sumnje, uvijek provjerite službene izvore.",
@@ -87,6 +88,22 @@
 		"layersSection": "Slojevi",
 		"showSections": "Prikaži dionice staze",
 		"showSectionsTooltip": "Označava dionice staze bojama i prikazuje oznake granica dionica sa statistikama.",
+		"layers": {
+			"trailStyle": {
+				"legend": "Stil staze",
+				"default": "Zadano",
+				"sections": "Dionice",
+				"grade": "Nagib",
+				"tooltip": "Odaberi kako se boji linija staze.",
+				"legendTitle": "Nagib",
+				"legendFlat": "ravno",
+				"legendModerate": "umjereno",
+				"legendSteep": "strmo",
+				"legendVerySteep": "vrlo strmo",
+				"legendExtreme": "ekstremno",
+				"legendNote": "toplo = uspon, hladno = silazak"
+			}
+		},
 		"walkingPace": "Tempo hodanja",
 		"walkingPaceHint": "Raspon: {min} - {max}, zadano: {default}",
 		"walkingPaceReset": "Vrati tempo hodanja na zadanu vrijednost",

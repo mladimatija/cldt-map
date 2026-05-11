@@ -141,6 +141,8 @@ export function createMapStoreStub(): MapStoreState {
 		setLargeTouchTargets: noop,
 		showSections: false,
 		setShowSections: noop,
+		gradeTintedTrail: false,
+		setGradeTintedTrail: noop,
 		baseMapProvider: BaseMapProvider.OPEN_STREET_MAP,
 		setBaseMapProvider: noop,
 		isMapFullscreen: false,

@@ -32,3 +32,11 @@ export function sectionBoundaryIcon(label: string, sectionIndex: number): L.DivI
 		iconAnchor: [12, 12],
 	});
 }
+
+/** Ascent colors for grade bands 0..4 (flat lime -> deep red).
+ * Band 0 (flat) uses the same lime for both directions; the ascent/descent split is
+ * applied at render time via the sign of the segment elevation delta, not via a third array. */
+export const GRADE_BAND_ASCENT_COLORS = ['#84cc16', '#eab308', '#f97316', '#ef4444', '#7f1d1d'] as const;
+
+/** Descent colors for grade bands 0..4 (flat lime -> deep teal). Band 0 mirrors ascent. */
+export const GRADE_BAND_DESCENT_COLORS = ['#84cc16', '#0ea5e9', '#06b6d4', '#0891b2', '#164e63'] as const;

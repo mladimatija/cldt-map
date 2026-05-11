@@ -9,6 +9,15 @@ import { computeBearing } from '../distance-utils';
 
 type GpxElevationPoint = { lat: number; lng: number; elevation: number };
 
+/** Bucket an absolute grade percent into one of five bands per the design system §4.20 ramp. */
+function bucketGradePct(absGradePct: number): 0 | 1 | 2 | 3 | 4 {
+	if (absGradePct <= 3) return 0;
+	if (absGradePct <= 6) return 1;
+	if (absGradePct <= 10) return 2;
+	if (absGradePct <= 15) return 3;
+	return 4;
+}
+
 /**
  * Compute closest point on trail to a given location. Pure helper used by
  * calculateClosestPoint and forceCalculateClosestPointFromLocation.
@@ -172,6 +181,9 @@ export const createTrailSlice: StateCreator<StoreState, [], [], TrailSlice> = (s
 		window.dispatchEvent(event);
 	},
 
+	// Caller is expected to pass `points` and `elevationPoints` already direction-adjusted
+	// (ascending index = advancing in current travel direction). The raw elevation delta to the
+	// next point therefore yields a direction-relative gradePct: positive = ascent in current direction.
 	processTrailData: (points, elevationPoints, startPoint, endPoint, distance, elevGain, elevLoss): void => {
 		set({
 			trailPoints: points,
@@ -216,6 +228,15 @@ export const createTrailSlice: StateCreator<StoreState, [], [], TrailSlice> = (s
 			const bearingDeg =
 				i < points.length - 1 ? computeBearing(points[i].lat, points[i].lng, points[i + 1].lat, points[i + 1].lng) : 0;
 
+			// Signed grade percent to the next point (positive = ascending in current direction).
+			let gradePct = 0;
+			if (i < points.length - 1 && elevationPoints?.[i] && elevationPoints?.[i + 1]) {
+				const dEle = elevationPoints[i + 1].elevation - elevationPoints[i].elevation;
+				const dDist = points[i].distanceTo(points[i + 1]);
+				gradePct = dDist > 0 ? (dEle / dDist) * 100 : 0;
+			}
+			const gradeBand = bucketGradePct(Math.abs(gradePct));
+
 			enhancedPoints.push({
 				lat: points[i].lat,
 				lng: points[i].lng,
@@ -226,12 +247,18 @@ export const createTrailSlice: StateCreator<StoreState, [], [], TrailSlice> = (s
 				index: i,
 				sectionName: section?.nameKey,
 				bearingDeg,
+				gradePct,
+				gradeBand,
 			});
 		}
 
-		// Last point inherits previous bearing (single-point trails keep 0).
+		// Last point inherits previous bearing/grade (single-point trails keep zeros).
 		if (enhancedPoints.length >= 2) {
-			enhancedPoints[enhancedPoints.length - 1].bearingDeg = enhancedPoints[enhancedPoints.length - 2].bearingDeg;
+			const last = enhancedPoints[enhancedPoints.length - 1];
+			const prev = enhancedPoints[enhancedPoints.length - 2];
+			last.bearingDeg = prev.bearingDeg;
+			last.gradePct = prev.gradePct;
+			last.gradeBand = prev.gradeBand;
 		}
 
 		set({ enhancedTrailPoints: enhancedPoints });
