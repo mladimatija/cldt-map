@@ -25,6 +25,22 @@ export function cn(...inputs: ClassValue[]): string {
 	return twMerge(clsx(inputs));
 }
 
+/**
+ * Returns true when the URL is an absolute http(s) URL. Used to gate anchors whose
+ * href comes from external data (notices feed, HGSS dataset) so a malicious
+ * javascript:/data: payload cannot execute via the link. Relative paths and
+ * non-http(s) schemes are rejected.
+ */
+export function isSafeUrl(u: string | undefined | null): boolean {
+	if (!u) return false;
+	try {
+		const protocol = new URL(u).protocol;
+		return protocol === 'http:' || protocol === 'https:';
+	} catch {
+		return false;
+	}
+}
+
 // --------------------------------------
 // Error handling utilities
 // --------------------------------------
