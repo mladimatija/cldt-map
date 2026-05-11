@@ -6,7 +6,7 @@ import { usePopoverFocusTrap } from '@/hooks';
 import SmartTooltip from '@/components/ui/SmartTooltip';
 import { Checkbox } from '@/components/ui/Checkbox';
 import { formatPace } from '@/lib/distance-utils';
-import type { UnitSystem } from '@/lib/store';
+import { useMapStore, type MapStoreState } from '@/lib/store';
 import {
 	IoMoonOutline,
 	IoBatteryHalfOutline,
@@ -27,32 +27,6 @@ interface MapControlsSettingsPanelProps {
 	containerRef: RefObject<HTMLDivElement | null>;
 	isExpanded: boolean;
 	onToggle: () => void;
-	preferencesTitle: string;
-	darkMode: boolean;
-	setDarkMode: (checked: boolean) => void;
-	batterySaverMode: boolean;
-	setBatterySaverMode: (checked: boolean) => void;
-	batterySaverTooltip: string;
-	largeTouchTargets: boolean;
-	setLargeTouchTargets: (checked: boolean) => void;
-	showSections: boolean;
-	setShowSections: (checked: boolean) => void;
-	gradeTintedTrail: boolean;
-	setGradeTintedTrail: (enabled: boolean) => void;
-	walkingPaceKmh: number;
-	setWalkingPaceKmh: (pace: number) => void;
-	gradeAdjustedEta: boolean;
-	setGradeAdjustedEta: (enabled: boolean) => void;
-	sunsetProjection: boolean;
-	setSunsetProjection: (enabled: boolean) => void;
-	severeWeatherLayer: boolean;
-	setSevereWeatherLayer: (enabled: boolean) => void;
-	units: UnitSystem;
-	darkModeLabel: string;
-	batterySaverLabel: string;
-	largeTouchTargetsLabel: string;
-	tooltipShow: string;
-	tooltipHide: string;
 }
 
 /** Settings popover: dark mode, battery saver, large touch targets, show sections. */
@@ -60,36 +34,34 @@ export function MapControlsSettingsPanel({
 	containerRef,
 	isExpanded,
 	onToggle,
-	preferencesTitle,
-	darkMode,
-	setDarkMode,
-	batterySaverMode,
-	setBatterySaverMode,
-	batterySaverTooltip,
-	largeTouchTargets,
-	setLargeTouchTargets,
-	showSections,
-	setShowSections,
-	gradeTintedTrail,
-	setGradeTintedTrail,
-	walkingPaceKmh,
-	setWalkingPaceKmh,
-	gradeAdjustedEta,
-	setGradeAdjustedEta,
-	sunsetProjection,
-	setSunsetProjection,
-	severeWeatherLayer,
-	setSevereWeatherLayer,
-	units,
-	darkModeLabel,
-	batterySaverLabel,
-	largeTouchTargetsLabel,
-	tooltipShow,
-	tooltipHide,
 }: MapControlsSettingsPanelProps): React.ReactElement {
 	const t = useTranslations('mapControls');
 	const tWeather = useTranslations('severeWeather');
 	const popoverRef = usePopoverFocusTrap(isExpanded);
+
+	const darkMode = useMapStore((state: MapStoreState) => state.darkMode);
+	const setDarkMode = useMapStore((state: MapStoreState) => state.setDarkMode);
+	const batterySaverMode = useMapStore((state: MapStoreState) => state.batterySaverMode);
+	const setBatterySaverMode = useMapStore((state: MapStoreState) => state.setBatterySaverMode);
+	const largeTouchTargets = useMapStore((state: MapStoreState) => state.largeTouchTargets);
+	const setLargeTouchTargets = useMapStore((state: MapStoreState) => state.setLargeTouchTargets);
+	const showSections = useMapStore((state: MapStoreState) => state.showSections);
+	const setShowSections = useMapStore((state: MapStoreState) => state.setShowSections);
+	const gradeTintedTrail = useMapStore((state: MapStoreState) => state.gradeTintedTrail);
+	const setGradeTintedTrail = useMapStore((state: MapStoreState) => state.setGradeTintedTrail);
+	const walkingPaceKmh = useMapStore((state: MapStoreState) => state.walkingPaceKmh);
+	const setWalkingPaceKmh = useMapStore((state: MapStoreState) => state.setWalkingPaceKmh);
+	const gradeAdjustedEta = useMapStore((state: MapStoreState) => state.gradeAdjustedEta);
+	const setGradeAdjustedEta = useMapStore((state: MapStoreState) => state.setGradeAdjustedEta);
+	const sunsetProjection = useMapStore((state: MapStoreState) => state.sunsetProjection);
+	const setSunsetProjection = useMapStore((state: MapStoreState) => state.setSunsetProjection);
+	const severeWeatherLayer = useMapStore((state: MapStoreState) => state.severeWeatherLayer);
+	const setSevereWeatherLayer = useMapStore((state: MapStoreState) => state.setSevereWeatherLayer);
+	const units = useMapStore((state: MapStoreState) => state.units);
+
+	const preferencesTitle = t('preferences');
+	const tooltipShow = t('preferencesShow');
+	const tooltipHide = t('preferencesHide');
 
 	return (
 		<div className="relative inline-block w-10 shrink-0" ref={containerRef}>
@@ -108,14 +80,14 @@ export function MapControlsSettingsPanel({
 					<label className="flex cursor-pointer items-center gap-2">
 						<Checkbox checked={darkMode} onCheckedChange={(checked) => setDarkMode(checked)} />
 						<IoMoonOutline className="h-4 w-4 shrink-0 text-gray-600 dark:text-white" />
-						<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">{darkModeLabel}</span>
+						<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">{t('darkMode')}</span>
 					</label>
 					<label className="flex cursor-pointer items-center gap-2">
 						<Checkbox checked={batterySaverMode} onCheckedChange={(checked) => setBatterySaverMode(checked)} />
 						<IoBatteryHalfOutline className="h-4 w-4 shrink-0 text-gray-600 dark:text-white" />
-						<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">{batterySaverLabel}</span>
+						<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">{t('batterySaver')}</span>
 						<span className="inline-flex" onClick={(e) => e.stopPropagation()} onMouseDown={(e) => e.stopPropagation()}>
-							<SmartTooltip content={batterySaverTooltip} position="top">
+							<SmartTooltip content={t('batterySaverTooltip')} position="top">
 								<IoHelpCircleOutline className="ml-0.5 h-3.5 w-3.5 shrink-0 cursor-help text-gray-400 hover:text-gray-600 dark:text-white" />
 							</SmartTooltip>
 						</span>
@@ -123,7 +95,7 @@ export function MapControlsSettingsPanel({
 					<label className="flex cursor-pointer items-center gap-2">
 						<Checkbox checked={largeTouchTargets} onCheckedChange={(checked) => setLargeTouchTargets(checked)} />
 						<IoHandLeftOutline className="h-4 w-4 shrink-0 text-gray-600 dark:text-white" />
-						<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">{largeTouchTargetsLabel}</span>
+						<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">{t('largeTouchTargets')}</span>
 					</label>
 					<p className="mt-1 text-xs font-semibold tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
 						{t('layersSection')}
