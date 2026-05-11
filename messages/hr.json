@@ -511,6 +511,9 @@
 			"plusCode": "Kopiraj Plus kod",
 			"section": "Kopiraj etapu i km"
 		},
+		"callStation": "Nazovi {name}",
+		"openStationPage": "Otvori stranicu za {name}",
+		"stationDetails": "Detalji stanice",
 		"compass": {
 			"N": "S",
 			"NE": "SI",

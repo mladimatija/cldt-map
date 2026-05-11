@@ -510,6 +510,9 @@
 			"plusCode": "Plus Code kopieren",
 			"section": "Etappe und km kopieren"
 		},
+		"callStation": "{name} anrufen",
+		"openStationPage": "Seite für {name} öffnen",
+		"stationDetails": "Stationsdetails",
 		"compass": {
 			"N": "N",
 			"NE": "NO",
