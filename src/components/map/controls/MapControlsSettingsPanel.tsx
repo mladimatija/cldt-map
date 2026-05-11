@@ -16,6 +16,7 @@ import {
 	IoHelpCircleOutline,
 	IoWarningOutline,
 } from 'react-icons/io5';
+import { GRADE_BAND_ASCENT_COLORS } from '@/components/map/trail-route-constants';
 import { Button } from '@/components/ui/Button';
 import { cn } from '@/lib/utils';
 import { MAP_CONTROL_POPOVER } from './map-controls-constants';
@@ -36,6 +37,8 @@ interface MapControlsSettingsPanelProps {
 	setLargeTouchTargets: (checked: boolean) => void;
 	showSections: boolean;
 	setShowSections: (checked: boolean) => void;
+	gradeTintedTrail: boolean;
+	setGradeTintedTrail: (enabled: boolean) => void;
 	walkingPaceKmh: number;
 	setWalkingPaceKmh: (pace: number) => void;
 	gradeAdjustedEta: boolean;
@@ -67,6 +70,8 @@ export function MapControlsSettingsPanel({
 	setLargeTouchTargets,
 	showSections,
 	setShowSections,
+	gradeTintedTrail,
+	setGradeTintedTrail,
 	walkingPaceKmh,
 	setWalkingPaceKmh,
 	gradeAdjustedEta,
@@ -94,7 +99,7 @@ export function MapControlsSettingsPanel({
 					aria-modal="true"
 					className={cn(
 						MAP_CONTROL_POPOVER,
-						'absolute top-1/2 right-[calc(100%+0.5rem)] flex w-80 -translate-y-1/2 flex-col gap-2',
+						'absolute top-1/2 right-[calc(100%+0.5rem)] flex max-h-[calc(100dvh-8rem)] w-80 -translate-y-1/2 flex-col gap-2 overflow-y-auto',
 					)}
 					ref={popoverRef}
 					role="dialog"
@@ -123,16 +128,76 @@ export function MapControlsSettingsPanel({
 					<p className="mt-1 text-xs font-semibold tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
 						{t('layersSection')}
 					</p>
-					<label className="flex cursor-pointer items-center gap-2">
-						<Checkbox checked={showSections} onCheckedChange={(checked) => setShowSections(checked)} />
-						<IoLayersOutline className="h-4 w-4 shrink-0 text-gray-600 dark:text-white" />
-						<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">{t('showSections')}</span>
-						<span className="inline-flex" onClick={(e) => e.stopPropagation()} onMouseDown={(e) => e.stopPropagation()}>
-							<SmartTooltip content={t('showSectionsTooltip')} position="top">
-								<IoHelpCircleOutline className="ml-0.5 h-3.5 w-3.5 shrink-0 cursor-help text-gray-400 hover:text-gray-600 dark:text-white" />
-							</SmartTooltip>
-						</span>
-					</label>
+					<fieldset className="m-0 flex flex-col gap-1 border-0 p-0">
+						<legend className="mb-1 flex items-center gap-2 p-0 text-sm text-gray-700 dark:text-[var(--text-primary)]">
+							<IoLayersOutline className="h-4 w-4 shrink-0 text-gray-600 dark:text-white" />
+							<span>{t('layers.trailStyle.legend')}</span>
+							<span
+								className="inline-flex"
+								onClick={(e) => e.stopPropagation()}
+								onMouseDown={(e) => e.stopPropagation()}
+							>
+								<SmartTooltip content={t('layers.trailStyle.tooltip')} position="top">
+									<IoHelpCircleOutline className="ml-0.5 h-3.5 w-3.5 shrink-0 cursor-help text-gray-400 hover:text-gray-600 dark:text-white" />
+								</SmartTooltip>
+							</span>
+						</legend>
+						{(() => {
+							const selected = gradeTintedTrail ? 'grade' : showSections ? 'sections' : 'default';
+							return (['default', 'sections', 'grade'] as const).map((option) => (
+								<label className="flex cursor-pointer items-center gap-2 pl-6" key={option}>
+									<input
+										checked={selected === option}
+										className="accent-cldt-blue focus-visible:ring-cldt-green h-4 w-4 cursor-pointer focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:outline-none"
+										name="trail-style"
+										type="radio"
+										value={option}
+										onChange={() => {
+											if (option === 'grade') {
+												setGradeTintedTrail(true);
+											} else if (option === 'sections') {
+												setShowSections(true);
+											} else {
+												setShowSections(false);
+												setGradeTintedTrail(false);
+											}
+										}}
+									/>
+									<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">
+										{t(`layers.trailStyle.${option}`)}
+									</span>
+								</label>
+							));
+						})()}
+					</fieldset>
+					{gradeTintedTrail && (
+						<div className="ml-6 flex flex-col gap-1 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
+							<p className="font-semibold text-gray-700 dark:text-[var(--text-primary)]">
+								{t('layers.trailStyle.legendTitle')}
+							</p>
+							{(
+								[
+									{ band: 0, key: 'legendFlat', range: '0-3%' },
+									{ band: 1, key: 'legendModerate', range: '3-6%' },
+									{ band: 2, key: 'legendSteep', range: '6-10%' },
+									{ band: 3, key: 'legendVerySteep', range: '10-15%' },
+									{ band: 4, key: 'legendExtreme', range: '>15%' },
+								] as const
+							).map(({ band, key, range }) => (
+								<div className="flex items-center gap-2" key={key}>
+									<span
+										aria-hidden="true"
+										className="inline-block h-2 w-6 shrink-0 rounded-sm"
+										style={{ backgroundColor: GRADE_BAND_ASCENT_COLORS[band] }}
+									/>
+									<span>
+										{t(`layers.trailStyle.${key}`)} ({range})
+									</span>
+								</div>
+							))}
+							<p className="mt-0.5 text-xs italic opacity-75">{t('layers.trailStyle.legendNote')}</p>
+						</div>
+					)}
 					<label className="flex cursor-pointer items-center gap-2">
 						<Checkbox checked={severeWeatherLayer} onCheckedChange={(checked) => setSevereWeatherLayer(checked)} />
 						<IoWarningOutline className="h-4 w-4 shrink-0 text-gray-600 dark:text-white" />
