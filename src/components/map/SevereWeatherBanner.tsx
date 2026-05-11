@@ -16,7 +16,7 @@ const DISMISSED_KEY = 'cldt-dismissed-weather-warnings';
 const SEVERITY_ORDER: Record<SeverityLevel, number> = { red: 3, orange: 2, yellow: 1 };
 
 const SEVERITY_CLASSES: Record<SeverityLevel, string> = {
-	red: 'bg-red-600 text-white',
+	red: 'bg-cldt-red text-white',
 	orange: 'bg-amber-400 text-amber-900',
 	yellow: 'bg-yellow-300 text-yellow-900',
 };
