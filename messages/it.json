@@ -47,7 +47,8 @@
 			"radar": "Overlay radar precipitazioni - radar RainViewer animato con frame passati e previsionali, controlli play/pausa e legenda colori",
 			"sunsetPosition": "Posizione tramonto/alba - mostra dove ti troverai sul sentiero al tramonto e all'alba in base al tuo ritmo attuale; indicatori attivabili sulla linea",
 			"stagePlanner": "Pianificatore tappe multi-giorno - suddividi qualsiasi tratto del sentiero in tappe giornaliere per distanza o tempo, visualizza statistiche di dislivello ed ETA per tappa, esporta le singole tappe come file GPX o tutte le tappe come PDF tappe in mappa",
-			"gpxImport": "Importazione tracce GPX - trascina (o seleziona) un file GPX registrato per sovrapporre la tua escursione alla mappa ufficiale; statistiche su distanza, passo, tempo totale, tempo in movimento, deviazione massima e copertura del percorso"
+			"gpxImport": "Importazione tracce GPX - trascina (o seleziona) un file GPX registrato per sovrapporre la tua escursione alla mappa ufficiale; statistiche su distanza, passo, tempo totale, tempo in movimento, deviazione massima e copertura del percorso",
+			"emergency": "Pannello di emergenza 112 - tieni premuto il pulsante SOS rosso (in basso a destra) per aprire un pannello offline-first con coordinate GPS, Plus Code, tratta e km del percorso, direzione e distanza al più vicino accesso stradale e alla stazione di soccorso alpino HGSS; copia ogni campo negli appunti e passa al dialer (Chiama 112) o alle mappe (Apri nelle mappe); funziona completamente offline una volta in cache"
 		},
 		"dataAttribution": "Dati e attribuzioni",
 		"dataAttributionDesc": "I dati del sentiero sono forniti dall'organizzazione Udruga Long Distance Trail Hrvatska (LDTH). Le tessere mappa provengono da OpenStreetMap, OpenTopoMap, CyclOSM e altri provider. Le mappe topografiche croate provengono dall'Amministrazione Geodetica Statale (DGU). I dati meteo provengono da DHMZ (Servizio Meteorologico Croato) e Open-Meteo. Le tessere radar sono fornite da RainViewer. I dati visualizzati su questo sito potrebbero non riflettere le condizioni più recenti. In caso di dubbio, verificare sempre le fonti ufficiali.",
@@ -485,5 +486,44 @@
 		"severityOrange": "Moderato",
 		"severityRed": "Grave",
 		"dismiss": "Chiudi"
+	},
+	"emergency": {
+		"title": "Emergenza · 112",
+		"buttonAriaLabel": "Apri pannello di emergenza - tieni premuto per attivare",
+		"holdToOpen": "Tieni premuto per aprire il pannello di emergenza",
+		"close": "Chiudi pannello di emergenza",
+		"position": "Posizione",
+		"plusCode": "Plus Code",
+		"section": "Tratta",
+		"kmFromStart": "{km} km dall'inizio",
+		"nearestRoad": "Accesso stradale più vicino",
+		"nearestRescue": "Soccorso alpino (HGSS)",
+		"callButton": "Chiama 112",
+		"mapsButton": "Apri nelle mappe",
+		"crossroadsAt": "Incrocio a {distance} - {ref}",
+		"gpsUnavailable": "GPS non disponibile - usata l'ultima posizione nota",
+		"gpsNoPosition": "GPS non disponibile - nessun dato di posizione",
+		"copyTooltipDefault": "Copia",
+		"copyTooltipSuccess": "Copiato",
+		"copyAriaLabel": {
+			"coords": "Copia coordinate",
+			"plusCode": "Copia Plus Code",
+			"section": "Copia tratta e km"
+		},
+		"compass": {
+			"N": "N",
+			"NE": "NE",
+			"E": "E",
+			"SE": "SE",
+			"S": "S",
+			"SW": "SO",
+			"W": "O",
+			"NW": "NO"
+		},
+		"roadType": {
+			"unclassified": "Strada non classificata",
+			"residential": "Strada residenziale",
+			"road": "Strada"
+		}
 	}
 }

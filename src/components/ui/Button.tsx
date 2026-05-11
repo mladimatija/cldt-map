@@ -55,6 +55,9 @@ const buttonVariants = cva(
 				offlinePrimary: 'bg-black text-white hover:bg-black/90 focus-visible:bg-black/90',
 				/** Offline page outline. */
 				offlineOutline: 'border border-black/15 bg-transparent text-black hover:bg-black/5 focus-visible:bg-black/5',
+				/** Primary CTA for the emergency 112 panel - solid red. */
+				emergencyPrimary:
+					'bg-cldt-red text-white border border-transparent hover:bg-cldt-red/90 focus-visible:bg-cldt-red/90 focus-visible:ring-2 focus-visible:ring-cldt-green focus-visible:ring-offset-1',
 			},
 			size: {
 				default: 'px-4 py-2',

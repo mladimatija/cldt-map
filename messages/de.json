@@ -47,7 +47,8 @@
 			"radar": "Niederschlagsradar-Overlay - animierter RainViewer-Radar mit vergangenen und vorhergesagten Frames, Wiedergabesteuerung und Farblegende",
 			"sunsetPosition": "Sonnenuntergang/Sonnenaufgang-Position - zeigt, wo du bei Sonnenuntergang und Sonnenaufgang auf dem Weg sein wirst; umschaltbare Markierungen auf der Strecke",
 			"stagePlanner": "Mehrtages-Etappenplaner - teile beliebige Streckenabschnitte nach Distanz oder Zeit in Tagesetappen auf, zeige Höhen- und ETA-Statistiken je Etappe an, exportiere einzelne Etappen als GPX-Dateien oder alle Etappen als Etappenkarten-PDF",
-			"gpxImport": "GPX-Track-Import - ziehe eine aufgezeichnete GPX-Datei auf die Karte (oder wähle sie aus) und vergleiche deine Route mit dem offiziellen Weg; Statistiken zu Distanz, Tempo, Gesamtzeit, Gehzeit, max. Abweichung und Streckenabdeckung"
+			"gpxImport": "GPX-Track-Import - ziehe eine aufgezeichnete GPX-Datei auf die Karte (oder wähle sie aus) und vergleiche deine Route mit dem offiziellen Weg; Statistiken zu Distanz, Tempo, Gesamtzeit, Gehzeit, max. Abweichung und Streckenabdeckung",
+			"emergency": "Notfallpanel 112 - langes Drücken des roten SOS-Buttons (unten rechts) öffnet ein offline-first Panel mit deinen GPS-Koordinaten, Plus Code, Etappe und Kilometer auf dem Weg sowie Richtung und Entfernung zur nächsten Straßenanbindung und HGSS-Bergrettungsstation; jedes Feld in die Zwischenablage kopieren und an die Telefon-App (112 anrufen) oder Karten-App (In Karten öffnen) übergeben; vollständig offline, sobald die Daten im Cache sind"
 		},
 		"dataAttribution": "Daten & Urheberrecht",
 		"dataAttributionDesc": "Trail-Daten werden von der Udruga Long Distance Trail Hrvatska (LDTH) bereitgestellt. Kartenkacheln kommen von OpenStreetMap, OpenTopoMap, CyclOSM und anderen Anbietern. Kroatische topografische Karten stammen vom Staatlichen Geodätischen Amt (DGU). Wetterdaten kommen von DHMZ (Kroatischer Wetterdienst) und Open-Meteo. Radarkacheln werden von RainViewer bereitgestellt. Die auf dieser Seite angezeigten Daten entsprechen möglicherweise nicht dem aktuellen Stand. Im Zweifelsfall bitte immer die offiziellen Quellen prüfen.",
@@ -485,5 +486,44 @@
 		"severityOrange": "Mäßig",
 		"severityRed": "Schwer",
 		"dismiss": "Schließen"
+	},
+	"emergency": {
+		"title": "Notfall · 112",
+		"buttonAriaLabel": "Notfallpanel öffnen - zum Aktivieren halten",
+		"holdToOpen": "Halten, um Notfallpanel zu öffnen",
+		"close": "Notfallpanel schließen",
+		"position": "Position",
+		"plusCode": "Plus Code",
+		"section": "Etappe",
+		"kmFromStart": "{km} km ab Start",
+		"nearestRoad": "Nächste Straßenanbindung",
+		"nearestRescue": "Bergrettung (HGSS)",
+		"callButton": "112 anrufen",
+		"mapsButton": "In Karten öffnen",
+		"crossroadsAt": "Kreuzung bei {distance} - {ref}",
+		"gpsUnavailable": "GPS nicht verfügbar - letzte bekannte Position verwendet",
+		"gpsNoPosition": "GPS nicht verfügbar - keine Positionsdaten",
+		"copyTooltipDefault": "Kopieren",
+		"copyTooltipSuccess": "Kopiert",
+		"copyAriaLabel": {
+			"coords": "Koordinaten kopieren",
+			"plusCode": "Plus Code kopieren",
+			"section": "Etappe und km kopieren"
+		},
+		"compass": {
+			"N": "N",
+			"NE": "NO",
+			"E": "O",
+			"SE": "SO",
+			"S": "S",
+			"SW": "SW",
+			"W": "W",
+			"NW": "NW"
+		},
+		"roadType": {
+			"unclassified": "Unklassifizierte Straße",
+			"residential": "Wohnstraße",
+			"road": "Straße"
+		}
 	}
 }
