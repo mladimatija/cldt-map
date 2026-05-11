@@ -1511,7 +1511,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 			</div>
 
 			<div
-				className={`map-controls-emergency z-controls absolute right-2 bottom-4 ${controlsDisabledClass}`}
+				className={`map-controls-emergency z-controls absolute right-2 bottom-28 ${controlsDisabledClass}`}
 				ref={emergencyContainerRef}
 				onContextMenu={(e) => e.preventDefault()}
 			>
