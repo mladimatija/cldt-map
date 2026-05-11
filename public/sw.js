@@ -1,5 +1,5 @@
 // Service worker for CLDT Map (app shell + tiles)
-const CACHE_VERSION = 5;
+const CACHE_VERSION = 6;
 const CACHE_NAME = `cldt-map-cache-v${CACHE_VERSION}`;
 const OFFLINE_URL = '/offline';
 const TILE_CACHE_PREFIX = 'cldt-tiles-';

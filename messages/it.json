@@ -510,6 +510,9 @@
 			"plusCode": "Copia Plus Code",
 			"section": "Copia tratta e km"
 		},
+		"callStation": "Chiama {name}",
+		"openStationPage": "Apri pagina per {name}",
+		"stationDetails": "Dettagli stazione",
 		"compass": {
 			"N": "N",
 			"NE": "NE",
