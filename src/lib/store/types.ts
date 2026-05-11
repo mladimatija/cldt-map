@@ -10,10 +10,8 @@ export type { TrailDirection, UnitSystem };
 export interface LocationState {
 	userLocation: { lat: number; lng: number; accuracy?: number } | null;
 	isLocating: boolean;
-	userLocationInitialized: boolean;
 	initialLocationSet: boolean;
 	permissionStatus: 'granted' | 'denied' | 'prompt' | null;
-	showPermissionNotification: boolean;
 	locationError: { code: number; message: string } | null;
 	showUserMarker: boolean;
 }
@@ -21,15 +19,11 @@ export interface LocationState {
 export interface LocationActions {
 	setUserLocation: (location: { lat: number; lng: number; accuracy?: number } | null) => void;
 	setIsLocating: (isLocating: boolean) => void;
-	setUserLocationInitialized: (initialized: boolean) => void;
-	setInitialLocationSet: (set: boolean) => void;
 	setPermissionStatus: (status: 'granted' | 'denied' | 'prompt' | null) => void;
-	setShowPermissionNotification: (show: boolean) => void;
 	setLocationError: (error: { code: number; message: string } | null) => void;
 	setShowUserMarker: (show: boolean) => void;
 
 	handleLocationUpdate: (location: LatLng) => void;
-	togglePermissionNotification: (visible: boolean) => void;
 	getCurrentLocation: () => Promise<void>;
 	initLocationService: () => void;
 	requestLocationPermission: () => Promise<void>;
@@ -153,8 +147,8 @@ export interface MapStoreState {
 	trailData: GeoJSON.FeatureCollection | null;
 	setTrailData: (data: GeoJSON.FeatureCollection | null) => void;
 
-	startPoint: unknown | null;
-	endPoint: unknown | null;
+	startPoint: LatLng | null;
+	endPoint: LatLng | null;
 	totalDistance: number;
 	elevationGain: number;
 	elevationLoss: number;
@@ -169,13 +163,13 @@ export interface MapStoreState {
 	setGpxLoadFailed: (failed: boolean) => void;
 	reloadTrailRequested: number;
 	setReloadTrailRequested: (timestamp: number) => void;
-	trailPoints?: unknown[];
+	trailPoints?: LatLng[];
 	requestRawGpxData?: () => string | null;
 	processTrailData?: (
-		points: unknown[],
+		points: LatLng[],
 		elevationPoints: { lat: number; lng: number; elevation: number }[],
-		startPoint: unknown | null,
-		endPoint: unknown | null,
+		startPoint: LatLng | null,
+		endPoint: LatLng | null,
 		totalDistance: number,
 		elevationGain: number,
 		elevationLoss: number,

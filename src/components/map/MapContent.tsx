@@ -61,8 +61,8 @@ const SevereWeatherLayer = dynamic(
 );
 
 export default function MapContent(): React.ReactElement {
-	const [isLocating, setIsLocating] = useState(false);
 	const [initialLocationFetched, setInitialLocationFetched] = useState(false);
+	const isLocating = useMapStore((state: MapStoreState) => state.isLocating);
 	const userLocation = useMapStore((state: MapStoreState) => state.userLocation);
 	const fakeUserLocationEnabled = useMapStore((state: MapStoreState) => state.fakeUserLocationEnabled);
 	const gpxLoaded = useMapStore((state: MapStoreState) => state.gpxLoaded);
@@ -116,19 +116,6 @@ export default function MapContent(): React.ReactElement {
 			}
 		}
 	}, [fakeUserLocationEnabled, gpxLoaded, permissionStatus, checkAndRequestLocation, initialLocationFetched]);
-
-	// Handle location tracking status changes
-	useEffect(() => {
-		const locationState = useMapStore.getState().isLocating;
-		queueMicrotask(() => setIsLocating(locationState));
-		const unsubscribe = useMapStore.subscribe((state: MapStoreState) => {
-			if (state.isLocating !== isLocating) {
-				queueMicrotask(() => setIsLocating(state.isLocating));
-			}
-		});
-
-		return () => unsubscribe();
-	}, [isLocating]);
 
 	// Track permission changes to fetch location when permission is newly granted (skip when fake location is enabled)
 	useEffect(() => {
