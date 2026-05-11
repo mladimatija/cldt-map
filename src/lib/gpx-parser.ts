@@ -14,7 +14,13 @@ export interface ParsedGpx {
 	tracks: ParsedTrack[];
 }
 
+const MAX_GPX_BYTES = 10 * 1024 * 1024;
+
 export function parseGpx(xml: string): ParsedGpx {
+	// Refuse to parse oversized files before they hit DOMParser, which would otherwise
+	// allocate proportional memory for the entire document.
+	if (xml.length > MAX_GPX_BYTES) throw new Error('GPX file is too large');
+
 	// Reject DOCTYPE to prevent entity-expansion DoS (Billion Laughs)
 	if (/<!DOCTYPE/i.test(xml)) throw new Error('GPX file contains unsupported DOCTYPE');
 

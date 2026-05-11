@@ -3,9 +3,11 @@
  * Only allows ALLOWED_HOSTS; rejects non-HTTPS and invalid URLs.
  */
 import { NextRequest, NextResponse } from 'next/server';
+import { enforceRateLimit, fetchWithSizeCap } from '@/lib/api-defense';
 
 const ALLOWED_HOSTS = ['cldt.hr', 'www.cldt.hr'];
 const ALLOWED_PATH_PREFIXES = ['/']; // Adjust to more specific prefixes (e.g. ['/gpx/', '/maps/']) as needed.
+const MAX_BODY_BYTES = 25 * 1024 * 1024; // 25 MB - room for large GPX files
 
 /**
  * Proxy API route to handle CORS issues with external resources
@@ -14,6 +16,9 @@ const ALLOWED_PATH_PREFIXES = ['/']; // Adjust to more specific prefixes (e.g. [
  */
 export async function GET(request: NextRequest): Promise<Response> {
 	try {
+		const limited = enforceRateLimit(request, { name: 'proxy', windowMs: 60_000, max: 30 });
+		if (limited) return limited;
+
 		const { searchParams } = new URL(request.url);
 		const url = searchParams.get('url');
 
@@ -53,28 +58,27 @@ export async function GET(request: NextRequest): Promise<Response> {
 		const controller = new AbortController();
 		const timeoutId = setTimeout(() => controller.abort(), 60000); // 60s for large GPX files
 
-		const response = await fetch(targetUrl.toString(), {
-			headers: {
-				Accept: 'application/xml, text/xml, */*',
-				'User-Agent': 'Mozilla/5.0 (compatible; CLDT-Map/1.0; +https://github.com/cldt-hr/cldt-map)',
+		const fetched = await fetchWithSizeCap(
+			targetUrl.toString(),
+			{
+				headers: {
+					Accept: 'application/xml, text/xml, */*',
+					'User-Agent': 'Mozilla/5.0 (compatible; CLDT-Map/1.0; +https://github.com/cldt-hr/cldt-map)',
+				},
+				signal: controller.signal,
 			},
-			signal: controller.signal,
-		});
+			MAX_BODY_BYTES,
+		);
 
 		clearTimeout(timeoutId);
 
-		if (!response.ok) {
-			return NextResponse.json(
-				{ error: `Upstream error: ${response.status} ${response.statusText}` },
-				{ status: response.status },
-			);
+		if (!fetched.ok) {
+			return NextResponse.json({ error: fetched.reason }, { status: fetched.status });
 		}
 
-		const content = await response.text();
-
-		return new NextResponse(content, {
+		return new NextResponse(fetched.body, {
 			headers: {
-				'Content-Type': response.headers.get('Content-Type') || 'text/xml',
+				'Content-Type': fetched.response.headers.get('Content-Type') || 'text/xml',
 				'Access-Control-Allow-Origin': '*',
 				'Access-Control-Allow-Methods': 'GET',
 				'Access-Control-Allow-Headers': 'Content-Type',
@@ -85,7 +89,7 @@ export async function GET(request: NextRequest): Promise<Response> {
 		if (error instanceof Error && error.name === 'AbortError') {
 			return NextResponse.json({ error: 'Request timeout' }, { status: 504 });
 		}
-		console.error('Proxy error:', error);
+		console.error('[proxy]', error instanceof Error ? error.message : String(error));
 		return NextResponse.json({ error: 'Failed to proxy request' }, { status: 500 });
 	}
 }
