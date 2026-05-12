@@ -45,7 +45,7 @@ export const mapOptions: MapOption[] = [
 		id: BaseMapProvider.OPEN_TOPO_MAP,
 		name: 'Topo',
 		description: 'Topographic map with contour lines',
-		icon: <FaMountain className={`${iconClass} text-green-700`} />,
+		icon: <FaMountain className={`${iconClass} text-cldt-green`} />,
 	},
 	{
 		id: BaseMapProvider.SATELLITE,
@@ -63,7 +63,7 @@ export const mapOptions: MapOption[] = [
 		id: BaseMapProvider.CYCL_OSM,
 		name: 'Cycling',
 		description: 'OpenCycleMap for cyclists and hiking',
-		icon: <FaBiking className={`${iconClass} text-blue-600`} />,
+		icon: <FaBiking className={`${iconClass} text-cldt-blue`} />,
 	},
 	{
 		id: BaseMapProvider.CROATIA_TOPO,
