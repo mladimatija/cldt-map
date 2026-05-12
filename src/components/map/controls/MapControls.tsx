@@ -286,6 +286,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 	useClickOutside(exportPanelRef, isExporting, () => setIsExporting(false));
 	useClickOutside(stagePlannerRef, isStagePlannerExpanded, () => setIsStagePlannerExpanded(false));
 	useClickOutside(emergencyContainerRef, isEmergencyOpen, () => setIsEmergencyOpen(false));
+	useClickOutside(settingsContainerRef, isSettingsExpanded, () => setIsSettingsExpanded(false));
 
 	useEffect(() => {
 		const handleKeyDown = (e: KeyboardEvent): void => {
@@ -1109,7 +1110,6 @@ const MapControls: React.FC<MapControlsProps> = ({
 		};
 	}, [map, setShowTileBoundary, showTileBoundary, tileBoundaryReinitKey]);
 
-
 	useEffect(() => {
 		try {
 			const container = map.getContainer();
@@ -1371,7 +1371,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 					{showCopyToast && (
 						<div
 							aria-live="polite"
-							className="map-tooltip map-tooltip--pwa animate-slide-in-from-top fixed top-4 right-4 z-[var(--z-toast)]"
+							className="map-tooltip map-tooltip--pwa animate-slide-in-from-top fixed top-4 right-4 z-[var(--z-toast)] motion-reduce:animate-none"
 							role="status"
 						>
 							<p className="font-medium">{t('linkCopied')}</p>
@@ -1380,7 +1380,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 					{tileBoundaryError && (
 						<div
 							aria-live="assertive"
-							className="map-tooltip map-tooltip--pwa animate-slide-in-from-top fixed top-4 right-4 z-[var(--z-toast)]"
+							className="map-tooltip map-tooltip--pwa animate-slide-in-from-top fixed top-4 right-4 z-[var(--z-toast)] motion-reduce:animate-none"
 							role="alert"
 						>
 							<p className="font-medium">{tileBoundaryError}</p>

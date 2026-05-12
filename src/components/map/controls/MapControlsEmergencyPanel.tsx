@@ -278,6 +278,7 @@ export function MapControlsEmergencyPanel({
 	return (
 		<div
 			aria-labelledby="emergency-panel-title"
+			aria-modal="true"
 			className={`z-controls-popover border-l-cldt-red absolute right-[calc(100%+0.5rem)] bottom-0 flex w-80 flex-col gap-2 border-l-2 ${MAP_CONTROL_POPOVER}`}
 			ref={containerRef}
 			role="dialog"

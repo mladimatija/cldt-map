@@ -107,8 +107,11 @@ export async function fetchWithSizeCap(
 		return { ok: false, status: response.status, reason: 'Upstream error' };
 	}
 
-	const declared = parseInt(response.headers.get('content-length') ?? '0', 10);
-	if (declared > maxBytes) {
+	// Three cases: header absent (skip precheck), header present but non-numeric
+	// (skip precheck, let the streamed counter enforce the cap), header present and valid.
+	const rawLength = response.headers.get('content-length');
+	const declared = rawLength !== null ? Number(rawLength) : null;
+	if (declared !== null && Number.isFinite(declared) && declared > maxBytes) {
 		return { ok: false, status: 502, reason: 'Response too large' };
 	}
 
@@ -123,7 +126,7 @@ export async function fetchWithSizeCap(
 
 	const reader = response.body.getReader();
 	const decoder = new TextDecoder();
-	let body = '';
+	const chunks: string[] = [];
 	let total = 0;
 	while (true) {
 		const { done, value } = await reader.read();
@@ -133,9 +136,9 @@ export async function fetchWithSizeCap(
 			await reader.cancel().catch(() => {});
 			return { ok: false, status: 502, reason: 'Response body exceeded size limit' };
 		}
-		body += decoder.decode(value, { stream: true });
+		chunks.push(decoder.decode(value, { stream: true }));
 	}
-	body += decoder.decode();
+	chunks.push(decoder.decode());
 
-	return { ok: true, response, body };
+	return { ok: true, response, body: chunks.join('') };
 }
