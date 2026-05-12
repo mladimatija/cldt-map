@@ -14,7 +14,7 @@ export interface ParsedGpx {
 	tracks: ParsedTrack[];
 }
 
-const MAX_GPX_BYTES = 10 * 1024 * 1024;
+const MAX_GPX_BYTES = 20 * 1024 * 1024;
 
 export function parseGpx(xml: string): ParsedGpx {
 	// Refuse to parse oversized files before they hit DOMParser, which would otherwise
