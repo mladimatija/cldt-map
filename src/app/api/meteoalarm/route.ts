@@ -7,7 +7,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 
 import type { Feature, FeatureCollection, Polygon, Position } from 'geojson';
 
-import { enforceRateLimit } from '@/lib/api-defense';
+import { enforceRateLimit, fetchWithSizeCap } from '@/lib/api-defense';
 import { escapeRegex } from '@/lib/utils';
 
 /* ------------------------------------------------------------------ */
@@ -234,29 +234,22 @@ export async function GET(request: NextRequest): Promise<Response> {
 		const controller = new AbortController();
 		const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
 
-		const res = await fetch(METEOALARM_URL, {
-			signal: controller.signal,
-			next: { revalidate: 900 },
-		});
+		const fetched = await fetchWithSizeCap(
+			METEOALARM_URL,
+			{
+				signal: controller.signal,
+				next: { revalidate: 900 },
+			},
+			MAX_BODY_BYTES,
+		);
 		clearTimeout(timeout);
 
-		if (!res.ok) {
-			console.error(`[meteoalarm] Upstream returned ${res.status}`);
+		if (!fetched.ok) {
+			console.error(`[meteoalarm] ${fetched.reason}`);
 			return NextResponse.json(EMPTY_COLLECTION, { headers: CACHE_HEADERS });
 		}
 
-		const contentLength = parseInt(res.headers.get('content-length') ?? '0', 10);
-		if (contentLength > MAX_BODY_BYTES) {
-			console.error(`[meteoalarm] Response too large: ${contentLength}`);
-			return NextResponse.json(EMPTY_COLLECTION, { headers: CACHE_HEADERS });
-		}
-
-		const xml = await res.text();
-		if (xml.length > MAX_BODY_BYTES) {
-			console.error('[meteoalarm] Body exceeded size limit');
-			return NextResponse.json(EMPTY_COLLECTION, { headers: CACHE_HEADERS });
-		}
-		const features = parseEntries(xml);
+		const features = parseEntries(fetched.body);
 
 		const collection: FeatureCollection = {
 			type: 'FeatureCollection',

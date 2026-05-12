@@ -10,6 +10,25 @@ const ALLOWED_PATH_PREFIXES = ['/']; // Adjust to more specific prefixes (e.g. [
 const MAX_BODY_BYTES = 25 * 1024 * 1024; // 25 MB - room for large GPX files
 
 /**
+ * Reflecting upstream Content-Type verbatim lets a compromised origin trick the browser into
+ * parsing the proxied bytes as HTML (CORS wildcard makes this worse). Only known-safe XML-ish
+ * types pass through; anything else is downgraded to text/plain.
+ */
+const ALLOWED_CONTENT_TYPES = ['application/xml', 'text/xml', 'application/gpx+xml'];
+function sanitizeContentType(raw: string | null): string {
+	if (!raw) return 'text/xml';
+	const lower = raw.toLowerCase();
+	for (const allowed of ALLOWED_CONTENT_TYPES) {
+		// Match either an exact type or a typed-with-parameters value like 'text/xml; charset=utf-8'.
+		// Reject prefix over-matches like 'application/xmlfoo'.
+		if (lower === allowed || lower.startsWith(`${allowed};`) || lower.startsWith(`${allowed} `)) {
+			return raw;
+		}
+	}
+	return 'text/plain';
+}
+
+/**
  * Proxy API route to handle CORS issues with external resources
  * Fetches content from the URL provided in the 'url' query parameter
  * and returns it with appropriate CORS headers
@@ -38,7 +57,8 @@ export async function GET(request: NextRequest): Promise<Response> {
 		}
 
 		if (!ALLOWED_HOSTS.includes(targetUrl.hostname)) {
-			return NextResponse.json({ error: `Host not allowed: ${targetUrl.hostname}` }, { status: 403 });
+			console.warn('[proxy] rejected host', targetUrl.hostname);
+			return NextResponse.json({ error: 'Host not allowed' }, { status: 403 });
 		}
 
 		// Enforce standard HTTPS port and prevent access to services on other ports.
@@ -52,7 +72,8 @@ export async function GET(request: NextRequest): Promise<Response> {
 			return NextResponse.json({ error: 'Path traversal is not allowed' }, { status: 400 });
 		}
 		if (!ALLOWED_PATH_PREFIXES.some((prefix) => pathname.startsWith(prefix))) {
-			return NextResponse.json({ error: `Path not allowed: ${pathname}` }, { status: 403 });
+			console.warn('[proxy] rejected path', pathname);
+			return NextResponse.json({ error: 'Path not allowed' }, { status: 403 });
 		}
 
 		const controller = new AbortController();
@@ -78,7 +99,7 @@ export async function GET(request: NextRequest): Promise<Response> {
 
 		return new NextResponse(fetched.body, {
 			headers: {
-				'Content-Type': fetched.response.headers.get('Content-Type') || 'text/xml',
+				'Content-Type': sanitizeContentType(fetched.response.headers.get('Content-Type')),
 				'Access-Control-Allow-Origin': '*',
 				'Access-Control-Allow-Methods': 'GET',
 				'Access-Control-Allow-Headers': 'Content-Type',
