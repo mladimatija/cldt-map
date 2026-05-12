@@ -30,7 +30,6 @@ import {
 } from '@/lib/utils';
 import { PROVIDER_TO_KEY } from '@/components/map/base-map-options';
 import type { BaseMapProvider } from '@/lib/services/map-service';
-import { config } from '@/lib/config';
 import type * as GeoJSON from 'geojson';
 import {
 	IoArrowDownOutline,
@@ -176,7 +175,6 @@ const MapControls: React.FC<MapControlsProps> = ({
 	const t = useTranslations('mapControls');
 	const tChart = useTranslations('elevationChart');
 	const tExport = useTranslations('mapExport');
-	const [isShowingBoundary, setIsShowingBoundary] = useState(false);
 	const [isSharing, setIsSharing] = useState(false);
 	const [isExporting, setIsExporting] = useState(false);
 	const [isStagePlannerExpanded, setIsStagePlannerExpanded] = useState(false);
@@ -184,7 +182,6 @@ const MapControls: React.FC<MapControlsProps> = ({
 	const [showTilesBoundary, setShowTilesBoundary] = useState(false);
 	const [tileBoundaryReinitKey, setTileBoundaryReinitKey] = useState(0);
 	const [isColorAdjustEnabled, setIsColorAdjustEnabled] = useState(false);
-	const [distancePrecisionState, setDistancePrecisionState] = useState(config.distancePrecision);
 	const [isPrecisionExpanded, setIsPrecisionExpanded] = useState(false);
 	const [isSettingsExpanded, setIsSettingsExpanded] = useState(false);
 	const precisionContainerRef = useRef<HTMLDivElement>(null);
@@ -252,12 +249,12 @@ const MapControls: React.FC<MapControlsProps> = ({
 	const setRulerRange = useMapStore((state: MapStoreState) => state.setRulerRange);
 	const setDistancePrecision = useMapStore((state: MapStoreState) => state.setDistancePrecision);
 
-	const storeDirection = useMapStore((state: MapStoreState) => state.direction);
+	const direction = useMapStore((state: MapStoreState) => state.direction);
 	const enhancedTrailPoints = useStore((state: StoreState) => state.enhancedTrailPoints);
-	const storeDistancePrecision = useMapStore((state: MapStoreState) => state.distancePrecision);
-	const storeUnits = useMapStore((state: MapStoreState) => state.units);
-	const storeShowBoundary = useMapStore((state: MapStoreState) => state.showBoundary);
-	const storeShowTileBoundary = useMapStore((state: MapStoreState) => state.showTileBoundary);
+	const distancePrecision = useMapStore((state: MapStoreState) => state.distancePrecision);
+	const units = useMapStore((state: MapStoreState) => state.units);
+	const showBoundary = useMapStore((state: MapStoreState) => state.showBoundary);
+	const showTileBoundary = useMapStore((state: MapStoreState) => state.showTileBoundary);
 	const baseMapProvider = useMapStore((state: MapStoreState) => state.baseMapProvider);
 	const gpxLoadFailed = useMapStore((state: MapStoreState) => state.gpxLoadFailed);
 	const prevBaseMapProviderRef = useRef(baseMapProvider);
@@ -293,14 +290,36 @@ const MapControls: React.FC<MapControlsProps> = ({
 	useEffect(() => {
 		const handleKeyDown = (e: KeyboardEvent): void => {
 			if (e.key !== 'Escape') return;
-			closeOverlayTools();
-			if (isSharing) setIsSharing(false);
-			else if (isEmergencyOpen) setIsEmergencyOpen(false);
-			else if (isRulerEnabled) setRulerEnabled(false);
+			// Escape closes one thing at a time. Overlay panels first; the ruler flag lives in
+			// mapStore (not cleared by closeOverlayTools) only when no overlay was open.
+			const anyOverlayOpen =
+				isPrecisionExpanded ||
+				isColorAdjustEnabled ||
+				isSettingsExpanded ||
+				isSharing ||
+				isExporting ||
+				isStagePlannerExpanded ||
+				isEmergencyOpen;
+			if (anyOverlayOpen) {
+				closeOverlayTools();
+				return;
+			}
+			if (isRulerEnabled) setRulerEnabled(false);
 		};
 		document.addEventListener('keydown', handleKeyDown);
 		return () => document.removeEventListener('keydown', handleKeyDown);
-	}, [isSharing, isRulerEnabled, isEmergencyOpen, closeOverlayTools, setRulerEnabled]);
+	}, [
+		isPrecisionExpanded,
+		isColorAdjustEnabled,
+		isSettingsExpanded,
+		isSharing,
+		isExporting,
+		isStagePlannerExpanded,
+		isEmergencyOpen,
+		isRulerEnabled,
+		closeOverlayTools,
+		setRulerEnabled,
+	]);
 
 	useEffect(() => {
 		window.addEventListener('closeMapControlOverlays', closeOverlayTools);
@@ -360,7 +379,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 
 	const toggleDirection = (): void => {
 		closeOverlayTools();
-		const newDirection = storeDirection === 'SOBO' ? 'NOBO' : 'SOBO';
+		const newDirection = direction === 'SOBO' ? 'NOBO' : 'SOBO';
 		setDirection(newDirection);
 		useStore.getState().broadcastDirectionChange(newDirection);
 		onToggleDirection(newDirection);
@@ -368,7 +387,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 
 	const toggleUnits = (): void => {
 		closeOverlayTools();
-		const newUnits = storeUnits === 'metric' ? 'imperial' : 'metric';
+		const newUnits = units === 'metric' ? 'imperial' : 'metric';
 		setUnits(newUnits);
 		useStore.getState().broadcastUnitsChange(newUnits);
 		onToggleUnits(newUnits);
@@ -376,8 +395,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 
 	const toggleBoundary = (): void => {
 		closeOverlayTools();
-		const shouldShow = !isShowingBoundary;
-		setIsShowingBoundary(shouldShow);
+		const shouldShow = !showBoundary;
 		setShowBoundary(shouldShow);
 
 		if (shouldShow) {
@@ -468,7 +486,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 			lat: center.lat,
 			lng: center.lng,
 			zoom,
-			direction: storeDirection,
+			direction: direction,
 			baseMap: baseMapKey,
 			sections: showSections,
 			dark: darkMode,
@@ -482,7 +500,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 		const totalKm = state.trailMetadata?.totalDistance ?? 0;
 		if (totalKm <= 0) return null;
 
-		const unit = storeUnits === 'imperial' ? 'mi' : 'km';
+		const unit = units === 'imperial' ? 'mi' : 'km';
 		const zoom = map.getZoom();
 
 		const baseMapKey = baseMapProvider
@@ -500,7 +518,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 			const kmFromStart = highlightedTrailPoint.distanceFromStart / 1000;
 			return buildShareProgressUrl(window.location.origin + window.location.pathname, {
 				kmFromStart,
-				direction: storeDirection,
+				direction: direction,
 				unit,
 				zoom,
 				...styleParams,
@@ -511,7 +529,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 			const kmFromStart = closestPoint.distanceFromStart / 1000;
 			return buildShareProgressUrl(window.location.origin + window.location.pathname, {
 				kmFromStart,
-				direction: storeDirection,
+				direction: direction,
 				unit,
 				zoom,
 				...styleParams,
@@ -666,8 +684,8 @@ const MapControls: React.FC<MapControlsProps> = ({
 				rulerSegmentHighlightRef.current = null;
 			}
 			const opts: RulerSegmentOpts = optsOverride ?? {
-				units: storeUnits,
-				distancePrecision: distancePrecisionState,
+				units: units,
+				distancePrecision: distancePrecision,
 				t,
 				tChart,
 			};
@@ -696,7 +714,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 				}).addTo(map);
 			}
 		},
-		[storeUnits, distancePrecisionState, t, tChart, buildRulerSegmentAndTooltipContent, map],
+		[units, distancePrecision, t, tChart, buildRulerSegmentAndTooltipContent, map],
 	);
 
 	const [rulerAnnouncement, setRulerAnnouncement] = useState<string | null>(null);
@@ -730,18 +748,18 @@ const MapControls: React.FC<MapControlsProps> = ({
 	// When trail direction changes and ruler is active, convert ruler range so the same segment uses the new direction's distance-from-start.
 	useEffect(() => {
 		if (!isRulerEnabled || !rulerRange || !enhancedTrailPoints?.length) {
-			lastDirectionRef.current = storeDirection;
+			lastDirectionRef.current = direction;
 			return;
 		}
-		if (lastDirectionRef.current !== undefined && lastDirectionRef.current !== storeDirection) {
+		if (lastDirectionRef.current !== undefined && lastDirectionRef.current !== direction) {
 			const totalM = enhancedTrailPoints[enhancedTrailPoints.length - 1]?.distanceFromStart ?? 0;
 			setRulerRange({
 				distanceFromStartA: totalM - rulerRange.distanceFromStartB,
 				distanceFromStartB: totalM - rulerRange.distanceFromStartA,
 			});
 		}
-		lastDirectionRef.current = storeDirection;
-	}, [storeDirection, isRulerEnabled, rulerRange, enhancedTrailPoints, setRulerRange]);
+		lastDirectionRef.current = direction;
+	}, [direction, isRulerEnabled, rulerRange, enhancedTrailPoints, setRulerRange]);
 
 	// When trail data (e.g., after direction change) updates and ruler is active, rebuild the ruler from the current store range.
 	useEffect(() => {
@@ -767,8 +785,8 @@ const MapControls: React.FC<MapControlsProps> = ({
 		rulerLayerRef.current = L.polyline(points, RULER_POLYLINE_OPTIONS).addTo(map);
 
 		const opts: RulerSegmentOpts = {
-			units: storeUnits,
-			distancePrecision: storeDistancePrecision,
+			units: units,
+			distancePrecision: distancePrecision,
 			t,
 			tChart,
 		};
@@ -783,8 +801,8 @@ const MapControls: React.FC<MapControlsProps> = ({
 		isRulerEnabled,
 		rulerRange,
 		enhancedTrailPoints,
-		storeUnits,
-		storeDistancePrecision,
+		units,
+		distancePrecision,
 		map,
 		t,
 		tChart,
@@ -861,10 +879,10 @@ const MapControls: React.FC<MapControlsProps> = ({
 		const [dataA, dataB] = rulerPointDataRef.current;
 		const enhancedTrailPoints = useStore.getState().enhancedTrailPoints;
 		const points = rulerMarkerRef.current.map((m) => m.getLatLng()) as [L.LatLng, L.LatLng];
-		const opts = { units: storeUnits, distancePrecision: distancePrecisionState, t, tChart };
+		const opts = { units: units, distancePrecision: distancePrecision, t, tChart };
 		const { content } = buildRulerSegmentAndTooltipContent(dataA, dataB, enhancedTrailPoints, points, opts);
 		rulerTooltipRef.current.setContent(content);
-	}, [storeUnits, distancePrecisionState, t, tChart, buildRulerSegmentAndTooltipContent]);
+	}, [units, distancePrecision, t, tChart, buildRulerSegmentAndTooltipContent]);
 
 	// When a user drags a range on the elevation chart, enable ruler and set the two points.
 	useEffect(() => {
@@ -977,42 +995,23 @@ const MapControls: React.FC<MapControlsProps> = ({
 	};
 
 	useEffect(() => {
-		const initFromStore = (): void => {
-			if (typeof storeDirection !== 'undefined') {
-				useStore.getState().broadcastDirectionChange(storeDirection);
+		useStore.getState().broadcastDirectionChange(direction);
+		// Persisted units live in mapStore, but MapControlsUnitsSelector reads from the
+		// main useStore UISlice. Propagate on mount so the selector matches reality after
+		// a reload with a non-default preference.
+		useStore.getState().setUnits(units);
+		if (showBoundary && !boundaryLayerRef.current && map) {
+			try {
+				setTimeout(() => {
+					const boundary = createCroatiaBoundaryLayer(map, t('borderOfCroatia'));
+					boundaryLayerRef.current = boundary;
+					boundary.addTo(map);
+				}, 300);
+			} catch (error) {
+				console.error('Error initializing boundary:', error);
 			}
-
-			if (typeof storeUnits !== 'undefined') {
-				useStore.getState().setUnits(storeUnits);
-			}
-
-			if (typeof storeDistancePrecision !== 'undefined') {
-				setDistancePrecisionState(storeDistancePrecision);
-			}
-
-			if (typeof storeShowBoundary !== 'undefined') {
-				setIsShowingBoundary(storeShowBoundary);
-
-				if (storeShowBoundary && !boundaryLayerRef.current && map) {
-					try {
-						setTimeout(() => {
-							const boundary = createCroatiaBoundaryLayer(map, t('borderOfCroatia'));
-							boundaryLayerRef.current = boundary;
-							boundary.addTo(map);
-						}, 300);
-					} catch (error) {
-						console.error('Error initializing boundary:', error);
-					}
-				}
-			}
-
-			if (typeof storeShowTileBoundary !== 'undefined') {
-				setShowTilesBoundary(storeShowTileBoundary);
-			}
-		};
-
-		initFromStore();
-	}, [storeDirection, storeUnits, storeShowBoundary, storeShowTileBoundary, storeDistancePrecision, map, t]);
+		}
+	}, [direction, units, showBoundary, map, t]);
 
 	// When the base map provider changes while tile boundary is active, the old BoundaryCanvas
 	// layer is removed by BaseMapSelector's handleMapChange (which removes all TileLayers).
@@ -1025,14 +1024,14 @@ const MapControls: React.FC<MapControlsProps> = ({
 		}
 		prevBaseMapProviderRef.current = baseMapProvider;
 
-		if (storeShowTileBoundary && boundaryCanvasLayerRef.current) {
+		if (showTileBoundary && boundaryCanvasLayerRef.current) {
 			boundaryCanvasLayerRef.current = null;
 			setTileBoundaryReinitKey((k) => k + 1);
 		}
-	}, [baseMapProvider, storeShowTileBoundary]);
+	}, [baseMapProvider, showTileBoundary]);
 
 	useEffect(() => {
-		if (!storeShowTileBoundary || boundaryCanvasLayerRef.current) {
+		if (!showTileBoundary || boundaryCanvasLayerRef.current) {
 			return;
 		}
 
@@ -1108,12 +1107,8 @@ const MapControls: React.FC<MapControlsProps> = ({
 			cancelled = true;
 			clearAllTimeouts();
 		};
-	}, [map, setShowTileBoundary, storeShowTileBoundary, tileBoundaryReinitKey]);
+	}, [map, setShowTileBoundary, showTileBoundary, tileBoundaryReinitKey]);
 
-	const setDistancePrecisionHandler = (precision: number): void => {
-		setDistancePrecisionState(precision);
-		setDistancePrecision(precision);
-	};
 
 	useEffect(() => {
 		try {
@@ -1200,19 +1195,19 @@ const MapControls: React.FC<MapControlsProps> = ({
 			>
 				<SmartTooltip
 					content={t('directionTooltip', {
-						direction: storeDirection === 'SOBO' ? t('directionSouthbound') : t('directionNorthbound'),
+						direction: direction === 'SOBO' ? t('directionSouthbound') : t('directionNorthbound'),
 					})}
 					position="left"
 				>
 					<Button
 						aria-label={t('directionTooltip', {
-							direction: storeDirection === 'SOBO' ? t('directionSouthbound') : t('directionNorthbound'),
+							direction: direction === 'SOBO' ? t('directionSouthbound') : t('directionNorthbound'),
 						})}
-						title={`Change Direction (Currently ${storeDirection === 'SOBO' ? t('directionTitleNorthSouth') : t('directionTitleSouthNorth')})`}
+						title={`Change Direction (Currently ${direction === 'SOBO' ? t('directionTitleNorthSouth') : t('directionTitleSouthNorth')})`}
 						variant="controlRound"
 						onClick={toggleDirection}
 					>
-						{storeDirection === 'SOBO' ? (
+						{direction === 'SOBO' ? (
 							<IoArrowDownOutline aria-hidden className="h-5 w-5" />
 						) : (
 							<IoArrowUpOutline aria-hidden className="h-5 w-5" />
@@ -1222,27 +1217,27 @@ const MapControls: React.FC<MapControlsProps> = ({
 
 				<SmartTooltip
 					content={t('unitsTooltip', {
-						units: storeUnits === 'metric' ? t('unitsMetric') : t('unitsImperial'),
+						units: units === 'metric' ? t('unitsMetric') : t('unitsImperial'),
 					})}
 					position="left"
 				>
 					<Button
-						aria-label={t('unitsTooltip', { units: storeUnits === 'metric' ? t('unitsMetric') : t('unitsImperial') })}
+						aria-label={t('unitsTooltip', { units: units === 'metric' ? t('unitsMetric') : t('unitsImperial') })}
 						className="text-cldt-blue-contrast font-semibold"
 						variant="controlRound"
 						onClick={toggleUnits}
 					>
-						<span aria-hidden="true">{storeUnits === 'metric' ? 'km' : 'mi'}</span>
+						<span aria-hidden="true">{units === 'metric' ? 'km' : 'mi'}</span>
 					</Button>
 				</SmartTooltip>
 
 				<MapControlsPrecisionSlider
 					containerRef={precisionContainerRef}
 					isExpanded={isPrecisionExpanded}
-					tooltipContent={t('precisionClick', { value: distancePrecisionState })}
+					tooltipContent={t('precisionClick', { value: distancePrecision })}
 					tooltipExpanded={t('precisionDrag')}
-					value={distancePrecisionState}
-					onChange={setDistancePrecisionHandler}
+					value={distancePrecision}
+					onChange={setDistancePrecision}
 					onToggle={() => {
 						setIsPrecisionExpanded((prev) => {
 							if (!prev) {
@@ -1255,9 +1250,9 @@ const MapControls: React.FC<MapControlsProps> = ({
 				/>
 
 				<MapControlsButton
-					active={isShowingBoundary}
-					ariaLabel={isShowingBoundary ? t('boundaryHide') : t('boundaryShow')}
-					content={isShowingBoundary ? t('boundaryHide') : t('boundaryShow')}
+					active={showBoundary}
+					ariaLabel={showBoundary ? t('boundaryHide') : t('boundaryShow')}
+					content={showBoundary ? t('boundaryHide') : t('boundaryShow')}
 					onClick={toggleBoundary}
 				>
 					<IoMapOutline aria-hidden className="h-5 w-5" />
