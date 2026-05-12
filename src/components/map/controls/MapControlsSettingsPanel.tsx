@@ -192,7 +192,7 @@ export function MapControlsSettingsPanel({
 							{walkingPaceKmh !== 4 && (
 								<button
 									aria-label={t('walkingPaceReset')}
-									className="text-cldt-blue min-h-[var(--min-touch-target)] min-w-[var(--min-touch-target)] cursor-pointer border-0 bg-transparent p-0 text-sm underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[--cldt-green]"
+									className="text-cldt-blue focus-visible:ring-cldt-green min-h-[var(--min-touch-target)] min-w-[var(--min-touch-target)] cursor-pointer rounded border-0 bg-transparent p-0 text-sm underline outline-none focus-visible:ring-2 focus-visible:ring-offset-1"
 									type="button"
 									onClick={() => setWalkingPaceKmh(4)}
 								>

@@ -120,7 +120,7 @@ export function SevereWeatherBanner(): React.ReactElement | null {
 					{w.severity !== 'red' && (
 						<button
 							aria-label={t('dismiss')}
-							className="flex min-h-[var(--min-touch-target)] min-w-[var(--min-touch-target)] shrink-0 items-center justify-center rounded p-1 leading-none font-bold opacity-80 hover:opacity-100 focus-visible:ring-2 focus-visible:ring-[var(--cldt-green)] focus-visible:ring-offset-1"
+							className="focus-visible:ring-cldt-green flex min-h-[var(--min-touch-target)] min-w-[var(--min-touch-target)] shrink-0 items-center justify-center rounded p-1 leading-none font-bold opacity-80 outline-none hover:opacity-100 focus-visible:ring-2 focus-visible:ring-offset-1"
 							type="button"
 							onClick={() => handleDismiss(w.id)}
 						>

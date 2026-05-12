@@ -49,7 +49,7 @@ export function MapControlsImportsPanel(): React.ReactElement {
 				<IoDownloadOutline aria-hidden className="h-4 w-4 shrink-0 text-gray-500 dark:text-[var(--text-secondary)]" />
 				<span className="flex-1 text-xs font-medium text-gray-600 dark:text-[var(--text-primary)]">{t('title')}</span>
 				<button
-					className="text-cldt-blue text-xs underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[--cldt-green]"
+					className="text-cldt-blue focus-visible:ring-cldt-green rounded text-xs underline outline-none focus-visible:ring-2 focus-visible:ring-offset-1"
 					type="button"
 					onClick={openFilePicker}
 				>

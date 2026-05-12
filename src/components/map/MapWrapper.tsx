@@ -32,7 +32,7 @@ function MapLoading({ text }: { text: string }): ReactElement {
 	return (
 		<div className="flex h-full w-full flex-col items-center justify-center bg-white">
 			<div className="relative mb-3 h-16 w-16">
-				<div className="border-t-cldt-blue border-r-cldt-green border-b-cldt-blue border-l-cldt-green absolute top-0 left-0 h-full w-full animate-spin rounded-full border-4"></div>
+				<div className="border-t-cldt-blue border-r-cldt-green border-b-cldt-blue border-l-cldt-green absolute top-0 left-0 h-full w-full animate-spin rounded-full border-4 motion-reduce:animate-none"></div>
 				<div className="absolute top-[15%] left-[15%] h-[70%] w-[70%] rounded-full bg-white"></div>
 			</div>
 			<p className="text-lg font-medium text-gray-600">{text}</p>

@@ -8,6 +8,7 @@ import { MdKeyboardArrowDown, MdKeyboardArrowUp } from 'react-icons/md';
 import { usePathname, useRouter } from '@/i18n/navigation';
 import { routing, type Locale } from '@/i18n/routing';
 import { useClientLocale } from '@/components/providers/ClientIntlProvider';
+import { useClickOutside } from '@/hooks';
 import { cn } from '@/lib/utils';
 
 export function LanguageSwitcher(): React.ReactElement {
@@ -28,16 +29,7 @@ export function LanguageSwitcher(): React.ReactElement {
 		return () => document.removeEventListener('keydown', handler);
 	}, [isOpen]);
 
-	useEffect(() => {
-		if (!isOpen) return;
-		const handler = (e: MouseEvent): void => {
-			if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
-				setIsOpen(false);
-			}
-		};
-		document.addEventListener('mousedown', handler);
-		return () => document.removeEventListener('mousedown', handler);
-	}, [isOpen]);
+	useClickOutside(containerRef, isOpen, () => setIsOpen(false));
 
 	const handleSelect = (next: Locale): void => {
 		setLocale(next);
