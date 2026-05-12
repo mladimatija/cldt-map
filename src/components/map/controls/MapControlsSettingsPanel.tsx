@@ -67,7 +67,7 @@ export function MapControlsSettingsPanel({
 		<div className="relative inline-block w-10 shrink-0" ref={containerRef}>
 			{isExpanded && (
 				<div
-					aria-label={preferencesTitle}
+					aria-labelledby="settings-panel-title"
 					aria-modal="true"
 					className={cn(
 						MAP_CONTROL_POPOVER,
@@ -76,7 +76,9 @@ export function MapControlsSettingsPanel({
 					ref={popoverRef}
 					role="dialog"
 				>
-					<h3 className="text-sm font-medium text-gray-700 dark:text-[var(--text-primary)]">{preferencesTitle}</h3>
+					<h3 className="text-sm font-medium text-gray-700 dark:text-[var(--text-primary)]" id="settings-panel-title">
+						{preferencesTitle}
+					</h3>
 					<label className="flex cursor-pointer items-center gap-2">
 						<Checkbox checked={darkMode} onCheckedChange={(checked) => setDarkMode(checked)} />
 						<IoMoonOutline className="h-4 w-4 shrink-0 text-gray-600 dark:text-white" />

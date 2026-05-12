@@ -38,7 +38,7 @@ const buttonVariants = cva(
 				controlRoundDark: `${CONTROL_ROUND_SHAPE} ${BORDER_WHITE} text-cldt-blue ${CLDT_HOVER_FOCUS} hover:border-2 focus-visible:border-2 dark:border-[var(--border-color)] dark:bg-[var(--bg-secondary)] dark:text-[var(--text-primary)]`,
 				/** Close icon (×) in tooltips/banners; pair with .user-location-close-btn for position/size. */
 				closeIcon:
-					'h-6 w-6 min-w-0 shrink-0 border-none bg-transparent p-0 text-[var(--map-tooltip-color)] text-xl leading-none outline-none hover:bg-black/5 hover:text-cldt-blue focus-visible:bg-black/5 focus-visible:text-cldt-blue rounded',
+					'h-6 w-6 min-w-0 shrink-0 border-none bg-transparent p-0 text-[var(--map-tooltip-color)] text-xl leading-none outline-none hover:bg-black/5 hover:text-cldt-blue focus-visible:bg-black/5 focus-visible:text-cldt-blue focus-visible:ring-2 focus-visible:ring-cldt-green focus-visible:ring-offset-1 rounded',
 				/** Base map selector list option. */
 				mapOption: `${MAP_OPTION_GRID} border-l-4 border-l-transparent ${MAP_OPTION_LEFT_ACCENT}`,
 				/** Base map selector list option (selected). */
