@@ -1,0 +1,63 @@
+{
+	"lastUpdated": "2026-05-18",
+	"source": "DHMZ, HPS, NP Paklenica, NP Plitvička jezera, NP Krka",
+	"sourceUrl": "https://meteo.hr/naslovnica-upozorenja.php?tab=upozorenja",
+	"entries": [
+		{
+			"id": "paklenica-put-malog-princa-closed-2026",
+			"severity": "closed_recommended",
+			"season": "year-round",
+			"distanceStartKm": 1662,
+			"distanceEndKm": 1664.9,
+			"validFrom": "2026-05-12",
+			"validUntil": "2026-08-12",
+			"note_en": "Put Malog Princa (Prince's Little Path) in Paklenica National Park is closed until further notice due to deteriorated safety fixtures and aids on this demanding route. Do not attempt to use this route.",
+			"note_hr": "Zbog dotrajalih elemenata osiguranja i pomagala u prolasku zahtjevnoga planinarskog puta do daljnjeg zatvoren Put Malog Princa u NP Paklenici.",
+			"source": "HPS - Planinarski putovi",
+			"sourceUrl": "https://www.hps.hr/novosti/planinarski-putovi/",
+			"lastUpdated": "2026-05-12"
+		},
+		{
+			"id": "velebit-lika-trail-maintenance-2026",
+			"severity": "caution",
+			"season": "shoulder",
+			"distanceStartKm": 1578.5,
+			"distanceEndKm": 1686,
+			"validFrom": "2026-05-09",
+			"validUntil": "2026-06-01",
+			"note_en": "Active trail maintenance work is ongoing on routes across Lika, Srednji Velebit, and Sjeverni Velebit (Velebitski planinarski put / CLDT corridor). A trail-marker course and stakeholder meeting was held 9-10 May 2026. Expect temporary path alterations, trail crews, and equipment on the trail. Exercise caution.",
+			"note_hr": "Tečaj za markaciste planinarskih društava koja održavaju planinarske putove na područjima Like, Srednjeg i Sjevernog Velebita, održan 9.-10. svibnja 2026. Aktivni radovi obilježavanja i održavanja planinarskih putova u tijeku. Oprez na terenu.",
+			"source": "HPS - Planinarski putovi",
+			"sourceUrl": "https://www.hps.hr/novosti/planinarski-putovi/",
+			"lastUpdated": "2026-05-18"
+		},
+		{
+			"id": "plitvice-footwear-caution-2026",
+			"severity": "caution",
+			"season": "shoulder",
+			"distanceStartKm": 1560,
+			"distanceEndKm": 1570,
+			"validFrom": "2026-05-18",
+			"validUntil": "2026-06-01",
+			"note_en": "Plitvice Lakes NP (Upper and Lower Lakes) is open to visitors. Appropriate/adequate footwear is recommended due to potentially wet, slippery, or muddy trail surfaces. Panoramic vehicles and electric boats operating on schedule.",
+			"note_hr": "Gornja i Donja jezera su otvorena za posjetitelje. Preporučuje se adekvatna obuća. Panoramska vozila prometuju prema rasporedu. Elektrobrodovi prometuju prema rasporedu.",
+			"source": "NP Plitvička jezera - Trenutni uvjeti",
+			"sourceUrl": "https://np-plitvicka-jezera.hr/planirajte-posjet/trenutni-uvjeti-upozorenja-i-obavijesti/",
+			"lastUpdated": "2026-05-18"
+		},
+		{
+			"id": "krka-skradinski-buk-remediation-2026",
+			"severity": "caution",
+			"season": "year-round",
+			"distanceStartKm": 1775,
+			"distanceEndKm": 1785,
+			"validFrom": "2026-05-18",
+			"validUntil": "2026-06-18",
+			"note_en": "At Skradinski buk (Krka NP), the spur trail to the ethno-village is under remediation; the loop trail remains open as an alternative. Additionally, the fence/railing at the viewpoint behind HE Krka is under repair until mid-May - take caution when passing. The Burnum locality is fully closed due to conservation works. Boat excursions from Roški slap to medieval fortresses Nečven and Trošenj are currently unavailable.",
+			"note_hr": "U tijeku je sanacija odvojka staze prema etnoselu na Skradinskom buku. Obilazak je moguć kružnom stazom. Do sredine svibnja sanira se ograda vidikovca iza HE Krka na Skradinskom buku te ljubazno molimo posjetitelje na oprez prilikom prolaska. Lokalitet Burnum trenutno je zatvoren zbog konzervatorskih radova. Trenutno nije dostupan izlet brodom s Roškog slapa do srednjovjekovnih utvrda Nečven i Trošenj.",
+			"source": "NP Krka - Naslovnica",
+			"sourceUrl": "https://www.np-krka.hr/",
+			"lastUpdated": "2026-05-18"
+		}
+	]
+}

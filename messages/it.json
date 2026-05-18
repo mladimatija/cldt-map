@@ -44,6 +44,7 @@
 			"printExport": "Stampa ed esporta - salva la vista mappa corrente come PDF o immagine PNG",
 			"weather": "Meteo attuale nella tua posizione sul sentiero - temperatura, vento, probabilità precipitazioni, alba/tramonto; previsione oraria 12 ore con barre precipitazioni e suggerimento finestra migliore (DHMZ + Open-Meteo)",
 			"trailNotices": "Avvisi regionali sulle condizioni del sentiero - banner eliminabili con avvisi sulle condizioni attuali sul percorso",
+			"seasonalStatus": "Stato stagionale del sentiero - livello mappa curato con avvisi, chiusure e condizioni stagionali da DHMZ, HGSS, HPS e parchi nazionali croati; marcatori colorati per gravità al centro di ogni tratto interessato; passa il cursore o clicca un marcatore per evidenziare il tratto e aprire un riquadro con gravità, attrezzatura consigliata e link all'avviso originale; i dati si aggiornano con `npm run update-seasonal`",
 			"radar": "Overlay radar precipitazioni - radar RainViewer animato con frame passati e previsionali, controlli play/pausa e legenda colori",
 			"sunsetPosition": "Posizione tramonto/alba - mostra dove ti troverai sul sentiero al tramonto e all'alba in base al tuo ritmo attuale; indicatori attivabili sulla linea",
 			"stagePlanner": "Pianificatore tappe multi-giorno - suddividi qualsiasi tratto del sentiero in tappe giornaliere per distanza o tempo, visualizza statistiche di dislivello ed ETA per tappa, esporta le singole tappe come file GPX o tutte le tappe come PDF tappe in mappa",
@@ -52,7 +53,7 @@
 			"trailStyle": "Stile del percorso - scegli nel pannello dei livelli come colorare la polilinea: Predefinito (un solo colore), Tratte (zone A/B/C con marker di confine e statistiche per tratta) o Pendenza (colorazione a cinque bande in stile Strava, toni caldi per le salite e freddi per le discese nella direzione di marcia attiva; legenda del colore nel pannello; ricalcolata al cambio di direzione SOBO/NOBO)"
 		},
 		"dataAttribution": "Dati e attribuzioni",
-		"dataAttributionDesc": "I dati del sentiero sono forniti dall'organizzazione Udruga Long Distance Trail Hrvatska (LDTH). Le tessere mappa provengono da OpenStreetMap, OpenTopoMap, CyclOSM e altri provider. Le mappe topografiche croate provengono dall'Amministrazione Geodetica Statale (DGU). I dati meteo provengono da DHMZ (Servizio Meteorologico Croato) e Open-Meteo. Le tessere radar sono fornite da RainViewer. I dati visualizzati su questo sito potrebbero non riflettere le condizioni più recenti. In caso di dubbio, verificare sempre le fonti ufficiali.",
+		"dataAttributionDesc": "I dati del sentiero sono forniti dall'organizzazione Udruga Long Distance Trail Hrvatska (LDTH). Le tessere mappa provengono da OpenStreetMap, OpenTopoMap, CyclOSM e altri provider. Le mappe topografiche croate provengono dall'Amministrazione Geodetica Statale (DGU). I dati meteo provengono da DHMZ (Servizio Meteorologico Croato) e Open-Meteo. Le tessere radar sono fornite da RainViewer. Stato stagionale del sentiero, avvisi di pericolo e dati delle stazioni di soccorso alpino provengono da HGSS (Servizio croato di soccorso in montagna), HPS (Federazione croata di alpinismo) e dalle autorità dei parchi nazionali (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) e Parco naturale Velebit. I dati visualizzati su questo sito potrebbero non riflettere le condizioni più recenti. In caso di dubbio, verificare sempre le fonti ufficiali.",
 		"privacy": "Privacy",
 		"privacyDesc": "La tua posizione viene utilizzata solo quando la abiliti e concedi il permesso. Non viene mai inviata a nessun server - tutto funziona nel tuo browser. Non è necessario un account o un accesso.",
 		"links": "Link",
@@ -503,6 +504,23 @@
 		"severityOrange": "Moderato",
 		"severityRed": "Grave",
 		"dismiss": "Chiudi"
+	},
+	"seasonalStatus": {
+		"layerToggle": "Stato stagionale del sentiero",
+		"layerTooltip": "Mostra o nascondi le condizioni stagionali del sentiero (chiusure, neve, vento di bora) lungo il percorso",
+		"severity": {
+			"open": "Aperto",
+			"caution": "Cautela",
+			"closed_recommended": "Chiusura consigliata",
+			"experts_only": "Solo per esperti"
+		},
+		"bannerPrefix": "Stato del sentiero:",
+		"validLabel": "Valido:",
+		"gearLabel": "Attrezzatura consigliata",
+		"sourceLabel": "Fonte",
+		"tapForDetails": "Tocca per dettagli",
+		"chipAriaLabel": "{severity} - {source}",
+		"lastUpdatedDaysAgo": "{days, plural, =0 {Aggiornato oggi} =1 {Aggiornato ieri} other {Aggiornato # giorni fa}}"
 	},
 	"emergency": {
 		"title": "Emergenza · 112",

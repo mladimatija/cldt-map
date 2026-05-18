@@ -1,6 +1,6 @@
 'use client';
 
-import React, { type RefObject } from 'react';
+import React, { useState, type RefObject } from 'react';
 import { useTranslations } from 'next-intl';
 import { usePopoverFocusTrap } from '@/hooks';
 import SmartTooltip from '@/components/ui/SmartTooltip';
@@ -15,7 +15,9 @@ import {
 	IoSettingsOutline,
 	IoHelpCircleOutline,
 	IoWarningOutline,
+	IoSnowOutline,
 } from 'react-icons/io5';
+import { severityColor, type SeasonalSeverity } from '@/lib/seasonal-status';
 import { GRADE_BAND_ASCENT_COLORS } from '@/components/map/trail-route-constants';
 import { Button } from '@/components/ui/Button';
 import { cn } from '@/lib/utils';
@@ -37,6 +39,7 @@ export function MapControlsSettingsPanel({
 }: MapControlsSettingsPanelProps): React.ReactElement {
 	const t = useTranslations('mapControls');
 	const tWeather = useTranslations('severeWeather');
+	const tSeasonal = useTranslations('seasonalStatus');
 	const popoverRef = usePopoverFocusTrap(isExpanded);
 
 	const darkMode = useMapStore((state: MapStoreState) => state.darkMode);
@@ -57,7 +60,21 @@ export function MapControlsSettingsPanel({
 	const setSunsetProjection = useMapStore((state: MapStoreState) => state.setSunsetProjection);
 	const severeWeatherLayer = useMapStore((state: MapStoreState) => state.severeWeatherLayer);
 	const setSevereWeatherLayer = useMapStore((state: MapStoreState) => state.setSevereWeatherLayer);
+	const seasonalStatusLayerEnabled = useMapStore((state: MapStoreState) => state.seasonalStatusLayerEnabled);
+	const setSeasonalStatusLayerEnabled = useMapStore((state: MapStoreState) => state.setSeasonalStatusLayerEnabled);
+	const seasonalStatusFile = useMapStore((state: MapStoreState) => state.seasonalStatusFile);
 	const units = useMapStore((state: MapStoreState) => state.units);
+
+	// Capture "now" once at mount via a lazy useState init - mirrors the pattern
+	// in SunsetSunriseMarkers - so the days-ago display stays pure during render
+	// while still reflecting the active dataset's lastUpdated value.
+	const [nowMs] = useState(() => Date.now());
+	const seasonalLastUpdatedDays: number | null = ((): number | null => {
+		if (!seasonalStatusFile?.lastUpdated) return null;
+		const ts = Date.parse(seasonalStatusFile.lastUpdated);
+		if (Number.isNaN(ts)) return null;
+		return Math.max(0, Math.round((nowMs - ts) / 86_400_000));
+	})();
 
 	const preferencesTitle = t('preferences');
 	const tooltipShow = t('preferencesShow');
@@ -182,6 +199,45 @@ export function MapControlsSettingsPanel({
 							</SmartTooltip>
 						</span>
 					</label>
+
+					{seasonalStatusFile && (
+						<label className="flex cursor-pointer items-center gap-2">
+							<Checkbox
+								checked={seasonalStatusLayerEnabled}
+								onCheckedChange={(checked) => setSeasonalStatusLayerEnabled(checked)}
+							/>
+							<IoSnowOutline className="h-4 w-4 shrink-0 text-gray-600 dark:text-white" />
+							<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">{tSeasonal('layerToggle')}</span>
+							<span
+								className="inline-flex"
+								onClick={(e) => e.stopPropagation()}
+								onMouseDown={(e) => e.stopPropagation()}
+							>
+								<SmartTooltip content={tSeasonal('layerTooltip')} position="top">
+									<IoHelpCircleOutline className="ml-0.5 h-3.5 w-3.5 shrink-0 cursor-help text-gray-400 hover:text-gray-600 dark:text-white" />
+								</SmartTooltip>
+							</span>
+						</label>
+					)}
+					{seasonalStatusFile && seasonalStatusLayerEnabled && (
+						<div className="ml-6 flex flex-col gap-1 text-xs text-gray-700 dark:text-[var(--text-primary)]">
+							{(['open', 'caution', 'closed_recommended', 'experts_only'] as SeasonalSeverity[]).map((sev) => (
+								<div className="flex items-center gap-2" key={sev}>
+									<span
+										aria-hidden="true"
+										className="inline-block h-3 w-4 shrink-0 rounded-sm"
+										style={{ backgroundColor: severityColor(sev) }}
+									/>
+									<span>{tSeasonal(`severity.${sev}`)}</span>
+								</div>
+							))}
+							{seasonalLastUpdatedDays !== null && (
+								<p className="mt-0.5 text-xs italic opacity-75">
+									{tSeasonal('lastUpdatedDaysAgo', { days: seasonalLastUpdatedDays })}
+								</p>
+							)}
+						</div>
+					)}
 
 					<div className="flex flex-col gap-1">
 						<div className="flex items-center gap-2">

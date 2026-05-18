@@ -28,6 +28,12 @@ import {
 } from '../tile-cache';
 import { findNearestPointIndex, RulerRange } from '@/lib/distance-utils';
 import { loadImportedTracks, removeImportedTrack } from '../imported-tracks';
+import {
+	filterActiveEntries,
+	isSeasonalStatusDefaultEnabled,
+	type SeasonalStatusEntry,
+	type SeasonalStatusFile,
+} from '../seasonal-status';
 
 /** Module-level abort controller for tile downloads - one download at a time. */
 let tilePrecacheAbortController: AbortController | null = null;
@@ -572,6 +578,31 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 				setSevereWeatherData: (data: GeoJSON.FeatureCollection | null): void => {
 					set({ severeWeatherData: data });
 				},
+
+				seasonalStatusFile: null,
+				setSeasonalStatusFile: (file: SeasonalStatusFile | null): void => {
+					set({
+						seasonalStatusFile: file,
+						seasonalStatusEntries: file ? filterActiveEntries(file.entries) : [],
+					});
+				},
+				seasonalStatusEntries: [],
+				seasonalStatusLayerEnabled: isSeasonalStatusDefaultEnabled(),
+				seasonalStatusLayerUserToggled: false,
+				setSeasonalStatusLayerEnabled: (enabled: boolean): void => {
+					set({
+						seasonalStatusLayerEnabled: enabled,
+						seasonalStatusLayerUserToggled: true,
+					});
+				},
+				seasonalStatusModalEntry: null,
+				setSeasonalStatusModalEntry: (entry: SeasonalStatusEntry | null): void => {
+					set({ seasonalStatusModalEntry: entry });
+				},
+				seasonalStatusHoveredEntryId: null,
+				setSeasonalStatusHoveredEntryId: (id: string | null): void => {
+					set({ seasonalStatusHoveredEntryId: id });
+				},
 			}),
 			{
 				name: 'cldt-map-storage',
@@ -596,7 +627,22 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					sunsetProjection: state.sunsetProjection,
 					stagePlan: state.stagePlan,
 					severeWeatherLayer: state.severeWeatherLayer,
+					seasonalStatusLayerEnabled: state.seasonalStatusLayerEnabled,
+					seasonalStatusLayerUserToggled: state.seasonalStatusLayerUserToggled,
 				}),
+				merge: (persistedState, currentState) => {
+					const merged = {
+						...currentState,
+						...(persistedState as Partial<MapStoreState>),
+					};
+					// If the user has never explicitly toggled the seasonal layer,
+					// recompute it from the current date so the default tracks the
+					// Nov 1 - May 31 window across sessions.
+					if (!merged.seasonalStatusLayerUserToggled) {
+						merged.seasonalStatusLayerEnabled = isSeasonalStatusDefaultEnabled();
+					}
+					return merged;
+				},
 			},
 		),
 	);

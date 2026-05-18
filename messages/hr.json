@@ -44,6 +44,7 @@
 			"printExport": "Ispis i izvoz - spremi trenutni prikaz karte kao PDF ili PNG sliku",
 			"weather": "Trenutno vrijeme na vašoj lokaciji na stazi - temperatura, vjetar, vjerojatnost padalina, izlazak/zalazak sunca; 12-satna prognoza s prikazom padalina i preporukom najboljeg prozora (DHMZ + Open-Meteo)",
 			"trailNotices": "Regionalne obavijesti o stanju na stazi - odbacive obavijesti s upozorenjima za trenutne uvjete na stazi",
+			"seasonalStatus": "Sezonsko stanje puta - sloj karte s upozorenjima, zatvaranjima i sezonskim uvjetima prikupljenim s DHMZ-a, HGSS-a, HPS-a i nacionalnih parkova; markeri po boji ozbiljnosti smješteni u sredinu svakog zahvaćenog raspona; prijeđite kursorom ili kliknite na marker za isticanje dionice i otvaranje detaljnog prozora s razinom, preporučenom opremom i poveznicom na izvornu obavijest; podaci se osvježavaju pokretanjem naredbe `npm run update-seasonal`",
 			"radar": "Preklopni sloj radara padalina - animirani RainViewer radar s prošlim i prognoziranim kadrovima, kontrole reproduciranja i legenda boja",
 			"sunsetPosition": "Pozicija zalaska/izlaska sunca - prikazuje gdje ćete biti na stazi u trenutku zalaska i izlaska sunca prema trenutnom tempu; markeri na poliliniji",
 			"stagePlanner": "Planer višednevnih etapa - podijelite bilo koji dio staze na dnevne etape prema udaljenosti ili vremenu, pregledajte statistike nadmorske visine i ETA po etapi, izvezite pojedine etape kao GPX datoteke ili sve etape kao PDF karte etapa",
@@ -52,7 +53,7 @@
 			"trailStyle": "Stil staze - odaberi kako će ruta biti obojana u ploči slojeva: Zadano (jedna boja), Dionice (zone A/B/C s graničnim oznakama i statistikom po dionici) ili Nagib (gradijentno bojanje u pet pojaseva, topli tonovi za uspone i hladni za silazne dijelove u trenutnom smjeru hodanja; legenda u ploči; ponovno se izračunava pri promjeni smjera SOBO/NOBO)"
 		},
 		"dataAttribution": "Podaci i atribucija",
-		"dataAttributionDesc": "Podatke o stazi pruža organizacija Udruga Long Distance Trail Hrvatska (LDTH). Karte dolaze od OpenStreetMap, OpenTopoMap, CyclOSM i drugih pružatelja. Hrvatske topografske karte su od Državne geodetske uprave (DGU). Meteorološki podaci dolaze od DHMZ-a (Državni hidrometeorološki zavod) i Open-Meteo. Radarske pločice osigurava RainViewer. Podaci prikazani na ovoj stranici možda ne odražavaju najnovije stanje. U slučaju sumnje, uvijek provjerite službene izvore.",
+		"dataAttributionDesc": "Podatke o stazi pruža organizacija Udruga Long Distance Trail Hrvatska (LDTH). Karte dolaze od OpenStreetMap, OpenTopoMap, CyclOSM i drugih pružatelja. Hrvatske topografske karte su od Državne geodetske uprave (DGU). Meteorološki podaci dolaze od DHMZ-a (Državni hidrometeorološki zavod) i Open-Meteo. Radarske pločice osigurava RainViewer. Podaci o sezonskom stanju puta, upozorenja o opasnostima i podaci o stanicama gorske službe spašavanja preuzeti su od HGSS-a (Hrvatska gorska služba spašavanja), HPS-a (Hrvatski planinarski savez) te uprava nacionalnih parkova (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) i Parka prirode Velebit. Podaci prikazani na ovoj stranici možda ne odražavaju najnovije stanje. U slučaju sumnje, uvijek provjerite službene izvore.",
 		"privacy": "Privatnost",
 		"privacyDesc": "Vaša lokacija se koristi samo kada je omogućite i date dopuštenje. Nikada se ne šalje na server - sve se izvodi u vašem pregledniku. Nije potreban račun ili prijava.",
 		"links": "Linkovi",
@@ -504,6 +505,23 @@
 		"severityOrange": "Umjeren",
 		"severityRed": "Ozbiljan",
 		"dismiss": "Odbaci"
+	},
+	"seasonalStatus": {
+		"layerToggle": "Sezonsko stanje puta",
+		"layerTooltip": "Prikaži ili sakrij sezonske uvjete na trasi (zatvaranja, snijeg, bura)",
+		"severity": {
+			"open": "Otvoreno",
+			"caution": "Oprez",
+			"closed_recommended": "Preporuka zatvaranja",
+			"experts_only": "Samo za iskusne"
+		},
+		"bannerPrefix": "Stanje puta:",
+		"validLabel": "Vrijedi:",
+		"gearLabel": "Preporučena oprema",
+		"sourceLabel": "Izvor",
+		"tapForDetails": "Dodirni za detalje",
+		"chipAriaLabel": "{severity} - {source}",
+		"lastUpdatedDaysAgo": "{days, plural, =0 {Ažurirano danas} =1 {Ažurirano jučer} few {Ažurirano prije # dana} other {Ažurirano prije # dana}}"
 	},
 	"emergency": {
 		"title": "Hitno · 112",
