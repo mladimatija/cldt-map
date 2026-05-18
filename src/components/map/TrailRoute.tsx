@@ -1038,8 +1038,17 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 				direction: 'top',
 				offset: L.point(0, -8),
 				permanent: false,
-				className: 'map-tooltip map-tooltip--compact',
+				className: 'map-tooltip map-tooltip--compact seasonal-status-chip-tooltip',
 				pane: SEASONAL_STATUS_TOOLTIP_PANE,
+			});
+			// Set the per-severity accent on the tooltip element each time it opens,
+			// mirroring the modal's CSS-var pattern so the left accent border picks
+			// up the correct colour.
+			const chipAccent = severityColor(entry.severity);
+			marker.on('tooltipopen', (e: L.LeafletEvent) => {
+				const tooltip = (e as unknown as { tooltip: L.Tooltip }).tooltip;
+				const el = tooltip.getElement();
+				if (el) el.style.setProperty('--seasonal-accent', chipAccent);
 			});
 			marker.on('mouseover', () => {
 				setSeasonalStatusHoveredEntryId(entry.id);
