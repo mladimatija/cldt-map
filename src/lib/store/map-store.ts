@@ -2,7 +2,7 @@ import type * as GeoJSON from 'geojson';
 import type { LatLng } from 'leaflet';
 import { create, type StoreApi, type UseBoundStore } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import { config, TRAIL_OFF_TRAIL_THRESHOLD_M } from '../config';
+import { config, seasonalStatusLayerEnabledOverride, TRAIL_OFF_TRAIL_THRESHOLD_M } from '../config';
 import { getRandomLocationInBoundary, toLocationError } from '../utils';
 import { LocationService } from '../services/location-service';
 import type { ImportedTrack, MapStoreState, StagePlan, StoreState, TrailDirection, UnitSystem } from './types';
@@ -193,7 +193,7 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 				largeTouchTargets: config.largeTouchTargets,
 				setLargeTouchTargets: (enabled: boolean) => set({ largeTouchTargets: enabled }),
 				showSections: config.showSections,
-				gradeTintedTrail: false,
+				gradeTintedTrail: config.gradeTintedTrail,
 				setShowSections: (show: boolean): void => {
 					set({ showSections: show, gradeTintedTrail: show ? false : get().gradeTintedTrail });
 				},
@@ -225,8 +225,8 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 				tileCacheTotal: 0,
 				tileCacheError: null,
 				tileCacheMeta: null,
-				autoSync: false,
-				predictivePrecache: false,
+				autoSync: config.autoSync,
+				predictivePrecache: config.predictivePrecache,
 
 				startTileDownload: async (points, providerName) => {
 					if (typeof window === 'undefined') return;
@@ -522,17 +522,17 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					}
 				},
 
-				walkingPaceKmh: 4,
+				walkingPaceKmh: config.walkingPaceKmh,
 				setWalkingPaceKmh: (pace: number): void => {
 					set({ walkingPaceKmh: pace });
 				},
 
-				gradeAdjustedEta: true,
+				gradeAdjustedEta: config.gradeAdjustedEta,
 				setGradeAdjustedEta: (enabled: boolean): void => {
 					set({ gradeAdjustedEta: enabled });
 				},
 
-				sunsetProjection: false,
+				sunsetProjection: config.sunsetProjection,
 				setSunsetProjection: (enabled: boolean): void => {
 					set({ sunsetProjection: enabled });
 				},
@@ -570,7 +570,7 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					set({ hoveredImportedTrackId: id });
 				},
 
-				severeWeatherLayer: false,
+				severeWeatherLayer: config.severeWeatherLayer,
 				setSevereWeatherLayer: (enabled: boolean): void => {
 					set({ severeWeatherLayer: enabled });
 				},
@@ -587,7 +587,7 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					});
 				},
 				seasonalStatusEntries: [],
-				seasonalStatusLayerEnabled: isSeasonalStatusDefaultEnabled(),
+				seasonalStatusLayerEnabled: seasonalStatusLayerEnabledOverride ?? isSeasonalStatusDefaultEnabled(),
 				seasonalStatusLayerUserToggled: false,
 				setSeasonalStatusLayerEnabled: (enabled: boolean): void => {
 					set({
@@ -636,10 +636,12 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 						...(persistedState as Partial<MapStoreState>),
 					};
 					// If the user has never explicitly toggled the seasonal layer,
-					// recompute it from the current date so the default tracks the
-					// Nov 1 - May 31 window across sessions.
+					// recompute it on every hydration. Explicit env override wins
+					// unconditionally; otherwise fall back to the winter-window
+					// auto-default (Nov 1 - May 31) so the default tracks the
+					// season across sessions.
 					if (!merged.seasonalStatusLayerUserToggled) {
-						merged.seasonalStatusLayerEnabled = isSeasonalStatusDefaultEnabled();
+						merged.seasonalStatusLayerEnabled = seasonalStatusLayerEnabledOverride ?? isSeasonalStatusDefaultEnabled();
 					}
 					return merged;
 				},

@@ -30,6 +30,25 @@ function envInt(key: string, defaultVal: number): number {
 	return Number.isNaN(n) ? defaultVal : n;
 }
 
+function envFloat(key: string, defaultVal: number): number {
+	const v = process.env[key];
+	if (v === undefined || v === '') {
+		return defaultVal;
+	}
+	const n = parseFloat(v);
+	return Number.isNaN(n) ? defaultVal : n;
+}
+
+/** Tri-state boolean env: "true"/"1" => true, "false"/"0" => false, unset => undefined.
+ *  Use when callers need to distinguish "not set" from "explicitly false". */
+function envBoolOptional(key: string): boolean | undefined {
+	const v = process.env[key];
+	if (v === undefined || v === '') return undefined;
+	if (v === 'true' || v === '1') return true;
+	if (v === 'false' || v === '0') return false;
+	return undefined;
+}
+
 function envMapCenter(key: string, defaultVal: [number, number]): [number, number] {
 	const v = process.env[key];
 	if (!v || typeof v !== 'string') return defaultVal;
@@ -98,10 +117,36 @@ export const config = {
 
 	/** Show trail sections (color-coded segments and boundary markers) by default */
 	showSections: envBool('NEXT_PUBLIC_DEFAULT_SHOW_SECTIONS', false),
+
+	/** Grade-tinted trail rendering by default (mutually exclusive with showSections). */
+	gradeTintedTrail: envBool('NEXT_PUBLIC_DEFAULT_GRADE_TINTED_TRAIL', false),
+
+	/** Walking pace in km/h used for passage-time estimates. */
+	walkingPaceKmh: envFloat('NEXT_PUBLIC_DEFAULT_WALKING_PACE_KMH', 4),
+
+	/** Apply Tobler-style grade adjustment to ETA estimates by default. */
+	gradeAdjustedEta: envBool('NEXT_PUBLIC_DEFAULT_GRADE_ADJUSTED_ETA', true),
+
+	/** Show sunset projection on the trail by default. */
+	sunsetProjection: envBool('NEXT_PUBLIC_DEFAULT_SUNSET_PROJECTION', false),
+
+	/** Show severe-weather overlay by default. */
+	severeWeatherLayer: envBool('NEXT_PUBLIC_DEFAULT_SEVERE_WEATHER_LAYER', false),
+
+	/** Auto-sync tile cache in the background by default. */
+	autoSync: envBool('NEXT_PUBLIC_DEFAULT_AUTO_SYNC', false),
+
+	/** Predictively pre-cache tiles near the user's position by default. */
+	predictivePrecache: envBool('NEXT_PUBLIC_DEFAULT_PREDICTIVE_PRECACHE', false),
 } as const;
 
 /** Number of days after which a tile cache is considered stale (overridable via env). */
 export const tileCacheTtlDays = envInt('NEXT_PUBLIC_TILE_CACHE_TTL_DAYS', 30);
+
+/** Tri-state override for the seasonal-status layer default. `undefined` means
+ *  fall back to the winter-window auto-default (Nov 1 - May 31). Setting the
+ *  env to "true" or "false" overrides the auto-default unconditionally. */
+export const seasonalStatusLayerEnabledOverride = envBoolOptional('NEXT_PUBLIC_DEFAULT_SEASONAL_STATUS_ENABLED');
 
 /** Maximum distance in metres from the nearest trail point at which a user is considered "on trail".
  *  15 m accounts for typical GPS inaccuracy on narrow trails. */
