@@ -22,6 +22,14 @@ const SevereWeatherBanner = dynamic(
 	() => import('@/components/map/SevereWeatherBanner').then((m) => ({ default: m.SevereWeatherBanner })),
 	{ ssr: false },
 );
+const SeasonalStatusBanner = dynamic(
+	() => import('@/components/map/SeasonalStatusBanner').then((m) => ({ default: m.SeasonalStatusBanner })),
+	{ ssr: false },
+);
+const SeasonalStatusModal = dynamic(
+	() => import('@/components/map/SeasonalStatusModal').then((m) => ({ default: m.SeasonalStatusModal })),
+	{ ssr: false },
+);
 
 interface MapWrapperProps {
 	locale?: string;
@@ -105,9 +113,11 @@ export default function MapWrapper(_props?: MapWrapperProps): ReactElement {
 			<GPXLoadErrorBanner />
 			<TrailNoticesBanner />
 			<SevereWeatherBanner />
+			<SeasonalStatusBanner />
 			<div className="relative min-h-0 flex-1 bg-white" ref={mapContainerRef}>
 				<Map defaultBaseMap={config.baseMapProvider} zoomSnap={0} />
 			</div>
+			<SeasonalStatusModal />
 		</div>
 	);
 }

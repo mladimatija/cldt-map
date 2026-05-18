@@ -10,6 +10,7 @@ import { useTranslations } from 'next-intl';
 import { useMapStore, type MapStoreState } from '@/lib/store';
 import { DEFAULT_PATH_OPTIONS } from '@/components/map/trail-route-constants';
 import { useSevereWeatherFetch } from '@/hooks/useSevereWeatherFetch';
+import { useSeasonalStatusFetch } from '@/hooks/useSeasonalStatusFetch';
 
 function MapTrailLoadingFallback(): React.ReactElement {
 	const t = useTranslations('mapWrapper');
@@ -71,6 +72,7 @@ export default function MapContent(): React.ReactElement {
 	const requestLocationPermission = useMapStore((state: MapStoreState) => state.requestLocationPermission);
 
 	useSevereWeatherFetch();
+	useSeasonalStatusFetch();
 
 	// Initialize location service once when the component mounts
 	useEffect(() => {

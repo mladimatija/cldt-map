@@ -1,0 +1,52 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "https://cldt.hr/schemas/seasonal-status.json",
+	"title": "Seasonal Trail Status",
+	"description": "Time-bounded trail-status entries for the CLDT, surfaced as a tinted polyline and banner chip in the app.",
+	"type": "object",
+	"required": ["lastUpdated", "source", "entries"],
+	"additionalProperties": false,
+	"properties": {
+		"lastUpdated": { "type": "string", "format": "date" },
+		"source": { "type": "string", "minLength": 1 },
+		"sourceUrl": { "type": "string", "format": "uri" },
+		"entries": {
+			"type": "array",
+			"items": { "$ref": "#/$defs/entry" }
+		}
+	},
+	"$defs": {
+		"entry": {
+			"type": "object",
+			"required": ["id", "severity", "validFrom", "validUntil", "note_en", "note_hr", "source"],
+			"additionalProperties": false,
+			"properties": {
+				"id": {
+					"type": "string",
+					"pattern": "^[a-z0-9][a-z0-9-]*$",
+					"minLength": 3,
+					"maxLength": 80,
+					"description": "Stable lowercase-kebab identifier, e.g. velebit-ridge-winter-2026"
+				},
+				"severity": {
+					"enum": ["open", "caution", "closed_recommended", "experts_only"]
+				},
+				"season": {
+					"enum": ["winter", "shoulder", "summer", "year-round"]
+				},
+				"distanceStartKm": { "type": "number", "minimum": 0 },
+				"distanceEndKm": { "type": "number", "minimum": 0, "exclusiveMinimum": 0 },
+				"sectionId": { "type": "string", "minLength": 1 },
+				"validFrom": { "type": "string", "format": "date" },
+				"validUntil": { "type": "string", "format": "date" },
+				"note_en": { "type": "string", "minLength": 1, "maxLength": 800 },
+				"note_hr": { "type": "string", "minLength": 1, "maxLength": 800 },
+				"gear": { "type": "string", "maxLength": 200 },
+				"source": { "type": "string", "minLength": 1 },
+				"sourceUrl": { "type": "string", "format": "uri" },
+				"lastUpdated": { "type": "string", "format": "date" }
+			},
+			"anyOf": [{ "required": ["sectionId"] }, { "required": ["distanceStartKm", "distanceEndKm"] }]
+		}
+	}
+}

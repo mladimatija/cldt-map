@@ -1,0 +1,65 @@
+[
+	{
+		"name": "DHMZ - Upozorenja (vremenska)",
+		"url": "https://meteo.hr/naslovnica-upozorenja.php?tab=upozorenja",
+		"language": "hr",
+		"covers": "Croatian Met Service regional weather warnings (yellow / orange / red). Covers Gospićka regija (Lika / Velebit), Riječka regija (Kvarner), Velebitski kanal - directly applicable to CLDT bura, storm, and snow signals.",
+		"parseHint": "Table by region and day. For each region, extract severity colour (žuto / narančasto / crveno), valid-from / valid-until window, hazard type (vjetar / kiša / snijeg / grmljavina), and human description. Focus on Gospićka, Riječka, Velebitski kanal, and Dalmatian regions."
+	},
+	{
+		"name": "HGSS - Novosti",
+		"url": "https://www.hgss.hr/novosti/",
+		"language": "hr",
+		"covers": "Croatian Mountain Rescue news. Strongest signal for experts_only / closed_recommended classification - when HGSS publishes a hazard warning, that's a direct trigger.",
+		"parseHint": "Reverse-chronological list of news items. Look at the first 10 entries. Skip routine entries (training, awards, social). Focus on entries mentioning snijeg, lavin, bura, vjetar, magla, poledica, akcija spašavanja, ozljeda, nesreća. Note station name (Senj / Gospić for Velebit; Zadar / Split for Paklenica / Biokovo; Rijeka for Risnjak)."
+	},
+	{
+		"name": "HPS - Planinarski putovi (vijesti)",
+		"url": "https://www.hps.hr/novosti/planinarski-putovi/",
+		"language": "hr",
+		"covers": "Croatian Mountaineering Federation news category 'Planinarski putovi'. Primary source for trail closures (e.g. 'Zatvoren Put malog princa' in Paklenica).",
+		"parseHint": "List of trail-related news. Focus on closures (zatvoren, zatvaranje), state-of-trail reports (stanje putova, prohodnost), damage (oštećenja, nevrijeme). Note the specific mountain or trail name."
+	},
+	{
+		"name": "HPS - Planinarski objekti (vijesti)",
+		"url": "https://www.hps.hr/novosti/objekti/",
+		"language": "hr",
+		"covers": "Croatian Mountaineering Federation news category 'Planinarski objekti' - mountain huts and shelters. Hut closures and damage reports.",
+		"parseHint": "List of hut-related news. Focus on closures, fire damage, renovations affecting access. Note hut name and mountain range."
+	},
+	{
+		"name": "NP Sjeverni Velebit - Važne obavijesti",
+		"url": "https://np-sjeverni-velebit.hr/www/hr/va%C5%BEne-obavijesti",
+		"language": "hr",
+		"covers": "Northern Velebit National Park important notices. Road access (Zavižan road, Štirovača - Alan road), entrance status, seasonal closures.",
+		"parseHint": "Structured page with sections: Zavižanska cesta (status), Pristup iz smjera Krasna preko Oltara do Zavižana (alternative access), Prohodnost ceste Štirovača - Alan (road passability), entrance hours. Extract road open / closed status."
+	},
+	{
+		"name": "NP Paklenica - Novosti",
+		"url": "https://www.np-paklenica.hr/hr/novosti-paklenica-hr/",
+		"language": "hr",
+		"covers": "Paklenica National Park news. Trail and climbing-route conditions, seasonal closures.",
+		"parseHint": "Reverse-chronological news. Focus on conditions in Velika and Mala Paklenica canyons, Anića kuk climbing routes, and Paklenica trail closures."
+	},
+	{
+		"name": "NP Plitvička jezera - Trenutni uvjeti",
+		"url": "https://np-plitvicka-jezera.hr/planirajte-posjet/trenutni-uvjeti-upozorenja-i-obavijesti/",
+		"language": "hr",
+		"covers": "Plitvice National Park current conditions and alerts page.",
+		"parseHint": "Structured page. Extract: Upper Lakes open / closed, Lower Lakes open / closed, panoramic-vehicle status, electric-boat status, footwear recommendation, and the date at top."
+	},
+	{
+		"name": "NP Krka - Naslovnica",
+		"url": "https://www.np-krka.hr/",
+		"language": "hr",
+		"covers": "Krka National Park homepage. Less likely to surface trail-status info; included for completeness.",
+		"parseHint": "Homepage may have an alerts banner or news section. Extract only entries about trail / visitor access changes; skip ticket and event announcements."
+	},
+	{
+		"name": "Park prirode Velebit - Novosti",
+		"url": "https://pp-velebit.hr/o-parku/novosti/",
+		"language": "hr",
+		"covers": "Velebit Nature Park news. Covers southern Velebit, the southern section of Premužićeva staza, Cerovačke špilje, Tulove grede.",
+		"parseHint": "Reverse-chronological news. Focus on Premužićeva staza, Tulove grede, Cerovačke špilje, and southern Velebit ridge conditions."
+	}
+]

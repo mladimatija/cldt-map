@@ -1,0 +1,77 @@
+name: Refresh seasonal trail status
+
+# Runs the seasonal-status curator (`npm run update-seasonal`) once a week.
+# When the curator produces any change to public/seasonal-status.json the
+# workflow opens (or updates) a pull request against master for human review.
+#
+# Required repository secrets (Settings -> Secrets and variables -> Actions):
+#   - ANTHROPIC_API_KEY     Anthropic API key used by the curator
+#   - NEXT_PUBLIC_GPX_URL   Trail GPX URL the curator fetches for landmark
+#                           resolution (same value as in .env.local)
+#
+# Required permission (Settings -> Actions -> General -> Workflow permissions):
+#   "Allow GitHub Actions to create and approve pull requests"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+on:
+  schedule:
+    # Mondays at 06:00 UTC (08:00 Croatia summer / 07:00 winter). Picks up
+    # weekend-accumulated source updates without hitting Sunday-evening
+    # rebuilds on source sites.
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+
+jobs:
+  refresh:
+    name: Run curator and open PR
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run seasonal-status curator
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          NEXT_PUBLIC_GPX_URL: ${{ secrets.NEXT_PUBLIC_GPX_URL }}
+        run: npm run update-seasonal
+
+      - name: Open or update pull request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          commit-message: 'feat: refresh seasonal trail status data'
+          title: 'feat: refresh seasonal trail status data'
+          body: |
+            Automated weekly refresh of `public/seasonal-status.json`.
+
+            The curator fetched the source pages defined in
+            `scripts/seasonal-status-sources.json`, resolved Croatian-landmark
+            km positions from the live GPX, summarised each page, synthesised
+            an updated entry set, and validated it against
+            `public/seasonal-status.schema.json` plus the business rules in
+            `scripts/update-seasonal-status.ts`.
+
+            **Sources fetched:** DHMZ regional weather warnings, HGSS news,
+            HPS trail- and hut-news categories, NP Sjeverni Velebit, NP
+            Paklenica, NP Plitvička jezera, NP Krka homepage, Park prirode
+            Velebit.
+
+            Review the diff for plausibility, then merge. The branch is reused
+            week-over-week, so this PR will be updated on the next run if it
+            is still open.
+          branch: feat/refresh-seasonal-status
+          delete-branch: true
+          base: master
+          labels: |
+            seasonal-status
+            automated

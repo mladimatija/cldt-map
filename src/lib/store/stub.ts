@@ -186,5 +186,16 @@ export function createMapStoreStub(): MapStoreState {
 		setSevereWeatherLayer: noop,
 		severeWeatherData: null,
 		setSevereWeatherData: noop,
+
+		seasonalStatusFile: null,
+		setSeasonalStatusFile: noop,
+		seasonalStatusEntries: [],
+		seasonalStatusLayerEnabled: false,
+		seasonalStatusLayerUserToggled: false,
+		setSeasonalStatusLayerEnabled: noop,
+		seasonalStatusModalEntry: null,
+		setSeasonalStatusModalEntry: noop,
+		seasonalStatusHoveredEntryId: null,
+		setSeasonalStatusHoveredEntryId: noop,
 	};
 }
