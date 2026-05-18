@@ -284,10 +284,10 @@ async function fetchSource(source: SourceEntry): Promise<FetchedSource> {
 
 function extractText(html: string): string {
 	return html
-		.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, ' ')
-		.replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, ' ')
-		.replace(/<noscript\b[^>]*>[\s\S]*?<\/noscript>/gi, ' ')
-		.replace(/<!--[\s\S]*?-->/g, ' ')
+		.replace(/<script\b[^>]*>[\s\S]*?<\/script\b[^>]*>/gi, ' ')
+		.replace(/<style\b[^>]*>[\s\S]*?<\/style\b[^>]*>/gi, ' ')
+		.replace(/<noscript\b[^>]*>[\s\S]*?<\/noscript\b[^>]*>/gi, ' ')
+		.replace(/<!--[\s\S]*?--\s*!?>/g, ' ')
 		.replace(/<[^>]+>/g, ' ')
 		.replace(/&nbsp;/g, ' ')
 		.replace(/&lt;/g, '<')
