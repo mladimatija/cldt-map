@@ -69,6 +69,15 @@
 		0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
+/* Chip hover tooltip: left accent border colour is set per severity via the
+   `--seasonal-accent` CSS variable, applied to the tooltip element by the
+   chip marker's `tooltipopen` handler in TrailRoute.tsx. Mirrors the modal
+   pattern below; both rules use `!important` to win over the base
+   `.map-tooltip` shorthand `border-left`. */
+.map-tooltip.seasonal-status-chip-tooltip {
+	border-left-color: var(--seasonal-accent, var(--cldt-blue)) !important;
+}
+
 .map-tooltip.seasonal-status-popout {
 	border-left-color: var(--seasonal-accent, var(--cldt-blue)) !important;
 	max-width: 440px !important;
