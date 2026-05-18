@@ -44,6 +44,7 @@
 			"printExport": "Drucken und Exportieren - aktuelle Kartenansicht als PDF oder PNG speichern",
 			"weather": "Aktuelles Wetter an Ihrem Trailstandort - Temperatur, Wind, Niederschlagswahrscheinlichkeit, Sonnenaufgang/-untergang; 12-Stunden-Vorhersage mit Niederschlagsbalken und Empfehlung des besten Zeitfensters (DHMZ + Open-Meteo)",
 			"trailNotices": "Regionale Trail-Zustandsbenachrichtigungen - abbaubare Banner mit Warnungen zu aktuellen Bedingungen auf dem Trail",
+			"seasonalStatus": "Saisonaler Wegzustand - kuratierte Kartenebene mit Warnungen, Sperrungen und saisonalen Bedingungen aus Quellen von DHMZ, HGSS, HPS und kroatischen Nationalparks; nach Schweregrad gefärbte Chip-Markierungen am Wegmittelpunkt jedes betroffenen Abschnitts; Hover oder Klick auf einen Chip hebt die betroffene Strecke hervor und öffnet ein Detailfenster mit Schweregrad, empfohlener Ausrüstung und Link zur Originalmeldung; Daten werden mit `npm run update-seasonal` aktualisiert",
 			"radar": "Niederschlagsradar-Overlay - animierter RainViewer-Radar mit vergangenen und vorhergesagten Frames, Wiedergabesteuerung und Farblegende",
 			"sunsetPosition": "Sonnenuntergang/Sonnenaufgang-Position - zeigt, wo du bei Sonnenuntergang und Sonnenaufgang auf dem Weg sein wirst; umschaltbare Markierungen auf der Strecke",
 			"stagePlanner": "Mehrtages-Etappenplaner - teile beliebige Streckenabschnitte nach Distanz oder Zeit in Tagesetappen auf, zeige Höhen- und ETA-Statistiken je Etappe an, exportiere einzelne Etappen als GPX-Dateien oder alle Etappen als Etappenkarten-PDF",
@@ -52,7 +53,7 @@
 			"trailStyle": "Wegstil - wähle im Ebenen-Panel, wie die Route eingefärbt wird: Standard (eine Farbe), Abschnitte (Zonen A/B/C mit Grenzmarkern und Statistik pro Abschnitt) oder Steigung (Gradienten-Färbung in fünf Stufen, warme Töne für Anstiege und kühle für Abstiege in der aktuellen Gehrichtung; Farblegende im Panel; wird beim Wechsel der SOBO/NOBO-Richtung neu berechnet)"
 		},
 		"dataAttribution": "Daten & Urheberrecht",
-		"dataAttributionDesc": "Trail-Daten werden von der Udruga Long Distance Trail Hrvatska (LDTH) bereitgestellt. Kartenkacheln kommen von OpenStreetMap, OpenTopoMap, CyclOSM und anderen Anbietern. Kroatische topografische Karten stammen vom Staatlichen Geodätischen Amt (DGU). Wetterdaten kommen von DHMZ (Kroatischer Wetterdienst) und Open-Meteo. Radarkacheln werden von RainViewer bereitgestellt. Die auf dieser Seite angezeigten Daten entsprechen möglicherweise nicht dem aktuellen Stand. Im Zweifelsfall bitte immer die offiziellen Quellen prüfen.",
+		"dataAttributionDesc": "Trail-Daten werden von der Udruga Long Distance Trail Hrvatska (LDTH) bereitgestellt. Kartenkacheln kommen von OpenStreetMap, OpenTopoMap, CyclOSM und anderen Anbietern. Kroatische topografische Karten stammen vom Staatlichen Geodätischen Amt (DGU). Wetterdaten kommen von DHMZ (Kroatischer Wetterdienst) und Open-Meteo. Radarkacheln werden von RainViewer bereitgestellt. Daten zum saisonalen Wegzustand, Gefahrenwarnungen sowie Standorte der Bergwacht-Stationen stammen von HGSS (Kroatische Bergrettung), HPS (Kroatischer Bergsteigerverband) und den Verwaltungen der Nationalparks (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) sowie Naturpark Velebit. Die auf dieser Seite angezeigten Daten entsprechen möglicherweise nicht dem aktuellen Stand. Im Zweifelsfall bitte immer die offiziellen Quellen prüfen.",
 		"privacy": "Datenschutz",
 		"privacyDesc": "Dein Standort wird nur verwendet, wenn du ihn aktivierst und die Berechtigung erteilst. Er wird niemals an einen Server gesendet - alles läuft in deinem Browser. Es ist kein Konto oder Login erforderlich.",
 		"links": "Links",
@@ -503,6 +504,23 @@
 		"severityOrange": "Mäßig",
 		"severityRed": "Schwer",
 		"dismiss": "Schließen"
+	},
+	"seasonalStatus": {
+		"layerToggle": "Saisonaler Wegzustand",
+		"layerTooltip": "Saisonale Wegbedingungen (Sperrungen, Schnee, Bura-Wind) entlang der Route ein- oder ausblenden",
+		"severity": {
+			"open": "Geöffnet",
+			"caution": "Vorsicht",
+			"closed_recommended": "Sperrung empfohlen",
+			"experts_only": "Nur für Erfahrene"
+		},
+		"bannerPrefix": "Wegzustand:",
+		"validLabel": "Gültig:",
+		"gearLabel": "Empfohlene Ausrüstung",
+		"sourceLabel": "Quelle",
+		"tapForDetails": "Für Details tippen",
+		"chipAriaLabel": "{severity} - {source}",
+		"lastUpdatedDaysAgo": "{days, plural, =0 {Heute aktualisiert} =1 {Gestern aktualisiert} other {Vor # Tagen aktualisiert}}"
 	},
 	"emergency": {
 		"title": "Notfall · 112",

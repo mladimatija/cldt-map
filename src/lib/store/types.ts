@@ -3,6 +3,7 @@ import type * as GeoJSON from 'geojson';
 import type { TrailDirection, UnitSystem } from '../types';
 import type { TileCacheMeta } from '../tile-cache';
 import type { TrackPoint } from '../gpx-parser';
+import type { SeasonalStatusEntry, SeasonalStatusFile } from '../seasonal-status';
 import { RulerRange } from '@/lib/distance-utils';
 
 export type { TrailDirection, UnitSystem };
@@ -293,6 +294,18 @@ export interface MapStoreState {
 	setSevereWeatherLayer: (enabled: boolean) => void;
 	severeWeatherData: GeoJSON.FeatureCollection | null;
 	setSevereWeatherData: (data: GeoJSON.FeatureCollection | null) => void;
+
+	// ── Seasonal trail status ──────────────────────────────────────────
+	seasonalStatusFile: SeasonalStatusFile | null;
+	setSeasonalStatusFile: (file: SeasonalStatusFile | null) => void;
+	seasonalStatusEntries: SeasonalStatusEntry[];
+	seasonalStatusLayerEnabled: boolean;
+	seasonalStatusLayerUserToggled: boolean;
+	setSeasonalStatusLayerEnabled: (enabled: boolean) => void;
+	seasonalStatusModalEntry: SeasonalStatusEntry | null;
+	setSeasonalStatusModalEntry: (entry: SeasonalStatusEntry | null) => void;
+	seasonalStatusHoveredEntryId: string | null;
+	setSeasonalStatusHoveredEntryId: (id: string | null) => void;
 }
 
 export interface StagePlan {
