@@ -7,7 +7,7 @@ import { L } from './leaflet';
 import { TRAIL_SECTIONS } from '../trail-sections';
 import { computeBearing, findNearestPointIndex } from '../distance-utils';
 
-/** Bucket an absolute grade percent into one of five bands per the design system §4.20 ramp. */
+/** Bucket an absolute grade percent into one of five bands. */
 function bucketGradePct(absGradePct: number): 0 | 1 | 2 | 3 | 4 {
 	if (absGradePct <= 3) return 0;
 	if (absGradePct <= 6) return 1;

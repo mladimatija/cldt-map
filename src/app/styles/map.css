@@ -20,6 +20,65 @@
 	z-index: calc(var(--z-map-tooltips) + 3) !important;
 }
 
+.leaflet-pane.seasonal-status-pane {
+	z-index: calc(var(--z-map) + 1) !important;
+}
+
+/* Chip markers sit above the trail-point pulsing dot (z = tooltips + 1) but
+   BELOW any tooltip pane so an open trail-point tooltip is never obscured
+   by a chip. */
+.leaflet-pane.seasonal-status-marker-pane {
+	z-index: calc(var(--z-map-tooltips) + 2) !important;
+}
+
+/* Tooltip pane for the chip-marker hover tooltip. Outranks the trail-point
+   tooltip pane (tooltips + 3) so the chip's own hover card is always on top
+   of its trigger and any concurrent tooltips. */
+.leaflet-pane.seasonal-status-tooltip-pane {
+	z-index: calc(var(--z-map-tooltips) + 4) !important;
+}
+
+.seasonal-status-chip-wrapper {
+	background: transparent;
+	border: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.seasonal-status-chip {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 22px;
+	height: 22px;
+	border: 2px solid white;
+	border-radius: 50%;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	cursor: pointer;
+	transition:
+		transform 120ms ease-out,
+		box-shadow 120ms ease-out;
+}
+.seasonal-status-chip-wrapper:hover .seasonal-status-chip,
+.seasonal-status-chip-wrapper.is-active .seasonal-status-chip {
+	transform: scale(1.18);
+}
+.seasonal-status-chip-wrapper.is-active .seasonal-status-chip {
+	box-shadow:
+		0 0 0 4px rgba(0, 0, 0, 0.18),
+		0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.map-tooltip.seasonal-status-popout {
+	border-left-color: var(--seasonal-accent, var(--cldt-blue)) !important;
+	max-width: 440px !important;
+}
+
+.seasonal-status-popout .user-location-close-btn {
+	top: 0;
+	right: 0;
+}
+
 .leaflet-control {
 	pointer-events: auto;
 }
@@ -495,5 +554,12 @@
 	.user-location-marker::before,
 	.user-location-marker::after {
 		animation: none;
+	}
+	.seasonal-status-chip {
+		transition: none;
+	}
+	.seasonal-status-chip-wrapper:hover .seasonal-status-chip,
+	.seasonal-status-chip-wrapper.is-active .seasonal-status-chip {
+		transform: none;
 	}
 }
