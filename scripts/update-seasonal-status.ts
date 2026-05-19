@@ -3,15 +3,27 @@
 // Run: `npm run update-seasonal`
 // Requires: ANTHROPIC_API_KEY in env.
 //
-// Flow:
+// Hard-grounded flow (every claim must trace back to a verifiable quote):
 //   1. Load prior state, sources, schema, sections.
-//   2. Fetch each source URL.
-//   3. Summarise each fetched page with Sonnet (structured signal extraction).
-//   4. Synthesise the new seasonal-status.json with Sonnet.
-//   5. Validate against the JSON schema + business rules.
-//   6. Write public/seasonal-status.json and print a diff to stdout.
+//   2. Fetch each source URL; keep the normalized page text.
+//   3. Summarize each fetched page with Sonnet -> STRUCTURED signals, each with
+//      a verbatim `quote` from the page.
+//   4. Programmatically verify each quote is a literal substring of the source
+//      text. Drop any signal whose quote cannot be found.
+//   5. Synthesize the new seasonal-status.json with Sonnet (prompt-cached
+//      system prompt). Every entry must carry an `evidence` field naming the
+//      source and quoting the supporting text.
+//   6. Programmatically verify each entry's evidence: source name matches a
+//      fetched source, quote matches one of the verified signals from that
+//      source, sourceUrl is in the allowlist. Drop entries that fail.
+//   7. Opus critic pass (prompt-cached rubric) reviews every entry against the
+//      verified signals. Strip entries the critic flags as unsupported. If
+//      more than half the entries fail, abort the run.
+//   8. Strip the audit-only `evidence` field, normalise dashes, validate
+//      schema + business rules.
+//   9. Write public/seasonal-status.json and print a diff to stdout.
 //
-// Output is reviewed via `git diff` and committed on a branch by the maintainer.
+// Output is reviewed via `git diff` and committed to a branch by the maintainer.
 
 import Anthropic from '@anthropic-ai/sdk';
 import Ajv from 'ajv/dist/2020.js';
@@ -31,16 +43,23 @@ const OUTPUT_PATH = path.resolve(PROJECT_ROOT, 'public/seasonal-status.json');
 
 const SYNTHESIS_MODEL = 'claude-sonnet-4-6';
 const SUMMARY_MODEL = 'claude-sonnet-4-6';
+const CRITIC_MODEL = 'claude-opus-4-7';
 const MAX_FETCH_BYTES = 500_000;
 const MAX_SUMMARY_INPUT_CHARS = 30_000;
 const FETCH_TIMEOUT_MS = 30_000;
 const USER_AGENT = 'cldt-seasonal-status-updater/1.0 (+https://cldt.hr)';
 const GPX_URL = process.env.NEXT_PUBLIC_GPX_URL;
 
+/** Fraction of entries the Opus critic must approve. Below this the run aborts
+ *  rather than ship a low-confidence file. 0.5 is permissive on purpose: most
+ *  weeks the critic agrees on >=80%, and the alarm should fire only on a real
+ *  systemic regression (e.g., a source went down and the model hallucinated). */
+const MIN_CRITIC_APPROVAL_RATIO = 0.5;
+
 // Known Croatian landmarks along the CLDT corridor. Their actual km position is
 // resolved at run time by fetching the GPX and snapping each landmark to its
 // nearest trail point. The resolved values are injected into the synthesis
-// prompt so the model assigns correct distanceStartKm / distanceEndKm rather
+//  prompt, so the model assigns the correct distanceStartKm / distanceEndKm rather
 // than guessing.
 interface TrailLandmark {
 	name: string;
@@ -49,23 +68,121 @@ interface TrailLandmark {
 	lng: number;
 }
 
+// 36-landmark spine of the CLDT, validated against the v1 GPX in 2026 (every
+// coordinate snaps to within ~6 km of the actual trail line; most are <1 km).
+// Coverage is roughly every 50-100 km along 2,220 km of trail, organized
+// roughly NOBO-to-SOBO.
 const TRAIL_LANDMARKS: TrailLandmark[] = [
-	{ name: 'Učka / Istria', description: 'Trail beginning, Učka peak (Vojak)', lat: 45.2952, lng: 14.2025 },
-	{ name: 'Risnjak / Gorski kotar', description: 'Risnjak NP summit', lat: 45.4233, lng: 14.63 },
-	{ name: 'Plitvička jezera', description: 'Plitvice Lakes NP', lat: 44.8689, lng: 15.6093 },
+	// Eastern Slavonia (km 0-150)
+	{ name: 'Ilok', description: 'Trail terminus, Danube confluence, easternmost CLDT point', lat: 45.227, lng: 19.376 },
+	{ name: 'Vukovar', description: 'Eastern Slavonia, Vukovar / Vučedol', lat: 45.355, lng: 18.996 },
+	{ name: 'Osijek', description: 'Osijek, Drava-Slavonia plain', lat: 45.555, lng: 18.6955 },
+	{ name: 'Kopački rit', description: 'Kopački rit Nature Park, Baranja wetlands', lat: 45.602, lng: 18.766 },
+	// Slavonian highlands (km 240-290)
+	{ name: 'Našice / Krndija foot', description: 'Approach to Krndija / Papuk via Našice', lat: 45.4925, lng: 18.09 },
+	{ name: 'Krndija', description: 'Krndija range, eastern Slavonian highlands', lat: 45.45, lng: 17.9 },
+	{ name: 'Papuk NP', description: 'Papuk Nature Park, central Slavonian massif', lat: 45.5083, lng: 17.6833 },
+	// Continental Croatia (km 420-580)
+	{ name: 'Bilogora', description: 'Bilogora range, northern continental Croatia', lat: 45.9583, lng: 16.9417 },
+	{ name: 'Kalnik', description: 'Kalnik mountain, north of Križevci', lat: 46.15, lng: 16.45 },
+	{
+		name: 'Međimurje (Mura/Drava)',
+		description: 'Mura-Drava confluence, northernmost CLDT extent',
+		lat: 46.48,
+		lng: 16.45,
+	},
+	// Hrvatsko zagorje + Slovenian-border ranges (km 685-745)
+	{ name: 'Macelj', description: 'Macelj range, Slovenian border', lat: 46.25, lng: 15.85 },
+	{ name: 'Strahinjčica', description: 'Strahinjčica, Hrvatsko zagorje', lat: 46.1858, lng: 15.9333 },
+	{ name: 'Ivanščica', description: 'Ivanščica, highest peak in Hrvatsko zagorje', lat: 46.1844, lng: 16.1517 },
+	// Zagreb belt + Žumberak (km 790-880)
+	{
+		name: 'Medvednica (Sljeme)',
+		description: 'Medvednica Nature Park above Zagreb, Sljeme peak',
+		lat: 45.8989,
+		lng: 15.9667,
+	},
+	{ name: 'Samoborsko gorje', description: 'Samobor highlands west of Zagreb', lat: 45.7833, lng: 15.65 },
+	{ name: 'Žumberak / Sveta gera', description: 'Žumberak Nature Park, Sveta gera peak', lat: 45.7547, lng: 15.3247 },
+	// Gorski kotar (km 1070-1080)
+	{
+		name: 'Risnjak NP',
+		description: 'Risnjak National Park; trail passes the NP, not the summit itself',
+		lat: 45.4283,
+		lng: 14.6181,
+	},
+	{ name: 'Snježnik', description: 'Snježnik peak, western Gorski kotar', lat: 45.4393, lng: 14.5532 },
+	// Istria (km 1410-1420)
+	{ name: 'Učka (Vojak)', description: 'Učka mountain Vojak summit, highest in Istria', lat: 45.2939, lng: 14.2023 },
+	{ name: 'Poklon pass (Učka)', description: 'Poklon pass on Učka, mountain hut', lat: 45.3322, lng: 14.2222 },
+	// Velika Kapela (km 1510)
+	{
+		name: 'Bjelolasica / Velika Kapela',
+		description: 'Bjelolasica massif, Velika Kapela range, central Gorski kotar',
+		lat: 45.2828,
+		lng: 14.9586,
+	},
+	// Northern Velebit (km 1578-1600)
 	{
 		name: 'Zavižan / Sjeverni Velebit NP',
 		description: 'Premužićeva staza start, DHMZ Zavižan met station',
 		lat: 44.8128,
 		lng: 14.9747,
 	},
-	{ name: 'Sjeverni Velebit ridge', description: 'Northern Velebit central ridge', lat: 44.7889, lng: 14.9628 },
-	{ name: 'Paklenica / Starigrad', description: 'Paklenica NP entrance', lat: 44.305, lng: 15.4533 },
-	{ name: 'Anića kuk', description: 'Paklenica climbing area, Put Malog Princa', lat: 44.3411, lng: 15.472 },
-	{ name: 'Sveto brdo', description: 'Southern Velebit summit', lat: 44.2336, lng: 15.5614 },
-	{ name: 'Dinara', description: 'Dinara peak (highest in Croatia)', lat: 44.0633, lng: 16.3833 },
-	{ name: 'Krka NP', description: 'Skradinski buk waterfalls', lat: 43.8038, lng: 15.9656 },
-	{ name: 'Biokovo / Sveti Jure', description: 'Biokovo NP peak', lat: 43.3367, lng: 17.0594 },
+	{
+		name: 'Sjeverni Velebit ridge',
+		description: 'Northern Velebit central ridge, Premužićeva staza',
+		lat: 44.7889,
+		lng: 14.9628,
+	},
+	{
+		name: 'Veliki Alan',
+		description: 'Veliki Alan saddle and mountain hut, central Velebit',
+		lat: 44.6917,
+		lng: 15.0244,
+	},
+	// Southern Velebit / Paklenica (km 1665-1695)
+	{
+		name: 'Paklenica entrance (Starigrad)',
+		description: 'NP Paklenica entrance; trail passes inland of the canyon mouth',
+		lat: 44.305,
+		lng: 15.4533,
+	},
+	{ name: 'Anića kuk', description: 'Paklenica climbing area, Put Malog Princa trail', lat: 44.3411, lng: 15.472 },
+	{
+		name: 'Vaganski vrh',
+		description: 'Vaganski vrh, highest peak in Velebit (adjacent to ridge trail)',
+		lat: 44.4097,
+		lng: 15.5158,
+	},
+	{
+		name: 'Sveto brdo',
+		description: 'Sveto brdo, southern Velebit summit (adjacent to ridge trail)',
+		lat: 44.2336,
+		lng: 15.5614,
+	},
+	{ name: 'Tulove grede', description: 'Tulove grede rocky towers, southern Velebit', lat: 44.275, lng: 15.65 },
+	// Inland Dalmatia (km 1800-1840)
+	{
+		name: 'Dinara (Sinjal)',
+		description: 'Dinara range, Sinjal peak (highest in Croatia, 1831 m)',
+		lat: 44.0631,
+		lng: 16.3839,
+	},
+	{ name: 'Troglav', description: 'Troglav peak, Dinaric range, Croatian-Bosnian border', lat: 43.9683, lng: 16.6017 },
+	// Central Dalmatia (km 1920-1960)
+	{ name: 'Omiš / Cetina', description: 'Omiš coast, Cetina river canyon', lat: 43.45, lng: 16.69 },
+	{ name: 'Biokovo / Sveti Jure', description: 'Biokovo Nature Park, Sveti Jure peak', lat: 43.3367, lng: 17.0594 },
+	// South Dalmatia (km 2050-2220)
+	{ name: 'Pelješac (Sv. Ilija)', description: 'Pelješac peninsula, Sv. Ilija peak', lat: 42.9583, lng: 17.3 },
+	{ name: 'Dubrovnik area', description: 'Dubrovnik / southern coast approach', lat: 42.65, lng: 18.09 },
+	{ name: 'Konavoska brda', description: 'Konavle highlands, southern Croatia', lat: 42.5, lng: 18.4 },
+	{
+		name: 'Trail end (Prevlaka / Konavle)',
+		description: 'Trail terminus at Prevlaka peninsula, Croatian-Montenegrin border',
+		lat: 42.393,
+		lng: 18.533,
+	},
 ];
 
 interface ResolvedLandmark extends TrailLandmark {
@@ -104,11 +221,29 @@ interface SeasonalStatusEntry {
 	lastUpdated?: string;
 }
 
+/** Audit-only field the synthesizer must produce per entry. Stripped before
+ *  the file is written so the on-disk schema stays clean. */
+interface EvidenceRef {
+	source_name: string;
+	quote: string;
+}
+
+interface SeasonalStatusEntryWithEvidence extends SeasonalStatusEntry {
+	evidence?: EvidenceRef;
+}
+
 interface SeasonalStatusFile {
 	lastUpdated: string;
 	source: string;
 	sourceUrl?: string;
 	entries: SeasonalStatusEntry[];
+}
+
+interface SeasonalStatusDraft {
+	lastUpdated: string;
+	source: string;
+	sourceUrl?: string;
+	entries: SeasonalStatusEntryWithEvidence[];
 }
 
 interface SourceEntry {
@@ -125,9 +260,37 @@ interface FetchedSource {
 	error: string | null;
 }
 
+/** Raw structured signal as returned by the summarizer model. */
+interface RawSignal {
+	region?: string;
+	hazard?: string;
+	severity_guess?: Severity | 'unknown';
+	valid_window?: string;
+	quote: string;
+}
+
+/** A signal whose quote has been verified to occur literally in the source
+ *  text. Only verified signals are passed to the synthesizer. */
+interface VerifiedSignal {
+	source_name: string;
+	source_url: string;
+	region: string;
+	hazard: string;
+	severity_guess: Severity | 'unknown';
+	valid_window: string;
+	quote: string;
+}
+
 interface SourceSummary {
 	source: SourceEntry;
-	summary: string;
+	signals: RawSignal[];
+	error: string | null;
+}
+
+interface CriticVerdict {
+	id: string;
+	supported: boolean;
+	reason: string;
 }
 
 // ---- Main ------------------------------------------------------------------
@@ -160,11 +323,35 @@ async function main(): Promise<void> {
 
 	const client = new Anthropic();
 
-	console.log('→ Summarising sources with Sonnet...');
+	console.log('→ Summarising sources with Sonnet (structured signals)...');
 	const summaries = await Promise.all(fetched.map((f) => summariseSource(client, f)));
 
-	console.log('→ Synthesising new seasonal-status.json with Sonnet...');
-	const next = await synthesise(client, { summaries, prior, sections, schema, geometry });
+	console.log('→ Verifying signal quotes against source text...');
+	const verifiedSignals = verifySignalQuotes(fetched, summaries);
+	console.log(
+		`  ${verifiedSignals.length} verified signals across ${summaries.filter((s) => s.signals.length > 0).length} sources.`,
+	);
+	if (verifiedSignals.length === 0) {
+		console.warn('  ⚠ No verified signals this run; output will drop every prior entry without corroboration.');
+	}
+
+	console.log('→ Synthesising candidate seasonal-status.json with Sonnet...');
+	const allowedSourceUrls = new Set(fetched.map((f) => f.source.url));
+	const draft = await synthesise(client, {
+		signals: verifiedSignals,
+		prior,
+		sections,
+		schema,
+		geometry,
+	});
+
+	console.log('→ Verifying entry evidence...');
+	const evidenceVerified = verifyEvidence(draft, verifiedSignals, allowedSourceUrls);
+
+	console.log('→ Opus critic pass...');
+	const criticApproved = await runCritic(client, evidenceVerified, verifiedSignals);
+
+	const next = stripEvidence(criticApproved);
 	normaliseDashes(next);
 
 	console.log('→ Validating schema...');
@@ -205,6 +392,7 @@ async function resolveTrailGeometry(): Promise<TrailGeometry | null> {
 			lng: number;
 			cumM: number;
 		}
+
 		const pts: LatLngKm[] = [];
 		const re = /<trkpt\b[^>]*\blat="([\d.-]+)"[^>]*\blon="([\d.-]+)"/g;
 		let m: RegExpExecArray | null;
@@ -299,14 +487,11 @@ function extractText(html: string): string {
 		.trim();
 }
 
-// ---- Summarisation (Sonnet) ------------------------------------------------
+// ---- Summarisation (Sonnet, structured) ------------------------------------
 
 async function summariseSource(client: Anthropic, fetched: FetchedSource): Promise<SourceSummary> {
 	if (fetched.error || !fetched.text) {
-		return {
-			source: fetched.source,
-			summary: `[unreachable: ${fetched.error ?? 'no content'}]`,
-		};
+		return { source: fetched.source, signals: [], error: fetched.error ?? 'no content' };
 	}
 
 	const content = fetched.text.slice(0, MAX_SUMMARY_INPUT_CHARS);
@@ -324,18 +509,22 @@ async function summariseSource(client: Anthropic, fetched: FetchedSource): Promi
 		`Extract every concrete signal about current or forthcoming trail / mountain ` +
 		`conditions relevant to the Croatia Long Distance Trail (CLDT) or to Croatian ` +
 		`mountain ranges (Velebit, Biokovo, Risnjak, Učka, Gorski kotar, Plitvice, ` +
-		`Paklenica, Krka). For each signal, give:\n` +
-		`  - region or section name, and approximate distance range along CLDT if you can infer it\n` +
-		`  - condition (snow depth, avalanche risk, bura wind, closure, hut closure, etc.)\n` +
-		`  - severity guess (caution / closed_recommended / experts_only)\n` +
-		`  - valid window if mentioned\n` +
-		`  - a direct quoted phrase as evidence\n\n` +
-		`If nothing relevant is on the page, reply exactly: NO SIGNALS.\n` +
+		`Paklenica, Krka).\n\n` +
+		`Reply with ONE JSON object: { "signals": [...] }. Each signal must have:\n` +
+		`  - "region": region or mountain name (string)\n` +
+		`  - "hazard": short description of the condition (string)\n` +
+		`  - "severity_guess": one of "caution", "closed_recommended", "experts_only", or "unknown"\n` +
+		`  - "valid_window": validity window if mentioned, otherwise "" (string)\n` +
+		`  - "quote": a VERBATIM substring of the page content above, between 10 and 280 characters,\n` +
+		`    that directly supports the signal. The quote MUST appear character-for-character\n` +
+		`    in the page text - do not paraphrase, translate, summarise, or merge fragments.\n\n` +
+		`If the page has no relevant signals, reply exactly: { "signals": [] }\n\n` +
+		`Output JSON only - no prose, no Markdown fences, no explanation. Start with { and end with }.\n` +
 		`Do NOT invent details. Only report what is explicitly on the page.`;
 
 	const response = await client.messages.create({
 		model: SUMMARY_MODEL,
-		max_tokens: 1500,
+		max_tokens: 2000,
 		messages: [{ role: 'user', content: prompt }],
 	});
 
@@ -345,21 +534,71 @@ async function summariseSource(client: Anthropic, fetched: FetchedSource): Promi
 		.join('\n')
 		.trim();
 
-	return { source: fetched.source, summary: text };
+	try {
+		const parsed = parseJsonObject<{ signals?: RawSignal[] }>(text);
+		const signals = Array.isArray(parsed.signals) ? parsed.signals : [];
+		return { source: fetched.source, signals, error: null };
+	} catch (err) {
+		return { source: fetched.source, signals: [], error: `summary-parse: ${(err as Error).message}` };
+	}
 }
 
-// ---- Synthesis (Sonnet) ----------------------------------------------------
+// ---- Quote verification ----------------------------------------------------
+
+/** Normalize whitespace and case for substring matching against the
+ *  extractText() output. extractText collapses all whitespace to single
+ *  spaces, so quotes need the same treatment to match reliably. */
+function normaliseForMatch(s: string): string {
+	return s.replace(/\s+/g, ' ').trim().toLowerCase();
+}
+
+function verifySignalQuotes(fetched: FetchedSource[], summaries: SourceSummary[]): VerifiedSignal[] {
+	const verified: VerifiedSignal[] = [];
+	const sourceTextByName = new Map<string, string>();
+	for (const f of fetched) {
+		if (f.text) sourceTextByName.set(f.source.name, normaliseForMatch(f.text));
+	}
+
+	for (const summary of summaries) {
+		if (summary.error) continue;
+		const haystack = sourceTextByName.get(summary.source.name);
+		if (!haystack) continue;
+		for (const sig of summary.signals) {
+			if (typeof sig.quote !== 'string' || sig.quote.length < 10) continue;
+			const needle = normaliseForMatch(sig.quote);
+			if (!haystack.includes(needle)) {
+				console.warn(
+					`  ⚠ Dropping unverified signal from ${summary.source.name}: ` +
+						`quote not found in source. Quote: "${sig.quote.slice(0, 80)}..."`,
+				);
+				continue;
+			}
+			verified.push({
+				source_name: summary.source.name,
+				source_url: summary.source.url,
+				region: typeof sig.region === 'string' ? sig.region : '',
+				hazard: typeof sig.hazard === 'string' ? sig.hazard : '',
+				severity_guess: sig.severity_guess ?? 'unknown',
+				valid_window: typeof sig.valid_window === 'string' ? sig.valid_window : '',
+				quote: sig.quote.trim(),
+			});
+		}
+	}
+	return verified;
+}
+
+// ---- Synthesis (Sonnet, prompt-cached) -------------------------------------
 
 async function synthesise(
 	client: Anthropic,
 	args: {
-		summaries: SourceSummary[];
+		signals: VerifiedSignal[];
 		prior: SeasonalStatusFile;
 		sections: unknown;
 		schema: object;
 		geometry: TrailGeometry | null;
 	},
-): Promise<SeasonalStatusFile> {
+): Promise<SeasonalStatusDraft> {
 	const today = isoDate(new Date());
 	const system = buildSynthesisSystem({
 		today,
@@ -367,20 +606,28 @@ async function synthesise(
 		sections: args.sections,
 		geometry: args.geometry,
 	});
-	const user = buildSynthesisUser({ summaries: args.summaries, prior: args.prior });
+	const user = buildSynthesisUser({ signals: args.signals, prior: args.prior });
 
 	const response = await client.messages.create({
 		model: SYNTHESIS_MODEL,
 		max_tokens: 16_000,
-		system,
+		system: [
+			{
+				type: 'text',
+				text: system,
+				cache_control: { type: 'ephemeral' },
+			},
+		],
 		messages: [{ role: 'user', content: user }],
 	});
+
+	logCacheUsage('synthesis', response.usage);
 
 	const raw = response.content
 		.filter((b): b is Anthropic.TextBlock => b.type === 'text')
 		.map((b) => b.text)
 		.join('\n');
-	return parseJsonObject<SeasonalStatusFile>(raw);
+	return parseJsonObject<SeasonalStatusDraft>(raw);
 }
 
 function buildSynthesisSystem(args: {
@@ -399,13 +646,21 @@ function buildSynthesisSystem(args: {
 				...args.geometry.landmarks.map((lm) => `  - ${lm.name} (${lm.description}): km ${lm.trailKm.toFixed(1)}`),
 				``,
 				`When a source mentions a region, set distanceStartKm / distanceEndKm to bracket the ` +
-					`relevant landmark km values. Examples:`,
-				`  - "Velebit ridge" → span Zavižan through Sveto brdo`,
-				`  - "Paklenica" → span Paklenica / Starigrad through Anića kuk (a few km of padding ok)`,
-				`  - "Gospićka regija" (DHMZ) → covers the full Velebit range`,
-				`  - "Velebitski kanal" (DHMZ) → western face of Velebit, same km range as the ridge`,
-				`  - "Sjeverna Dalmacija" (DHMZ) → southern Velebit through Krka`,
-				`  - "Riječka regija" (DHMZ) → Risnjak / Gorski kotar area`,
+					`relevant landmark km values. Examples (Velebit / coastal):`,
+				`  - "Velebit ridge" -> span Zavižan through Sveto brdo`,
+				`  - "Paklenica" -> span Paklenica entrance through Anića kuk (a few km of padding ok)`,
+				`  - "Gospićka regija" (DHMZ) -> covers the full Velebit range`,
+				`  - "Velebitski kanal" (DHMZ) -> western face of Velebit, same km range as the ridge`,
+				`  - "Sjeverna Dalmacija" (DHMZ) -> southern Velebit through Dinara / Tulove grede`,
+				`  - "Riječka regija" (DHMZ) -> Risnjak / Gorski kotar area`,
+				`Examples (continental / Slavonia, where the trail spends km 0-1000):`,
+				`  - "Osječka regija" (DHMZ) -> Slavonian plain: Ilok through Osijek / Kopački rit`,
+				`  - "Sjeverna Hrvatska" / "Bjelovarska regija" -> Bilogora / Kalnik corridor`,
+				`  - "Međimurska / Varaždinska regija" -> Međimurje through Macelj / Ivanščica`,
+				`  - "Zagrebačka regija" -> Medvednica / Samoborsko gorje / Žumberak corridor`,
+				`  - "Karlovačka regija" -> Žumberak south and approach to Gorski kotar`,
+				`  - "Splitsko-dalmatinska regija" -> Dinara / Omiš / Biokovo`,
+				`  - "Dubrovačko-neretvanska regija" -> Pelješac / Dubrovnik approach / Konavle`,
 				`Do NOT invent km values. If you cannot map a region to a landmark, use the nearest ` +
 					`landmark range and add a few km of padding on either side.`,
 				``,
@@ -413,7 +668,7 @@ function buildSynthesisSystem(args: {
 		: [
 				`TRAIL GEOMETRY:`,
 				`(GPX unreachable this run. Avoid creating new entries with distanceStartKm / ` +
-					`distanceEndKm; only EXTEND existing entries whose km values were already set.)`,
+					`distanceEndKm; only re-emit existing entries whose km values were already set.)`,
 				``,
 			].join('\n');
 
@@ -422,62 +677,289 @@ function buildSynthesisSystem(args: {
 		``,
 		`Today's date: ${args.today}`,
 		``,
-		`OUTPUT: exactly one JSON object matching the schema below. No prose, no Markdown ` +
-			`fences, no explanation. Start with { and end with }.`,
+		`OUTPUT: exactly one JSON object matching the schema below, plus an "evidence" field on each ` +
+			`entry. No prose, no Markdown fences, no explanation. Start with { and end with }.`,
 		``,
 		`SCHEMA:`,
 		JSON.stringify(args.schema, null, 2),
+		``,
+		`EVIDENCE (per-entry audit field, REQUIRED on every entry you emit):`,
+		`Each entry MUST include an "evidence" object with these fields:`,
+		`  - "source_name": the exact name of the source from the VERIFIED SIGNALS block below.`,
+		`  - "quote": one of the verbatim quotes from that source in the VERIFIED SIGNALS block.`,
+		`If you cannot point to a verified signal that supports the entry, do NOT emit the entry.`,
+		`The "evidence" field is audit metadata; the script strips it before writing to disk.`,
 		``,
 		`SECTION TAXONOMY (sectionId references must resolve to one of these ids):`,
 		JSON.stringify(args.sections ?? {}, null, 2),
 		``,
 		geometryBlock,
+		`HARD GROUNDING RULES:`,
+		`1. Every entry you emit must trace back to at least one verified signal. If no signal ` +
+			`mentions a region, hazard, or timing, the entry cannot exist.`,
+		`1a. OFF-ROUTE GUARD: the landmark list above is the complete spine of the CLDT. If a ` +
+			`source describes conditions in a region that is NOT in the landmark list (for example: ` +
+			`Plitvička jezera, Krka NP, Mljet, Brač/Hvar, Vrgorac, or any other area not named ` +
+			`above), the trail does NOT pass through that region. Do NOT create an entry for it - ` +
+			`even if the source is in the configured sources list. Drop the signal silently.`,
+		`2. Do NOT re-emit a prior entry just because it appears in the PRIOR STATE block. The ` +
+			`prior state is shown only so you can reserve stable ids and stable fields ` +
+			`(validFrom, severity) when a current signal corroborates the same hazard. If no ` +
+			`current signal corroborates a prior entry, drop it.`,
+		`3. NEVER paraphrase or extrapolate beyond what the signals state. If a signal says ` +
+			`"closure recommended", do not promote it to "experts only". If a signal omits a ` +
+			`date, use a conservative 14-day window from today's date.`,
+		`4. sourceUrl on every entry must match the source_url of the VERIFIED SIGNAL you cite.`,
+		``,
 		`UPDATE RULES:`,
-		`1. ADD a new entry when a source summary reports a hazard not represented by an ` +
-			`existing active entry. Required fields: id, severity, validFrom, validUntil, ` +
-			`note_en, note_hr, source. Use id format "{region}-{hazard}-{year}" e.g. ` +
-			`"velebit-ridge-winter-2026". sourceUrl is required for new entries.`,
-		`2. EXTEND an existing entry when a source confirms its conditions are ongoing - ` +
-			`bump validUntil forward by at most 14 days. Update lastUpdated to today.`,
-		`3. RAISE severity if a source reports worsening conditions; LOWER severity only if ` +
-			`a source explicitly reports improvement.`,
-		`4. EXPIRE an entry (drop it from the output) when validUntil has passed OR a source ` +
-			`explicitly reports the hazard has lifted.`,
-		`5. LEAVE an entry alone if no source mentions it AND validUntil has not passed.`,
-		`6. NEVER invent entries. Every new or modified entry MUST cite sourceUrl pointing ` +
-			`to one of the URLs that appeared in the source summaries below.`,
-		`7. When uncertain, prefer "caution" over "closed_recommended"; prefer keeping a ` +
-			`prior entry over rewriting it.`,
-		`8. note_hr should preserve the source's Croatian phrasing; note_en is your faithful ` +
-			`English summary of note_hr.`,
-		`9. Each entry must reference its trail segment by EITHER distanceStartKm + ` +
+		`A. ADD a new entry when a verified signal reports a hazard not represented by a prior ` +
+			`entry. Required fields: id, severity, validFrom, validUntil, note_en, note_hr, ` +
+			`source, sourceUrl. Use id format "{region}-{hazard}-{year}" e.g. ` +
+			`"velebit-ridge-winter-2026".`,
+		`B. EXTEND a prior entry when a current signal confirms its conditions are ongoing - ` +
+			`reuse the same id and stable fields, bump validUntil forward by at most 14 days, ` +
+			`update lastUpdated to today.`,
+		`C. RAISE severity if a current signal explicitly reports worsening conditions; LOWER ` +
+			`severity only if a current signal explicitly reports improvement.`,
+		`D. When uncertain, prefer "caution" over "closed_recommended"; prefer copying the ` +
+			`signal's "severity_guess" verbatim.`,
+		`E. note_hr should preserve the source's Croatian phrasing as closely as the quote ` +
+			`allows; note_en is your faithful English translation of note_hr - no embellishment.`,
+		`F. Each entry must reference its trail segment by EITHER distanceStartKm + ` +
 			`distanceEndKm (using the landmark km positions above) OR sectionId (which must ` +
 			`match the taxonomy above). Prefer distance ranges.`,
-		`10. Set the top-level lastUpdated to today's date.`,
-		`11. When the prior entries have km values that conflict with the landmark positions ` +
-			`above (e.g. a Paklenica entry with km 400 when Paklenica is actually at km 600), ` +
-			`treat that as wrong data and rewrite the entry with correct km values, keeping the ` +
-			`same id and other metadata.`,
+		`G. Set the top-level lastUpdated to today's date.`,
+		`H. When prior entries have km values that conflict with the landmark positions above ` +
+			`(e.g. a Paklenica entry with km 400 when Paklenica is actually at km 600), treat that ` +
+			`as wrong data and rewrite the entry with correct km values, keeping the same id.`,
 	].join('\n');
 }
 
-function buildSynthesisUser(args: { summaries: SourceSummary[]; prior: SeasonalStatusFile }): string {
-	const summariesBlock = args.summaries
-		.map(
-			(s) => `### ${s.source.name}\n` + `URL: ${s.source.url}\n` + `Covers: ${s.source.covers}\n\n` + `${s.summary}\n`,
-		)
-		.join('\n---\n\n');
+function buildSynthesisUser(args: { signals: VerifiedSignal[]; prior: SeasonalStatusFile }): string {
+	const signalsBlock =
+		args.signals.length === 0
+			? `(no verified signals this run)`
+			: args.signals
+					.map(
+						(s, i) =>
+							`Signal ${i + 1}\n` +
+							`  source_name: ${s.source_name}\n` +
+							`  source_url: ${s.source_url}\n` +
+							`  region: ${s.region}\n` +
+							`  hazard: ${s.hazard}\n` +
+							`  severity_guess: ${s.severity_guess}\n` +
+							`  valid_window: ${s.valid_window || '(unspecified)'}\n` +
+							`  quote: ${JSON.stringify(s.quote)}`,
+					)
+					.join('\n\n');
 
 	return [
-		`SOURCE SUMMARIES:`,
+		`VERIFIED SIGNALS (every entry you emit must trace to at least one of these):`,
 		``,
-		summariesBlock,
+		signalsBlock,
 		``,
-		`PRIOR STATE (the current seasonal-status.json):`,
+		`PRIOR STATE (id reservation hint only - do not re-emit entries that no signal supports):`,
 		JSON.stringify(args.prior, null, 2),
 		``,
-		`Produce the updated seasonal-status.json now. Output JSON only.`,
+		`Produce the updated seasonal-status.json now. Each entry must include an "evidence" ` +
+			`object with "source_name" and "quote" from one of the verified signals above. ` +
+			`Output JSON only.`,
 	].join('\n');
+}
+
+// ---- Evidence verification (programmatic) ----------------------------------
+
+function verifyEvidence(
+	draft: SeasonalStatusDraft,
+	signals: VerifiedSignal[],
+	allowedSourceUrls: Set<string>,
+): SeasonalStatusDraft {
+	const signalsByName = new Map<string, VerifiedSignal[]>();
+	for (const s of signals) {
+		const list = signalsByName.get(s.source_name) ?? [];
+		list.push(s);
+		signalsByName.set(s.source_name, list);
+	}
+
+	const kept: SeasonalStatusEntryWithEvidence[] = [];
+	let dropped = 0;
+	for (const entry of draft.entries) {
+		const reason = checkEvidence(entry, signalsByName, allowedSourceUrls);
+		if (reason !== null) {
+			dropped++;
+			console.warn(`  ⚠ Dropping ${entry.id}: ${reason}`);
+			continue;
+		}
+		kept.push(entry);
+	}
+	console.log(`  ${kept.length} entries with valid evidence, ${dropped} dropped.`);
+	return { ...draft, entries: kept };
+}
+
+function checkEvidence(
+	entry: SeasonalStatusEntryWithEvidence,
+	signalsByName: Map<string, VerifiedSignal[]>,
+	allowedSourceUrls: Set<string>,
+): string | null {
+	if (!entry.evidence || typeof entry.evidence !== 'object') {
+		return 'missing evidence field';
+	}
+	const { source_name, quote } = entry.evidence;
+	if (typeof source_name !== 'string' || typeof quote !== 'string') {
+		return 'evidence has wrong shape';
+	}
+	const candidates = signalsByName.get(source_name);
+	if (!candidates) {
+		return `evidence.source_name "${source_name}" did not appear in verified signals`;
+	}
+	const needle = normaliseForMatch(quote);
+	const match = candidates.find((c) => normaliseForMatch(c.quote) === needle);
+	if (!match) {
+		return `evidence.quote did not match any verified signal from ${source_name}`;
+	}
+	if (entry.sourceUrl && !allowedSourceUrls.has(entry.sourceUrl)) {
+		return `sourceUrl "${entry.sourceUrl}" not in fetched-source allowlist`;
+	}
+	return null;
+}
+
+// ---- Opus critic (prompt-cached) -------------------------------------------
+
+async function runCritic(
+	client: Anthropic,
+	draft: SeasonalStatusDraft,
+	signals: VerifiedSignal[],
+): Promise<SeasonalStatusDraft> {
+	if (draft.entries.length === 0) {
+		console.log('  (no entries to review)');
+		return draft;
+	}
+
+	const system = [
+		`You are a strict editorial reviewer for a hiker-safety data file. For each entry in the ` +
+			`candidate JSON below, decide whether the entry is fully supported by the verified ` +
+			`signals provided. An entry is supported only if the signals explicitly mention:`,
+		`  - the hazard or condition`,
+		`  - the location or region`,
+		`  - the timing (or the entry uses a conservative 14-day window from today)`,
+		`Severity in the entry must not exceed what the signals state. Treat paraphrase, ` +
+			`extrapolation, or "this is probably still true" as NOT supported.`,
+		``,
+		`Reply with one JSON object: { "verdicts": [ { "id": "...", "supported": true|false, "reason": "..." } ] }`,
+		`Include one verdict per entry, in the same order. No prose outside the JSON.`,
+	].join('\n');
+
+	const user = [
+		`VERIFIED SIGNALS:`,
+		``,
+		signals.length === 0
+			? '(no signals)'
+			: signals
+					.map(
+						(s, i) =>
+							`Signal ${i + 1} (${s.source_name}): region="${s.region}" hazard="${s.hazard}" ` +
+							`severity_guess="${s.severity_guess}" valid_window="${s.valid_window}" quote=${JSON.stringify(s.quote)}`,
+					)
+					.join('\n'),
+		``,
+		`CANDIDATE ENTRIES (review each against the signals above):`,
+		``,
+		JSON.stringify(draft.entries, null, 2),
+		``,
+		`Output the verdicts JSON now.`,
+	].join('\n');
+
+	const response = await client.messages.create({
+		model: CRITIC_MODEL,
+		max_tokens: 4000,
+		system: [
+			{
+				type: 'text',
+				text: system,
+				cache_control: { type: 'ephemeral' },
+			},
+		],
+		messages: [{ role: 'user', content: user }],
+	});
+
+	logCacheUsage('critic', response.usage);
+
+	const raw = response.content
+		.filter((b): b is Anthropic.TextBlock => b.type === 'text')
+		.map((b) => b.text)
+		.join('\n');
+
+	let verdicts: CriticVerdict[];
+	try {
+		const parsed = parseJsonObject<{ verdicts?: CriticVerdict[] }>(raw);
+		verdicts = Array.isArray(parsed.verdicts) ? parsed.verdicts : [];
+	} catch (err) {
+		fail(`Critic returned unparseable JSON: ${(err as Error).message}`);
+	}
+
+	const verdictById = new Map(verdicts.map((v) => [v.id, v]));
+	const kept: SeasonalStatusEntryWithEvidence[] = [];
+	const rejected: CriticVerdict[] = [];
+	for (const entry of draft.entries) {
+		const v = verdictById.get(entry.id);
+		if (!v) {
+			rejected.push({ id: entry.id, supported: false, reason: 'no verdict returned' });
+			continue;
+		}
+		if (v.supported) {
+			kept.push(entry);
+		} else {
+			rejected.push(v);
+		}
+	}
+
+	for (const v of rejected) {
+		console.warn(`  ⚠ Critic rejected ${v.id}: ${v.reason}`);
+	}
+	const approvalRatio = draft.entries.length === 0 ? 1 : kept.length / draft.entries.length;
+	console.log(
+		`  Critic approved ${kept.length}/${draft.entries.length} entries (${(approvalRatio * 100).toFixed(0)}%).`,
+	);
+	if (approvalRatio < MIN_CRITIC_APPROVAL_RATIO) {
+		fail(
+			`Critic approval ratio ${(approvalRatio * 100).toFixed(0)}% is below the ` +
+				`${(MIN_CRITIC_APPROVAL_RATIO * 100).toFixed(0)}% floor. Aborting rather than ship a low-confidence file.`,
+		);
+	}
+
+	return { ...draft, entries: kept };
+}
+
+// ---- Evidence stripping ----------------------------------------------------
+
+function stripEvidence(draft: SeasonalStatusDraft): SeasonalStatusFile {
+	return {
+		...draft,
+		entries: draft.entries.map((e) => {
+			const { evidence: _evidence, ...clean } = e;
+			return clean;
+		}),
+	};
+}
+
+// ---- Cache usage logging ---------------------------------------------------
+
+function logCacheUsage(
+	label: string,
+	usage: {
+		input_tokens?: number;
+		output_tokens?: number;
+		cache_creation_input_tokens?: number | null;
+		cache_read_input_tokens?: number | null;
+	},
+): void {
+	const cacheRead = usage.cache_read_input_tokens ?? 0;
+	const cacheCreate = usage.cache_creation_input_tokens ?? 0;
+	const hot = cacheRead > 0;
+	console.log(
+		`  [${label}] in=${usage.input_tokens ?? 0} out=${usage.output_tokens ?? 0} ` +
+			`cache_create=${cacheCreate} cache_read=${cacheRead} ${hot ? '(cache HIT)' : '(cache MISS / first-run)'}`,
+	);
 }
 
 // ---- Dash normalisation ----------------------------------------------------
@@ -569,13 +1051,13 @@ function printDiff(prior: SeasonalStatusFile, next: SeasonalStatusFile): void {
 	});
 
 	for (const e of added) {
-		console.log(`  + ${e.id}  (${e.severity}, ${e.validFrom} → ${e.validUntil})`);
+		console.log(`  + ${e.id}  (${e.severity}, ${e.validFrom} -> ${e.validUntil})`);
 	}
 	for (const e of removed) {
 		console.log(`  - ${e.id}`);
 	}
 	for (const e of modified) {
-		console.log(`  ~ ${e.id}  (${e.severity}, ${e.validFrom} → ${e.validUntil})`);
+		console.log(`  ~ ${e.id}  (${e.severity}, ${e.validFrom} -> ${e.validUntil})`);
 	}
 	if (!added.length && !removed.length && !modified.length) {
 		console.log('  (no changes)');

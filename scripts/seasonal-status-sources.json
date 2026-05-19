@@ -42,20 +42,6 @@
 		"parseHint": "Reverse-chronological news. Focus on conditions in Velika and Mala Paklenica canyons, Anića kuk climbing routes, and Paklenica trail closures."
 	},
 	{
-		"name": "NP Plitvička jezera - Trenutni uvjeti",
-		"url": "https://np-plitvicka-jezera.hr/planirajte-posjet/trenutni-uvjeti-upozorenja-i-obavijesti/",
-		"language": "hr",
-		"covers": "Plitvice National Park current conditions and alerts page.",
-		"parseHint": "Structured page. Extract: Upper Lakes open / closed, Lower Lakes open / closed, panoramic-vehicle status, electric-boat status, footwear recommendation, and the date at top."
-	},
-	{
-		"name": "NP Krka - Naslovnica",
-		"url": "https://www.np-krka.hr/",
-		"language": "hr",
-		"covers": "Krka National Park homepage. Less likely to surface trail-status info; included for completeness.",
-		"parseHint": "Homepage may have an alerts banner or news section. Extract only entries about trail / visitor access changes; skip ticket and event announcements."
-	},
-	{
 		"name": "Park prirode Velebit - Novosti",
 		"url": "https://pp-velebit.hr/o-parku/novosti/",
 		"language": "hr",
