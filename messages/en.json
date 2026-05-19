@@ -534,7 +534,7 @@
 		"nearestRoad": "Nearest road access",
 		"nearestRescue": "Mountain rescue (HGSS)",
 		"callButton": "Call 112",
-		"mapsButton": "Open in maps",
+		"mapsButton": "Open my location in maps",
 		"crossroadsAt": "Crossroads at {distance} - {ref}",
 		"gpsUnavailable": "GPS unavailable - last known position used",
 		"gpsNoPosition": "GPS unavailable - no position data",

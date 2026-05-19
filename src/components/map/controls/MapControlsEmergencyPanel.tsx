@@ -265,14 +265,14 @@ export function MapControlsEmergencyPanel({
 		if (!hasPosition) return undefined;
 		const lat = displayPosition.lat.toFixed(6);
 		const lng = displayPosition.lng.toFixed(6);
-		// geo: URIs are mobile-only (no desktop browser registers a handler). On desktop,
-		// fall back to an OSM web URL that any browser can open.
+		// geo: URIs are mobile-only (no desktop browser registers a handler) and
+		// let the user open the coordinates in whichever maps app they have set
+		// as default - Google Maps, Apple Maps, OsmAnd, etc. On desktop fall back
+		// to Google Maps to share the link with HGSS dispatch.
 		const isMobile =
 			typeof window !== 'undefined' &&
 			(window.matchMedia('(pointer: coarse)').matches || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent));
-		return isMobile
-			? `geo:${lat},${lng}?q=${lat},${lng}`
-			: `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lng}#map=16/${lat}/${lng}`;
+		return isMobile ? `geo:${lat},${lng}?q=${lat},${lng}` : `https://www.google.com/maps?q=${lat},${lng}`;
 	}, [hasPosition, displayPosition]);
 
 	return (

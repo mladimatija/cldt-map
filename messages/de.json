@@ -534,7 +534,7 @@
 		"nearestRoad": "Nächste Straßenanbindung",
 		"nearestRescue": "Bergrettung (HGSS)",
 		"callButton": "112 anrufen",
-		"mapsButton": "In Karten öffnen",
+		"mapsButton": "Meinen Standort in Karten öffnen",
 		"crossroadsAt": "Kreuzung bei {distance} - {ref}",
 		"gpsUnavailable": "GPS nicht verfügbar - letzte bekannte Position verwendet",
 		"gpsNoPosition": "GPS nicht verfügbar - keine Positionsdaten",
