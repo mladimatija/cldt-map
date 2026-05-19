@@ -149,9 +149,20 @@ function createAndAddTileBoundaryCanvas(map: L.Map, urlTemplate: string): L.Tile
 		maxZoom: 19,
 		subdomains: 'abc',
 	});
+	// Only swap out the BASE tile layer (Leaflet's default `tilePane`). Overlay
+	// tile layers in custom panes - radar (radarPane), and any future
+	// tile-based overlays - must survive the boundary toggle, otherwise enabling
+	// boundary-clipping while the radar is on silently strips the radar and the
+	// user has to toggle it off + on to get it back.
 	map.eachLayer((l) => {
-		if (l instanceof L.TileLayer && !(l instanceof BoundaryCanvasCtor)) {
-			map.removeLayer(l);
+		if (!(l instanceof L.TileLayer) || l instanceof BoundaryCanvasCtor) return;
+		// Cast to escape the over-narrowed type produced by the instanceof-exclusion
+		// guard above (TS narrows `l` to `never` after the negative BoundaryCanvasCtor
+		// check, even though l is still a plain L.TileLayer at runtime).
+		const tile = l as L.TileLayer;
+		const pane = tile.options.pane;
+		if (pane === undefined || pane === 'tilePane') {
+			map.removeLayer(tile);
 		}
 	});
 	layer.addTo(map);
