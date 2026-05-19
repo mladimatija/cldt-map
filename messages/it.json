@@ -534,7 +534,7 @@
 		"nearestRoad": "Accesso stradale più vicino",
 		"nearestRescue": "Soccorso alpino (HGSS)",
 		"callButton": "Chiama 112",
-		"mapsButton": "Apri nelle mappe",
+		"mapsButton": "Apri la mia posizione nelle mappe",
 		"crossroadsAt": "Incrocio a {distance} - {ref}",
 		"gpsUnavailable": "GPS non disponibile - usata l'ultima posizione nota",
 		"gpsNoPosition": "GPS non disponibile - nessun dato di posizione",
