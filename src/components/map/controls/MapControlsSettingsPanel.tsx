@@ -88,7 +88,7 @@ export function MapControlsSettingsPanel({
 					aria-modal="true"
 					className={cn(
 						MAP_CONTROL_POPOVER,
-						'absolute top-1/2 right-[calc(100%+0.5rem)] flex max-h-[calc(100dvh-8rem)] w-80 -translate-y-1/2 flex-col gap-2 overflow-y-auto',
+						'fixed top-2 right-16 flex max-h-[calc(100dvh-8rem)] w-80 flex-col gap-2 overflow-y-auto',
 					)}
 					ref={popoverRef}
 					role="dialog"
