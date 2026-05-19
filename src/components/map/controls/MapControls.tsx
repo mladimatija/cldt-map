@@ -208,6 +208,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 	const showSections = useMapStore((state: MapStoreState) => state.showSections);
 	const userLocation = useMapStore((state: MapStoreState) => state.userLocation);
 	const permissionStatus = useMapStore((state: MapStoreState) => state.permissionStatus);
+	const largeTouchTargets = useMapStore((state: MapStoreState) => state.largeTouchTargets);
 	const highlightedTrailPoint = useStore((state: StoreState) => state.highlightedTrailPoint);
 
 	const withinMapBoundary = userLocation ? isWithinMapBoundary(userLocation.lat, userLocation.lng) : false;
@@ -1177,6 +1178,65 @@ const MapControls: React.FC<MapControlsProps> = ({
 		},
 		[map, stableRulerClick],
 	);
+
+	// Prevent the right-side button stack from overlapping the SOS emergency
+	// button on short or rotated viewports. Measures both elements live and
+	// applies max-height + overflow-y inline only when an actual overlap is
+	// detected; clears the inline styles when there is room. Re-runs on:
+	//   - mount and re-mount
+	//   - window resize (catches layout changes from browser-chrome show/hide)
+	//   - orientationchange (rotation on phones / tablets)
+	//   - largeTouchTargets toggle (button sizes change -> stack height changes)
+	//   - ResizeObserver on the stack itself (button count changes / fonts load)
+	useEffect(() => {
+		if (typeof window === 'undefined') return;
+		const stack = topRightControlsRef.current;
+		const sos = emergencyContainerRef.current;
+		if (!stack || !sos) return;
+
+		const GAP_PX = 16;
+
+		const update = (): void => {
+			// Clear inline styles first, so we measure the stack's natural height
+			// rather than a previously capped one.
+			stack.style.maxHeight = '';
+			stack.style.overflowY = '';
+
+			const stackRect = stack.getBoundingClientRect();
+			const sosRect = sos.getBoundingClientRect();
+
+			if (stackRect.bottom + GAP_PX > sosRect.top) {
+				const maxH = Math.max(0, sosRect.top - stackRect.top - GAP_PX);
+				stack.style.maxHeight = `${maxH}px`;
+				stack.style.overflowY = 'auto';
+			}
+		};
+
+		// rAF defers the measurement until after the browser has applied any
+		// pending layout (e.g., button-size changes from the large-touch-targets
+		// toggle), so we read post-change geometry.
+		const scheduleUpdate = (): void => {
+			requestAnimationFrame(update);
+		};
+
+		scheduleUpdate();
+
+		window.addEventListener('resize', scheduleUpdate);
+		window.addEventListener('orientationchange', scheduleUpdate);
+
+		const ro = new ResizeObserver(scheduleUpdate);
+		ro.observe(stack);
+		ro.observe(sos);
+
+		return () => {
+			window.removeEventListener('resize', scheduleUpdate);
+			window.removeEventListener('orientationchange', scheduleUpdate);
+			ro.disconnect();
+			// Leave no inline styles behind when the component unmounts.
+			stack.style.maxHeight = '';
+			stack.style.overflowY = '';
+		};
+	}, [largeTouchTargets]);
 
 	const controlsDisabledClass = gpxLoadFailed ? 'pointer-events-none opacity-60' : '';
 
