@@ -157,7 +157,7 @@ export default function MapContent(): React.ReactElement {
 			<RulerHint />
 			<ZoomControls />
 			<LocationControls checkPermission={checkAndRequestLocation} />
-			<div className="z-map-overlay absolute right-14 bottom-2 left-14 mx-2 flex flex-col gap-1 sm:mx-0">
+			<div className="z-map-overlay absolute right-16 bottom-2 left-16 mx-2 flex flex-col gap-1 sm:mx-0">
 				<RadarControls />
 				<ElevationChart className="shadow-lg" />
 			</div>
