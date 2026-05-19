@@ -49,22 +49,26 @@ jobs:
       - name: Open or update pull request
         uses: peter-evans/create-pull-request@v7
         with:
-          commit-message: 'feat: refresh seasonal trail status data'
-          title: 'feat: refresh seasonal trail status data'
+          commit-message: 'chore: refresh seasonal trail status data'
+          title: 'chore: refresh seasonal trail status data'
           body: |
             Automated weekly refresh of `public/seasonal-status.json`.
 
             The curator fetched the source pages defined in
             `scripts/seasonal-status-sources.json`, resolved Croatian-landmark
-            km positions from the live GPX, summarised each page, synthesised
-            an updated entry set, and validated it against
+            km positions from the live GPX, asked Sonnet to extract
+            structured signals (each with a verbatim quote), verified every
+            quote is a literal substring of its source page, then asked
+            Sonnet to synthesise the updated entry set with a per-entry
+            `evidence` field. Opus then reviewed every entry against the
+            verified signals; entries it flagged as unsupported were stripped.
+            Finally the output was validated against
             `public/seasonal-status.schema.json` plus the business rules in
             `scripts/update-seasonal-status.ts`.
 
             **Sources fetched:** DHMZ regional weather warnings, HGSS news,
             HPS trail- and hut-news categories, NP Sjeverni Velebit, NP
-            Paklenica, NP Plitvička jezera, NP Krka homepage, Park prirode
-            Velebit.
+            Paklenica, Park prirode Velebit.
 
             Review the diff for plausibility, then merge. The branch is reused
             week-over-week, so this PR will be updated on the next run if it
