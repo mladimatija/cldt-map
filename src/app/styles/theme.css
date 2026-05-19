@@ -57,3 +57,19 @@
 .large-touch-targets .map-controls-top-row {
 	top: 88px !important;
 }
+
+/* Scrollbar hiding for the right-side button stack. The max-height + overflow
+   are applied dynamically in MapControls via a measure-and-constrain effect
+   that runs on mount, on window resize / orientationchange, and when the
+   large-touch-targets toggle flips - so the constraint kicks in ONLY when
+   the stack would actually overlap the SOS button. These rules just keep
+   the scrollbar invisible when JS turns scroll on; touch / wheel scrolling
+   still works. */
+.map-controls-top-row {
+	overscroll-behavior: contain;
+	scrollbar-width: none;
+	-ms-overflow-style: none;
+}
+.map-controls-top-row::-webkit-scrollbar {
+	display: none;
+}
