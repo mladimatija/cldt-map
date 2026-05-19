@@ -732,6 +732,7 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 								<CartesianGrid strokeDasharray="3 3" />
 								<XAxis
 									dataKey="distance"
+									domain={['dataMin', 'dataMax']}
 									label={{
 										value: units === 'metric' ? t('distanceKm') : t('distanceMi'),
 										position: 'insideBottomRight',
