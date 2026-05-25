@@ -1,63 +1,37 @@
 {
-	"lastUpdated": "2026-05-19",
+	"lastUpdated": "2026-05-25",
 	"source": "CLDT Seasonal Trail Status",
 	"sourceUrl": "https://cldt.hr",
 	"entries": [
 		{
-			"id": "velebit-thunderstorm-2026-05-19",
-			"severity": "caution",
-			"season": "shoulder",
-			"distanceStartKm": 1578.5,
-			"distanceEndKm": 1692.3,
-			"validFrom": "2026-05-19",
-			"validUntil": "2026-05-19",
-			"note_hr": "Gospićka regija: lokalno izraženiji pljuskovi s grmljavinom. Vjerojatnost grmljavine > 70 %. Vrijedi 19.05.2026 od 12:00 do 20:00.",
-			"note_en": "Gospić region (Lika / Velebit): locally heavy showers with thunderstorms. Probability of thunder > 70 %. Valid 19 May 2026 from 12:00 to 20:00.",
-			"source": "DHMZ - Upozorenja (vremenska)",
-			"sourceUrl": "https://meteo.hr/naslovnica-upozorenja.php?tab=upozorenja",
-			"lastUpdated": "2026-05-19"
-		},
-		{
-			"id": "gorski-kotar-risnjak-thunderstorm-2026-05-19",
-			"severity": "caution",
-			"season": "shoulder",
-			"distanceStartKm": 1073.3,
-			"distanceEndKm": 1416.3,
-			"validFrom": "2026-05-19",
-			"validUntil": "2026-05-19",
-			"note_hr": "Riječka regija: lokalno izraženiji pljuskovi praćeni grmljavinom, osobito u Istri. Vjerojatnost grmljavine > 70 %. Vrijedi 19.05.2026 od 12:00 do 19:00.",
-			"note_en": "Rijeka region (Kvarner / Gorski kotar / Učka / Risnjak): locally heavy showers with thunderstorms, especially in Istria. Probability of thunder > 70 %. Valid 19 May 2026 from 12:00 to 19:00.",
-			"source": "DHMZ - Upozorenja (vremenska)",
-			"sourceUrl": "https://meteo.hr/naslovnica-upozorenja.php?tab=upozorenja",
-			"lastUpdated": "2026-05-19"
-		},
-		{
-			"id": "paklenica-knin-thunderstorm-2026-05-19",
+			"id": "sjeverna-dalmacija-wind-2026-05-25",
 			"severity": "caution",
 			"season": "shoulder",
 			"distanceStartKm": 1662,
 			"distanceEndKm": 1800.2,
-			"validFrom": "2026-05-19",
-			"validUntil": "2026-05-19",
-			"note_hr": "Kninska regija: lokalno izraženiji pljuskovi s grmljavinom. Vjerojatnost grmljavine > 70 %. Vrijedi 19.05.2026 od 12:00 do 19:00.",
-			"note_en": "Knin region (Paklenica / northern Dalmatia): locally heavy showers with thunderstorms. Probability of thunder > 70 %. Valid 19 May 2026 from 12:00 to 19:00.",
+			"validFrom": "2026-05-25",
+			"validUntil": "2026-05-25",
+			"note_hr": "Sjeverna Dalmacija: mjestimice jak sjeverozapadni vjetar. Najjači udari vjetra 35-40 čvorova (65-75 km/h). Vrijedi od 25.05.2026 15:00 do 25.05.2026 20:00.",
+			"note_en": "Northern Dalmatia: locally strong north-westerly wind. Strongest gusts 35-40 knots (65-75 km/h). Valid 25 May 2026 from 15:00 to 20:00.",
+			"gear": "Windproof layer recommended; secure loose equipment.",
 			"source": "DHMZ - Upozorenja (vremenska)",
 			"sourceUrl": "https://meteo.hr/naslovnica-upozorenja.php?tab=upozorenja",
-			"lastUpdated": "2026-05-19"
+			"lastUpdated": "2026-05-25"
 		},
 		{
-			"id": "karlovac-zumberak-thunderstorm-2026-05-19",
+			"id": "juzna-dalmacija-bura-2026-05-25",
 			"severity": "caution",
 			"season": "shoulder",
-			"distanceStartKm": 876.7,
-			"distanceEndKm": 1073.3,
-			"validFrom": "2026-05-19",
-			"validUntil": "2026-05-19",
-			"note_hr": "Karlovačka regija: lokalno izraženiji pljuskovi s grmljavinom. Vjerojatnost grmljavine > 70 %. Vrijedi 19.05.2026 od 12:00 do 20:00.",
-			"note_en": "Karlovac region (Žumberak south / Gorski kotar approaches): locally heavy showers with thunderstorms. Probability of thunder > 70 %. Valid 19 May 2026 from 12:00 to 20:00.",
+			"distanceStartKm": 1960.3,
+			"distanceEndKm": 2220.8,
+			"validFrom": "2026-05-25",
+			"validUntil": "2026-05-25",
+			"note_hr": "Južna Dalmacija: mjestimice pojačana bura. Najjači udari vjetra 35-40 čvorova (65-75 km/h). Vrijedi od 25.05.2026 00:00 do 25.05.2026 08:00.",
+			"note_en": "Southern Dalmatia: locally strong bora wind. Strongest gusts 35-40 knots (65-75 km/h). Valid 25 May 2026 from 00:00 to 08:00.",
+			"gear": "Windproof layer recommended; secure loose equipment.",
 			"source": "DHMZ - Upozorenja (vremenska)",
 			"sourceUrl": "https://meteo.hr/naslovnica-upozorenja.php?tab=upozorenja",
-			"lastUpdated": "2026-05-19"
+			"lastUpdated": "2026-05-25"
 		},
 		{
 			"id": "paklenica-put-malog-princa-closed-2026",
@@ -66,12 +40,26 @@
 			"distanceStartKm": 1662,
 			"distanceEndKm": 1664.9,
 			"validFrom": "2026-05-12",
-			"validUntil": "2026-06-02",
+			"validUntil": "2026-06-08",
 			"note_hr": "Put Malog Princa u NP Paklenica zatvoren je do daljnjeg zbog dotrajalih elemenata osiguranja i pomagala u prolasku zahtjevnoga planinarskog puta.",
 			"note_en": "Put Malog Princa in NP Paklenica is closed until further notice due to worn safety elements and aids on this demanding trail.",
 			"source": "HPS - Planinarski putovi (vijesti)",
 			"sourceUrl": "https://www.hps.hr/novosti/planinarski-putovi/",
-			"lastUpdated": "2026-05-19"
+			"lastUpdated": "2026-05-25"
+		},
+		{
+			"id": "sjeverni-velebit-np-cash-only-2026",
+			"severity": "caution",
+			"season": "year-round",
+			"distanceStartKm": 1578.5,
+			"distanceEndKm": 1600,
+			"validFrom": "2026-05-25",
+			"validUntil": "2026-06-08",
+			"note_hr": "NP Sjeverni Velebit: na oba ulaza (Babić Siča i Alan) plaćanje je moguće isključivo GOTOVINOM. Ulaz Babić Siča radi pon-ned 8:00-16:00; ulaz Alan - ulaznice se kupuju kod dežurnog čuvara prirode.",
+			"note_en": "NP Sjeverni Velebit: payment at both entrances (Babić Siča and Alan) is possible exclusively in CASH. Babić Siča entrance is open Mon-Sun 08:00-16:00; Alan entrance - tickets purchased from the on-duty nature warden.",
+			"source": "NP Sjeverni Velebit - Važne obavijesti",
+			"sourceUrl": "https://np-sjeverni-velebit.hr/www/hr/va%C5%BEne-obavijesti",
+			"lastUpdated": "2026-05-25"
 		}
 	]
 }
