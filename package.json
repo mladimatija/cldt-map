@@ -37,7 +37,7 @@
 		"recharts": "^3.8.1",
 		"tailwind-merge": "^3.6.0",
 		"tailwindcss-animate": "^1.0.7",
-		"zustand": "^5.0.13"
+		"zustand": "^5.0.14"
 	},
 	"devDependencies": {
 		"@anthropic-ai/sdk": "^0.99.0",
