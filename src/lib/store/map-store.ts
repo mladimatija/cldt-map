@@ -194,11 +194,15 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 				setLargeTouchTargets: (enabled: boolean) => set({ largeTouchTargets: enabled }),
 				showSections: config.showSections,
 				gradeTintedTrail: config.gradeTintedTrail,
+				showDistanceMarkers: config.showDistanceMarkers,
 				setShowSections: (show: boolean): void => {
 					set({ showSections: show, gradeTintedTrail: show ? false : get().gradeTintedTrail });
 				},
 				setGradeTintedTrail: (enabled: boolean): void => {
 					set({ gradeTintedTrail: enabled, showSections: enabled ? false : get().showSections });
+				},
+				setShowDistanceMarkers: (show: boolean): void => {
+					set({ showDistanceMarkers: show });
 				},
 				baseMapProvider: config.baseMapProvider,
 				setBaseMapProvider: (provider: string) => set({ baseMapProvider: provider }),
@@ -615,6 +619,7 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					showUserMarker: state.showUserMarker,
 					showSections: state.showSections,
 					gradeTintedTrail: state.gradeTintedTrail,
+					showDistanceMarkers: state.showDistanceMarkers,
 					distancePrecision: state.distancePrecision,
 					darkMode: state.darkMode,
 					batterySaverMode: state.batterySaverMode,

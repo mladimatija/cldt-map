@@ -232,6 +232,8 @@ export interface MapStoreState {
 	setShowSections: (show: boolean) => void;
 	gradeTintedTrail: boolean;
 	setGradeTintedTrail: (enabled: boolean) => void;
+	showDistanceMarkers: boolean;
+	setShowDistanceMarkers: (show: boolean) => void;
 	baseMapProvider: string;
 	setBaseMapProvider: (provider: string) => void;
 

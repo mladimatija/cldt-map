@@ -50,7 +50,8 @@
 			"stagePlanner": "Planer višednevnih etapa - podijelite bilo koji dio staze na dnevne etape prema udaljenosti ili vremenu, pregledajte statistike nadmorske visine i ETA po etapi, izvezite pojedine etape kao GPX datoteke ili sve etape kao PDF karte etapa",
 			"gpxImport": "Uvoz GPX rute - povuci i ispusti (ili odaberi) snimljenu GPX datoteku i usporedi svoju rutu sa službenom stazom; statistike o udaljenosti, tempu, ukupnom i vremenu kretanja, maksimalnom odstupanju i pokrivenosti staze",
 			"emergency": "Hitna ploča 112 - dugim pritiskom crvenog SOS gumba (donji desni kut) otvara se offline-first ploča s tvojim GPS koordinatama, Plus kodom, etapom i kilometrom staze te smjerom i udaljenošću do najbližeg pristupa cesti i HGSS stanice; kopiraj svako polje i pokreni biranje (Nazovi 112) ili karte (Otvori u kartama); radi potpuno offline jednom kad se podaci spreme u predmemoriju",
-			"trailStyle": "Stil staze - odaberi kako će ruta biti obojana u ploči slojeva: Zadano (jedna boja), Dionice (zone A/B/C s graničnim oznakama i statistikom po dionici) ili Nagib (gradijentno bojanje u pet pojaseva, topli tonovi za uspone i hladni za silazne dijelove u trenutnom smjeru hodanja; legenda u ploči; ponovno se izračunava pri promjeni smjera SOBO/NOBO)"
+			"trailStyle": "Stil staze - odaberi kako će ruta biti obojana u ploči slojeva: Zadano (jedna boja), Dionice (zone A/B/C s graničnim oznakama i statistikom po dionici) ili Nagib (gradijentno bojanje u pet pojaseva, topli tonovi za uspone i hladni za silazne dijelove u trenutnom smjeru hodanja; legenda u ploči; ponovno se izračunava pri promjeni smjera SOBO/NOBO)",
+			"distanceMarkers": "Oznake kilometara - male oznake km / mi duž staze na intervalima 100 / 50 / 25 / 10 / 5 / 1. Progresivni prikaz prema razini zumiranja: 100 km uvijek vidljivo na bilo kojem zumu, finiji intervali pojavljuju se dok zumirate (oznake od 1 km tek na zumu 13+). Uključivo iz Postavki; oznake slijede aktivni sustav jedinica i trenutni smjer (SOBO/NOBO)"
 		},
 		"dataAttribution": "Podaci i atribucija",
 		"dataAttributionDesc": "Podatke o stazi pruža organizacija Udruga Long Distance Trail Hrvatska (LDTH). Karte dolaze od OpenStreetMap, OpenTopoMap, CyclOSM i drugih pružatelja. Hrvatske topografske karte su od Državne geodetske uprave (DGU). Meteorološki podaci dolaze od DHMZ-a (Državni hidrometeorološki zavod) i Open-Meteo. Radarske pločice osigurava RainViewer. Podaci o sezonskom stanju puta, upozorenja o opasnostima i podaci o stanicama gorske službe spašavanja preuzeti su od HGSS-a (Hrvatska gorska služba spašavanja), HPS-a (Hrvatski planinarski savez) te uprava nacionalnih parkova (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) i Parka prirode Velebit. Podaci prikazani na ovoj stranici možda ne odražavaju najnovije stanje. U slučaju sumnje, uvijek provjerite službene izvore.",
@@ -89,6 +90,8 @@
 		"layersSection": "Slojevi",
 		"showSections": "Prikaži dionice staze",
 		"showSectionsTooltip": "Označava dionice staze bojama i prikazuje oznake granica dionica sa statistikama.",
+		"showDistanceMarkers": "Oznake kilometara",
+		"showDistanceMarkersTooltip": "Prikaži oznake kilometara duž staze (100, 50, 25, 10, 5, 1). Više oznaka pojavljuje se dok zumirate.",
 		"layers": {
 			"trailStyle": {
 				"legend": "Stil staze",

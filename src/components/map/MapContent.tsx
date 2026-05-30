@@ -46,6 +46,10 @@ const NoticeMarkers = dynamic(
 	{ ssr: false },
 );
 const SunsetSunriseMarkers = dynamic(() => import('@/components/map/SunsetSunriseMarkers'), { ssr: false });
+const TrailDistanceMarkers = dynamic(
+	() => import('@/components/map/TrailDistanceMarkers').then((m) => ({ default: m.TrailDistanceMarkers })),
+	{ ssr: false },
+);
 const StageBoundaryMarkers = dynamic(() => import('@/components/map/StageBoundaryMarkers'), { ssr: false });
 const RadarOverlay = dynamic(() => import('@/components/map/RadarOverlay').then((m) => ({ default: m.RadarOverlay })), {
 	ssr: false,
@@ -148,6 +152,7 @@ export default function MapContent(): React.ReactElement {
 				<TrailRoute pathOptions={DEFAULT_PATH_OPTIONS} />
 			</Suspense>
 			<ImportedTrackLayer />
+			<TrailDistanceMarkers />
 			<MapMarkers />
 			<SunsetSunriseMarkers />
 			<StageBoundaryMarkers />
