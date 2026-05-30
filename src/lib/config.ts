@@ -121,6 +121,9 @@ export const config = {
 	/** Grade-tinted trail rendering by default (mutually exclusive with showSections). */
 	gradeTintedTrail: envBool('NEXT_PUBLIC_DEFAULT_GRADE_TINTED_TRAIL', false),
 
+	/** Show zoom-aware distance markers along the trail by default. */
+	showDistanceMarkers: envBool('NEXT_PUBLIC_DEFAULT_DISTANCE_MARKERS', false),
+
 	/** Walking pace in km/h used for passage-time estimates. */
 	walkingPaceKmh: envFloat('NEXT_PUBLIC_DEFAULT_WALKING_PACE_KMH', 4),
 

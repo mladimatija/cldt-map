@@ -16,6 +16,7 @@ import {
 	IoHelpCircleOutline,
 	IoWarningOutline,
 	IoSnowOutline,
+	IoFlagOutline,
 } from 'react-icons/io5';
 import { severityColor, type SeasonalSeverity } from '@/lib/seasonal-status';
 import { GRADE_BAND_ASCENT_COLORS } from '@/components/map/trail-route-constants';
@@ -52,6 +53,8 @@ export function MapControlsSettingsPanel({
 	const setShowSections = useMapStore((state: MapStoreState) => state.setShowSections);
 	const gradeTintedTrail = useMapStore((state: MapStoreState) => state.gradeTintedTrail);
 	const setGradeTintedTrail = useMapStore((state: MapStoreState) => state.setGradeTintedTrail);
+	const showDistanceMarkers = useMapStore((state: MapStoreState) => state.showDistanceMarkers);
+	const setShowDistanceMarkers = useMapStore((state: MapStoreState) => state.setShowDistanceMarkers);
 	const walkingPaceKmh = useMapStore((state: MapStoreState) => state.walkingPaceKmh);
 	const setWalkingPaceKmh = useMapStore((state: MapStoreState) => state.setWalkingPaceKmh);
 	const gradeAdjustedEta = useMapStore((state: MapStoreState) => state.gradeAdjustedEta);
@@ -189,6 +192,16 @@ export function MapControlsSettingsPanel({
 							<p className="mt-0.5 text-xs italic opacity-75">{t('layers.trailStyle.legendNote')}</p>
 						</div>
 					)}
+					<label className="flex cursor-pointer items-center gap-2">
+						<Checkbox checked={showDistanceMarkers} onCheckedChange={(checked) => setShowDistanceMarkers(checked)} />
+						<IoFlagOutline className="h-4 w-4 shrink-0 text-gray-600 dark:text-white" />
+						<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">{t('showDistanceMarkers')}</span>
+						<span className="inline-flex" onClick={(e) => e.stopPropagation()} onMouseDown={(e) => e.stopPropagation()}>
+							<SmartTooltip content={t('showDistanceMarkersTooltip')} position="top">
+								<IoHelpCircleOutline className="ml-0.5 h-3.5 w-3.5 shrink-0 cursor-help text-gray-400 hover:text-gray-600 dark:text-white" />
+							</SmartTooltip>
+						</span>
+					</label>
 					<label className="flex cursor-pointer items-center gap-2">
 						<Checkbox checked={severeWeatherLayer} onCheckedChange={(checked) => setSevereWeatherLayer(checked)} />
 						<IoWarningOutline className="h-4 w-4 shrink-0 text-gray-600 dark:text-white" />

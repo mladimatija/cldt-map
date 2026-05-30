@@ -137,6 +137,8 @@ export function createMapStoreStub(): MapStoreState {
 		setShowSections: noop,
 		gradeTintedTrail: false,
 		setGradeTintedTrail: noop,
+		showDistanceMarkers: false,
+		setShowDistanceMarkers: noop,
 		baseMapProvider: BaseMapProvider.OPEN_STREET_MAP,
 		setBaseMapProvider: noop,
 		isMapFullscreen: false,

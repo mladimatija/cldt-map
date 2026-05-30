@@ -24,6 +24,99 @@
 	z-index: calc(var(--z-map) + 1) !important;
 }
 
+/* Distance markers render above the seasonal-status halo pane (z = z-map+1)
+   but below the seasonal-status-marker-pane (chip markers at z-map-tooltips+2),
+   trail-point-marker pane, and every tooltip pane. Visibility per zoom level
+   is handled in TS by mounting / unmounting LayerGroups, so this rule has no
+   `display: none` fallback. The CSS bubble is rendered inside a zero-sized
+   DivIcon, so iconAnchor stays 0,0 and the bubble floats centred over its
+   lat/lng via translate(-50%, -50%). */
+.leaflet-pane.trail-distance-marker-pane {
+	z-index: calc(var(--z-map) + 2) !important;
+}
+
+.distance-marker-wrapper {
+	background: transparent;
+	border: 0;
+	pointer-events: none;
+}
+
+.distance-marker {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	background: white;
+	border: 1px solid var(--cldt-blue-text);
+	border-radius: 9999px;
+	padding: 1px 6px;
+	font-family:
+		system-ui,
+		-apple-system,
+		sans-serif;
+	font-size: 11px;
+	font-weight: 600;
+	line-height: 1;
+	color: var(--cldt-blue-text);
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+	transform: translate(-50%, -50%);
+	white-space: nowrap;
+	pointer-events: none;
+	user-select: none;
+}
+.distance-marker--100 {
+	font-size: 12px;
+	padding: 2px 8px;
+	border-width: 2px;
+}
+.distance-marker--50 {
+	font-size: 11px;
+	padding: 2px 7px;
+	border-width: 2px;
+}
+.distance-marker--25 {
+	font-size: 11px;
+}
+.distance-marker--10,
+.distance-marker--5 {
+	font-size: 10px;
+	padding: 1px 5px;
+}
+.distance-marker--1 {
+	font-size: 9px;
+	padding: 1px 4px;
+	opacity: 0.85;
+}
+
+/* Large-touch-targets bumps every marker up a notch for readability. */
+.large-touch-targets .distance-marker {
+	font-size: 13px;
+	padding: 3px 8px;
+}
+.large-touch-targets .distance-marker--100 {
+	font-size: 14px;
+	padding: 3px 10px;
+}
+.large-touch-targets .distance-marker--1 {
+	font-size: 11px;
+	padding: 2px 6px;
+}
+
+/* Dark-mode skin: invert the bubble so it stays legible on dark base maps.
+   `.dark` is added to <html> by ThemeProvider for the user-toggled theme;
+   the media query covers the OS-preference default before the user toggles. */
+@media (prefers-color-scheme: dark) {
+	.distance-marker {
+		background: var(--bg-secondary);
+		color: var(--text-primary);
+		border-color: var(--cldt-blue);
+	}
+}
+.dark .distance-marker {
+	background: var(--bg-secondary);
+	color: var(--text-primary);
+	border-color: var(--cldt-blue);
+}
+
 /* Chip markers sit above the trail-point pulsing dot (z = tooltips + 1) but
    BELOW any tooltip pane so an open trail-point tooltip is never obscured
    by a chip. */

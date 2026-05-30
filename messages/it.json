@@ -50,7 +50,8 @@
 			"stagePlanner": "Pianificatore tappe multi-giorno - suddividi qualsiasi tratto del sentiero in tappe giornaliere per distanza o tempo, visualizza statistiche di dislivello ed ETA per tappa, esporta le singole tappe come file GPX o tutte le tappe come PDF tappe in mappa",
 			"gpxImport": "Importazione tracce GPX - trascina (o seleziona) un file GPX registrato per sovrapporre la tua escursione alla mappa ufficiale; statistiche su distanza, passo, tempo totale, tempo in movimento, deviazione massima e copertura del percorso",
 			"emergency": "Pannello di emergenza 112 - tieni premuto il pulsante SOS rosso (in basso a destra) per aprire un pannello offline-first con coordinate GPS, Plus Code, tratta e km del percorso, direzione e distanza al più vicino accesso stradale e alla stazione di soccorso alpino HGSS; copia ogni campo negli appunti e passa al dialer (Chiama 112) o alle mappe (Apri nelle mappe); funziona completamente offline una volta in cache",
-			"trailStyle": "Stile del percorso - scegli nel pannello dei livelli come colorare la polilinea: Predefinito (un solo colore), Tratte (zone A/B/C con marker di confine e statistiche per tratta) o Pendenza (colorazione a cinque bande in stile Strava, toni caldi per le salite e freddi per le discese nella direzione di marcia attiva; legenda del colore nel pannello; ricalcolata al cambio di direzione SOBO/NOBO)"
+			"trailStyle": "Stile del percorso - scegli nel pannello dei livelli come colorare la polilinea: Predefinito (un solo colore), Tratte (zone A/B/C con marker di confine e statistiche per tratta) o Pendenza (colorazione a cinque bande in stile Strava, toni caldi per le salite e freddi per le discese nella direzione di marcia attiva; legenda del colore nel pannello; ricalcolata al cambio di direzione SOBO/NOBO)",
+			"distanceMarkers": "Indicatori di distanza - piccole etichette km/mi lungo il sentiero a intervalli di 100 / 50 / 25 / 10 / 5 / 1 unità. Visualizzazione progressiva in base al livello di zoom: 100 km sempre visibili a qualsiasi zoom, intervalli più fini compaiono man mano che ingrandisci (etichette da 1 km solo da zoom 13+). Attivabile dalle Impostazioni; le etichette seguono il sistema di unità attivo e la direzione corrente (SOBO/NOBO)"
 		},
 		"dataAttribution": "Dati e attribuzioni",
 		"dataAttributionDesc": "I dati del sentiero sono forniti dall'organizzazione Udruga Long Distance Trail Hrvatska (LDTH). Le tessere mappa provengono da OpenStreetMap, OpenTopoMap, CyclOSM e altri provider. Le mappe topografiche croate provengono dall'Amministrazione Geodetica Statale (DGU). I dati meteo provengono da DHMZ (Servizio Meteorologico Croato) e Open-Meteo. Le tessere radar sono fornite da RainViewer. Stato stagionale del sentiero, avvisi di pericolo e dati delle stazioni di soccorso alpino provengono da HGSS (Servizio croato di soccorso in montagna), HPS (Federazione croata di alpinismo) e dalle autorità dei parchi nazionali (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) e Parco naturale Velebit. I dati visualizzati su questo sito potrebbero non riflettere le condizioni più recenti. In caso di dubbio, verificare sempre le fonti ufficiali.",
@@ -89,6 +90,8 @@
 		"layersSection": "Livelli",
 		"showSections": "Mostra sezioni sentiero",
 		"showSectionsTooltip": "Colora il sentiero per sezione e mostra i marcatori dei confini con le statistiche.",
+		"showDistanceMarkers": "Indicatori di distanza",
+		"showDistanceMarkersTooltip": "Mostra gli indicatori di distanza lungo il sentiero (100, 50, 25, 10, 5, 1). Più indicatori appaiono man mano che ingrandisci.",
 		"layers": {
 			"trailStyle": {
 				"legend": "Stile sentiero",
