@@ -6,18 +6,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { enforceRateLimit, fetchWithSizeCap } from '@/lib/api-defense';
 import { escapeRegex } from '@/lib/utils';
+import { haversineDistanceM } from '@/lib/haversine';
 
 const MAX_BODY_BYTES = 5 * 1024 * 1024;
-
-function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number): number {
-	const R = 6371;
-	const dLat = ((lat2 - lat1) * Math.PI) / 180;
-	const dLng = ((lng2 - lng1) * Math.PI) / 180;
-	const a =
-		Math.sin(dLat / 2) ** 2 +
-		Math.cos((lat1 * Math.PI) / 180) * Math.cos((lat2 * Math.PI) / 180) * Math.sin(dLng / 2) ** 2;
-	return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-}
 
 /**
  * Maps a DHMZ VrijemeZnak code (e.g. "1", "12", "5n") to a WMO-compatible
@@ -110,7 +101,7 @@ export async function GET(request: NextRequest): Promise<Response> {
 		let nearest: Station | null = null;
 		let minDist = Infinity;
 		for (const station of stations) {
-			const dist = haversineKm(lat, lng, station.lat, station.lng);
+			const dist = haversineDistanceM(lat, lng, station.lat, station.lng);
 			if (dist < minDist) {
 				minDist = dist;
 				nearest = station;

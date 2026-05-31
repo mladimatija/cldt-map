@@ -40,3 +40,36 @@ export const GRADE_BAND_ASCENT_COLORS = ['#84cc16', '#eab308', '#f97316', '#ef44
 
 /** Descent colors for grade bands 0..4 (flat lime -> deep teal). Band 0 mirrors ascent. */
 export const GRADE_BAND_DESCENT_COLORS = ['#84cc16', '#0ea5e9', '#06b6d4', '#0891b2', '#164e63'] as const;
+
+/** Surface bucket colors. All meet WCAG AA contrast against the white map
+ *   background, so they remain legible on both light and OSM-tile bases.
+ *  Mapping is intentionally walking-shoe-oriented:
+ *    paved   = gray  (road / sidewalk - low effort but boring)
+ *    unpaved = warm tan (gravel forest road)
+ *    gravel  = ochre  (loose-stone track, more attention needed)
+ *    ground  = green  (forest path / soil / grass - the "trail" feel)
+ *    rock    = blue-gray (scree / stone slab - footing matters)
+ *    unknown = slate  (no OSM tag - desaturated so missing data reads as missing)
+ */
+export const SURFACE_COLORS = {
+	paved: '#6b7280',
+	unpaved: '#a16207',
+	gravel: '#ca8a04',
+	ground: '#15803d',
+	rock: '#475569',
+	unknown: '#9ca3af',
+} as const;
+
+/** SAC scale colors (Swiss Alpine Club). Hiking T1 (easiest) -> T6 (the most
+ *  challenging alpine). Hue ramps from cool to hot to mirror perceived
+ *  difficulty. `untagged` is a neutral slate, so unrated terrain doesn't
+ *  visually masquerade as "easy". */
+export const SAC_COLORS = {
+	hiking: '#15803d',
+	mountain_hiking: '#65a30d',
+	demanding_mountain_hiking: '#ca8a04',
+	alpine_hiking: '#ea580c',
+	demanding_alpine_hiking: '#dc2626',
+	difficult_alpine_hiking: '#7f1d1d',
+	untagged: '#94a3b8',
+} as const;

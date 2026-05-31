@@ -1,0 +1,79 @@
+name: Refresh trail OSM tags
+
+# Runs the OSM tag enricher (`npm run enrich-osm`) on the first of each month.
+# When the run produces any change to public/trail-osm-tags.json the workflow
+# opens (or updates) a pull request against master for human review. Monthly
+# cadence (vs weekly) keeps Overpass load proportional to how rarely
+# trail-corridor OSM tags actually change.
+#
+# Required repository secret (Settings -> Secrets and variables -> Actions):
+#   - NEXT_PUBLIC_GPX_URL   Trail GPX URL the enricher samples for OSM tag
+#                           extraction (same value as in .env.local).
+#
+# Optional repository variable:
+#   - OSM_OVERPASS_URL      Alternative Overpass endpoint; defaults to the
+#                           public https://overpass-api.de/api/interpreter
+#                           if unset.
+
+permissions:
+  contents: write
+  pull-requests: write
+
+on:
+  schedule:
+    # 1st of each month at 04:00 UTC. OSM tag drift for the CLDT corridor
+    # rarely warrants more than monthly refreshes; a quieter cadence also
+    # keeps GitHub PR noise down and stays well within Overpass free-tier
+    # limits. Manual `workflow_dispatch` is available for ad-hoc refreshes.
+    - cron: '0 4 1 * *'
+  workflow_dispatch:
+
+jobs:
+  enrich:
+    name: Enrich trail with OSM tags and open PR
+    runs-on: ubuntu-latest
+
+    steps:
+      # Action versions pinned to commit SHAs (supply-chain hardening) per
+      # GitHub's hardened-runner guidance. Update via:
+      #   curl -s https://api.github.com/repos/<owner>/<repo>/git/refs/tags/<tag>
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run OSM enricher
+        env:
+          NEXT_PUBLIC_GPX_URL: ${{ secrets.NEXT_PUBLIC_GPX_URL }}
+          OSM_OVERPASS_URL: ${{ vars.OSM_OVERPASS_URL }}
+        run: npm run enrich-osm
+
+      - name: Open or update pull request
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8
+        with:
+          commit-message: 'chore: refresh trail OSM tag enrichment'
+          title: 'chore: refresh trail OSM tag enrichment'
+          body: |
+            Automated monthly refresh of `public/trail-osm-tags.json`.
+
+            The enricher sampled the trail every 100 m, queried Overpass for
+            `way[highway]` along the route, snapped each sample to the
+            nearest way within 50 m, and run-length encoded the resulting
+            (surface, highway, sac_scale, mtb:scale) stream.
+
+            Review the surface and SAC coverage histograms in the workflow
+            logs for plausibility, then merge.
+
+            The branch is reused month-over-month, so this PR will be updated
+            on the next run if it is still open.
+          branch: feat/refresh-trail-osm-tags
+          delete-branch: true
+          base: master
+          labels: |
+            osm-enrichment
+            automated

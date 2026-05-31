@@ -5,6 +5,7 @@
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { haversineDistanceM } from '../src/lib/haversine';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -71,16 +72,7 @@ interface Crossing {
 
 const sleep = (ms: number): Promise<void> => new Promise((r) => setTimeout(r, ms));
 
-function haversineKm(a: LatLng, b: LatLng): number {
-	const R = 6371;
-	const toRad = (d: number): number => (d * Math.PI) / 180;
-	const dLat = toRad(b.lat - a.lat);
-	const dLng = toRad(b.lng - a.lng);
-	const lat1 = toRad(a.lat);
-	const lat2 = toRad(b.lat);
-	const h = Math.sin(dLat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLng / 2) ** 2;
-	return 2 * R * Math.asin(Math.min(1, Math.sqrt(h)));
-}
+const haversineKm = (a: LatLng, b: LatLng): number => haversineDistanceM(a, b) / 1000;
 
 // ---- GPX loading -----------------------------------------------------------
 

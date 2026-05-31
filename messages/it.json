@@ -50,7 +50,8 @@
 			"stagePlanner": "Pianificatore tappe multi-giorno - suddividi qualsiasi tratto del sentiero in tappe giornaliere per distanza o tempo, visualizza statistiche di dislivello ed ETA per tappa, esporta le singole tappe come file GPX o tutte le tappe come PDF tappe in mappa",
 			"gpxImport": "Importazione tracce GPX - trascina (o seleziona) un file GPX registrato per sovrapporre la tua escursione alla mappa ufficiale; statistiche su distanza, passo, tempo totale, tempo in movimento, deviazione massima e copertura del percorso",
 			"emergency": "Pannello di emergenza 112 - tieni premuto il pulsante SOS rosso (in basso a destra) per aprire un pannello offline-first con coordinate GPS, Plus Code, tratta e km del percorso, direzione e distanza al più vicino accesso stradale e alla stazione di soccorso alpino HGSS; copia ogni campo negli appunti e passa al dialer (Chiama 112) o alle mappe (Apri nelle mappe); funziona completamente offline una volta in cache",
-			"trailStyle": "Stile del percorso - scegli nel pannello dei livelli come colorare la polilinea: Predefinito (un solo colore), Tratte (zone A/B/C con marker di confine e statistiche per tratta) o Pendenza (colorazione a cinque bande in stile Strava, toni caldi per le salite e freddi per le discese nella direzione di marcia attiva; legenda del colore nel pannello; ricalcolata al cambio di direzione SOBO/NOBO)",
+			"trailStyle": "Stile del percorso - scegli nel pannello dei livelli come colorare la polilinea: Predefinito (un solo colore), Tratte (zone A/B/C con marker di confine e statistiche per tratta), Pendenza (colorazione a cinque bande in stile Strava, toni caldi per le salite e freddi per le discese nella direzione di marcia attiva; legenda del colore nel pannello; ricalcolata al cambio di direzione SOBO/NOBO), Fondo o Difficoltà (SAC)",
+			"surfaceAndSac": "Colorazione per fondo e difficoltà - colora la polilinea del sentiero (e il riempimento del grafico altimetrico) in base al tipo di fondo OSM (asfaltato / non asfaltato / ghiaia / terra / roccia) o alla scala escursionistica SAC (T1 escursionismo fino a T6 escursionismo alpino difficile). I dati vengono arricchiti mensilmente da una GitHub Action a partire da OpenStreetMap; le opzioni Fondo e Difficoltà restano disabilitate finché il set di dati non viene caricato al primo rendering. Consapevole della direzione: il set è indicizzato per km SOBO e il renderer lo specchia al volo per NOBO",
 			"distanceMarkers": "Indicatori di distanza - piccole etichette km/mi lungo il sentiero a intervalli di 100 / 50 / 25 / 10 / 5 / 1 unità. Visualizzazione progressiva in base al livello di zoom: 100 km sempre visibili a qualsiasi zoom, intervalli più fini compaiono man mano che ingrandisci (etichette da 1 km solo da zoom 13+). Attivabile dalle Impostazioni; le etichette seguono il sistema di unità attivo e la direzione corrente (SOBO/NOBO)"
 		},
 		"dataAttribution": "Dati e attribuzioni",
@@ -98,6 +99,9 @@
 				"default": "Predefinito",
 				"sections": "Sezioni",
 				"grade": "Pendenza",
+				"surface": "Fondo",
+				"sac": "Difficoltà (SAC)",
+				"dataUnavailable": "dati in caricamento",
 				"tooltip": "Scegli come colorare la linea del sentiero.",
 				"legendTitle": "Pendenza",
 				"legendFlat": "pianeggiante",
@@ -105,7 +109,26 @@
 				"legendSteep": "ripido",
 				"legendVerySteep": "molto ripido",
 				"legendExtreme": "estremo",
-				"legendNote": "caldo = salita, freddo = discesa"
+				"legendNote": "caldo = salita, freddo = discesa",
+				"surfaceLegendTitle": "Fondo",
+				"surfaceBuckets": {
+					"paved": "Asfalto / cemento / pietra",
+					"unpaved": "Non asfaltato / compattato",
+					"gravel": "Ghiaia",
+					"ground": "Terra (suolo, erba, polvere)",
+					"rock": "Pietraia / roccia",
+					"unknown": "Sconosciuto"
+				},
+				"sacLegendTitle": "Scala SAC di escursionismo",
+				"sacBuckets": {
+					"hiking": "Escursionismo",
+					"mountain_hiking": "Escursionismo in montagna",
+					"demanding_mountain_hiking": "Escursionismo impegnativo in montagna",
+					"alpine_hiking": "Escursionismo alpino",
+					"demanding_alpine_hiking": "Escursionismo alpino impegnativo",
+					"difficult_alpine_hiking": "Escursionismo alpino difficile",
+					"untagged": "Non classificato"
+				}
 			}
 		},
 		"walkingPace": "Velocità di camminata",

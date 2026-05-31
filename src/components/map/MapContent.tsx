@@ -11,6 +11,7 @@ import { useMapStore, type MapStoreState } from '@/lib/store';
 import { DEFAULT_PATH_OPTIONS } from '@/components/map/trail-route-constants';
 import { useSevereWeatherFetch } from '@/hooks/useSevereWeatherFetch';
 import { useSeasonalStatusFetch } from '@/hooks/useSeasonalStatusFetch';
+import { useTrailOsmTagsFetch } from '@/hooks/useTrailOsmTagsFetch';
 
 function MapTrailLoadingFallback(): React.ReactElement {
 	const t = useTranslations('mapWrapper');
@@ -77,6 +78,7 @@ export default function MapContent(): React.ReactElement {
 
 	useSevereWeatherFetch();
 	useSeasonalStatusFetch();
+	useTrailOsmTagsFetch();
 
 	// Initialize location service once when the component mounts
 	useEffect(() => {
