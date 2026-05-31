@@ -20,7 +20,10 @@ import {
 	sectionBoundaryIcon,
 	GRADE_BAND_ASCENT_COLORS,
 	GRADE_BAND_DESCENT_COLORS,
+	SURFACE_COLORS,
+	SAC_COLORS,
 } from '@/components/map/trail-route-constants';
+import { bucketSac, bucketSurface, findRunAtKm, type SacBucket, type SurfaceBucket } from '@/lib/trail-osm-tags';
 import { TRAIL_SECTIONS } from '@/lib/trail-sections';
 import { fetchGPXWithCache } from '@/lib/gpx-cache';
 import { parseGpx } from '@/lib/gpx-parser';
@@ -91,11 +94,6 @@ function buildSectionTooltipHtml(
 	`;
 }
 
-/**
- * Walk the direction-adjusted points and bucket each segment by (gradeBand, sign).
- * Returns a 5x2 matrix [band][sign] of LatLng[][] (each entry a contiguous run).
- * sign: 0 = ascent (deltaEle >= 0), 1 = descent.
- */
 /** Disjoint polyline runs indexed by [band 0..4][sign: 0 ascent or flat, 1 descent]. */
 type GradeBandRuns = L.LatLng[][][][];
 
@@ -108,6 +106,55 @@ interface TrailPoint {
 	elevationLossFromStart?: number;
 	sectionName?: string;
 	bearingDeg: number;
+}
+
+/**
+ * Walks the trail and groups consecutive segments by their OSM-derived bucket
+ * (surface or SAC scale). Returns `Map<bucketKey, LatLng[][]>` ready to feed
+ * into one polyline per bucket. The caller resolves bucket -> color and
+ * renders. SOBO-direction km is looked up via `soboKmForIdx(idx)` so the
+ * direction-agnostic OSM tag runs the map correctly even when the trail is
+ * traversed NOBO.
+ *
+ * If the lookup returns null for a point (km outside the tag dataset or no
+ * way found within the snap radius), the point is bucketed as 'unknown' /
+ * 'untagged' so it still renders rather than dropping out of the polyline.
+ */
+function buildTagBandSegments<K extends string>(
+	pointLatLngs: L.LatLng[],
+	soboKmForIdx: (idx: number) => number,
+	bucketAt: (km: number) => K,
+): Map<K, L.LatLng[][]> {
+	const result = new Map<K, L.LatLng[][]>();
+	if (pointLatLngs.length < 2) return result;
+
+	let currentKey: K | null = null;
+	let currentRun: L.LatLng[] = [];
+
+	const flush = (): void => {
+		if (currentRun.length >= 2 && currentKey !== null) {
+			const existing = result.get(currentKey) ?? [];
+			existing.push(currentRun);
+			result.set(currentKey, existing);
+		}
+	};
+
+	for (let i = 0; i < pointLatLngs.length - 1; i++) {
+		const a = pointLatLngs[i];
+		const b = pointLatLngs[i + 1];
+		const key = bucketAt(soboKmForIdx(i));
+
+		if (key !== currentKey) {
+			flush();
+			currentKey = key;
+			// Seed with [a, b] so adjacent bucket runs share a vertex (no visual gap).
+			currentRun = [a, b];
+		} else {
+			currentRun.push(b);
+		}
+	}
+	flush();
+	return result;
 }
 
 function buildGradeBandSegments(enhancedPoints: EnhancedTrailPoint[], pointLatLngs: L.LatLng[]): GradeBandRuns {
@@ -153,7 +200,7 @@ const TRAIL_POINT_TOOLTIP_PANE = 'trailPointTooltipPane';
 /**
  * Pane for the seasonal-status halo polyline, drawn under the trail when an
  * entry is hovered or has its modal open. Z-index sits just above the base
- * trail so the highlight reads clearly without competing with markers above.
+ * trail, so the highlight reads clearly without competing with the markers above.
  */
 const SEASONAL_STATUS_PANE = 'seasonalStatusPane';
 /**
@@ -195,18 +242,26 @@ function buildSeasonalChipIcon(entry: SeasonalStatusEntry, ariaLabel: string): L
 	});
 }
 
-/** Finds the index in `points` whose `distanceFromStart` is closest to `targetM`. */
+/** Finds the index in `points` whose `distanceFromStart` is closest to `targetM`.
+ *  `points` are assumed sorted ascending on distanceFromStart (the upstream
+ *  pipeline guarantees this). Binary-searches the position then picks the
+ *  closer of the two neighbors. */
 function nearestPointByDistanceM(points: EnhancedTrailPoint[], targetM: number): number {
-	let bestIdx = 0;
-	let bestDiff = Infinity;
-	for (let i = 0; i < points.length; i++) {
-		const diff = Math.abs(points[i].distanceFromStart - targetM);
-		if (diff < bestDiff) {
-			bestDiff = diff;
-			bestIdx = i;
-		}
+	if (points.length === 0) return 0;
+	let lo = 0;
+	let hi = points.length - 1;
+	while (lo < hi) {
+		const mid = (lo + hi) >> 1;
+		if (points[mid].distanceFromStart < targetM) lo = mid + 1;
+		else hi = mid;
 	}
-	return bestIdx;
+	if (
+		lo > 0 &&
+		Math.abs(points[lo - 1].distanceFromStart - targetM) < Math.abs(points[lo].distanceFromStart - targetM)
+	) {
+		return lo - 1;
+	}
+	return lo;
 }
 
 interface TrailRouteProps {
@@ -271,6 +326,13 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 	const distancePrecision = useMapStore((state: MapStoreState) => state.distancePrecision);
 	const showSections = useMapStore((state: MapStoreState) => state.showSections);
 	const gradeTintedTrail = useMapStore((state: MapStoreState) => state.gradeTintedTrail);
+	const surfaceColoured = useMapStore((state: MapStoreState) => state.surfaceColoured);
+	const sacColoured = useMapStore((state: MapStoreState) => state.sacColoured);
+	const trailOsmTagsFile = useMapStore((state: MapStoreState) => state.trailOsmTagsFile);
+	// `null` when neither Surface nor SAC is active, so an async OSM data load
+	// does not re-trigger the trail-loading effect when no visible bucket branch
+	// would consume `tagRuns`.
+	const activeOsmTagsFile = surfaceColoured || sacColoured ? trailOsmTagsFile : null;
 	const walkingPaceKmh = useMapStore((state: MapStoreState) => state.walkingPaceKmh);
 	const seasonalStatusEntries = useMapStore((state: MapStoreState) => state.seasonalStatusEntries);
 	const seasonalStatusLayerEnabled = useMapStore((state: MapStoreState) => state.seasonalStatusLayerEnabled);
@@ -297,7 +359,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 	// latest value without depending on it. Without this, every visibility toggle
 	// changes the callback identity and causes the marker/tooltip to be torn down
 	// and rebuilt by the highlight-watching effect. The refs are updated in an
-	// effect so we don't write to them during render (react-hooks/refs rule).
+	// effect, so we don't write to them during render (react-hooks/refs rule).
 	// showMarkerAtPosition is only invoked from event handlers and effect-scheduled
 	// callbacks, so the post-commit ref update is in sync by the time it runs.
 	const isTooltipVisibleRef = useRef(false);
@@ -696,10 +758,44 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 					sectionBoundaryMarkersRef.current = [];
 					sectionStatsRef.current = [];
 
-					// Grade tinting requires elevation data; fall back to default rendering when absent.
-					const showGradeTinted = gradeTintedTrail && hasElevation;
+					// SOBO-direction km lookup: the OSM tag dataset is direction-agnostic
+					// (always indexed from the SOBO start), so when the user traverses NOBO,
+					// we mirror the cum-distance back to SOBO space before binary-searching.
+					const totalDistanceMLocal = cumDistances[cumDistances.length - 1];
+					const soboKmForIdx = (idx: number): number =>
+						direction === 'SOBO' ? cumDistances[idx] / 1000 : (totalDistanceMLocal - cumDistances[idx]) / 1000;
 
-					if (showGradeTinted) {
+					// Trail style priority: sac > surface > grade > sections > default.
+					// Surface and SAC both require the OSM tag dataset; if it's missing, we
+					// silently fall through to the next style rather than rendering nothing.
+					const showGradeTinted = gradeTintedTrail && hasElevation;
+					const tagRuns = trailOsmTagsFile?.runs ?? null;
+					const showSurfaceColoured = surfaceColoured && tagRuns !== null && tagRuns.length > 0;
+					const showSacColoured = sacColoured && tagRuns !== null && tagRuns.length > 0;
+
+					if (showSacColoured) {
+						const runsByBucket = buildTagBandSegments<SacBucket>(latLngPoints, soboKmForIdx, (km) =>
+							bucketSac(findRunAtKm(tagRuns, km)?.sac_scale ?? null),
+						);
+						for (const [bucket, segments] of runsByBucket) {
+							if (segments.length === 0) continue;
+							const polyline = L.polyline(segments, { ...basePolylineOptions, color: SAC_COLORS[bucket] });
+							attachPolylineHandlers(polyline);
+							featureGroup.addLayer(polyline);
+							sectionPolylines.push(polyline);
+						}
+					} else if (showSurfaceColoured) {
+						const runsByBucket = buildTagBandSegments<SurfaceBucket>(latLngPoints, soboKmForIdx, (km) =>
+							bucketSurface(findRunAtKm(tagRuns, km)?.surface ?? null),
+						);
+						for (const [bucket, segments] of runsByBucket) {
+							if (segments.length === 0) continue;
+							const polyline = L.polyline(segments, { ...basePolylineOptions, color: SURFACE_COLORS[bucket] });
+							attachPolylineHandlers(polyline);
+							featureGroup.addLayer(polyline);
+							sectionPolylines.push(polyline);
+						}
+					} else if (showGradeTinted) {
 						const enhancedPoints = useStore.getState().enhancedTrailPoints;
 						const runs = buildGradeBandSegments(enhancedPoints, latLngPoints);
 
@@ -862,8 +958,8 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 						(directionAdjustedPoints[directionAdjustedPoints.length - 1] as L.LatLngTuple)[1],
 					);
 
-					// Hide the start marker when sections or grade tinting are shown so the colored layer is unobstructed.
-					if (!showSections && !gradeTintedTrail) {
+					// Hide the start marker when any colored trail style is shown, so the colored layer is unobstructed.
+					if (!showSections && !showGradeTinted && !showSurfaceColoured && !showSacColoured) {
 						const startIcon = L.divIcon({
 							className: 'trail-endpoint-marker trail-start-marker',
 							html: `<div class="trail-endpoint-marker-inner">${START_FLAG_SVG}</div>`,
@@ -965,6 +1061,8 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 		};
 		// pathOptions is intentionally omitted: it is a module-level constant by default; including
 		// it would trigger a full trail rebuild if a caller ever passed an inline object.
+		// `trailOsmTagsFile` is gated via `activeOsmTagsFile`: when neither Surface nor SAC is active,
+		// the async OSM data load does not invalidate the effect and triggers an avoidable rebuild.
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [
 		map,
@@ -983,6 +1081,9 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 		clearTrailHighlight,
 		showSections,
 		gradeTintedTrail,
+		surfaceColoured,
+		sacColoured,
+		activeOsmTagsFile,
 	]);
 
 	// Build one chip marker per active seasonal-status entry, anchored at the
@@ -1043,7 +1144,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 			});
 			// Set the per-severity accent on the tooltip element each time it opens,
 			// mirroring the modal's CSS-var pattern so the left accent border picks
-			// up the correct colour.
+			// up the correct color.
 			const chipAccent = severityColor(entry.severity);
 			marker.on('tooltipopen', (e: L.LeafletEvent) => {
 				const tooltip = (e as unknown as { tooltip: L.Tooltip }).tooltip;

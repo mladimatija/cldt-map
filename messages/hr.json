@@ -50,7 +50,8 @@
 			"stagePlanner": "Planer višednevnih etapa - podijelite bilo koji dio staze na dnevne etape prema udaljenosti ili vremenu, pregledajte statistike nadmorske visine i ETA po etapi, izvezite pojedine etape kao GPX datoteke ili sve etape kao PDF karte etapa",
 			"gpxImport": "Uvoz GPX rute - povuci i ispusti (ili odaberi) snimljenu GPX datoteku i usporedi svoju rutu sa službenom stazom; statistike o udaljenosti, tempu, ukupnom i vremenu kretanja, maksimalnom odstupanju i pokrivenosti staze",
 			"emergency": "Hitna ploča 112 - dugim pritiskom crvenog SOS gumba (donji desni kut) otvara se offline-first ploča s tvojim GPS koordinatama, Plus kodom, etapom i kilometrom staze te smjerom i udaljenošću do najbližeg pristupa cesti i HGSS stanice; kopiraj svako polje i pokreni biranje (Nazovi 112) ili karte (Otvori u kartama); radi potpuno offline jednom kad se podaci spreme u predmemoriju",
-			"trailStyle": "Stil staze - odaberi kako će ruta biti obojana u ploči slojeva: Zadano (jedna boja), Dionice (zone A/B/C s graničnim oznakama i statistikom po dionici) ili Nagib (gradijentno bojanje u pet pojaseva, topli tonovi za uspone i hladni za silazne dijelove u trenutnom smjeru hodanja; legenda u ploči; ponovno se izračunava pri promjeni smjera SOBO/NOBO)",
+			"trailStyle": "Stil staze - odaberi kako će ruta biti obojana u ploči slojeva: Zadano (jedna boja), Dionice (zone A/B/C s graničnim oznakama i statistikom po dionici), Nagib (gradijentno bojanje u pet pojaseva, topli tonovi za uspone i hladni za silazne dijelove u trenutnom smjeru hodanja; legenda u ploči; ponovno se izračunava pri promjeni smjera SOBO/NOBO), Podloga ili Težina (SAC)",
+			"surfaceAndSac": "Bojanje po podlozi i težini - oboji liniju staze (i pozadinu grafa nadmorske visine) prema OSM tipu podloge (asfalt / neasfaltirano / šljunak / tlo / stijena) ili SAC ljestvici planinarenja (T1 planinarenje do T6 teško alpinističko). Podatke jednom mjesečno osvježava GitHub Action iz OpenStreetMapa; opcije Podloga i Težina ostaju onemogućene dok se skup ne učita pri prvom prikazu. Smjer-svjestan: skup je vezan uz SOBO km, a renderer ih u hodu zrcali na NOBO",
 			"distanceMarkers": "Oznake kilometara - male oznake km / mi duž staze na intervalima 100 / 50 / 25 / 10 / 5 / 1. Progresivni prikaz prema razini zumiranja: 100 km uvijek vidljivo na bilo kojem zumu, finiji intervali pojavljuju se dok zumirate (oznake od 1 km tek na zumu 13+). Uključivo iz Postavki; oznake slijede aktivni sustav jedinica i trenutni smjer (SOBO/NOBO)"
 		},
 		"dataAttribution": "Podaci i atribucija",
@@ -98,6 +99,9 @@
 				"default": "Zadano",
 				"sections": "Dionice",
 				"grade": "Nagib",
+				"surface": "Podloga",
+				"sac": "Težina (SAC)",
+				"dataUnavailable": "podaci se učitavaju",
 				"tooltip": "Odaberi kako se boji linija staze.",
 				"legendTitle": "Nagib",
 				"legendFlat": "ravno",
@@ -105,7 +109,26 @@
 				"legendSteep": "strmo",
 				"legendVerySteep": "vrlo strmo",
 				"legendExtreme": "ekstremno",
-				"legendNote": "toplo = uspon, hladno = silazak"
+				"legendNote": "toplo = uspon, hladno = silazak",
+				"surfaceLegendTitle": "Podloga",
+				"surfaceBuckets": {
+					"paved": "Asfalt / beton / kamen",
+					"unpaved": "Neasfaltirano / sabijeno",
+					"gravel": "Šljunak",
+					"ground": "Zemlja (tlo, trava, prašina)",
+					"rock": "Stijena / siga",
+					"unknown": "Nepoznato"
+				},
+				"sacLegendTitle": "SAC ljestvica planinarenja",
+				"sacBuckets": {
+					"hiking": "Planinarenje",
+					"mountain_hiking": "Gorsko planinarenje",
+					"demanding_mountain_hiking": "Zahtjevno gorsko planinarenje",
+					"alpine_hiking": "Alpinističko planinarenje",
+					"demanding_alpine_hiking": "Zahtjevno alpinističko planinarenje",
+					"difficult_alpine_hiking": "Teško alpinističko planinarenje",
+					"untagged": "Neoznačeno"
+				}
 			}
 		},
 		"walkingPace": "Tempo hodanja",

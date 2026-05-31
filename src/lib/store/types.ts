@@ -4,6 +4,7 @@ import type { TrailDirection, UnitSystem } from '../types';
 import type { TileCacheMeta } from '../tile-cache';
 import type { TrackPoint } from '../gpx-parser';
 import type { SeasonalStatusEntry, SeasonalStatusFile } from '../seasonal-status';
+import type { TrailOsmTagsFile } from '../trail-osm-tags';
 import { RulerRange } from '@/lib/distance-utils';
 
 export type { TrailDirection, UnitSystem };
@@ -232,6 +233,10 @@ export interface MapStoreState {
 	setShowSections: (show: boolean) => void;
 	gradeTintedTrail: boolean;
 	setGradeTintedTrail: (enabled: boolean) => void;
+	surfaceColoured: boolean;
+	setSurfaceColoured: (enabled: boolean) => void;
+	sacColoured: boolean;
+	setSacColoured: (enabled: boolean) => void;
 	showDistanceMarkers: boolean;
 	setShowDistanceMarkers: (show: boolean) => void;
 	baseMapProvider: string;
@@ -296,6 +301,10 @@ export interface MapStoreState {
 	setSevereWeatherLayer: (enabled: boolean) => void;
 	severeWeatherData: GeoJSON.FeatureCollection | null;
 	setSevereWeatherData: (data: GeoJSON.FeatureCollection | null) => void;
+
+	// ── Trail OSM tag enrichment (surface, highway, SAC, MTB scale) ──
+	trailOsmTagsFile: TrailOsmTagsFile | null;
+	setTrailOsmTagsFile: (file: TrailOsmTagsFile | null) => void;
 
 	// ── Seasonal trail status ──────────────────────────────────────────
 	seasonalStatusFile: SeasonalStatusFile | null;

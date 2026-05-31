@@ -50,7 +50,8 @@
 			"stagePlanner": "Multi-day stage planner - split any trail range into daily stages by distance or time, view per-stage elevation and ETA stats, export individual stages as GPX files, or export all stages as a strip-map PDF",
 			"gpxImport": "GPX track import - drag and drop (or pick) a recorded GPX file to overlay your actual hike on the map; compare your track against the official trail with stats on distance, pace, elapsed time, max deviation, and % of trail covered",
 			"emergency": "Emergency 112 panel - long-press the red SOS button (bottom-right) for an offline-first panel showing your GPS coordinates, Plus Code, trail section and km, and the bearing and distance to the nearest road access and HGSS mountain rescue station; copy any field to the clipboard and hand off to your phone dialer (Call 112) or maps app (Open in maps); fully offline once cached",
-			"trailStyle": "Trail style - choose how the route polyline is coloured from the layers panel: Default (single colour), Sections (A/B/C zones with boundary markers and per-section stats), or Grade (Strava-style gradient tinting with five bands; warm for ascents and cool for descents in the active travel direction; colour-ramp legend in the panel; recomputed when the SOBO/NOBO direction is toggled)",
+			"trailStyle": "Trail style - choose how the route polyline is coloured from the layers panel: Default (single colour), Sections (A/B/C zones with boundary markers and per-section stats), Grade (Strava-style gradient tinting with five bands; warm for ascents and cool for descents in the active travel direction; colour-ramp legend in the panel; recomputed when the SOBO/NOBO direction is toggled), Surface, or Difficulty (SAC)",
+			"surfaceAndSac": "Surface and difficulty colouring - tint the trail polyline (and the elevation chart's area fill) by OSM surface type (paved / unpaved / gravel / ground / rock) or by SAC hiking scale (T1 hiking through T6 difficult alpine hiking). The data is enriched monthly from OpenStreetMap by a GitHub Action; surface and SAC options stay disabled until the dataset finishes loading on first paint. Direction-aware: the dataset is keyed to SOBO km and the renderer mirrors to NOBO on the fly",
 			"distanceMarkers": "Distance markers - small km / mi labels along the trail at 100 / 50 / 25 / 10 / 5 / 1 unit intervals. Progressive disclosure by zoom level: 100 km always visible at any zoom, finer intervals reveal as you zoom in (1 km labels only at zoom 13+). Toggleable from Settings; labels follow the active unit system and current direction (SOBO/NOBO)"
 		},
 		"dataAttribution": "Data & attribution",
@@ -98,6 +99,9 @@
 				"default": "Default",
 				"sections": "Sections",
 				"grade": "Grade",
+				"surface": "Surface",
+				"sac": "Difficulty (SAC)",
+				"dataUnavailable": "data loading",
 				"tooltip": "Choose how the trail polyline is colored.",
 				"legendTitle": "Grade",
 				"legendFlat": "flat",
@@ -105,7 +109,26 @@
 				"legendSteep": "steep",
 				"legendVerySteep": "very steep",
 				"legendExtreme": "extreme",
-				"legendNote": "warm = ascent, cool = descent"
+				"legendNote": "warm = ascent, cool = descent",
+				"surfaceLegendTitle": "Surface",
+				"surfaceBuckets": {
+					"paved": "Paved (asphalt, concrete, stone)",
+					"unpaved": "Unpaved / compacted",
+					"gravel": "Gravel",
+					"ground": "Ground (dirt, earth, grass)",
+					"rock": "Rock / scree",
+					"unknown": "Unknown"
+				},
+				"sacLegendTitle": "SAC hiking scale",
+				"sacBuckets": {
+					"hiking": "Hiking",
+					"mountain_hiking": "Mountain hiking",
+					"demanding_mountain_hiking": "Demanding mountain hiking",
+					"alpine_hiking": "Alpine hiking",
+					"demanding_alpine_hiking": "Demanding alpine hiking",
+					"difficult_alpine_hiking": "Difficult alpine hiking",
+					"untagged": "Untagged"
+				}
 			}
 		},
 		"walkingPace": "Walking pace",

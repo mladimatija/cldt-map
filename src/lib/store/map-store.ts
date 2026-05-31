@@ -194,12 +194,36 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 				setLargeTouchTargets: (enabled: boolean) => set({ largeTouchTargets: enabled }),
 				showSections: config.showSections,
 				gradeTintedTrail: config.gradeTintedTrail,
+				surfaceColoured: config.surfaceColoured,
+				sacColoured: config.sacColoured,
 				showDistanceMarkers: config.showDistanceMarkers,
+				// All four trail-style modes are mutually exclusive: enabling one
+				// flips the other three off in the same set() call. The setters
+				// guard against unnecessary writes by only mentioning the others
+				// when the new value would change them.
 				setShowSections: (show: boolean): void => {
-					set({ showSections: show, gradeTintedTrail: show ? false : get().gradeTintedTrail });
+					set({
+						showSections: show,
+						...(show && { gradeTintedTrail: false, surfaceColoured: false, sacColoured: false }),
+					});
 				},
 				setGradeTintedTrail: (enabled: boolean): void => {
-					set({ gradeTintedTrail: enabled, showSections: enabled ? false : get().showSections });
+					set({
+						gradeTintedTrail: enabled,
+						...(enabled && { showSections: false, surfaceColoured: false, sacColoured: false }),
+					});
+				},
+				setSurfaceColoured: (enabled: boolean): void => {
+					set({
+						surfaceColoured: enabled,
+						...(enabled && { showSections: false, gradeTintedTrail: false, sacColoured: false }),
+					});
+				},
+				setSacColoured: (enabled: boolean): void => {
+					set({
+						sacColoured: enabled,
+						...(enabled && { showSections: false, gradeTintedTrail: false, surfaceColoured: false }),
+					});
 				},
 				setShowDistanceMarkers: (show: boolean): void => {
 					set({ showDistanceMarkers: show });
@@ -583,6 +607,11 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					set({ severeWeatherData: data });
 				},
 
+				trailOsmTagsFile: null,
+				setTrailOsmTagsFile: (file): void => {
+					set({ trailOsmTagsFile: file });
+				},
+
 				seasonalStatusFile: null,
 				setSeasonalStatusFile: (file: SeasonalStatusFile | null): void => {
 					set({
@@ -619,6 +648,8 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					showUserMarker: state.showUserMarker,
 					showSections: state.showSections,
 					gradeTintedTrail: state.gradeTintedTrail,
+					surfaceColoured: state.surfaceColoured,
+					sacColoured: state.sacColoured,
 					showDistanceMarkers: state.showDistanceMarkers,
 					distancePrecision: state.distancePrecision,
 					darkMode: state.darkMode,

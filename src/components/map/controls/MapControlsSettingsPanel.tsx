@@ -19,12 +19,13 @@ import {
 	IoFlagOutline,
 } from 'react-icons/io5';
 import { severityColor, type SeasonalSeverity } from '@/lib/seasonal-status';
-import { GRADE_BAND_ASCENT_COLORS } from '@/components/map/trail-route-constants';
+import { GRADE_BAND_ASCENT_COLORS, SAC_COLORS, SURFACE_COLORS } from '@/components/map/trail-route-constants';
 import { Button } from '@/components/ui/Button';
 import { cn } from '@/lib/utils';
 import { MAP_CONTROL_POPOVER } from './map-controls-constants';
 import { MapControlsTileCachePanel } from './MapControlsTileCachePanel';
 import { MapControlsImportsPanel } from './MapControlsImportsPanel';
+import { SURFACE_BUCKETS } from '@/components/charts/ElevationChart';
 
 interface MapControlsSettingsPanelProps {
 	containerRef: RefObject<HTMLDivElement | null>;
@@ -53,6 +54,11 @@ export function MapControlsSettingsPanel({
 	const setShowSections = useMapStore((state: MapStoreState) => state.setShowSections);
 	const gradeTintedTrail = useMapStore((state: MapStoreState) => state.gradeTintedTrail);
 	const setGradeTintedTrail = useMapStore((state: MapStoreState) => state.setGradeTintedTrail);
+	const surfaceColoured = useMapStore((state: MapStoreState) => state.surfaceColoured);
+	const setSurfaceColoured = useMapStore((state: MapStoreState) => state.setSurfaceColoured);
+	const sacColoured = useMapStore((state: MapStoreState) => state.sacColoured);
+	const setSacColoured = useMapStore((state: MapStoreState) => state.setSacColoured);
+	const trailOsmTagsFile = useMapStore((state: MapStoreState) => state.trailOsmTagsFile);
 	const showDistanceMarkers = useMapStore((state: MapStoreState) => state.showDistanceMarkers);
 	const setShowDistanceMarkers = useMapStore((state: MapStoreState) => state.setShowDistanceMarkers);
 	const walkingPaceKmh = useMapStore((state: MapStoreState) => state.walkingPaceKmh);
@@ -137,31 +143,63 @@ export function MapControlsSettingsPanel({
 							</span>
 						</legend>
 						{(() => {
-							const selected = gradeTintedTrail ? 'grade' : showSections ? 'sections' : 'default';
-							return (['default', 'sections', 'grade'] as const).map((option) => (
-								<label className="flex cursor-pointer items-center gap-2 pl-6" key={option}>
-									<input
-										checked={selected === option}
-										className="accent-cldt-blue focus-visible:ring-cldt-green h-4 w-4 cursor-pointer focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:outline-none"
-										name="trail-style"
-										type="radio"
-										value={option}
-										onChange={() => {
-											if (option === 'grade') {
-												setGradeTintedTrail(true);
-											} else if (option === 'sections') {
-												setShowSections(true);
-											} else {
-												setShowSections(false);
-												setGradeTintedTrail(false);
-											}
-										}}
-									/>
-									<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">
-										{t(`layers.trailStyle.${option}`)}
-									</span>
-								</label>
-							));
+							const selected = sacColoured
+								? 'sac'
+								: surfaceColoured
+									? 'surface'
+									: gradeTintedTrail
+										? 'grade'
+										: showSections
+											? 'sections'
+											: 'default';
+							// Surface / SAC require the OSM tag dataset. Disable until it loads
+							// so the user can't pick a style with no data behind it.
+							const osmReady = Boolean(trailOsmTagsFile?.runs?.length);
+							return (['default', 'sections', 'grade', 'surface', 'sac'] as const).map((option) => {
+								const disabled = (option === 'surface' || option === 'sac') && !osmReady;
+								return (
+									<label
+										className={cn(
+											'flex items-center gap-2 pl-6',
+											disabled ? 'pointer-events-none cursor-not-allowed opacity-50' : 'cursor-pointer',
+										)}
+										key={option}
+									>
+										<input
+											checked={selected === option}
+											className="accent-cldt-blue focus-visible:ring-cldt-green h-4 w-4 cursor-pointer focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:outline-none disabled:cursor-not-allowed"
+											disabled={disabled}
+											name="trail-style"
+											type="radio"
+											value={option}
+											onChange={() => {
+												if (option === 'sac') {
+													setSacColoured(true);
+												} else if (option === 'surface') {
+													setSurfaceColoured(true);
+												} else if (option === 'grade') {
+													setGradeTintedTrail(true);
+												} else if (option === 'sections') {
+													setShowSections(true);
+												} else {
+													setShowSections(false);
+													setGradeTintedTrail(false);
+													setSurfaceColoured(false);
+													setSacColoured(false);
+												}
+											}}
+										/>
+										<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">
+											{t(`layers.trailStyle.${option}`)}
+											{disabled && (
+												<span className="ml-1 text-xs italic opacity-75">
+													({t('layers.trailStyle.dataUnavailable')})
+												</span>
+											)}
+										</span>
+									</label>
+								);
+							});
 						})()}
 					</fieldset>
 					{gradeTintedTrail && (
@@ -190,6 +228,52 @@ export function MapControlsSettingsPanel({
 								</div>
 							))}
 							<p className="mt-0.5 text-xs italic opacity-75">{t('layers.trailStyle.legendNote')}</p>
+						</div>
+					)}
+					{surfaceColoured && (
+						<div className="ml-6 flex flex-col gap-1 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
+							<p className="font-semibold text-gray-700 dark:text-[var(--text-primary)]">
+								{t('layers.trailStyle.surfaceLegendTitle')}
+							</p>
+							{SURFACE_BUCKETS.map((bucket) => (
+								<div className="flex items-center gap-2" key={bucket}>
+									<span
+										aria-hidden="true"
+										className="inline-block h-2 w-6 shrink-0 rounded-sm"
+										style={{ backgroundColor: SURFACE_COLORS[bucket] }}
+									/>
+									<span>{t(`layers.trailStyle.surfaceBuckets.${bucket}`)}</span>
+								</div>
+							))}
+						</div>
+					)}
+					{sacColoured && (
+						<div className="ml-6 flex flex-col gap-1 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
+							<p className="font-semibold text-gray-700 dark:text-[var(--text-primary)]">
+								{t('layers.trailStyle.sacLegendTitle')}
+							</p>
+							{(
+								[
+									{ key: 'hiking', label: 'T1' },
+									{ key: 'mountain_hiking', label: 'T2' },
+									{ key: 'demanding_mountain_hiking', label: 'T3' },
+									{ key: 'alpine_hiking', label: 'T4' },
+									{ key: 'demanding_alpine_hiking', label: 'T5' },
+									{ key: 'difficult_alpine_hiking', label: 'T6' },
+									{ key: 'untagged', label: '-' },
+								] as const
+							).map(({ key, label }) => (
+								<div className="flex items-center gap-2" key={key}>
+									<span
+										aria-hidden="true"
+										className="inline-block h-2 w-6 shrink-0 rounded-sm"
+										style={{ backgroundColor: SAC_COLORS[key] }}
+									/>
+									<span>
+										<span className="font-mono">{label}</span> {t(`layers.trailStyle.sacBuckets.${key}`)}
+									</span>
+								</div>
+							))}
 						</div>
 					)}
 					<label className="flex cursor-pointer items-center gap-2">

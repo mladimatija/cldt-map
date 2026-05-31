@@ -1,18 +1,9 @@
 import localforage from 'localforage';
 import type { ParsedTrack } from './gpx-parser';
 import type { ImportedTrack, TrackStats } from './store/types';
+import { haversineDistanceM as haversineM } from './haversine';
 
 const MAX_GPX_SIZE = 10_000_000; // 10 MB
-const R = 6_371_000; // Earth radius in metres
-
-function haversineM(lat1: number, lng1: number, lat2: number, lng2: number): number {
-	const dLat = ((lat2 - lat1) * Math.PI) / 180;
-	const dLng = ((lng2 - lng1) * Math.PI) / 180;
-	const a =
-		Math.sin(dLat / 2) ** 2 +
-		Math.cos((lat1 * Math.PI) / 180) * Math.cos((lat2 * Math.PI) / 180) * Math.sin(dLng / 2) ** 2;
-	return 2 * R * Math.asin(Math.sqrt(a));
-}
 
 const importedTracksStore = localforage.createInstance({
 	name: 'cldt-map',

@@ -55,6 +55,7 @@ export default function AboutPage(): React.ReactNode {
 						<li className="mb-2">{t('mapFeaturesList.gpxImport')}</li>
 						<li className="mb-2">{t('mapFeaturesList.emergency')}</li>
 						<li className="mb-2">{t('mapFeaturesList.trailStyle')}</li>
+						<li className="mb-2">{t('mapFeaturesList.surfaceAndSac')}</li>
 						<li className="mb-2">{t('mapFeaturesList.distanceMarkers')}</li>
 					</ul>
 				</article>

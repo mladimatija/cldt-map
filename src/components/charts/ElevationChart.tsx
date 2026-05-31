@@ -21,6 +21,14 @@ import {
 import { formatElevation, formatDistance } from '@/lib/utils';
 import { computeEta, findNearestPointIndex } from '@/lib/distance-utils';
 import { useStore, useMapStore, type StoreState, type MapStoreState, type UnitSystem } from '@/lib/store';
+import { bucketSac, bucketSurface, findRunAtKm, type SacBucket, type SurfaceBucket } from '@/lib/trail-osm-tags';
+import {
+	GRADE_BAND_ASCENT_COLORS,
+	GRADE_BAND_DESCENT_COLORS,
+	SAC_COLORS,
+	SURFACE_COLORS,
+} from '@/components/map/trail-route-constants';
+import { TRAIL_SECTIONS } from '@/lib/trail-sections';
 import { MdKeyboardArrowUp, MdKeyboardArrowDown } from 'react-icons/md';
 import { IoDownloadOutline, IoHelpCircleOutline } from 'react-icons/io5';
 import { useTranslations } from 'next-intl';
@@ -29,6 +37,36 @@ import { RULER_SET_FROM_CHART_EVENT } from '@/lib/ruler-from-chart';
 import { Button } from '@/components/ui/Button';
 import { GpxDownloadModal } from '@/components/map/GpxDownloadModal';
 import { buildGpxXml, downloadGpxFile, extractGpxSegment } from '@/lib/gpx-export';
+
+export const SURFACE_BUCKETS: readonly SurfaceBucket[] = ['paved', 'unpaved', 'gravel', 'ground', 'rock', 'unknown'];
+export const SAC_BUCKETS: readonly SacBucket[] = [
+	'hiking',
+	'mountain_hiking',
+	'demanding_mountain_hiking',
+	'alpine_hiking',
+	'demanding_alpine_hiking',
+	'difficult_alpine_hiking',
+	'untagged',
+];
+
+/** Section bucket keys mirror TRAIL_SECTIONS.nameKey (sectionA / sectionB / sectionC). */
+const SECTION_BUCKETS: readonly string[] = TRAIL_SECTIONS.map((s) => s.nameKey);
+const SECTION_COLOR_BY_KEY: Readonly<Record<string, string>> = Object.fromEntries(
+	TRAIL_SECTIONS.map((s) => [s.nameKey, s.color]),
+);
+
+/** Grade bucket keys: g{band 0..4}_{asc|desc}. Mirrors the polyline's 5x2 palette. */
+const GRADE_BUCKETS: readonly string[] = (['asc', 'desc'] as const).flatMap((sign) =>
+	[0, 1, 2, 3, 4].map((band) => `g${band}_${sign}`),
+);
+function gradeColorForKey(key: string): string {
+	// Regex domain `[0-4]` matches the closed band range; an out-of-range key
+	// from a future change would fail to match and produce undefined rather
+	// than silently indexing past the 5-element palette arrays.
+	const [, bandStr, sign] = /^g([0-4])_(asc|desc)$/.exec(key) ?? [];
+	const band = Number(bandStr);
+	return sign === 'desc' ? GRADE_BAND_DESCENT_COLORS[band] : GRADE_BAND_ASCENT_COLORS[band];
+}
 
 interface ElevationPoint {
 	distance: number;
@@ -197,6 +235,11 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 	const walkingPaceKmh = useMapStore((state: MapStoreState) => state.walkingPaceKmh);
 	const gradeAdjustedEta = useMapStore((state: MapStoreState) => state.gradeAdjustedEta);
 	const darkMode = useMapStore((state: MapStoreState) => state.darkMode);
+	const surfaceColoured = useMapStore((state: MapStoreState) => state.surfaceColoured);
+	const sacColoured = useMapStore((state: MapStoreState) => state.sacColoured);
+	const showSections = useMapStore((state: MapStoreState) => state.showSections);
+	const gradeTintedTrail = useMapStore((state: MapStoreState) => state.gradeTintedTrail);
+	const trailOsmTagsFile = useMapStore((state: MapStoreState) => state.trailOsmTagsFile);
 	const axisTextColor = darkMode ? 'var(--text-primary)' : undefined;
 	const chartRef = useRef<HTMLDivElement>(null);
 	useBlockMapPropagation(chartRef, [chartData.length]);
@@ -461,6 +504,77 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 		setIsExpanded(!isExpanded);
 	};
 
+	// Fill-by-metric for the elevation area chart. When any color-coded trail
+	// style is active, the chart renders one Area per bucket, so the elevation
+	// profile visually mirrors the polyline. Surface and SAC additionally
+	// require the OSM tag dataset to be loaded.
+	const fillMode: 'surface' | 'sac' | 'sections' | 'grade' | null = useMemo(() => {
+		if (sacColoured && trailOsmTagsFile?.runs?.length) return 'sac';
+		if (surfaceColoured && trailOsmTagsFile?.runs?.length) return 'surface';
+		if (gradeTintedTrail && enhancedTrailPoints.length > 0) return 'grade';
+		if (showSections && enhancedTrailPoints.length > 0) return 'sections';
+		return null;
+	}, [sacColoured, surfaceColoured, gradeTintedTrail, showSections, trailOsmTagsFile, enhancedTrailPoints]);
+
+	const enrichedChartData = useMemo(() => {
+		if (!fillMode || chartData.length === 0) return chartData;
+
+		// Resolve the bucket key for a given chart point per the active fillMode.
+		// Surface and SAC read from the SOBO-keyed OSM tag dataset; sections and grade
+		// read from the direction-adjusted enhancedTrailPoints (sectionName /
+		// gradeBand / gradePct are all already direction-relative there).
+		const bucketKeyAt: ((p: ElevationPoint) => string) | null = ((): ((p: ElevationPoint) => string) | null => {
+			if (fillMode === 'surface' || fillMode === 'sac') {
+				const runs = trailOsmTagsFile?.runs;
+				if (!runs?.length) return null;
+				const totalKm = trailMetadata?.totalDistance ?? 0;
+				return (p) => {
+					const soboKm = direction === 'SOBO' ? p.distance : Math.max(0, totalKm - p.distance);
+					const run = findRunAtKm(runs, soboKm);
+					return fillMode === 'surface' ? bucketSurface(run?.surface ?? null) : bucketSac(run?.sac_scale ?? null);
+				};
+			}
+			if (enhancedTrailPoints.length === 0) return null;
+			return (p) => {
+				const idx = findNearestPointIndex(enhancedTrailPoints, p.distance * 1000);
+				const ep = enhancedTrailPoints[idx];
+				if (fillMode === 'sections') {
+					// In practice every enhanced trail point has a sectionName because
+					// TRAIL_SECTIONS spans 0..Infinity. The fallback to the first section
+					// only fires for the degenerate empty-data case and prevents an
+					// `elev_undefined` dataKey from polluting the chart.
+					return ep?.sectionName ?? TRAIL_SECTIONS[0].nameKey;
+				}
+				const band = ep?.gradeBand ?? 0;
+				const sign = (ep?.gradePct ?? 0) < 0 ? 'desc' : 'asc';
+				return `g${band}_${sign}`;
+			};
+		})();
+		if (!bucketKeyAt) return chartData;
+
+		// Bridge transitions: when the bucket changes between two consecutive chart
+		// points, also set the current point's value under the previous bucket's key
+		// so adjacent Areas share a vertex. Without this, Recharts's connectNulls=false
+		// leaves a one-sample gap (~ 4-5 km on a 2,220 km trail downsampled to 500
+		// points) wherever the bucket changes.
+		const enriched = new Array<ElevationPoint>(chartData.length);
+		let prevKey: string | null = null;
+		for (let i = 0; i < chartData.length; i++) {
+			const p = chartData[i];
+			const key = bucketKeyAt(p);
+			const next: ElevationPoint & Record<string, number | undefined> = {
+				...p,
+				[`elev_${key}`]: p.elevation,
+			};
+			if (prevKey !== null && prevKey !== key) {
+				next[`elev_${prevKey}`] = p.elevation;
+			}
+			enriched[i] = next;
+			prevKey = key;
+		}
+		return enriched;
+	}, [chartData, fillMode, trailOsmTagsFile, direction, trailMetadata, enhancedTrailPoints]);
+
 	const { highestPoint, lowestPoint } = useMemo(() => {
 		let high = -Infinity;
 		let low = Infinity;
@@ -592,7 +706,7 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 								offset={6}
 								position="bottom"
 							>
-								<IoHelpCircleOutline aria-label={tControls('helpTitle')} className="h-4 w-4" />
+								<IoHelpCircleOutline aria-hidden className="h-4 w-4" />
 							</Tooltip>
 						</span>
 					</div>
@@ -709,7 +823,7 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 						onTouchStartCapture={stopMapInteractionTouch}
 					>
 						<ResponsiveContainer height="100%" minHeight={200} width="100%">
-							<AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 10 }}>
+							<AreaChart data={enrichedChartData} margin={{ top: 10, right: 10, left: 0, bottom: 10 }}>
 								<RechartsTooltip
 									content={(props) => (
 										<ChartTooltipSync
@@ -754,14 +868,68 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 									tick={{ fill: axisTextColor }}
 									tickFormatter={(value) => formatElevation(value, units)}
 								/>
-								<Area
-									activeDot={{ r: 6, fill: 'var(--cldt-green)' }}
-									dataKey="elevation"
-									dot={false}
-									fill="var(--cldt-light-blue)"
-									stroke="var(--cldt-blue)"
-									type="monotone"
-								/>
+								{fillMode === 'surface' ? (
+									SURFACE_BUCKETS.map((b) => (
+										<Area
+											connectNulls={false}
+											dataKey={`elev_${b}`}
+											dot={false}
+											fill={SURFACE_COLORS[b]}
+											fillOpacity={0.7}
+											key={b}
+											stroke="var(--cldt-blue)"
+											type="monotone"
+										/>
+									))
+								) : fillMode === 'sac' ? (
+									SAC_BUCKETS.map((b) => (
+										<Area
+											connectNulls={false}
+											dataKey={`elev_${b}`}
+											dot={false}
+											fill={SAC_COLORS[b]}
+											fillOpacity={0.7}
+											key={b}
+											stroke="var(--cldt-blue)"
+											type="monotone"
+										/>
+									))
+								) : fillMode === 'sections' ? (
+									SECTION_BUCKETS.map((b) => (
+										<Area
+											connectNulls={false}
+											dataKey={`elev_${b}`}
+											dot={false}
+											fill={SECTION_COLOR_BY_KEY[b]}
+											fillOpacity={0.7}
+											key={b}
+											stroke="var(--cldt-blue)"
+											type="monotone"
+										/>
+									))
+								) : fillMode === 'grade' ? (
+									GRADE_BUCKETS.map((b) => (
+										<Area
+											connectNulls={false}
+											dataKey={`elev_${b}`}
+											dot={false}
+											fill={gradeColorForKey(b)}
+											fillOpacity={0.7}
+											key={b}
+											stroke="var(--cldt-blue)"
+											type="monotone"
+										/>
+									))
+								) : (
+									<Area
+										activeDot={{ r: 6, fill: 'var(--cldt-green)' }}
+										dataKey="elevation"
+										dot={false}
+										fill="var(--cldt-light-blue)"
+										stroke="var(--cldt-blue)"
+										type="monotone"
+									/>
+								)}
 								{highlightedPoint && (
 									<>
 										<ReferenceLine
