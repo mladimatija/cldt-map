@@ -144,7 +144,7 @@ const MAX_TAG_LEN = 64;
 function isTagField(v: unknown): boolean {
 	// Treat omitted (undefined) fields as null so a remote payload that drops
 	// optional tags is accepted rather than rejecting the entire run.
-	return v == null || (typeof v === 'string' && v.length <= MAX_TAG_LEN);
+	return v === null || (typeof v === 'string' && v.length <= MAX_TAG_LEN);
 }
 
 function isValidRun(r: unknown): r is TrailOsmTagRun {
