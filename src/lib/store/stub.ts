@@ -137,6 +137,10 @@ export function createMapStoreStub(): MapStoreState {
 		setShowSections: noop,
 		gradeTintedTrail: false,
 		setGradeTintedTrail: noop,
+		surfaceColoured: false,
+		setSurfaceColoured: noop,
+		sacColoured: false,
+		setSacColoured: noop,
 		showDistanceMarkers: false,
 		setShowDistanceMarkers: noop,
 		baseMapProvider: BaseMapProvider.OPEN_STREET_MAP,
@@ -188,6 +192,9 @@ export function createMapStoreStub(): MapStoreState {
 		setSevereWeatherLayer: noop,
 		severeWeatherData: null,
 		setSevereWeatherData: noop,
+
+		trailOsmTagsFile: null,
+		setTrailOsmTagsFile: noop,
 
 		seasonalStatusFile: null,
 		setSeasonalStatusFile: noop,

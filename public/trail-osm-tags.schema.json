@@ -1,0 +1,71 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "https://cldt.hr/trail-osm-tags.schema.json",
+	"title": "CLDT Trail OSM Tags",
+	"description": "Run-length-encoded OSM way tags along the CLDT, sampled every ~100 m and merged into contiguous runs of identical (surface, highway, sac_scale, mtb_scale). Consumed by the trail-style renderer to colour the polyline by surface or by SAC difficulty.",
+	"type": "object",
+	"required": ["lastUpdated", "totalKm", "runs"],
+	"properties": {
+		"lastUpdated": {
+			"type": "string",
+			"format": "date",
+			"description": "ISO date (YYYY-MM-DD) when the enrichment script last ran."
+		},
+		"totalKm": {
+			"type": "number",
+			"minimum": 0,
+			"description": "Total CLDT length in kilometres at the time of enrichment. Used as a sanity check against the live GPX; if the live trail length differs by >5 percent the runtime loader treats this dataset as stale."
+		},
+		"sampleStepM": {
+			"type": "number",
+			"minimum": 1,
+			"description": "Original sampling step in metres before run-length encoding. Informational; the runtime does not need to honour it."
+		},
+		"runs": {
+			"type": "array",
+			"description": "Sorted by fromKm. Adjacent runs do not overlap. Coverage gaps (where the script could not find an OSM way within the snap radius) are emitted as a run with surface=null, highway=null, sac_scale=null.",
+			"items": {
+				"type": "object",
+				"required": ["fromKm", "toKm"],
+				"additionalProperties": false,
+				"properties": {
+					"fromKm": {
+						"type": "number",
+						"minimum": 0,
+						"description": "Inclusive start of the run, in km from the SOBO start."
+					},
+					"toKm": {
+						"type": "number",
+						"minimum": 0,
+						"description": "Inclusive end of the run, in km from the SOBO start."
+					},
+					"surface": {
+						"type": ["string", "null"],
+						"description": "OSM surface=* value (e.g. asphalt, paved, unpaved, gravel, ground, dirt, grass, rock). Null when no nearby way had a surface tag."
+					},
+					"highway": {
+						"type": ["string", "null"],
+						"description": "OSM highway=* value (e.g. path, track, footway, unclassified, tertiary). Null when no way found within snap radius."
+					},
+					"sac_scale": {
+						"type": ["string", "null"],
+						"enum": [
+							null,
+							"hiking",
+							"mountain_hiking",
+							"demanding_mountain_hiking",
+							"alpine_hiking",
+							"demanding_alpine_hiking",
+							"difficult_alpine_hiking"
+						],
+						"description": "OSM sac_scale=* value: T1 hiking through T6 difficult alpine hiking. Null when no SAC tag is set on the nearest way."
+					},
+					"mtb_scale": {
+						"type": ["string", "null"],
+						"description": "OSM mtb:scale=* value (0-6). Informational; not currently rendered."
+					}
+				}
+			}
+		}
+	}
+}

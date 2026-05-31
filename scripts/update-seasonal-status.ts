@@ -31,6 +31,7 @@ import addFormats from 'ajv-formats';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { haversineDistanceM as haversineMeters } from '../src/lib/haversine';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -370,15 +371,6 @@ async function main(): Promise<void> {
 }
 
 // ---- GPX landmark resolution ----------------------------------------------
-
-function haversineMeters(a: { lat: number; lng: number }, b: { lat: number; lng: number }): number {
-	const R = 6_371_000;
-	const toRad = (d: number): number => (d * Math.PI) / 180;
-	const dLat = toRad(b.lat - a.lat);
-	const dLng = toRad(b.lng - a.lng);
-	const h = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(a.lat)) * Math.cos(toRad(b.lat)) * Math.sin(dLng / 2) ** 2;
-	return 2 * R * Math.asin(Math.sqrt(h));
-}
 
 async function resolveTrailGeometry(): Promise<TrailGeometry | null> {
 	if (!GPX_URL) return null;

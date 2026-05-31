@@ -50,7 +50,8 @@
 			"stagePlanner": "Mehrtages-Etappenplaner - teile beliebige Streckenabschnitte nach Distanz oder Zeit in Tagesetappen auf, zeige Höhen- und ETA-Statistiken je Etappe an, exportiere einzelne Etappen als GPX-Dateien oder alle Etappen als Etappenkarten-PDF",
 			"gpxImport": "GPX-Track-Import - ziehe eine aufgezeichnete GPX-Datei auf die Karte (oder wähle sie aus) und vergleiche deine Route mit dem offiziellen Weg; Statistiken zu Distanz, Tempo, Gesamtzeit, Gehzeit, max. Abweichung und Streckenabdeckung",
 			"emergency": "Notfallpanel 112 - langes Drücken des roten SOS-Buttons (unten rechts) öffnet ein offline-first Panel mit deinen GPS-Koordinaten, Plus Code, Etappe und Kilometer auf dem Weg sowie Richtung und Entfernung zur nächsten Straßenanbindung und HGSS-Bergrettungsstation; jedes Feld in die Zwischenablage kopieren und an die Telefon-App (112 anrufen) oder Karten-App (In Karten öffnen) übergeben; vollständig offline, sobald die Daten im Cache sind",
-			"trailStyle": "Wegstil - wähle im Ebenen-Panel, wie die Route eingefärbt wird: Standard (eine Farbe), Abschnitte (Zonen A/B/C mit Grenzmarkern und Statistik pro Abschnitt) oder Steigung (Gradienten-Färbung in fünf Stufen, warme Töne für Anstiege und kühle für Abstiege in der aktuellen Gehrichtung; Farblegende im Panel; wird beim Wechsel der SOBO/NOBO-Richtung neu berechnet)",
+			"trailStyle": "Wegstil - wähle im Ebenen-Panel, wie die Route eingefärbt wird: Standard (eine Farbe), Abschnitte (Zonen A/B/C mit Grenzmarkern und Statistik pro Abschnitt), Steigung (Gradienten-Färbung in fünf Stufen, warme Töne für Anstiege und kühle für Abstiege in der aktuellen Gehrichtung; Farblegende im Panel; wird beim Wechsel der SOBO/NOBO-Richtung neu berechnet), Untergrund oder Schwierigkeit (SAC)",
+			"surfaceAndSac": "Untergrund- und Schwierigkeitsfärbung - färbt die Trail-Linie (und die Flächenfüllung des Höhenprofils) nach OSM-Untergrundtyp (befestigt / unbefestigt / Schotter / Erde / Fels) oder nach SAC-Wanderskala (T1 Wandern bis T6 schwieriges Alpinwandern). Die Daten werden monatlich von einer GitHub-Action aus OpenStreetMap angereichert; die Optionen Untergrund und Schwierigkeit bleiben deaktiviert, bis der Datensatz beim ersten Rendern geladen ist. Richtungsbewusst: der Datensatz ist nach SOBO km indiziert und der Renderer spiegelt ihn live nach NOBO",
 			"distanceMarkers": "Distanzmarkierungen - kleine km/mi-Beschriftungen entlang des Trails im Abstand von 100 / 50 / 25 / 10 / 5 / 1 Einheiten. Progressive Anzeige je nach Zoomstufe: 100 km sind bei jedem Zoom sichtbar, feinere Abstände erscheinen beim Hineinzoomen (1-km-Beschriftungen erst ab Zoom 13+). In den Einstellungen umschaltbar; Beschriftungen folgen dem aktiven Einheitensystem und der aktuellen Richtung (SOBO/NOBO)"
 		},
 		"dataAttribution": "Daten & Urheberrecht",
@@ -98,6 +99,9 @@
 				"default": "Standard",
 				"sections": "Abschnitte",
 				"grade": "Steigung",
+				"surface": "Untergrund",
+				"sac": "Schwierigkeit (SAC)",
+				"dataUnavailable": "Daten werden geladen",
 				"tooltip": "Wähle, wie die Trail-Linie eingefärbt wird.",
 				"legendTitle": "Steigung",
 				"legendFlat": "flach",
@@ -105,7 +109,26 @@
 				"legendSteep": "steil",
 				"legendVerySteep": "sehr steil",
 				"legendExtreme": "extrem",
-				"legendNote": "warm = Aufstieg, kühl = Abstieg"
+				"legendNote": "warm = Aufstieg, kühl = Abstieg",
+				"surfaceLegendTitle": "Untergrund",
+				"surfaceBuckets": {
+					"paved": "Befestigt (Asphalt, Beton, Stein)",
+					"unpaved": "Unbefestigt / verdichtet",
+					"gravel": "Schotter",
+					"ground": "Erde (Boden, Gras, Schmutz)",
+					"rock": "Fels / Geröll",
+					"unknown": "Unbekannt"
+				},
+				"sacLegendTitle": "SAC Wanderskala",
+				"sacBuckets": {
+					"hiking": "Wandern",
+					"mountain_hiking": "Bergwandern",
+					"demanding_mountain_hiking": "Anspruchsvolles Bergwandern",
+					"alpine_hiking": "Alpinwandern",
+					"demanding_alpine_hiking": "Anspruchsvolles Alpinwandern",
+					"difficult_alpine_hiking": "Schwieriges Alpinwandern",
+					"untagged": "Nicht klassifiziert"
+				}
 			}
 		},
 		"walkingPace": "Gehtempo",
