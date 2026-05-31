@@ -118,8 +118,14 @@ export const config = {
 	/** Show trail sections (color-coded segments and boundary markers) by default */
 	showSections: envBool('NEXT_PUBLIC_DEFAULT_SHOW_SECTIONS', false),
 
-	/** Grade-tinted trail rendering by default (mutually exclusive with showSections). */
+	/** Grade-tinted trail rendering by default (mutually exclusive with showSections, surfaceColoured, sacColoured). */
 	gradeTintedTrail: envBool('NEXT_PUBLIC_DEFAULT_GRADE_TINTED_TRAIL', false),
+
+	/** Surface-coloured trail rendering by default (mutually exclusive with the other trail styles). */
+	surfaceColoured: envBool('NEXT_PUBLIC_DEFAULT_SURFACE_COLOURED', false),
+
+	/** SAC-difficulty-coloured trail rendering by default (mutually exclusive with the other trail styles). */
+	sacColoured: envBool('NEXT_PUBLIC_DEFAULT_SAC_COLOURED', false),
 
 	/** Show zoom-aware distance markers along the trail by default. */
 	showDistanceMarkers: envBool('NEXT_PUBLIC_DEFAULT_DISTANCE_MARKERS', false),

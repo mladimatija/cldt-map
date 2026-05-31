@@ -118,7 +118,9 @@ Optional overrides (see `src/lib/config.ts`, `src/lib/gpx-cache.ts`):
 - `NEXT_PUBLIC_DEFAULT_LARGE_TOUCH_TARGETS` - large touch targets on load (accessibility)
 - `NEXT_PUBLIC_DEFAULT_RULER_ENABLED` - distance ruler on load
 - `NEXT_PUBLIC_DEFAULT_SHOW_SECTIONS` - show trail sections on load (default `false`)
-- `NEXT_PUBLIC_DEFAULT_GRADE_TINTED_TRAIL` - render grade-tinted trail on load (default `false`; mutually exclusive with show-sections)
+- `NEXT_PUBLIC_DEFAULT_GRADE_TINTED_TRAIL` - render grade-tinted trail on load (default `false`; mutually exclusive with show-sections / surface-coloured / sac-coloured)
+- `NEXT_PUBLIC_DEFAULT_SURFACE_COLOURED` - colour trail polyline by OSM surface type on load (default `false`; requires `public/trail-osm-tags.json` populated via `npm run enrich-osm`)
+- `NEXT_PUBLIC_DEFAULT_SAC_COLOURED` - colour trail polyline by SAC hiking-difficulty scale on load (default `false`; requires the same OSM tag dataset)
 - `NEXT_PUBLIC_DEFAULT_DISTANCE_MARKERS` - show zoom-aware distance markers along the trail (default `false`). Levels 100/50/25/10/5/1 reveal progressively as you zoom in; labelled in km or mi depending on `NEXT_PUBLIC_DEFAULT_UNITS`
 - `NEXT_PUBLIC_DEFAULT_WALKING_PACE_KMH` - walking pace in km/h used for passage-time estimates (default `4`)
 - `NEXT_PUBLIC_DEFAULT_GRADE_ADJUSTED_ETA` - apply Tobler-style grade adjustment to ETA (default `true`)
@@ -133,10 +135,12 @@ Optional overrides (see `src/lib/config.ts`, `src/lib/gpx-cache.ts`):
 - `NEXT_PUBLIC_TILE_CACHE_TTL_DAYS` - days after which offline tile cache is considered stale (default `30`)
 - `NEXT_PUBLIC_NOTICES_URL` - URL for remote trail-condition notices JSON; falls back to bundled `/notices.json` on network error
 - `NEXT_PUBLIC_SEASONAL_STATUS_URL` - URL for remote seasonal-status JSON; falls back to bundled `/seasonal-status.json` on network error
+- `NEXT_PUBLIC_TRAIL_OSM_TAGS_URL` - URL for remote OSM tag dataset JSON; falls back to bundled `/trail-osm-tags.json` on network error. The bundled file is ~290 KB uncompressed and gzips to ~20 KB; Next.js serves static assets gzipped by default, and `next.config.ts` sets `Cache-Control: public, max-age=86400` on the route so returning visitors do not re-download it.
 
 Script-only:
 
 - `ANTHROPIC_API_KEY` - required by `npm run update-seasonal` (the curator that synthesises `public/seasonal-status.json` from configured sources). Not read at runtime; set it locally or in CI secrets where the script runs.
+- `OSM_OVERPASS_URL` - optional Overpass endpoint override for `npm run enrich-osm` (the OSM tag enricher). Defaults to `https://overpass-api.de/api/interpreter`. Set to a self-hosted instance to bypass public-instance rate limits.
 
 ### Run
 

@@ -72,6 +72,12 @@ const nextConfig: NextConfig = {
 				source: '/manifest.webmanifest',
 				headers: [{ key: 'Cache-Control', value: 'public, max-age=0, must-revalidate' }],
 			},
+			{
+				// OSM tag dataset is refreshed monthly via CI; cache for a day so
+				// returning visitors don't re-download the ~20 KB gzipped file.
+				source: '/trail-osm-tags.json',
+				headers: [{ key: 'Cache-Control', value: 'public, max-age=86400, must-revalidate' }],
+			},
 		];
 	},
 };
