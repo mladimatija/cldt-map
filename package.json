@@ -60,7 +60,7 @@
 		"prettier-plugin-tailwindcss": "^0.8.0",
 		"sharp": "^0.34.5",
 		"tailwindcss": "^4.2.4",
-		"tsx": "^4.22.2",
+		"tsx": "^4.22.4",
 		"typescript": "^6.0.3"
 	},
 	"overrides": {
