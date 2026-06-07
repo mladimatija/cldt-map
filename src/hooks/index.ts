@@ -9,5 +9,25 @@ import { useSiteMetadata } from './useSiteMetadata';
 import { useFitToRoute } from './useFitToRoute';
 import { usePopoverFocusTrap } from './usePopoverFocusTrap';
 import { useClickOutside } from './useClickOutside';
+import { usePanel, usePanelListeners, usePanelManager } from './usePanelManager';
+import { usePoiListRows } from './usePoiListRows';
 
-export { useSiteMetadata, useMapStore, useBlockMapPropagation, useFitToRoute, usePopoverFocusTrap, useClickOutside };
+export {
+	useSiteMetadata,
+	useMapStore,
+	useBlockMapPropagation,
+	useFitToRoute,
+	usePopoverFocusTrap,
+	useClickOutside,
+	usePanel,
+	usePanelListeners,
+	usePanelManager,
+	usePoiListRows,
+};
+export type {
+	ParsedDistance,
+	PoiListGroupedItem,
+	SortMode,
+	UsePoiListRowsArgs,
+	UsePoiListRowsResult,
+} from './usePoiListRows';

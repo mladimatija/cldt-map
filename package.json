@@ -18,11 +18,13 @@
 		"build:emergency-data": "tsx scripts/build-emergency-data.ts",
 		"update-seasonal": "tsx --env-file-if-exists=.env.local scripts/update-seasonal-status.ts",
 		"enrich-osm": "tsx --env-file-if-exists=.env.local scripts/enrich-trail-osm.ts",
+		"enrich-pois": "tsx --env-file-if-exists=.env.local scripts/enrich-pois.ts",
 		"clean-install": "rm -rf node_modules .next package-lock.json && npm install"
 	},
 	"dependencies": {
 		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",
+		"docx": "^9.7.1",
 		"html-to-image": "^1.11.13",
 		"jspdf": "^4.2.1",
 		"leaflet": "^1.9.4",
@@ -35,6 +37,7 @@
 		"react-dom": "19.2.6",
 		"react-icons": "^5.6.0",
 		"react-leaflet": "^5.0.0",
+		"react-select": "^5.10.2",
 		"recharts": "^3.8.1",
 		"tailwind-merge": "^3.6.0",
 		"tailwindcss-animate": "^1.0.7",

@@ -74,8 +74,8 @@ export function MapControlsSettingsPanel({
 	const seasonalStatusFile = useMapStore((state: MapStoreState) => state.seasonalStatusFile);
 	const units = useMapStore((state: MapStoreState) => state.units);
 
-	// Capture "now" once at mount via a lazy useState init - mirrors the pattern
-	// in SunsetSunriseMarkers - so the days-ago display stays pure during render
+	// Capture "now" once at mount via a lazy useState init
+	// so the days-ago display stays pure during render
 	// while still reflecting the active dataset's lastUpdated value.
 	const [nowMs] = useState(() => Date.now());
 	const seasonalLastUpdatedDays: number | null = ((): number | null => {
@@ -97,7 +97,7 @@ export function MapControlsSettingsPanel({
 					aria-modal="true"
 					className={cn(
 						MAP_CONTROL_POPOVER,
-						'fixed top-2 right-16 flex max-h-[calc(100dvh-8rem)] w-80 flex-col gap-2 overflow-y-auto',
+						'fixed top-2 right-16 flex max-h-[calc(100dvh-4rem)] w-80 flex-col gap-2 overflow-y-auto',
 					)}
 					ref={popoverRef}
 					role="dialog"
@@ -286,6 +286,7 @@ export function MapControlsSettingsPanel({
 							</SmartTooltip>
 						</span>
 					</label>
+
 					<label className="flex cursor-pointer items-center gap-2">
 						<Checkbox checked={severeWeatherLayer} onCheckedChange={(checked) => setSevereWeatherLayer(checked)} />
 						<IoWarningOutline className="h-4 w-4 shrink-0 text-gray-600 dark:text-white" />

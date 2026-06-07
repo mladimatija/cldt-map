@@ -13,7 +13,7 @@ import { formatDistance, formatElevation } from '@/lib/utils';
 const createSunDivIcon = (color: string): L.DivIcon =>
 	L.divIcon({
 		className: '',
-		html: `<div style="width:18px;height:18px;border-radius:50%;background:${color};border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.35);"></div>`,
+		html: `<div style="width:18px;height:18px;border-radius:50%;background:${color};border:2px solid var(--marker-on-color);box-shadow:var(--trail-marker-shadow);"></div>`,
 		iconSize: [18, 18],
 		iconAnchor: [9, 9],
 	});

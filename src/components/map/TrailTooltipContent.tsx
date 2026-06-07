@@ -9,6 +9,7 @@ import React from 'react';
 import { Button } from '@/components/ui/Button';
 import { HourlyWeatherStrip } from './HourlyWeatherStrip';
 import { WindCompass } from './WindCompass';
+import { openCoordinatesInMaps } from '@/lib/utils';
 import type { HourlyStripData } from '@/lib/weather';
 
 export interface TrailTooltipData {
@@ -79,15 +80,6 @@ interface TrailTooltipContentProps {
 	onNavigate?: () => void;
 }
 
-function openCoordinates(lat: number, lng: number): void {
-	const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-	if (isMobile) {
-		window.location.href = `geo:${lat},${lng}`;
-	} else {
-		window.open(`https://www.google.com/maps?q=${lat},${lng}`, '_blank', 'noopener,noreferrer');
-	}
-}
-
 export function TrailTooltipContent({
 	title,
 	trailData,
@@ -121,7 +113,7 @@ export function TrailTooltipContent({
 						<button
 							className="trail-tooltip-coords-link m-0 border-0 bg-transparent p-0 font-bold"
 							type="button"
-							onClick={() => openCoordinates(trailData.lat, trailData.lng)}
+							onClick={() => openCoordinatesInMaps(trailData.lat, trailData.lng)}
 						>
 							{trailData.lat.toFixed(5)}, {trailData.lng.toFixed(5)}
 						</button>

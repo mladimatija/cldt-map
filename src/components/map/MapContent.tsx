@@ -12,6 +12,8 @@ import { DEFAULT_PATH_OPTIONS } from '@/components/map/trail-route-constants';
 import { useSevereWeatherFetch } from '@/hooks/useSevereWeatherFetch';
 import { useSeasonalStatusFetch } from '@/hooks/useSeasonalStatusFetch';
 import { useTrailOsmTagsFetch } from '@/hooks/useTrailOsmTagsFetch';
+import { usePoisFetch } from '@/hooks/usePoisFetch';
+import { usePanelListeners } from '@/hooks';
 
 function MapTrailLoadingFallback(): React.ReactElement {
 	const t = useTranslations('mapWrapper');
@@ -25,7 +27,6 @@ const LocationControls = dynamic(() => import('@/components/map/controls/MapCont
 const BaseMapSelector = dynamic(() => import('@/components/map/BaseMapSelector'), { ssr: false });
 const MapMarkers = dynamic(() => import('@/components/map/MapMarkers'), { ssr: false });
 const ShareUrlHandler = dynamic(() => import('@/components/map/ShareUrlHandler'), { ssr: false });
-const GoToDistance = dynamic(() => import('@/components/map/GoToDistance'), { ssr: false });
 const ElevationChart = dynamic(() => import('@/components/charts/ElevationChart'), { ssr: false });
 const RulerHint = dynamic(() => import('@/components/map/controls/RulerHint').then((m) => ({ default: m.RulerHint })), {
 	ssr: false,
@@ -49,6 +50,13 @@ const NoticeMarkers = dynamic(
 const SunsetSunriseMarkers = dynamic(() => import('@/components/map/SunsetSunriseMarkers'), { ssr: false });
 const TrailDistanceMarkers = dynamic(
 	() => import('@/components/map/TrailDistanceMarkers').then((m) => ({ default: m.TrailDistanceMarkers })),
+	{ ssr: false },
+);
+const PoiMarkers = dynamic(() => import('@/components/map/PoiMarkers').then((m) => ({ default: m.PoiMarkers })), {
+	ssr: false,
+});
+const PoiImageLightbox = dynamic(
+	() => import('@/components/map/PoiImageLightbox').then((m) => ({ default: m.PoiImageLightbox })),
 	{ ssr: false },
 );
 const StageBoundaryMarkers = dynamic(() => import('@/components/map/StageBoundaryMarkers'), { ssr: false });
@@ -79,6 +87,10 @@ export default function MapContent(): React.ReactElement {
 	useSevereWeatherFetch();
 	useSeasonalStatusFetch();
 	useTrailOsmTagsFetch();
+	usePoisFetch();
+	// Coordinates mutual-exclusion close behavior for every panel that
+	// registers via `usePanel` (map controls + base map dropdown).
+	usePanelListeners();
 
 	// Initialize location service once when the component mounts
 	useEffect(() => {
@@ -147,7 +159,6 @@ export default function MapContent(): React.ReactElement {
 			<GpxImportDropzone />
 			<DistanceRemainingOverlay />
 			<ShareUrlHandler />
-			<GoToDistance />
 			<BaseMapSelector />
 			<RadarOverlay />
 			<Suspense fallback={<MapTrailLoadingFallback />}>
@@ -155,6 +166,8 @@ export default function MapContent(): React.ReactElement {
 			</Suspense>
 			<ImportedTrackLayer />
 			<TrailDistanceMarkers />
+			<PoiMarkers />
+			<PoiImageLightbox />
 			<MapMarkers />
 			<SunsetSunriseMarkers />
 			<StageBoundaryMarkers />

@@ -50,8 +50,13 @@ export function parseGpx(xml: string): ParsedGpx {
 
 			const timeEl = pt.getElementsByTagName('time')[0];
 			if (timeEl?.textContent) {
-				const date = new Date(timeEl.textContent.trim());
-				if (!isNaN(date.getTime())) point.time = date;
+				const timeStr = timeEl.textContent.trim();
+				// ISO 8601 with timezone is at most 29 chars; reject longer strings
+				// to avoid allocating the Date constructor for pathological inputs.
+				if (timeStr.length <= 32) {
+					const date = new Date(timeStr);
+					if (!isNaN(date.getTime())) point.time = date;
+				}
 			}
 
 			return [point];

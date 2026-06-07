@@ -12,7 +12,7 @@ const importedTracksStore = localforage.createInstance({
 
 export const TRACK_COLOR_PALETTE = ['#e74c3c', '#3498db', '#2ecc71', '#f39c12', '#9b59b6'];
 
-// FNV-1a 32-bit - per DR-023: sufficient for content-addressable deduplication of user-local files
+// FNV-1a 32-bit: sufficient for content-addressable deduplication of user-local files
 function fnv1aHash(str: string): string {
 	let h = 0x811c9dc5;
 	for (let i = 0; i < str.length; i++) {
@@ -114,7 +114,6 @@ export function computeTrackStats(track: ImportedTrack, enhancedPoints: { lat: n
 
 	const avgMovingPaceSecPerKm = totalDistanceM > 0 && totalMovingSec > 0 ? totalMovingSec / (totalDistanceM / 1000) : 0;
 
-	// DR-024 monotonic-hint coverage walk.
 	// Assumes imported track is roughly monotone along the official trail (typical for hikes).
 	// A ±50 backward probe handles minor direction reversals and switchbacks.
 	let maxDeviationM = 0;

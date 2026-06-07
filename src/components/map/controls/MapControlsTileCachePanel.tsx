@@ -18,6 +18,7 @@ import {
 	PRECACHE_ZOOM_MIN,
 	PRECACHE_ZOOM_MAX,
 } from '@/lib/tile-cache';
+import { clearPoiAssetCache, getPoiAssetCount } from '@/lib/poi-prefetch';
 import { tileCacheTtlDays } from '@/lib/config';
 import { Button } from '@/components/ui/Button';
 import { Checkbox } from '@/components/ui/Checkbox';
@@ -51,6 +52,7 @@ export function MapControlsTileCachePanel(): React.ReactElement {
 	const tileCacheMeta = useMapStore((s: MapStoreState) => s.tileCacheMeta);
 	const autoSync = useMapStore((s: MapStoreState) => s.autoSync);
 	const predictivePrecache = useMapStore((s: MapStoreState) => s.predictivePrecache);
+	const poiPrefetchVersion = useMapStore((s: MapStoreState) => s.poiPrefetchVersion);
 	const gpxLoaded = useMapStore((s: MapStoreState) => s.gpxLoaded);
 	const startTileDownload = useMapStore((s: MapStoreState) => s.startTileDownload);
 	const cancelTileDownload = useMapStore((s: MapStoreState) => s.cancelTileDownload);
@@ -65,6 +67,18 @@ export function MapControlsTileCachePanel(): React.ReactElement {
 	const [querying, setQuerying] = useState(false);
 	const [confirmClearAll, setConfirmClearAll] = useState(false);
 	const confirmYesRef = useRef<HTMLButtonElement>(null);
+
+	// Live POI-asset count (images + Wikipedia summaries cached by
+	// `prefetchPoiAssets`). Refreshed when the download finishes and after a
+	// manual clear so the user sees the cache flip back to 0.
+	const [poiAssetCount, setPoiAssetCount] = useState<number | null>(null);
+	const refreshPoiAssetCount = useCallback(async (): Promise<void> => {
+		setPoiAssetCount(await getPoiAssetCount());
+	}, []);
+	const handleClearPoiAssets = useCallback(async (): Promise<void> => {
+		await clearPoiAssetCache();
+		await refreshPoiAssetCount();
+	}, [refreshPoiAssetCount]);
 
 	const cacheable = isProviderCacheable(baseMapProvider);
 	const stale = isCacheStale(tileCacheMeta);
@@ -96,6 +110,12 @@ export function MapControlsTileCachePanel(): React.ReactElement {
 		}
 		prevDownloading.current = tileCacheDownloading;
 	}, [tileCacheDownloading, baseMapProvider, refreshLiveCount]);
+
+	// Probe the POI asset count on mount, then refresh whenever the background
+	// prefetch increments the store counter.
+	useEffect(() => {
+		queueMicrotask(() => void refreshPoiAssetCount());
+	}, [poiPrefetchVersion, refreshPoiAssetCount]);
 
 	// Focus [Yes] button when clear-all confirmation row appears
 	useEffect(() => {
@@ -313,6 +333,24 @@ export function MapControlsTileCachePanel(): React.ReactElement {
 									</SmartTooltip>
 								</span>
 							</label>
+
+							{/* POI offline assets: cached image thumbnails + Wikipedia
+							    summaries. Populated as a side-effect of the corridor
+							    pre-cache so popups stay rich offline. */}
+							<div className="flex items-center justify-between gap-2">
+								<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">
+									{t('poiAssets', { count: poiAssetCount ?? 0 })}
+								</span>
+								<Button
+									aria-label={t('clearPoiAssets')}
+									className="relative !px-2 !py-1.5 text-xs before:absolute before:inset-[-12px]"
+									disabled={!poiAssetCount}
+									variant="mapControlOutlineSecondary"
+									onClick={() => void handleClearPoiAssets()}
+								>
+									{t('clearPoiAssets')}
+								</Button>
+							</div>
 
 							{/* Predictive pre-cache toggle */}
 							<label

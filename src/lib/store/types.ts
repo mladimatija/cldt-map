@@ -5,9 +5,11 @@ import type { TileCacheMeta } from '../tile-cache';
 import type { TrackPoint } from '../gpx-parser';
 import type { SeasonalStatusEntry, SeasonalStatusFile } from '../seasonal-status';
 import type { TrailOsmTagsFile } from '../trail-osm-tags';
+import type { PoiImage, PoisFile } from '../pois';
 import { RulerRange } from '@/lib/distance-utils';
 
 export type { TrailDirection, UnitSystem };
+export type { TrackPoint } from '../gpx-parser';
 
 export interface LocationState {
 	userLocation: { lat: number; lng: number; accuracy?: number } | null;
@@ -245,6 +247,14 @@ export interface MapStoreState {
 	isMapFullscreen: boolean;
 	setMapFullscreen: (fullscreen: boolean) => void;
 
+	/** Id of the currently open overlay panel (precision, settings, share, ...)
+	 *  or null when none is open. Mutually exclusive: opening one closes any
+	 *  previous. Refs and document listeners live in `usePanelManager`. */
+	openPanel: string | null;
+	setOpenPanel: (id: string | null) => void;
+	togglePanel: (id: string) => void;
+	closePanel: () => void;
+
 	// ── Offline / tile cache ─────────────────────────────────────────────────
 	isOffline: boolean;
 	setIsOffline: (offline: boolean) => void;
@@ -257,6 +267,9 @@ export interface MapStoreState {
 	tileCacheMeta: TileCacheMeta | null;
 	autoSync: boolean;
 	predictivePrecache: boolean;
+	/** Incremented each time the background POI asset prefetch completes so
+	 *  components can react without setTimeout. */
+	poiPrefetchVersion: number;
 
 	startTileDownload: (
 		points: { lat: number; lng: number; distanceFromStart: number }[],
@@ -305,6 +318,53 @@ export interface MapStoreState {
 	// ── Trail OSM tag enrichment (surface, highway, SAC, MTB scale) ──
 	trailOsmTagsFile: TrailOsmTagsFile | null;
 	setTrailOsmTagsFile: (file: TrailOsmTagsFile | null) => void;
+
+	// ── Points of Interest (towns, settlements, future categories) ──
+	poisFile: PoisFile | null;
+	setPoisFile: (file: PoisFile | null) => void;
+	/** Master on/off for the POI map layer. */
+	poisLayerEnabled: boolean;
+	setPoisLayerEnabled: (enabled: boolean) => void;
+	/** Unix-ms timestamp of the last time the user dismissed the POI source
+	 *  disclaimer with "Don't show for 30 days". `null` means never dismissed,
+	 *  so the dialog opens on the next enable. */
+	poiDisclaimerDismissedAt: number | null;
+	setPoiDisclaimerDismissedAt: (ts: number | null) => void;
+	/** Per-type filter: a type present in this set is rendered, absent is hidden. */
+	enabledPoiTypes: ReadonlySet<string>;
+	setEnabledPoiTypes: (types: ReadonlySet<string>) => void;
+	togglePoiType: (type: string) => void;
+	/** Per-tag filter. Empty set means "no tag filter" - all POIs that pass
+	 *  the type filter are shown. Non-empty set means "only POIs whose tags
+	 *  intersect this set". Tag-less POIs are always hidden when the filter
+	 *  is active, otherwise the filter would be a no-op for any dataset that
+	 *  isn't fully tagged. */
+	enabledPoiTags: ReadonlySet<string>;
+	setEnabledPoiTags: (tags: ReadonlySet<string>) => void;
+	togglePoiTag: (tag: string) => void;
+	clearPoiTags: () => void;
+	/** POI ids the user has explicitly starred for trip-brief "Selected only" scope.
+	 *  Persisted in the store so the selection survives panel close/reopen and
+	 *  is still present when the trip-brief modal is opened. */
+	starredPoiIds: ReadonlySet<string>;
+	toggleStarredPoi: (id: string) => void;
+	clearStarredPois: () => void;
+	/** POI id the renderer should fly to and open the popup for on the next
+	 *  effect tick. Set by panels that want to surface a POI on the map
+	 *  (e.g. the stage planner places list); cleared by PoiMarkers after
+	 *  the fly+open dance completes. */
+	pendingOpenPoiId: string | null;
+	requestOpenPoi: (id: string) => void;
+	clearPendingOpenPoi: () => void;
+	/** Active lightbox state. When `images` is non-null, `PoiImageLightbox`
+	 *  renders fullscreen with `index` pointing at the visible image. The
+	 *  popup gallery sets these on thumbnail click; the lightbox clears
+	 *  them on close. */
+	lightboxImages: PoiImage[] | null;
+	lightboxIndex: number;
+	openLightbox: (images: PoiImage[], index: number) => void;
+	closeLightbox: () => void;
+	setLightboxIndex: (index: number) => void;
 
 	// ── Seasonal trail status ──────────────────────────────────────────
 	seasonalStatusFile: SeasonalStatusFile | null;

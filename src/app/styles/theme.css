@@ -1,6 +1,8 @@
 :root {
 	--cldt-blue: #00a6c7;
 	--cldt-blue-text: #006b85;
+	--cldt-blue-border-alpha: #80d3df;
+	--cldt-blue-surface: #ebf8fb;
 	--cldt-green: #5ec687;
 	--cldt-red: #e1584d;
 	--cldt-light-blue: #e5f0f5;
@@ -23,11 +25,115 @@
 	--z-controls: 100;
 	--z-controls-popover: 110;
 	--z-tooltips: 200;
+	--z-map-popups: 250;
 	--z-modal: 300;
 	--z-toast: 400;
 	--z-banner: 500;
+	--z-lightbox: 600;
 
 	--min-touch-target: 44px;
+
+	/* POI cluster surface colors (opaque, computed over white #ffffff). */
+	--poi-cluster-bg: #2980af;
+	--poi-cluster-hover-bg: #1c78aa;
+
+	/* POI star toggle: amber active/hover state; inactive uses a neutral gray
+	   so the icon recedes until the user stars a place. Both are tokenized
+	   so dark mode can override and so the palette stays in one file. */
+	--poi-star-inactive: #d1d5db;
+	--poi-star-active: #f59e0b;
+
+	/* POI marker fill colours, grouped by category:
+	     Places (town, settlement)     : blues
+	     Landscape (peak, viewpoint)   : earth tones
+	     Stay (hut, shelter)           : warm orange / rust
+	     Services (restaurant, cafe, food, atm) : magenta / violet
+	   Tokenized so dark mode can override per category and the palette stays
+	   in theme.css. The fallback `--poi-color-default` is used when a type is
+	   not in the map (e.g. unknown type from a stale dataset). */
+	--poi-color-town: #0369a1;
+	--poi-color-settlement: #0891b2;
+	--poi-color-peak: #7c2d12;
+	--poi-color-viewpoint: #a3a3a3;
+	--poi-color-hut: #c2410c;
+	--poi-color-shelter: #92400e;
+	--poi-color-restaurant: #be185d;
+	--poi-color-cafe: #be185d;
+	--poi-color-food: #be185d;
+	--poi-color-atm: #6d28d9;
+	--poi-color-default: #475569;
+
+	/* Generic tinted near-white used for borders and text rendered over any
+	   coloured map marker / button surface (POI dots, seasonal-status chips,
+	   user-location dot, pulse markers, trail endpoint / section markers, the
+	   SOS pulse ring, etc.). #f8fafc still reads as "white" against the coloured
+	   backgrounds but plays nicely with the rest of the palette and gives one
+	   override point if a future dark theme needs it. POI-specific aliases
+	   below preserve naming for popup / cluster sites. */
+	--marker-on-color: #f8fafc;
+	--poi-marker-border: var(--marker-on-color);
+	--poi-cluster-text: var(--marker-on-color);
+	--poi-cluster-border: var(--marker-on-color);
+	--poi-popup-action-text: var(--marker-on-color);
+
+	--print-page-bg: #ffffff;
+
+	/* POI marker drop shadow. Documented as a token so light/dark can diverge
+	   if needed and so it's not buried as a raw rgba() in map.css. */
+	--poi-marker-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+
+	/* POI cluster drop shadow (slightly heavier than --poi-marker-shadow so
+	   the cluster disc reads as elevated over individual markers). */
+	--poi-cluster-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+
+	/* Distance marker bubble drop shadow (subtle lift on the pill label). */
+	--distance-marker-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+
+	/* Seasonal-status chip drop shadow (slightly heavier than distance marker
+	   so the chip reads as elevated above the trail polyline). */
+	--seasonal-chip-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+
+	/* User-location dot drop shadow (soft glow to distinguish the dot from
+	   the map background at all zoom levels). */
+	--user-location-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
+
+	/* Trail-feature marker drop shadow used by trail endpoint / section
+	   markers and the sunrise/sunset sun discs. */
+	--trail-marker-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+
+	/* Image loading placeholder (skeleton) colour. Pre-computed opaque hex over
+	   each mode's primary surface so we don't ship a raw alpha-blend. */
+	--color-image-placeholder: #ecf0f4;
+
+	/* Lightbox (fullscreen image viewer) tokens. The lightbox is a cinematic
+	   surface that is always-dark regardless of the theme - a near-opaque black
+	   backdrop with white-tinted text and chrome - so the same values carry
+	   through to .dark. Tokenized here so map.css / PoiImageLightbox don't ship
+	   raw black/white literals. Pre-computed opaque equivalents (the lightbox
+	   never exposes the page underneath, so true alpha-blending isn't needed). */
+	--lightbox-backdrop-bg: #0d0d0d;
+	--lightbox-text-primary: #f8fafc;
+	--lightbox-text-secondary: #c6cbd1;
+	--lightbox-chrome-bg: #1a1a1a;
+	--lightbox-chrome-bg-hover: #2d2d2d;
+
+	/* Shared semi-transparent backdrop for centred modals (POI disclaimer,
+	   trip-brief generator). Policy exception: modal backdrops must let the
+	   map show through, so an opaque pre-computed value isn't viable here.
+	   Tokenized anyway so all modal call sites share one definition. */
+	--modal-backdrop-bg: rgba(0, 0, 0, 0.4);
+
+	/* POI popup close button hover background. Subtle tint over light bg. */
+	--poi-popup-close-hover-bg: #f3f4f6;
+
+	/* Seasonal chip active ring glow (outer box-shadow ring on the active chip). */
+	--seasonal-chip-active-ring: rgba(0, 0, 0, 0.18);
+
+	/* Pulse marker glow: pre-computed semi-transparent green for the box-shadow
+	   bloom on the active trail-position pulse dot. */
+	--pulse-marker-glow-static: rgba(94, 198, 135, 0.8);
+	--pulse-marker-glow-start: rgba(94, 198, 135, 0.7);
+	--pulse-marker-glow-mid: rgba(94, 198, 135, 0.3);
 
 	touch-action: manipulation;
 }
@@ -44,6 +150,61 @@
 	--text-primary: #f1f5f9;
 	--text-secondary: #94a3b8;
 	--border-color: #334155;
+
+	/* Share-button border and hover surface over dark bg (#0f172a) */
+	--cldt-blue-border-alpha: #167b8c;
+	--cldt-blue-surface: #112434;
+
+	/* POI cluster dark-mode: opaque hex over dark bg (#0f172a) */
+	--poi-cluster-bg: #29b8ca;
+	--poi-cluster-hover-bg: #2ac1d3;
+
+	/* POI star toggle: keep amber on dark; bump inactive to a brighter neutral
+	   so the empty-state glyph is still readable against the dark popup. */
+	--poi-star-inactive: #4b5563;
+	--poi-star-active: #f59e0b;
+
+	/* POI marker fill colours, lifted slightly for contrast on dark navy. */
+	--poi-color-town: #38bdf8;
+	--poi-color-settlement: #22d3ee;
+	--poi-color-peak: #f97316;
+	--poi-color-viewpoint: #cbd5e1;
+	--poi-color-hut: #fb923c;
+	--poi-color-shelter: #f59e0b;
+	--poi-color-restaurant: #ec4899;
+	--poi-color-cafe: #ec4899;
+	--poi-color-food: #ec4899;
+	--poi-color-atm: #a78bfa;
+	--poi-color-default: #94a3b8;
+
+	/* Near-white tokens carry through unchanged - they read as crisp white
+	   over the dark POI markers and cluster discs in dark mode too. */
+
+	/* POI popup close button hover: slightly lighter surface on dark bg. */
+	--poi-popup-close-hover-bg: #374151;
+
+	/* Seasonal chip active ring: slightly deeper on dark bg. */
+	--seasonal-chip-active-ring: rgba(0, 0, 0, 0.35);
+
+	/* Pulse marker glow over dark bg (#0f172a). */
+	--pulse-marker-glow-static: rgba(110, 231, 160, 0.8);
+	--pulse-marker-glow-start: rgba(110, 231, 160, 0.7);
+	--pulse-marker-glow-mid: rgba(110, 231, 160, 0.3);
+
+	/* POI marker drop shadow: slightly darker on dark mode to maintain lift
+	   against the dark navy basemap. */
+	--poi-marker-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+	--poi-cluster-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
+	--trail-marker-shadow: 0 2px 6px rgba(0, 0, 0, 0.55);
+
+	/* Bumped alpha on dark mode so the bubble/chip/dot silhouette stays
+	   distinct against the dark navy basemap. */
+	--distance-marker-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+	--seasonal-chip-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+	--user-location-shadow: 0 0 4px rgba(0, 0, 0, 0.6);
+
+	/* Image loading placeholder over dark bg (#0f172a). */
+	--color-image-placeholder: #1e2a3e;
 }
 
 .large-touch-targets .z-controls button,

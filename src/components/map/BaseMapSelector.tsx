@@ -4,7 +4,7 @@
 import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import { useMap } from 'react-leaflet';
 import { BaseMapProvider, MapService } from '@/lib/services/map-service';
-import { useBlockMapPropagation, useClickOutside, useMapStore } from '@/hooks';
+import { useBlockMapPropagation, useMapStore, usePanel } from '@/hooks';
 import { L } from '@/lib/store/leaflet';
 import type { MapStoreState } from '@/lib/store';
 import { cn } from '@/lib/utils';
@@ -36,23 +36,9 @@ export default function BaseMapSelector({ initialProvider }: BaseMapSelectorProp
 		}
 	}, [storedProvider, currentLayer, initialProvider]);
 
-	const [isOpen, setIsOpen] = useState(false);
 	const containerRef = useRef<HTMLDivElement>(null);
 	useBlockMapPropagation(containerRef);
-	useClickOutside(containerRef, isOpen, () => setIsOpen(false));
-
-	useEffect(() => {
-		if (!isOpen) {
-			return;
-		}
-		const handleKeyDown = (e: KeyboardEvent): void => {
-			if (e.key === 'Escape') {
-				setIsOpen(false);
-			}
-		};
-		document.addEventListener('keydown', handleKeyDown);
-		return () => document.removeEventListener('keydown', handleKeyDown);
-	}, [isOpen]);
+	const { isOpen, close, toggle } = usePanel('baseMap', containerRef);
 
 	useEffect(() => {
 		if (!isBrowser || !map) {
@@ -114,7 +100,7 @@ export default function BaseMapSelector({ initialProvider }: BaseMapSelectorProp
 		} catch (error) {
 			console.error('Error changing map layer:', error);
 		} finally {
-			setIsOpen(false);
+			close();
 		}
 	};
 
@@ -133,17 +119,7 @@ export default function BaseMapSelector({ initialProvider }: BaseMapSelectorProp
 
 	const currentLayerName = t(PROVIDER_TO_KEY[currentLayer] ?? 'standard');
 	const toggleButton = (
-		<Button
-			aria-label={`${currentLayerName} Map Style`}
-			variant="controlRoundDark"
-			onClick={() => {
-				const willOpen = !isOpen;
-				if (willOpen) {
-					window.dispatchEvent(new CustomEvent('closeMapControlOverlays'));
-				}
-				setIsOpen(willOpen);
-			}}
-		>
+		<Button aria-label={`${currentLayerName} Map Style`} variant="controlRoundDark" onClick={toggle}>
 			<div className="flex items-center justify-center">
 				{mapOptions.find((option) => option.id === currentLayer)?.icon}
 			</div>

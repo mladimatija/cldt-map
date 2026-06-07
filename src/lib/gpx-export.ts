@@ -4,6 +4,17 @@ export interface GpxExportPoint {
 	elevation?: number;
 }
 
+/** XML-escape attribute / text content. The dataset is curated but we don't
+ *  trust that to mean it never contains `&` or `<` (Wikipedia titles do). */
+function escapeXml(s: string): string {
+	return s
+		.replace(/&/g, '&amp;')
+		.replace(/</g, '&lt;')
+		.replace(/>/g, '&gt;')
+		.replace(/"/g, '&quot;')
+		.replace(/'/g, '&apos;');
+}
+
 /** Builds a minimal GPX 1.1 XML string from an array of track points. */
 export function buildGpxXml(points: GpxExportPoint[], trackName: string): string {
 	const trackPoints = points
@@ -16,7 +27,7 @@ export function buildGpxXml(points: GpxExportPoint[], trackName: string): string
 	return `<?xml version="1.0" encoding="UTF-8"?>
 <gpx version="1.1" creator="CLDT Map - map.cldt.hr" xmlns="http://www.topografix.com/GPX/1/1">
 \t<trk>
-\t\t<name>${trackName}</name>
+\t\t<name>${escapeXml(trackName)}</name>
 \t\t<trkseg>
 ${trackPoints}
 \t\t</trkseg>
@@ -50,10 +61,54 @@ export function extractGpxSegment(rawGpxXml: string, startIndex: number, endInde
 	return `<?xml version="1.0" encoding="UTF-8"?>
 <gpx version="1.1" creator="CLDT Map - map.cldt.hr" xmlns="http://www.topografix.com/GPX/1/1">
 \t<trk>
-\t\t<name>${trackName}</name>
+\t\t<name>${escapeXml(trackName)}</name>
 \t\t<trkseg>
 ${trackPoints}\t\t</trkseg>
 \t</trk>
+</gpx>`;
+}
+
+export interface GpxWaypoint {
+	lat: number;
+	lng: number;
+	name: string;
+	/** OSMAnd / generic POI type label - rendered into <type> for waypoint
+	 *  categorisation. */
+	type?: string;
+	/** Optional metres. Skipped when missing rather than rendered as 0. */
+	elevation?: number;
+	/** Optional free-text description shown when the user taps the waypoint. */
+	description?: string;
+	/** Optional canonical URL associated with the POI. */
+	url?: string;
+}
+
+/**
+ * Builds a GPX 1.1 document that contains only `<wpt>` elements, no tracks.
+ * Output is OSMAnd / Locus / Gaia-compatible: each waypoint carries name,
+ * optional elevation, type, description, and link. Use this when the user
+ * has cherry-picked a set of POIs for offline import to a GPS app.
+ */
+export function buildGpxWaypointXml(waypoints: GpxWaypoint[], documentName: string): string {
+	const wpts = waypoints
+		.map((w) => {
+			const parts: string[] = [`\t<wpt lat="${w.lat.toFixed(7)}" lon="${w.lng.toFixed(7)}">`];
+			if (w.elevation !== undefined) parts.push(`\t\t<ele>${w.elevation.toFixed(1)}</ele>`);
+			parts.push(`\t\t<name>${escapeXml(w.name)}</name>`);
+			if (w.description) parts.push(`\t\t<desc>${escapeXml(w.description)}</desc>`);
+			if (w.url) parts.push(`\t\t<link href="${escapeXml(w.url)}" />`);
+			if (w.type) parts.push(`\t\t<type>${escapeXml(w.type)}</type>`);
+			parts.push('\t</wpt>');
+			return parts.join('\n');
+		})
+		.join('\n');
+
+	return `<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="CLDT Map - map.cldt.hr" xmlns="http://www.topografix.com/GPX/1/1">
+\t<metadata>
+\t\t<name>${escapeXml(documentName)}</name>
+\t</metadata>
+${wpts}
 </gpx>`;
 }
 

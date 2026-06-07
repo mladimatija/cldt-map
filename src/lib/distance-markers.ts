@@ -89,9 +89,8 @@ function nearestPointIndex(points: EnhancedTrailPoint[], targetM: number): numbe
 
 /**
  * Map of marker level -> Leaflet zoom levels at which the marker should be
- * visible. Mirrors the progressive-disclosure scheme used by gpx.studio:
- * 100 km always visible, lower levels only as the user zooms in. The
- * level-25 entry is intentionally split (visible at low zoom for a gentle
+ * visible. 100 km always visible, lower levels only as the user zooms in.
+ * The level-25 entry is intentionally split (visible at low zoom for a gentle
  * density bump, hidden at zoom 10 when level-10 markers take over, then
  * visible again at zoom 11+).
  */
