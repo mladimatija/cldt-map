@@ -12,7 +12,6 @@ export const MAP_CONTROL_INPUT =
 
 /**
  * Shared dark-mode class fragments - keep in sync with theme.css .dark variables.
- * See docs/dark-mode-styling.md for the unified approach.
  */
 /** Dark panel background + border (panels, popovers, modals). */
 export const DARK_PANEL = 'dark:border-[var(--border-color)] dark:bg-[var(--bg-secondary)]';

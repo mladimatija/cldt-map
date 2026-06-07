@@ -55,7 +55,7 @@ const SECTION_COLOR_BY_KEY: Readonly<Record<string, string>> = Object.fromEntrie
 	TRAIL_SECTIONS.map((s) => [s.nameKey, s.color]),
 );
 
-/** Grade bucket keys: g{band 0..4}_{asc|desc}. Mirrors the polyline's 5x2 palette. */
+/** Grade bucket keys: g{band 0..4}_{asc|desc}. */
 const GRADE_BUCKETS: readonly string[] = (['asc', 'desc'] as const).flatMap((sign) =>
 	[0, 1, 2, 3, 4].map((band) => `g${band}_${sign}`),
 );

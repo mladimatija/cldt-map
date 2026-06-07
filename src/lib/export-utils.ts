@@ -1,5 +1,5 @@
 import { BaseMapProvider } from '@/lib/services/base-map-provider';
-import type { EnhancedTrailPoint, StagePlan, TrailDirection } from '@/lib/store/types';
+import type { EnhancedTrailPoint, StagePlan, TrailDirection, UnitSystem } from '@/lib/store/types';
 import { computeStageStats } from '@/lib/stage-planner';
 import { findNearestPointIndex, formatEta } from '@/lib/distance-utils';
 import { formatElevation, kmToMiles } from '@/lib/utils';
@@ -8,7 +8,7 @@ import { siteMetadata } from '@/lib/metadata';
 /** Providers whose tile servers don't send Access-Control-Allow-Origin; PNG canvas export will taint. */
 const CORS_BLOCKED_PROVIDERS: string[] = [BaseMapProvider.SATELLITE, BaseMapProvider.CROATIA_TOPO];
 
-const MAP_RENDER_SETTLE_MS = 600;
+export const MAP_RENDER_SETTLE_MS = 600;
 
 /** Returns true if PNG export should be disabled for the given base map provider. */
 export function isPngExportDisabled(provider: string): boolean {
@@ -63,7 +63,7 @@ export function pointsToBounds(pts: { lat: number; lng: number }[]): [[number, n
 	];
 }
 
-async function blobToDataUrl(blob: Blob): Promise<string> {
+export async function blobToDataUrl(blob: Blob): Promise<string> {
 	return new Promise((resolve, reject) => {
 		const reader = new FileReader();
 		reader.onload = () => resolve(reader.result as string);
@@ -79,9 +79,12 @@ const EXCLUDED_PANE_CLASSES = new Set([
 	'leaflet-popup-pane',
 ]);
 
-function makeCaptureFilter(container: HTMLElement): (node: Element) => boolean {
+export function makeCaptureFilter(container: HTMLElement): (node: Element) => boolean {
 	return (node: Element): boolean => {
 		if (node === container) return true;
+		// html-to-image walks every child node including Text/Comment which
+		// have no classList; keep those and skip the class-based checks.
+		if (!(node instanceof Element)) return true;
 		// Direct children: only keep leaflet-map-pane
 		if (node.parentElement === container) return node.classList.contains('leaflet-map-pane');
 		// Within map-pane: exclude marker/shadow/tooltip/popup panes
@@ -119,7 +122,7 @@ export function fitMapToRulerBounds(
 	map.fitBounds(pointsToBounds(segmentPoints), { padding: [40, 40], ...options });
 }
 
-async function cropToAspect(dataUrl: string, targetW: number, targetH: number): Promise<string> {
+export async function cropToAspect(dataUrl: string, targetW: number, targetH: number): Promise<string> {
 	return new Promise((resolve) => {
 		const img = new Image();
 		img.onload = () => {
@@ -152,7 +155,7 @@ export async function exportStripMapPdf(
 	elevationPoints: { elevation: number; distanceFromStart: number }[],
 	paceKmh: number,
 	gradeAdjusted: boolean,
-	units: 'metric' | 'imperial',
+	units: UnitSystem,
 	map: LeafletMapForExport,
 	onProgress?: (current: number, total: number) => void,
 	stageLabel?: string,

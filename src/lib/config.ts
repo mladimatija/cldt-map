@@ -1,5 +1,6 @@
 import type { TrailDirection, UnitSystem } from './types';
 import { BaseMapProvider } from './services/base-map-provider';
+import { KNOWN_POI_TYPES } from './poi-types';
 
 /**
  * Centralized application defaults.
@@ -130,6 +131,11 @@ export const config = {
 	/** Show zoom-aware distance markers along the trail by default. */
 	showDistanceMarkers: envBool('NEXT_PUBLIC_DEFAULT_DISTANCE_MARKERS', false),
 
+	/** POI map layer master toggle default. Off-by-default so first-time users
+	 *  see the trail unobstructed; the panel shows a confirmation dialog the
+	 *  first time they enable it (POIs are publicly sourced, not CLDTA-vetted). */
+	poisLayerEnabled: envBool('NEXT_PUBLIC_DEFAULT_POIS_ENABLED', false),
+
 	/** Walking pace in km/h used for passage-time estimates. */
 	walkingPaceKmh: envFloat('NEXT_PUBLIC_DEFAULT_WALKING_PACE_KMH', 4),
 
@@ -156,6 +162,21 @@ export const tileCacheTtlDays = envInt('NEXT_PUBLIC_TILE_CACHE_TTL_DAYS', 30);
  *  fall back to the winter-window auto-default (Nov 1 - May 31). Setting the
  *  env to "true" or "false" overrides the auto-default unconditionally. */
 export const seasonalStatusLayerEnabledOverride = envBoolOptional('NEXT_PUBLIC_DEFAULT_SEASONAL_STATUS_ENABLED');
+
+/** Comma-separated list of POI types enabled by default in the per-type
+ *  filter, e.g. "town,settlement". Unset defaults to all v1 known types. */
+export const defaultEnabledPoiTypes: ReadonlySet<string> = (() => {
+	const raw = process.env.NEXT_PUBLIC_DEFAULT_POI_TYPES;
+	if (typeof raw !== 'string' || raw.trim().length === 0) {
+		return new Set(KNOWN_POI_TYPES);
+	}
+	return new Set(
+		raw
+			.split(',')
+			.map((s) => s.trim())
+			.filter((s) => s.length > 0),
+	);
+})();
 
 /** Maximum distance in metres from the nearest trail point at which a user is considered "on trail".
  *  15 m accounts for typical GPS inaccuracy on narrow trails. */

@@ -98,9 +98,8 @@ let cachedPromise: Promise<TrailOsmTagsFile | null> | null = null;
 
 /**
  * Loads the bundled OSM tag dataset (and, if configured, the remote variant).
- * Mirrors the seasonal-status loader pattern: remote first when
- * NEXT_PUBLIC_TRAIL_OSM_TAGS_URL is set, fallback to /trail-osm-tags.json on
- * any error. Result is cached for the lifetime of the page.
+ * remote first when NEXT_PUBLIC_TRAIL_OSM_TAGS_URL is set, fallback to
+ * /trail-osm-tags.json on any error. Result is cached for the lifetime of the page.
  */
 export function loadTrailOsmTags(): Promise<TrailOsmTagsFile | null> {
 	if (!cachedPromise) {

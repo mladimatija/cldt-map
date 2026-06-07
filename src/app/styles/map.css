@@ -35,6 +35,381 @@
 	z-index: calc(var(--z-map) + 2) !important;
 }
 
+/* POI markers (towns, settlements). Sit above the trail polyline + halos
+   but below chip markers, the trail-point marker, and tooltips so a POI
+   never obscures a seasonal-status chip or an active trail-point pin.
+   The previous calc(var(--z-map) + 3) put them at z-index 3, which on some
+   browsers lost the implicit Leaflet pane order and let POIs render behind
+   labels and the trail. var(--z-map-markers) anchors them firmly in the
+   marker tier. */
+.leaflet-pane.poi-marker-pane {
+	z-index: var(--z-map-markers, 3) !important;
+}
+.leaflet-pane.poi-tooltip-pane {
+	z-index: calc(var(--z-tooltips, 200) - 10) !important;
+}
+/* Leaflet's popup pane (its default sits at z-index 700) gets flattened to
+   z-0 by the blanket `.leaflet-pane { z-index: var(--z-map) }` rule at the
+   top of this file, which then lets every marker pane (z=2, 3, ...) render
+   on top of an open popup. Restore the intended layering by anchoring the
+   popup pane above tooltips and all marker tiers. */
+.leaflet-pane.leaflet-popup-pane {
+	z-index: var(--z-map-popups, 250) !important;
+}
+
+/* The wrapper is the touch target: a transparent 44x44 disc touch target (--min-touch-target).
+   The visible marker (`.poi-marker`) stays small per-type so dense clusters stay legible;
+   it's centred inside the wrapper via flexbox. */
+.poi-marker-wrapper {
+	background: transparent;
+	border: 0;
+	cursor: pointer;
+	display: flex !important;
+	align-items: center;
+	justify-content: center;
+	min-width: var(--min-touch-target);
+	min-height: var(--min-touch-target);
+}
+.poi-marker {
+	display: inline-block;
+	width: var(--poi-size, 8px);
+	height: var(--poi-size, 8px);
+	background: var(--poi-color, var(--poi-color-default));
+	border: 1.5px solid var(--poi-marker-border);
+	border-radius: 50%;
+	box-shadow: var(--poi-marker-shadow);
+	cursor: pointer;
+	transition: transform 100ms ease-out;
+	pointer-events: none;
+}
+.poi-marker-wrapper:hover .poi-marker,
+.poi-marker-wrapper--selected .poi-marker {
+	transform: scale(1.35);
+}
+/* Focus / active styling. The wrapper is invisible by design; we suppress its
+   outline only on :focus-visible (keyboard) and :active (transient press), so
+   that the inner dot's box-shadow ring below is the sole keyboard affordance.
+   We deliberately do NOT include a plain `:focus` here - that would suppress
+   the ring on pointer click and leave keyboard users with no fallback in
+   browsers that fire :focus without :focus-visible. */
+.poi-marker-wrapper:focus-visible,
+.poi-marker-wrapper:active {
+	outline: none !important;
+	background: transparent !important;
+}
+.poi-marker-wrapper:focus-visible .poi-marker,
+.poi-marker-wrapper:active .poi-marker {
+	transform: scale(1.35);
+}
+.poi-marker-wrapper:focus-visible .poi-marker {
+	box-shadow: 0 0 0 2px var(--cldt-green);
+}
+
+/* Popup: Leaflet renders three nested elements
+ *   .leaflet-popup-content-wrapper  (default: white bg, rounded, shadow)
+ *     .leaflet-popup-content         (default: 13px font + Leaflet's margin)
+ * Makes the OUTER wrapper transparent and applies all chrome
+ * (blue border, bg, shadow, padding) to the INNER content element.
+ */
+.leaflet-popup.poi-popup .leaflet-popup-content-wrapper {
+	background: transparent !important;
+	box-shadow: none !important;
+	padding: 0 !important;
+	border-radius: 0 !important;
+}
+.leaflet-popup.poi-popup .leaflet-popup-content {
+	margin: 0 !important;
+	background-color: var(--map-tooltip-bg) !important;
+	color: var(--map-tooltip-color) !important;
+	border-left: 4px solid var(--cldt-blue) !important;
+	border-radius: var(--map-tooltip-radius) !important;
+	padding: var(--map-tooltip-padding, 12px) !important;
+	box-shadow: var(--map-tooltip-shadow) !important;
+	font-size: var(--map-tooltip-font-size, 13px) !important;
+	line-height: var(--map-tooltip-line-height, 1.4) !important;
+	min-width: 220px;
+	max-width: 320px;
+}
+.leaflet-popup.poi-popup .leaflet-popup-tip {
+	background: var(--map-tooltip-bg) !important;
+	box-shadow: var(--map-tooltip-shadow) !important;
+}
+/* Mirror the closeIcon Button variant used by .user-location-close-btn elsewhere:
+   transparent base, subtle bg + cldt-blue text on hover/focus, green focus ring. */
+.leaflet-popup.poi-popup .leaflet-popup-close-button {
+	color: var(--map-tooltip-color) !important;
+	border-radius: 4px;
+	transition:
+		background-color 100ms ease-out,
+		color 100ms ease-out;
+}
+.leaflet-popup.poi-popup .leaflet-popup-close-button:hover,
+.leaflet-popup.poi-popup .leaflet-popup-close-button:focus-visible {
+	background: var(--poi-popup-close-hover-bg) !important;
+	color: var(--cldt-blue) !important;
+}
+.leaflet-popup.poi-popup .leaflet-popup-close-button:focus-visible {
+	outline: 2px solid var(--cldt-green);
+	outline-offset: 1px;
+}
+
+/* BEM rows used by the popup builder. All sizes / weights driven from CSS
+   rather than utility classes baked into the HTML string, so the look
+   stays consistent without depending on Tailwind picking up classes from
+   detached popup DOM. */
+.poi-popup__title {
+	margin: 0 0 4px;
+	font-size: 14px;
+	font-weight: 600;
+	color: var(--cldt-blue);
+	line-height: 1.3;
+}
+.poi-popup__title .poi-popup__type {
+	font-weight: 500;
+	color: var(--text-secondary, #475569);
+	font-size: 12px;
+}
+.poi-popup__row {
+	margin: 0 0 2px !important;
+	font-size: 12px;
+	color: var(--map-tooltip-color, inherit);
+}
+.poi-popup__row--muted {
+	opacity: 0.75;
+	font-style: italic;
+}
+.poi-popup__row--link {
+	margin-top: 4px;
+}
+.poi-popup__label {
+	font-weight: 600;
+	margin-right: 2px;
+}
+.poi-popup__link {
+	color: var(--cldt-blue, #0369a1);
+	text-decoration: underline;
+}
+.poi-popup__wiki {
+	margin: 6px 0 0;
+	font-size: 12px;
+	opacity: 0.85;
+	font-style: italic;
+}
+.poi-popup__provenance {
+	margin: 6px 0 0;
+	font-size: 10px;
+	opacity: 0.6;
+}
+
+/* Wikipedia / curated thumbnail at the top of the POI popup. Capped so it
+   doesn't blow out popup width on portrait images, and rounded to match the
+   map-tooltip vocabulary. */
+.poi-popup__image {
+	display: block;
+	width: 100%;
+	max-width: 240px;
+	max-height: 160px;
+	object-fit: cover;
+	border-radius: 6px;
+	margin: 0 0 6px;
+	background: var(--color-image-placeholder);
+}
+
+/* Phase 4 multi-image gallery. Horizontal scroll-snap strip so we don't
+   need a JS carousel; each item shows the image + an attribution caption
+   underneath that wraps so long credit lines stay readable. */
+.poi-popup__gallery {
+	display: flex;
+	gap: 6px;
+	overflow-x: auto;
+	scroll-snap-type: x mandatory;
+	margin: 0 0 6px;
+	padding-bottom: 2px;
+	-webkit-overflow-scrolling: touch;
+}
+.poi-popup__gallery-item {
+	flex: 0 0 auto;
+	margin: 0;
+	scroll-snap-align: start;
+	display: flex;
+	flex-direction: column;
+	width: 240px;
+}
+.poi-popup__gallery-img {
+	display: block;
+	width: 240px;
+	height: 160px;
+	object-fit: cover;
+	border-radius: 6px;
+	background: var(--color-image-placeholder);
+}
+.poi-popup__gallery-cap {
+	font-size: 10px;
+	color: var(--text-secondary, #475569);
+	margin-top: 2px;
+	line-height: 1.3;
+}
+.poi-popup__gallery-credit {
+	display: inline-block;
+}
+
+/* Action row at the bottom of the POI popup. Two buttons:
+   - LEFT: "Open in Maps" - solid-fill blue, primary action because most
+     users tapping a POI want to navigate to it.
+   - RIGHT: "Share link" - outlined pill, secondary. Copies an in-app deep
+     link to the clipboard.
+   `gap` separates the two; `space-between` would justify them to the edges,
+   but `flex-end` + `gap` keeps them grouped on the right which reads as a
+   tighter action pair. */
+.poi-popup__actions {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 6px;
+	margin-top: 6px;
+}
+.poi-popup__open-maps,
+.poi-popup__share {
+	border-radius: 6px;
+	font-size: 13px;
+	font-weight: 500;
+	padding: 6px 12px;
+	cursor: pointer;
+	transition:
+		filter 100ms ease-out,
+		background-color 100ms ease-out,
+		border-color 100ms ease-out;
+}
+.poi-popup__star {
+	background: transparent;
+	border: 0;
+	padding: 0;
+	margin-right: auto;
+	font-size: 22px;
+	line-height: 1;
+	color: var(--poi-star-inactive);
+	cursor: pointer;
+	transition: color 100ms ease-out;
+}
+.poi-popup__star.poi-popup__star--active {
+	color: var(--poi-star-active);
+}
+.poi-popup__star:hover {
+	color: var(--poi-star-active);
+}
+.poi-popup__star:focus-visible {
+	outline: 2px solid var(--cldt-green);
+	outline-offset: 2px;
+	border-radius: 4px;
+}
+.poi-popup__open-maps {
+	background: var(--cldt-blue, #0369a1);
+	border: 1px solid var(--cldt-blue, #0369a1);
+	color: var(--poi-popup-action-text);
+}
+.poi-popup__open-maps:hover {
+	filter: brightness(1.08);
+}
+.poi-popup__open-maps:active {
+	filter: brightness(0.92);
+}
+.poi-popup__open-maps:focus-visible {
+	filter: brightness(1.08);
+	outline: 2px solid var(--cldt-green);
+	outline-offset: 2px;
+}
+.poi-popup__share {
+	background: transparent;
+	border: 1px solid var(--cldt-blue-border-alpha, #80d3df);
+	color: var(--cldt-blue, #0369a1);
+}
+.poi-popup__share:hover {
+	background: var(--cldt-blue-surface, #ebf8fb);
+	border-color: var(--cldt-blue, #0369a1);
+}
+.poi-popup__share:active {
+	background: var(--cldt-blue-surface, #ebf8fb);
+}
+.poi-popup__share:focus-visible {
+	background: var(--cldt-blue-surface, #ebf8fb);
+	border-color: var(--cldt-blue, #0369a1);
+	outline: 2px solid var(--cldt-green);
+	outline-offset: 2px;
+}
+
+/* Gallery thumbnail button: strip default browser button styling so the
+   image is the entire tap target without an inset border or background. */
+.poi-popup__gallery-btn {
+	background: transparent;
+	border: 0;
+	padding: 0;
+	cursor: pointer;
+	display: block;
+}
+.poi-popup__gallery-btn:focus-visible {
+	outline: 2px solid var(--cldt-green);
+	outline-offset: 2px;
+	border-radius: 6px;
+}
+
+/* Lightbox overlay - sits above every other map / control layer. The
+   z-index var is reserved at the top of theme.css. */
+.poi-lightbox {
+	z-index: var(--z-lightbox, 600);
+}
+.poi-lightbox__img {
+	border-radius: 4px;
+}
+.poi-lightbox__nav {
+	font-size: 28px;
+	line-height: 1;
+	width: 44px;
+	height: 44px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+}
+
+/* Count-bearing cluster marker shown at zoom levels below the per-POI
+   threshold. Sized dynamically via the --cluster-size CSS variable set by
+   the renderer (logarithmic with cluster count, capped at 48 px). */
+.poi-cluster-wrapper {
+	background: transparent;
+	border: 0;
+	cursor: pointer;
+}
+.poi-cluster {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: var(--cluster-size, 44px);
+	height: var(--cluster-size, 44px);
+	background: var(--poi-cluster-bg);
+	color: var(--poi-cluster-text);
+	border: 2px solid var(--poi-cluster-border);
+	border-radius: 9999px;
+	box-shadow: var(--poi-cluster-shadow);
+	font-family:
+		system-ui,
+		-apple-system,
+		sans-serif;
+	font-size: 11px;
+	font-weight: 600;
+	line-height: 1;
+	cursor: pointer;
+	transition: transform 100ms ease-out;
+	user-select: none;
+}
+.poi-cluster-wrapper:hover .poi-cluster {
+	transform: scale(1.1);
+}
+.poi-cluster-wrapper:focus-visible .poi-cluster {
+	box-shadow: 0 0 0 2px var(--cldt-green);
+}
+.seasonal-status-chip-wrapper:focus-visible .seasonal-status-chip {
+	box-shadow: 0 0 0 2px var(--cldt-green);
+}
+
 .distance-marker-wrapper {
 	background: transparent;
 	border: 0;
@@ -45,7 +420,7 @@
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	background: white;
+	background: var(--bg-primary, #fafafa);
 	border: 1px solid var(--cldt-blue-text);
 	border-radius: 9999px;
 	padding: 1px 6px;
@@ -57,7 +432,7 @@
 	font-weight: 600;
 	line-height: 1;
 	color: var(--cldt-blue-text);
-	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+	box-shadow: var(--distance-marker-shadow);
 	transform: translate(-50%, -50%);
 	white-space: nowrap;
 	pointer-events: none;
@@ -144,9 +519,9 @@
 	justify-content: center;
 	width: 22px;
 	height: 22px;
-	border: 2px solid white;
+	border: 2px solid var(--marker-on-color);
 	border-radius: 50%;
-	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	box-shadow: var(--seasonal-chip-shadow);
 	cursor: pointer;
 	transition:
 		transform 120ms ease-out,
@@ -158,8 +533,8 @@
 }
 .seasonal-status-chip-wrapper.is-active .seasonal-status-chip {
 	box-shadow:
-		0 0 0 4px rgba(0, 0, 0, 0.18),
-		0 1px 3px rgba(0, 0, 0, 0.3);
+		0 0 0 4px var(--seasonal-chip-active-ring),
+		var(--seasonal-chip-shadow);
 }
 
 /* Chip hover tooltip: left accent border colour is set per severity via the
@@ -199,9 +574,9 @@
 	width: 20px !important;
 	height: 20px !important;
 	background-color: var(--cldt-blue, #00a6c7) !important;
-	border: 2px solid white !important;
+	border: 2px solid var(--marker-on-color) !important;
 	border-radius: 50% !important;
-	box-shadow: 0 0 4px rgba(0, 0, 0, 0.4) !important;
+	box-shadow: var(--user-location-shadow) !important;
 	z-index: var(--z-map-markers) !important;
 }
 
@@ -410,19 +785,19 @@
 	width: 16px;
 	height: 16px;
 	background-color: var(--cldt-green);
-	border: 2px solid white;
+	border: 2px solid var(--marker-on-color);
 	border-radius: 50%;
-	box-shadow: 0 0 10px color-mix(in srgb, var(--cldt-green) 80%, transparent);
+	box-shadow: 0 0 10px var(--pulse-marker-glow-static);
 	animation: pulse 1s infinite;
 }
 
 @keyframes pulse {
 	0% {
-		box-shadow: 0 0 0 0 color-mix(in srgb, var(--cldt-green) 70%, transparent);
+		box-shadow: 0 0 0 0 var(--pulse-marker-glow-start);
 		transform: scale(1);
 	}
 	50% {
-		box-shadow: 0 0 0 10px color-mix(in srgb, var(--cldt-green) 30%, transparent);
+		box-shadow: 0 0 0 10px var(--pulse-marker-glow-mid);
 		transform: scale(1.1);
 	}
 	100% {
@@ -441,9 +816,9 @@
 	position: relative;
 	width: 28px;
 	height: 28px;
-	border: 2px solid white;
+	border: 2px solid var(--marker-on-color);
 	border-radius: 50%;
-	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+	box-shadow: var(--trail-marker-shadow);
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -478,13 +853,13 @@
 .trail-section-marker-inner {
 	width: 24px;
 	height: 24px;
-	border: 2px solid white;
+	border: 2px solid var(--marker-on-color);
 	border-radius: 50%;
-	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+	box-shadow: var(--trail-marker-shadow);
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	color: white;
+	color: var(--marker-on-color);
 	font-size: 10px;
 	font-weight: 700;
 	letter-spacing: 0;
@@ -603,7 +978,7 @@
 	html {
 		margin: 0 !important;
 		padding: 0 !important;
-		background: white !important;
+		background: var(--print-page-bg) !important;
 	}
 
 	/* Ensure map container fills page */
@@ -630,7 +1005,7 @@
 	right: 0;
 	bottom: 0;
 	border-radius: 50%;
-	border: 2px solid white;
+	border: 2px solid var(--marker-on-color);
 	pointer-events: none;
 	animation: sos-pulse 1s ease-out infinite;
 }
@@ -647,6 +1022,22 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+	.poi-cluster {
+		transition: none;
+	}
+	.poi-cluster-wrapper:hover .poi-cluster {
+		transform: none;
+	}
+	.poi-marker {
+		transition: none;
+	}
+	.poi-marker-wrapper:hover .poi-marker {
+		transform: none;
+	}
+	.poi-popup__open-maps,
+	.poi-popup__share {
+		transition: none;
+	}
 	.sos-pulse-ring {
 		animation: none;
 	}

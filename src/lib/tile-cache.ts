@@ -7,12 +7,19 @@
  * - Read/write cache metadata from localforage
  * - Query Cache Storage for tile counts and clear caches
  * - Estimate available storage before a download
+ *
+ * POI prefetch orchestration deliberately lives in the store: both
+ * the manual `startTileDownload` flow and the predictive flow trigger the
+ * POI asset prefetch from inside `createMapStore` actions, using helpers
+ * from `@/lib/poi-prefetch`. This module returns the predictive corridor
+ * slice as part of its result so the store action can fire the prefetch
+ * itself without tile-cache.ts taking on a POI dependency.
  */
 import localforage from 'localforage';
 import { DEFAULT_MAP_SERVICES } from '@/lib/services/map-service-config';
 import { tileCacheTtlDays } from '@/lib/config';
 import { findNearestPointIndex } from '@/lib/distance-utils';
-import type { EnhancedTrailPoint } from '@/lib/store/types';
+import type { EnhancedTrailPoint, TrailDirection } from '@/lib/store/types';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -126,33 +133,45 @@ interface Bounds {
 function computeTrailCorridor(points: Pick<EnhancedTrailPoint, 'lat' | 'lng' | 'distanceFromStart'>[]): Bounds[] {
 	const segments: Bounds[] = [];
 	let segmentBaseDistance = 0;
-	let segLats: number[] = [];
-	let segLons: number[] = [];
+	// Running min/max tracked per point (O(1) per point) instead of
+	// Math.min(...arr)/Math.max(...arr) spread calls (O(N) per flush, and
+	// potentially stack-overflowing on high-density trails with >65k points).
+	let segMinLat = Infinity;
+	let segMaxLat = -Infinity;
+	let segMinLon = Infinity;
+	let segMaxLon = -Infinity;
+
+	const flushSegment = (): void => {
+		segments.push({
+			minLat: segMinLat - CORRIDOR_PADDING_DEG,
+			maxLat: segMaxLat + CORRIDOR_PADDING_DEG,
+			minLon: segMinLon - CORRIDOR_PADDING_DEG,
+			maxLon: segMaxLon + CORRIDOR_PADDING_DEG,
+		});
+	};
+
+	const resetBounds = (lat: number, lng: number): void => {
+		segMinLat = lat;
+		segMaxLat = lat;
+		segMinLon = lng;
+		segMaxLon = lng;
+	};
 
 	for (const pt of points) {
-		segLats.push(pt.lat);
-		segLons.push(pt.lng);
+		if (pt.lat < segMinLat) segMinLat = pt.lat;
+		if (pt.lat > segMaxLat) segMaxLat = pt.lat;
+		if (pt.lng < segMinLon) segMinLon = pt.lng;
+		if (pt.lng > segMaxLon) segMaxLon = pt.lng;
 
 		if (pt.distanceFromStart - segmentBaseDistance >= SEGMENT_DISTANCE_M) {
-			segments.push({
-				minLat: Math.min(...segLats) - CORRIDOR_PADDING_DEG,
-				maxLat: Math.max(...segLats) + CORRIDOR_PADDING_DEG,
-				minLon: Math.min(...segLons) - CORRIDOR_PADDING_DEG,
-				maxLon: Math.max(...segLons) + CORRIDOR_PADDING_DEG,
-			});
+			flushSegment();
 			segmentBaseDistance = pt.distanceFromStart;
-			segLats = [pt.lat];
-			segLons = [pt.lng];
+			resetBounds(pt.lat, pt.lng);
 		}
 	}
 
-	if (segLats.length > 0) {
-		segments.push({
-			minLat: Math.min(...segLats) - CORRIDOR_PADDING_DEG,
-			maxLat: Math.max(...segLats) + CORRIDOR_PADDING_DEG,
-			minLon: Math.min(...segLons) - CORRIDOR_PADDING_DEG,
-			maxLon: Math.max(...segLons) + CORRIDOR_PADDING_DEG,
-		});
+	if (segMinLat !== Infinity) {
+		flushSegment();
 	}
 
 	return segments;
@@ -275,7 +294,7 @@ export type NavigatorWithBattery = Navigator & {
 export interface PredictivePrecacheArgs {
 	points: Pick<EnhancedTrailPoint, 'lat' | 'lng' | 'distanceFromStart'>[];
 	fromIdx: number;
-	direction: 'SOBO' | 'NOBO';
+	direction: TrailDirection;
 	providerName: string;
 	kmAhead?: number;
 }
@@ -286,13 +305,31 @@ export interface PredictivePrecacheArgs {
  * surfaced - runs silently. Idempotent within a 20 km bucket per direction
  * (call `resetPredictivePrecacheBuckets()` on direction change).
  */
+/** Minimal trail-point shape used in / returned from predictive precache.
+ *  Subset of EnhancedTrailPoint; structurally compatible with the
+ *  `CorridorSlicePoint` accepted by poi-prefetch helpers, so the store can
+ *  pass the returned slice straight through. */
+export type PredictivePrecacheSlicePoint = Pick<EnhancedTrailPoint, 'lat' | 'lng' | 'distanceFromStart'>;
+
+export interface PredictivePrecacheRunResult {
+	/** The tile precache outcome, or null when the run was cancelled mid-flight. */
+	result: PrecacheResult | null;
+	/** The corridor slice that was just cached. The store passes this to
+	 *  `prefetchPoisAlongSlice` so the POI asset prefetch covers the same
+	 *  km range, without tile-cache.ts having to depend on the POI layer. */
+	slice: PredictivePrecacheSlicePoint[];
+	/** The abort signal driving this run. Shared so the follow-up POI prefetch
+	 *  can be cancelled by the same controller (e.g. on a direction change). */
+	signal: AbortSignal;
+}
+
 export async function runPredictivePrecache({
 	points,
 	fromIdx,
 	direction,
 	providerName,
 	kmAhead = PRECACHE_AHEAD_KM,
-}: PredictivePrecacheArgs): Promise<PrecacheResult | null> {
+}: PredictivePrecacheArgs): Promise<PredictivePrecacheRunResult | null> {
 	if (!isProviderCacheable(providerName)) return null;
 	const urlTemplate = getTileUrlTemplate(providerName);
 	if (!urlTemplate) return null;
@@ -326,7 +363,8 @@ export async function runPredictivePrecache({
 	const controller = new AbortController();
 	predictivePrecacheAbortController = controller;
 	try {
-		return await precacheTiles(urls, () => {}, controller.signal);
+		const tileResult = await precacheTiles(urls, () => {}, controller.signal);
+		return { result: tileResult, slice, signal: controller.signal };
 	} catch {
 		return null;
 	} finally {

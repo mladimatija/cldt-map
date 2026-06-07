@@ -1,6 +1,7 @@
 import type { StoreState, MapStoreState } from './types';
 import { BaseMapProvider } from '../services/map-service';
 import { INITIAL_TRAIL_STATE } from './trail-slice';
+import { KNOWN_POI_TYPES } from '../poi-types';
 
 /**
  * Returns an object matching StoreState with default values and no-op functions for SSR.
@@ -147,6 +148,10 @@ export function createMapStoreStub(): MapStoreState {
 		setBaseMapProvider: noop,
 		isMapFullscreen: false,
 		setMapFullscreen: noop,
+		openPanel: null,
+		setOpenPanel: noop,
+		togglePanel: noop,
+		closePanel: noop,
 		requestRawGpxData: noopNull,
 		processTrailData: () => {},
 
@@ -160,6 +165,7 @@ export function createMapStoreStub(): MapStoreState {
 		tileCacheMeta: null,
 		autoSync: false,
 		predictivePrecache: false,
+		poiPrefetchVersion: 0,
 		startTileDownload: noopAsyncVoid,
 		cancelTileDownload: noop,
 		clearTileCacheForProvider: noopAsyncVoid,
@@ -195,6 +201,31 @@ export function createMapStoreStub(): MapStoreState {
 
 		trailOsmTagsFile: null,
 		setTrailOsmTagsFile: noop,
+
+		poisFile: null,
+		setPoisFile: noop,
+		poisLayerEnabled: false,
+		setPoisLayerEnabled: noop,
+		poiDisclaimerDismissedAt: null,
+		setPoiDisclaimerDismissedAt: noop,
+		enabledPoiTypes: new Set(KNOWN_POI_TYPES),
+		setEnabledPoiTypes: noop,
+		togglePoiType: noop,
+		enabledPoiTags: new Set<string>(),
+		setEnabledPoiTags: noop,
+		togglePoiTag: noop,
+		clearPoiTags: noop,
+		starredPoiIds: new Set<string>(),
+		toggleStarredPoi: noop,
+		clearStarredPois: noop,
+		pendingOpenPoiId: null,
+		requestOpenPoi: noop,
+		clearPendingOpenPoi: noop,
+		lightboxImages: null,
+		lightboxIndex: 0,
+		openLightbox: noop,
+		closeLightbox: noop,
+		setLightboxIndex: noop,
 
 		seasonalStatusFile: null,
 		setSeasonalStatusFile: noop,

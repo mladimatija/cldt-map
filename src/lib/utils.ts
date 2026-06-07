@@ -8,7 +8,7 @@ import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { useStore, useMapStore } from '@/lib/store';
 import { config } from '@/lib/config';
-import type { TrailDirection, UnitSystem } from '@/lib/types';
+import type { DistanceUnit, TrailDirection, UnitSystem } from '@/lib/types';
 import { RulerRange } from '@/lib/distance-utils';
 
 export type { UnitSystem };
@@ -130,6 +130,14 @@ const KM_TO_MI = 0.621371;
 /** Convert kilometers to miles. */
 export function kmToMiles(km: number): number {
 	return km * KM_TO_MI;
+}
+
+/** Format a distance-from-trail value (in km) for display in POI list/search
+ *  rows. Returns a string with one decimal place in the active unit. */
+export function formatOffTrail(km: number, units: UnitSystem): string {
+	const v = units === 'imperial' ? kmToMiles(km) : km;
+	const unit = units === 'imperial' ? 'mi' : 'km';
+	return `${(Math.round(v * 10) / 10).toFixed(1)} ${unit}`;
 }
 
 const toImperial: Conversions = {
@@ -272,10 +280,42 @@ function isMobile(): boolean {
  * @returns URL to open for navigation
  */
 export function getNavigateToPointUrl(originLat: number, originLng: number, destLat: number, destLng: number): string {
+	// Defence-in-depth: clamp to finite numbers before interpolating into URIs.
+	if (
+		!Number.isFinite(originLat) ||
+		!Number.isFinite(originLng) ||
+		!Number.isFinite(destLat) ||
+		!Number.isFinite(destLng)
+	) {
+		return '';
+	}
 	if (isMobile()) {
 		return `geo:${destLat},${destLng}`;
 	}
 	return `https://www.google.com/maps/dir/?api=1&origin=${originLat},${originLng}&destination=${destLat},${destLng}`;
+}
+
+/**
+ * Open a map app at the given coordinates (no directions, just the point).
+ * On mobile: opens the device's default maps app via `geo:` URI (Apple Maps,
+ *   Google Maps, OsmAnd, Organic Maps, whatever the user has set as default).
+ * On desktop: opens Google Maps in a new tab.
+ *
+ * Shared between the trail click tooltip and the POI popup so both surfaces
+ * use the same "view this point externally" affordance.
+ *
+ * @param lat Latitude
+ * @param lng Longitude
+ */
+export function openCoordinatesInMaps(lat: number, lng: number): void {
+	if (typeof window === 'undefined') return;
+	// Defence-in-depth: clamp to finite numbers before interpolating into URIs.
+	if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
+	if (isMobile()) {
+		window.location.href = `geo:${lat},${lng}?q=${lat},${lng}`;
+	} else {
+		window.open(`https://www.google.com/maps?q=${lat},${lng}`, '_blank', 'noopener,noreferrer');
+	}
 }
 
 /** Short keys for base map used in share URLs (e.g. standard, topo, croatiaTopo, darkMap) */
@@ -332,7 +372,7 @@ export function buildShareProgressUrl(
 	params: {
 		kmFromStart: number;
 		direction: TrailDirection;
-		unit?: 'km' | 'mi';
+		unit?: DistanceUnit;
 		zoom?: number;
 		baseMap?: ShareBaseMapKey;
 		sections?: boolean;
@@ -380,7 +420,13 @@ const SHARE_URL_PARAMS = [
 	'sections',
 	'dark',
 	'ruler',
+	'poi',
 ] as const;
+
+/** POI ids are token-like (alphanumeric, dot, dash, underscore). Anything
+ *  else is rejected to avoid the URL becoming an injection vector or
+ *  carrying surprising whitespace into selectors. */
+const POI_ID_RE = /^[A-Za-z0-9._-]{1,128}$/;
 
 /**
  * Remove share URL params from the current location (clean URL when the share tooltip is closed)
@@ -420,11 +466,12 @@ export function parseShareUrlParams(): {
 	zoom?: number;
 	dir?: TrailDirection;
 	progress?: number;
-	unit?: 'km' | 'mi';
+	unit?: DistanceUnit;
 	baseMap?: ShareBaseMapKey;
 	sections?: boolean;
 	dark?: boolean;
 	rulerRange?: RulerRange;
+	poi?: string;
 } | null {
 	if (typeof window === 'undefined') return null;
 	const params = new URLSearchParams(window.location.search);
@@ -438,7 +485,8 @@ export function parseShareUrlParams(): {
 	const sections = params.get('sections');
 	const dark = params.get('dark');
 	const ruler = params.get('ruler');
-	if (!lat && !lng && !zoom && !progress && !baseMap && !sections && !dark && !ruler) return null;
+	const poi = params.get('poi');
+	if (!lat && !lng && !zoom && !progress && !baseMap && !sections && !dark && !ruler && !poi) return null;
 
 	let rulerRange: RulerRange | undefined;
 	if (ruler) {
@@ -470,7 +518,21 @@ export function parseShareUrlParams(): {
 				dark: dark === '1',
 			}),
 		...(rulerRange && { rulerRange }),
+		...(poi && POI_ID_RE.test(poi) && { poi }),
 	};
+}
+
+/** Build a deep-link URL that points to a specific POI by id. The handler
+ *  on load uses the id to look up the POI in the dataset, fly the map to its
+ *  coordinates, and open its popup. Returns an absolute URL based on the
+ *  current `window.location.origin + pathname`. */
+export function buildPoiShareUrl(poiId: string): string {
+	if (typeof window === 'undefined') return '';
+	const params = new URLSearchParams(window.location.search);
+	// Replace any existing poi param so re-sharing from a different POI does
+	// the right thing instead of stacking.
+	params.set('poi', poiId);
+	return `${window.location.origin}${window.location.pathname}?${params.toString()}`;
 }
 
 /**

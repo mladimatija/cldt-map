@@ -57,6 +57,8 @@ export default function AboutPage(): React.ReactNode {
 						<li className="mb-2">{t('mapFeaturesList.trailStyle')}</li>
 						<li className="mb-2">{t('mapFeaturesList.surfaceAndSac')}</li>
 						<li className="mb-2">{t('mapFeaturesList.distanceMarkers')}</li>
+						<li className="mb-2">{t('mapFeaturesList.pois')}</li>
+						<li className="mb-2">{t('mapFeaturesList.tripBrief')}</li>
 					</ul>
 				</article>
 

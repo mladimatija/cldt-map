@@ -1,6 +1,42 @@
 import type { EnhancedTrailPoint, StagePlan } from '@/lib/store/types';
 import { computeEta, findNearestPointIndex, gradeSegmentSeconds } from '@/lib/distance-utils';
 
+/** Sensible upper bound for a sustained walking day - long-distance hikers
+ *  typically walk 8-10 hours; 10 leaves headroom while preventing the planner
+ *  from emitting physically impossible stages (e.g. 100 km/day at 4 km/h). */
+export const DEFAULT_MAX_HOURS_PER_DAY = 10;
+
+/**
+ * Minimum number of stages required to keep each day under the given hour cap
+ * at the supplied pace, accounting for grade adjustment when enabled.
+ * Returns 1 when the trail fits entirely within a single day.
+ */
+export function computeMinStagesForCap(
+	elevationPoints: { elevation: number; distanceFromStart: number }[],
+	startKm: number,
+	endKm: number,
+	paceKmh: number,
+	gradeAdjusted: boolean,
+	maxHoursPerDay: number,
+): number {
+	if (maxHoursPerDay <= 0 || paceKmh <= 0 || startKm >= endKm) return 1;
+	const startM = startKm * 1000;
+	const endM = endKm * 1000;
+	const startIdx = findNearestPointIndex(elevationPoints, startM);
+	const endIdx = findNearestPointIndex(elevationPoints, endM);
+	if (startIdx >= endIdx) return 1;
+	const speedMps = (paceKmh * 1000) / 3600;
+	let totalSec = 0;
+	for (let i = startIdx; i < endIdx; i++) {
+		const distSeg = elevationPoints[i + 1].distanceFromStart - elevationPoints[i].distanceFromStart;
+		if (distSeg <= 0) continue;
+		const dz = elevationPoints[i + 1].elevation - elevationPoints[i].elevation;
+		totalSec += gradeAdjusted ? gradeSegmentSeconds(distSeg, dz, speedMps) : distSeg / speedMps;
+	}
+	const capSec = maxHoursPerDay * 3600;
+	return Math.max(1, Math.ceil(totalSec / capSec));
+}
+
 export function splitByDistance(startKm: number, endKm: number, stageKm: number): StagePlan {
 	if (stageKm <= 0 || startKm >= endKm)
 		return { startKm, endKm, stages: [{ startKm, endKm }], balanceMode: 'distance' };

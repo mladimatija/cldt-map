@@ -1,0 +1,1222 @@
+{
+	"_comment": "Curated supplemental data for Croatian mountain huts (HPS). Matched against OSM-derived hut POIs by name (case- and diacritic-insensitive) and lat/lng proximity (within 500 m). Fields here are MERGED into the matched POI: HPS data wins for `phone`, `capacity`, `season`, `note_en`, `note_hr`, `url`. Edit this file by hand to add or correct entries; the next `npm run enrich-pois` run picks them up. Sources: hps.hr hut directory and planinarski-portal.org GIS profiles.",
+	"_format": "Array of entries with { name, lat, lng, phone?, capacity?, season?, url?, note_en?, note_hr? }",
+	"huts": [
+		{
+			"name": "Akademik Josip Roglić",
+			"lat": 43.3125,
+			"lng": 17.133,
+			"note_en": "Biokovo mountain hut at 900 m.",
+			"note_hr": "Planinarska kuća na Biokovu, 900 m."
+		},
+		{
+			"name": "Alan",
+			"lat": 44.7214,
+			"lng": 14.9693,
+			"phone": "+385 98 901 5742",
+			"capacity": 40,
+			"season": "summer year-round, off-season by arrangement",
+			"url": "https://www.hps.hr/alan/",
+			"note_en": "Saddle hut on Premuziceva staza, central Velebit, near Veliki Alan pass.",
+			"note_hr": "Sedlo na Premužićevoj stazi, središnji Velebit, blizu prijevoja Veliki Alan."
+		},
+		{
+			"name": "Alat",
+			"lat": 43.7114,
+			"lng": 15.959,
+			"note_en": "Small hut above Sibenik area, 150 m.",
+			"note_hr": "Manja kuća iznad šibenskog područja, 150 m."
+		},
+		{
+			"name": "Ana",
+			"lat": 44.58,
+			"lng": 15.1095,
+			"note_en": "Central Velebit hut at 862 m.",
+			"note_hr": "Središnji Velebit, 862 m."
+		},
+		{
+			"name": "Anin vrh",
+			"lat": 46.0839,
+			"lng": 16.8467,
+			"note_en": "Bilogora hut at 303 m.",
+			"note_hr": "Kuća na Bilogori, 303 m."
+		},
+		{
+			"name": "Anka Komadina",
+			"lat": 45.1117,
+			"lng": 14.8639,
+			"note_en": "Viniste, southern Gorski kotar, 300 m.",
+			"note_hr": "Vinište, južni Gorski kotar, 300 m."
+		},
+		{
+			"name": "Apatišan",
+			"lat": 44.7711,
+			"lng": 15.0931,
+			"note_en": "Northern Velebit hut at 1112 m, near Krasno.",
+			"note_hr": "Sjeverni Velebit, 1112 m, kod Krasna."
+		},
+		{
+			"name": "Ačkova hiža",
+			"lat": 46.1777,
+			"lng": 15.8328,
+			"note_en": "Hrvatsko zagorje hut, 450 m.",
+			"note_hr": "Hrvatsko zagorje, 450 m."
+		},
+		{
+			"name": "Babino sklonište",
+			"lat": 45.2728,
+			"lng": 14.2201,
+			"note_en": "Ucka shelter at 1012 m, near Lovran.",
+			"note_hr": "Sklonište na Učki, 1012 m, iznad Lovrana."
+		},
+		{
+			"name": "Bajin kijer",
+			"lat": 45.3288,
+			"lng": 17.5503,
+			"note_en": "Pozega-area hut at 249 m.",
+			"note_hr": "Požeška okolica, 249 m."
+		},
+		{
+			"name": "Belecgrad",
+			"lat": 46.1644,
+			"lng": 16.1167,
+			"note_en": "Hrvatsko zagorje hut near medieval Belec castle, 440 m.",
+			"note_hr": "Hrvatsko zagorje, kod srednjovjekovnog grada Belca, 440 m."
+		},
+		{
+			"name": "Bijele stijene",
+			"lat": 45.2951,
+			"lng": 14.8839,
+			"note_en": "Bijele stijene strict reserve, southern Gorski kotar, 875 m.",
+			"note_hr": "Strogi rezervat Bijele stijene, južni Gorski kotar, 875 m."
+		},
+		{
+			"name": "Bitorajka",
+			"lat": 45.2939,
+			"lng": 14.7875,
+			"note_en": "Shelter on Bitoraj, southern Gorski kotar, 1303 m.",
+			"note_hr": "Sklonište na Bitoraju, južni Gorski kotar, 1303 m."
+		},
+		{
+			"name": "Boris Farkaš",
+			"lat": 45.7308,
+			"lng": 15.3066,
+			"note_en": "Zumberacka gora hut at 710 m.",
+			"note_hr": "Žumberačka gora, 710 m."
+		},
+		{
+			"name": "Borovik",
+			"lat": 45.3883,
+			"lng": 18.1649,
+			"note_en": "Djakovo-area hut at 155 m.",
+			"note_hr": "Đakovačka okolica, 155 m."
+		},
+		{
+			"name": "Brezovac",
+			"lat": 44.0964,
+			"lng": 16.3474,
+			"note_en": "Dinara approach hut at 1050 m, near Knin.",
+			"note_hr": "Prilaz Dinari, 1050 m, kod Knina."
+		},
+		{
+			"name": "Bukovac",
+			"lat": 43.3823,
+			"lng": 16.9523,
+			"note_en": "Hut near Brela, Biokovo area, 1030 m.",
+			"note_hr": "Kuća kod Brela, Biokovo, 1030 m."
+		},
+		{
+			"name": "Bunarić",
+			"lat": 43.7262,
+			"lng": 16.8616,
+			"note_en": "Dalmatinska zagora shelter at 1600 m.",
+			"note_hr": "Dalmatinska zagora, sklonište na 1600 m."
+		},
+		{
+			"name": "Careva kuća",
+			"lat": 44.7418,
+			"lng": 15.0573,
+			"note_en": "Northern Velebit hut at 1180 m.",
+			"note_hr": "Sjeverni Velebit, 1180 m."
+		},
+		{
+			"name": "Cerinski vir",
+			"lat": 45.776,
+			"lng": 15.6346,
+			"note_en": "Samoborsko gorje hut at 331 m.",
+			"note_hr": "Samoborsko gorje, 331 m."
+		},
+		{
+			"name": "Cesargrad",
+			"lat": 46.0587,
+			"lng": 15.7247,
+			"note_en": "Hut by Cesargrad medieval ruin, Hrvatsko zagorje, 464 m.",
+			"note_hr": "Uz srednjovjekovne ruine Cesargrada, Hrvatsko zagorje, 464 m."
+		},
+		{
+			"name": "Crni vrh",
+			"lat": 45.602,
+			"lng": 17.4276,
+			"note_en": "Papuk shelter at 864 m, near Daruvar.",
+			"note_hr": "Sklonište na Papuku, 864 m, kod Daruvara."
+		},
+		{
+			"name": "Crnopac",
+			"lat": 44.2637,
+			"lng": 15.8322,
+			"note_en": "Southern Velebit shelter at 1137 m, gateway to Crnopac caves.",
+			"note_hr": "Južni Velebit, sklonište na 1137 m, ulaz u jamski sustav Crnopac."
+		},
+		{
+			"name": "Dr. Maks Plotnikov",
+			"lat": 45.7492,
+			"lng": 15.7034,
+			"note_en": "Samoborsko gorje hut at 411 m, on Plesivica.",
+			"note_hr": "Samoborsko gorje, 411 m, na Plešivici."
+		},
+		{
+			"name": "Dragutin Hirc",
+			"lat": 45.2189,
+			"lng": 14.9774,
+			"note_en": "Bjelolasica hut at 1280 m, central Gorski kotar.",
+			"note_hr": "Bjelolasica, 1280 m, središnji Gorski kotar."
+		},
+		{
+			"name": "Duliba",
+			"lat": 45.1406,
+			"lng": 14.9328,
+			"note_en": "Zelena kuca on Bjelolasica plateau, 750 m.",
+			"note_hr": "Zelena kuća na bjelolaskom platou, 750 m."
+		},
+		{
+			"name": "Dušice",
+			"lat": 44.3177,
+			"lng": 15.5857,
+			"note_en": "Southern Velebit shelter at 1262 m.",
+			"note_hr": "Južni Velebit, sklonište na 1262 m."
+		},
+		{
+			"name": "Filićev dom",
+			"lat": 46.2694,
+			"lng": 15.9872,
+			"note_en": "Ravna gora hut, Varazdin area, 660 m.",
+			"note_hr": "Ravna gora, varaždinski kraj, 660 m."
+		},
+		{
+			"name": "Frbežari",
+			"lat": 45.569,
+			"lng": 14.6241,
+			"note_en": "Kamenjak hut, northern Gorski kotar, 825 m.",
+			"note_hr": "Kamenjak, sjeverni Gorski kotar, 825 m."
+		},
+		{
+			"name": "Gažul",
+			"lat": 43.3053,
+			"lng": 16.6299,
+			"note_en": "Vidova gora hut on Brac, 574 m.",
+			"note_hr": "Kuća na Vidovoj gori, Brač, 574 m."
+		},
+		{
+			"name": "Glavaš",
+			"lat": 44.0113,
+			"lng": 16.4195,
+			"note_en": "Dinara source-of-Cetina shelter at 550 m.",
+			"note_hr": "Izvor Cetine, sklonište na 550 m."
+		},
+		{
+			"name": "Glavica",
+			"lat": 45.8423,
+			"lng": 15.8756,
+			"note_en": "Medvednica hut at 420 m.",
+			"note_hr": "Medvednica, 420 m."
+		},
+		{
+			"name": "Grafičar",
+			"lat": 45.8875,
+			"lng": 15.9301,
+			"note_en": "Medvednica hut at 864 m, near Sljeme summit.",
+			"note_hr": "Medvednica, 864 m, blizu vrha Sljeme."
+		},
+		{
+			"name": "Grebengrad",
+			"lat": 46.1759,
+			"lng": 16.2869,
+			"note_en": "Hrvatsko zagorje hut at 490 m.",
+			"note_hr": "Hrvatsko zagorje, 490 m."
+		},
+		{
+			"name": "Grohot",
+			"lat": 45.9568,
+			"lng": 16.1175,
+			"note_en": "Medvednica eastern hut at 474 m.",
+			"note_hr": "Istočna Medvednica, 474 m."
+		},
+		{
+			"name": "Hahlić",
+			"lat": 45.4417,
+			"lng": 14.48,
+			"phone": "+385 91 726 1938",
+			"capacity": 40,
+			"season": "weekends and holidays",
+			"url": "https://www.pdobruc.hr/planinarski-dom-hahlic",
+			"note_en": "Stone hut on southern slope of Obruc, 1097 m.",
+			"note_hr": "Kamena kuća na južnoj padini Obruča, 1097 m."
+		},
+		{
+			"name": "Hrvatski vitez Josip Goreta",
+			"lat": 43.9482,
+			"lng": 16.5211,
+			"note_en": "Dinara summit-area shelter at 1530 m.",
+			"note_hr": "Vršno područje Dinare, sklonište na 1530 m."
+		},
+		{
+			"name": "Hrvoje Dujmić",
+			"lat": 43.5321,
+			"lng": 16.635,
+			"note_en": "Mosor shelter at 1150 m.",
+			"note_hr": "Mosor, sklonište na 1150 m."
+		},
+		{
+			"name": "Hunjka",
+			"lat": 45.9143,
+			"lng": 15.9749,
+			"note_en": "Medvednica hut at 853 m, north of Sljeme.",
+			"note_hr": "Medvednica, 853 m, sjeverno od Sljemena."
+		},
+		{
+			"name": "Ivan Pačkovski",
+			"lat": 45.9036,
+			"lng": 15.9692,
+			"note_en": "Puntijarka on Medvednica, 957 m.",
+			"note_hr": "Puntijarka na Medvednici, 957 m."
+		},
+		{
+			"name": "Ivanova hiža",
+			"lat": 45.5531,
+			"lng": 15.4999,
+			"note_en": "Karlovac-area hut at 188 m.",
+			"note_hr": "Karlovačka okolica, 188 m."
+		},
+		{
+			"name": "Ivica Sudnik",
+			"lat": 45.7715,
+			"lng": 15.6502,
+			"note_en": "Samoborsko gorje hut at 530 m.",
+			"note_hr": "Samoborsko gorje, 530 m."
+		},
+		{
+			"name": "Ivine vodice",
+			"lat": 44.3366,
+			"lng": 15.5368,
+			"note_en": "Southern Velebit shelter at 1250 m.",
+			"note_hr": "Južni Velebit, sklonište na 1250 m."
+		},
+		{
+			"name": "Izvor",
+			"lat": 45.9814,
+			"lng": 16.2384,
+			"note_en": "Kalnik foothills hut at 175 m, near Sveti Ivan Zelina.",
+			"note_hr": "Podnožje Kalnika, 175 m, kod Sv. Ivana Zeline."
+		},
+		{
+			"name": "Jakob Mihelčić",
+			"lat": 45.2689,
+			"lng": 14.9659,
+			"note_en": "Bjelolasica shelter at 1460 m.",
+			"note_hr": "Bjelolasica, sklonište na 1460 m."
+		},
+		{
+			"name": "Jankovac",
+			"lat": 45.5222,
+			"lng": 17.6847,
+			"note_en": "Papuk Nature Park hut at 475 m, near Jankovac lakes.",
+			"note_hr": "Park prirode Papuk, 475 m, kod Jankovačkih jezera."
+		},
+		{
+			"name": "Jančarica",
+			"lat": 45.2708,
+			"lng": 14.9318,
+			"note_en": "Bjelolasica hut at 1239 m, near Mrkopalj.",
+			"note_hr": "Bjelolasica, 1239 m, kod Mrkoplja."
+		},
+		{
+			"name": "Javorova kosa",
+			"lat": 45.3881,
+			"lng": 14.9521,
+			"note_en": "Ravna Gora hut at 1000 m, central Gorski kotar.",
+			"note_hr": "Ravna Gora, 1000 m, središnji Gorski kotar."
+		},
+		{
+			"name": "Jezerce",
+			"lat": 45.5046,
+			"lng": 17.6722,
+			"note_en": "Papuk hut at 720 m, managed by HGSS Pozega.",
+			"note_hr": "Papuk, 720 m, upravlja HGSS Požega."
+		},
+		{
+			"name": "Junac",
+			"lat": 45.9008,
+			"lng": 15.9533,
+			"note_en": "Medvednica hut at 968 m, near Sljeme.",
+			"note_hr": "Medvednica, 968 m, blizu Sljemena."
+		},
+		{
+			"name": "Kalnik",
+			"lat": 46.1322,
+			"lng": 16.4626,
+			"note_en": "Kalnik hut at 480 m, near Krizevci.",
+			"note_hr": "Kalnik, 480 m, kod Križevaca."
+		},
+		{
+			"name": "Kameni svati",
+			"lat": 45.8666,
+			"lng": 15.853,
+			"note_en": "Western Medvednica hut at 480 m, near Susedgrad.",
+			"note_hr": "Zapadna Medvednica, 480 m, kod Susedgrada."
+		},
+		{
+			"name": "Kamenitovac",
+			"lat": 45.9102,
+			"lng": 16.9417,
+			"note_en": "Bilogora hut at 242 m, near Bjelovar.",
+			"note_hr": "Bilogora, 242 m, kod Bjelovara."
+		},
+		{
+			"name": "Klek",
+			"lat": 45.257,
+			"lng": 15.1444,
+			"phone": "+385 98 827 737",
+			"capacity": 42,
+			"season": "weekends",
+			"url": "https://hpdklek.hr/hpd/",
+			"note_en": "Hut below the iconic Klek peak, 1000 m, southern Gorski kotar.",
+			"note_hr": "Kuća pod prepoznatljivim vrhom Klek, 1000 m, južni Gorski kotar."
+		},
+		{
+			"name": "Kontejner",
+			"lat": 43.5203,
+			"lng": 16.6397,
+			"note_en": "Ljuto kame shelter on Mosor at 1055 m.",
+			"note_hr": "Sklonište Ljuto kame na Mosoru, 1055 m."
+		},
+		{
+			"name": "Korita",
+			"lat": 45.3788,
+			"lng": 14.1614,
+			"note_en": "Ucka hut at 1010 m.",
+			"note_hr": "Učka, 1010 m."
+		},
+		{
+			"name": "Kremenjak",
+			"lat": 45.2243,
+			"lng": 14.2065,
+			"note_en": "Istria shelter at 847 m, central peninsula.",
+			"note_hr": "Sklonište u Istri, 847 m."
+		},
+		{
+			"name": "Krivi Put",
+			"lat": 45.0323,
+			"lng": 14.9652,
+			"note_en": "Senjsko bilo hut at 820 m.",
+			"note_hr": "Senjsko bilo, 820 m."
+		},
+		{
+			"name": "Krndija",
+			"lat": 45.4262,
+			"lng": 18.0406,
+			"note_en": "Krndija hut at 274 m, near Nasice.",
+			"note_hr": "Krndija, 274 m, kod Našica."
+		},
+		{
+			"name": "Kugina kuća",
+			"lat": 44.6222,
+			"lng": 15.0703,
+			"note_en": "Central Velebit hut at 1180 m.",
+			"note_hr": "Središnji Velebit, 1180 m."
+		},
+		{
+			"name": "Kulmerica",
+			"lat": 45.9341,
+			"lng": 15.9938,
+			"note_en": "Medvednica hut at 665 m.",
+			"note_hr": "Medvednica, 665 m."
+		},
+		{
+			"name": "Kuna gora",
+			"lat": 46.1685,
+			"lng": 15.7485,
+			"note_en": "Hrvatsko zagorje hut at 380 m, near Pregrada.",
+			"note_hr": "Hrvatsko zagorje, 380 m, kod Pregrade."
+		},
+		{
+			"name": "Kurin",
+			"lat": 45.1981,
+			"lng": 14.7845,
+			"note_en": "Strilez hut at 830 m, above Crikvenica.",
+			"note_hr": "Strilež, 830 m, iznad Crikvenice."
+		},
+		{
+			"name": "Lapjak",
+			"lat": 45.468,
+			"lng": 17.6587,
+			"note_en": "Papuk hut at 335 m.",
+			"note_hr": "Papuk, 335 m."
+		},
+		{
+			"name": "Lazica",
+			"lat": 45.4743,
+			"lng": 14.9695,
+			"note_en": "Northern Gorski kotar hut at 666 m, near Brod Moravice.",
+			"note_hr": "Sjeverni Gorski kotar, 666 m, kod Broda Moravica."
+		},
+		{
+			"name": "Ledinec",
+			"lat": 46.2382,
+			"lng": 16.2719,
+			"note_en": "Hrvatsko zagorje hut at 290 m.",
+			"note_hr": "Hrvatsko zagorje, 290 m."
+		},
+		{
+			"name": "Lipa",
+			"lat": 45.9296,
+			"lng": 16.0673,
+			"note_en": "Medvednica eastern hut at 700 m, near Sesvete.",
+			"note_hr": "Istočna Medvednica, 700 m, kod Sesveta."
+		},
+		{
+			"name": "Ljubljan",
+			"lat": 43.5453,
+			"lng": 16.611,
+			"note_en": "Mosor shelter at 1080 m.",
+			"note_hr": "Mosor, sklonište na 1080 m."
+		},
+		{
+			"name": "Lojzekov izvor",
+			"lat": 45.943,
+			"lng": 15.9847,
+			"note_en": "Medvednica hut at 400 m, near Donja Stubica.",
+			"note_hr": "Medvednica, 400 m, kod Donje Stubice."
+		},
+		{
+			"name": "Luda kuća",
+			"lat": 43.4304,
+			"lng": 16.725,
+			"note_en": "Omis hinterland hut at 650 m.",
+			"note_hr": "Omiška zagora, 650 m."
+		},
+		{
+			"name": "Lugarnica",
+			"lat": 43.5415,
+			"lng": 16.5882,
+			"note_en": "Mosor hut at 872 m.",
+			"note_hr": "Mosor, 872 m."
+		},
+		{
+			"name": "Lujčekova hiža",
+			"lat": 46.18,
+			"lng": 16.2344,
+			"note_en": "Milengrad hut at 434 m, Hrvatsko zagorje.",
+			"note_hr": "Milengrad, 434 m, Hrvatsko zagorje."
+		},
+		{
+			"name": "Majer",
+			"lat": 46.165,
+			"lng": 16.0883,
+			"note_en": "Ostrc hut at 591 m, near Zlatar.",
+			"note_hr": "Ostrc, 591 m, kod Zlatara."
+		},
+		{
+			"name": "Malačka",
+			"lat": 43.581,
+			"lng": 16.3254,
+			"note_en": "Kozjak hut at 477 m, above Kastela.",
+			"note_hr": "Kozjak, 477 m, iznad Kaštela."
+		},
+		{
+			"name": "Mališćak",
+			"lat": 45.487,
+			"lng": 17.6378,
+			"note_en": "Papuk shelter at 734 m, near Velika.",
+			"note_hr": "Papuk, sklonište na 734 m, kod Velike."
+		},
+		{
+			"name": "Martinova košara",
+			"lat": 44.0394,
+			"lng": 16.406,
+			"note_en": "Dinara shelter at 1287 m, near Kijevo.",
+			"note_hr": "Dinara, sklonište na 1287 m, kod Kijeva."
+		},
+		{
+			"name": "Matija Filjak",
+			"lat": 45.396,
+			"lng": 16.2709,
+			"note_en": "Zrinska gora hut at 415 m, Banovina.",
+			"note_hr": "Zrinska gora, 415 m, Banovina."
+		},
+		{
+			"name": "Miroslav Hirtz",
+			"lat": 45.2187,
+			"lng": 14.9778,
+			"note_en": "Bjelolasica shelter at 1280 m.",
+			"note_hr": "Bjelolasica, sklonište na 1280 m."
+		},
+		{
+			"name": "Miroslav Hirtz u Jablancu",
+			"lat": 44.7045,
+			"lng": 14.8972,
+			"note_en": "Coastal HPS hut in Jablanac, gateway to Premuziceva staza.",
+			"note_hr": "Obalni dom HPS-a u Jablancu, prilaz Premužićevoj stazi."
+		},
+		{
+			"name": "Mladen Polović",
+			"lat": 45.4463,
+			"lng": 15.5224,
+			"note_en": "Vinica hut at 309 m, near Duga Resa.",
+			"note_hr": "Vinica, 309 m, kod Duge Rese."
+		},
+		{
+			"name": "Mlaka",
+			"lat": 45.4497,
+			"lng": 17.8543,
+			"note_en": "Krndija hut at 552 m, near Kutjevo.",
+			"note_hr": "Krndija, 552 m, kod Kutjeva."
+		},
+		{
+			"name": "Moslavačka Slatina",
+			"lat": 45.6149,
+			"lng": 16.6648,
+			"note_en": "Moslavacka gora hut at 170 m, near Kutina.",
+			"note_hr": "Moslavačka gora, 170 m, kod Kutine."
+		},
+		{
+			"name": "Mrkvište",
+			"lat": 44.7091,
+			"lng": 15.0487,
+			"note_en": "Northern Velebit hut at 1276 m, on Premuziceva staza.",
+			"note_hr": "Sjeverni Velebit, 1276 m, na Premužićevoj stazi."
+		},
+		{
+			"name": "Na Strahinjčici",
+			"lat": 46.1857,
+			"lng": 15.8934,
+			"note_en": "Strahinjcica hut at 618 m, Hrvatsko zagorje.",
+			"note_hr": "Strahinjčica, 618 m, Hrvatsko zagorje."
+		},
+		{
+			"name": "Ograđenica",
+			"lat": 44.6497,
+			"lng": 15.0236,
+			"note_en": "Central Velebit shelter at 1400 m.",
+			"note_hr": "Središnji Velebit, sklonište na 1400 m."
+		},
+		{
+			"name": "Oltari",
+			"lat": 44.8737,
+			"lng": 14.9839,
+			"note_en": "Northern Velebit hut at 940 m, near Krasno.",
+			"note_hr": "Sjeverni Velebit, 940 m, kod Krasna."
+		},
+		{
+			"name": "Omanovac",
+			"lat": 45.4174,
+			"lng": 17.2486,
+			"note_en": "Psunj hut at 655 m, near Pakrac.",
+			"note_hr": "Psunj, 655 m, kod Pakraca."
+		},
+		{
+			"name": "Orlovac",
+			"lat": 43.7025,
+			"lng": 16.8049,
+			"note_en": "Mosec hut at 659 m, Dalmatinska zagora.",
+			"note_hr": "Mosec, 659 m, Dalmatinska zagora."
+		},
+		{
+			"name": "Orlove stine",
+			"lat": 43.7697,
+			"lng": 16.5242,
+			"note_en": "Svilaja hut at 1065 m, near Sinj.",
+			"note_hr": "Svilaja, 1065 m, kod Sinja."
+		},
+		{
+			"name": "Orlovo gnijezdo",
+			"lat": 43.5719,
+			"lng": 16.3954,
+			"note_en": "Kozjak shelter at 598 m, above Kastela.",
+			"note_hr": "Kozjak, sklonište na 598 m, iznad Kaštela."
+		},
+		{
+			"name": "Paklenica",
+			"lat": 44.3458,
+			"lng": 15.4826,
+			"capacity": 50,
+			"season": "weekends and by arrangement",
+			"url": "https://np-paklenica.hr",
+			"note_en": "Mountain hut deep inside Velika Paklenica canyon, 480 m.",
+			"note_hr": "Planinarski dom duboko u kanjonu Velike Paklenice, 480 m."
+		},
+		{
+			"name": "Pasarićeva kuća",
+			"lat": 46.1822,
+			"lng": 16.1265,
+			"note_en": "Ivanscica summit hut at 1054 m.",
+			"note_hr": "Vršna kuća Ivanščice, 1054 m."
+		},
+		{
+			"name": "Petrov vrh",
+			"lat": 45.5884,
+			"lng": 17.3128,
+			"note_en": "Papuk hut at 547 m, near Daruvar.",
+			"note_hr": "Papuk, 547 m, kod Daruvara."
+		},
+		{
+			"name": "Picelj",
+			"lat": 46.0412,
+			"lng": 15.8821,
+			"note_en": "Cesargrad/Picelj hut at 262 m, Hrvatsko zagorje.",
+			"note_hr": "Picelj, 262 m, Hrvatsko zagorje."
+		},
+		{
+			"name": "Pljuskara",
+			"lat": 45.2341,
+			"lng": 17.9496,
+			"note_en": "Dilj gora hut at 260 m, near Slavonski Brod.",
+			"note_hr": "Dilj gora, 260 m, kod Slavonskog Broda."
+		},
+		{
+			"name": "Pod Koludrom",
+			"lat": 43.5679,
+			"lng": 16.3928,
+			"note_en": "Kozjak hut at 325 m, above Kastel Kambelovac.",
+			"note_hr": "Kozjak, 325 m, iznad Kaštel Kambelovca."
+		},
+		{
+			"name": "Pod Svetim Jurom",
+			"lat": 43.3391,
+			"lng": 17.0539,
+			"phone": "+385 91 613 0497",
+			"capacity": 18,
+			"season": "by arrangement",
+			"url": "https://www.biokovo-hpd.hr/",
+			"note_en": "Concrete shelter below Sveti Jure on Biokovo, 1594 m.",
+			"note_hr": "Betonska kuća ispod Sv. Jure na Biokovu, 1594 m."
+		},
+		{
+			"name": "Poklon",
+			"lat": 45.3084,
+			"lng": 14.2159,
+			"note_en": "Ucka Nature Park hut at 922 m, on Poklon saddle.",
+			"note_hr": "Park prirode Učka, 922 m, na sedlu Poklon."
+		},
+		{
+			"name": "Promina",
+			"lat": 43.9088,
+			"lng": 16.1716,
+			"note_en": "Promina hut at 850 m, near Drnis.",
+			"note_hr": "Promina, 850 m, kod Drniša."
+		},
+		{
+			"name": "Prpa",
+			"lat": 44.5329,
+			"lng": 15.1433,
+			"note_en": "Central Velebit hut at 935 m, Baske Ostarije.",
+			"note_hr": "Središnji Velebit, 935 m, Baške Oštarije."
+		},
+		{
+			"name": "Pume",
+			"lat": 43.9344,
+			"lng": 16.5715,
+			"note_en": "Dinara HGSS shelter at 1630 m.",
+			"note_hr": "HGSS sklonište na Dinari, 1630 m."
+		},
+		{
+			"name": "Pusti duh",
+			"lat": 46.2749,
+			"lng": 15.9804,
+			"note_en": "Ravna gora hut at 672 m, near Lepoglava.",
+			"note_hr": "Ravna gora, 672 m, kod Lepoglave."
+		},
+		{
+			"name": "Putalj",
+			"lat": 43.5677,
+			"lng": 16.4241,
+			"note_en": "Kozjak hut at 460 m, above Kastel Sucurac.",
+			"note_hr": "Kozjak, 460 m, iznad Kaštel Sućurca."
+		},
+		{
+			"name": "Radoboj",
+			"lat": 46.1729,
+			"lng": 15.918,
+			"note_en": "Hrvatsko zagorje hut at 270 m.",
+			"note_hr": "Hrvatsko zagorje, 270 m."
+		},
+		{
+			"name": "Ratkovo sklonište",
+			"lat": 45.2256,
+			"lng": 14.9519,
+			"note_en": "Bjelolasica shelter at 1174 m.",
+			"note_hr": "Bjelolasica, sklonište na 1174 m."
+		},
+		{
+			"name": "Ravni dabar",
+			"lat": 44.5633,
+			"lng": 15.1245,
+			"note_en": "Central Velebit hut at 723 m.",
+			"note_hr": "Središnji Velebit, 723 m."
+		},
+		{
+			"name": "Risnjak",
+			"lat": 45.4294,
+			"lng": 14.6221,
+			"phone": "+385 91 882 4686",
+			"capacity": 43,
+			"season": "May-Oct (closed Tue)",
+			"url": "https://www.np-risnjak.hr",
+			"note_en": "NP Risnjak lodge (Schlosserov dom) below the summit, 1418 m. Within Risnjak National Park; reservations recommended in summer.",
+			"note_hr": "Dom NP Risnjak (Schlosserov dom) ispod vrha, 1418 m; ljetne rezervacije preporučene."
+		},
+		{
+			"name": "Risnjak (Medvednica)",
+			"lat": 45.8782,
+			"lng": 15.9179,
+			"phone": "+385 98 1351 485",
+			"capacity": 12,
+			"season": "weekends",
+			"url": "https://www.pp-medvednica.hr",
+			"note_en": "Small Medvednica hut also named Risnjak, built 1955. Disambiguated from the NP Risnjak lodge.",
+			"note_hr": "Mala medvednička kuća koja se također zove Risnjak, izgrađena 1955. Razlikuje se od doma u NP Risnjak."
+		},
+		{
+			"name": "Rossijevo sklonište",
+			"lat": 44.766,
+			"lng": 14.9872,
+			"phone": "+385 98 183 5580",
+			"capacity": 6,
+			"season": "year-round",
+			"url": "https://www.facebook.com/gromovaca/",
+			"note_en": "Shelter in Rozanski kukovi (Northern Velebit NP), 1580 m, built 1929.",
+			"note_hr": "Sklonište u Rožanskim kukovima (NP Sjeverni Velebit), 1580 m, izgrađeno 1929."
+		},
+		{
+			"name": "Rudetova bajta",
+			"lat": 45.4206,
+			"lng": 14.921,
+			"note_en": "Skrad shelter at 1038 m, northern Gorski kotar.",
+			"note_hr": "Skrad, sklonište na 1038 m, sjeverni Gorski kotar."
+		},
+		{
+			"name": "Rudi Jurić",
+			"lat": 46.1707,
+			"lng": 16.7278,
+			"note_en": "Bilogora hut at 295 m, near Koprivnica.",
+			"note_hr": "Bilogora, 295 m, kod Koprivnice."
+		},
+		{
+			"name": "Runolist",
+			"lat": 45.897,
+			"lng": 15.9612,
+			"note_en": "Medvednica hut at 830 m, near Sljeme.",
+			"note_hr": "Medvednica, 830 m, blizu Sljemena."
+		},
+		{
+			"name": "Rupe",
+			"lat": 44.0043,
+			"lng": 16.5084,
+			"note_en": "Dinara shelter at 1363 m.",
+			"note_hr": "Dinara, sklonište na 1363 m."
+		},
+		{
+			"name": "Schlosserov dom",
+			"lat": 45.4294,
+			"lng": 14.6221,
+			"phone": "+385 91 882 4686",
+			"capacity": 43,
+			"season": "May-Oct (closed Tue)",
+			"url": "https://www.np-risnjak.hr",
+			"note_en": "Risnjak NP lodge below the summit, 1418 m. Managed by JU NP Risnjak.",
+			"note_hr": "Dom NP Risnjak ispod vrha, 1418 m. Upravlja JU NP Risnjak."
+		},
+		{
+			"name": "Scout",
+			"lat": 45.7928,
+			"lng": 15.5517,
+			"note_en": "Samoborsko gorje hut at 360 m.",
+			"note_hr": "Samoborsko gorje, 360 m."
+		},
+		{
+			"name": "Sijaset",
+			"lat": 44.9639,
+			"lng": 14.9683,
+			"note_en": "Northern Velebit hut at 328 m.",
+			"note_hr": "Sjeverni Velebit, 328 m."
+		},
+		{
+			"name": "Skitača",
+			"lat": 44.9834,
+			"lng": 14.1455,
+			"note_en": "Labin hinterland hut at 425 m.",
+			"note_hr": "Labinska zagora, 425 m."
+		},
+		{
+			"name": "Skorpovac",
+			"lat": 44.5922,
+			"lng": 15.0543,
+			"note_en": "Central Velebit shelter at 958 m.",
+			"note_hr": "Središnji Velebit, sklonište na 958 m."
+		},
+		{
+			"name": "Slobodan Ravlić",
+			"lat": 43.3381,
+			"lng": 17.0338,
+			"note_en": "Biokovo hut at 1467 m.",
+			"note_hr": "Biokovo, 1467 m."
+		},
+		{
+			"name": "Snježnik",
+			"lat": 45.4393,
+			"lng": 14.5532,
+			"capacity": 18,
+			"season": "year-round (unstaffed)",
+			"note_en": "Small unstaffed shelter on Snjeznik summit, Gorski kotar.",
+			"note_hr": "Malo neopskrbljeno sklonište na vrhu Snježnika, Gorski kotar."
+		},
+		{
+			"name": "Strmac",
+			"lat": 45.3481,
+			"lng": 17.3807,
+			"note_en": "Psunj hut at 350 m, near Nova Gradiska.",
+			"note_hr": "Psunj, 350 m, kod Nove Gradiške."
+		},
+		{
+			"name": "Struge",
+			"lat": 44.3763,
+			"lng": 15.4662,
+			"note_en": "Southern Velebit shelter at 1400 m, Paklenica NP.",
+			"note_hr": "Južni Velebit, sklonište na 1400 m, NP Paklenica."
+		},
+		{
+			"name": "Sveti Andrija",
+			"lat": 43.0539,
+			"lng": 16.1838,
+			"note_en": "Hut on Hum, Vis island, 267 m.",
+			"note_hr": "Kuća na Humu, otok Vis, 267 m."
+		},
+		{
+			"name": "Sveti Gaudent",
+			"lat": 44.6951,
+			"lng": 14.348,
+			"note_en": "Osorscica hut on Losinj, 274 m.",
+			"note_hr": "Osorščica na Lošinju, 274 m."
+		},
+		{
+			"name": "Sveti Jakov",
+			"lat": 43.8592,
+			"lng": 16.6396,
+			"note_en": "Dinara hut at 1001 m, near Gornji Bitelic.",
+			"note_hr": "Dinara, 1001 m, kod Gornjeg Bitelića."
+		},
+		{
+			"name": "Sveti Josip",
+			"lat": 44.5494,
+			"lng": 15.1946,
+			"note_en": "Visocica hut at 1124 m, central Velebit.",
+			"note_hr": "Visočica, 1124 m, središnji Velebit."
+		},
+		{
+			"name": "Sveti Jure",
+			"lat": 43.8706,
+			"lng": 16.3795,
+			"note_en": "Svilaja hut at 1119 m, near Vrlika.",
+			"note_hr": "Svilaja, 1119 m, kod Vrlike."
+		},
+		{
+			"name": "Sveti Mihovil",
+			"lat": 43.686,
+			"lng": 16.8852,
+			"note_en": "Mosec shelter at 1340 m, near Trilj.",
+			"note_hr": "Mosec, sklonište na 1340 m, kod Trilja."
+		},
+		{
+			"name": "Tatekova koliba",
+			"lat": 44.4084,
+			"lng": 15.3188,
+			"note_en": "Paklenica shelter at 860 m.",
+			"note_hr": "Paklenica, sklonište na 860 m."
+		},
+		{
+			"name": "Tivanovo",
+			"lat": 45.4921,
+			"lng": 17.9379,
+			"note_en": "Djurdjenovac-area hut at 220 m.",
+			"note_hr": "Đurđenovačka okolica, 220 m."
+		},
+		{
+			"name": "Toni Roso",
+			"lat": 43.3107,
+			"lng": 17.0464,
+			"note_en": "Biokovo hut at 1422 m.",
+			"note_hr": "Biokovo, 1422 m."
+		},
+		{
+			"name": "Trišnjica",
+			"lat": 45.4945,
+			"lng": 17.7095,
+			"note_en": "Papuk hut at 640 m, near Pozega.",
+			"note_hr": "Papuk, 640 m, kod Požege."
+		},
+		{
+			"name": "Trpošnjik",
+			"lat": 43.4782,
+			"lng": 16.7218,
+			"note_en": "Omis area hut at 970 m.",
+			"note_hr": "Omiško područje, 970 m."
+		},
+		{
+			"name": "Umberto Girometta",
+			"lat": 43.5222,
+			"lng": 16.6195,
+			"note_en": "Mosor central lodge at 868 m.",
+			"note_hr": "Središnji dom na Mosoru, 868 m."
+		},
+		{
+			"name": "Vagabundina koliba",
+			"lat": 45.222,
+			"lng": 14.805,
+			"note_en": "Privately-managed hut at 864 m, southern Gorski kotar.",
+			"note_hr": "Privatno upravljana kuća, 864 m, južni Gorski kotar."
+		},
+		{
+			"name": "Vagon",
+			"lat": 46.243,
+			"lng": 16.2788,
+			"note_en": "Dugi vrh hut at 220 m, Hrvatsko zagorje.",
+			"note_hr": "Dugi vrh, 220 m, Hrvatsko zagorje."
+		},
+		{
+			"name": "Veliki Alan",
+			"lat": 44.6917,
+			"lng": 15.0244,
+			"phone": "+385 91 201 6785",
+			"capacity": 24,
+			"season": "Apr-Oct (warden-staffed)",
+			"note_en": "Saddle hut on Premuziceva staza, central Velebit.",
+			"note_hr": "Sedlo na Premužićevoj stazi, središnji Velebit."
+		},
+		{
+			"name": "Velobrski ledari",
+			"lat": 43.3188,
+			"lng": 17.0202,
+			"note_en": "Biokovo foothill hut at 292 m, Veliko Brdo.",
+			"note_hr": "Podnožje Biokova, 292 m, Veliko Brdo."
+		},
+		{
+			"name": "Vickov stup",
+			"lat": 43.5323,
+			"lng": 16.6261,
+			"note_en": "Mosor shelter at 1325 m, near the summit.",
+			"note_hr": "Mosor, sklonište na 1325 m, blizu vrha."
+		},
+		{
+			"name": "Vidikovac",
+			"lat": 45.9765,
+			"lng": 15.9407,
+			"note_en": "Medvednica hut at 180 m, above Stubicke Toplice.",
+			"note_hr": "Medvednica, 180 m, iznad Stubičkih Toplica."
+		},
+		{
+			"name": "Vila Velebita",
+			"lat": 44.5251,
+			"lng": 15.1781,
+			"note_en": "Central Velebit hut at 935 m.",
+			"note_hr": "Središnji Velebit, 935 m."
+		},
+		{
+			"name": "Viljevo",
+			"lat": 45.1979,
+			"lng": 17.7327,
+			"note_en": "Dilj gora hut at 297 m.",
+			"note_hr": "Dilj gora, 297 m."
+		},
+		{
+			"name": "Visočica",
+			"lat": 44.4323,
+			"lng": 15.36,
+			"note_en": "Southern Velebit hut at 1430 m, below Visocica peak.",
+			"note_hr": "Južni Velebit, 1430 m, ispod vrha Visočica."
+		},
+		{
+			"name": "Vjetar s Dinare",
+			"lat": 43.9076,
+			"lng": 16.6133,
+			"note_en": "Dinara shelter at 1330 m.",
+			"note_hr": "Dinara, sklonište na 1330 m."
+		},
+		{
+			"name": "Vlaški grad",
+			"lat": 44.3268,
+			"lng": 15.5521,
+			"note_en": "Southern Velebit shelter at 1280 m.",
+			"note_hr": "Južni Velebit, sklonište na 1280 m."
+		},
+		{
+			"name": "Vodice",
+			"lat": 45.7648,
+			"lng": 15.3801,
+			"note_en": "Zumberacka gora hut at 850 m.",
+			"note_hr": "Žumberačka gora, 850 m."
+		},
+		{
+			"name": "Vošac",
+			"lat": 43.327,
+			"lng": 17.0395,
+			"capacity": 30,
+			"season": "weekends and summer",
+			"url": "https://www.biokovo-hpd.hr/",
+			"note_en": "Biokovo lodge below Vosac peak, ~1421 m, managed by HPD Biokovo.",
+			"note_hr": "Dom HPD Biokovo ispod Vošca, ~1421 m."
+		},
+		{
+			"name": "Vrbanj",
+			"lat": 42.5542,
+			"lng": 18.5074,
+			"note_en": "Dubrovnik hinterland hut at 1009 m.",
+			"note_hr": "Dubrovačka zagora, 1009 m."
+		},
+		{
+			"name": "Vugrovec",
+			"lat": 45.8926,
+			"lng": 16.1002,
+			"note_en": "Medvednica eastern hut at 235 m.",
+			"note_hr": "Istočna Medvednica, 235 m."
+		},
+		{
+			"name": "Vuković",
+			"lat": 43.8149,
+			"lng": 16.6967,
+			"note_en": "Dinara-area hut at 902 m.",
+			"note_hr": "Dinarsko područje, 902 m."
+		},
+		{
+			"name": "Zamost",
+			"lat": 45.5322,
+			"lng": 14.6859,
+			"note_en": "Tuhobic hut at 321 m, northern Gorski kotar.",
+			"note_hr": "Tuhobić, 321 m, sjeverni Gorski kotar."
+		},
+		{
+			"name": "Zavižan",
+			"lat": 44.8143,
+			"lng": 14.9758,
+			"phone": "+385 53 614 209",
+			"capacity": 29,
+			"season": "year-round",
+			"url": "https://www.np-sjeverni-velebit.hr",
+			"note_en": "Premuziceva staza northern start at 1594 m; DHMZ meteorological station alongside.",
+			"note_hr": "Početak Premužićeve staze na 1594 m; uz dom je DHMZ meteorološka postaja."
+		},
+		{
+			"name": "Zavrata",
+			"lat": 44.3614,
+			"lng": 15.3761,
+			"note_en": "Paklenica shelter at 780 m.",
+			"note_hr": "Paklenica, sklonište na 780 m."
+		},
+		{
+			"name": "Zlatino sklonište",
+			"lat": 44.2918,
+			"lng": 15.5811,
+			"note_en": "Tulove grede shelter at 900 m, southern Velebit.",
+			"note_hr": "Tulove grede, sklonište na 900 m, južni Velebit."
+		},
+		{
+			"name": "Zlatko Prgin",
+			"lat": 44.0678,
+			"lng": 16.3749,
+			"note_en": "Dinara shelter at 1543 m.",
+			"note_hr": "Dinara, sklonište na 1543 m."
+		},
+		{
+			"name": "Zvonimir Plevnik",
+			"lat": 45.5055,
+			"lng": 15.4997,
+			"note_en": "Karlovac-area hut at 190 m.",
+			"note_hr": "Karlovačka okolica, 190 m."
+		},
+		{
+			"name": "Ćićo",
+			"lat": 43.7548,
+			"lng": 15.9522,
+			"note_en": "Sibenik-area hut at 220 m.",
+			"note_hr": "Šibensko područje, 220 m."
+		},
+		{
+			"name": "Česmina",
+			"lat": 43.5815,
+			"lng": 16.3275,
+			"note_en": "Kozjak hut at 499 m, above Kastela.",
+			"note_hr": "Kozjak, 499 m, iznad Kaštela."
+		},
+		{
+			"name": "Đuro Pilar",
+			"lat": 45.1892,
+			"lng": 18.0034,
+			"note_en": "Dilj gora hut at 169 m, near Slavonski Brod.",
+			"note_hr": "Dilj gora, 169 m, kod Slavonskog Broda."
+		},
+		{
+			"name": "Šaševo",
+			"lat": 45.4834,
+			"lng": 17.8162,
+			"note_en": "Krndija hut at 415 m, near Orahovica.",
+			"note_hr": "Krndija, 415 m, kod Orahovice."
+		},
+		{
+			"name": "Škola Kuna Konavoska",
+			"lat": 42.5594,
+			"lng": 18.3603,
+			"note_en": "Konavle hut at 721 m, above Dubrovnik.",
+			"note_hr": "Konavle, 721 m, iznad Dubrovnika."
+		},
+		{
+			"name": "Šoićeva kuća",
+			"lat": 45.7608,
+			"lng": 15.6272,
+			"note_en": "Samoborsko gorje hut at 385 m.",
+			"note_hr": "Samoborsko gorje, 385 m."
+		},
+		{
+			"name": "Šugarska duliba",
+			"lat": 44.4523,
+			"lng": 15.2475,
+			"note_en": "Southern Velebit shelter at 1212 m.",
+			"note_hr": "Južni Velebit, sklonište na 1212 m."
+		},
+		{
+			"name": "Žbevnica",
+			"lat": 45.4554,
+			"lng": 14.0126,
+			"note_en": "Cicarija hut at 851 m, north Istria.",
+			"note_hr": "Ćićarija, 851 m, sjeverna Istra."
+		},
+		{
+			"name": "Ždrilo",
+			"lat": 44.4847,
+			"lng": 15.183,
+			"note_en": "Central Velebit shelter at 1010 m.",
+			"note_hr": "Središnji Velebit, sklonište na 1010 m."
+		},
+		{
+			"name": "Željezničar",
+			"lat": 45.7631,
+			"lng": 15.6487,
+			"note_en": "Samoborsko gorje hut at 691 m, on Japetic.",
+			"note_hr": "Samoborsko gorje, 691 m, na Japetiću."
+		},
+		{
+			"name": "Žitnica",
+			"lat": 45.7412,
+			"lng": 15.6036,
+			"note_en": "Plesivica hut at 815 m, Samoborsko gorje.",
+			"note_hr": "Plešivica, 815 m, Samoborsko gorje."
+		}
+	]
+}

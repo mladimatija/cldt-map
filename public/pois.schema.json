@@ -1,0 +1,173 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "https://cldt.hr/pois.schema.json",
+	"title": "CLDT Points of Interest",
+	"description": "Typed POIs along or near the CLDT corridor: towns and settlements for orientation and resupply in v1; intended to grow to springs, mountain huts, shelters, viewpoints, etc. in future phases. The schema is intentionally open about `type` so adding new categories never requires a schema migration - only renderer / settings updates.",
+	"type": "object",
+	"required": ["lastUpdated", "pois"],
+	"properties": {
+		"lastUpdated": {
+			"type": "string",
+			"format": "date",
+			"description": "ISO date (YYYY-MM-DD) when the dataset was last refreshed."
+		},
+		"pois": {
+			"type": "array",
+			"description": "Sorted by trailKm ascending. Adjacent entries may share the same trailKm when two POIs sit at the same point on the trail.",
+			"items": {
+				"type": "object",
+				"required": ["id", "type", "name_en", "name_hr", "lat", "lng", "trailKm", "distanceFromTrailKm"],
+				"additionalProperties": false,
+				"properties": {
+					"id": {
+						"type": "string",
+						"pattern": "^[a-z0-9][a-z0-9-]*$",
+						"description": "Stable slug used as the React key and the URL fragment when deep-linking."
+					},
+					"type": {
+						"type": "string",
+						"description": "Open enum. Initial v1 values: `town`, `settlement`. Future values (no schema change needed): `spring`, `hut`, `shelter`, `camp_site`, `viewpoint`, `parking`, `restaurant`. Renderers that don't know a given type SHOULD ignore the entry rather than throw."
+					},
+					"name_en": {
+						"type": "string",
+						"description": "Display name in English."
+					},
+					"name_hr": {
+						"type": "string",
+						"description": "Display name in Croatian. Often identical to name_en for proper-noun place names."
+					},
+					"lat": {
+						"type": "number",
+						"minimum": -90,
+						"maximum": 90
+					},
+					"lng": {
+						"type": "number",
+						"minimum": -180,
+						"maximum": 180
+					},
+					"trailKm": {
+						"type": "number",
+						"minimum": 0,
+						"description": "Cumulative distance from the SOBO start to the trail's closest point to this POI. The renderer mirrors to NOBO at runtime."
+					},
+					"distanceFromTrailKm": {
+						"type": "number",
+						"minimum": 0,
+						"description": "Straight-line (great-circle) distance from the POI to the closest trail point in km. 0 means the trail passes through the POI; larger values flag it as a near-trail reference (e.g. resupply detour)."
+					},
+					"population": {
+						"type": ["integer", "null"],
+						"minimum": 0,
+						"description": "Optional population count, useful for settlement-vs-town sizing and search ranking. Sourced from OSM `population=*` and supplemented by Wikidata P1082."
+					},
+					"elevationM": {
+						"type": ["number", "null"],
+						"description": "Optional elevation in metres. Primarily for `peak` and `hut`."
+					},
+					"phone": {
+						"type": "string",
+						"description": "Optional contact phone (E.164 format). Primarily for `hut` (HPS-derived) and businesses."
+					},
+					"capacity": {
+						"type": ["integer", "null"],
+						"minimum": 0,
+						"description": "Optional sleeping/seating capacity. Primarily for `hut` (HPS-derived)."
+					},
+					"season": {
+						"type": "string",
+						"description": "Optional opening season / months (free-form short text). Primarily for `hut` and `shelter`."
+					},
+					"image": {
+						"type": "string",
+						"format": "uri",
+						"description": "DEPRECATED single-image URL. Kept for backward compatibility with datasets curated before Phase 4. The renderer prefers `images[]` when present."
+					},
+					"images": {
+						"type": "array",
+						"description": "Ordered gallery of POI photos. The first entry is treated as the primary image (Wikidata P18 when available). Each entry must include a source URL so the user can open the original and verify the licence.",
+						"items": {
+							"type": "object",
+							"required": ["url"],
+							"additionalProperties": false,
+							"properties": {
+								"url": {
+									"type": "string",
+									"format": "uri",
+									"description": "Full-resolution image URL (typically a Commons file URL)."
+								},
+								"thumbUrl": {
+									"type": "string",
+									"format": "uri",
+									"description": "Pre-sized thumbnail URL (~600 px wide). Optional; falls back to `url` when missing."
+								},
+								"attribution": {
+									"type": "string",
+									"description": "Human-readable credit line (e.g. 'Photo by User:Foo'). Required for CC-BY/BY-SA content."
+								},
+								"license": {
+									"type": "string",
+									"description": "Licence short code, e.g. 'CC-BY-SA-4.0', 'CC-BY-3.0', 'CC0', 'PD'."
+								},
+								"sourceUrl": {
+									"type": "string",
+									"format": "uri",
+									"description": "Canonical page where the original file lives (Commons file page, official site, etc.)."
+								}
+							}
+						}
+					},
+					"wikipedia": {
+						"type": "string",
+						"description": "Optional Wikipedia reference. Accepts full URLs (https://hr.wikipedia.org/wiki/Velebit), locale-prefixed short forms (hr:Velebit), or bare English titles (Velebit)."
+					},
+					"summary_en": {
+						"type": "string",
+						"description": "Optional Wikipedia summary extract (English) baked at enrichment time. The popup renders this synchronously so a description appears immediately - no live REST call needed. Falls back to lazy fetch when absent."
+					},
+					"summary_hr": {
+						"type": "string",
+						"description": "Optional Wikipedia summary extract (Croatian) baked at enrichment time. Same role as summary_en but for the hr locale."
+					},
+					"tags": {
+						"type": "array",
+						"items": { "type": "string" },
+						"description": "Free-form tags for future filtering (e.g. `resupply`, `atm`, `train`, `bus`, `pharmacy`, `unesco`)."
+					},
+					"url": {
+						"type": "string",
+						"format": "uri",
+						"description": "Optional canonical URL (official town site, hut booking page, etc.). Sourced from OSM `website=*` and Wikidata P856."
+					},
+					"note_en": {
+						"type": "string",
+						"description": "Optional short description in English."
+					},
+					"note_hr": {
+						"type": "string",
+						"description": "Optional short description in Croatian."
+					},
+					"source": {
+						"type": "string",
+						"enum": ["osm", "wikidata", "hps", "curated"],
+						"description": "Highest-quality data source contributing to this entry. `osm` is the baseline; `wikidata` / `hps` upgrade towns and huts when those passes hit; `curated` marks rows that originated from a manually-maintained file and should never be overwritten without review."
+					},
+					"lastVerified": {
+						"type": "string",
+						"format": "date",
+						"description": "ISO date (YYYY-MM-DD) when the entry was last touched by the enricher or a human curator."
+					},
+					"nearestHighwayM": {
+						"type": "number",
+						"minimum": 0,
+						"description": "Distance in metres from the POI to the closest OSM `highway=*` way. Populated by the enricher's reachability pass; small values mean the POI sits on or near a walkable road / path, large or absent values flag stranded POIs."
+					},
+					"isReachable": {
+						"type": "boolean",
+						"description": "True if the POI's nearest highway is in the same connected component of the corridor highway graph as the trail polyline. False means the road network around the POI is disconnected from the trail (typical for POIs separated from the trail by an unbridged river, cliff, or military zone)."
+					}
+				}
+			}
+		}
+	}
+}

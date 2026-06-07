@@ -1,23 +1,35 @@
 'use client';
 
 import React, { useMemo, useRef, useState } from 'react';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { useMap, Polyline } from 'react-leaflet';
+import { IoHelpCircleOutline } from 'react-icons/io5';
+import SmartTooltip from '@/components/ui/SmartTooltip';
+import { isKnownType, poiDisplayName, poiMatchesTagFilter, STAGE_POI_OFFTRAIL_KM, type Poi } from '@/lib/pois';
 import { Button } from '@/components/ui/Button';
 import { Checkbox } from '@/components/ui/Checkbox';
+import { MapControlsTripBriefModal } from './MapControlsTripBriefModal';
 import { cn, formatElevation, kmToMiles, milesToKm } from '@/lib/utils';
 import { MAP_CONTROL_POPOVER, MAP_CONTROL_INPUT } from './map-controls-constants';
 import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
 import { usePopoverFocusTrap } from '@/hooks';
-import { splitByDistance, splitByEta, computeStageStats } from '@/lib/stage-planner';
+import {
+	splitByDistance,
+	splitByEta,
+	computeStageStats,
+	computeMinStagesForCap,
+	DEFAULT_MAX_HOURS_PER_DAY,
+} from '@/lib/stage-planner';
 import { findNearestPointIndex, formatEta } from '@/lib/distance-utils';
-import { buildGpxXml, downloadGpxFile } from '@/lib/gpx-export';
+import { buildGpxXml, buildGpxWaypointXml, downloadGpxFile, type GpxWaypoint } from '@/lib/gpx-export';
 import { exportStripMapPdf, pointsToBounds } from '@/lib/export-utils';
 
 const MAX_STAGES = 200;
 
 export function MapControlsStagePlannerPanel(): React.ReactElement {
 	const t = useTranslations('stagePlanner');
+	const tPois = useTranslations('pois');
+	const locale = useLocale();
 
 	const stagePlan = useMapStore((s: MapStoreState) => s.stagePlan);
 	const setStagePlan = useMapStore((s: MapStoreState) => s.setStagePlan);
@@ -25,6 +37,11 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 	const walkingPaceKmh = useMapStore((s: MapStoreState) => s.walkingPaceKmh);
 	const gradeAdjustedEta = useMapStore((s: MapStoreState) => s.gradeAdjustedEta);
 	const units = useMapStore((s: MapStoreState) => s.units);
+	const poisFile = useMapStore((s: MapStoreState) => s.poisFile);
+	const poisLayerEnabled = useMapStore((s: MapStoreState) => s.poisLayerEnabled);
+	const enabledPoiTypes = useMapStore((s: MapStoreState) => s.enabledPoiTypes);
+	const enabledPoiTags = useMapStore((s: MapStoreState) => s.enabledPoiTags);
+	const requestOpenPoi = useMapStore((s: MapStoreState) => s.requestOpenPoi);
 
 	const enhancedTrailPoints = useStore((s: StoreState) => s.enhancedTrailPoints);
 	const trailMetadata = useStore((s: StoreState) => s.trailMetadata);
@@ -44,9 +61,12 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 	const [kmPerDayKm, setKmPerDayKm] = useState(25);
 	const [stageCount, setStageCount] = useState(5);
 	const [balanceByEta, setBalanceByEta] = useState(false);
+	const [maxHoursPerDay, setMaxHoursPerDay] = useState(DEFAULT_MAX_HOURS_PER_DAY);
+	const [autoBumpNotice, setAutoBumpNotice] = useState<{ requested: number; actual: number } | null>(null);
 	const [activeStageIndex, setActiveStageIndex] = useState<number | null>(null);
 	const [confirmReset, setConfirmReset] = useState(false);
 	const [isPdfExporting, setIsPdfExporting] = useState(false);
+	const [isTripBriefOpen, setIsTripBriefOpen] = useState(false);
 	const [pdfProgress, setPdfProgress] = useState<{ current: number; total: number } | null>(null);
 	const pdfAbortRef = useRef<AbortController | null>(null);
 
@@ -64,22 +84,34 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 		if (!enhancedTrailPoints?.length) return;
 		const safeKmPerDay = Math.max(0.1, kmPerDayKm);
 		const safeStageCount = Math.min(MAX_STAGES, Math.max(1, stageCount));
+		const requestedCount =
+			mode === 'stages'
+				? safeStageCount
+				: Math.min(MAX_STAGES, Math.max(1, Math.ceil((endKm - startKm) / safeKmPerDay)));
+		const minCount = computeMinStagesForCap(
+			enhancedTrailPoints,
+			startKm,
+			endKm,
+			walkingPaceKmh,
+			gradeAdjustedEta,
+			maxHoursPerDay,
+		);
+		const finalCount = Math.min(MAX_STAGES, Math.max(requestedCount, minCount));
+		setAutoBumpNotice(finalCount > requestedCount ? { requested: requestedCount, actual: finalCount } : null);
 		if (balanceByEta) {
-			const count =
-				mode === 'stages'
-					? safeStageCount
-					: Math.min(MAX_STAGES, Math.max(1, Math.ceil((endKm - startKm) / safeKmPerDay)));
-			setStagePlan(splitByEta(enhancedTrailPoints, startKm, endKm, walkingPaceKmh, gradeAdjustedEta, count));
-		} else if (mode === 'stages') {
-			setStagePlan(splitByDistance(startKm, endKm, (endKm - startKm) / safeStageCount));
+			setStagePlan(splitByEta(enhancedTrailPoints, startKm, endKm, walkingPaceKmh, gradeAdjustedEta, finalCount));
 		} else {
-			setStagePlan(splitByDistance(startKm, endKm, safeKmPerDay));
+			setStagePlan(splitByDistance(startKm, endKm, (endKm - startKm) / finalCount));
 		}
 		setActiveStageIndex(0);
 		setConfirmReset(false);
 	};
 
 	const handleStageClick = (index: number): void => {
+		if (index === activeStageIndex) {
+			setActiveStageIndex(null);
+			return;
+		}
 		setActiveStageIndex(index);
 		if (!stagePlan || !enhancedTrailPoints?.length) return;
 		const stage = stagePlan.stages[index];
@@ -100,7 +132,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 		const startIdx = findNearestPointIndex(enhancedTrailPoints, stage.startKm * 1000);
 		const endIdx = findNearestPointIndex(enhancedTrailPoints, stage.endKm * 1000);
 		let pts = enhancedTrailPoints.slice(Math.min(startIdx, endIdx), Math.max(startIdx, endIdx) + 1);
-		if (useStore.getState().direction === 'NOBO') pts = [...pts].reverse();
+		if (isNobo) pts = [...pts].reverse();
 		const gpx = buildGpxXml(
 			pts.map((p) => ({ lat: p.lat, lng: p.lng, elevation: p.elevation })),
 			`CLDT Stage ${activeStageIndex + 1}`,
@@ -163,6 +195,77 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 	const distanceUnitLabel = isImperial ? 'mi' : 'km';
 	const valueUnitLabel = mode === 'stages' ? t('modeStages') : `${distanceUnitLabel}/day`;
 
+	/** POIs that the renderer would also draw - same enabled-types and master
+	 *  toggle filter so the planner view never lists POIs the user has hidden. */
+	const visiblePois = useMemo((): Poi[] => {
+		if (!poisFile?.pois?.length || !poisLayerEnabled) return [];
+		return poisFile.pois.filter(
+			(p) =>
+				isKnownType(p.type) &&
+				enabledPoiTypes.has(p.type) &&
+				poiMatchesTagFilter(p, enabledPoiTags) &&
+				p.distanceFromTrailKm <= STAGE_POI_OFFTRAIL_KM,
+		);
+	}, [poisFile, poisLayerEnabled, enabledPoiTypes, enabledPoiTags]);
+
+	/** Per-stage POI buckets keyed by stage index. SOBO km of each POI is
+	 *  compared against the stage's [startKm, endKm] window (also SOBO). Sorted
+	 *  by trailKm within the stage so the list reads in walking order for SOBO
+	 *  hikers; NOBO display flips it below. */
+	const poisByStage = useMemo((): Poi[][] => {
+		if (!stagePlan || visiblePois.length === 0) return [];
+		return stagePlan.stages.map((stage) => {
+			const lo = Math.min(stage.startKm, stage.endKm);
+			const hi = Math.max(stage.startKm, stage.endKm);
+			return visiblePois.filter((p) => p.trailKm >= lo && p.trailKm <= hi).sort((a, b) => a.trailKm - b.trailKm);
+		});
+	}, [stagePlan, visiblePois]);
+
+	const activeStagePois = useMemo((): Poi[] => {
+		if (activeStageIndex === null || !poisByStage[activeStageIndex]) return [];
+		const pois = poisByStage[activeStageIndex];
+		return isNobo ? [...pois].reverse() : pois;
+	}, [activeStageIndex, poisByStage, isNobo]);
+
+	/** Flat, deduplicated waypoint list across every stage in the current plan.
+	 *  Dedup by id since a POI sitting at a stage boundary can legitimately
+	 *  appear in two consecutive buckets. Pre-computed via useMemo so the
+	 *  export-button disabled flag and the click handler agree on the count
+	 *  without re-walking the buckets twice. */
+	const allStagesWaypoints = useMemo((): GpxWaypoint[] => {
+		if (!stagePlan || poisByStage.length === 0) return [];
+		const seen = new Set<string>();
+		const out: GpxWaypoint[] = [];
+		for (const pois of poisByStage) {
+			for (const poi of pois) {
+				if (seen.has(poi.id)) continue;
+				seen.add(poi.id);
+				const name = poiDisplayName(poi, locale);
+				const typeLabel = tPois(`type.${poi.type}`, { default: poi.type });
+				out.push({
+					lat: poi.lat,
+					lng: poi.lng,
+					name,
+					type: typeLabel,
+					elevation: typeof poi.elevationM === 'number' ? poi.elevationM : undefined,
+					description: poi.note_en || poi.note_hr || undefined,
+					url: poi.url || undefined,
+				});
+			}
+		}
+		return out;
+	}, [stagePlan, poisByStage, locale, tPois]);
+
+	const handleAllStagesPoiExport = (): void => {
+		if (allStagesWaypoints.length === 0) return;
+		const xml = buildGpxWaypointXml(allStagesWaypoints, t('title'));
+		downloadGpxFile(xml, 'cldt-stages-pois.gpx');
+	};
+
+	const handlePoiClick = (poi: Poi): void => {
+		requestOpenPoi(poi.id);
+	};
+
 	return (
 		<>
 			{highlightPositions.length > 0 && (
@@ -171,7 +274,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 			<div
 				aria-labelledby="stage-planner-title"
 				aria-modal="true"
-				className={`z-controls-popover absolute top-1/2 right-[calc(100%+0.5rem)] flex max-h-[calc(100svh-15rem)] w-80 -translate-y-1/2 flex-col gap-2 overflow-hidden ${MAP_CONTROL_POPOVER}`}
+				className={`z-controls-popover fixed top-2 right-16 flex h-[calc(100dvh-4rem)] w-80 flex-col gap-2 overflow-hidden ${MAP_CONTROL_POPOVER}`}
 				ref={popoverRef}
 				role="dialog"
 				onContextMenu={(e) => e.preventDefault()}
@@ -183,7 +286,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 				<div className="flex flex-col gap-2">
 					<div className="flex gap-2">
 						<label className="flex flex-1 flex-col gap-0.5 text-xs text-gray-600 dark:text-gray-400">
-							{t('startKm')} ({distanceUnitLabel})
+							{t('startKm', { unit: distanceUnitLabel })}
 							<input
 								className={MAP_CONTROL_INPUT}
 								max={toDisplay(endKm)}
@@ -197,7 +300,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 							/>
 						</label>
 						<label className="flex flex-1 flex-col gap-0.5 text-xs text-gray-600 dark:text-gray-400">
-							{t('endKm')} ({distanceUnitLabel})
+							{t('endKm', { unit: distanceUnitLabel })}
 							<input
 								className={MAP_CONTROL_INPUT}
 								max={trailMetadata?.totalDistance ? toDisplay(trailMetadata.totalDistance) : undefined}
@@ -237,22 +340,39 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 						</label>
 					</div>
 
-					<label className="flex flex-col gap-0.5 text-xs text-gray-600 dark:text-gray-400">
-						{valueUnitLabel}
-						<input
-							className={MAP_CONTROL_INPUT}
-							min={mode === 'stages' ? 1 : 0.1}
-							step={mode === 'stages' ? 1 : isImperial ? 0.5 : 1}
-							type="number"
-							value={mode === 'stages' ? stageCount : toDisplay(kmPerDayKm)}
-							onChange={(e) => {
-								const v = Number(e.target.value);
-								if (!Number.isFinite(v) || v <= 0) return;
-								if (mode === 'stages') setStageCount(Math.round(v));
-								else setKmPerDayKm(fromDisplay(v));
-							}}
-						/>
-					</label>
+					<div className="flex gap-2">
+						<label className="flex flex-1 flex-col gap-0.5 text-xs text-gray-600 dark:text-gray-400">
+							{valueUnitLabel}
+							<input
+								className={MAP_CONTROL_INPUT}
+								min={mode === 'stages' ? 1 : 0.1}
+								step={mode === 'stages' ? 1 : isImperial ? 0.5 : 1}
+								type="number"
+								value={mode === 'stages' ? stageCount : toDisplay(kmPerDayKm)}
+								onChange={(e) => {
+									const v = Number(e.target.value);
+									if (!Number.isFinite(v) || v <= 0) return;
+									if (mode === 'stages') setStageCount(Math.round(v));
+									else setKmPerDayKm(fromDisplay(v));
+								}}
+							/>
+						</label>
+						<label className="flex flex-1 flex-col gap-0.5 text-xs text-gray-600 dark:text-gray-400">
+							{t('maxHoursPerDay')}
+							<input
+								className={MAP_CONTROL_INPUT}
+								max={24}
+								min={1}
+								step={0.5}
+								type="number"
+								value={maxHoursPerDay}
+								onChange={(e) => {
+									const v = Number(e.target.value);
+									if (Number.isFinite(v) && v > 0) setMaxHoursPerDay(v);
+								}}
+							/>
+						</label>
+					</div>
 
 					<label className="flex cursor-pointer items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
 						<Checkbox
@@ -262,11 +382,27 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 							}}
 						/>
 						{t('balanceByEta')}
+						<span className="inline-flex" onClick={(e) => e.stopPropagation()} onMouseDown={(e) => e.stopPropagation()}>
+							<SmartTooltip content={t('balanceByEtaHelp')} position="top">
+								<IoHelpCircleOutline className="ml-0.5 h-3.5 w-3.5 shrink-0 cursor-help text-gray-400 hover:text-gray-600 dark:text-white" />
+							</SmartTooltip>
+						</span>
 					</label>
 
 					<Button variant="mapControlOutline" onClick={handleGenerate}>
 						{t('generatePlan')}
 					</Button>
+
+					{autoBumpNotice && (
+						<p className="text-cldt-blue dark:text-cldt-blue m-0 text-[11px]">
+							{t('autoBumpNotice', {
+								actual: autoBumpNotice.actual,
+								requested: autoBumpNotice.requested,
+								hours: maxHoursPerDay,
+								pace: walkingPaceKmh,
+							})}
+						</p>
+					)}
 				</div>
 
 				{!stagePlan && <p className="mb-0 text-xs text-gray-500 dark:text-gray-400">{t('noStages')}</p>}
@@ -275,6 +411,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 					<div className="flex min-h-0 flex-1 flex-col divide-y divide-gray-100 overflow-y-auto rounded border border-gray-100 dark:divide-[var(--border-color)] dark:border-[var(--border-color)]">
 						{stagePlan.stages.map((stage, i) => {
 							const stats = stageStats[i];
+							const poiCount = poisByStage[i]?.length ?? 0;
 							return (
 								<button
 									className={cn(
@@ -304,6 +441,38 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 											</span>
 										</>
 									)}
+									{poiCount > 0 && (
+										<span
+											aria-label={t('stagePoiCount', { count: poiCount })}
+											className="text-cldt-blue bg-cldt-blue/10 ml-1 shrink-0 rounded-full px-1.5 py-0 text-[10px] font-medium tabular-nums"
+											title={t('stagePoiCount', { count: poiCount })}
+										>
+											{poiCount}
+										</span>
+									)}
+								</button>
+							);
+						})}
+					</div>
+				)}
+
+				{stagePlan && activeStageIndex !== null && activeStagePois.length > 0 && (
+					<div className="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto rounded border border-gray-100 px-2 py-1 dark:border-[var(--border-color)]">
+						<p className="text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400">
+							{t('stagePoisHeading', { index: activeStageIndex + 1 })}
+						</p>
+						{activeStagePois.map((poi) => {
+							const name = poiDisplayName(poi, locale);
+							const typeLabel = tPois(`type.${poi.type}`, { default: poi.type });
+							return (
+								<button
+									className="hover:bg-cldt-blue/10 focus-visible:bg-cldt-blue/10 dark:hover:bg-cldt-blue/20 focus-visible:ring-cldt-green flex w-full items-baseline gap-1 rounded px-1 py-0.5 text-left text-xs focus-visible:ring-2 focus-visible:outline-none"
+									key={poi.id}
+									type="button"
+									onClick={() => handlePoiClick(poi)}
+								>
+									<span className="truncate font-medium text-gray-800 dark:text-[var(--text-primary)]">{name}</span>
+									<span className="ml-auto shrink-0 text-[10px] text-gray-500 dark:text-gray-400">{typeLabel}</span>
 								</button>
 							);
 						})}
@@ -312,8 +481,21 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 
 				{stagePlan && !confirmReset && (
 					<div className="flex flex-col gap-2">
-						<Button disabled={activeStageIndex === null} variant="mapControlOutline" onClick={handleGpxExport}>
+						<Button
+							disabled={activeStageIndex === null}
+							title={t('gpxExportTooltip')}
+							variant="mapControlOutline"
+							onClick={handleGpxExport}
+						>
 							{t('gpxExport')}
+						</Button>
+						<Button
+							disabled={allStagesWaypoints.length === 0}
+							title={t('gpxPoisExportTooltip')}
+							variant="mapControlOutline"
+							onClick={handleAllStagesPoiExport}
+						>
+							{t('gpxPoisExport')}
 						</Button>
 						{isPdfExporting ? (
 							<div className="flex gap-2">
@@ -322,16 +504,33 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 										? t('stripMapPdfProgress', { current: pdfProgress.current, total: pdfProgress.total })
 										: t('stripMapPdf')}
 								</span>
-								<Button size="sm" variant="mapControlOutlineSecondary" onClick={handleCancelPdfExport}>
+								<Button
+									size="sm"
+									title={t('stripMapPdfCancelTooltip')}
+									variant="mapControlOutlineSecondary"
+									onClick={handleCancelPdfExport}
+								>
 									{t('stripMapPdfCancel')}
 								</Button>
 							</div>
 						) : (
-							<Button variant="mapControlOutline" onClick={handleStripMapPdfExport}>
+							<Button title={t('stripMapPdfTooltip')} variant="mapControlOutline" onClick={handleStripMapPdfExport}>
 								{t('stripMapPdf')}
 							</Button>
 						)}
-						<Button variant="mapControlOutlineSecondary" onClick={() => setConfirmReset(true)}>
+						<Button
+							disabled={!stagePlan || stagePlan.stages.length === 0}
+							title={t('tripBriefOpenTooltip')}
+							variant="mapControlOutline"
+							onClick={() => setIsTripBriefOpen(true)}
+						>
+							{t('tripBriefOpen')}
+						</Button>
+						<Button
+							title={t('resetTooltip')}
+							variant="mapControlOutlineSecondary"
+							onClick={() => setConfirmReset(true)}
+						>
 							{t('reset')}
 						</Button>
 					</div>
@@ -349,6 +548,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 					</div>
 				)}
 			</div>
+			<MapControlsTripBriefModal open={isTripBriefOpen} onClose={() => setIsTripBriefOpen(false)} />
 		</>
 	);
 }
