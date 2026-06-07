@@ -30,6 +30,7 @@ import { foldDiacritics } from '@/lib/pois';
 import type { Poi, PoiImage, PoisFile } from '../src/lib/poi-types';
 import { parseWikipediaRef, SUMMARY_HOST_TEMPLATE as WIKIPEDIA_SUMMARY_HOST_TEMPLATE } from '../src/lib/wikipedia';
 import { applyReachabilityFilter, formatStats } from './poi-reachability';
+import { fetchOverpass } from './overpass-fetch';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -574,27 +575,21 @@ async function fetchOsmElements(bbox: Bbox, selectors: { key: string; values: st
 	}
 	const query = `[out:json][timeout:${OVERPASS_TIMEOUT_S}];(${clauses.join('')});out center tags;`;
 
-	const controller = new AbortController();
-	const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+	let res: Response;
 	try {
-		const res = await fetch(OVERPASS_URL, {
-			method: 'POST',
-			headers: { 'content-type': 'application/x-www-form-urlencoded', 'user-agent': USER_AGENT },
+		res = await fetchOverpass({
+			url: OVERPASS_URL,
 			body: `data=${encodeURIComponent(query)}`,
-			signal: controller.signal,
+			userAgent: USER_AGENT,
+			fetchTimeoutMs: FETCH_TIMEOUT_MS,
+			onRetry: ({ message }) => console.warn(`     Overpass ${message}.`),
 		});
-		if (!res.ok) {
-			console.warn(`     Overpass returned HTTP ${res.status}; skipping this type.`);
-			return { elements: [], failed: true };
-		}
-		const json = (await res.json()) as { elements?: OverpassElement[] };
-		return { elements: json.elements ?? [], failed: false };
 	} catch (err) {
 		console.warn(`     Overpass error: ${(err as Error).message}; skipping this type.`);
 		return { elements: [], failed: true };
-	} finally {
-		clearTimeout(timeout);
 	}
+	const json = (await res.json()) as { elements?: OverpassElement[] };
+	return { elements: json.elements ?? [], failed: false };
 }
 
 // ---- Wikidata SPARQL -------------------------------------------------------
