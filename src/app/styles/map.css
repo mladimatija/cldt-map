@@ -1056,3 +1056,48 @@
 		transform: none;
 	}
 }
+
+/* react-select ships baseline styles via Emotion's runtime CSS-in-JS, which
+   in this Next.js App Router setup is unreliable: the offscreen A11yText
+   styles and the SVG `fill: currentColor` rule both fail to apply, so the
+   live-region announcement leaks into the visible layout and the chevron
+   renders as solid black instead of inheriting our text-gray-400. The
+   selectors below restate those rules, scoped to the POI panel's two Select
+   instances via the prefixed classes we already set (poi-type-select__*,
+   poi-sort-select__*) so they survive Emotion failing. */
+.poi-type-select__indicator svg,
+.poi-sort-select__indicator svg {
+	fill: currentColor;
+	stroke: currentColor;
+}
+div:has(> .poi-type-select__control) > span[class*='a11yText'],
+div:has(> .poi-sort-select__control) > span[class*='a11yText'] {
+	position: absolute !important;
+	width: 1px !important;
+	height: 1px !important;
+	padding: 0 !important;
+	margin: -1px !important;
+	overflow: hidden !important;
+	clip: rect(0, 0, 0, 0) !important;
+	white-space: nowrap !important;
+	border: 0 !important;
+}
+/* DummyInput is what react-select renders for non-searchable selects (sort).
+   It must remain focusable but invisible; without Emotion these styles
+   would not apply and it renders as a default focused input. */
+.poi-type-select__control input[class*='dummyInput'],
+.poi-sort-select__control input[class*='dummyInput'] {
+	background: 0;
+	border: 0;
+	caret-color: transparent;
+	color: transparent;
+	font-size: inherit;
+	grid-area: 1 / 2;
+	left: -100px;
+	opacity: 0;
+	outline: 0;
+	padding: 0;
+	position: relative;
+	transform: scale(0);
+	width: 1px;
+}
