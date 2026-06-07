@@ -20,6 +20,7 @@
 // is easier to scan.
 
 import { haversineDistanceM as haversineM } from '../src/lib/haversine';
+import { fetchOverpass } from './overpass-fetch';
 
 // ---- Types -----------------------------------------------------------------
 
@@ -200,24 +201,14 @@ export async function fetchHighwaysInBbox(
 	const bboxStr = `${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng}`;
 	const query =
 		`[out:json][timeout:${OVERPASS_TIMEOUT_S}];` + `way[highway~"^(${HIGHWAY_REGEX})$"](${bboxStr});` + `out geom;`;
-	const ctrl = new AbortController();
-	const timer = setTimeout(() => ctrl.abort(), FETCH_TIMEOUT_MS);
-	try {
-		const res = await fetch(overpassUrl, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/x-www-form-urlencoded',
-				'User-Agent': userAgent,
-			},
-			body: `data=${encodeURIComponent(query)}`,
-			signal: ctrl.signal,
-		});
-		if (!res.ok) throw new Error(`Overpass returned ${res.status}`);
-		const data = (await res.json()) as OverpassResponse;
-		return (data.elements ?? []).filter((e): e is OverpassWayElement => e.type === 'way');
-	} finally {
-		clearTimeout(timer);
-	}
+	const res = await fetchOverpass({
+		url: overpassUrl,
+		body: `data=${encodeURIComponent(query)}`,
+		userAgent,
+		fetchTimeoutMs: FETCH_TIMEOUT_MS,
+	});
+	const data = (await res.json()) as OverpassResponse;
+	return (data.elements ?? []).filter((e): e is OverpassWayElement => e.type === 'way');
 }
 
 /** Builds an undirected graph from Overpass way elements. Consecutive points

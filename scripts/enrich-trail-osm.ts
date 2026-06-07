@@ -21,6 +21,7 @@ import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { haversineDistanceM as haversineM } from '../src/lib/haversine';
+import { fetchOverpass } from './overpass-fetch';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -294,45 +295,36 @@ async function fetchWaysInBbox(b: Bbox): Promise<OsmWay[]> {
 	const bboxStr = `${padded.minLat},${padded.minLng},${padded.maxLat},${padded.maxLng}`;
 	const query = `[out:json][timeout:${OVERPASS_TIMEOUT_S}];` + `way[highway](${bboxStr});` + `out tags geom;`;
 
-	const controller = new AbortController();
-	const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+	let res: Response;
 	try {
-		const res = await fetch(OVERPASS_URL, {
-			method: 'POST',
-			headers: {
-				'content-type': 'application/x-www-form-urlencoded',
-				'user-agent': USER_AGENT,
-			},
+		res = await fetchOverpass({
+			url: OVERPASS_URL,
 			body: `data=${encodeURIComponent(query)}`,
-			signal: controller.signal,
+			userAgent: USER_AGENT,
+			fetchTimeoutMs: FETCH_TIMEOUT_MS,
+			onRetry: ({ message }) => console.warn(`     Overpass ${message}.`),
 		});
-		if (!res.ok) {
-			console.warn(`     Overpass returned HTTP ${res.status}; treating chunk as untagged.`);
-			return [];
-		}
-		const json = (await res.json()) as {
-			elements?: Array<{
-				type?: string;
-				tags?: Record<string, string>;
-				geometry?: Array<{ lat: number; lon: number }>;
-			}>;
-		};
-		const elements = json.elements ?? [];
-		const ways: OsmWay[] = [];
-		for (const el of elements) {
-			if (el.type !== 'way' || !el.tags || !el.geometry) continue;
-			ways.push({
-				tags: el.tags,
-				nodes: el.geometry.map((g) => ({ lat: g.lat, lng: g.lon })),
-			});
-		}
-		return ways;
 	} catch (err) {
 		console.warn(`     Overpass error: ${(err as Error).message}; treating chunk as untagged.`);
 		return [];
-	} finally {
-		clearTimeout(timeout);
 	}
+	const json = (await res.json()) as {
+		elements?: Array<{
+			type?: string;
+			tags?: Record<string, string>;
+			geometry?: Array<{ lat: number; lon: number }>;
+		}>;
+	};
+	const elements = json.elements ?? [];
+	const ways: OsmWay[] = [];
+	for (const el of elements) {
+		if (el.type !== 'way' || !el.tags || !el.geometry) continue;
+		ways.push({
+			tags: el.tags,
+			nodes: el.geometry.map((g) => ({ lat: g.lat, lng: g.lon })),
+		});
+	}
+	return ways;
 }
 
 // ---- Snap samples to nearest way -------------------------------------------
