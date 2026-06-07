@@ -29,7 +29,7 @@ const PROJECT_ROOT = path.resolve(__dirname, '..');
 const SCHEMA_PATH = path.resolve(PROJECT_ROOT, 'public/trail-osm-tags.schema.json');
 const OUTPUT_PATH = path.resolve(PROJECT_ROOT, 'public/trail-osm-tags.json');
 const GPX_URL = process.env.NEXT_PUBLIC_GPX_URL;
-const OVERPASS_URL = process.env.OSM_OVERPASS_URL ?? 'https://overpass-api.de/api/interpreter';
+const OVERPASS_URL = process.env.OSM_OVERPASS_URL?.trim() || 'https://overpass-api.de/api/interpreter';
 const USER_AGENT = 'cldt-osm-enricher/1.0 (+https://cldt.hr)';
 
 // Sampling resolution. Every 100 m yields ~22,000 samples on a 2,220 km trail.
