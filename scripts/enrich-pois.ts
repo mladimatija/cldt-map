@@ -40,7 +40,7 @@ const OUTPUT_PATH = path.resolve(PROJECT_ROOT, 'public/pois.json');
 const HPS_HUTS_PATH = path.resolve(PROJECT_ROOT, 'scripts/hps-huts.json');
 const CROATIA_GEOJSON_PATH = path.resolve(PROJECT_ROOT, 'public/data/geoJsonHr.json');
 const GPX_URL = process.env.NEXT_PUBLIC_GPX_URL;
-const OVERPASS_URL = process.env.OSM_OVERPASS_URL ?? 'https://overpass-api.de/api/interpreter';
+const OVERPASS_URL = process.env.OSM_OVERPASS_URL?.trim() || 'https://overpass-api.de/api/interpreter';
 const WIKIDATA_SPARQL_URL = 'https://query.wikidata.org/sparql';
 const USER_AGENT = 'cldt-poi-enricher/2.0 (+https://cldt.hr)';
 
