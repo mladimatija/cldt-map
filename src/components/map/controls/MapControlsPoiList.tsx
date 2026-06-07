@@ -41,22 +41,28 @@ const poiSelectClassNames = {
 	// the menu. The menu's own z-controls-popover (110) below sits in the popover
 	// stacking context and wins against sibling controls and the sticky bucket header.
 	container: () => 'relative w-full text-xs leading-snug',
+	// Layout (flex, items-center, justify-between) is repeated here on purpose:
+	// react-select's base flex CSS is injected via Emotion at runtime, which
+	// silently drops out in the Next.js App Router production build. Restating
+	// the layout in Tailwind makes the control render correctly without
+	// depending on Emotion's runtime style injection.
 	control: ({ isFocused }: { isFocused: boolean }) =>
 		cn(
-			'min-h-[44px] cursor-pointer rounded-md border bg-[var(--map-tooltip-bg)] px-2 py-0.5 text-xs leading-snug text-gray-800 outline-none dark:bg-[var(--bg-secondary)] dark:text-white',
+			'flex min-h-[44px] flex-wrap items-center justify-between cursor-pointer rounded-md border bg-[var(--map-tooltip-bg)] px-2 py-0.5 text-xs leading-snug text-gray-800 outline-none dark:bg-[var(--bg-secondary)] dark:text-white',
 			isFocused ? 'border-cldt-green ring-1 ring-cldt-green' : 'border-gray-200 dark:border-white',
 		),
 	placeholder: () => 'text-xs text-gray-400',
 	input: () => 'text-xs text-gray-800 dark:text-white',
 	singleValue: () => 'text-xs text-gray-800 dark:text-white',
-	valueContainer: () => 'flex flex-wrap gap-1',
+	valueContainer: () => 'flex flex-wrap items-center gap-1 flex-1',
 	multiValue: () =>
 		'flex items-center gap-1 rounded bg-cldt-blue/15 dark:bg-cldt-blue/25 text-[11px] px-1.5 py-0.5 leading-none',
 	multiValueLabel: () => 'text-cldt-blue dark:text-cldt-blue text-[11px]',
 	multiValueRemove: () => 'cursor-pointer hover:text-red-500 ml-0.5 text-[11px]',
+	indicatorsContainer: () => 'flex items-center self-stretch shrink-0',
 	indicatorSeparator: () => 'hidden',
-	dropdownIndicator: () => 'text-gray-400 hover:text-gray-600 dark:hover:text-white px-1',
-	clearIndicator: () => 'text-gray-400 hover:text-red-500 px-1 cursor-pointer',
+	dropdownIndicator: () => 'flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-white px-1',
+	clearIndicator: () => 'flex items-center text-gray-400 hover:text-red-500 px-1 cursor-pointer',
 	menu: () =>
 		'absolute z-controls-popover mt-1 w-full rounded-md border border-gray-200 bg-[var(--map-tooltip-bg)] shadow-md text-xs leading-snug dark:border-[var(--border-color)] dark:bg-[var(--bg-secondary)]',
 	menuList: () => 'py-1 max-h-60 overflow-y-auto',
