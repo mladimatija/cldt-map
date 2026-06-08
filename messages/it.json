@@ -683,8 +683,8 @@
 	},
 	"poiDisclaimer": {
 		"title": "Su questi luoghi",
-		"publicSource": "I punti d'interesse mostrati qui sono raccolti da fonti pubbliche (OpenStreetMap, Wikipedia, Wikimedia Commons, HPS) e non sono confermati o verificati dalla CLDTA.",
-		"farOut": "L'<link>app mobile FarOut</link> contiene i POI confermati e verificati, curati dal team CLDTA, dove gli utenti possono commentare ogni luogo e lasciare feedback.",
+		"publicSource": "I punti d'interesse mostrati qui sono raccolti da fonti pubbliche (OpenStreetMap, Wikipedia, Wikimedia Commons, HPS) e non sono confermati o verificati dalla LDTH.",
+		"farOut": "L'<link>app mobile FarOut</link> contiene i POI confermati e verificati, curati dal team LDTH, dove gli utenti possono commentare ogni luogo e lasciare feedback.",
 		"confirm": "Mostra sulla mappa",
 		"dismiss30": "Non mostrarlo per 30 giorni",
 		"cancel": "Annulla"

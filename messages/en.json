@@ -683,8 +683,8 @@
 	},
 	"poiDisclaimer": {
 		"title": "About these places",
-		"publicSource": "The points of interest shown here are scraped from public sources (OpenStreetMap, Wikipedia, Wikimedia Commons, HPS) and are not confirmed or vetted by the CLDTA.",
-		"farOut": "The <link>FarOut mobile app</link> holds the confirmed and vetted POIs, curated by the CLDTA team, where users can comment on each place and leave their feedback.",
+		"publicSource": "The points of interest shown here are scraped from public sources (OpenStreetMap, Wikipedia, Wikimedia Commons, HPS) and are not confirmed or vetted by the LDTH.",
+		"farOut": "The <link>FarOut mobile app</link> holds the confirmed and vetted POIs, curated by the LDTH team, where users can comment on each place and leave their feedback.",
 		"confirm": "Show on map",
 		"dismiss30": "Don't show this for 30 days",
 		"cancel": "Cancel"
