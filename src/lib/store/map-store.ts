@@ -688,30 +688,34 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					},
 					enabledPoiTypes: defaultEnabledPoiTypes,
 					setEnabledPoiTypes: (types): void => {
-						set({ enabledPoiTypes: types });
+						set({ enabledPoiTypes: types, poiFiltersUserModified: true });
 					},
 					togglePoiType: (type: string): void => {
 						const current = get().enabledPoiTypes;
 						const next = new Set(current);
 						if (next.has(type)) next.delete(type);
 						else next.add(type);
-						set({ enabledPoiTypes: next });
+						set({ enabledPoiTypes: next, poiFiltersUserModified: true });
 					},
 					// Tags default to "no filter" (empty set). User picks chips in the
 					// list panel to narrow the visible POIs by tag intersection.
 					enabledPoiTags: new Set<string>(),
 					setEnabledPoiTags: (tags): void => {
-						set({ enabledPoiTags: tags });
+						set({ enabledPoiTags: tags, poiFiltersUserModified: true });
 					},
 					togglePoiTag: (tag: string): void => {
 						const current = get().enabledPoiTags;
 						const next = new Set(current);
 						if (next.has(tag)) next.delete(tag);
 						else next.add(tag);
-						set({ enabledPoiTags: next });
+						set({ enabledPoiTags: next, poiFiltersUserModified: true });
 					},
 					clearPoiTags: (): void => {
-						set({ enabledPoiTags: new Set<string>() });
+						set({ enabledPoiTags: new Set<string>(), poiFiltersUserModified: true });
+					},
+					poiFiltersUserModified: false,
+					resetPoiFiltersToDefaults: (): void => {
+						set({ enabledPoiTypes: defaultEnabledPoiTypes, enabledPoiTags: new Set<string>() });
 					},
 					starredPoiIds: new Set<string>(),
 					toggleStarredPoi: (id: string): void => {
@@ -792,6 +796,7 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					// Set isn't JSON-serialisable; persist as an array and re-hydrate in merge().
 					enabledPoiTypes: [...state.enabledPoiTypes],
 					enabledPoiTags: [...state.enabledPoiTags],
+					poiFiltersUserModified: state.poiFiltersUserModified,
 					starredPoiIds: [...state.starredPoiIds],
 					distancePrecision: state.distancePrecision,
 					darkMode: state.darkMode,

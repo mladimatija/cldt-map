@@ -343,6 +343,14 @@ export interface MapStoreState {
 	setEnabledPoiTags: (tags: ReadonlySet<string>) => void;
 	togglePoiTag: (tag: string) => void;
 	clearPoiTags: () => void;
+	/** True once the user has explicitly modified either POI filter (types or
+	 *  tags). Lets the POI disclaimer handlers re-seed defaults the first time
+	 *  the layer is enabled without overwriting a user's prior customisation. */
+	poiFiltersUserModified: boolean;
+	/** Reset both POI filters to their initial defaults without flipping
+	 *  `poiFiltersUserModified` - used by the disclaimer handlers, not by
+	 *  user-facing controls. */
+	resetPoiFiltersToDefaults: () => void;
 	/** POI ids the user has explicitly starred for trip-brief "Selected only" scope.
 	 *  Persisted in the store so the selection survives panel close/reopen and
 	 *  is still present when the trip-brief modal is opened. */
