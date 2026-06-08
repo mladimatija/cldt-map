@@ -1,5 +1,5 @@
 {
-	"lastUpdated": "2026-06-07",
+	"lastUpdated": "2026-06-08",
 	"source": "CLDT Seasonal Trail Status",
 	"sourceUrl": "https://cldt.hr",
 	"entries": [
@@ -10,26 +10,12 @@
 			"distanceStartKm": 1662,
 			"distanceEndKm": 1664.9,
 			"validFrom": "2026-05-12",
-			"validUntil": "2026-06-21",
+			"validUntil": "2026-06-22",
 			"note_hr": "Put Malog Princa u NP Paklenica zatvoren je do daljnjeg zbog dotrajalih elemenata osiguranja i pomagala u prolasku zahtjevnoga planinarskog puta.",
 			"note_en": "Put Malog Princa in NP Paklenica is closed until further notice due to worn safety elements and aids on this demanding trail.",
 			"source": "HPS - Planinarski putovi (vijesti)",
 			"sourceUrl": "https://www.hps.hr/novosti/planinarski-putovi/",
-			"lastUpdated": "2026-06-07"
-		},
-		{
-			"id": "sjeverni-velebit-np-cash-only-2026",
-			"severity": "caution",
-			"season": "year-round",
-			"distanceStartKm": 1578.5,
-			"distanceEndKm": 1600,
-			"validFrom": "2026-05-25",
-			"validUntil": "2026-06-21",
-			"note_hr": "NP Sjeverni Velebit: na oba ulaza (Babić Siča i Alan) plaćanje je moguće isključivo GOTOVINOM. Ulaz Babić Siča radi pon-ned 8:00-16:00; ulaz Alan - ulaznice se kupuju kod dežurnog čuvara prirode.",
-			"note_en": "NP Sjeverni Velebit: payment at both entrances (Babić Siča and Alan) is possible exclusively in CASH. Babić Siča entrance is open Mon-Sun 08:00-16:00; Alan entrance - tickets purchased from the on-duty nature warden.",
-			"source": "NP Sjeverni Velebit - Važne obavijesti",
-			"sourceUrl": "https://np-sjeverni-velebit.hr/www/hr/va%C5%BEne-obavijesti",
-			"lastUpdated": "2026-06-07"
+			"lastUpdated": "2026-06-08"
 		},
 		{
 			"id": "dinara-trails-closed-june-2026",
@@ -43,21 +29,7 @@
 			"note_en": "Temporary unavailability of hiking trails on Dinara during June 2026.",
 			"source": "HPS - Planinarski putovi (vijesti)",
 			"sourceUrl": "https://www.hps.hr/novosti/planinarski-putovi/",
-			"lastUpdated": "2026-06-07"
-		},
-		{
-			"id": "paklenica-trail-caution-2026",
-			"severity": "caution",
-			"season": "shoulder",
-			"distanceStartKm": 1662,
-			"distanceEndKm": 1669,
-			"validFrom": "2026-05-18",
-			"validUntil": "2026-06-21",
-			"note_hr": "U NP Paklenica, na planinarskoj stazi između Jurlina i kanjona Velike Paklenice, provedena je akcija spašavanja planinarka koja zbog ozljede noge nije mogla nastaviti daljnje kretanje. Preporuča se oprez na stazama u ovom području.",
-			"note_en": "In NP Paklenica, on the trail between Jurlina and the Velika Paklenica canyon, a rescue operation was carried out for a hiker who was unable to continue due to a leg injury. Caution is advised on trails in this area.",
-			"source": "HGSS - Novosti",
-			"sourceUrl": "https://www.hgss.hr/novosti/",
-			"lastUpdated": "2026-06-07"
+			"lastUpdated": "2026-06-08"
 		}
 	]
 }
