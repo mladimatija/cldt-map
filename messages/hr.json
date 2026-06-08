@@ -684,8 +684,8 @@
 	},
 	"poiDisclaimer": {
 		"title": "O ovim mjestima",
-		"publicSource": "Prikazane točke interesa preuzete su iz javnih izvora (OpenStreetMap, Wikipedia, Wikimedia Commons, HPS) i nisu potvrđene niti provjerene od strane CLDTA.",
-		"farOut": "<link>Mobilna aplikacija FarOut</link> sadrži potvrđene i provjerene POI-eve, koje uređuje CLDTA, gdje korisnici mogu komentirati svako mjesto i ostaviti povratne informacije.",
+		"publicSource": "Prikazane točke interesa preuzete su iz javnih izvora (OpenStreetMap, Wikipedia, Wikimedia Commons, HPS) i nisu potvrđene niti provjerene od strane LDTH.",
+		"farOut": "<link>Mobilna aplikacija FarOut</link> sadrži potvrđene i provjerene POI-eve, koje uređuje LDTH, gdje korisnici mogu komentirati svako mjesto i ostaviti povratne informacije.",
 		"confirm": "Prikaži na karti",
 		"dismiss30": "Ne prikazuj ovo 30 dana",
 		"cancel": "Odustani"

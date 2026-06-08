@@ -133,7 +133,7 @@ export const config = {
 
 	/** POI map layer master toggle default. Off-by-default so first-time users
 	 *  see the trail unobstructed; the panel shows a confirmation dialog the
-	 *  first time they enable it (POIs are publicly sourced, not CLDTA-vetted). */
+	 *  first time they enable it (POIs are publicly sourced, not LDTH-vetted). */
 	poisLayerEnabled: envBool('NEXT_PUBLIC_DEFAULT_POIS_ENABLED', false),
 
 	/** Walking pace in km/h used for passage-time estimates. */

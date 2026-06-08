@@ -5,7 +5,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/Button';
 import { usePopoverFocusTrap } from '@/hooks';
 
-/** "FarOut mobile app" deep-link target. The CLDTA's Croatian-language page is
+/** "FarOut mobile app" deep-link target. The LDTH's Croatian-language page is
  *  the canonical source; all non-HR locales fall back to the English mirror. */
 function getFarOutAppUrl(locale: string): string {
 	if (locale === 'hr') return 'https://cldt.hr/orijentacija-mobilna-aplikacija/';
