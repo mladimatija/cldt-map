@@ -234,7 +234,17 @@ export function MapControlsPoiList({
 	const setPoisLayerEnabled = useMapStore((s: MapStoreState) => s.setPoisLayerEnabled);
 	const poiDisclaimerDismissedAt = useMapStore((s: MapStoreState) => s.poiDisclaimerDismissedAt);
 	const setPoiDisclaimerDismissedAt = useMapStore((s: MapStoreState) => s.setPoiDisclaimerDismissedAt);
+	const poiFiltersUserModified = useMapStore((s: MapStoreState) => s.poiFiltersUserModified);
+	const resetPoiFiltersToDefaults = useMapStore((s: MapStoreState) => s.resetPoiFiltersToDefaults);
 	const [disclaimerOpen, setDisclaimerOpen] = useState(false);
+
+	// Re-seed defaults only when the user has never touched the filters. Runs
+	// from both disclaimer paths (Confirm + DismissFor30Days) so an in-memory
+	// clear by some other code path can't leave the layer enabled with an
+	// empty filter on the very first opt-in.
+	const seedDefaultFiltersIfPristine = useCallback((): void => {
+		if (!poiFiltersUserModified) resetPoiFiltersToDefaults();
+	}, [poiFiltersUserModified, resetPoiFiltersToDefaults]);
 
 	const handlePoisLayerToggle = useCallback(
 		(checked: boolean): void => {
@@ -865,10 +875,12 @@ export function MapControlsPoiList({
 						open={disclaimerOpen}
 						onCancel={() => setDisclaimerOpen(false)}
 						onConfirm={() => {
+							seedDefaultFiltersIfPristine();
 							setPoisLayerEnabled(true);
 							setDisclaimerOpen(false);
 						}}
 						onDismissFor30Days={() => {
+							seedDefaultFiltersIfPristine();
 							setPoisLayerEnabled(true);
 							setPoiDisclaimerDismissedAt(Date.now());
 							setDisclaimerOpen(false);
