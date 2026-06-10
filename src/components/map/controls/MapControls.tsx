@@ -282,6 +282,15 @@ const MapControls: React.FC<MapControlsProps> = ({
 	const baseMapProvider = useMapStore((state: MapStoreState) => state.baseMapProvider);
 	const gpxLoadFailed = useMapStore((state: MapStoreState) => state.gpxLoadFailed);
 	const prevBaseMapProviderRef = useRef(baseMapProvider);
+	// Pending PNG-export timer; cleared on unmount so a late capture can't run
+	// against a torn-down map container.
+	const pngExportTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+	useEffect(
+		() => () => {
+			if (pngExportTimerRef.current) clearTimeout(pngExportTimerRef.current);
+		},
+		[],
+	);
 
 	const [colorSettings, setColorSettings] = useState({
 		brightness: 100,
@@ -945,7 +954,9 @@ const MapControls: React.FC<MapControlsProps> = ({
 		if (rulerRange && enhancedTrailPoints?.length) {
 			fitMapToRulerBounds(map, rulerRange, enhancedTrailPoints);
 		}
-		setTimeout(async () => {
+		if (pngExportTimerRef.current) clearTimeout(pngExportTimerRef.current);
+		pngExportTimerRef.current = setTimeout(async () => {
+			pngExportTimerRef.current = null;
 			try {
 				const { toBlob } = await import('html-to-image');
 				const mapEl = document.querySelector<HTMLElement>('.leaflet-container');
@@ -957,7 +968,9 @@ const MapControls: React.FC<MapControlsProps> = ({
 				link.download = 'cldt-map.png';
 				link.href = url;
 				link.click();
-				URL.revokeObjectURL(url);
+				// Defer revocation one tick: revoking synchronously after click() can
+				// abort the download in Safari.
+				setTimeout(() => URL.revokeObjectURL(url), 1000);
 			} catch (err) {
 				console.error('PNG export failed:', err instanceof Error ? err.message : String(err));
 			}
@@ -970,17 +983,22 @@ const MapControls: React.FC<MapControlsProps> = ({
 		// main useStore UISlice. Propagate on mount so the selector matches reality after
 		// a reload with a non-default preference.
 		useStore.getState().setUnits(units);
-		if (showBoundary && !boundaryLayerRef.current && map) {
+		if (!showBoundary || boundaryLayerRef.current || !map) return;
+		// Delay lets the map container settle before drawing the boundary. The timer is
+		// cleared on re-run/unmount and the ref is re-checked inside the callback: this
+		// effect also re-fires on direction/units/t changes, and without both guards a
+		// pending timer from a previous run could add a duplicate, orphaned layer.
+		const boundaryTimerId = setTimeout(() => {
+			if (boundaryLayerRef.current) return;
 			try {
-				setTimeout(() => {
-					const boundary = createCroatiaBoundaryLayer(map, t('borderOfCroatia'));
-					boundaryLayerRef.current = boundary;
-					boundary.addTo(map);
-				}, 300);
+				const boundary = createCroatiaBoundaryLayer(map, t('borderOfCroatia'));
+				boundaryLayerRef.current = boundary;
+				boundary.addTo(map);
 			} catch (error) {
 				console.error('Error initializing boundary:', error);
 			}
-		}
+		}, 300);
+		return () => clearTimeout(boundaryTimerId);
 	}, [direction, units, showBoundary, map, t]);
 
 	// When the base map provider changes while tile boundary is active, the old BoundaryCanvas
