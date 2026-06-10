@@ -89,6 +89,8 @@
 		"batterySaver": "Battery saver",
 		"batterySaverTooltip": "Reduces location update frequency and animations to save battery.",
 		"largeTouchTargets": "Large touch targets",
+		"compassHeading": "Compass heading",
+		"compassHeadingTooltip": "Shows which way you are facing as a cone on your location marker. Uses the device compass; on iPhone you will be asked for permission.",
 		"largeTouchTargetsTooltip": "Increases button size for easier tapping on mobile.",
 		"layersSection": "Layers",
 		"showSections": "Show trail sections",

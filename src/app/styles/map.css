@@ -580,6 +580,36 @@
 	z-index: var(--z-map-markers) !important;
 }
 
+/* Compass heading cone: rotates around the dot via the --heading custom
+   property (written directly to the element by MapMarkers, bypassing React
+   re-renders). Hidden until the first sensor reading arrives. */
+.user-location-heading {
+	display: none;
+	position: absolute;
+	top: -12px;
+	left: 50%;
+	width: 0;
+	height: 0;
+	border-left: 7px solid transparent;
+	border-right: 7px solid transparent;
+	border-bottom: 12px solid var(--cldt-blue, #00a6c7);
+	opacity: 0.85;
+	transform: translateX(-50%) rotate(var(--heading, 0deg));
+	transform-origin: 50% 22px;
+	z-index: calc(var(--z-map-markers) - 1);
+	pointer-events: none;
+}
+
+.user-location-heading.is-active {
+	display: block;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	.user-location-heading {
+		transition: transform 0.2s ease-out;
+	}
+}
+
 .user-location-marker::before {
 	content: '';
 	position: absolute;
