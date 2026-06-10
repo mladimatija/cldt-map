@@ -294,6 +294,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 	const markerRef = useRef<L.Marker | null>(null);
 	const tooltipRef = useRef<L.Tooltip | null>(null);
 	const tooltipRootRef = useRef<Root | null>(null);
+	const weatherAbortRef = useRef<AbortController | null>(null);
 	const startMarkerRef = useRef<L.Marker | null>(null);
 	const finishMarkerRef = useRef<L.Marker | null>(null);
 	const [isTooltipVisible, setIsTooltipVisible] = useState(false);
@@ -392,6 +393,12 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 	);
 
 	const clearMarkerAndTooltip = useCallback((): void => {
+		// Cancel any in-flight weather request for the tooltip being torn down,
+		// so a slow response can't waste bandwidth or race a newer tooltip.
+		if (weatherAbortRef.current) {
+			weatherAbortRef.current.abort();
+			weatherAbortRef.current = null;
+		}
 		if (tooltipRootRef.current) {
 			tooltipRootRef.current.unmount();
 			tooltipRootRef.current = null;
@@ -554,7 +561,13 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 			tooltipRootRef.current = tooltipRoot;
 
 			// Fetch weather and re-render once data arrives; if fetch fails weatherData is null and loading state clears.
-			void fetchWeather(point.lat, point.lng).then((weatherData) => {
+			// The AbortController cancels the request when this tooltip is replaced or torn down
+			// (clearMarkerAndTooltip aborts); the identity check below is the render-side guard.
+			weatherAbortRef.current?.abort();
+			const weatherAbort = new AbortController();
+			weatherAbortRef.current = weatherAbort;
+			void fetchWeather(point.lat, point.lng, weatherAbort.signal).then((weatherData) => {
+				if (weatherAbort.signal.aborted) return;
 				if (tooltipRootRef.current === tooltipRoot) {
 					renderTooltip(weatherData, false);
 				}

@@ -46,7 +46,7 @@ interface OpenMeteoResponse {
 }
 
 /** Fetches daily data from Open-Meteo (sunrise, sunset, precipitation probability). */
-async function fetchOpenMeteo(lat: number, lng: number): Promise<WeatherData | null> {
+async function fetchOpenMeteo(lat: number, lng: number, signal?: AbortSignal): Promise<WeatherData | null> {
 	try {
 		const params = new URLSearchParams({
 			latitude: lat.toFixed(5),
@@ -57,7 +57,7 @@ async function fetchOpenMeteo(lat: number, lng: number): Promise<WeatherData | n
 			forecast_hours: '12',
 			timezone: 'auto',
 		});
-		const res = await fetch(`https://api.open-meteo.com/v1/forecast?${params.toString()}`);
+		const res = await fetch(`https://api.open-meteo.com/v1/forecast?${params.toString()}`, { signal });
 		if (!res.ok) return null;
 
 		const json = (await res.json()) as OpenMeteoResponse;
@@ -118,15 +118,16 @@ async function fetchOpenMeteo(lat: number, lng: number): Promise<WeatherData | n
  * Uses DHMZ (Croatian Met Service) as the primary source for real-time conditions
  * and supplements with Open-Meteo for daily fields (precipitation probability,
  * sunrise, sunset). Falls back to Open-Meteo entirely if DHMZ is unavailable.
- * Never throws.
+ * Never throws. Pass an AbortSignal to cancel the underlying requests; an
+ * aborted call resolves to null.
  */
-export async function fetchWeather(lat: number, lng: number): Promise<WeatherData | null> {
+export async function fetchWeather(lat: number, lng: number, signal?: AbortSignal): Promise<WeatherData | null> {
 	try {
 		const [dhmzResult, openMeteoResult] = await Promise.allSettled([
-			fetch(`/api/dhmz-weather?lat=${lat.toFixed(5)}&lng=${lng.toFixed(5)}`).then((r) =>
+			fetch(`/api/dhmz-weather?lat=${lat.toFixed(5)}&lng=${lng.toFixed(5)}`, { signal }).then((r) =>
 				r.ok ? (r.json() as Promise<WeatherData>) : Promise.reject(r.status),
 			),
-			fetchOpenMeteo(lat, lng),
+			fetchOpenMeteo(lat, lng, signal),
 		]);
 
 		const dhmz = dhmzResult.status === 'fulfilled' ? dhmzResult.value : null;
