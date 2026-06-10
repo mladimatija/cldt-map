@@ -222,7 +222,6 @@
 		"changeMapStyle": "Kartenstil ändern ({name})"
 	},
 	"test": {
-		"redirecting": "Weiterleitung...",
 		"backToMap": "Zurück zur Karte",
 		"title": "Store-Test",
 		"description": "Teste die Persistenz von Karteneinstellungen im localStorage. Verwende die folgenden Steuerungen, um zu überprüfen, ob die Einstellungen nach dem Seitenneuladen erhalten bleiben."
