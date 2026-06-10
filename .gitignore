@@ -54,8 +54,6 @@ Desktop.ini
 **/public/sw.js
 **/public/sw-version.js
 **/public/sw.js.map
-# Per-type POI files derived from public/pois.json at build time (scripts/split-pois.mjs)
-/public/data/pois/
 **/public/worker-*.js
 **/public/worker-*.js.map
 **/public/workbox-*.js
