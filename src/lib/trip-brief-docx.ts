@@ -95,6 +95,17 @@ export async function exportTripBriefDocx(args: TripBriefDocxArgs): Promise<void
 			}),
 		);
 
+		// AI accuracy disclaimer: shown to every reader of the document when
+		// the narratives were AI-generated, not only the person who toggled it.
+		if (meta.aiDisclaimer) {
+			out.push(
+				new Paragraph({
+					children: [new TextRun({ text: meta.aiDisclaimer, italics: true, size: 16, color: '888888' })],
+					spacing: { after: 240 },
+				}),
+			);
+		}
+
 		return out;
 	}
 

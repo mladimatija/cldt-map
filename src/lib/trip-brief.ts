@@ -37,6 +37,11 @@ export interface TripBriefMeta {
 	walkingPaceKmh: number;
 	gradeAdjustedEta: boolean;
 	startDate?: string;
+	/** Localized accuracy disclaimer, set (from messages/*.json, where all
+	 *  user-facing copy lives) when the narrative slots were filled by the AI
+	 *  route. Renderers print it on the cover whenever present - the exporters
+	 *  run outside React/next-intl, so the caller resolves the string. */
+	aiDisclaimer?: string;
 }
 
 export interface TripBriefPoi {

@@ -276,6 +276,17 @@ function renderCover(pdf: JsPDF, brief: TripBrief, logoDataUrl: string | null): 
 	pdf.text(wrapped, MARGIN_X, y);
 	y += wrapped.length * 5 + 10;
 
+	// AI accuracy disclaimer: printed on the cover whenever the narratives
+	// came from the AI route, so readers of the exported document see the
+	// caveat - not only the person who toggled it in the app.
+	if (meta.aiDisclaimer) {
+		pdf.setFontSize(8);
+		const disclaimer = pdf.splitTextToSize(meta.aiDisclaimer, PAGE_W - MARGIN_X * 2) as string[];
+		pdf.text(disclaimer, MARGIN_X, y);
+		y += disclaimer.length * 4 + 8;
+		pdf.setFontSize(10);
+	}
+
 	// Per-day at-a-glance table on the cover. Lets the reader see the
 	// whole trip arc on page 1 without flipping. Three columns: day label,
 	// distance, ETA. Capped to whatever fits in the remaining vertical
