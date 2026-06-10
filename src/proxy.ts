@@ -23,8 +23,15 @@ function getDefaultLocaleFromRequest(request: NextRequest): Locale {
 
 function buildCspHeader(nonce: string): string {
 	const isDev = process.env.NODE_ENV === 'development';
-	// In dev, omit nonce from style-src so 'unsafe-inline' applies and Next.js dev overlay (bottom-left logo) can use inline styles
-	const styleSrc = isDev ? "'self' 'unsafe-inline'" : `'self' 'nonce-${nonce}'`;
+	// style-src allows inline styles in every environment: Leaflet divIcon markers
+	// (POI dots, clusters, seasonal chips, stage boundaries, sunset discs) carry
+	// per-marker style attributes that a nonce can never cover, and CSP ignores
+	// 'unsafe-inline' whenever a nonce is present in the directive - so the nonce
+	// must stay out of style-src or every marker style gets blocked (seen in prod
+	// as colorless POI markers and invisible seasonal chips). Style injection is
+	// an accepted, low-risk trade-off; script-src keeps the nonce + strict-dynamic,
+	// which is the security-critical part.
+	const styleSrc = "'self' 'unsafe-inline'";
 	return [
 		"default-src 'self'",
 		`script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${isDev ? " 'unsafe-eval'" : ''}`,
