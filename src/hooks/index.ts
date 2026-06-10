@@ -11,6 +11,7 @@ import { usePopoverFocusTrap } from './usePopoverFocusTrap';
 import { useClickOutside } from './useClickOutside';
 import { usePanel, usePanelListeners, usePanelManager } from './usePanelManager';
 import { usePoiListRows } from './usePoiListRows';
+import { useRuler } from './useRuler';
 
 export {
 	useSiteMetadata,
@@ -23,7 +24,9 @@ export {
 	usePanelListeners,
 	usePanelManager,
 	usePoiListRows,
+	useRuler,
 };
+export type { UseRulerResult } from './useRuler';
 export type {
 	ParsedDistance,
 	PoiListGroupedItem,
