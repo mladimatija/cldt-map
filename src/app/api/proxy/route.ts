@@ -87,6 +87,12 @@ export async function GET(request: NextRequest): Promise<Response> {
 					'User-Agent': 'Mozilla/5.0 (compatible; CLDT-Map/1.0; +https://github.com/cldt-hr/cldt-map)',
 				},
 				signal: controller.signal,
+				// The host allowlist above is only checked for the requested URL. fetch() follows
+				// redirects by default, so a redirect from the allowed host could escape the
+				// allowlist and reflect arbitrary bytes to the client (this route serves the body
+				// with a wildcard CORS header). Reject redirects instead: a 3xx lands in the
+				// !response.ok branch of fetchWithSizeCap and is reported as an upstream error.
+				redirect: 'manual',
 			},
 			MAX_BODY_BYTES,
 		);
