@@ -5,6 +5,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { useMap } from 'react-leaflet';
 import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
 import { Button } from '@/components/ui/Button';
+import { Radio } from '@/components/ui/Radio';
 import { cn } from '@/lib/utils';
 import { assembleTripBrief, canAssembleTripBrief, makeDistanceLabelFn, type TripBrief } from '@/lib/trip-brief';
 import { exportTripBriefPdf } from '@/lib/trip-brief-pdf';
@@ -164,22 +165,13 @@ export function MapControlsTripBriefModal({
 						{t('format')}
 					</legend>
 					<label className="flex items-center gap-2 text-sm text-gray-700 dark:text-[var(--text-primary)]">
-						<input
-							checked={format === 'pdf'}
-							className="accent-cldt-blue"
-							name="trip-brief-format"
-							type="radio"
-							value="pdf"
-							onChange={() => setFormat('pdf')}
-						/>
+						<Radio checked={format === 'pdf'} name="trip-brief-format" value="pdf" onChange={() => setFormat('pdf')} />
 						{t('pdf')}
 					</label>
 					<label className="flex items-center gap-2 text-sm text-gray-700 dark:text-[var(--text-primary)]">
-						<input
+						<Radio
 							checked={format === 'docx'}
-							className="accent-cldt-blue"
 							name="trip-brief-format"
-							type="radio"
 							value="docx"
 							onChange={() => setFormat('docx')}
 						/>
@@ -192,11 +184,9 @@ export function MapControlsTripBriefModal({
 						{t('poiScope')}
 					</legend>
 					<label className="flex items-center gap-2 text-sm text-gray-700 dark:text-[var(--text-primary)]">
-						<input
+						<Radio
 							checked={poiScope === 'allInStage'}
-							className="accent-cldt-blue"
 							name="trip-brief-pois"
-							type="radio"
 							value="allInStage"
 							onChange={() => setPoiScope('allInStage')}
 						/>
@@ -211,12 +201,10 @@ export function MapControlsTripBriefModal({
 						)}
 						title={starredPoiIds.size > 0 ? undefined : t('poisSelectedComingSoon')}
 					>
-						<input
+						<Radio
 							checked={poiScope === 'selected'}
-							className="accent-cldt-blue"
 							disabled={starredPoiIds.size === 0}
 							name="trip-brief-pois"
-							type="radio"
 							value="selected"
 							onChange={() => setPoiScope('selected')}
 						/>
