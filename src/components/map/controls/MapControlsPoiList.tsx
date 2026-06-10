@@ -411,7 +411,7 @@ export function MapControlsPoiList({
 		debouncedQuery,
 		units,
 		direction,
-		trailTotalDistanceMeters: trailMetadata?.totalDistance ?? null,
+		trailTotalKm: trailMetadata?.totalDistance ?? null,
 		totalKm,
 		sort,
 		locale,

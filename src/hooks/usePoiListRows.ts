@@ -54,7 +54,9 @@ export interface UsePoiListRowsArgs {
 	debouncedQuery: string;
 	units: UnitSystem;
 	direction: TrailDirection;
-	trailTotalDistanceMeters: number | null;
+	/** Authoritative trail length in km (trailMetadata.totalDistance); null
+	 *  until the GPX is loaded. Falls back to `totalKm` when null. */
+	trailTotalKm: number | null;
 	totalKm: number;
 	sort: SortMode;
 	locale: string;
@@ -83,7 +85,7 @@ export function usePoiListRows(args: UsePoiListRowsArgs): UsePoiListRowsResult {
 		debouncedQuery,
 		units,
 		direction,
-		trailTotalDistanceMeters,
+		trailTotalKm,
 		totalKm,
 		sort,
 		locale,
@@ -95,15 +97,8 @@ export function usePoiListRows(args: UsePoiListRowsArgs): UsePoiListRowsResult {
 
 	const parsedDistance = useMemo(
 		() =>
-			parseDistanceQuery(
-				debouncedQuery,
-				units,
-				direction,
-				// parseDistanceQuery's range guard works in km; trailTotalDistanceMeters
-				// is in metres (Leaflet's distanceTo), so convert before passing.
-				trailTotalDistanceMeters !== null ? trailTotalDistanceMeters / 1000 : totalKm,
-			),
-		[debouncedQuery, units, direction, trailTotalDistanceMeters, totalKm],
+			parseDistanceQuery(debouncedQuery, units, direction, trailTotalKm ?? totalKm),
+		[debouncedQuery, units, direction, trailTotalKm, totalKm],
 	);
 
 	const rows = useMemo((): Poi[] => {
