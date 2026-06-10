@@ -148,7 +148,6 @@
 		"directionSouthbound": "Južni smjer (S→J)",
 		"directionNorthbound": "Sjeverni smjer (J→S)",
 		"testStore": "Test Store",
-		"changeMapStyle": "Promijeni stil karte ({name})",
 		"unitsTooltip": "Trenutno {units}, kliknite za promjenu",
 		"unitsMetric": "Metrički (km)",
 		"unitsImperial": "Imperijalno (milje)",
