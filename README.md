@@ -36,7 +36,7 @@ Interactive web map for the **Croatian Long Distance Trail (CLDT)** – a 2,200+
 - **Elevation profile** – Chart showing terrain along the route; hover to preview on the map, click to pin a point
 - **Distance ruler** – Measure segments; see estimated hiking time (based on configurable walking pace), elevation gain/loss, and section name for the selected range
 - **Distance & ETA overlay** – Live HUD chip showing traveled distance, distance remaining, elevation gain/loss remaining, and ETA to trail end (and active ruler section); updates as you move
-- **GPX export** – Download the full trail or any ruler-selected segment as a GPX file
+- **GPX export** – Download the full trail or any ruler-selected segment as a GPX file; on mobile, hand the file straight to OsmAnd / Locus / Gaia via the system share sheet
 - **Print / export** - Print the current map view as a PDF (landscape, segment auto-fitted) or download as a PNG image
 - **Map layers** – Standard, Topo, Satellite, Terrain, CyclOSM, Croatia Topo
 - **Weather at trail location** – Current conditions (temperature, feels like, wind, precipitation probability, sunrise/sunset) shown in the location tooltip; 12-hour hourly forecast strip with per-hour temperature, precipitation bars, and wind; automatic "best window" hint identifying the longest dry period; sourced from DHMZ (Croatian Met Service) with Open-Meteo as fallback

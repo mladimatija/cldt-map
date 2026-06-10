@@ -418,6 +418,7 @@
 		"disclaimerItem9": "Der Weiterverkauf und die Nutzung der CLDT-GPX-Datei zum finanziellen Gewinn ist eine Straftat und wird strafrechtlich verfolgt.",
 		"acknowledgmentLabel": "Ich bin mir der möglichen Gefahren auf dem Trail bewusst und werde ihn verantwortungsvoll erkunden und nutzen, unter Einhaltung der Leave No Trace-Prinzipien.",
 		"downloadButton": "Herunterladen",
+		"shareButton": "Teilen",
 		"cancelButton": "Abbrechen",
 		"downloadFull": "GPX herunterladen",
 		"exportSegment": "Als GPX exportieren",
