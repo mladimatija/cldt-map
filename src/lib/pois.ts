@@ -29,16 +29,138 @@ let cachedEtag: string | null = null;
  *  without re-parsing the JSON body. */
 let lastParsedResult: PoisFile | null = null;
 
-/** Loads the bundled POI dataset, with remote-URL fallback. Caches for the
- *  lifetime of the page; call resetPoisCache() to force a re-fetch on
- *  visibility change. */
-export function loadPois(): Promise<PoisFile | null> {
+// ── Per-type split loading ────────────────────────────────────────────────────
+//
+// scripts/split-pois.mjs (npm prebuild) derives /data/pois/<type>.json from
+// the committed pois.json. Loading per type means a user who disabled peaks
+// skips the 1.4 MB peak file entirely, and each file revalidates with its own
+// ETag. When the split files are unavailable (plain `next dev`, or a custom
+// NEXT_PUBLIC_POIS_URL which is whole-file by definition), everything falls
+// back to the legacy whole-file path below.
+
+interface TypeCacheEntry {
+	etag: string | null;
+	data: PoisFile | null;
+	/** False after resetPoisCache(): the next load revalidates (304 reuses data). */
+	validated: boolean;
+	inflight: Promise<PoisFile | null> | null;
+}
+
+const typeCache = new Map<string, TypeCacheEntry>();
+/** Sticky once a per-type file is missing or a remote override is configured. */
+let splitUnavailable = !!process.env.NEXT_PUBLIC_POIS_URL;
+/** Memo of the last merge so repeat calls with the same inputs keep object
+ *  identity (consumers memo on the file reference). */
+let lastMergeKey: string | null = null;
+let lastMergeInputs: (PoisFile | null)[] = [];
+let lastMergeResult: PoisFile | null = null;
+
+function entryFor(type: string): TypeCacheEntry {
+	let e = typeCache.get(type);
+	if (!e) {
+		e = { etag: null, data: null, validated: false, inflight: null };
+		typeCache.set(type, e);
+	}
+	return e;
+}
+
+async function fetchPoiType(type: string): Promise<PoisFile | null> {
+	const entry = entryFor(type);
+	try {
+		const headers: HeadersInit = entry.etag ? { 'If-None-Match': entry.etag } : {};
+		const res = await fetch(`/data/pois/${encodeURIComponent(type)}.json`, { headers });
+		if (res.status === 304 && entry.data !== null) {
+			entry.validated = true;
+			return entry.data;
+		}
+		if (res.ok) {
+			entry.etag = res.headers.get('etag');
+			const parsed = normalize((await res.json()) as Partial<PoisFile>);
+			entry.data = parsed;
+			entry.validated = true;
+			return parsed;
+		}
+		// 404 and friends: the split was not generated for this deployment.
+		splitUnavailable = true;
+		return null;
+	} catch {
+		// Network failure: keep whatever we had; do not mark the split missing.
+		return entry.data;
+	}
+}
+
+function loadPoiType(type: string): Promise<PoisFile | null> {
+	const entry = entryFor(type);
+	if (entry.validated && entry.data !== null) return Promise.resolve(entry.data);
+	if (entry.inflight) return entry.inflight;
+	entry.inflight = fetchPoiType(type).finally(() => {
+		entry.inflight = null;
+	});
+	return entry.inflight;
+}
+
+function mergeTypeFiles(key: string, files: (PoisFile | null)[]): PoisFile {
+	if (
+		lastMergeResult &&
+		lastMergeKey === key &&
+		lastMergeInputs.length === files.length &&
+		lastMergeInputs.every((f, i) => f === files[i])
+	) {
+		return lastMergeResult;
+	}
+	const pois: Poi[] = [];
+	let lastUpdated = '';
+	for (const f of files) {
+		if (!f) continue;
+		pois.push(...f.pois);
+		if (f.lastUpdated > lastUpdated) lastUpdated = f.lastUpdated;
+	}
+	pois.sort((a, b) => a.trailKm - b.trailKm);
+	lastMergeKey = key;
+	lastMergeInputs = files;
+	lastMergeResult = { lastUpdated, pois };
+	return lastMergeResult;
+}
+
+/**
+ * Loads the POI dataset. With `types` given, fetches only those per-type
+ * files (the map flow passes the user's enabled types); without arguments,
+ * loads every known type (prefetch / trip-brief / planner paths). Falls back
+ * to the legacy whole-file /pois.json when the split is unavailable; in that
+ * case an explicit `types` set is filtered from the whole file so callers
+ * see identical shapes either way.
+ *
+ * Caches for the lifetime of the page; call resetPoisCache() to force
+ * revalidation (per-file ETags make that cheap).
+ */
+export async function loadPois(types?: ReadonlySet<string>): Promise<PoisFile | null> {
+	const requested: string[] = types ? [...types].filter(isKnownType).sort() : [...KNOWN_POI_TYPES].sort();
+	if (requested.length === 0) return { lastUpdated: '', pois: [] };
+
+	if (!splitUnavailable) {
+		const files = await Promise.all(requested.map((t) => loadPoiType(t)));
+		// fetchPoiType flips splitUnavailable on 404; detect and fall through.
+		if (!splitUnavailable) {
+			return mergeTypeFiles(requested.join(','), files);
+		}
+	}
+
 	if (!cachedPromise) cachedPromise = fetchPois();
-	return cachedPromise;
+	const whole = await cachedPromise;
+	if (!whole) return null;
+	if (!types) return whole;
+	const enabled = new Set(requested);
+	return { lastUpdated: whole.lastUpdated, pois: whole.pois.filter((p) => enabled.has(p.type)) };
 }
 
 export function resetPoisCache(): void {
 	cachedPromise = null;
+	for (const entry of typeCache.values()) {
+		entry.validated = false;
+	}
+	lastMergeKey = null;
+	lastMergeInputs = [];
+	lastMergeResult = null;
 }
 
 /**
