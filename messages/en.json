@@ -93,6 +93,8 @@
 		"compassHeadingTooltip": "Shows which way you are facing as a cone on your location marker. Uses the device compass; on iPhone you will be asked for permission.",
 		"keepScreenOn": "Keep screen on while tracking",
 		"keepScreenOnTooltip": "Prevents the display from sleeping while your GPS position is shown on the map. Battery saver mode overrides this. Not supported in every browser.",
+		"offRouteAlert": "Off-route alert",
+		"offRouteAlertTooltip": "Warns with a banner and vibration when you drift more than ~200 m off the trail. Arms itself only after you have actually been on the trail, so it stays silent at home, in town, or while driving - and switches off by itself when you leave the trail area.",
 		"largeTouchTargetsTooltip": "Increases button size for easier tapping on mobile.",
 		"layersSection": "Layers",
 		"showSections": "Show trail sections",
@@ -305,6 +307,18 @@
 		"close": "Close"
 	},
 	"storeTest": {
+		"offRouteTitle": "Off-route alert simulator",
+		"offRouteDescription": "Drives the real alert banner by injecting synthetic GPS fixes (user location + closest trail point) into the stores. Enable the feature, send 3 on-trail fixes to arm the machine, then 3 off-trail fixes to raise the alert. A far fix exercises auto-disarm; an inaccurate fix should change nothing.",
+		"offRouteEnableFirst": "Enable the off-route alert to start simulating.",
+		"offRoutePhase": "Machine phase",
+		"offRouteCounters": "Consecutive fixes",
+		"offRouteFixesSent": "Fixes sent",
+		"offRouteFixOn": "On-trail fix (40 m)",
+		"offRouteFixOff": "Off-trail fix (350 m)",
+		"offRouteFixFar": "Far fix (2.5 km)",
+		"offRouteFixInaccurate": "Inaccurate fix (350 m, +/-120 m)",
+		"offRouteBannerEmpty": "The alert banner renders here while alerting.",
+		"offRouteSnoozedHint": "No banner while the phase is alerting means it was dismissed; it stays snoozed until the alert resolves and a new drift occurs.",
 		"title": "Store Persistence Test",
 		"direction": "Direction",
 		"toggleDirection": "Toggle Direction",
@@ -698,6 +712,12 @@
 		"confirm": "Show on map",
 		"dismiss30": "Don't show this for 30 days",
 		"cancel": "Cancel"
+	},
+	"offRoute": {
+		"title": "Off route.",
+		"body": "You are {distance} from the trail.",
+		"backToTrail": "Trail is to the {compass} ({bearing}°).",
+		"dismiss": "Dismiss off-route alert"
 	},
 	"emergency": {
 		"title": "Emergency · 112",

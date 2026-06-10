@@ -36,6 +36,9 @@ const buttonVariants = cva(
 				controlRoundLocating: `${CONTROL_ROUND_SHAPE} cursor-wait border border-gray-200 bg-cldt-blue/10 dark:border-[var(--border-color)] dark:bg-cldt-blue/20 dark:text-[var(--text-primary)]`,
 				/** Round map control with dark mode styling (e.g., base map trigger). */
 				controlRoundDark: `${CONTROL_ROUND_SHAPE} ${BORDER_WHITE} text-cldt-blue ${CLDT_HOVER_FOCUS} hover:border-2 focus-visible:border-2 dark:border-[var(--border-color)] dark:bg-[var(--bg-secondary)] dark:text-[var(--text-primary)]`,
+				/** Close icon (×) on colored alert banners; inherits the banner's text color. */
+				bannerClose:
+					'flex min-h-[var(--min-touch-target)] min-w-[var(--min-touch-target)] shrink-0 items-center justify-center rounded p-1 text-current leading-none font-bold opacity-80 hover:opacity-100 focus-visible:ring-2 focus-visible:ring-cldt-green focus-visible:ring-offset-1',
 				/** Close icon (×) in tooltips/banners; pair with .user-location-close-btn for position/size. */
 				closeIcon:
 					'h-6 w-6 min-w-0 shrink-0 border-none bg-transparent p-0 text-[var(--map-tooltip-color)] text-xl leading-none outline-none hover:bg-black/5 hover:text-cldt-blue focus-visible:bg-black/5 focus-visible:text-cldt-blue focus-visible:ring-2 focus-visible:ring-cldt-green focus-visible:ring-offset-1 rounded',

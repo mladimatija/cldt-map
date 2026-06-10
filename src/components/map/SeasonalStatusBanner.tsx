@@ -10,6 +10,7 @@ import {
 	severityRank,
 	type SeasonalStatusEntry,
 } from '@/lib/seasonal-status';
+import { BANNER_REGION_CLASSES, BANNER_ROW_CLASSES } from './banner-styles';
 
 /**
  * Renders a non-dismissible banner chip when the user's GPS-snapped position
@@ -41,7 +42,7 @@ export function SeasonalStatusBanner(): React.ReactElement | null {
 	if (active.length === 0) return null;
 
 	return (
-		<div aria-label={t('bannerPrefix')} className="relative z-[var(--z-banner)]" role="region">
+		<div aria-label={t('bannerPrefix')} className={BANNER_REGION_CLASSES} role="region">
 			{active.map((entry) => {
 				const severityLabel = t(`severity.${entry.severity}`);
 				const note = resolveSeasonalNote(entry, locale);
@@ -62,7 +63,7 @@ export function SeasonalStatusBanner(): React.ReactElement | null {
 					<div key={entry.id} role="alert" style={{ backgroundColor: severityColor(entry.severity) }}>
 						<button
 							aria-label={buttonLabel}
-							className="flex w-full items-start gap-2 px-3 py-2 text-left text-sm text-white outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-inset"
+							className={`${BANNER_ROW_CLASSES} w-full text-left text-white outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-inset`}
 							title={hoverTitle}
 							type="button"
 							onClick={() => setSeasonalStatusModalEntry(entry)}

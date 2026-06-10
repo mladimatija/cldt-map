@@ -4,6 +4,8 @@ import React, { useEffect, useState } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { loadNotices, resolveLocalized, type TrailNotice, type NoticeSeverity } from '@/lib/notices';
 import { isSafeUrl } from '@/lib/utils';
+import { Button } from '@/components/ui/Button';
+import { BANNER_REGION_CLASSES, BANNER_ROW_CLASSES, BANNER_RED_CLASSES } from './banner-styles';
 
 const DISMISSED_KEY = 'cldt-dismissed-notices';
 
@@ -27,7 +29,7 @@ function persistDismissed(id: string): void {
 }
 
 const SEVERITY_CLASSES: Record<NoticeSeverity, string> = {
-	emergency: 'bg-cldt-red text-white',
+	emergency: BANNER_RED_CLASSES,
 	closure: 'bg-cldt-red/90 text-white',
 	warning: 'bg-amber-400 text-amber-900',
 	info: 'bg-cldt-blue text-white',
@@ -58,13 +60,9 @@ export function TrailNoticesBanner(): React.ReactElement | null {
 	};
 
 	return (
-		<div aria-label={t('regionLabel')} className="relative z-[var(--z-banner)]" role="region">
+		<div aria-label={t('regionLabel')} className={BANNER_REGION_CLASSES} role="region">
 			{visible.map((n) => (
-				<div
-					className={`flex items-start gap-2 px-3 py-2 text-sm ${SEVERITY_CLASSES[n.severity]}`}
-					key={n.id}
-					role="alert"
-				>
+				<div className={`${BANNER_ROW_CLASSES} ${SEVERITY_CLASSES[n.severity]}`} key={n.id} role="alert">
 					<div className="min-w-0 flex-1">
 						<span className="font-semibold">{resolveLocalized(n.title, locale)}</span>
 						{n.message && <span className="ml-2">{resolveLocalized(n.message, locale)}</span>}
@@ -75,14 +73,9 @@ export function TrailNoticesBanner(): React.ReactElement | null {
 						)}
 					</div>
 					{canDismiss(n) && (
-						<button
-							aria-label={t('dismissLabel')}
-							className="focus-visible:ring-cldt-green shrink-0 leading-none font-bold opacity-80 outline-none hover:opacity-100 focus-visible:ring-2 focus-visible:ring-offset-1"
-							type="button"
-							onClick={() => handleDismiss(n.id)}
-						>
+						<Button aria-label={t('dismissLabel')} variant="bannerClose" onClick={() => handleDismiss(n.id)}>
 							×
-						</button>
+						</Button>
 					)}
 				</div>
 			))}

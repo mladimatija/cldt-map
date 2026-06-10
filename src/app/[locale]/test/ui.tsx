@@ -3,6 +3,7 @@
 import React from 'react';
 import { Link } from '@/i18n/navigation';
 import StoreTest from '@/components/StoreTest';
+import { OffRouteAlertSimulator } from '@/components/OffRouteAlertSimulator';
 import { Layout } from '@/components/layout/Layout';
 import { useTranslations } from 'next-intl';
 
@@ -24,6 +25,10 @@ export function TestClient(): React.ReactElement {
 				<p className="mb-6 text-gray-600">{t('description')}</p>
 
 				<StoreTest />
+
+				<div className="mt-6">
+					<OffRouteAlertSimulator />
+				</div>
 			</div>
 		</Layout>
 	);

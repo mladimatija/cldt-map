@@ -95,7 +95,7 @@ export interface TrailActions {
 	setGpxLoadFailed: (failed: boolean) => void;
 	setClosestPointCalculated: (calculated: boolean) => void;
 	setShowClosestPointLine: (show: boolean) => void;
-	setClosestPoint: (point: ClosestPoint) => void;
+	setClosestPoint: (point: ClosestPoint | null) => void;
 	setTrailMetadata: (metadata: TrailMetadata) => void;
 	setRawGpxData: (data: string) => void;
 	setGpxElevationPoints: (points: { lat: number; lng: number; elevation: number }[]) => void;
@@ -237,6 +237,11 @@ export interface MapStoreState {
 	 *  not sleep mid-hike. Battery saver mode overrides this off. */
 	keepScreenOn: boolean;
 	setKeepScreenOn: (enabled: boolean) => void;
+	/** Off-route alert capability (banner + vibration when drifting off the
+	 *  trail). Arms itself only after consecutive on-trail fixes, so it is
+	 *  safe to leave enabled while away from the trail. */
+	offRouteAlertEnabled: boolean;
+	setOffRouteAlertEnabled: (enabled: boolean) => void;
 	largeTouchTargets: boolean;
 	setLargeTouchTargets: (enabled: boolean) => void;
 	showSections: boolean;

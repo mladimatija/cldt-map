@@ -135,6 +135,8 @@ export function createMapStoreStub(): MapStoreState {
 		setCompassEnabled: noop,
 		keepScreenOn: false,
 		setKeepScreenOn: noop,
+		offRouteAlertEnabled: false,
+		setOffRouteAlertEnabled: noop,
 		setBatterySaverMode: noop,
 		largeTouchTargets: false,
 		setLargeTouchTargets: noop,
