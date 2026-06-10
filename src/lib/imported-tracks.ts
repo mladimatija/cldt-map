@@ -2,6 +2,7 @@ import localforage from 'localforage';
 import type { ParsedTrack } from './gpx-parser';
 import type { ImportedTrack, TrackStats } from './store/types';
 import { haversineDistanceM as haversineM } from './haversine';
+import { buildSpatialGrid } from './spatial-grid';
 
 const MAX_GPX_SIZE = 10_000_000; // 10 MB
 
@@ -114,43 +115,26 @@ export function computeTrackStats(track: ImportedTrack, enhancedPoints: { lat: n
 
 	const avgMovingPaceSecPerKm = totalDistanceM > 0 && totalMovingSec > 0 ? totalMovingSec / (totalDistanceM / 1000) : 0;
 
-	// Assumes imported track is roughly monotone along the official trail (typical for hikes).
-	// A ±50 backward probe handles minor direction reversals and switchbacks.
+	// Exact nearest-trail-point lookups via a spatial grid (built once per call,
+	// O(trail) build + ~O(1) per track point). Replaces the previous hint-based
+	// monotone scan, which assumed the track follows the trail in one direction:
+	// out-and-back hikes or tracks recorded against the SOBO point order could
+	// degrade to a full scan per point and its early-break heuristic could
+	// settle on a local minimum across switchbacks, overstating deviation.
 	let maxDeviationM = 0;
 	let coveragePercent = 0;
 
 	if (enhancedPoints.length > 0) {
+		const grid = buildSpatialGrid(enhancedPoints);
 		const coverage = new Uint8Array(enhancedPoints.length);
-		let hint = 0;
 		let covered = 0;
 
 		for (const pt of trackPoints) {
-			let nearestIdx = hint;
-			let nearestDist = haversineM(pt.lat, pt.lng, enhancedPoints[hint].lat, enhancedPoints[hint].lng);
-
-			// Forward scan from hint - break early when distances diverge significantly
-			for (let j = hint + 1; j < enhancedPoints.length; j++) {
-				const d = haversineM(pt.lat, pt.lng, enhancedPoints[j].lat, enhancedPoints[j].lng);
-				if (d < nearestDist) {
-					nearestDist = d;
-					nearestIdx = j;
-				} else if (d > nearestDist + 50) break;
-			}
-
-			// Backward probe (±50) to handle brief reversals
-			const backStart = Math.max(0, hint - 50);
-			for (let j = backStart; j < hint; j++) {
-				const d = haversineM(pt.lat, pt.lng, enhancedPoints[j].lat, enhancedPoints[j].lng);
-				if (d < nearestDist) {
-					nearestDist = d;
-					nearestIdx = j;
-				}
-			}
-
-			hint = nearestIdx;
-			if (nearestDist > maxDeviationM) maxDeviationM = nearestDist;
-			if (nearestDist <= 25 && coverage[nearestIdx] === 0) {
-				coverage[nearestIdx] = 1;
+			const hit = grid.nearest(pt.lat, pt.lng);
+			if (!hit) continue;
+			if (hit.distanceM > maxDeviationM) maxDeviationM = hit.distanceM;
+			if (hit.distanceM <= 25 && coverage[hit.index] === 0) {
+				coverage[hit.index] = 1;
 				covered++;
 			}
 		}
