@@ -91,6 +91,8 @@
 		"largeTouchTargets": "Large touch targets",
 		"compassHeading": "Compass heading",
 		"compassHeadingTooltip": "Shows which way you are facing as a cone on your location marker. Uses the device compass; on iPhone you will be asked for permission.",
+		"keepScreenOn": "Keep screen on while tracking",
+		"keepScreenOnTooltip": "Prevents the display from sleeping while your GPS position is shown on the map. Battery saver mode overrides this. Not supported in every browser.",
 		"largeTouchTargetsTooltip": "Increases button size for easier tapping on mobile.",
 		"layersSection": "Layers",
 		"showSections": "Show trail sections",

@@ -233,6 +233,10 @@ export interface MapStoreState {
 	 *  iOS requires a permission prompt; the settings toggle handles it. */
 	compassEnabled: boolean;
 	setCompassEnabled: (enabled: boolean) => void;
+	/** Hold a screen wake lock while tracking with GPS so the display does
+	 *  not sleep mid-hike. Battery saver mode overrides this off. */
+	keepScreenOn: boolean;
+	setKeepScreenOn: (enabled: boolean) => void;
 	largeTouchTargets: boolean;
 	setLargeTouchTargets: (enabled: boolean) => void;
 	showSections: boolean;

@@ -91,6 +91,8 @@
 		"largeTouchTargets": "Pulsanti grandi",
 		"compassHeading": "Direzione bussola",
 		"compassHeadingTooltip": "Mostra la direzione in cui sei rivolto come un cono sul marcatore della posizione. Usa la bussola del dispositivo; su iPhone verrà chiesta l'autorizzazione.",
+		"keepScreenOn": "Mantieni lo schermo acceso durante il tracciamento",
+		"keepScreenOnTooltip": "Impedisce che lo schermo si spenga mentre la tua posizione GPS è mostrata sulla mappa. Il risparmio batteria ha la precedenza. Non supportato in tutti i browser.",
 		"largeTouchTargetsTooltip": "Ingrandisce i pulsanti per facilitare il tocco su dispositivi mobili.",
 		"layersSection": "Livelli",
 		"showSections": "Mostra sezioni sentiero",
