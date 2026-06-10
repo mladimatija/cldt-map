@@ -261,6 +261,78 @@ export function formatCompactTemp(celsius: number, units: UnitSystem): string {
 	return `${Math.round(celsius)}°`;
 }
 
+// ── Per-stage daily forecasts ─────────────────────────────────────────────────
+
+/** Open-Meteo serves daily forecasts up to 16 days out. */
+export const FORECAST_HORIZON_DAYS = 16;
+
+export interface DailyForecast {
+	/** yyyy-mm-dd of the forecast day. */
+	date: string;
+	weatherCode: number;
+	tMaxC: number;
+	tMinC: number;
+	precipProbPct: number;
+}
+
+interface OpenMeteoDailyResponse {
+	daily?: {
+		time?: string[];
+		weathercode?: number[];
+		temperature_2m_max?: number[];
+		temperature_2m_min?: number[];
+		precipitation_probability_max?: number[];
+	};
+}
+
+/**
+ * Fetches one daily forecast per request entry (a coordinate + the calendar
+ * day the hiker is expected there) in a single batched Open-Meteo call, used
+ * by the stage planner. Entries whose date is outside the 16-day horizon (or
+ * in the past) resolve to null; callers should pre-filter for UX but stray
+ * dates are tolerated. Never throws; a network failure resolves all-null.
+ */
+export async function fetchStageForecasts(
+	requests: { lat: number; lng: number; date: string }[],
+	signal?: AbortSignal,
+): Promise<(DailyForecast | null)[]> {
+	if (requests.length === 0) return [];
+	try {
+		const dates = requests.map((r) => r.date).sort();
+		const params = new URLSearchParams({
+			latitude: requests.map((r) => r.lat.toFixed(4)).join(','),
+			longitude: requests.map((r) => r.lng.toFixed(4)).join(','),
+			daily: 'weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max',
+			start_date: dates[0],
+			end_date: dates[dates.length - 1],
+			timezone: 'auto',
+		});
+		const res = await fetch(`https://api.open-meteo.com/v1/forecast?${params.toString()}`, { signal });
+		if (!res.ok) return requests.map(() => null);
+		const json = (await res.json()) as OpenMeteoDailyResponse | OpenMeteoDailyResponse[];
+		// Open-Meteo returns a bare object for one location, an array for many.
+		const perLocation = Array.isArray(json) ? json : [json];
+		return requests.map((req, i) => {
+			const daily = perLocation[Math.min(i, perLocation.length - 1)]?.daily;
+			const idx = daily?.time?.indexOf(req.date) ?? -1;
+			if (!daily || idx < 0) return null;
+			const weatherCode = daily.weathercode?.[idx];
+			const tMaxC = daily.temperature_2m_max?.[idx];
+			const tMinC = daily.temperature_2m_min?.[idx];
+			if (weatherCode === undefined || tMaxC === undefined || tMinC === undefined) return null;
+			return {
+				date: req.date,
+				weatherCode,
+				tMaxC,
+				tMinC,
+				precipProbPct: daily.precipitation_probability_max?.[idx] ?? 0,
+			};
+		});
+	} catch {
+		return requests.map(() => null);
+	}
+}
+
 /**
  * Computes the best-window hint parameters from hourly data and an optional window.
  *

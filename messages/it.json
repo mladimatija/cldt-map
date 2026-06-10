@@ -516,6 +516,8 @@
 		"modeStages": "Tappe",
 		"balanceByEta": "Bilancia per ETA",
 		"balanceByEtaHelp": "Quando attivo, ogni giorno dura piu o meno lo stesso tempo (considerando dislivello e ritmo) invece di coprire la stessa distanza. Utile quando il terreno e irregolare.",
+		"tripStartDate": "Data di partenza (facoltativa, attiva il meteo)",
+		"forecastTitle": "{condition} - massima {max}, minima {min}, precipitazioni {precip}%",
 		"maxHoursPerDay": "Ore max/giorno",
 		"autoBumpNotice": "Regolato a {actual} tappe (richieste: {requested}) per mantenere ogni giornata sotto ~{hours}h a {pace} km/h.",
 		"generatePlan": "Genera piano",
