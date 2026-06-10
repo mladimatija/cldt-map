@@ -222,7 +222,6 @@
 		"changeMapStyle": "Promijeni stil karte ({name})"
 	},
 	"test": {
-		"redirecting": "Preusmjeravanje...",
 		"backToMap": "Natrag na kartu",
 		"title": "Test Store",
 		"description": "Testirajte perzistenciju postavki karte u localStorage. Koristite kontrole ispod za provjeru da se postavke zadržavaju između osvježavanja stranice."

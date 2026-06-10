@@ -222,7 +222,6 @@
 		"changeMapStyle": "Change map style ({name})"
 	},
 	"test": {
-		"redirecting": "Redirecting...",
 		"backToMap": "Back to Map",
 		"title": "Test Store",
 		"description": "Test the persistence of map settings in localStorage. Use the controls below to verify settings persist between page refreshes."
