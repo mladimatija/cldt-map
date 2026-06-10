@@ -93,6 +93,8 @@
 		"compassHeadingTooltip": "Prikazuje u kojem ste smjeru okrenuti kao stožac na oznaci vaše lokacije. Koristi kompas uređaja; na iPhoneu će se tražiti dozvola.",
 		"keepScreenOn": "Drži zaslon upaljenim tijekom praćenja",
 		"keepScreenOnTooltip": "Sprječava gašenje zaslona dok je vaša GPS pozicija prikazana na karti. Način uštede baterije ima prednost. Nije podržano u svim preglednicima.",
+		"offRouteAlert": "Upozorenje o skretanju s rute",
+		"offRouteAlertTooltip": "Upozorava trakom i vibracijom kad skrenete više od ~200 m s rute. Aktivira se tek nakon što ste stvarno bili na ruti, pa ostaje tiho kod kuće, u gradu ili u vožnji - i samo se isključuje kad napustite područje rute.",
 		"largeTouchTargetsTooltip": "Povećava veličinu gumba radi lakšeg dodirivanja na mobilnim uređajima.",
 		"layersSection": "Slojevi",
 		"showSections": "Prikaži dionice staze",
@@ -305,6 +307,18 @@
 		"close": "Zatvori"
 	},
 	"storeTest": {
+		"offRouteTitle": "Simulator upozorenja o skretanju s rute",
+		"offRouteDescription": "Pokreće stvarnu traku upozorenja ubacivanjem sintetičkih GPS točaka (lokacija korisnika + najbliža točka rute) u spremišta. Uključi značajku, pošalji 3 točke na ruti za aktivaciju automata, zatim 3 točke izvan rute za alarm. Udaljena točka testira automatsko isključivanje; neprecizna točka ne smije ništa promijeniti.",
+		"offRouteEnableFirst": "Uključi upozorenje o skretanju za početak simulacije.",
+		"offRoutePhase": "Faza automata",
+		"offRouteCounters": "Uzastopne točke",
+		"offRouteFixesSent": "Poslano točaka",
+		"offRouteFixOn": "Točka na ruti (40 m)",
+		"offRouteFixOff": "Točka izvan rute (350 m)",
+		"offRouteFixFar": "Udaljena točka (2,5 km)",
+		"offRouteFixInaccurate": "Neprecizna točka (350 m, +/-120 m)",
+		"offRouteBannerEmpty": "Traka upozorenja prikazuje se ovdje tijekom alarma.",
+		"offRouteSnoozedHint": "Ako nema trake dok je faza alerting, upozorenje je odbačeno; ostaje utišano dok se alarm ne razriješi i ne dogodi novo skretanje.",
 		"title": "Test perzistencije Store",
 		"direction": "Smjer",
 		"toggleDirection": "Promijeni smjer",
@@ -698,6 +712,12 @@
 		"confirm": "Prikaži na karti",
 		"dismiss30": "Ne prikazuj ovo 30 dana",
 		"cancel": "Odustani"
+	},
+	"offRoute": {
+		"title": "Izvan rute.",
+		"body": "Udaljeni ste {distance} od rute.",
+		"backToTrail": "Ruta je prema {compass} ({bearing}°).",
+		"dismiss": "Odbaci upozorenje o skretanju"
 	},
 	"emergency": {
 		"title": "Hitno · 112",

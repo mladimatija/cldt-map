@@ -93,6 +93,8 @@
 		"compassHeadingTooltip": "Zeigt als Kegel auf der Standortmarkierung, in welche Richtung Sie schauen. Nutzt den Gerätekompass; auf dem iPhone wird um Erlaubnis gefragt.",
 		"keepScreenOn": "Bildschirm beim Tracking anlassen",
 		"keepScreenOnTooltip": "Verhindert, dass das Display schlafen geht, solange Ihre GPS-Position auf der Karte angezeigt wird. Der Energiesparmodus hat Vorrang. Nicht in jedem Browser unterstützt.",
+		"offRouteAlert": "Routenabweichungs-Alarm",
+		"offRouteAlertTooltip": "Warnt mit Banner und Vibration, wenn Sie mehr als ~200 m vom Trail abkommen. Aktiviert sich erst, nachdem Sie tatsächlich auf dem Trail waren - bleibt also zu Hause, in der Stadt oder im Auto stumm und schaltet sich von selbst ab, wenn Sie das Trail-Gebiet verlassen.",
 		"largeTouchTargetsTooltip": "Vergrößert Schaltflächen für einfacheres Tippen auf Mobilgeräten.",
 		"layersSection": "Ebenen",
 		"showSections": "Abschnitte anzeigen",
@@ -305,6 +307,18 @@
 		"close": "Schließen"
 	},
 	"storeTest": {
+		"offRouteTitle": "Simulator für Routenabweichungs-Alarm",
+		"offRouteDescription": "Steuert das echte Alarmbanner, indem synthetische GPS-Fixe (Nutzerposition + nächster Trailpunkt) in die Stores geschrieben werden. Funktion aktivieren, 3 Fixe auf dem Trail senden (scharfschalten), dann 3 Fixe abseits für den Alarm. Ein ferner Fix testet das automatische Entschärfen; ein ungenauer Fix darf nichts ändern.",
+		"offRouteEnableFirst": "Aktiviere den Routenabweichungs-Alarm, um die Simulation zu starten.",
+		"offRoutePhase": "Automat-Phase",
+		"offRouteCounters": "Aufeinanderfolgende Fixe",
+		"offRouteFixesSent": "Gesendete Fixe",
+		"offRouteFixOn": "Fix auf dem Trail (40 m)",
+		"offRouteFixOff": "Fix abseits (350 m)",
+		"offRouteFixFar": "Ferner Fix (2,5 km)",
+		"offRouteFixInaccurate": "Ungenauer Fix (350 m, +/-120 m)",
+		"offRouteBannerEmpty": "Das Alarmbanner erscheint hier während eines Alarms.",
+		"offRouteSnoozedHint": "Kein Banner trotz Phase alerting bedeutet: verworfen; es bleibt stumm, bis sich der Alarm auflöst und eine neue Abweichung auftritt.",
 		"title": "Store-Persistenztest",
 		"direction": "Richtung",
 		"toggleDirection": "Richtung umschalten",
@@ -698,6 +712,12 @@
 		"confirm": "Auf Karte anzeigen",
 		"dismiss30": "30 Tage lang nicht anzeigen",
 		"cancel": "Abbrechen"
+	},
+	"offRoute": {
+		"title": "Abseits der Route.",
+		"body": "Sie sind {distance} vom Trail entfernt.",
+		"backToTrail": "Der Trail liegt Richtung {compass} ({bearing}°).",
+		"dismiss": "Routenabweichungs-Alarm verwerfen"
 	},
 	"emergency": {
 		"title": "Notfall · 112",

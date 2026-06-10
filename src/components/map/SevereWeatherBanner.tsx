@@ -5,6 +5,8 @@ import { useTranslations } from 'next-intl';
 import { useMapStore, type MapStoreState } from '@/lib/store';
 import { pointInPolygon } from '@/lib/point-in-polygon';
 import { resolveSeverity, type SeverityLevel } from '@/lib/severe-weather';
+import { Button } from '@/components/ui/Button';
+import { BANNER_REGION_CLASSES, BANNER_ROW_CLASSES, BANNER_RED_CLASSES } from './banner-styles';
 import type * as GeoJSON from 'geojson';
 
 function quantize(n: number): number {
@@ -16,7 +18,7 @@ const DISMISSED_KEY = 'cldt-dismissed-weather-warnings';
 const SEVERITY_ORDER: Record<SeverityLevel, number> = { red: 3, orange: 2, yellow: 1 };
 
 const SEVERITY_CLASSES: Record<SeverityLevel, string> = {
-	red: 'bg-cldt-red text-white',
+	red: BANNER_RED_CLASSES,
 	orange: 'bg-amber-400 text-amber-900',
 	yellow: 'bg-yellow-300 text-yellow-900',
 };
@@ -105,27 +107,18 @@ export function SevereWeatherBanner(): React.ReactElement | null {
 	};
 
 	return (
-		<div aria-label={t('bannerPrefix')} className="relative z-[var(--z-banner)]" role="region">
+		<div aria-label={t('bannerPrefix')} className={BANNER_REGION_CLASSES} role="region">
 			{visible.map((w) => (
-				<div
-					className={`flex items-start gap-2 px-3 py-2 text-sm ${SEVERITY_CLASSES[w.severity]}`}
-					key={w.id}
-					role="alert"
-				>
+				<div className={`${BANNER_ROW_CLASSES} ${SEVERITY_CLASSES[w.severity]}`} key={w.id} role="alert">
 					<div className="min-w-0 flex-1">
 						<span className="font-semibold">{t('bannerPrefix')}</span>
 						<span className="ml-1">{t(SEVERITY_LABELS[w.severity])}</span>
 						{w.event && <span className="ml-1">- {w.event}</span>}
 					</div>
 					{w.severity !== 'red' && (
-						<button
-							aria-label={t('dismiss')}
-							className="focus-visible:ring-cldt-green flex min-h-[var(--min-touch-target)] min-w-[var(--min-touch-target)] shrink-0 items-center justify-center rounded p-1 leading-none font-bold opacity-80 outline-none hover:opacity-100 focus-visible:ring-2 focus-visible:ring-offset-1"
-							type="button"
-							onClick={() => handleDismiss(w.id)}
-						>
+						<Button aria-label={t('dismiss')} variant="bannerClose" onClick={() => handleDismiss(w.id)}>
 							×
-						</button>
+						</Button>
 					)}
 				</div>
 			))}

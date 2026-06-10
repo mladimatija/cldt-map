@@ -93,6 +93,8 @@
 		"compassHeadingTooltip": "Mostra la direzione in cui sei rivolto come un cono sul marcatore della posizione. Usa la bussola del dispositivo; su iPhone verrà chiesta l'autorizzazione.",
 		"keepScreenOn": "Mantieni lo schermo acceso durante il tracciamento",
 		"keepScreenOnTooltip": "Impedisce che lo schermo si spenga mentre la tua posizione GPS è mostrata sulla mappa. Il risparmio batteria ha la precedenza. Non supportato in tutti i browser.",
+		"offRouteAlert": "Avviso fuori percorso",
+		"offRouteAlertTooltip": "Avvisa con un banner e una vibrazione quando ti allontani più di ~200 m dal sentiero. Si attiva solo dopo che sei stato davvero sul sentiero, quindi resta silenzioso a casa, in città o in auto - e si disattiva da solo quando lasci la zona del sentiero.",
 		"largeTouchTargetsTooltip": "Ingrandisce i pulsanti per facilitare il tocco su dispositivi mobili.",
 		"layersSection": "Livelli",
 		"showSections": "Mostra sezioni sentiero",
@@ -305,6 +307,18 @@
 		"close": "Chiudi"
 	},
 	"storeTest": {
+		"offRouteTitle": "Simulatore avviso fuori percorso",
+		"offRouteDescription": "Pilota il banner reale iniettando fix GPS sintetici (posizione utente + punto del sentiero più vicino) negli store. Attiva la funzione, invia 3 fix sul sentiero per armare la macchina, poi 3 fix fuori percorso per generare l'avviso. Un fix lontano testa il disarmo automatico; un fix impreciso non deve cambiare nulla.",
+		"offRouteEnableFirst": "Attiva l'avviso fuori percorso per iniziare la simulazione.",
+		"offRoutePhase": "Fase della macchina",
+		"offRouteCounters": "Fix consecutivi",
+		"offRouteFixesSent": "Fix inviati",
+		"offRouteFixOn": "Fix sul sentiero (40 m)",
+		"offRouteFixOff": "Fix fuori percorso (350 m)",
+		"offRouteFixFar": "Fix lontano (2,5 km)",
+		"offRouteFixInaccurate": "Fix impreciso (350 m, +/-120 m)",
+		"offRouteBannerEmpty": "Il banner di avviso appare qui durante l'allarme.",
+		"offRouteSnoozedHint": "Nessun banner mentre la fase è alerting significa che è stato ignorato; resta silenziato finché l'allarme non si risolve e si verifica una nuova deviazione.",
 		"title": "Test persistenza store",
 		"direction": "Direzione",
 		"toggleDirection": "Cambia direzione",
@@ -698,6 +712,12 @@
 		"confirm": "Mostra sulla mappa",
 		"dismiss30": "Non mostrarlo per 30 giorni",
 		"cancel": "Annulla"
+	},
+	"offRoute": {
+		"title": "Fuori percorso.",
+		"body": "Sei a {distance} dal sentiero.",
+		"backToTrail": "Il sentiero è verso {compass} ({bearing}°).",
+		"dismiss": "Ignora l'avviso fuori percorso"
 	},
 	"emergency": {
 		"title": "Emergenza · 112",
