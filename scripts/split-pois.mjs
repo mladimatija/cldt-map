@@ -57,8 +57,18 @@ for (const [type, pois] of byType) {
 	const outPath = path.join(outDir, `${type}.json`);
 	writeFileSync(outPath, JSON.stringify({ lastUpdated: file.lastUpdated ?? '', pois }));
 }
+
+// Per-type counts manifest: lets the UI show "Town (29)" in the type filter
+// without fetching the type files themselves (disabled types are never
+// loaded, so counting client-side would undercount).
+const counts = Object.fromEntries([...byType.entries()].map(([t, p]) => [t, p.length]));
+writeFileSync(
+	path.join(outDir, 'manifest.json'),
+	JSON.stringify({ lastUpdated: file.lastUpdated ?? '', counts }, null, '\t') + '\n',
+);
+
 console.log(
-	`[split-pois] wrote ${byType.size} type files to public/data/pois (` +
+	`[split-pois] wrote ${byType.size} type files + manifest to public/data/pois (` +
 		[...byType.entries()].map(([t, p]) => `${t}:${p.length}`).join(', ') +
 		')',
 );

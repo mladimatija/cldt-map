@@ -161,6 +161,51 @@ export function resetPoisCache(): void {
 	lastMergeKey = null;
 	lastMergeInputs = [];
 	lastMergeResult = null;
+	typeCountsPromise = null;
+}
+
+/** Cached per-type counts from /data/pois/manifest.json (written by
+ *  scripts/split-pois.mjs). Null result is cached too - one failed fetch
+ *  should not retry per render. */
+let typeCountsPromise: Promise<Record<string, number> | null> | null = null;
+
+/**
+ * Loads the per-type POI counts for the full dataset, used by the type
+ * filter to show how many places each option carries. Counts come from the
+ * split manifest because the loader only fetches enabled types - counting
+ * client-side would report 0 for every disabled type. Falls back to counting
+ * the whole-file dataset when it happens to be loaded; otherwise resolves
+ * null and callers omit counts.
+ */
+export function loadPoiTypeCounts(): Promise<Record<string, number> | null> {
+	if (!typeCountsPromise) {
+		typeCountsPromise = (async (): Promise<Record<string, number> | null> => {
+			try {
+				const res = await fetch('/data/pois/manifest.json');
+				if (res.ok) {
+					const json = (await res.json()) as { counts?: Record<string, unknown> };
+					if (json?.counts && typeof json.counts === 'object') {
+						const counts: Record<string, number> = {};
+						for (const [type, n] of Object.entries(json.counts)) {
+							if (typeof n === 'number' && Number.isFinite(n)) counts[type] = n;
+						}
+						return counts;
+					}
+				}
+			} catch {
+				// fall through to whole-file fallback
+			}
+			if (lastParsedResult?.pois?.length) {
+				const counts: Record<string, number> = {};
+				for (const p of lastParsedResult.pois) {
+					counts[p.type] = (counts[p.type] ?? 0) + 1;
+				}
+				return counts;
+			}
+			return null;
+		})();
+	}
+	return typeCountsPromise;
 }
 
 /**
