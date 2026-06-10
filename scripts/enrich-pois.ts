@@ -22,6 +22,7 @@
 
 import Ajv from 'ajv/dist/2020.js';
 import addFormats from 'ajv-formats';
+import { createHash } from 'node:crypto';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -42,14 +43,44 @@ const HPS_HUTS_PATH = path.resolve(PROJECT_ROOT, 'scripts/hps-huts.json');
 const CROATIA_GEOJSON_PATH = path.resolve(PROJECT_ROOT, 'public/data/geoJsonHr.json');
 const GPX_URL = process.env.NEXT_PUBLIC_GPX_URL;
 const OVERPASS_URL = process.env.OSM_OVERPASS_URL?.trim() || 'https://overpass-api.de/api/interpreter';
+/** Community mirrors tried in order when the primary exhausts its retries.
+ *  Override with a comma-separated OSM_OVERPASS_FALLBACK_URLS; set it empty
+ *  to disable failover. */
+const OVERPASS_FALLBACK_URLS = (
+	process.env.OSM_OVERPASS_FALLBACK_URLS ?? 'https://overpass.kumi.systems/api/interpreter'
+)
+	.split(',')
+	.map((s) => s.trim())
+	.filter((s) => s.length > 0 && safeUrl(s));
 const WIKIDATA_SPARQL_URL = 'https://query.wikidata.org/sparql';
 const USER_AGENT = 'cldt-poi-enricher/2.0 (+https://cldt.hr)';
 
-/** Buffer (km) around the trail bbox used as the Overpass query area. */
+/** Buffer (km) around the trail bbox used as the Overpass query area (the
+ *  corridor query's fallback path only). */
 const BBOX_BUFFER_KM = 30;
 
-const OVERPASS_TIMEOUT_S = 120;
-const FETCH_TIMEOUT_MS = 180_000;
+/** Trail downsampling step for the corridor query polyline. With radius
+ *  slack >= step/2, sampling cannot open gaps in the corridor: any POI
+ *  within a type's maxDistanceKm of the full trail is within
+ *  maxDistanceKm + step/2 of some sampled point. */
+const CORRIDOR_SAMPLE_STEP_KM = 2;
+/** Added to each type's maxDistanceKm for the around-radius (covers the
+ *  sampling gap above plus snap error). */
+const CORRIDOR_RADIUS_SLACK_KM = 2;
+
+/** On-disk cache for successful per-type Overpass results, so a rerun after
+ *  a partial failure only refetches the types that actually failed. Keyed on
+ *  the full query text, so any change to selectors, radius, or trail
+ *  invalidates naturally. Disable with ENRICH_POIS_NO_CACHE=1. */
+const OVERPASS_CACHE_DIR = path.resolve(PROJECT_ROOT, '.cache/enrich-pois');
+const OVERPASS_CACHE_TTL_MS = Number(process.env.ENRICH_POIS_CACHE_TTL_HOURS ?? 24) * 3_600_000;
+const OVERPASS_CACHE_DISABLED = process.env.ENRICH_POIS_NO_CACHE === '1';
+
+const OVERPASS_TIMEOUT_S = 180;
+// Client timeout must exceed the server-side [timeout:] so we read Overpass's
+// own timeout response (a retryable 504-class signal) instead of aborting
+// first and losing the distinction from a dead connection.
+const FETCH_TIMEOUT_MS = 200_000;
 const WIKIDATA_TIMEOUT_MS = 120_000;
 const PAUSE_BETWEEN_PASSES_MS = 2_000;
 
@@ -162,6 +193,8 @@ async function main(): Promise<void> {
 
 	const bbox = bboxOf(trkpts);
 	const paddedBbox = padBbox(bbox, BBOX_BUFFER_KM);
+	const corridorPoly = downsampleTrail(trkpts, cumKm, CORRIDOR_SAMPLE_STEP_KM);
+	console.log(`  Corridor polyline: ${corridorPoly.length} points (${CORRIDOR_SAMPLE_STEP_KM} km step).`);
 
 	// ---- Pass 1: OSM per-type ----
 	console.log('\n=== Pass 1: OSM Overpass ===');
@@ -173,7 +206,7 @@ async function main(): Promise<void> {
 	for (let cfgIdx = 0; cfgIdx < TYPE_CONFIGS.length; cfgIdx++) {
 		const cfg = TYPE_CONFIGS[cfgIdx];
 		console.log(`-> Querying type=${cfg.type} (selectors: ${describeSelectors(cfg.overpassSelectors)})...`);
-		const { elements, failed } = await fetchOsmElements(paddedBbox, cfg.overpassSelectors);
+		const { elements, failed } = await fetchOsmElements(cfg, corridorPoly, paddedBbox);
 		if (failed) failedTypes.add(cfg.type);
 		console.log(`     ${elements.length} candidates.`);
 		let kept = 0;
@@ -574,34 +607,128 @@ interface OsmFetchResult {
 	failed: boolean;
 }
 
-async function fetchOsmElements(bbox: Bbox, selectors: { key: string; values: string[] }[]): Promise<OsmFetchResult> {
-	const bboxClause = `${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng}`;
+/**
+ * Downsamples the trail to roughly one point per `stepKm` of trail distance
+ * (always keeping the final point), producing the polyline for the Overpass
+ * `around:` corridor clause. ~2,244 km at a 2 km step is ~1,120 points -
+ * small enough to embed in the query, dense enough that the radius slack
+ * covers the gaps.
+ */
+function downsampleTrail(pts: LatLng[], cumKm: number[], stepKm: number): LatLng[] {
+	const out: LatLng[] = [];
+	let nextAtKm = 0;
+	for (let i = 0; i < pts.length; i++) {
+		if (cumKm[i] >= nextAtKm) {
+			out.push(pts[i]);
+			nextAtKm = cumKm[i] + stepKm;
+		}
+	}
+	const last = pts[pts.length - 1];
+	if (out[out.length - 1] !== last) out.push(last);
+	return out;
+}
+
+function buildOverpassQuery(selectors: { key: string; values: string[] }[], areaClause: string): string {
 	// Build per-selector clauses for both `node` and `way` (so e.g., shelters
 	// modelled as buildings are picked up via their centroid).
 	const clauses: string[] = [];
 	for (const s of selectors) {
 		for (const v of s.values) {
-			clauses.push(`node["${s.key}"="${v}"](${bboxClause});`);
-			clauses.push(`way["${s.key}"="${v}"](${bboxClause});`);
+			clauses.push(`node["${s.key}"="${v}"](${areaClause});`);
+			clauses.push(`way["${s.key}"="${v}"](${areaClause});`);
 		}
 	}
-	const query = `[out:json][timeout:${OVERPASS_TIMEOUT_S}];(${clauses.join('')});out center tags;`;
+	return `[out:json][timeout:${OVERPASS_TIMEOUT_S}];(${clauses.join('')});out center tags;`;
+}
 
-	let res: Response;
+/** Cache path for one query; the hash covers selectors, radius, and the
+ *  corridor polyline, so any input change misses the cache naturally. */
+function overpassCachePath(type: string, query: string): string {
+	const hash = createHash('sha1').update(query).digest('hex').slice(0, 12);
+	return path.join(OVERPASS_CACHE_DIR, `${type}-${hash}.json`);
+}
+
+async function readOverpassCache(file: string): Promise<OverpassElement[] | null> {
+	if (OVERPASS_CACHE_DISABLED) return null;
 	try {
-		res = await fetchOverpass({
-			url: OVERPASS_URL,
-			body: `data=${encodeURIComponent(query)}`,
-			userAgent: USER_AGENT,
-			fetchTimeoutMs: FETCH_TIMEOUT_MS,
-			onRetry: ({ message }) => console.warn(`     Overpass ${message}.`),
-		});
+		const raw = JSON.parse(await fs.readFile(file, 'utf8')) as { fetchedAt?: number; elements?: OverpassElement[] };
+		if (typeof raw.fetchedAt !== 'number' || !Array.isArray(raw.elements)) return null;
+		if (Date.now() - raw.fetchedAt > OVERPASS_CACHE_TTL_MS) return null;
+		return raw.elements;
+	} catch {
+		return null;
+	}
+}
+
+async function writeOverpassCache(file: string, elements: OverpassElement[]): Promise<void> {
+	if (OVERPASS_CACHE_DISABLED) return;
+	try {
+		await fs.mkdir(OVERPASS_CACHE_DIR, { recursive: true });
+		await fs.writeFile(file, JSON.stringify({ fetchedAt: Date.now(), elements }));
+	} catch (err) {
+		console.warn(`     cache write failed (${(err as Error).message}); continuing without cache.`);
+	}
+}
+
+async function runOverpassQuery(query: string): Promise<OverpassElement[]> {
+	const res = await fetchOverpass({
+		url: OVERPASS_URL,
+		fallbackUrls: OVERPASS_FALLBACK_URLS,
+		body: `data=${encodeURIComponent(query)}`,
+		userAgent: USER_AGENT,
+		fetchTimeoutMs: FETCH_TIMEOUT_MS,
+		onRetry: ({ message }) => console.warn(`     Overpass ${message}.`),
+	});
+	const json = (await res.json()) as { elements?: OverpassElement[] };
+	return json.elements ?? [];
+}
+
+/**
+ * Fetches the OSM candidates for one POI type.
+ *
+ * Strategy, in order:
+ *   1. Fresh on-disk cache hit for the exact query - free, makes reruns
+ *      after a partial failure only refetch the types that failed.
+ *   2. Corridor query: `around:` the downsampled trail polyline with radius
+ *      maxDistanceKm + slack. Overpass evaluates this against its spatial
+ *      index over a ~2-17 km ribbon instead of scanning a country-sized
+ *      bbox, which is what made the old per-type queries blow the server
+ *      [timeout:] and 504 under load. Results are identical because the
+ *      precise snap-to-trail distance filter still runs afterwards.
+ *   3. Legacy bbox query as a fallback when the corridor query fails
+ *      terminally (e.g., a mirror that rejects long request bodies).
+ */
+async function fetchOsmElements(cfg: TypeConfig, corridorPoly: LatLng[], bbox: Bbox): Promise<OsmFetchResult> {
+	const radiusM = Math.round((cfg.maxDistanceKm + CORRIDOR_RADIUS_SLACK_KM) * 1000);
+	const polyStr = corridorPoly.map((p) => `${p.lat.toFixed(5)},${p.lng.toFixed(5)}`).join(',');
+	const corridorQuery = buildOverpassQuery(cfg.overpassSelectors, `around:${radiusM},${polyStr}`);
+
+	const cacheFile = overpassCachePath(cfg.type, corridorQuery);
+	const cached = await readOverpassCache(cacheFile);
+	if (cached) {
+		console.log(
+			`     cache hit (${cached.length} elements; delete ${path.relative(PROJECT_ROOT, cacheFile)} to refetch).`,
+		);
+		return { elements: cached, failed: false };
+	}
+
+	try {
+		const elements = await runOverpassQuery(corridorQuery);
+		await writeOverpassCache(cacheFile, elements);
+		return { elements, failed: false };
+	} catch (err) {
+		console.warn(`     corridor query failed (${(err as Error).message}); falling back to bbox query.`);
+	}
+
+	const bboxClause = `${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng}`;
+	try {
+		const elements = await runOverpassQuery(buildOverpassQuery(cfg.overpassSelectors, bboxClause));
+		await writeOverpassCache(cacheFile, elements);
+		return { elements, failed: false };
 	} catch (err) {
 		console.warn(`     Overpass error: ${(err as Error).message}; skipping this type.`);
 		return { elements: [], failed: true };
 	}
-	const json = (await res.json()) as { elements?: OverpassElement[] };
-	return { elements: json.elements ?? [], failed: false };
 }
 
 // ---- Wikidata SPARQL -------------------------------------------------------
