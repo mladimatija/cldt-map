@@ -1,5 +1,5 @@
 {
-	"lastUpdated": "2026-06-07",
+	"lastUpdated": "2026-06-10",
 	"counts": {
 		"town": 29,
 		"settlement": 1853,
@@ -11,6 +11,6 @@
 		"cafe": 644,
 		"food": 0,
 		"atm": 242,
-		"water": 0
+		"water": 99
 	}
 }
