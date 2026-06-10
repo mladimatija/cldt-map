@@ -89,6 +89,8 @@
 		"batterySaver": "Risparmio energetico",
 		"batterySaverTooltip": "Riduce la frequenza degli aggiornamenti di posizione e le animazioni per risparmiare batteria.",
 		"largeTouchTargets": "Pulsanti grandi",
+		"compassHeading": "Direzione bussola",
+		"compassHeadingTooltip": "Mostra la direzione in cui sei rivolto come un cono sul marcatore della posizione. Usa la bussola del dispositivo; su iPhone verrà chiesta l'autorizzazione.",
 		"largeTouchTargetsTooltip": "Ingrandisce i pulsanti per facilitare il tocco su dispositivi mobili.",
 		"layersSection": "Livelli",
 		"showSections": "Mostra sezioni sentiero",

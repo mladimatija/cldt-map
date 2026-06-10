@@ -229,6 +229,10 @@ export interface MapStoreState {
 	setDarkMode: (enabled: boolean) => void;
 	batterySaverMode: boolean;
 	setBatterySaverMode: (enabled: boolean) => void;
+	/** Compass heading cone on the user-location marker (DeviceOrientation).
+	 *  iOS requires a permission prompt; the settings toggle handles it. */
+	compassEnabled: boolean;
+	setCompassEnabled: (enabled: boolean) => void;
 	largeTouchTargets: boolean;
 	setLargeTouchTargets: (enabled: boolean) => void;
 	showSections: boolean;

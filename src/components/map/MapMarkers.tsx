@@ -9,6 +9,7 @@ import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/li
 import { isWithinMapBoundary, getNavigateToPointUrl, formatDistance, formatElevation } from '@/lib/utils';
 import { TRAIL_OFF_TRAIL_THRESHOLD_M } from '@/lib/config';
 import { buildWindCompassPayload, computeDistanceRemaining, findNearestPointIndex } from '@/lib/distance-utils';
+import { useCompassHeading } from '@/hooks/useCompassHeading';
 import {
 	fetchWeather,
 	buildHourlyStripData,
@@ -134,12 +135,29 @@ export default function MapMarkers(): React.ReactElement | null {
 		() =>
 			L.divIcon({
 				className: 'user-location-marker',
-				html: '<div class="user-location-dot" />',
+				html: '<div class="user-location-heading" aria-hidden="true"></div><div class="user-location-dot" />',
 				iconSize: [20, 20],
 				iconAnchor: [10, 10],
 			}),
 		[],
 	);
+
+	// Compass heading cone: written straight to the marker element as a CSS
+	// custom property so a 60 Hz sensor never re-renders the React tree.
+	const compassEnabled = useMapStore((state: MapStoreState) => state.compassEnabled);
+	const compassHeading = useCompassHeading(compassEnabled && markerReady);
+	useEffect(() => {
+		const el = userMarkerRef.current?.getElement();
+		if (!el) return;
+		const cone = el.querySelector<HTMLElement>('.user-location-heading');
+		if (!cone) return;
+		if (compassHeading === null) {
+			cone.classList.remove('is-active');
+			return;
+		}
+		cone.classList.add('is-active');
+		cone.style.setProperty('--heading', `${Math.round(compassHeading)}deg`);
+	}, [compassHeading, markerReady]);
 
 	/** Index of the trail point nearest the user's projected position; shared by tooltip memos. */
 	const nearestEnhancedPointIdx = useMemo(() => {

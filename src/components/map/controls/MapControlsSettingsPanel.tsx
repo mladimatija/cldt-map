@@ -10,6 +10,7 @@ import { useMapStore, type MapStoreState } from '@/lib/store';
 import {
 	IoMoonOutline,
 	IoBatteryHalfOutline,
+	IoCompassOutline,
 	IoHandLeftOutline,
 	IoLayersOutline,
 	IoSettingsOutline,
@@ -26,6 +27,7 @@ import { MAP_CONTROL_POPOVER } from './map-controls-constants';
 import { MapControlsTileCachePanel } from './MapControlsTileCachePanel';
 import { MapControlsImportsPanel } from './MapControlsImportsPanel';
 import { SURFACE_BUCKETS } from '@/components/charts/ElevationChart';
+import { requestCompassPermission } from '@/hooks/useCompassHeading';
 
 interface MapControlsSettingsPanelProps {
 	containerRef: RefObject<HTMLDivElement | null>;
@@ -50,6 +52,19 @@ export function MapControlsSettingsPanel({
 	const setBatterySaverMode = useMapStore((state: MapStoreState) => state.setBatterySaverMode);
 	const largeTouchTargets = useMapStore((state: MapStoreState) => state.largeTouchTargets);
 	const setLargeTouchTargets = useMapStore((state: MapStoreState) => state.setLargeTouchTargets);
+	const compassEnabled = useMapStore((state: MapStoreState) => state.compassEnabled);
+	const setCompassEnabled = useMapStore((state: MapStoreState) => state.setCompassEnabled);
+
+	/** iOS gates DeviceOrientation behind a permission prompt that must run
+	 *  inside this user-gesture handler; only enable when events may flow. */
+	const handleCompassToggle = async (checked: boolean): Promise<void> => {
+		if (!checked) {
+			setCompassEnabled(false);
+			return;
+		}
+		const granted = await requestCompassPermission();
+		setCompassEnabled(granted);
+	};
 	const showSections = useMapStore((state: MapStoreState) => state.showSections);
 	const setShowSections = useMapStore((state: MapStoreState) => state.setShowSections);
 	const gradeTintedTrail = useMapStore((state: MapStoreState) => state.gradeTintedTrail);
@@ -124,6 +139,16 @@ export function MapControlsSettingsPanel({
 						<Checkbox checked={largeTouchTargets} onCheckedChange={(checked) => setLargeTouchTargets(checked)} />
 						<IoHandLeftOutline className="h-4 w-4 shrink-0 text-gray-600 dark:text-white" />
 						<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">{t('largeTouchTargets')}</span>
+					</label>
+					<label className="flex cursor-pointer items-center gap-2">
+						<Checkbox checked={compassEnabled} onCheckedChange={(checked) => void handleCompassToggle(checked)} />
+						<IoCompassOutline className="h-4 w-4 shrink-0 text-gray-600 dark:text-white" />
+						<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">{t('compassHeading')}</span>
+						<span className="inline-flex" onClick={(e) => e.stopPropagation()} onMouseDown={(e) => e.stopPropagation()}>
+							<SmartTooltip content={t('compassHeadingTooltip')} position="top">
+								<IoHelpCircleOutline className="ml-0.5 h-3.5 w-3.5 shrink-0 cursor-help text-gray-400 hover:text-gray-600 dark:text-white" />
+							</SmartTooltip>
+						</span>
 					</label>
 					<p className="mt-1 text-xs font-semibold tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
 						{t('layersSection')}
