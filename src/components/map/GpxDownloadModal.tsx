@@ -8,11 +8,15 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/Button';
 import { useBlockMapPropagation } from '@/hooks';
+import { canShareGpxFiles } from '@/lib/gpx-export';
 
 interface GpxDownloadModalProps {
 	isOpen: boolean;
 	onClose: () => void;
 	onConfirm: () => void;
+	/** Optional share-sheet handoff (Web Share API). The button renders only
+	 *  when provided AND the platform can share GPX files. */
+	onShare?: () => void;
 }
 
 const DISCLAIMER_ITEM_KEYS = [
@@ -27,9 +31,15 @@ const DISCLAIMER_ITEM_KEYS = [
 	'disclaimerItem9',
 ] as const;
 
-export function GpxDownloadModal({ isOpen, onClose, onConfirm }: GpxDownloadModalProps): React.ReactElement | null {
+export function GpxDownloadModal({
+	isOpen,
+	onClose,
+	onConfirm,
+	onShare,
+}: GpxDownloadModalProps): React.ReactElement | null {
 	const t = useTranslations('gpxDownload');
 	const [acknowledged, setAcknowledged] = useState(false);
+	const shareSupported = onShare !== undefined && canShareGpxFiles();
 	const backdropRef = useRef<HTMLDivElement>(null);
 	const dialogRef = useRef<HTMLDivElement>(null);
 	const checkboxRef = useRef<HTMLInputElement>(null);
@@ -62,6 +72,12 @@ export function GpxDownloadModal({ isOpen, onClose, onConfirm }: GpxDownloadModa
 	const handleConfirm = (): void => {
 		if (!acknowledged) return;
 		onConfirm();
+		onClose();
+	};
+
+	const handleShare = (): void => {
+		if (!acknowledged || !onShare) return;
+		onShare();
 		onClose();
 	};
 
@@ -112,6 +128,16 @@ export function GpxDownloadModal({ isOpen, onClose, onConfirm }: GpxDownloadModa
 					<Button size="default" variant="base" onClick={onClose}>
 						{t('cancelButton')}
 					</Button>
+					{shareSupported && (
+						<Button
+							disabled={!acknowledged}
+							size="default"
+							variant={acknowledged ? 'mapControlOutlineSecondary' : 'base'}
+							onClick={handleShare}
+						>
+							{t('shareButton')}
+						</Button>
+					)}
 					<Button
 						disabled={!acknowledged}
 						size="default"

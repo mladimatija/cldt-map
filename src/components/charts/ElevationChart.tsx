@@ -43,7 +43,7 @@ import { useTranslations } from 'next-intl';
 import { Tooltip } from '@/components/ui/Tooltip';
 import { Button } from '@/components/ui/Button';
 import { GpxDownloadModal } from '@/components/map/GpxDownloadModal';
-import { buildGpxXml, downloadGpxFile, extractGpxSegment } from '@/lib/gpx-export';
+import { buildGpxXml, downloadGpxFile, extractGpxSegment, shareGpxFile } from '@/lib/gpx-export';
 
 export { SAC_BUCKETS, SURFACE_BUCKETS } from './elevation-chart-shared';
 
@@ -355,36 +355,62 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 		setGpxModalOpen(true);
 	};
 
-	const handleGpxConfirm = (): void => {
+	/** Builds the GPX payload for the current modal mode, or null when the
+	 *  required data is not available. Shared by download and share paths. */
+	const buildGpxPayload = (): { gpx: string; filename: string } | null => {
 		if (gpxModalMode === 'full') {
 			if (rawGpxData) {
-				downloadGpxFile(rawGpxData, tGpx('filenameFullTrail'));
-			} else if (enhancedTrailPoints?.length) {
-				const gpx = buildGpxXml(
-					enhancedTrailPoints.map((p) => ({ lat: p.lat, lng: p.lng, elevation: p.elevation })),
-					'Croatian Long Distance Trail',
-				);
-				downloadGpxFile(gpx, tGpx('filenameFullTrail'));
+				return { gpx: rawGpxData, filename: tGpx('filenameFullTrail') };
 			}
-		} else if (gpxModalMode === 'segment' && rulerRange && enhancedTrailPoints?.length) {
+			if (enhancedTrailPoints?.length) {
+				return {
+					gpx: buildGpxXml(
+						enhancedTrailPoints.map((p) => ({ lat: p.lat, lng: p.lng, elevation: p.elevation })),
+						'Croatian Long Distance Trail',
+					),
+					filename: tGpx('filenameFullTrail'),
+				};
+			}
+			return null;
+		}
+		if (gpxModalMode === 'segment' && rulerRange && enhancedTrailPoints?.length) {
 			// enhancedTrailPoints is already sorted by distanceFromStart - no sort needed.
 			const segment = enhancedTrailPoints.filter(
 				(p) =>
 					p.distanceFromStart >= rulerRange.distanceFromStartA && p.distanceFromStart <= rulerRange.distanceFromStartB,
 			);
-			if (segment.length < 2) return;
+			if (segment.length < 2) return null;
 			const filename = tGpx('filenameSegment');
 			if (rawGpxData) {
-				const gpx = extractGpxSegment(rawGpxData, segment[0].index, segment[segment.length - 1].index, filename);
-				downloadGpxFile(gpx, filename);
-			} else {
-				const gpx = buildGpxXml(
+				return {
+					gpx: extractGpxSegment(rawGpxData, segment[0].index, segment[segment.length - 1].index, filename),
+					filename,
+				};
+			}
+			return {
+				gpx: buildGpxXml(
 					segment.map((p) => ({ lat: p.lat, lng: p.lng, elevation: p.elevation })),
 					filename,
-				);
-				downloadGpxFile(gpx, filename);
-			}
+				),
+				filename,
+			};
 		}
+		return null;
+	};
+
+	const handleGpxConfirm = (): void => {
+		const payload = buildGpxPayload();
+		if (payload) downloadGpxFile(payload.gpx, payload.filename);
+	};
+
+	const handleGpxShare = (): void => {
+		const payload = buildGpxPayload();
+		if (!payload) return;
+		void shareGpxFile(payload.gpx, payload.filename).then((handled) => {
+			// Unsupported or hard failure: fall back to a regular download so
+			// the user's acknowledged intent still completes.
+			if (!handled) downloadGpxFile(payload.gpx, payload.filename);
+		});
 	};
 
 	return (
@@ -702,7 +728,12 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 					</div>
 				)}
 			</div>
-			<GpxDownloadModal isOpen={gpxModalOpen} onClose={() => setGpxModalOpen(false)} onConfirm={handleGpxConfirm} />
+			<GpxDownloadModal
+				isOpen={gpxModalOpen}
+				onClose={() => setGpxModalOpen(false)}
+				onConfirm={handleGpxConfirm}
+				onShare={handleGpxShare}
+			/>
 		</>
 	);
 }

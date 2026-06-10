@@ -124,3 +124,33 @@ export function downloadGpxFile(gpxContent: string, filename: string): void {
 	document.body.removeChild(a);
 	URL.revokeObjectURL(url);
 }
+
+/** True when the Web Share API can hand a GPX file to another app (OsmAnd,
+ *  Locus, Gaia, mail, ...) - the mobile share-sheet path. */
+export function canShareGpxFiles(): boolean {
+	if (typeof navigator === 'undefined' || typeof navigator.canShare !== 'function') return false;
+	try {
+		const probe = new File(['<gpx/>'], 'probe.gpx', { type: 'application/gpx+xml' });
+		return navigator.canShare({ files: [probe] });
+	} catch {
+		return false;
+	}
+}
+
+/**
+ * Opens the platform share sheet with the GPX as a file attachment. Must be
+ * called from a user-gesture handler. Resolves true when the share sheet was
+ * opened (a user cancel still counts as handled); false means unsupported or
+ * rejected, in which case callers should fall back to downloadGpxFile.
+ */
+export async function shareGpxFile(gpxContent: string, filename: string, title?: string): Promise<boolean> {
+	if (!canShareGpxFiles()) return false;
+	const file = new File([gpxContent], filename, { type: 'application/gpx+xml' });
+	try {
+		await navigator.share({ files: [file], title: title ?? filename });
+		return true;
+	} catch (err) {
+		// AbortError = user dismissed the sheet; that is a handled outcome.
+		return err instanceof Error && err.name === 'AbortError';
+	}
+}
