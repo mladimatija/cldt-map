@@ -7,7 +7,14 @@ import { useLocale, useTranslations } from 'next-intl';
 import { IoLocationOutline } from 'react-icons/io5';
 import Select, { type GroupBase, type MultiValue } from 'react-select';
 import { useMapStore, useStore, type MapStoreState, type StoreState, TrailDirection, UnitSystem } from '@/lib/store';
-import { collectPoiTags, POI_TYPE_GROUPS, poiDisplayName, poiMatchesTagFilter, type Poi } from '@/lib/pois';
+import {
+	collectPoiTags,
+	loadPoiTypeCounts,
+	POI_TYPE_GROUPS,
+	poiDisplayName,
+	poiMatchesTagFilter,
+	type Poi,
+} from '@/lib/pois';
 import { defaultEnabledPoiTypes } from '@/lib/config';
 import { usePoiListRows, usePopoverFocusTrap, type ParsedDistance, type SortMode } from '@/hooks';
 import { cn, formatDistance, formatOffTrail } from '@/lib/utils';
@@ -352,6 +359,20 @@ export function MapControlsPoiList({
 			})),
 		[t],
 	);
+
+	/** Full-dataset count per POI type, from the split manifest. Drives the
+	 *  "(123)" suffix on menu options; null (manifest unavailable) hides the
+	 *  counts rather than showing zeros for never-loaded types. */
+	const [typeCounts, setTypeCounts] = useState<Record<string, number> | null>(null);
+	useEffect(() => {
+		let cancelled = false;
+		void loadPoiTypeCounts().then((counts) => {
+			if (!cancelled && counts) setTypeCounts(counts);
+		});
+		return () => {
+			cancelled = true;
+		};
+	}, []);
 	const selectedTypeOptions = useMemo(
 		() => typeOptions.flatMap((g) => g.options).filter((o) => enabledPoiTypes.has(o.value)),
 		[typeOptions, enabledPoiTypes],
@@ -706,6 +727,19 @@ export function MapControlsPoiList({
 				classNamePrefix="poi-type-select"
 				classNames={poiSelectClassNames}
 				closeMenuOnSelect={false}
+				// Counts only in the open menu (context 'menu'), so the selected
+				// chips stay compact. Falls back to the plain label while the
+				// manifest is loading or unavailable.
+				formatOptionLabel={(option, meta) =>
+					meta.context === 'menu' && typeCounts ? (
+						<span>
+							{option.label}{' '}
+							<span className="text-gray-400 tabular-nums dark:text-gray-500">({typeCounts[option.value] ?? 0})</span>
+						</span>
+					) : (
+						option.label
+					)
+				}
 				noOptionsMessage={() => t('typeFilterNoMatches')}
 				options={typeOptions}
 				placeholder={t('typeFilterPlaceholder')}
