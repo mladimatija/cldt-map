@@ -28,6 +28,18 @@ import { exportStripMapPdf, pointsToBounds } from '@/lib/export-utils';
 
 const MAX_STAGES = 200;
 
+/** Custom-drawn radio for the km-per-day / stages mode switch. Native radios
+ *  take an accent-color, but Chrome darkens the surrounding ring for contrast
+ *  (rendering near-black next to the teal dot), so the control is drawn from
+ *  scratch: appearance-none circle, teal fill when checked, with an inset
+ *  ring matching the panel background to carve out the classic center dot. */
+const STAGE_MODE_RADIO_CLASS =
+	'h-4 w-4 shrink-0 cursor-pointer appearance-none rounded-full border-2 border-gray-300 bg-white ' +
+	'checked:border-(--cldt-blue) checked:bg-(--cldt-blue) checked:shadow-[inset_0_0_0_3px_white] ' +
+	'focus-visible:ring-cldt-green focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:outline-none ' +
+	'dark:border-gray-500 dark:bg-[var(--bg-secondary)] dark:checked:border-(--cldt-blue) dark:checked:bg-(--cldt-blue) ' +
+	'dark:checked:shadow-[inset_0_0_0_3px_var(--bg-secondary)]';
+
 export function MapControlsStagePlannerPanel(): React.ReactElement {
 	const t = useTranslations('stagePlanner');
 	const tPois = useTranslations('pois');
@@ -335,7 +347,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 						<label className="flex cursor-pointer items-center gap-1">
 							<input
 								checked={mode === 'kmPerDay'}
-								className="accent-cldt-blue focus-visible:ring-cldt-green h-4 w-4 cursor-pointer focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:outline-none"
+								className={STAGE_MODE_RADIO_CLASS}
 								name="stage-mode"
 								type="radio"
 								value="kmPerDay"
@@ -346,7 +358,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 						<label className="flex cursor-pointer items-center gap-1">
 							<input
 								checked={mode === 'stages'}
-								className="accent-cldt-blue focus-visible:ring-cldt-green h-4 w-4 cursor-pointer focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:outline-none"
+								className={STAGE_MODE_RADIO_CLASS}
 								name="stage-mode"
 								type="radio"
 								value="stages"
@@ -408,7 +420,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 					<label className="flex flex-col gap-0.5 text-xs text-gray-600 dark:text-gray-400">
 						{t('tripStartDate')}
 						<input
-							className={MAP_CONTROL_INPUT}
+							className={cn(MAP_CONTROL_INPUT, 'w-full')}
 							type="date"
 							value={tripStartDate}
 							onChange={(e) => handleTripStartDateChange(e.target.value)}
