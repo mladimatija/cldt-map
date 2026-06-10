@@ -1,7 +1,7 @@
 import type { StoreState, MapStoreState } from './types';
 import { BaseMapProvider } from '../services/map-service';
 import { INITIAL_TRAIL_STATE } from './trail-slice';
-import { KNOWN_POI_TYPES } from '../poi-types';
+import { DEFAULT_POI_TYPES } from '../poi-types';
 
 /**
  * Returns an object matching StoreState with default values and no-op functions for SSR.
@@ -213,7 +213,7 @@ export function createMapStoreStub(): MapStoreState {
 		setPoisLayerEnabled: noop,
 		poiDisclaimerDismissedAt: null,
 		setPoiDisclaimerDismissedAt: noop,
-		enabledPoiTypes: new Set(KNOWN_POI_TYPES),
+		enabledPoiTypes: new Set(DEFAULT_POI_TYPES),
 		setEnabledPoiTypes: noop,
 		togglePoiType: noop,
 		enabledPoiTags: new Set<string>(),

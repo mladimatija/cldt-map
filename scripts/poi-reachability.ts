@@ -110,13 +110,13 @@ export const TIER_RULES: Record<string, TierRule> = {
 		notabilityOverride: true,
 	},
 	peak: {
-		maxOffTrailKm: 10,
+		maxOffTrailKm: 2,
 		requirePathWithinM: 200,
 		requireNamed: true,
 		notabilityOverride: true,
 	},
 	viewpoint: {
-		maxOffTrailKm: 6,
+		maxOffTrailKm: 2,
 		requireRoadWithinM: 100,
 		requireReachable: true,
 		notabilityOverride: true,
