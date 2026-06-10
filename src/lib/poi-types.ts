@@ -47,6 +47,9 @@ export const KNOWN_POI_TYPES: readonly KnownPoiType[] = [
 	'water',
 ] as const;
 
+/** Default POI type set for new users. */
+export const DEFAULT_POI_TYPES: readonly KnownPoiType[] = ['town', 'hut', 'shelter', 'food', 'water'];
+
 export type PoiType = KnownPoiType | string;
 
 export interface PoiImage {

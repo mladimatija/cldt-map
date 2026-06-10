@@ -1,6 +1,6 @@
 import type { TrailDirection, UnitSystem } from './types';
 import { BaseMapProvider } from './services/base-map-provider';
-import { KNOWN_POI_TYPES } from './poi-types';
+import { DEFAULT_POI_TYPES } from './poi-types';
 
 /**
  * Centralized application defaults.
@@ -168,7 +168,7 @@ export const seasonalStatusLayerEnabledOverride = envBoolOptional('NEXT_PUBLIC_D
 export const defaultEnabledPoiTypes: ReadonlySet<string> = (() => {
 	const raw = process.env.NEXT_PUBLIC_DEFAULT_POI_TYPES;
 	if (typeof raw !== 'string' || raw.trim().length === 0) {
-		return new Set(KNOWN_POI_TYPES);
+		return new Set(DEFAULT_POI_TYPES);
 	}
 	return new Set(
 		raw
