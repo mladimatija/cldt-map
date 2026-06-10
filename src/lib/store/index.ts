@@ -46,7 +46,11 @@ function createStoredStores(): { main: MainStore; map: MapStore } {
 
 function createStoreStubApi<S>(getStub: () => S): UseBoundStore<StoreApi<S>> {
 	const stub = getStub();
-	const api = ((selector: (state: S) => unknown) => selector(stub)) as unknown as UseBoundStore<StoreApi<S>>;
+	// Mirror zustand's bound-store call signatures: bare calls return the whole
+	// state (e.g. `const { units } = useMapStore()`), selector calls project it.
+	const api = ((selector?: (state: S) => unknown) => (selector ? selector(stub) : stub)) as unknown as UseBoundStore<
+		StoreApi<S>
+	>;
 	(api as unknown as { getState: () => S }).getState = getStub;
 	(api as unknown as { subscribe: () => () => void }).subscribe = () => () => {};
 	return api;
