@@ -23,6 +23,7 @@ function MapTrailLoadingFallback(): React.ReactElement {
 const MapControls = dynamic(() => import('@/components/map/controls/MapControls'), { ssr: false });
 const ZoomControls = dynamic(() => import('@/components/map/controls/MapControlsZoomControls'), { ssr: false });
 const TrailRoute = dynamic(() => import('@/components/map/TrailRoute'), { ssr: false });
+const SeasonalStatusTrailLayer = dynamic(() => import('@/components/map/SeasonalStatusTrailLayer'), { ssr: false });
 const LocationControls = dynamic(() => import('@/components/map/controls/MapControlsLocationControls'), { ssr: false });
 const BaseMapSelector = dynamic(() => import('@/components/map/BaseMapSelector'), { ssr: false });
 const MapMarkers = dynamic(() => import('@/components/map/MapMarkers'), { ssr: false });
@@ -164,6 +165,7 @@ export default function MapContent(): React.ReactElement {
 			<Suspense fallback={<MapTrailLoadingFallback />}>
 				<TrailRoute pathOptions={DEFAULT_PATH_OPTIONS} />
 			</Suspense>
+			<SeasonalStatusTrailLayer />
 			<ImportedTrackLayer />
 			<TrailDistanceMarkers />
 			<PoiMarkers />
