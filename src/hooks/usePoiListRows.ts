@@ -96,8 +96,7 @@ export function usePoiListRows(args: UsePoiListRowsArgs): UsePoiListRowsResult {
 	} = args;
 
 	const parsedDistance = useMemo(
-		() =>
-			parseDistanceQuery(debouncedQuery, units, direction, trailTotalKm ?? totalKm),
+		() => parseDistanceQuery(debouncedQuery, units, direction, trailTotalKm ?? totalKm),
 		[debouncedQuery, units, direction, trailTotalKm, totalKm],
 	);
 
