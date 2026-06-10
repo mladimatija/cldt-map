@@ -1,5 +1,19 @@
 // Service worker for CLDT Map (app shell + tiles)
-const CACHE_VERSION = 6;
+
+// Build stamp: scripts/stamp-sw-version.mjs (run via npm prebuild) generates
+// /sw-version.js with the current commit hash so every deploy gets a fresh
+// app-shell cache without anyone remembering to bump a constant. The file is
+// gitignored; in dev (or if the stamp is missing) importScripts throws and we
+// fall back to the manual version below. Registration uses
+// updateViaCache: 'none', so a changed stamp re-triggers SW install.
+let buildVersion = null;
+try {
+	importScripts('/sw-version.js');
+	buildVersion = self.CLDT_BUILD_VERSION || null;
+} catch {
+	// No build stamp available - manual fallback version applies.
+}
+const CACHE_VERSION = buildVersion || 6;
 const CACHE_NAME = `cldt-map-cache-v${CACHE_VERSION}`;
 const OFFLINE_URL = '/offline';
 const TILE_CACHE_PREFIX = 'cldt-tiles-';

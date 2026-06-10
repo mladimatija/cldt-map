@@ -9,6 +9,7 @@
 	},
 	"scripts": {
 		"dev": "next dev",
+		"prebuild": "node scripts/stamp-sw-version.mjs",
 		"build": "next build",
 		"start": "next start",
 		"lint": "eslint .",

@@ -49,7 +49,10 @@ Desktop.ini
 /analyze/
 
 # PWA files
+# Note: public/sw.js is tracked (added before this rule); the rule only hides
+# generated artifacts like the build stamp below.
 **/public/sw.js
+**/public/sw-version.js
 **/public/sw.js.map
 **/public/worker-*.js
 **/public/worker-*.js.map
