@@ -29,6 +29,7 @@ import { MapControlsTileCachePanel } from './MapControlsTileCachePanel';
 import { MapControlsImportsPanel } from './MapControlsImportsPanel';
 import { SURFACE_BUCKETS } from '@/components/charts/ElevationChart';
 import { requestCompassPermission } from '@/hooks/useCompassHeading';
+import { Radio } from '@/components/ui/Radio';
 
 interface MapControlsSettingsPanelProps {
 	containerRef: RefObject<HTMLDivElement | null>;
@@ -203,12 +204,10 @@ export function MapControlsSettingsPanel({
 										)}
 										key={option}
 									>
-										<input
+										<Radio
 											checked={selected === option}
-											className="accent-cldt-blue focus-visible:ring-cldt-green h-4 w-4 cursor-pointer focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:outline-none disabled:cursor-not-allowed"
 											disabled={disabled}
 											name="trail-style"
-											type="radio"
 											value={option}
 											onChange={() => {
 												if (option === 'sac') {

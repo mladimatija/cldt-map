@@ -7,6 +7,7 @@ import { IoHelpCircleOutline } from 'react-icons/io5';
 import SmartTooltip from '@/components/ui/SmartTooltip';
 import { isKnownType, poiDisplayName, poiMatchesTagFilter, STAGE_POI_OFFTRAIL_KM, type Poi } from '@/lib/pois';
 import { Button } from '@/components/ui/Button';
+import { Radio } from '@/components/ui/Radio';
 import { Checkbox } from '@/components/ui/Checkbox';
 import { MapControlsTripBriefModal } from './MapControlsTripBriefModal';
 import { cn, formatElevation, kmToMiles, milesToKm } from '@/lib/utils';
@@ -27,18 +28,6 @@ import { buildGpxXml, buildGpxWaypointXml, downloadGpxFile, type GpxWaypoint } f
 import { exportStripMapPdf, pointsToBounds } from '@/lib/export-utils';
 
 const MAX_STAGES = 200;
-
-/** Custom-drawn radio for the km-per-day / stages mode switch. Native radios
- *  take an accent-color, but Chrome darkens the surrounding ring for contrast
- *  (rendering near-black next to the teal dot), so the control is drawn from
- *  scratch: appearance-none circle, teal fill when checked, with an inset
- *  ring matching the panel background to carve out the classic center dot. */
-const STAGE_MODE_RADIO_CLASS =
-	'h-4 w-4 shrink-0 cursor-pointer appearance-none rounded-full border-2 border-gray-300 bg-white ' +
-	'checked:border-(--cldt-blue) checked:bg-(--cldt-blue) checked:shadow-[inset_0_0_0_3px_white] ' +
-	'focus-visible:ring-cldt-green focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:outline-none ' +
-	'dark:border-gray-500 dark:bg-[var(--bg-secondary)] dark:checked:border-(--cldt-blue) dark:checked:bg-(--cldt-blue) ' +
-	'dark:checked:shadow-[inset_0_0_0_3px_var(--bg-secondary)]';
 
 export function MapControlsStagePlannerPanel(): React.ReactElement {
 	const t = useTranslations('stagePlanner');
@@ -345,25 +334,16 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 
 					<div className="flex gap-3 text-xs text-gray-600 dark:text-gray-400">
 						<label className="flex cursor-pointer items-center gap-1">
-							<input
+							<Radio
 								checked={mode === 'kmPerDay'}
-								className={STAGE_MODE_RADIO_CLASS}
 								name="stage-mode"
-								type="radio"
 								value="kmPerDay"
 								onChange={() => setMode('kmPerDay')}
 							/>
 							{t('modeKmPerDay')}
 						</label>
 						<label className="flex cursor-pointer items-center gap-1">
-							<input
-								checked={mode === 'stages'}
-								className={STAGE_MODE_RADIO_CLASS}
-								name="stage-mode"
-								type="radio"
-								value="stages"
-								onChange={() => setMode('stages')}
-							/>
+							<Radio checked={mode === 'stages'} name="stage-mode" value="stages" onChange={() => setMode('stages')} />
 							{t('modeStages')}
 						</label>
 					</div>
