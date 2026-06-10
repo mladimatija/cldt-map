@@ -6,6 +6,8 @@ import { useMap } from 'react-leaflet';
 import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
 import { Button } from '@/components/ui/Button';
 import { Radio } from '@/components/ui/Radio';
+import { Checkbox } from '@/components/ui/Checkbox';
+import { applyAiNarratives, fetchAiNarratives } from '@/lib/trip-brief-ai';
 import { cn } from '@/lib/utils';
 import { assembleTripBrief, canAssembleTripBrief, makeDistanceLabelFn, type TripBrief } from '@/lib/trip-brief';
 import { exportTripBriefPdf } from '@/lib/trip-brief-pdf';
@@ -24,8 +26,9 @@ type PoiScope = 'selected' | 'allInStage';
 /**
  * Modal that lets the user pick the format (PDF/DOCX), which POIs to
  * include, and kicks off the trip-brief export. Reads stage plan + POI
- * selection + seasonal status from the store; the AI narrative toggle is
- * present but disabled (AI narrative not yet implemented).
+ * selection + seasonal status from the store. The AI narrative toggle asks
+ * /api/narrative for guide-style day paragraphs (best-effort: templated
+ * text remains the fallback, and exports never fail because of it).
  *
  * Selection state is persisted only inside the modal; closing without
  * generating drops it.
@@ -55,6 +58,8 @@ export function MapControlsTripBriefModal({
 
 	const [format, setFormat] = useState<Format>('pdf');
 	const [poiScope, setPoiScope] = useState<PoiScope>('allInStage');
+	const [aiNarrative, setAiNarrative] = useState(false);
+	const [aiPhase, setAiPhase] = useState(false);
 	const [generating, setGenerating] = useState(false);
 	const [progress, setProgress] = useState<{ current: number; total: number } | null>(null);
 	const [exportError, setExportError] = useState<string | null>(null);
@@ -74,7 +79,7 @@ export function MapControlsTripBriefModal({
 		setProgress(null);
 		setExportError(null);
 		try {
-			const brief: TripBrief = assembleTripBrief({
+			let brief: TripBrief = assembleTripBrief({
 				stagePlan,
 				poisFile,
 				enhancedTrailPoints,
@@ -93,6 +98,22 @@ export function MapControlsTripBriefModal({
 				typeLabel: (type) => tPois(`type.${type}`, { default: type }),
 				distanceLabel: makeDistanceLabelFn(units, distancePrecision),
 			});
+
+			// AI narratives are best-effort: any failure (offline, rate limit,
+			// unconfigured deploy, model hiccup) keeps the templated text and
+			// the export proceeds.
+			if (aiNarrative) {
+				setAiPhase(true);
+				const ai = await fetchAiNarratives(brief, controller.signal);
+				setAiPhase(false);
+				if (ai) {
+					// The disclaimer is resolved here (not in the exporters) because
+					// the export pipeline runs outside React/next-intl.
+					brief = applyAiNarratives(brief, ai, t('aiDisclaimer'));
+				} else if (!controller.signal.aborted) {
+					console.warn('AI narrative unavailable; exporting with templated text.');
+				}
+			}
 
 			const onProgress = (current: number, total: number): void => setProgress({ current, total });
 			if (format === 'pdf') {
@@ -116,6 +137,7 @@ export function MapControlsTripBriefModal({
 			}
 		} finally {
 			setGenerating(false);
+			setAiPhase(false);
 			setProgress(null);
 			abortRef.current = null;
 		}
@@ -217,10 +239,21 @@ export function MapControlsTripBriefModal({
 					</label>
 				</fieldset>
 
-				<label className="mb-3 flex items-center gap-2 text-sm text-gray-400 line-through" title={t('aiTooltip')}>
-					<input disabled checked={false} className="accent-cldt-blue" type="checkbox" />
+				<label
+					className="mb-3 flex cursor-pointer items-center gap-2 text-sm text-gray-700 dark:text-[var(--text-primary)]"
+					title={t('aiTooltip')}
+				>
+					<Checkbox checked={aiNarrative} onCheckedChange={(checked) => setAiNarrative(checked)} />
 					{t('aiNarrative')}
 				</label>
+
+				{aiNarrative && (
+					<p className="-mt-2 mb-3 text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('aiDisclaimer')}</p>
+				)}
+
+				{generating && aiPhase && (
+					<p className="mb-2 text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('aiGenerating')}</p>
+				)}
 
 				{generating && progress && (
 					<p className="mb-2 text-xs text-gray-500 dark:text-[var(--text-secondary)]">
