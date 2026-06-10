@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useMapStore, type MapStoreState } from '@/lib/store';
 import { loadPois, resetPoisCache } from '@/lib/pois';
 
@@ -16,18 +16,28 @@ let lastFetchedAt = 0;
  * Fetches the POI dataset on mount and re-fetches when the tab becomes
  * visible again so a freshly-merged enrichment PR is picked up without a
  * full reload. Only resets the cache when the data is stale (> 5 minutes
- * since the last successful fetch), avoiding a redundant 2.7 MB re-parse
- * after a brief tab switch.
+ * since the last successful fetch), avoiding a redundant re-parse after a
+ * brief tab switch.
+ *
+ * Fetches only the per-type files for the currently enabled POI types;
+ * enabling another type triggers an incremental fetch of just that file
+ * (already-loaded types are served from the module cache).
  */
 export function usePoisFetch(): void {
 	const setPoisFile = useMapStore((s: MapStoreState) => s.setPoisFile);
+	const enabledPoiTypes = useMapStore((s: MapStoreState) => s.enabledPoiTypes);
+
+	// Stable key so toggling Set identity without membership change (or a
+	// disable, which needs no fetch - the superset stays valid) does not refire.
+	const enabledKey = useMemo(() => [...enabledPoiTypes].sort().join(','), [enabledPoiTypes]);
 
 	useEffect(() => {
 		if (typeof window === 'undefined') return;
 
 		const fetchData = async (): Promise<void> => {
 			try {
-				const file = await loadPois();
+				const types = new Set(enabledKey.split(',').filter((t) => t.length > 0));
+				const file = await loadPois(types.size > 0 ? types : undefined);
 				lastFetchedAt = Date.now();
 				setPoisFile(file);
 			} catch {
@@ -50,5 +60,5 @@ export function usePoisFetch(): void {
 		return () => {
 			document.removeEventListener('visibilitychange', onVisibility);
 		};
-	}, [setPoisFile]);
+	}, [setPoisFile, enabledKey]);
 }
