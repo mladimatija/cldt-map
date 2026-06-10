@@ -9,6 +9,7 @@ import { formatPace } from '@/lib/distance-utils';
 import { useMapStore, type MapStoreState } from '@/lib/store';
 import {
 	IoMoonOutline,
+	IoSunnyOutline,
 	IoBatteryHalfOutline,
 	IoCompassOutline,
 	IoHandLeftOutline,
@@ -54,6 +55,8 @@ export function MapControlsSettingsPanel({
 	const setLargeTouchTargets = useMapStore((state: MapStoreState) => state.setLargeTouchTargets);
 	const compassEnabled = useMapStore((state: MapStoreState) => state.compassEnabled);
 	const setCompassEnabled = useMapStore((state: MapStoreState) => state.setCompassEnabled);
+	const keepScreenOn = useMapStore((state: MapStoreState) => state.keepScreenOn);
+	const setKeepScreenOn = useMapStore((state: MapStoreState) => state.setKeepScreenOn);
 
 	/** iOS gates DeviceOrientation behind a permission prompt that must run
 	 *  inside this user-gesture handler; only enable when events may flow. */
@@ -146,6 +149,16 @@ export function MapControlsSettingsPanel({
 						<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">{t('compassHeading')}</span>
 						<span className="inline-flex" onClick={(e) => e.stopPropagation()} onMouseDown={(e) => e.stopPropagation()}>
 							<SmartTooltip content={t('compassHeadingTooltip')} position="top">
+								<IoHelpCircleOutline className="ml-0.5 h-3.5 w-3.5 shrink-0 cursor-help text-gray-400 hover:text-gray-600 dark:text-white" />
+							</SmartTooltip>
+						</span>
+					</label>
+					<label className="flex cursor-pointer items-center gap-2">
+						<Checkbox checked={keepScreenOn} onCheckedChange={(checked) => setKeepScreenOn(checked)} />
+						<IoSunnyOutline className="h-4 w-4 shrink-0 text-gray-600 dark:text-white" />
+						<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">{t('keepScreenOn')}</span>
+						<span className="inline-flex" onClick={(e) => e.stopPropagation()} onMouseDown={(e) => e.stopPropagation()}>
+							<SmartTooltip content={t('keepScreenOnTooltip')} position="top">
 								<IoHelpCircleOutline className="ml-0.5 h-3.5 w-3.5 shrink-0 cursor-help text-gray-400 hover:text-gray-600 dark:text-white" />
 							</SmartTooltip>
 						</span>

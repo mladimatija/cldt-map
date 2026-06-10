@@ -14,6 +14,7 @@ import { useSeasonalStatusFetch } from '@/hooks/useSeasonalStatusFetch';
 import { useTrailOsmTagsFetch } from '@/hooks/useTrailOsmTagsFetch';
 import { usePoisFetch } from '@/hooks/usePoisFetch';
 import { usePanelListeners } from '@/hooks';
+import { useWakeLock } from '@/hooks/useWakeLock';
 
 function MapTrailLoadingFallback(): React.ReactElement {
 	const t = useTranslations('mapWrapper');
@@ -89,6 +90,11 @@ export default function MapContent(): React.ReactElement {
 	useSeasonalStatusFetch();
 	useTrailOsmTagsFetch();
 	usePoisFetch();
+	// Keep the screen awake while actively tracking, when the user opted in.
+	// Battery saver wins over the wake lock since its whole point is saving power.
+	const keepScreenOn = useMapStore((state: MapStoreState) => state.keepScreenOn);
+	const batterySaverModeForWakeLock = useMapStore((state: MapStoreState) => state.batterySaverMode);
+	useWakeLock(keepScreenOn && !batterySaverModeForWakeLock && permissionStatus === 'granted' && !!userLocation);
 	// Coordinates mutual-exclusion close behavior for every panel that
 	// registers via `usePanel` (map controls + base map dropdown).
 	usePanelListeners();

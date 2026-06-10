@@ -91,6 +91,8 @@
 		"largeTouchTargets": "Velike dodirne površine",
 		"compassHeading": "Smjer kompasa",
 		"compassHeadingTooltip": "Prikazuje u kojem ste smjeru okrenuti kao stožac na oznaci vaše lokacije. Koristi kompas uređaja; na iPhoneu će se tražiti dozvola.",
+		"keepScreenOn": "Drži zaslon upaljenim tijekom praćenja",
+		"keepScreenOnTooltip": "Sprječava gašenje zaslona dok je vaša GPS pozicija prikazana na karti. Način uštede baterije ima prednost. Nije podržano u svim preglednicima.",
 		"largeTouchTargetsTooltip": "Povećava veličinu gumba radi lakšeg dodirivanja na mobilnim uređajima.",
 		"layersSection": "Slojevi",
 		"showSections": "Prikaži dionice staze",
