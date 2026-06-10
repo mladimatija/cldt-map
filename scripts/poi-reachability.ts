@@ -203,7 +203,7 @@ interface Graph {
  *  highway query (every road + path with geometry) is the heaviest request
  *  in the pipeline; chunking turns one server-killing query into several
  *  cacheable, independently retried ones. */
-const HIGHWAY_CHUNKS = 8;
+const HIGHWAY_CHUNKS = 12;
 
 export interface HighwayFetchOptions {
 	overpassUrl: string;
@@ -323,19 +323,49 @@ function isWalkingPath(highway: string | undefined): boolean {
 export function floodFillFromTrail(graph: Graph, trailPts: LatLng[], seedRadiusM = 100): Set<string> {
 	const reached = new Set<string>();
 	const queue: string[] = [];
-	// Seed: every node within seedRadiusM of the trail polyline. Using a
-	// brute-force distance check because trail point counts are typically
-	// in the low thousands and node counts in the tens of thousands; the
-	// O(N*M) work is ~50ms in practice and avoids the complexity of a
-	// trail-side spatial index for a one-shot enricher pass.
+
+	// Seed: every node within seedRadiusM of the trail polyline. The trail
+	// points are bucketed into a uniform lat/lng grid (cell edge ~ the seed
+	// radius) so each node only compares against the trail points in its 3x3
+	// cell neighborhood. The previous brute-force version compared every node
+	// against every trail point - fine for the tens-of-thousands-node graphs
+	// it was written for, but a corridor graph of ~3M nodes against a 156k
+	// point GPX is ~5e11 haversine calls (half a day of CPU).
+	const cellLatDeg = seedRadiusM / 111_320;
+	const midLatRad = trailPts.length > 0 ? (trailPts[0].lat * Math.PI) / 180 : 0.785;
+	const cellLngDeg = seedRadiusM / (111_320 * Math.max(0.05, Math.cos(midLatRad)));
+	const cells = new Map<string, LatLng[]>();
+	for (const p of trailPts) {
+		const key = `${Math.floor(p.lat / cellLatDeg)}:${Math.floor(p.lng / cellLngDeg)}`;
+		const bucket = cells.get(key);
+		if (bucket) bucket.push(p);
+		else cells.set(key, [p]);
+	}
+	const nearTrail = (node: LatLng): boolean => {
+		const latKey = Math.floor(node.lat / cellLatDeg);
+		const lngKey = Math.floor(node.lng / cellLngDeg);
+		for (let dy = -1; dy <= 1; dy++) {
+			for (let dx = -1; dx <= 1; dx++) {
+				const bucket = cells.get(`${latKey + dy}:${lngKey + dx}`);
+				if (!bucket) continue;
+				for (const p of bucket) {
+					if (haversineM(node, p) <= seedRadiusM) return true;
+				}
+			}
+		}
+		return false;
+	};
 	for (const [id, node] of graph.nodes) {
-		if (distanceToPolylineM(node, trailPts) <= seedRadiusM) {
+		if (nearTrail(node)) {
 			reached.add(id);
 			queue.push(id);
 		}
 	}
-	while (queue.length > 0) {
-		const id = queue.shift()!;
+
+	// BFS with an index pointer: Array.shift() is O(n) per call and turns a
+	// millions-node traversal quadratic.
+	for (let head = 0; head < queue.length; head++) {
+		const id = queue[head];
 		const neighbours = graph.adj.get(id);
 		if (!neighbours) continue;
 		for (const n of neighbours) {
@@ -346,19 +376,6 @@ export function floodFillFromTrail(graph: Graph, trailPts: LatLng[], seedRadiusM
 		}
 	}
 	return reached;
-}
-
-/** Minimum distance (metres) from a point to a polyline, computed as the
- *  smallest haversine to any vertex. For dense polylines (trkpts every
- *  ~10-50 m on a hiking GPX) this is a close approximation to the true
- *  perpendicular distance without the cost of segment-projection math. */
-function distanceToPolylineM(point: LatLng, polyline: LatLng[]): number {
-	let best = Infinity;
-	for (const p of polyline) {
-		const d = haversineM(point, p);
-		if (d < best) best = d;
-	}
-	return best;
 }
 
 // ---- Spatial index ---------------------------------------------------------
@@ -502,10 +519,17 @@ export async function applyReachabilityFilter<T extends ReachabilityPoi>(
 	corridorPoly: LatLng[],
 	opts: HighwayFetchOptions,
 ): Promise<ReachabilityResult<T>> {
-	// Radius covers the farthest off-trail POI any tier rule allows, plus
-	// slack for corridor downsampling, so every POI's nearest road candidate
-	// is inside the fetched ribbon.
-	const maxOffTrailKm = Math.max(...Object.values(TIER_RULES).map((r) => r.maxOffTrailKm));
+	// Radius covers the farthest off-trail POI of any GRAPH-DEPENDENT rule,
+	// plus slack for corridor downsampling. Rules that never consult the
+	// graph (notabilityOverride 'always', e.g. huts at 15 km) must not widen
+	// the ribbon: deriving the radius from all rules once produced an 18 km
+	// ribbon whose chunks blew the Overpass server timeout on both endpoints,
+	// when the road checks themselves only ever look ~3 km off trail.
+	const maxOffTrailKm = Math.max(
+		...Object.values(TIER_RULES)
+			.filter((r) => ruleNeedsGraph(r))
+			.map((r) => r.maxOffTrailKm),
+	);
 	const radiusM = Math.round((maxOffTrailKm + 3) * 1000);
 
 	console.log(`-> Fetching OSM highway corridor for reachability check (${HIGHWAY_CHUNKS} chunks, r=${radiusM} m)...`);
@@ -534,12 +558,19 @@ export async function applyReachabilityFilter<T extends ReachabilityPoi>(
 		);
 	}
 
-	console.log('-> Flood-fill from trail polyline...');
-	const reachable = floodFillFromTrail(graph, trailPts);
-	console.log(`     ${reachable.size} nodes in trail-reachable component.`);
+	// Flood-fill and the spatial index only serve graph-dependent checks;
+	// when those types are being carried forward anyway, skip both (on a
+	// multi-million-node partial graph they are minutes of wasted work).
+	let reachable = new Set<string>();
+	let index: HighwayNodeIndex | null = null;
+	if (!graphUnusable) {
+		console.log('-> Flood-fill from trail polyline...');
+		reachable = floodFillFromTrail(graph, trailPts);
+		console.log(`     ${reachable.size} nodes in trail-reachable component.`);
 
-	console.log('-> Building spatial index...');
-	const index = new HighwayNodeIndex(graph.nodes, graph.hasPath);
+		console.log('-> Building spatial index...');
+		index = new HighwayNodeIndex(graph.nodes, graph.hasPath);
+	}
 
 	console.log('-> Applying tier rules...');
 	const kept: T[] = [];
@@ -569,8 +600,10 @@ export async function applyReachabilityFilter<T extends ReachabilityPoi>(
 		// row; the caller carries the prior dataset's row forward instead.
 		if (carryForwardTypes.has(poi.type)) continue;
 
-		const nearest = index.nearest({ lat: poi.lat, lng: poi.lng }, false);
-		const nearestPath = index.nearest({ lat: poi.lat, lng: poi.lng }, true);
+		// index is null only when the graph is unusable, and then every type
+		// reaching this point has a graph-free rule whose checks ignore these.
+		const nearest = index ? index.nearest({ lat: poi.lat, lng: poi.lng }, false) : null;
+		const nearestPath = index ? index.nearest({ lat: poi.lat, lng: poi.lng }, true) : null;
 		const nearestHighwayM = nearest?.distM ?? Infinity;
 		const nearestPathM = nearestPath?.distM ?? Infinity;
 		const isReachable = nearest ? reachable.has(nearest.id) : false;
