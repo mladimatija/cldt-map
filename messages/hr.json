@@ -678,7 +678,8 @@
 			"restaurant": "Restoran",
 			"cafe": "Kafić / pub",
 			"food": "Hrana",
-			"atm": "Bankomat"
+			"atm": "Bankomat",
+			"water": "Izvor vode"
 		}
 	},
 	"poiDisclaimer": {

@@ -89,6 +89,18 @@ const TYPE_CONFIGS: TypeConfig[] = [
 		maxDistanceKm: 2,
 	},
 	{ type: 'atm', overpassSelectors: [{ key: 'amenity', values: ['atm', 'bank'] }], maxDistanceKm: 2 },
+	{
+		// Drinking water is the most safety-critical resupply type on a 2200 km
+		// trail; the 1 km cap keeps only sources a hiker would realistically
+		// detour to. natural=spring is included because much of the karst
+		// corridor relies on springs rather than mapped taps.
+		type: 'water',
+		overpassSelectors: [
+			{ key: 'amenity', values: ['drinking_water'] },
+			{ key: 'natural', values: ['spring'] },
+		],
+		maxDistanceKm: 1,
+	},
 ];
 
 interface LatLng {

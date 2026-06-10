@@ -678,7 +678,8 @@
 			"restaurant": "Restaurant",
 			"cafe": "Café / Kneipe",
 			"food": "Verpflegung",
-			"atm": "Geldautomat / Bank"
+			"atm": "Geldautomat / Bank",
+			"water": "Wasserstelle"
 		}
 	},
 	"poiDisclaimer": {

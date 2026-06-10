@@ -25,7 +25,11 @@ export type KnownPoiType =
 	 *  so existing on-disk datasets continue to validate until they're
 	 *  re-enriched. */
 	| 'food'
-	| 'atm';
+	| 'atm'
+	/** Drinking water: OSM amenity=drinking_water plus natural=spring. Rows
+	 *  appear once the next scheduled enrichment run executes; until then the
+	 *  type renders as an empty layer. */
+	| 'water';
 
 /** Canonical list of all known POI type values. Used as the single source
  *  of truth for default-enabled type sets in config.ts and stub.ts. */
@@ -40,6 +44,7 @@ export const KNOWN_POI_TYPES: readonly KnownPoiType[] = [
 	'cafe',
 	'food',
 	'atm',
+	'water',
 ] as const;
 
 export type PoiType = KnownPoiType | string;
@@ -122,7 +127,7 @@ export const POI_TYPE_GROUPS: readonly { id: string; types: readonly KnownPoiTyp
 	{ id: 'places', types: ['town', 'settlement'] },
 	{ id: 'landscape', types: ['peak', 'viewpoint'] },
 	{ id: 'stay', types: ['hut', 'shelter'] },
-	{ id: 'services', types: ['restaurant', 'cafe', 'atm'] },
+	{ id: 'services', types: ['restaurant', 'cafe', 'atm', 'water'] },
 ];
 
 export function isKnownType(t: string): t is KnownPoiType {

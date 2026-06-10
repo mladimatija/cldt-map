@@ -678,7 +678,8 @@
 			"restaurant": "Ristorante",
 			"cafe": "Caffè / pub",
 			"food": "Cibo",
-			"atm": "Bancomat / banca"
+			"atm": "Bancomat / banca",
+			"water": "Punto d'acqua"
 		}
 	},
 	"poiDisclaimer": {

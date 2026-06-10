@@ -141,6 +141,13 @@ export const TIER_RULES: Record<string, TierRule> = {
 		requireReachable: true,
 		notabilityOverride: false,
 	},
+	water: {
+		// No road/reachability requirement: a spring or tap reached only by
+		// path is exactly what a thru-hiker needs. The 1 km hard cap matches
+		// TYPE_CONFIGS in enrich-pois.ts.
+		maxOffTrailKm: 1,
+		notabilityOverride: false,
+	},
 };
 
 // ---- Notability ------------------------------------------------------------
