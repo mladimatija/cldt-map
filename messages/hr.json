@@ -516,6 +516,8 @@
 		"modeStages": "Etape",
 		"balanceByEta": "Rasporedi po vremenu dolaska",
 		"balanceByEtaHelp": "Kad je uključeno, svaki dan traje otprilike isto vrijeme (uzimajući u obzir visinsku razliku i tempo) umjesto da prelazi istu udaljenost. Korisno kad je teren neujednačen.",
+		"tripStartDate": "Datum početka (neobavezno, uključuje prognozu)",
+		"forecastTitle": "{condition} - najviša {max}, najniža {min}, oborine {precip}%",
 		"maxHoursPerDay": "Maks. sati/dan",
 		"autoBumpNotice": "Prilagođeno na {actual} etapa (tražili ste {requested}) kako bi svaki dan ostao ispod ~{hours}h pri {pace} km/h.",
 		"generatePlan": "Generiraj plan",

@@ -21,6 +21,8 @@ import {
 	DEFAULT_MAX_HOURS_PER_DAY,
 } from '@/lib/stage-planner';
 import { findNearestPointIndex, formatEta } from '@/lib/distance-utils';
+import { useStageForecasts } from '@/hooks/useStageForecasts';
+import { formatCompactTemp, weatherCodeToKey, weatherKeyToIcon } from '@/lib/weather';
 import { buildGpxXml, buildGpxWaypointXml, downloadGpxFile, type GpxWaypoint } from '@/lib/gpx-export';
 import { exportStripMapPdf, pointsToBounds } from '@/lib/export-utils';
 
@@ -29,6 +31,7 @@ const MAX_STAGES = 200;
 export function MapControlsStagePlannerPanel(): React.ReactElement {
 	const t = useTranslations('stagePlanner');
 	const tPois = useTranslations('pois');
+	const tWeather = useTranslations('weather');
 	const locale = useLocale();
 
 	const stagePlan = useMapStore((s: MapStoreState) => s.stagePlan);
@@ -65,6 +68,17 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 	const [autoBumpNotice, setAutoBumpNotice] = useState<{ requested: number; actual: number } | null>(null);
 	const [activeStageIndex, setActiveStageIndex] = useState<number | null>(null);
 	const [confirmReset, setConfirmReset] = useState(false);
+	/** Optional trip start date (yyyy-mm-dd); enables per-stage forecasts. */
+	const [tripStartDate, setTripStartDate] = useState<string>(() => stagePlan?.startDate ?? '');
+
+	const handleTripStartDateChange = (value: string): void => {
+		setTripStartDate(value);
+		// Keep an existing plan in sync so forecasts (and the persisted plan)
+		// update without regenerating stages.
+		if (stagePlan) {
+			setStagePlan({ ...stagePlan, startDate: value || undefined });
+		}
+	};
 	const [isPdfExporting, setIsPdfExporting] = useState(false);
 	const [isTripBriefOpen, setIsTripBriefOpen] = useState(false);
 	const [pdfProgress, setPdfProgress] = useState<{ current: number; total: number } | null>(null);
@@ -72,6 +86,9 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 
 	const toDisplay = (km: number): number => (isImperial ? Math.round(kmToMiles(km) * 10) / 10 : km);
 	const fromDisplay = (display: number): number => (isImperial ? milesToKm(display) : display);
+
+	// One batched Open-Meteo call per plan; null per stage outside the horizon.
+	const stageForecasts = useStageForecasts(stagePlan, enhancedTrailPoints);
 
 	const stageStats = useMemo(() => {
 		if (!stagePlan || !enhancedTrailPoints?.length) return [];
@@ -98,11 +115,10 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 		);
 		const finalCount = Math.min(MAX_STAGES, Math.max(requestedCount, minCount));
 		setAutoBumpNotice(finalCount > requestedCount ? { requested: requestedCount, actual: finalCount } : null);
-		if (balanceByEta) {
-			setStagePlan(splitByEta(enhancedTrailPoints, startKm, endKm, walkingPaceKmh, gradeAdjustedEta, finalCount));
-		} else {
-			setStagePlan(splitByDistance(startKm, endKm, (endKm - startKm) / finalCount));
-		}
+		const plan = balanceByEta
+			? splitByEta(enhancedTrailPoints, startKm, endKm, walkingPaceKmh, gradeAdjustedEta, finalCount)
+			: splitByDistance(startKm, endKm, (endKm - startKm) / finalCount);
+		setStagePlan({ ...plan, startDate: tripStartDate || undefined });
 		setActiveStageIndex(0);
 		setConfirmReset(false);
 	};
@@ -389,6 +405,16 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 						</span>
 					</label>
 
+					<label className="flex flex-col gap-0.5 text-xs text-gray-600 dark:text-gray-400">
+						{t('tripStartDate')}
+						<input
+							className={MAP_CONTROL_INPUT}
+							type="date"
+							value={tripStartDate}
+							onChange={(e) => handleTripStartDateChange(e.target.value)}
+						/>
+					</label>
+
 					<Button variant="mapControlOutline" onClick={handleGenerate}>
 						{t('generatePlan')}
 					</Button>
@@ -448,6 +474,26 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 											title={t('stagePoiCount', { count: poiCount })}
 										>
 											{poiCount}
+										</span>
+									)}
+									{stageForecasts[i] && (
+										<span
+											aria-label={t('forecastTitle', {
+												condition: tWeather(weatherCodeToKey(stageForecasts[i].weatherCode)),
+												max: formatCompactTemp(stageForecasts[i].tMaxC, units),
+												min: formatCompactTemp(stageForecasts[i].tMinC, units),
+												precip: stageForecasts[i].precipProbPct,
+											})}
+											className="ml-1 shrink-0 text-gray-600 tabular-nums dark:text-gray-300"
+											title={t('forecastTitle', {
+												condition: tWeather(weatherCodeToKey(stageForecasts[i].weatherCode)),
+												max: formatCompactTemp(stageForecasts[i].tMaxC, units),
+												min: formatCompactTemp(stageForecasts[i].tMinC, units),
+												precip: stageForecasts[i].precipProbPct,
+											})}
+										>
+											<span aria-hidden>{weatherKeyToIcon(weatherCodeToKey(stageForecasts[i].weatherCode))}</span>{' '}
+											{formatCompactTemp(stageForecasts[i].tMaxC, units)}
 										</span>
 									)}
 								</button>

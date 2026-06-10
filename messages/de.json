@@ -516,6 +516,8 @@
 		"modeStages": "Etappen",
 		"balanceByEta": "Nach ETA ausgleichen",
 		"balanceByEtaHelp": "Wenn aktiv, dauert jeder Tag etwa gleich lang (unter Berücksichtigung von Höhenmetern und Tempo) statt die gleiche Strecke abzudecken. Hilfreich bei unebenem Gelände.",
+		"tripStartDate": "Startdatum (optional, aktiviert Wettervorhersage)",
+		"forecastTitle": "{condition} - Höchstwert {max}, Tiefstwert {min}, Niederschlag {precip}%",
 		"maxHoursPerDay": "Max. Stunden/Tag",
 		"autoBumpNotice": "Auf {actual} Etappen angepasst (angefordert: {requested}), damit jeder Tag unter ca. {hours}h bei {pace} km/h bleibt.",
 		"generatePlan": "Plan erstellen",

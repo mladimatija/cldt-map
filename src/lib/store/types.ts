@@ -397,6 +397,9 @@ export interface StagePlan {
 	endKm: number;
 	stages: { startKm: number; endKm: number }[];
 	balanceMode: 'distance' | 'eta';
+	/** Trip start date (yyyy-mm-dd). Optional; enables per-stage weather
+	 *  forecasts for stages within the 16-day Open-Meteo horizon. */
+	startDate?: string;
 }
 
 export interface ImportedTrack {

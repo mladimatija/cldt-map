@@ -516,6 +516,8 @@
 		"modeStages": "Stages",
 		"balanceByEta": "Balance by ETA",
 		"balanceByEtaHelp": "When on, each day takes roughly the same amount of time (accounting for elevation and pace) instead of covering the same distance. Useful when the trail has uneven terrain.",
+		"tripStartDate": "Trip start date (optional, enables weather)",
+		"forecastTitle": "{condition} - high {max}, low {min}, precipitation {precip}%",
 		"maxHoursPerDay": "Max hours/day",
 		"autoBumpNotice": "Adjusted to {actual} stages (you asked for {requested}) so each day stays under ~{hours}h at {pace} km/h.",
 		"generatePlan": "Generate plan",
