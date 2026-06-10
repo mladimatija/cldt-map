@@ -166,6 +166,7 @@ export function createMapStoreStub(): MapStoreState {
 		autoSync: false,
 		predictivePrecache: false,
 		poiPrefetchVersion: 0,
+		poiPrefetchSkipped: null,
 		startTileDownload: noopAsyncVoid,
 		cancelTileDownload: noop,
 		clearTileCacheForProvider: noopAsyncVoid,

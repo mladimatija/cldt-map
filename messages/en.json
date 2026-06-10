@@ -395,6 +395,7 @@
 		"querying": "Querying…",
 		"clearAll": "Clear all",
 		"poiAssets": "POI assets cached: {count}",
+		"poiAssetsSkipped": "{count, plural, one {# POI asset} other {# POI assets}} could not be cached and may be missing offline",
 		"clearPoiAssets": "Clear POI assets",
 		"confirmClear": "Are you sure?",
 		"confirmYes": "Yes",

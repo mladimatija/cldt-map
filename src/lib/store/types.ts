@@ -270,6 +270,11 @@ export interface MapStoreState {
 	/** Incremented each time the background POI asset prefetch completes so
 	 *  components can react without setTimeout. */
 	poiPrefetchVersion: number;
+	/** Number of assets the last user-initiated POI prefetch could not cache
+	 *  (network errors, unsafe URLs, missing fields). Null until a prefetch
+	 *  has run; lets the cache panel surface partial failures instead of
+	 *  failing silently. */
+	poiPrefetchSkipped: number | null;
 
 	startTileDownload: (
 		points: { lat: number; lng: number; distanceFromStart: number }[],

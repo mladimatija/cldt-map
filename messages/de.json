@@ -395,6 +395,7 @@
 		"querying": "Abfrage läuft…",
 		"clearAll": "Alles löschen",
 		"poiAssets": "Zwischengespeicherte POI-Inhalte: {count}",
+		"poiAssetsSkipped": "{count, plural, one {# POI-Inhalt konnte} other {# POI-Inhalte konnten}} nicht zwischengespeichert werden und fehlen offline möglicherweise",
 		"clearPoiAssets": "POI-Inhalte löschen",
 		"confirmClear": "Sind Sie sicher?",
 		"confirmYes": "Ja",

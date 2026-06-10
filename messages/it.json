@@ -395,6 +395,7 @@
 		"querying": "Interrogazione…",
 		"clearAll": "Cancella tutto",
 		"poiAssets": "Contenuti POI in cache: {count}",
+		"poiAssetsSkipped": "{count, plural, one {# contenuto POI non è stato memorizzato} other {# contenuti POI non sono stati memorizzati}} nella cache e potrebbe mancare offline",
 		"clearPoiAssets": "Cancella contenuti POI",
 		"confirmClear": "Sei sicuro?",
 		"confirmYes": "Sì",

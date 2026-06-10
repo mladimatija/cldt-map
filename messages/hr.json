@@ -395,6 +395,7 @@
 		"querying": "Dohvaćanje…",
 		"clearAll": "Obriši sve",
 		"poiAssets": "Pohranjeni POI sadržaji: {count}",
+		"poiAssetsSkipped": "{count, plural, one {# POI sadržaj nije spremljen} few {# POI sadržaja nisu spremljena} other {# POI sadržaja nije spremljeno}} u predmemoriju pa offline možda neće biti dostupni",
 		"clearPoiAssets": "Obriši POI sadržaje",
 		"confirmClear": "Jeste li sigurni?",
 		"confirmYes": "Da",

@@ -65,8 +65,22 @@ async function fetchText(url: string, timeoutMs: number): Promise<string> {
 /**
  * Fetches GPX data with caching support and fallback mechanisms.
  * Uses navigator.onLine for offline detection and fetch() for the request.
+ *
+ * Single-flight: concurrent callers share one in-flight request, so two
+ * overlapping calls cannot interleave their cache writes (e.g., a fallback
+ * re-write clobbering a fresh network write).
  */
 export async function fetchGPXWithCache(): Promise<GPXResult> {
+	if (inFlightGpxFetch) return inFlightGpxFetch;
+	inFlightGpxFetch = doFetchGPXWithCache().finally(() => {
+		inFlightGpxFetch = null;
+	});
+	return inFlightGpxFetch;
+}
+
+let inFlightGpxFetch: Promise<GPXResult> | null = null;
+
+async function doFetchGPXWithCache(): Promise<GPXResult> {
 	const gpxUrl = process.env.NEXT_PUBLIC_GPX_URL;
 
 	if (!gpxUrl) {

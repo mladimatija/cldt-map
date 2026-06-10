@@ -53,6 +53,7 @@ export function MapControlsTileCachePanel(): React.ReactElement {
 	const autoSync = useMapStore((s: MapStoreState) => s.autoSync);
 	const predictivePrecache = useMapStore((s: MapStoreState) => s.predictivePrecache);
 	const poiPrefetchVersion = useMapStore((s: MapStoreState) => s.poiPrefetchVersion);
+	const poiPrefetchSkipped = useMapStore((s: MapStoreState) => s.poiPrefetchSkipped);
 	const gpxLoaded = useMapStore((s: MapStoreState) => s.gpxLoaded);
 	const startTileDownload = useMapStore((s: MapStoreState) => s.startTileDownload);
 	const cancelTileDownload = useMapStore((s: MapStoreState) => s.cancelTileDownload);
@@ -337,6 +338,11 @@ export function MapControlsTileCachePanel(): React.ReactElement {
 							{/* POI offline assets: cached image thumbnails + Wikipedia
 							    summaries. Populated as a side-effect of the corridor
 							    pre-cache so popups stay rich offline. */}
+							{poiPrefetchSkipped !== null && poiPrefetchSkipped > 0 && (
+								<p className="text-xs text-amber-700 dark:text-amber-400" role="status">
+									{t('poiAssetsSkipped', { count: poiPrefetchSkipped })}
+								</p>
+							)}
 							<div className="flex items-center justify-between gap-2">
 								<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">
 									{t('poiAssets', { count: poiAssetCount ?? 0 })}

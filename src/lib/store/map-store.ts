@@ -60,19 +60,33 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 				/** Fire-and-forget POI asset prefetch invoked after a successful
 				 *  full-corridor download. Loads the entire POI dataset, runs the
 				 *  prefetch with a 2-minute timeout, and bumps `poiPrefetchVersion`
-				 *  so panels can refresh their counts. Failures are silent: the
-				 *  tile precache already succeeded by the time this runs, and the
-				 *  POI prefetch is best-effort. Scoped to the store factory so all
-				 *  cache orchestration lives inside `useMapStore` actions. */
+				 *  so panels can refresh their counts. Partial failures are
+				 *  recorded in `poiPrefetchSkipped` so the cache panel can tell
+				 *  the user some popups may be incomplete offline; a hard failure
+				 *  records every asset as skipped. Scoped to the store factory so
+				 *  all cache orchestration lives inside `useMapStore` actions. */
 				async function prefetchPoiAssetsAfterDownload(): Promise<void> {
 					const file = await loadPois();
 					if (!file?.pois?.length) return;
 					try {
-						const signal =
-							typeof AbortSignal.timeout === 'function' ? AbortSignal.timeout(120_000) : new AbortController().signal;
-						await prefetchPoiAssets(file.pois, signal);
+						// AbortSignal.timeout fallback: a bare `new AbortController().signal`
+						// never fires, which would let the prefetch run unbounded on
+						// browsers without timeout support. Arm the controller manually.
+						let signal: AbortSignal;
+						let timeoutId: ReturnType<typeof setTimeout> | null = null;
+						if (typeof AbortSignal.timeout === 'function') {
+							signal = AbortSignal.timeout(120_000);
+						} else {
+							const controller = new AbortController();
+							timeoutId = setTimeout(() => controller.abort(), 120_000);
+							signal = controller.signal;
+						}
+						const summary = await prefetchPoiAssets(file.pois, signal);
+						if (timeoutId) clearTimeout(timeoutId);
+						set({ poiPrefetchSkipped: summary.cancelled ? null : summary.skipped });
 					} catch {
-						// best-effort
+						// Hard failure (e.g. Cache Storage unavailable): flag rather than swallow.
+						set({ poiPrefetchSkipped: file.pois.length });
 					}
 					set((s) => ({ poiPrefetchVersion: s.poiPrefetchVersion + 1 }));
 				}
@@ -304,6 +318,9 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					autoSync: config.autoSync,
 					predictivePrecache: config.predictivePrecache,
 					poiPrefetchVersion: 0,
+					// Session-scoped on purpose (not in partialize): a stale skip count
+					// from a previous session would be misleading.
+					poiPrefetchSkipped: null,
 
 					startTileDownload: async (points, providerName) => {
 						if (typeof window === 'undefined') return;
