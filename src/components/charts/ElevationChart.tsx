@@ -4,7 +4,7 @@
  * Elevation profile chart (distance vs. elevation). Hover syncs with the trail highlight on the map via ChartTooltipSync.
  * Uses Recharts AreaChart; data comes from store enhancedTrailPoints / gpxElevationPoints.
  */
-import React, { useCallback, useEffect, useMemo, useRef, useState, JSX } from 'react';
+import React, { useEffect, useMemo, useRef, useState, JSX } from 'react';
 import { useBlockMapPropagation } from '@/hooks';
 import {
 	AreaChart,
@@ -20,177 +20,35 @@ import {
 } from 'recharts';
 import { formatElevation, formatDistance } from '@/lib/utils';
 import { computeEta, findNearestPointIndex } from '@/lib/distance-utils';
-import { useStore, useMapStore, type StoreState, type MapStoreState, type UnitSystem } from '@/lib/store';
-import { bucketSac, bucketSurface, findRunAtKm, type SacBucket, type SurfaceBucket } from '@/lib/trail-osm-tags';
-import {
-	GRADE_BAND_ASCENT_COLORS,
-	GRADE_BAND_DESCENT_COLORS,
-	SAC_COLORS,
-	SURFACE_COLORS,
-} from '@/components/map/trail-route-constants';
+import { useStore, useMapStore, type StoreState, type MapStoreState } from '@/lib/store';
+import { bucketSac, bucketSurface, findRunAtKm } from '@/lib/trail-osm-tags';
+import { SAC_COLORS, SURFACE_COLORS } from '@/components/map/trail-route-constants';
 import { TRAIL_SECTIONS } from '@/lib/trail-sections';
+import {
+	GRADE_BUCKETS,
+	SAC_BUCKETS,
+	SECTION_BUCKETS,
+	SECTION_COLOR_BY_KEY,
+	SURFACE_BUCKETS,
+	formatHikingTime,
+	gradeColorForKey,
+	type ElevationPoint,
+	type PinnedPoint,
+} from './elevation-chart-shared';
+import { ChartTooltipSync } from './ChartTooltipSync';
+import { useElevationChartRulerDrag } from '@/hooks/useElevationChartRulerDrag';
 import { MdKeyboardArrowUp, MdKeyboardArrowDown } from 'react-icons/md';
 import { IoDownloadOutline, IoHelpCircleOutline } from 'react-icons/io5';
 import { useTranslations } from 'next-intl';
 import { Tooltip } from '@/components/ui/Tooltip';
-import { RULER_SET_FROM_CHART_EVENT } from '@/lib/ruler-from-chart';
 import { Button } from '@/components/ui/Button';
 import { GpxDownloadModal } from '@/components/map/GpxDownloadModal';
 import { buildGpxXml, downloadGpxFile, extractGpxSegment } from '@/lib/gpx-export';
 
-export const SURFACE_BUCKETS: readonly SurfaceBucket[] = ['paved', 'unpaved', 'gravel', 'ground', 'rock', 'unknown'];
-export const SAC_BUCKETS: readonly SacBucket[] = [
-	'hiking',
-	'mountain_hiking',
-	'demanding_mountain_hiking',
-	'alpine_hiking',
-	'demanding_alpine_hiking',
-	'difficult_alpine_hiking',
-	'untagged',
-];
-
-/** Section bucket keys mirror TRAIL_SECTIONS.nameKey (sectionA / sectionB / sectionC). */
-const SECTION_BUCKETS: readonly string[] = TRAIL_SECTIONS.map((s) => s.nameKey);
-const SECTION_COLOR_BY_KEY: Readonly<Record<string, string>> = Object.fromEntries(
-	TRAIL_SECTIONS.map((s) => [s.nameKey, s.color]),
-);
-
-/** Grade bucket keys: g{band 0..4}_{asc|desc}. */
-const GRADE_BUCKETS: readonly string[] = (['asc', 'desc'] as const).flatMap((sign) =>
-	[0, 1, 2, 3, 4].map((band) => `g${band}_${sign}`),
-);
-function gradeColorForKey(key: string): string {
-	// Regex domain `[0-4]` matches the closed band range; an out-of-range key
-	// from a future change would fail to match and produce undefined rather
-	// than silently indexing past the 5-element palette arrays.
-	const [, bandStr, sign] = /^g([0-4])_(asc|desc)$/.exec(key) ?? [];
-	const band = Number(bandStr);
-	return sign === 'desc' ? GRADE_BAND_DESCENT_COLORS[band] : GRADE_BAND_ASCENT_COLORS[band];
-}
-
-interface ElevationPoint {
-	distance: number;
-	elevation: number;
-	lat?: number;
-	lng?: number;
-}
+export { SAC_BUCKETS, SURFACE_BUCKETS } from './elevation-chart-shared';
 
 interface ElevationChartProps {
 	className?: string;
-}
-
-/** Custom Tooltip that syncs the chart hover to map highlight. */
-function ChartTooltipSync(props: {
-	highlightTrailPosition: ((pos: { distance: number; elevation: number }) => void) | undefined;
-	clearTrailHighlight: (() => void) | undefined;
-	units: UnitSystem;
-	distancePrecision: number;
-	distanceLabel: string;
-	elevationLabel: string;
-	elevationUnitASL: string;
-	active?: boolean;
-	payload?: ReadonlyArray<{ payload?: ElevationPoint }>;
-	coordinate?: { x: number; y: number };
-	isPinned: boolean;
-	onScaleCalibration?: (coordX: number, distanceKm: number) => void;
-}): React.ReactElement | null {
-	const {
-		highlightTrailPosition,
-		clearTrailHighlight,
-		units,
-		distancePrecision,
-		distanceLabel,
-		elevationLabel,
-		elevationUnitASL,
-		active,
-		payload,
-		coordinate,
-		isPinned,
-		onScaleCalibration,
-	} = props;
-	const prevDistanceRef = useRef<number | null>(null);
-	const wasActiveRef = useRef(false);
-	const highlightTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-	const clearTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-	const HIGHLIGHT_DEBOUNCE_MS = 80;
-	const CLEAR_DEBOUNCE_MS = 120;
-
-	useEffect(() => {
-		if (active && payload?.[0]?.payload) {
-			const point = payload[0].payload;
-			if (coordinate !== undefined && coordinate !== null && typeof onScaleCalibration === 'function') {
-				onScaleCalibration(coordinate.x, point.distance);
-			}
-			wasActiveRef.current = true;
-			if (clearTimeoutRef.current) {
-				clearTimeout(clearTimeoutRef.current);
-				clearTimeoutRef.current = null;
-			}
-			if (!isPinned) {
-				const distance = point.distance * 1000;
-				if (prevDistanceRef.current !== distance) {
-					if (highlightTimeoutRef.current) {
-						clearTimeout(highlightTimeoutRef.current);
-						highlightTimeoutRef.current = null;
-					}
-					highlightTimeoutRef.current = setTimeout(() => {
-						prevDistanceRef.current = distance;
-						highlightTrailPosition?.({
-							distance,
-							elevation: point.elevation,
-						});
-						highlightTimeoutRef.current = null;
-					}, HIGHLIGHT_DEBOUNCE_MS);
-				}
-			}
-		} else {
-			if (!isPinned && wasActiveRef.current) {
-				if (highlightTimeoutRef.current) {
-					clearTimeout(highlightTimeoutRef.current);
-					highlightTimeoutRef.current = null;
-				}
-				if (clearTimeoutRef.current) {
-					clearTimeout(clearTimeoutRef.current);
-				}
-				clearTimeoutRef.current = setTimeout(() => {
-					wasActiveRef.current = false;
-					prevDistanceRef.current = null;
-					clearTrailHighlight?.();
-					clearTimeoutRef.current = null;
-				}, CLEAR_DEBOUNCE_MS);
-			}
-		}
-		return () => {
-			if (highlightTimeoutRef.current) clearTimeout(highlightTimeoutRef.current);
-			if (clearTimeoutRef.current) clearTimeout(clearTimeoutRef.current);
-		};
-	}, [active, payload, coordinate, highlightTrailPosition, clearTrailHighlight, isPinned, onScaleCalibration]);
-
-	if (!active || !payload?.[0]?.payload) {
-		return null;
-	}
-	const point = payload[0].payload;
-	return (
-		<div className="map-tooltip !max-w-none !min-w-0">
-			<p>
-				<span className="font-medium">{distanceLabel}:</span> {formatDistance(point.distance, units, distancePrecision)}
-			</p>
-			<p>
-				<span className="font-medium">{elevationLabel}:</span> {formatElevation(point.elevation, units)}{' '}
-				{elevationUnitASL}
-			</p>
-		</div>
-	);
-}
-
-type PinnedPoint = { distanceM: number; elevation: number };
-
-function formatHikingTime(minutes: number): string {
-	if (minutes < 60) return `${minutes}m`;
-	const h = Math.floor(minutes / 60);
-	const m = minutes % 60;
-	return m === 0 ? `${h}h` : `${h}h ${m}m`;
 }
 
 export default function ElevationChart({ className = '' }: ElevationChartProps): JSX.Element | null {
@@ -205,16 +63,7 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 	const [pinnedPoint, setPinnedPoint] = useState<PinnedPoint | null>(null);
 	const [gpxModalOpen, setGpxModalOpen] = useState(false);
 	const [gpxModalMode, setGpxModalMode] = useState<'full' | 'segment'>('full');
-	/** Preview range while dragging on chart (km); triggers ReferenceArea. */
-	const [dragPreviewRange, setDragPreviewRange] = useState<{ startKm: number; endKm: number } | null>(null);
 	const chartAreaRef = useRef<HTMLDivElement | null>(null);
-	/** Plot area in SVG pixels: used to map click X to distance. Updated from tooltip coordinate when hovering. */
-	const plotScaleRef = useRef<{ plotLeft: number; plotWidth: number } | null>(null);
-	const dragStartKmRef = useRef<number>(0);
-	const dragEndKmRef = useRef<number>(0);
-	const dragStartPointRef = useRef<{ distanceM: number; elevation: number; closest: ElevationPoint } | null>(null);
-	/** True if the user moved the mouse during this gesture (so treat as drag, not click). */
-	const didDragRef = useRef<boolean>(false);
 
 	const units = useMapStore((state: MapStoreState) => state.units);
 	const direction = useMapStore((state: MapStoreState) => state.direction);
@@ -251,131 +100,13 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 		}
 	}, [highlightedTrailPoint]);
 
-	const handleScaleCalibration = useCallback(
-		(coordX: number, distanceKm: number) => {
-			if (!chartAreaRef.current || !chartData.length) return;
-			const svg = chartAreaRef.current.querySelector('svg');
-			if (!svg) return;
-			const svgRect = svg.getBoundingClientRect();
-			const minDist = chartData[0].distance;
-			const maxDist = chartData[chartData.length - 1].distance;
-			const range = maxDist - minDist;
-			if (range <= 0) return;
-			const plotWidth = svgRect.width * 0.85;
-			const plotLeft = coordX - (plotWidth * (distanceKm - minDist)) / range;
-			plotScaleRef.current = { plotLeft, plotWidth };
-		},
-		[chartData],
-	);
-
-	const getDistanceKmFromClientX = useCallback(
-		(clientX: number): number | null => {
-			if (!chartAreaRef.current || !chartData.length) return null;
-			const svg = chartAreaRef.current.querySelector('svg');
-			if (!svg) return null;
-			const svgRect = svg.getBoundingClientRect();
-			const minDist = chartData[0].distance;
-			const maxDist = chartData[chartData.length - 1].distance;
-			const range = maxDist - minDist;
-			if (range <= 0) return null;
-			const clickX = clientX - svgRect.left;
-			const scale = plotScaleRef.current;
-			let plotLeft: number;
-			let plotWidth: number;
-			if (scale) {
-				plotLeft = scale.plotLeft;
-				plotWidth = scale.plotWidth;
-			} else {
-				plotLeft = svgRect.width * 0.1;
-				plotWidth = svgRect.width * 0.85;
-			}
-			const relativeX = (clickX - plotLeft) / plotWidth;
-			return minDist + Math.max(0, Math.min(1, relativeX)) * range;
-		},
-		[chartData],
-	);
-
-	const handleChartMouseDownCapture = useCallback(
-		(e: React.MouseEvent<HTMLDivElement>) => {
-			e.preventDefault();
-			e.stopPropagation();
-			const distanceKm = getDistanceKmFromClientX(e.clientX);
-			if (distanceKm === null || !chartData.length) return;
-
-			if (isRulerEnabled && rulerRange) {
-				const startKm = Math.min(rulerRange.distanceFromStartA, rulerRange.distanceFromStartB) / 1000;
-				const endKm = Math.max(rulerRange.distanceFromStartA, rulerRange.distanceFromStartB) / 1000;
-				if (distanceKm < startKm || distanceKm > endKm) {
-					setRulerEnabled(false);
-					return;
-				}
-			}
-
-			let closest = chartData[0];
-			let minDiff = Math.abs(chartData[0].distance - distanceKm);
-			for (let i = 1; i < chartData.length; i++) {
-				const diff = Math.abs(chartData[i].distance - distanceKm);
-				if (diff < minDiff) {
-					minDiff = diff;
-					closest = chartData[i];
-				}
-			}
-			const distanceM = closest.distance * 1000;
-			dragStartKmRef.current = distanceKm;
-			dragEndKmRef.current = distanceKm;
-			dragStartPointRef.current = { distanceM, elevation: closest.elevation, closest };
-			didDragRef.current = false;
-
-			const onMouseMove = (moveEvent: MouseEvent): void => {
-				const endKm = getDistanceKmFromClientX(moveEvent.clientX);
-				if (endKm === null) return;
-				didDragRef.current = true;
-				dragEndKmRef.current = endKm;
-				const start = dragStartKmRef.current;
-				setDragPreviewRange({ startKm: Math.min(start, endKm), endKm: Math.max(start, endKm) });
-			};
-			const onMouseUp = (): void => {
-				window.removeEventListener('mousemove', onMouseMove);
-				window.removeEventListener('mouseup', onMouseUp);
-				const startKm = dragStartKmRef.current;
-				const endKm = dragEndKmRef.current;
-				setDragPreviewRange(null);
-				const dragSpanKm = Math.abs(endKm - startKm);
-				const minDragKm = 0.05;
-				const treatAsDrag = didDragRef.current || dragSpanKm >= minDragKm;
-				if (treatAsDrag) {
-					const startM = Math.round(startKm * 1000);
-					const endM = Math.round(endKm * 1000);
-					const distanceFromStartA = Math.min(startM, endM);
-					const distanceFromStartB = Math.max(startM, endM);
-					setRulerRange({ distanceFromStartA, distanceFromStartB });
-					window.dispatchEvent(
-						new CustomEvent(RULER_SET_FROM_CHART_EVENT, {
-							detail: { distanceFromStartA, distanceFromStartB },
-						}),
-					);
-				} else {
-					const point = dragStartPointRef.current;
-					if (point && highlightTrailPosition) {
-						setPinnedPoint({ distanceM: point.distanceM, elevation: point.elevation });
-						highlightTrailPosition({ distance: point.distanceM, elevation: point.elevation });
-					}
-				}
-				dragStartPointRef.current = null;
-			};
-			window.addEventListener('mousemove', onMouseMove);
-			window.addEventListener('mouseup', onMouseUp);
-		},
-		[
+	// Drag-to-ruler gesture handling (plot calibration, drag preview, click-to-pin).
+	const { dragPreviewRange, handleScaleCalibration, handleChartMouseDownCapture, clearDragPreview } =
+		useElevationChartRulerDrag({
+			chartAreaRef,
 			chartData,
-			getDistanceKmFromClientX,
-			highlightTrailPosition,
-			isRulerEnabled,
-			rulerRange,
-			setRulerEnabled,
-			setRulerRange,
-		],
-	);
+			onPin: setPinnedPoint,
+		});
 
 	const totalDistance = trailMetadata?.totalDistance || 0;
 	const elevationGain = trailMetadata?.elevationGain || 0;
@@ -614,7 +345,7 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 	};
 
 	const clearRulerSelection = (): void => {
-		setDragPreviewRange(null);
+		clearDragPreview();
 		setRulerRange(null);
 		setRulerEnabled(false);
 	};
