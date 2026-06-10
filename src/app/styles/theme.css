@@ -61,6 +61,7 @@
 	--poi-color-cafe: #be185d;
 	--poi-color-food: #be185d;
 	--poi-color-atm: #6d28d9;
+	--poi-color-water: #0369a1;
 	--poi-color-default: #475569;
 
 	/* Generic tinted near-white used for borders and text rendered over any
@@ -175,6 +176,7 @@
 	--poi-color-cafe: #ec4899;
 	--poi-color-food: #ec4899;
 	--poi-color-atm: #a78bfa;
+	--poi-color-water: #38bdf8;
 	--poi-color-default: #94a3b8;
 
 	/* Near-white tokens carry through unchanged - they read as crisp white
