@@ -15,6 +15,10 @@ const NETWORK_BACKOFF_MS = [3_000, 10_000, 30_000];
 
 export interface FetchOverpassOptions {
 	url: string;
+	/** Mirrors tried in order after `url` exhausts its attempts. Public
+	 *  Overpass instances fail independently (different operators, different
+	 *  load), so a busy primary rarely implies a busy fallback. */
+	fallbackUrls?: string[];
 	/** Already URL-encoded request body, e.g. `data=${encodeURIComponent(query)}`. */
 	body: string;
 	userAgent: string;
@@ -44,11 +48,36 @@ export class OverpassFetchError extends Error {
 
 /**
  * POSTs an Overpass query, retrying 429/5xx and transient network errors with
- * bounded backoff. Returns the successful Response (body not yet consumed).
- * Throws OverpassFetchError after retries are exhausted or on a terminal
- * status (e.g., 4xx other than 429).
+ * bounded backoff, then failing over to each mirror in `fallbackUrls` with the
+ * same retry budget. Returns the successful Response (body not yet consumed).
+ * Throws the last endpoint's OverpassFetchError when every endpoint is
+ * exhausted; terminal statuses (4xx other than 429) skip straight to the next
+ * endpoint since retrying them locally cannot succeed.
  */
 export async function fetchOverpass(opts: FetchOverpassOptions): Promise<Response> {
+	const endpoints = [opts.url, ...(opts.fallbackUrls ?? [])];
+	let lastError: OverpassFetchError | undefined;
+	for (let i = 0; i < endpoints.length; i++) {
+		try {
+			return await fetchOverpassFromEndpoint({ ...opts, url: endpoints[i] });
+		} catch (err) {
+			lastError = err instanceof OverpassFetchError ? err : new OverpassFetchError((err as Error).message);
+			const next = endpoints[i + 1];
+			if (next) {
+				opts.onRetry?.({
+					attempt: 0,
+					nextAttempt: 1,
+					status: lastError.status ?? 'network',
+					waitMs: 0,
+					message: `${endpoints[i]} exhausted (${lastError.message}); failing over to ${next}`,
+				});
+			}
+		}
+	}
+	throw lastError ?? new OverpassFetchError('no Overpass endpoints configured');
+}
+
+async function fetchOverpassFromEndpoint(opts: FetchOverpassOptions): Promise<Response> {
 	const maxAttempts = opts.maxAttempts ?? DEFAULT_MAX_ATTEMPTS;
 	let lastNetworkErr: Error | undefined;
 

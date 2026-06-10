@@ -6,6 +6,9 @@
 .pnp.js
 .yarn/install-state.gz
 
+# enrichment script cache (per-type Overpass results; safe to delete)
+/.cache/
+
 # testing
 /coverage
 
