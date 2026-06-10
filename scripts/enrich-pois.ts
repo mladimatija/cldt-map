@@ -22,7 +22,6 @@
 
 import Ajv from 'ajv/dist/2020.js';
 import addFormats from 'ajv-formats';
-import { createHash } from 'node:crypto';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -31,7 +30,13 @@ import { foldDiacritics } from '@/lib/pois';
 import type { Poi, PoiImage, PoisFile } from '../src/lib/poi-types';
 import { parseWikipediaRef, SUMMARY_HOST_TEMPLATE as WIKIPEDIA_SUMMARY_HOST_TEMPLATE } from '../src/lib/wikipedia';
 import { applyReachabilityFilter, formatStats } from './poi-reachability';
-import { fetchOverpass } from './overpass-fetch';
+import {
+	fetchOverpassJson,
+	overpassCacheFile,
+	readOverpassJsonCache,
+	writeOverpassJsonCache,
+	type OverpassCacheOptions,
+} from './overpass-fetch';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -353,9 +358,19 @@ async function main(): Promise<void> {
 	console.log('\n=== Pass 6: Reachability filter ===');
 	try {
 		const beforeReach = byId.size;
-		const result = await applyReachabilityFilter([...byId.values()], trkpts, paddedBbox, OVERPASS_URL, USER_AGENT);
+		const result = await applyReachabilityFilter([...byId.values()], trkpts, corridorPoly, {
+			overpassUrl: OVERPASS_URL,
+			fallbackUrls: OVERPASS_FALLBACK_URLS,
+			userAgent: USER_AGENT,
+			cache: OVERPASS_CACHE,
+		});
 		byId.clear();
 		for (const p of result.kept) byId.set(p.id, p);
+		// Types whose graph-dependent rules could not be evaluated reuse the
+		// Pass 1 carry-forward mechanism: the merge keeps the prior dataset's
+		// rows (which passed reachability when the graph was last healthy)
+		// instead of either dropping them or writing unverified fresh rows.
+		for (const t of result.carryForwardTypes) failedTypes.add(t);
 		const dropped = beforeReach - result.kept.length;
 		console.log(`  Reachability filter dropped ${dropped} / ${beforeReach} POIs (${result.kept.length} remain).`);
 		console.log('  Per-type breakdown:');
@@ -641,37 +656,18 @@ function buildOverpassQuery(selectors: { key: string; values: string[] }[], area
 	return `[out:json][timeout:${OVERPASS_TIMEOUT_S}];(${clauses.join('')});out center tags;`;
 }
 
-/** Cache path for one query; the hash covers selectors, radius, and the
- *  corridor polyline, so any input change misses the cache naturally. */
-function overpassCachePath(type: string, query: string): string {
-	const hash = createHash('sha1').update(query).digest('hex').slice(0, 12);
-	return path.join(OVERPASS_CACHE_DIR, `${type}-${hash}.json`);
-}
-
-async function readOverpassCache(file: string): Promise<OverpassElement[] | null> {
-	if (OVERPASS_CACHE_DISABLED) return null;
-	try {
-		const raw = JSON.parse(await fs.readFile(file, 'utf8')) as { fetchedAt?: number; elements?: OverpassElement[] };
-		if (typeof raw.fetchedAt !== 'number' || !Array.isArray(raw.elements)) return null;
-		if (Date.now() - raw.fetchedAt > OVERPASS_CACHE_TTL_MS) return null;
-		return raw.elements;
-	} catch {
-		return null;
-	}
-}
-
-async function writeOverpassCache(file: string, elements: OverpassElement[]): Promise<void> {
-	if (OVERPASS_CACHE_DISABLED) return;
-	try {
-		await fs.mkdir(OVERPASS_CACHE_DIR, { recursive: true });
-		await fs.writeFile(file, JSON.stringify({ fetchedAt: Date.now(), elements }));
-	} catch (err) {
-		console.warn(`     cache write failed (${(err as Error).message}); continuing without cache.`);
-	}
-}
+/** Shared cache config for every Overpass query this script issues. */
+const OVERPASS_CACHE: OverpassCacheOptions = {
+	dir: OVERPASS_CACHE_DIR,
+	ttlMs: OVERPASS_CACHE_TTL_MS,
+	disabled: OVERPASS_CACHE_DISABLED,
+};
 
 async function runOverpassQuery(query: string): Promise<OverpassElement[]> {
-	const res = await fetchOverpass({
+	// fetchOverpassJson also rejects HTTP 200 bodies carrying an Overpass
+	// "runtime error" remark (server-side timeout / OOM), which would
+	// otherwise parse as a legitimate empty result.
+	const json = await fetchOverpassJson<{ elements?: OverpassElement[]; remark?: string }>({
 		url: OVERPASS_URL,
 		fallbackUrls: OVERPASS_FALLBACK_URLS,
 		body: `data=${encodeURIComponent(query)}`,
@@ -679,7 +675,6 @@ async function runOverpassQuery(query: string): Promise<OverpassElement[]> {
 		fetchTimeoutMs: FETCH_TIMEOUT_MS,
 		onRetry: ({ message }) => console.warn(`     Overpass ${message}.`),
 	});
-	const json = (await res.json()) as { elements?: OverpassElement[] };
 	return json.elements ?? [];
 }
 
@@ -703,8 +698,8 @@ async function fetchOsmElements(cfg: TypeConfig, corridorPoly: LatLng[], bbox: B
 	const polyStr = corridorPoly.map((p) => `${p.lat.toFixed(5)},${p.lng.toFixed(5)}`).join(',');
 	const corridorQuery = buildOverpassQuery(cfg.overpassSelectors, `around:${radiusM},${polyStr}`);
 
-	const cacheFile = overpassCachePath(cfg.type, corridorQuery);
-	const cached = await readOverpassCache(cacheFile);
+	const cacheFile = overpassCacheFile(OVERPASS_CACHE, cfg.type, corridorQuery);
+	const cached = await readOverpassJsonCache<OverpassElement[]>(cacheFile, OVERPASS_CACHE);
 	if (cached) {
 		console.log(
 			`     cache hit (${cached.length} elements; delete ${path.relative(PROJECT_ROOT, cacheFile)} to refetch).`,
@@ -714,7 +709,7 @@ async function fetchOsmElements(cfg: TypeConfig, corridorPoly: LatLng[], bbox: B
 
 	try {
 		const elements = await runOverpassQuery(corridorQuery);
-		await writeOverpassCache(cacheFile, elements);
+		await writeOverpassJsonCache(cacheFile, elements, OVERPASS_CACHE);
 		return { elements, failed: false };
 	} catch (err) {
 		console.warn(`     corridor query failed (${(err as Error).message}); falling back to bbox query.`);
@@ -723,7 +718,7 @@ async function fetchOsmElements(cfg: TypeConfig, corridorPoly: LatLng[], bbox: B
 	const bboxClause = `${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng}`;
 	try {
 		const elements = await runOverpassQuery(buildOverpassQuery(cfg.overpassSelectors, bboxClause));
-		await writeOverpassCache(cacheFile, elements);
+		await writeOverpassJsonCache(cacheFile, elements, OVERPASS_CACHE);
 		return { elements, failed: false };
 	} catch (err) {
 		console.warn(`     Overpass error: ${(err as Error).message}; skipping this type.`);
