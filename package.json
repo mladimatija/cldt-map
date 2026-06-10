@@ -16,6 +16,8 @@
 		"lint:fix": "eslint . --fix",
 		"format": "prettier --write .",
 		"format:check": "prettier --check .",
+		"check:i18n": "node scripts/check-i18n-parity.mjs",
+		"check:bundle": "node scripts/check-bundle-size.mjs",
 		"generate-pwa-icons": "node scripts/generate-pwa-icons.mjs",
 		"build:emergency-data": "tsx scripts/build-emergency-data.ts",
 		"update-seasonal": "tsx --env-file-if-exists=.env.local scripts/update-seasonal-status.ts",
