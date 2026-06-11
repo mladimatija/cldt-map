@@ -560,7 +560,8 @@
 		"stripMapPdfProgress": "{current} / {total}",
 		"stripMapPdfCancel": "Odustani",
 		"stripMapPdfCancelTooltip": "Otkaži izvoz PDF-a u tijeku.",
-		"pdfStageLabel": "Etapa"
+		"pdfStageLabel": "Etapa",
+		"stageWaterGap": "Najdulja dionica bez vode: {distance}"
 	},
 	"tripBrief": {
 		"defaultTitle": "CLDT plan putovanja",
@@ -703,6 +704,13 @@
 			"food": "Hrana",
 			"atm": "Bankomat",
 			"water": "Izvor vode"
+		},
+		"water": {
+			"reliable": "Pouzdana voda",
+			"seasonal": "Sezonska - moguće presušena",
+			"unverified": "Neprovjerena - pročistiti prije pića",
+			"not_potable": "Nije za piće",
+			"checked": "Provjereno"
 		}
 	},
 	"poiDisclaimer": {

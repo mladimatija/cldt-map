@@ -201,6 +201,28 @@
 	opacity: 0.6;
 }
 
+/* Water reliability chip (water POIs only). Colour comes from the same
+   theme.css variables that tint the map markers, so badge and marker always
+   agree. White text passes contrast on all four fills in both palettes. */
+.poi-popup__water {
+	display: inline-block;
+	padding: 1px 8px;
+	border-radius: 999px;
+	font-size: 11px;
+	font-weight: 600;
+	color: var(--marker-on-color);
+	background: var(--poi-color-water);
+}
+.poi-popup__water--seasonal {
+	background: var(--poi-color-water-seasonal);
+}
+.poi-popup__water--unverified {
+	background: var(--poi-color-water-unverified);
+}
+.poi-popup__water--nonpotable {
+	background: var(--poi-color-water-nonpotable);
+}
+
 /* Wikipedia / curated thumbnail at the top of the POI popup. Capped so it
    doesn't blow out popup width on portrait images, and rounded to match the
    map-tooltip vocabulary. */

@@ -52,6 +52,28 @@ export const DEFAULT_POI_TYPES: readonly KnownPoiType[] = ['town', 'hut', 'shelt
 
 export type PoiType = KnownPoiType | string;
 
+export type WaterKind = 'tap' | 'spring';
+
+export type WaterReliability = 'reliable' | 'seasonal' | 'unverified' | 'not_potable';
+
+/** Water-source intelligence carried by water POIs. Derived from OSM tags at
+ *  enrichment time by `classifyWater` in src/lib/water-intelligence.ts. */
+export interface WaterInfo {
+	/** Physical kind of source: a built tap/fountain or a natural spring. */
+	kind: WaterKind;
+	/** Reliability class derived from the OSM tags below. */
+	reliability: WaterReliability;
+	/** OSM seasonal=* was set and not "no". */
+	seasonal?: boolean;
+	/** OSM intermittent=* was set and not "no". */
+	intermittent?: boolean;
+	/** Normalized OSM drinking_water=* value ("treated" and friends map to
+	 *  "conditional"). Absent when the tag is missing. */
+	potable?: 'yes' | 'no' | 'conditional';
+	/** Last on-the-ground survey (OSM check_date / survey:date), YYYY-MM-DD. */
+	checkDate?: string;
+}
+
 export interface PoiImage {
 	/** Full-resolution image URL (typically a Commons file URL). */
 	url: string;
@@ -116,6 +138,10 @@ export interface Poi {
 	 *  classic "0.5 km haversine but other side of an unbridged river"
 	 *  failure mode). Absent on POIs that predate Pass 6. */
 	isReachable?: boolean;
+	/** Water-source intelligence (type "water" only). Derived at enrichment
+	 *  time from OSM tags; absent on rows that predate the
+	 *  water-intelligence pass. */
+	water?: WaterInfo;
 }
 
 export interface PoisFile {

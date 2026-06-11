@@ -28,6 +28,7 @@ import { fileURLToPath } from 'node:url';
 import { haversineDistanceM as haversineM } from '../src/lib/haversine';
 import { foldDiacritics } from '@/lib/pois';
 import type { Poi, PoiImage, PoisFile } from '../src/lib/poi-types';
+import { classifyWater } from '../src/lib/water-intelligence';
 import { parseWikipediaRef, SUMMARY_HOST_TEMPLATE as WIKIPEDIA_SUMMARY_HOST_TEMPLATE } from '../src/lib/wikipedia';
 import { applyReachabilityFilter, formatStats } from './poi-reachability';
 import {
@@ -208,8 +209,24 @@ async function main(): Promise<void> {
 	 *  The merge step carries forward every prior entry of these types, so a
 	 *  transient upstream failure never silently nukes the dataset. */
 	const failedTypes = new Set<string>();
+	// Partial-refresh filter: POI_TYPES="water" (comma-separable) restricts
+	// the fresh Overpass pass to the listed types. Every skipped type routes
+	// through the same carry-forward path as a failed query, so the merge
+	// keeps its prior rows untouched - a partial run can only improve the
+	// listed types, never degrade the rest.
+	const onlyTypes = new Set(
+		(process.env.POI_TYPES ?? '')
+			.split(',')
+			.map((s) => s.trim())
+			.filter(Boolean),
+	);
 	for (let cfgIdx = 0; cfgIdx < TYPE_CONFIGS.length; cfgIdx++) {
 		const cfg = TYPE_CONFIGS[cfgIdx];
+		if (onlyTypes.size > 0 && !onlyTypes.has(cfg.type)) {
+			failedTypes.add(cfg.type);
+			console.log(`-> Skipping type=${cfg.type} (POI_TYPES filter) - prior rows carry forward.`);
+			continue;
+		}
 		console.log(`-> Querying type=${cfg.type} (selectors: ${describeSelectors(cfg.overpassSelectors)})...`);
 		const { elements, failed } = await fetchOsmElements(cfg, corridorPoly, paddedBbox);
 		if (failed) failedTypes.add(cfg.type);
@@ -218,9 +235,17 @@ async function main(): Promise<void> {
 		for (const el of elements) {
 			const point = elementToLatLng(el);
 			if (!point) continue;
-			const name_en = pickName(el.tags ?? {}, 'en');
-			const name_hr = pickName(el.tags ?? {}, 'hr');
-			if (!name_en && !name_hr) continue;
+			let name_en = pickName(el.tags ?? {}, 'en');
+			let name_hr = pickName(el.tags ?? {}, 'hr');
+			if (!name_en && !name_hr) {
+				// Water sources are overwhelmingly unnamed in OSM yet are the most
+				// safety-critical POI type on the trail - synthesize a generic name
+				// instead of dropping them. Every other type keeps the name gate.
+				if (cfg.type !== 'water') continue;
+				const isSpring = el.tags?.natural === 'spring';
+				name_en = isSpring ? 'Spring' : 'Drinking water';
+				name_hr = isSpring ? 'Izvor' : 'Pitka voda';
+			}
 			const { km, distKm } = snapToTrail(point, trkpts, cumKm);
 			if (distKm > cfg.maxDistanceKm) continue;
 			const population = parseInteger(el.tags?.population);
@@ -246,6 +271,10 @@ async function main(): Promise<void> {
 				...(el.tags?.phone && { phone: el.tags.phone }),
 				...(url && { url }),
 				...(image && { image }),
+				// Water intelligence: reliability class + seasonality flags derived
+				// from the raw OSM tags (seasonal / intermittent / drinking_water /
+				// check_date). Water type only.
+				...(cfg.type === 'water' && { water: classifyWater(el.tags ?? {}) }),
 				// Default source for any pass-1 entry. Upgraded to `wikidata` or
 				// `hps` if later passes add data; `curated` is preserved by the
 				// merge step from any prior committed row.

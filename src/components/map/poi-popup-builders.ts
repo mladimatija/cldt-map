@@ -45,6 +45,13 @@ export interface PopupBuildLabels {
 	lastVerifiedLabel: string;
 	/** Used as aria-label prefix for gallery thumbnail buttons: "{galleryImageLabel} {i+1} of {total}: {name}". */
 	galleryImageLabel: string;
+	/** Water reliability badge labels, keyed by WaterReliability class. */
+	waterReliable: string;
+	waterSeasonal: string;
+	waterUnverified: string;
+	waterNotPotable: string;
+	/** Prefix for the OSM check_date shown next to the water badge. */
+	waterCheckedLabel: string;
 }
 
 /** Builds the gallery or legacy single-image HTML block. Returns empty string
@@ -117,6 +124,26 @@ export function buildMetaRowsHtml(
 	} else {
 		lines.push(
 			`<p class="poi-popup__row poi-popup__row--muted"><span class="poi-popup__label">${escapeHtml(labels.offTrailLabel)}</span> ${escapeHtml(offTrailLabel ?? '')}</p>`,
+		);
+	}
+	// Water reliability badge: a coloured chip directly under the position
+	// line, plus the last OSM survey date when a mapper recorded one.
+	if (poi.water) {
+		const rel = poi.water.reliability;
+		const relLabel =
+			rel === 'reliable'
+				? labels.waterReliable
+				: rel === 'seasonal'
+					? labels.waterSeasonal
+					: rel === 'not_potable'
+						? labels.waterNotPotable
+						: labels.waterUnverified;
+		const chipModifier = rel === 'not_potable' ? 'nonpotable' : rel;
+		const checked = poi.water.checkDate
+			? ` <span class="poi-popup__row--muted">${escapeHtml(labels.waterCheckedLabel)} ${escapeHtml(formatIsoDate(poi.water.checkDate, locale))}</span>`
+			: '';
+		lines.push(
+			`<p class="poi-popup__row"><span class="poi-popup__water poi-popup__water--${chipModifier}">${escapeHtml(relLabel)}</span>${checked}</p>`,
 		);
 	}
 	if (typeof poi.elevationM === 'number') {
