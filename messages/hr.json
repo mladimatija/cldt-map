@@ -588,7 +588,47 @@
 		"generating": "Generiram...",
 		"cancel": "Prekini",
 		"close": "Zatvori",
-		"exportError": "Izvoz nije uspio. Pokušajte ponovo."
+		"exportError": "Izvoz nije uspio. Pokušajte ponovo.",
+		"document": {
+			"labels": {
+				"overview": "Pregled",
+				"totalDistance": "Ukupna udaljenost",
+				"dayCount": "Broj dana",
+				"direction": "Smjer",
+				"gain": "Uspon",
+				"loss": "Spust",
+				"eta": "Vrijeme hodanja",
+				"pace": "Brzina",
+				"alerts": "Upozorenja",
+				"pois": "Mjesta uz put",
+				"emergency": "Hitne službe",
+				"generated": "Generirano u CLDT karti"
+			},
+			"daysHeading": "Po danima",
+			"moreLabel": "još mjesta",
+			"narrativeDirection": {
+				"SOBO": "južno (Ilok prema Prevlaki)",
+				"NOBO": "sjeverno (Prevlaka prema Iloku)"
+			},
+			"dayNarrative": "{day}. dan od {totalDays}: {distanceLabel}, +{gain} m / -{loss} m. {poiSentence}",
+			"dayPoiSentence": {
+				"withPois": "{poiCount} mjesta uz put.",
+				"empty": "Nema posebnih mjesta uz ovu etapu."
+			},
+			"overviewNarrative": "Plan obuhvaća {totalDistanceLabel} u {dayCount} dana {direction}. Procijenjeno vrijeme hodanja: {etaLabel}.",
+			"directionDisplay": {
+				"SOBO": "Južno (Ilok - Prevlaka)",
+				"NOBO": "Sjeverno (Prevlaka - Ilok)"
+			},
+			"dayHeader": "{day}. dan - {unit} {start} do {end}",
+			"emergencyBody": {
+				"l1": "Hitno: 112",
+				"l2": "Gorska služba spašavanja (HGSS): 112 (zatraži HGSS)",
+				"l3": "Uvijek nosi: vodu, čelnu svjetiljku, zviždaljku, prvu pomoć, mobitel s GPS-om.",
+				"l4": "U hitnoj situaciji: ostani na mjestu ako možeš, označi poziciju, kontaktiraj spasioce.",
+				"l5": "U područjima bez signala: SMS 112 s koordinatama ako poziv ne radi."
+			}
+		}
 	},
 	"severeWeather": {
 		"layerLabel": "Upozorenja za opasno vrijeme",

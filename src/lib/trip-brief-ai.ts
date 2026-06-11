@@ -11,7 +11,6 @@
  */
 import type { TripBrief } from '@/lib/trip-brief';
 import { formatEta } from '@/lib/distance-utils';
-import { NARRATIVE_DIRECTION } from '@/lib/trip-brief-i18n';
 
 export interface AiNarratives {
 	overview: string;
@@ -36,7 +35,7 @@ export async function fetchAiNarratives(brief: TripBrief, signal?: AbortSignal):
 	const locale = brief.meta.locale;
 	const payload = {
 		locale,
-		directionLabel: trim(NARRATIVE_DIRECTION[locale][brief.meta.direction]),
+		directionLabel: trim(brief.meta.strings.narrativeDirection[brief.meta.direction]),
 		totalDistanceLabel: trim(`${Math.round(brief.overview.totalKm)} km`),
 		etaLabel: trim(formatEta(brief.overview.totalDurationSec)),
 		days: brief.days.map((day) => ({

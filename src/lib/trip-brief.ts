@@ -23,7 +23,7 @@ import {
 	type Poi,
 	type PoisFile,
 } from '@/lib/pois';
-import { formatDayNarrative, formatOverviewNarrative } from '@/lib/trip-brief-i18n';
+import { formatDayNarrative, formatOverviewNarrative, type TripBriefStrings } from '@/lib/trip-brief-i18n';
 import type { EnhancedTrailPoint, StagePlan, TrailDirection, UnitSystem } from '@/lib/store/types';
 import type { SeasonalStatusEntry } from '@/lib/seasonal-status';
 import type { Locale } from '@/i18n/routing';
@@ -42,6 +42,10 @@ export interface TripBriefMeta {
 	 *  route. Renderers print it on the cover whenever present - the exporters
 	 *  run outside React/next-intl, so the caller resolves the string. */
 	aiDisclaimer?: string;
+	/** Active locale's exporter strings (messages tripBrief.document subtree),
+	 *  resolved by the caller via useMessages() - the PDF/DOCX generators run
+	 *  outside React/next-intl and read everything from here. */
+	strings: TripBriefStrings;
 }
 
 export interface TripBriefPoi {
@@ -97,6 +101,8 @@ export interface TripBrief {
 }
 
 export interface TripBriefAssemblyArgs {
+	/** Exporter strings for the active locale (tripBrief.document subtree). */
+	strings: TripBriefStrings;
 	stagePlan: StagePlan;
 	poisFile: PoisFile | null;
 	enhancedTrailPoints: EnhancedTrailPoint[];
@@ -154,6 +160,7 @@ export function assembleTripBrief(args: TripBriefAssemblyArgs): TripBrief {
 		startDate,
 		typeLabel,
 		distanceLabel,
+		strings,
 	} = args;
 
 	const totalKm =
@@ -223,7 +230,7 @@ export function assembleTripBrief(args: TripBriefAssemblyArgs): TripBrief {
 				gainM: dirGain,
 				lossM: dirLoss,
 				poiCount: stagePois.length,
-				locale,
+				strings,
 			}),
 			pois: stagePois,
 			seasonalAlerts: stageAlerts,
@@ -240,7 +247,7 @@ export function assembleTripBrief(args: TripBriefAssemblyArgs): TripBrief {
 			totalDistanceLabel: distanceLabel(totalKm),
 			dayCount: stagePlan.stages.length,
 			direction,
-			locale,
+			strings,
 			etaLabel: formatEta(totalDurationSec),
 		}),
 	};
@@ -254,6 +261,7 @@ export function assembleTripBrief(args: TripBriefAssemblyArgs): TripBrief {
 			units,
 			walkingPaceKmh,
 			gradeAdjustedEta,
+			strings,
 			...(startDate && { startDate }),
 		},
 		overview,

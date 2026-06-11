@@ -38,10 +38,7 @@ import { siteMetadata } from '@/lib/metadata';
 import type { TripBrief, TripBriefDay } from '@/lib/trip-brief';
 import type { EnhancedTrailPoint } from '@/lib/store/types';
 import {
-	DAYS_HEADING,
-	EMERGENCY_BODY,
-	LBL,
-	MORE_LABEL,
+	emergencyLines,
 	dayHeader,
 	directionDisplay,
 	formatGeneratedAt,
@@ -241,19 +238,19 @@ function renderCover(pdf: JsPDF, brief: TripBrief, logoDataUrl: string | null): 
 	pdf.setFont('NotoSans', 'bold');
 	pdf.setFontSize(18);
 	pdf.setTextColor(...SECTION_BLUE_RGB);
-	pdf.text(LBL[meta.locale].overview, MARGIN_X, HEADER_H + 14);
+	pdf.text(meta.strings.labels.overview, MARGIN_X, HEADER_H + 14);
 
 	// Stats grid: bold key in dark text, value in body text aligned to a
 	// fixed column.
 	pdf.setFontSize(11);
 	const grid: [string, string][] = [
-		[LBL[meta.locale].totalDistance, formatKmRound(overview.totalKm, meta.units)],
-		[LBL[meta.locale].dayCount, `${overview.dayCount}`],
-		[LBL[meta.locale].direction, directionDisplay(meta.direction, meta.locale)],
-		[LBL[meta.locale].gain, `+${formatElevation(overview.totalGainM, meta.units)}`],
-		[LBL[meta.locale].loss, `-${formatElevation(overview.totalLossM, meta.units)}`],
-		[LBL[meta.locale].eta, formatEta(overview.totalDurationSec)],
-		[LBL[meta.locale].pace, `${meta.walkingPaceKmh.toFixed(1)} km/h`],
+		[meta.strings.labels.totalDistance, formatKmRound(overview.totalKm, meta.units)],
+		[meta.strings.labels.dayCount, `${overview.dayCount}`],
+		[meta.strings.labels.direction, directionDisplay(meta.direction, meta.strings)],
+		[meta.strings.labels.gain, `+${formatElevation(overview.totalGainM, meta.units)}`],
+		[meta.strings.labels.loss, `-${formatElevation(overview.totalLossM, meta.units)}`],
+		[meta.strings.labels.eta, formatEta(overview.totalDurationSec)],
+		[meta.strings.labels.pace, `${meta.walkingPaceKmh.toFixed(1)} km/h`],
 	];
 	let y = HEADER_H + 26;
 	for (const [k, v] of grid) {
@@ -294,7 +291,7 @@ function renderCover(pdf: JsPDF, brief: TripBrief, logoDataUrl: string | null): 
 	pdf.setFont('NotoSans', 'bold');
 	pdf.setTextColor(...SECTION_BLUE_RGB);
 	pdf.setFontSize(12);
-	pdf.text(DAYS_HEADING[meta.locale], MARGIN_X, y);
+	pdf.text(meta.strings.daysHeading, MARGIN_X, y);
 	y += 6;
 
 	pdf.setFontSize(9);
@@ -304,7 +301,7 @@ function renderCover(pdf: JsPDF, brief: TripBrief, logoDataUrl: string | null): 
 		const distKm = day.endKm - day.startKm;
 		const distStr = formatKmRound(distKm, meta.units);
 		const eta = formatEta(day.etaSec);
-		const headerStr = dayHeader(day, meta.locale, meta.units);
+		const headerStr = dayHeader(day, meta.strings, meta.units);
 		pdf.setFont('NotoSans', 'bold');
 		pdf.setTextColor(...HEADER_TEXT_RGB);
 		pdf.text(headerStr, MARGIN_X, y);
@@ -329,7 +326,7 @@ function renderDay(
 	// stat segments (green gain, red loss, gray ETA). Same shape as the
 	// strip-map per-stage header.
 	const distKm = day.endKm - day.startKm;
-	const headerTitle = `${dayHeader(day, meta.locale, meta.units)}  |  ${formatKmRound(distKm, meta.units)}`;
+	const headerTitle = `${dayHeader(day, meta.strings, meta.units)}  |  ${formatKmRound(distKm, meta.units)}`;
 	const gainStr = formatElevation(day.gainM, meta.units);
 	const lossStr = formatElevation(day.lossM, meta.units);
 	const etaStr = formatEta(day.etaSec);
@@ -364,7 +361,7 @@ function renderDay(
 		pdf.setFont('NotoSans', 'bold');
 		pdf.setTextColor(...ALERT_RGB);
 		pdf.setFontSize(10);
-		pdf.text(LBL[meta.locale].alerts, MARGIN_X, yCursor);
+		pdf.text(meta.strings.labels.alerts, MARGIN_X, yCursor);
 		yCursor += 5;
 		pdf.setFont('NotoSans', 'normal');
 		pdf.setTextColor(...MUTED_TEXT_RGB);
@@ -385,7 +382,7 @@ function renderDay(
 		pdf.setFont('NotoSans', 'bold');
 		pdf.setTextColor(...SECTION_BLUE_RGB);
 		pdf.setFontSize(11);
-		pdf.text(`${LBL[meta.locale].pois} (${day.pois.length})`, MARGIN_X, yCursor);
+		pdf.text(`${meta.strings.labels.pois} (${day.pois.length})`, MARGIN_X, yCursor);
 		yCursor += 5;
 		pdf.setTextColor(...BODY_TEXT_RGB);
 		pdf.setFontSize(9);
@@ -423,7 +420,7 @@ function renderDay(
 		if (remainder > 0 && yCursor <= pageBudget) {
 			pdf.setFont('NotoSans', 'normal');
 			pdf.setTextColor(...MUTED_TEXT_RGB);
-			pdf.text(`+ ${remainder} ${MORE_LABEL[meta.locale]}`, MARGIN_X, yCursor);
+			pdf.text(`+ ${remainder} ${meta.strings.moreLabel}`, MARGIN_X, yCursor);
 		}
 	}
 }
@@ -431,13 +428,13 @@ function renderDay(
 function renderBackPage(pdf: JsPDF, brief: TripBrief, logoDataUrl: string | null): void {
 	const { meta } = brief;
 
-	paintHeaderBand(pdf, LBL[meta.locale].emergency, [], logoDataUrl);
+	paintHeaderBand(pdf, meta.strings.labels.emergency, [], logoDataUrl);
 
 	let y = HEADER_H + 14;
 	pdf.setFontSize(11);
 	pdf.setFont('NotoSans', 'normal');
 	pdf.setTextColor(...BODY_TEXT_RGB);
-	const lines = EMERGENCY_BODY[meta.locale];
+	const lines = emergencyLines(meta.strings);
 	for (const line of lines) {
 		const wrapped = pdf.splitTextToSize(line, PAGE_W - MARGIN_X * 2) as string[];
 		pdf.text(wrapped, MARGIN_X, y);
@@ -446,7 +443,11 @@ function renderBackPage(pdf: JsPDF, brief: TripBrief, logoDataUrl: string | null
 
 	pdf.setFontSize(9);
 	pdf.setTextColor(...FOOTER_RGB);
-	pdf.text(`${LBL[meta.locale].generated} ${formatGeneratedAt(meta.generatedAt, meta.locale)}`, MARGIN_X, PAGE_H - 12);
+	pdf.text(
+		`${meta.strings.labels.generated} ${formatGeneratedAt(meta.generatedAt, meta.locale)}`,
+		MARGIN_X,
+		PAGE_H - 12,
+	);
 }
 
 function footer(pdf: JsPDF, page: number, totalPages: number): void {
