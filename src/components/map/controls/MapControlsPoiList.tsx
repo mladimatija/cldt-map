@@ -209,10 +209,10 @@ const PoiListRow = React.memo(function PoiListRow({
 					{poi.water && tWater && (
 						<>
 							{' · '}
-							<span className="inline-flex items-baseline gap-1 whitespace-nowrap">
+							<span className="inline-flex items-baseline gap-1">
 								<span
 									aria-hidden
-									className="inline-block h-2 w-2 self-center rounded-full"
+									className="inline-block h-2 w-2 rounded-full"
 									style={{ background: WATER_COLOR[poi.water.reliability] }}
 								/>
 								{tWater}
