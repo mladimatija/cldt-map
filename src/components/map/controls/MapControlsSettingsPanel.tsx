@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, type RefObject } from 'react';
+import React, { useRef, useState, type RefObject } from 'react';
 import { useTranslations } from 'next-intl';
 import { usePopoverFocusTrap } from '@/hooks';
 import SmartTooltip from '@/components/ui/SmartTooltip';
@@ -16,6 +16,7 @@ import {
 	volumeUnitLabel,
 	weightUnitLabel,
 } from '@/lib/pack-weight';
+import { parsePackCsv } from '@/lib/pack-csv';
 import { useMapStore, type MapStoreState } from '@/lib/store';
 import {
 	IoMoonOutline,
@@ -109,6 +110,8 @@ export function MapControlsSettingsPanel({
 	const setWaterConsumptionLph = useMapStore((state: MapStoreState) => state.setWaterConsumptionLph);
 	const packEtaAdjust = useMapStore((state: MapStoreState) => state.packEtaAdjust);
 	const setPackEtaAdjust = useMapStore((state: MapStoreState) => state.setPackEtaAdjust);
+	const packGearList = useMapStore((state: MapStoreState) => state.packGearList);
+	const setPackGearList = useMapStore((state: MapStoreState) => state.setPackGearList);
 	const severeWeatherLayer = useMapStore((state: MapStoreState) => state.severeWeatherLayer);
 	const setSevereWeatherLayer = useMapStore((state: MapStoreState) => state.setSevereWeatherLayer);
 	const mineAreasEnabled = useMapStore((state: MapStoreState) => state.mineAreasEnabled);
@@ -123,6 +126,21 @@ export function MapControlsSettingsPanel({
 	// so the days-ago display stays pure during render
 	// while still reflecting the active dataset's lastUpdated value.
 	const [nowMs] = useState(() => Date.now());
+	const packCsvInputRef = useRef<HTMLInputElement>(null);
+	const [packCsvError, setPackCsvError] = useState(false);
+
+	/** LighterPack / Packstack CSV import: fills the gear list and the base
+	 *  weight field in one go. Parsing is synchronous and local. */
+	const handlePackCsv = async (file: File): Promise<void> => {
+		setPackCsvError(false);
+		try {
+			const list = parsePackCsv(await file.text(), file.name);
+			setPackGearList(list);
+			setPackBaseWeightKg(list.baseKg);
+		} catch {
+			setPackCsvError(true);
+		}
+	};
 	const seasonalLastUpdatedDays: number | null = ((): number | null => {
 		if (!seasonalStatusFile?.lastUpdated) return null;
 		const ts = Date.parse(seasonalStatusFile.lastUpdated);
@@ -538,6 +556,36 @@ export function MapControlsSettingsPanel({
 							</span>
 						</label>
 						<p className="m-0 text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('packWeightHint')}</p>
+						<input
+							accept=".csv,text/csv"
+							className="hidden"
+							ref={packCsvInputRef}
+							type="file"
+							onChange={(e) => {
+								const file = e.target.files?.[0];
+								if (file) void handlePackCsv(file);
+								e.target.value = '';
+							}}
+						/>
+						{packGearList ? (
+							<div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
+								<span className="min-w-0 flex-1 truncate">
+									{t('packCsvSummary', {
+										name: packGearList.sourceName,
+										count: packGearList.items.length,
+										base: formatWeight(packGearList.baseKg, units),
+									})}
+								</span>
+								<Button size="sm" variant="base" onClick={() => setPackGearList(null)}>
+									{t('packCsvClear')}
+								</Button>
+							</div>
+						) : (
+							<Button size="sm" variant="mapControlOutlineSecondary" onClick={() => packCsvInputRef.current?.click()}>
+								{t('packCsvImport')}
+							</Button>
+						)}
+						{packCsvError && <p className="text-cldt-red m-0 text-xs">{t('packCsvError')}</p>}
 					</div>
 
 					<label className="flex cursor-pointer items-start gap-2">

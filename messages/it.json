@@ -229,7 +229,11 @@
 		"waterConsumptionLabel": "Consumo di acqua",
 		"packWeightHint": "Attiva i suggerimenti sull’acqua da portare per tappa. Lascia vuoto il peso base per disattivare.",
 		"packEtaAdjustLabel": "Adatta le stime dei tempi al peso dello zaino",
-		"packEtaAdjustHint": "Rallenta le stime di circa l’1% per ogni chilogrammo di peso base oltre {reference}."
+		"packEtaAdjustHint": "Rallenta le stime di circa l’1% per ogni chilogrammo di peso base oltre {reference}.",
+		"packCsvImport": "Importa lista attrezzatura (CSV)",
+		"packCsvSummary": "{name}: {count} articoli, base {base}",
+		"packCsvClear": "Rimuovi",
+		"packCsvError": "Impossibile leggere il CSV. Esportalo da LighterPack o Packstack e riprova."
 	},
 	"baseMapSelector": {
 		"standard": "Standard",
@@ -673,7 +677,9 @@
 			}
 		},
 		"packSummary": "{base} + acqua",
-		"waterCarry": "Acqua: porta fino a {volume} per il tratto più lungo senza fonti (peso totale dello zaino {total})"
+		"waterCarry": "Acqua: porta fino a {volume} per il tratto più lungo senza fonti (peso totale dello zaino {total})",
+		"gearHeading": "Lista attrezzatura ({name})",
+		"gearMissing": "Attrezzatura consigliata non trovata nella tua lista: {terms}. Verifica prima della partenza."
 	},
 	"severeWeather": {
 		"layerLabel": "Avvisi meteo severi",

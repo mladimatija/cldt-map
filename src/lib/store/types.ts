@@ -8,6 +8,7 @@ import type { TrailOsmTagsFile } from '../trail-osm-tags';
 import type { MineAreasFile } from '../mine-areas';
 import type { CompletionInterval } from '../completion';
 import type { JournalEntry, UserWaypoint } from '../user-waypoints';
+import type { PackList } from '../pack-csv';
 import type { PoiImage, PoisFile } from '../pois';
 import { RulerRange } from '@/lib/distance-utils';
 
@@ -321,6 +322,10 @@ export interface MapStoreState {
 	/** Apply the pack-weight pace penalty to ETAs. Persisted. */
 	packEtaAdjust: boolean;
 	setPackEtaAdjust: (enabled: boolean) => void;
+	/** Imported gear list (LighterPack/Packstack CSV); null when none.
+	 *  Importing also fills packBaseWeightKg. Persisted. */
+	packGearList: PackList | null;
+	setPackGearList: (list: PackList | null) => void;
 
 	/** Personal map annotations (long-press to add). Persisted. */
 	userWaypoints: UserWaypoint[];

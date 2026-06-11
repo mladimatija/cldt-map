@@ -229,7 +229,11 @@
 		"waterConsumptionLabel": "Wasserverbrauch",
 		"packWeightHint": "Aktiviert Wassertransport-Empfehlungen pro Etappe. Basisgewicht leer lassen, um dies auszuschalten.",
 		"packEtaAdjustLabel": "Zeitschätzungen ans Rucksackgewicht anpassen",
-		"packEtaAdjustHint": "Verlangsamt Schätzungen um etwa 1% pro Kilogramm Basisgewicht über {reference}."
+		"packEtaAdjustHint": "Verlangsamt Schätzungen um etwa 1% pro Kilogramm Basisgewicht über {reference}.",
+		"packCsvImport": "Packliste importieren (CSV)",
+		"packCsvSummary": "{name}: {count} Artikel, Basis {base}",
+		"packCsvClear": "Entfernen",
+		"packCsvError": "CSV konnte nicht gelesen werden. Aus LighterPack oder Packstack exportieren und erneut versuchen."
 	},
 	"baseMapSelector": {
 		"standard": "Standard",
@@ -673,7 +677,9 @@
 			}
 		},
 		"packSummary": "{base} + Wasser",
-		"waterCarry": "Wasser: bis zu {volume} für den längsten Abschnitt ohne Quelle mitnehmen (Gesamtgewicht {total})"
+		"waterCarry": "Wasser: bis zu {volume} für den längsten Abschnitt ohne Quelle mitnehmen (Gesamtgewicht {total})",
+		"gearHeading": "Ausrüstungsliste ({name})",
+		"gearMissing": "Empfohlene Ausrüstung nicht in Ihrer Packliste gefunden: {terms}. Vor Abreise prüfen."
 	},
 	"severeWeather": {
 		"layerLabel": "Unwetterwarnungen",

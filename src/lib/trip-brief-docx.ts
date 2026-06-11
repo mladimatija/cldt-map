@@ -192,6 +192,25 @@ export async function exportTripBriefDocx(args: TripBriefDocxArgs): Promise<void
 		const { meta } = brief;
 		const out: DocxParagraph[] = [];
 
+		if (meta.gearChecklist) {
+			out.push(
+				new Paragraph({ text: meta.gearChecklist.heading, heading: HeadingLevel.HEADING_1, pageBreakBefore: true }),
+			);
+			if (meta.gearChecklist.missingLine) {
+				out.push(
+					new Paragraph({
+						children: [new TextRun({ text: meta.gearChecklist.missingLine, color: 'b45309', bold: true })],
+					}),
+				);
+			}
+			for (const cat of meta.gearChecklist.categories) {
+				out.push(new Paragraph({ text: cat.name, heading: HeadingLevel.HEADING_2 }));
+				for (const line of cat.lines) {
+					out.push(new Paragraph({ children: [new TextRun({ text: `[ ] ${line}` })] }));
+				}
+			}
+		}
+
 		out.push(
 			new Paragraph({
 				text: meta.strings.labels.emergency,
