@@ -658,6 +658,10 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					setPackGearList: (list): void => {
 						set({ packGearList: list });
 					},
+					pushAlertsEnabled: false,
+					setPushAlertsEnabled: (enabled: boolean): void => {
+						set({ pushAlertsEnabled: enabled });
+					},
 
 					userWaypoints: [],
 					addUserWaypoint: (wp): void => {
@@ -927,6 +931,7 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					waterConsumptionLph: state.waterConsumptionLph,
 					packEtaAdjust: state.packEtaAdjust,
 					packGearList: state.packGearList,
+					pushAlertsEnabled: state.pushAlertsEnabled,
 					userWaypoints: state.userWaypoints,
 					journalEntries: state.journalEntries,
 					gradeAdjustedEta: state.gradeAdjustedEta,

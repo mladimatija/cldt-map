@@ -207,3 +207,35 @@ async function handleGenericGetRequest(request) {
         return caches.match(request);
     }
 }
+// ── Web push (seasonal alert notifications) ─────────────────────────────────
+// Payload is JSON {title, body, url} sent by netlify/functions/push-seasonal-check.
+
+self.addEventListener('push', (event) => {
+    let data = {title: 'CLDT Map', body: '', url: '/'};
+    try {
+        if (event.data) data = {...data, ...event.data.json()};
+    } catch {
+        // keep defaults on malformed payloads
+    }
+    event.waitUntil(
+        self.registration.showNotification(data.title, {
+            body: data.body,
+            icon: '/icon-192.png',
+            badge: '/icon-192.png',
+            data: {url: data.url},
+        }),
+    );
+});
+
+self.addEventListener('notificationclick', (event) => {
+    event.notification.close();
+    const url = (event.notification.data && event.notification.data.url) || '/';
+    event.waitUntil(
+        self.clients.matchAll({type: 'window', includeUncontrolled: true}).then((clients) => {
+            for (const client of clients) {
+                if ('focus' in client) return client.focus();
+            }
+            return self.clients.openWindow(url);
+        }),
+    );
+});

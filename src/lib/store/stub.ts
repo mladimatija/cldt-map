@@ -194,6 +194,8 @@ export function createMapStoreStub(): MapStoreState {
 		setPackEtaAdjust: noop,
 		packGearList: null,
 		setPackGearList: noop,
+		pushAlertsEnabled: false,
+		setPushAlertsEnabled: noop,
 		userWaypoints: [],
 		addUserWaypoint: noop,
 		updateUserWaypoint: noop,

@@ -233,7 +233,9 @@
 		"packCsvImport": "Packliste importieren (CSV)",
 		"packCsvSummary": "{name}: {count} Artikel, Basis {base}",
 		"packCsvClear": "Entfernen",
-		"packCsvError": "CSV konnte nicht gelesen werden. Aus LighterPack oder Packstack exportieren und erneut versuchen."
+		"packCsvError": "CSV konnte nicht gelesen werden. Aus LighterPack oder Packstack exportieren und erneut versuchen.",
+		"pushAlertsLabel": "Über neue Warnungen benachrichtigen",
+		"pushAlertsHint": "Browser-Benachrichtigung bei neuen saisonalen Warnungen für den Weg. Funktioniert auch bei geschlossener App; kein Konto nötig."
 	},
 	"baseMapSelector": {
 		"standard": "Standard",
