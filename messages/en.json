@@ -560,7 +560,8 @@
 		"stripMapPdfProgress": "{current} / {total}",
 		"stripMapPdfCancel": "Cancel",
 		"stripMapPdfCancelTooltip": "Cancel the in-progress PDF export.",
-		"pdfStageLabel": "Stage"
+		"pdfStageLabel": "Stage",
+		"stageWaterGap": "Longest stretch without water: {distance}"
 	},
 	"tripBrief": {
 		"defaultTitle": "CLDT Trip Plan",
@@ -703,6 +704,13 @@
 			"food": "Food",
 			"atm": "ATM / bank",
 			"water": "Water source"
+		},
+		"water": {
+			"reliable": "Reliable water",
+			"seasonal": "Seasonal - may be dry",
+			"unverified": "Unverified - treat first",
+			"not_potable": "Not drinkable",
+			"checked": "Checked"
 		}
 	},
 	"poiDisclaimer": {

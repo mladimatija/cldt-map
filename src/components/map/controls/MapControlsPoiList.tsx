@@ -16,6 +16,7 @@ import {
 	type Poi,
 } from '@/lib/pois';
 import { defaultEnabledPoiTypes } from '@/lib/config';
+import { WATER_COLOR } from '@/lib/water-intelligence';
 import { usePoiListRows, usePopoverFocusTrap, type ParsedDistance, type SortMode } from '@/hooks';
 import { cn, formatDistance, formatOffTrail } from '@/lib/utils';
 import { findNearestPointIndex } from '@/lib/distance-utils';
@@ -105,6 +106,8 @@ interface PoiListRowProps {
 	tExportSelect: string;
 	tExportDeselect: string;
 	tType: string;
+	/** Translated water reliability label; empty string for non-water rows. */
+	tWater: string;
 	tOffTrailShort: (distance: string) => string;
 	tFromYou: (distance: string) => string;
 	onPick: () => void;
@@ -135,6 +138,7 @@ const PoiListRow = React.memo(function PoiListRow({
 	tExportSelect,
 	tExportDeselect,
 	tType,
+	tWater,
 	tOffTrailShort,
 	tFromYou,
 	onPick,
@@ -202,6 +206,19 @@ const PoiListRow = React.memo(function PoiListRow({
 					{tType} · {distLabel}
 					{offTrailLabel && <> · {tOffTrailShort(offTrailLabel)}</>}
 					{sort === 'gps' && gpsLabel && <> · {tFromYou(gpsLabel)}</>}
+					{poi.water && tWater && (
+						<>
+							{' · '}
+							<span className="inline-flex items-baseline gap-1 whitespace-nowrap">
+								<span
+									aria-hidden
+									className="inline-block h-2 w-2 self-center rounded-full"
+									style={{ background: WATER_COLOR[poi.water.reliability] }}
+								/>
+								{tWater}
+							</span>
+						</>
+					)}
 				</span>
 			</button>
 		</div>
@@ -599,6 +616,7 @@ export function MapControlsPoiList({
 		const exportSelect: string[] = new Array(rows.length);
 		const exportDeselect: string[] = new Array(rows.length);
 		const typeLabel: string[] = new Array(rows.length);
+		const waterLabel: string[] = new Array(rows.length);
 		for (let i = 0; i < rows.length; i++) {
 			const poi = rows[i];
 			const name = displayNameById.get(poi.id) ?? poiDisplayName(poi, locale);
@@ -607,8 +625,9 @@ export function MapControlsPoiList({
 			exportSelect[i] = t('exportSelect', { name });
 			exportDeselect[i] = t('exportDeselect', { name });
 			typeLabel[i] = t(`type.${poi.type}`, { default: poi.type });
+			waterLabel[i] = poi.water ? t(`water.${poi.water.reliability}`) : '';
 		}
-		return { starAdd, starRemove, exportSelect, exportDeselect, typeLabel };
+		return { starAdd, starRemove, exportSelect, exportDeselect, typeLabel, waterLabel };
 	}, [rows, displayNameById, locale, t]);
 
 	const renderRow = useCallback(
@@ -636,6 +655,7 @@ export function MapControlsPoiList({
 					tStarAdd={rowLabels.starAdd[i]}
 					tStarRemove={rowLabels.starRemove[i]}
 					tType={rowLabels.typeLabel[i]}
+					tWater={rowLabels.waterLabel[i]}
 					totalKm={totalKm}
 					units={units}
 					onPick={pickHandlers[i]}

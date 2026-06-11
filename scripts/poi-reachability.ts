@@ -532,9 +532,29 @@ export async function applyReachabilityFilter<T extends ReachabilityPoi>(
 	);
 	const radiusM = Math.round((maxOffTrailKm + 3) * 1000);
 
-	console.log(`-> Fetching OSM highway corridor for reachability check (${HIGHWAY_CHUNKS} chunks, r=${radiusM} m)...`);
-	const { ways, failed } = await fetchHighwaysAlongCorridor(corridorPoly, radiusM, opts);
-	console.log(`     ${ways.length} highway ways${failed ? ' (one or more chunks FAILED)' : ''}.`);
+	// Partial runs (e.g. POI_TYPES=water) can arrive with no POI whose rule
+	// ever consults the graph. The corridor fetch, flood fill, and spatial
+	// index would be pure waste then - skip straight to the tier loop with an
+	// empty graph; the graph-free rules below only check distance / name /
+	// population.
+	const graphNeeded = pois.some((p) => {
+		const rule = TIER_RULES[p.type];
+		return rule !== undefined && ruleNeedsGraph(rule);
+	});
+
+	let ways: Awaited<ReturnType<typeof fetchHighwaysAlongCorridor>>['ways'] = [];
+	let failed = false;
+	if (graphNeeded) {
+		console.log(
+			`-> Fetching OSM highway corridor for reachability check (${HIGHWAY_CHUNKS} chunks, r=${radiusM} m)...`,
+		);
+		const res = await fetchHighwaysAlongCorridor(corridorPoly, radiusM, opts);
+		ways = res.ways;
+		failed = res.failed;
+		console.log(`     ${ways.length} highway ways${failed ? ' (one or more chunks FAILED)' : ''}.`);
+	} else {
+		console.log('-> No graph-dependent POI types in this run - skipping highway corridor fetch.');
+	}
 
 	console.log('-> Building highway graph...');
 	const graph = buildHighwayGraph(ways);
@@ -546,8 +566,10 @@ export async function applyReachabilityFilter<T extends ReachabilityPoi>(
 	// exactly how a silently timed-out highway query once dropped 7,000 POIs:
 	// every road check ran against zero nodes). In either case, withhold
 	// fresh rows for graph-dependent types and tell the caller to carry the
-	// prior dataset's rows forward.
-	const graphUnusable = failed || graph.nodes.size === 0;
+	// prior dataset's rows forward. A deliberately skipped fetch (no
+	// graph-dependent POIs present) is NOT an unusable graph - nothing in
+	// this run consults it.
+	const graphUnusable = graphNeeded && (failed || graph.nodes.size === 0);
 	const carryForwardTypes = new Set<string>();
 	if (graphUnusable) {
 		for (const [type, rule] of Object.entries(TIER_RULES)) {
@@ -563,7 +585,7 @@ export async function applyReachabilityFilter<T extends ReachabilityPoi>(
 	// multi-million-node partial graph they are minutes of wasted work).
 	let reachable = new Set<string>();
 	let index: HighwayNodeIndex | null = null;
-	if (!graphUnusable) {
+	if (graphNeeded && !graphUnusable) {
 		console.log('-> Flood-fill from trail polyline...');
 		reachable = floodFillFromTrail(graph, trailPts);
 		console.log(`     ${reachable.size} nodes in trail-reachable component.`);
@@ -615,9 +637,13 @@ export async function applyReachabilityFilter<T extends ReachabilityPoi>(
 			continue;
 		}
 
-		// Attach reachability metadata for the schema-checked output.
-		poi.nearestHighwayM = Number.isFinite(nearestHighwayM) ? Math.round(nearestHighwayM) : undefined;
-		poi.isReachable = isReachable;
+		// Attach reachability metadata for the schema-checked output. Skipped
+		// entirely when the corridor fetch was skipped: writing isReachable
+		// false from a graph nothing was checked against would be a lie.
+		if (index) {
+			poi.nearestHighwayM = Number.isFinite(nearestHighwayM) ? Math.round(nearestHighwayM) : undefined;
+			poi.isReachable = isReachable;
+		}
 		tally.kept++;
 		stats.set(poi.type, tally);
 		kept.push(poi);

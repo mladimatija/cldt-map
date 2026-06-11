@@ -24,6 +24,12 @@ import {
 import { findNearestPointIndex, formatEta } from '@/lib/distance-utils';
 import { useStageForecasts } from '@/hooks/useStageForecasts';
 import { formatCompactTemp, weatherCodeToKey, weatherKeyToIcon } from '@/lib/weather';
+import {
+	isUsableWaterSource,
+	longestDryStretchKm,
+	WATER_GAP_DANGER_KM,
+	WATER_GAP_WARN_KM,
+} from '@/lib/water-intelligence';
 import { buildGpxXml, buildGpxWaypointXml, downloadGpxFile, type GpxWaypoint } from '@/lib/gpx-export';
 import { exportStripMapPdf, pointsToBounds } from '@/lib/export-utils';
 
@@ -243,6 +249,25 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 		const pois = poisByStage[activeStageIndex];
 		return isNobo ? [...pois].reverse() : pois;
 	}, [activeStageIndex, poisByStage, isNobo]);
+
+	/** Trail-km positions of water sources a hiker can plan around (explicitly
+	 *  non-potable excluded). Deliberately ignores the layer / type visibility
+	 *  filters: hiding water markers on the map must not hide a safety stat.
+	 *  The enrichment pipeline caps water at 1 km off trail, so no extra
+	 *  distance filter is needed here. */
+	const waterSourceKms = useMemo((): number[] => {
+		if (!poisFile?.pois?.length) return [];
+		return poisFile.pois.filter((p) => p.type === 'water' && isUsableWaterSource(p.water)).map((p) => p.trailKm);
+	}, [poisFile]);
+
+	/** Per-stage longest stretch (km, SOBO-keyed but direction-agnostic)
+	 *  without passing a usable water source. Empty when the dataset has no
+	 *  water rows at all (pre-water-layer datasets), so the UI can hide the
+	 *  stat instead of claiming every stage is bone dry. */
+	const waterGapByStage = useMemo((): number[] => {
+		if (!stagePlan || waterSourceKms.length === 0) return [];
+		return stagePlan.stages.map((s) => longestDryStretchKm(s.startKm, s.endKm, waterSourceKms));
+	}, [stagePlan, waterSourceKms]);
 
 	/** Flat, deduplicated waypoint list across every stage in the current plan.
 	 *  Dedup by id since a POI sitting at a stage boundary can legitimately
@@ -468,6 +493,25 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 											{poiCount}
 										</span>
 									)}
+									{waterGapByStage[i] !== undefined && waterGapByStage[i] >= WATER_GAP_WARN_KM && (
+										<span
+											aria-label={t('stageWaterGap', {
+												distance: `${toDisplay(waterGapByStage[i]).toFixed(0)} ${distanceUnitLabel}`,
+											})}
+											className={cn(
+												'ml-1 shrink-0 rounded-full px-1.5 py-0 text-[10px] font-medium tabular-nums',
+												waterGapByStage[i] >= WATER_GAP_DANGER_KM
+													? 'bg-cldt-red/10 text-cldt-red'
+													: 'bg-amber-500/15 text-amber-700 dark:text-amber-400',
+											)}
+											title={t('stageWaterGap', {
+												distance: `${toDisplay(waterGapByStage[i]).toFixed(0)} ${distanceUnitLabel}`,
+											})}
+										>
+											<span aria-hidden>💧</span>
+											{toDisplay(waterGapByStage[i]).toFixed(0)}
+										</span>
+									)}
 									{stageForecasts[i] && (
 										<span
 											aria-label={t('forecastTitle', {
@@ -499,6 +543,23 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 						<p className="text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400">
 							{t('stagePoisHeading', { index: activeStageIndex + 1 })}
 						</p>
+						{waterGapByStage[activeStageIndex] !== undefined && (
+							<p
+								className={cn(
+									'm-0 text-[10px]',
+									waterGapByStage[activeStageIndex] >= WATER_GAP_DANGER_KM
+										? 'text-cldt-red'
+										: waterGapByStage[activeStageIndex] >= WATER_GAP_WARN_KM
+											? 'text-amber-700 dark:text-amber-400'
+											: 'text-gray-500 dark:text-gray-400',
+								)}
+							>
+								<span aria-hidden>💧</span>{' '}
+								{t('stageWaterGap', {
+									distance: `${toDisplay(waterGapByStage[activeStageIndex]).toFixed(0)} ${distanceUnitLabel}`,
+								})}
+							</p>
+						)}
 						{activeStagePois.map((poi) => {
 							const name = poiDisplayName(poi, locale);
 							const typeLabel = tPois(`type.${poi.type}`, { default: poi.type });

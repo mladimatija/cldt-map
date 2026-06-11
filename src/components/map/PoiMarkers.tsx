@@ -130,6 +130,11 @@ export function PoiMarkers(): null {
 			sourceCurated: t('sourceCurated'),
 			lastVerifiedLabel: t('lastVerified'),
 			galleryImageLabel: t('galleryImageLabel'),
+			waterReliable: t('water.reliable'),
+			waterSeasonal: t('water.seasonal'),
+			waterUnverified: t('water.unverified'),
+			waterNotPotable: t('water.not_potable'),
+			waterCheckedLabel: t('water.checked'),
 		};
 
 		/** Re-render markers for the current zoom. Above CLUSTER_MAX_ZOOM we

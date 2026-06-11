@@ -560,7 +560,8 @@
 		"stripMapPdfProgress": "{current} / {total}",
 		"stripMapPdfCancel": "Annulla",
 		"stripMapPdfCancelTooltip": "Annulla l'esportazione PDF in corso.",
-		"pdfStageLabel": "Tappa"
+		"pdfStageLabel": "Tappa",
+		"stageWaterGap": "Tratto più lungo senza acqua: {distance}"
 	},
 	"tripBrief": {
 		"defaultTitle": "Piano di viaggio CLDT",
@@ -703,6 +704,13 @@
 			"food": "Cibo",
 			"atm": "Bancomat / banca",
 			"water": "Punto d'acqua"
+		},
+		"water": {
+			"reliable": "Acqua affidabile",
+			"seasonal": "Stagionale - può essere secca",
+			"unverified": "Non verificata - trattare prima di bere",
+			"not_potable": "Non potabile",
+			"checked": "Verificata"
 		}
 	},
 	"poiDisclaimer": {

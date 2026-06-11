@@ -62,6 +62,12 @@
 	--poi-color-food: #be185d;
 	--poi-color-atm: #6d28d9;
 	--poi-color-water: #0369a1;
+	/* Water reliability variants (markers + popup/list badges): the base water
+	   colour doubles as "reliable"; amber = seasonal, slate = unverified
+	   spring, red = explicitly non-potable. */
+	--poi-color-water-seasonal: #d97706;
+	--poi-color-water-unverified: #64748b;
+	--poi-color-water-nonpotable: #dc2626;
 	--poi-color-default: #475569;
 
 	/* Generic tinted near-white used for borders and text rendered over any
@@ -177,6 +183,9 @@
 	--poi-color-food: #ec4899;
 	--poi-color-atm: #a78bfa;
 	--poi-color-water: #38bdf8;
+	--poi-color-water-seasonal: #fbbf24;
+	--poi-color-water-unverified: #94a3b8;
+	--poi-color-water-nonpotable: #f87171;
 	--poi-color-default: #94a3b8;
 
 	/* Near-white tokens carry through unchanged - they read as crisp white

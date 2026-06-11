@@ -131,7 +131,9 @@
 					},
 					"tags": {
 						"type": "array",
-						"items": { "type": "string" },
+						"items": {
+							"type": "string"
+						},
 						"description": "Free-form tags for future filtering (e.g. `resupply`, `atm`, `train`, `bus`, `pharmacy`, `unesco`)."
 					},
 					"url": {
@@ -165,6 +167,33 @@
 					"isReachable": {
 						"type": "boolean",
 						"description": "True if the POI's nearest highway is in the same connected component of the corridor highway graph as the trail polyline. False means the road network around the POI is disconnected from the trail (typical for POIs separated from the trail by an unbridged river, cliff, or military zone)."
+					},
+					"water": {
+						"type": "object",
+						"description": "Water-source intelligence (type \"water\" only), derived from OSM tags at enrichment time.",
+						"additionalProperties": false,
+						"required": ["kind", "reliability"],
+						"properties": {
+							"kind": {
+								"enum": ["tap", "spring"]
+							},
+							"reliability": {
+								"enum": ["reliable", "seasonal", "unverified", "not_potable"]
+							},
+							"seasonal": {
+								"type": "boolean"
+							},
+							"intermittent": {
+								"type": "boolean"
+							},
+							"potable": {
+								"enum": ["yes", "no", "conditional"]
+							},
+							"checkDate": {
+								"type": "string",
+								"pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+							}
+						}
 					}
 				}
 			}

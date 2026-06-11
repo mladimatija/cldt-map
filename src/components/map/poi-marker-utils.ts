@@ -8,6 +8,7 @@
 
 import L from 'leaflet';
 import type { Poi } from '@/lib/pois';
+import { WATER_COLOR } from '@/lib/water-intelligence';
 
 /** Zoom level at and above which clustering is disabled. Below this, nearby
  *  POIs are grouped into a single count-bearing marker; at this zoom or
@@ -68,10 +69,15 @@ export function escapeHtml(s: string): string {
 	return s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
-/** Build a Leaflet divIcon for a single POI. */
+/** Build a Leaflet divIcon for a single POI. Water markers tint by their
+ *  reliability class (blue reliable / amber seasonal / slate unverified /
+ *  red non-potable) so trust is readable at map zoom without a popup. */
 export function buildIcon(poi: Poi, ariaLabel: string): L.DivIcon {
 	const size = TYPE_SIZE[poi.type] ?? 8;
-	const color = TYPE_COLOR[poi.type] ?? 'var(--poi-color-default)';
+	const color =
+		poi.type === 'water' && poi.water
+			? WATER_COLOR[poi.water.reliability]
+			: (TYPE_COLOR[poi.type] ?? 'var(--poi-color-default)');
 	const safeLabel = escapeHtml(ariaLabel);
 	return L.divIcon({
 		className: 'poi-marker-wrapper',
