@@ -60,7 +60,8 @@
 			"completionTracking": "Tracciamento dei tratti completati - segna ciò che hai percorso: automaticamente dal GPS sul sentiero, manualmente dalla selezione del righello o da intere sezioni A/B/C, oppure importando una traccia GPX registrata. I tratti completati si disegnano in verde sopra qualsiasi stile; il pannello progresso e il tooltip posizione mostrano il progresso totale e per sezione",
 			"helpPanel": "Aiuto in-app - il pulsante ? apre un riferimento per argomenti: nozioni di base della mappa, profilo altimetrico, gesti nascosti (pressione lunga SOS, trascinamento GPX), strumenti di pianificazione e comportamento offline",
 			"upNext": "Vista \"A seguire\" - la fonte d’acqua, il rifugio e la città più vicini davanti a te, con le distanze, direttamente nel pannello distanze",
-			"packWeight": "Peso dello zaino e acqua da portare - suggerimenti \"porta fino a X L\" per tappa dal peso base e dal consumo, in unità metriche o imperiali"
+			"packWeight": "Peso dello zaino e acqua da portare - suggerimenti \"porta fino a X L\" per tappa dal peso base e dal consumo, in unità metriche o imperiali",
+			"waypointsJournal": "Punti personali e diario di viaggio - tieni premuto sulla mappa per segnaposti con note, diario datato, esportazione GPX/Markdown; tutto resta sul tuo dispositivo"
 		},
 		"dataAttribution": "Dati e attribuzioni",
 		"dataAttributionDesc": "I dati del sentiero sono forniti dall'organizzazione Udruga Long Distance Trail Hrvatska (LDTH). Le tessere mappa provengono da OpenStreetMap, OpenTopoMap, CyclOSM e altri provider. Le mappe topografiche croate provengono dall'Amministrazione Geodetica Statale (DGU). I dati meteo provengono da DHMZ (Servizio Meteorologico Croato) e Open-Meteo. Le tessere radar sono fornite da RainViewer. Stato stagionale del sentiero, avvisi di pericolo e dati delle stazioni di soccorso alpino provengono da HGSS (Servizio croato di soccorso in montagna), HPS (Federazione croata di alpinismo) e dalle autorità dei parchi nazionali (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) e Parco naturale Velebit. I dati visualizzati su questo sito potrebbero non riflettere le condizioni più recenti. In caso di dubbio, verificare sempre le fonti ufficiali.",
@@ -887,7 +888,20 @@
 		"clear": "Cancella tutto il progresso",
 		"confirmClear": "Cancellare tutto il progresso?",
 		"confirmYes": "Cancella",
-		"confirmNo": "Mantieni"
+		"confirmNo": "Mantieni",
+		"waypointsHeading": "I miei punti",
+		"waypointDelete": "Elimina",
+		"exportWaypoints": "Esporta punti (GPX)",
+		"noWaypoints": "Nessun punto ancora. Tieni premuto (o clic destro) sulla mappa per aggiungerne uno.",
+		"journalHeading": "Diario di viaggio",
+		"journalRangeLine": "Tratto: {range}",
+		"noEntries": "Nessuna voce nel diario.",
+		"entryDateLabel": "Data della voce",
+		"entryTextLabel": "Testo della voce",
+		"entryPlaceholder": "Com’è andata la giornata?",
+		"attachRuler": "Allega selezione del righello ({range})",
+		"addEntry": "Aggiungi voce",
+		"exportJournal": "Esporta (.md)"
 	},
 	"help": {
 		"title": "Aiuto",
@@ -902,7 +916,8 @@
 		"gestures": {
 			"sos": "Tieni premuto il pulsante rosso SOS per il pannello di emergenza offline: coordinate, Plus Code, accesso stradale più vicino, soccorso HGSS e 112 con un tocco.",
 			"gpxDrop": "Trascina un file .gpx registrato sulla mappa per sovrapporre la tua escursione e confrontarla con il sentiero ufficiale.",
-			"poiList": "Nella lista dei luoghi digita un numero (\"100 km\") per saltarci; le frecce navigano, S seleziona le righe per l'export GPX."
+			"poiList": "Nella lista dei luoghi digita un numero (\"100 km\") per saltarci; le frecce navigano, S seleziona le righe per l'export GPX.",
+			"waypoint": "Tieni premuto (o clic destro) in un punto qualsiasi della mappa per un punto personale con nota."
 		},
 		"planningHeading": "Strumenti di pianificazione",
 		"planning": {
@@ -916,5 +931,15 @@
 			"gps": "GPS, pannello di emergenza e progresso funzionano completamente offline una volta salvato il corridoio."
 		},
 		"officialAppNote": "FarOut è l’app ufficiale del CLDT. Questa mappa è un progetto indipendente solo per scopi di ricerca ed educativi - verifica le informazioni critiche con le fonti ufficiali."
+	},
+	"waypoints": {
+		"defaultName": "Punto",
+		"nameLabel": "Nome del punto",
+		"noteLabel": "Nota",
+		"notePlaceholder": "Aggiungi una nota (scorta d’acqua, campeggio...)",
+		"atKm": "al {distance}",
+		"offTrail": "fuori dal sentiero",
+		"save": "Salva",
+		"delete": "Elimina"
 	}
 }

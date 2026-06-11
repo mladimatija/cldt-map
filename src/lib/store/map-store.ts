@@ -655,6 +655,39 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 						set({ packEtaAdjust: enabled });
 					},
 
+					userWaypoints: [],
+					addUserWaypoint: (wp): void => {
+						set((s) => ({ userWaypoints: [...s.userWaypoints, wp] }));
+					},
+					updateUserWaypoint: (id, patch): void => {
+						set((s) => ({
+							userWaypoints: s.userWaypoints.map((w) => (w.id === id ? { ...w, ...patch } : w)),
+						}));
+					},
+					removeUserWaypoint: (id): void => {
+						set((s) => ({ userWaypoints: s.userWaypoints.filter((w) => w.id !== id) }));
+					},
+					pendingOpenWaypointId: null,
+					requestOpenWaypoint: (id: string): void => {
+						set({ pendingOpenWaypointId: id });
+					},
+					clearPendingOpenWaypoint: (): void => {
+						set({ pendingOpenWaypointId: null });
+					},
+
+					journalEntries: [],
+					addJournalEntry: (entry): void => {
+						set((s) => ({ journalEntries: [...s.journalEntries, entry] }));
+					},
+					updateJournalEntry: (id, patch): void => {
+						set((s) => ({
+							journalEntries: s.journalEntries.map((e) => (e.id === id ? { ...e, ...patch } : e)),
+						}));
+					},
+					removeJournalEntry: (id): void => {
+						set((s) => ({ journalEntries: s.journalEntries.filter((e) => e.id !== id) }));
+					},
+
 					gradeAdjustedEta: config.gradeAdjustedEta,
 					setGradeAdjustedEta: (enabled: boolean): void => {
 						set({ gradeAdjustedEta: enabled });
@@ -889,6 +922,8 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					packBaseWeightKg: state.packBaseWeightKg,
 					waterConsumptionLph: state.waterConsumptionLph,
 					packEtaAdjust: state.packEtaAdjust,
+					userWaypoints: state.userWaypoints,
+					journalEntries: state.journalEntries,
 					gradeAdjustedEta: state.gradeAdjustedEta,
 					sunsetProjection: state.sunsetProjection,
 					stagePlan: state.stagePlan,

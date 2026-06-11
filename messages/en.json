@@ -60,7 +60,8 @@
 			"completionTracking": "Section completion tracking - mark which stretches you have hiked: automatically from GPS while on-trail, manually from the ruler selection or whole A/B/C sections, or by importing a recorded GPX track. Completed stretches draw green over any trail style; the progress panel and the location tooltip show total and per-section progress",
 			"helpPanel": "In-app help - the ? button opens a topic-grouped reference covering map basics, the elevation chart, hidden gestures (SOS long-press, GPX drag-and-drop), planning tools, and offline behaviour",
 			"upNext": "Up next data-book view - the nearest water source, shelter, and town ahead of you, with distances, right in the distance panel",
-			"packWeight": "Pack weight & water carry - per-stage \"carry up to X L\" suggestions from your base weight and drinking rate, in metric or imperial"
+			"packWeight": "Pack weight & water carry - per-stage \"carry up to X L\" suggestions from your base weight and drinking rate, in metric or imperial",
+			"waypointsJournal": "Custom waypoints & trip journal - long-press the map for personal markers with notes, keep a dated journal, export as GPX/Markdown; all stored on your device"
 		},
 		"dataAttribution": "Data & attribution",
 		"dataAttributionDesc": "Trail data is provided by the Udruga Long Distance Trail Hrvatska (LDTH) organization. Map tiles come from OpenStreetMap, OpenTopoMap, CyclOSM, and other providers. Croatian topographic maps are from the State Geodetic Administration (DGU). Weather data comes from DHMZ (Croatian Met Service) and Open-Meteo. Radar tiles are provided by RainViewer. Seasonal trail status, hazard warnings, and mountain rescue station data are sourced from HGSS (Croatian Mountain Rescue Service), HPS (Croatian Mountaineering Federation), and the national park authorities (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) together with Park prirode Velebit. Data displayed on this site may not reflect the latest conditions. When in doubt, always verify with the official sources.",
@@ -887,7 +888,20 @@
 		"clear": "Clear all progress",
 		"confirmClear": "Clear all progress?",
 		"confirmYes": "Clear",
-		"confirmNo": "Keep"
+		"confirmNo": "Keep",
+		"waypointsHeading": "My waypoints",
+		"waypointDelete": "Delete",
+		"exportWaypoints": "Export waypoints (GPX)",
+		"noWaypoints": "No waypoints yet. Long-press (or right-click) the map to add one.",
+		"journalHeading": "Trip journal",
+		"journalRangeLine": "Stretch: {range}",
+		"noEntries": "No journal entries yet.",
+		"entryDateLabel": "Entry date",
+		"entryTextLabel": "Entry text",
+		"entryPlaceholder": "How was the day?",
+		"attachRuler": "Attach ruler selection ({range})",
+		"addEntry": "Add entry",
+		"exportJournal": "Export (.md)"
 	},
 	"help": {
 		"title": "Help",
@@ -902,7 +916,8 @@
 		"gestures": {
 			"sos": "Long-press the red SOS button for the offline emergency panel: coordinates, Plus Code, nearest road access, HGSS rescue, and one-tap 112.",
 			"gpxDrop": "Drag and drop a recorded .gpx file anywhere onto the map to overlay your hike and compare it with the official trail.",
-			"poiList": "In the places list, type a number (\"100 km\") to jump there; arrow keys navigate, S selects rows for GPX export."
+			"poiList": "In the places list, type a number (\"100 km\") to jump there; arrow keys navigate, S selects rows for GPX export.",
+			"waypoint": "Long-press (or right-click) anywhere on the map to drop a personal waypoint with a note."
 		},
 		"planningHeading": "Planning tools",
 		"planning": {
@@ -916,5 +931,15 @@
 			"gps": "GPS, the emergency panel, and your progress keep working fully offline once the corridor is cached."
 		},
 		"officialAppNote": "FarOut is the official CLDT app. This map is an independent project for research and educational purposes only - verify critical information with official sources."
+	},
+	"waypoints": {
+		"defaultName": "Waypoint",
+		"nameLabel": "Waypoint name",
+		"noteLabel": "Note",
+		"notePlaceholder": "Add a note (water cache, campsite...)",
+		"atKm": "at {distance}",
+		"offTrail": "off trail",
+		"save": "Save",
+		"delete": "Delete"
 	}
 }

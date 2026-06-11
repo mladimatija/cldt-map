@@ -7,6 +7,7 @@ import type { SeasonalStatusEntry, SeasonalStatusFile } from '../seasonal-status
 import type { TrailOsmTagsFile } from '../trail-osm-tags';
 import type { MineAreasFile } from '../mine-areas';
 import type { CompletionInterval } from '../completion';
+import type { JournalEntry, UserWaypoint } from '../user-waypoints';
 import type { PoiImage, PoisFile } from '../pois';
 import { RulerRange } from '@/lib/distance-utils';
 
@@ -320,6 +321,23 @@ export interface MapStoreState {
 	/** Apply the pack-weight pace penalty to ETAs. Persisted. */
 	packEtaAdjust: boolean;
 	setPackEtaAdjust: (enabled: boolean) => void;
+
+	/** Personal map annotations (long-press to add). Persisted. */
+	userWaypoints: UserWaypoint[];
+	addUserWaypoint: (wp: UserWaypoint) => void;
+	updateUserWaypoint: (id: string, patch: Partial<Pick<UserWaypoint, 'name' | 'note'>>) => void;
+	removeUserWaypoint: (id: string) => void;
+	/** Waypoint id whose popup should open (set by the progress panel list);
+	 *  consumed and cleared by the marker layer. Session-only. */
+	pendingOpenWaypointId: string | null;
+	requestOpenWaypoint: (id: string) => void;
+	clearPendingOpenWaypoint: () => void;
+
+	/** Dated trip journal entries, optionally attached to a km range. Persisted. */
+	journalEntries: JournalEntry[];
+	addJournalEntry: (entry: JournalEntry) => void;
+	updateJournalEntry: (id: string, patch: Partial<Pick<JournalEntry, 'date' | 'text' | 'startKm' | 'endKm'>>) => void;
+	removeJournalEntry: (id: string) => void;
 
 	gradeAdjustedEta: boolean;
 	setGradeAdjustedEta: (enabled: boolean) => void;
