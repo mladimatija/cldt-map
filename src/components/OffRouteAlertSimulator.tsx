@@ -125,7 +125,7 @@ export function OffRouteAlertSimulator(): React.ReactElement {
 				</div>
 				{!enabled && <p className="text-sm text-gray-600">{t('offRouteEnableFirst')}</p>}
 
-				<div className="overflow-hidden rounded border border-dashed border-gray-300">
+				<div className="relative min-h-28 rounded border border-dashed border-gray-300">
 					<OffRouteAlertBanner />
 					{machine.phase !== 'alerting' && (
 						<p className="px-3 py-2 text-sm text-gray-500">{t('offRouteBannerEmpty')}</p>
