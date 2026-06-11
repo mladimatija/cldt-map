@@ -20,7 +20,6 @@ import { computeBearing } from '@/lib/distance-utils';
 import { bearingToCompass } from '@/lib/emergency-data';
 import { formatDistance } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
-import { BANNER_REGION_CLASSES, BANNER_ROW_CLASSES, BANNER_RED_CLASSES } from './banner-styles';
 
 /** Dev-only: publishes each machine step so the test page simulator can show
  *  the real machine state. The branch is compiled out of production builds. */
@@ -87,24 +86,22 @@ export function OffRouteAlertBanner(): React.ReactElement | null {
 	const compass = bearingToCompass(bearing);
 	const distanceLabel = formatDistance(closestPoint.distance, units, distancePrecision, true);
 
+	// Same floating banner pattern as GPXLoadErrorBanner / StaleCacheNotification
+	// (map-tooltip--banner), with the --error red accent.
 	return (
-		<div className={BANNER_REGION_CLASSES} role="region">
-			<div className={`${BANNER_ROW_CLASSES} ${BANNER_RED_CLASSES}`} role="alert">
-				<div className="min-w-0 flex-1">
-					<span className="font-semibold">{t('title')}</span>
-					<span className="ml-1">{t('body', { distance: distanceLabel })}</span>
-					<span className="ml-1">
-						{t('backToTrail', { compass: tEmergency(`compass.${compass}`), bearing: Math.round(bearing) })}
-					</span>
-				</div>
-				<Button
-					aria-label={t('dismiss')}
-					variant="bannerClose"
-					onClick={() => setView((prev) => ({ ...prev, snoozed: true }))}
-				>
-					×
-				</Button>
-			</div>
+		<div className="map-tooltip map-tooltip--banner map-tooltip--error animate-slide-in-from-top" role="alert">
+			<Button
+				aria-label={t('dismiss')}
+				className="user-location-close-btn"
+				variant="closeIcon"
+				onClick={() => setView((prev) => ({ ...prev, snoozed: true }))}
+			>
+				×
+			</Button>
+			<p>
+				<strong>{t('title')}</strong> {t('body', { distance: distanceLabel })}{' '}
+				{t('backToTrail', { compass: tEmergency(`compass.${compass}`), bearing: Math.round(bearing) })}
+			</p>
 		</div>
 	);
 }
