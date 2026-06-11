@@ -210,6 +210,8 @@ export function createMapStoreStub(): MapStoreState {
 		setCompletionAutoTrack: () => {},
 		showCompletionOverlay: true,
 		setShowCompletionOverlay: () => {},
+		walkSim: null,
+		setWalkSim: () => {},
 		mineAreasEnabled: true,
 		setMineAreasEnabled: () => {},
 		mineAreasFile: null,

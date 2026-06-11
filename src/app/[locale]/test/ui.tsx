@@ -2,7 +2,9 @@
 
 import React from 'react';
 import { Link } from '@/i18n/navigation';
-import StoreTest from '@/components/StoreTest';
+import { TestWalkSimulator } from '@/components/TestWalkSimulator';
+import { TestBannerInjectors } from '@/components/TestBannerInjectors';
+import { TestResetUtilities } from '@/components/TestResetUtilities';
 import { OffRouteAlertSimulator } from '@/components/OffRouteAlertSimulator';
 import { Layout } from '@/components/layout/Layout';
 import { useTranslations } from 'next-intl';
@@ -24,10 +26,11 @@ export function TestClient(): React.ReactElement {
 				<h1 className="mb-2">{t('title')}</h1>
 				<p className="mb-6 text-gray-600">{t('description')}</p>
 
-				<StoreTest />
-
-				<div className="mt-6">
+				<div className="space-y-6">
+					<TestWalkSimulator />
+					<TestBannerInjectors />
 					<OffRouteAlertSimulator />
+					<TestResetUtilities />
 				</div>
 			</div>
 		</Layout>
