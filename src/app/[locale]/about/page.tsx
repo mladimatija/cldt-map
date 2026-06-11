@@ -21,6 +21,22 @@ export default function AboutPage(): React.ReactNode {
 				<article className="mb-8">
 					<h2 className="text-cldt-blue mb-3 text-2xl font-semibold">{t('whatIsThis')}</h2>
 					<p className="mb-4">{t('whatIsThisDesc', { title: siteMetadata.title })}</p>
+					<aside
+						aria-label={t('officialApp')}
+						className="border-cldt-blue mb-4 rounded border-l-4 bg-gray-50 p-4 dark:bg-[var(--bg-secondary)]"
+					>
+						<h3 className="text-cldt-blue mb-2 text-base font-semibold">{t('officialApp')}</h3>
+						<p className="m-0 text-sm">
+							{t.rich('officialAppDesc', {
+								title: siteMetadata.title,
+								link: (chunks) => (
+									<ExternalLink href="https://faroutguides.com/croatian-long-distance-trail-map/">
+										{chunks}
+									</ExternalLink>
+								),
+							})}
+						</p>
+					</aside>
 				</article>
 
 				<article className="mb-8">
@@ -63,6 +79,7 @@ export default function AboutPage(): React.ReactNode {
 						<li className="mb-2">{t('mapFeaturesList.offRouteAlert')}</li>
 						<li className="mb-2">{t('mapFeaturesList.waterIntelligence')}</li>
 						<li className="mb-2">{t('mapFeaturesList.completionTracking')}</li>
+						<li className="mb-2">{t('mapFeaturesList.upNext')}</li>
 						<li className="mb-2">{t('mapFeaturesList.helpPanel')}</li>
 					</ul>
 				</article>

@@ -58,7 +58,8 @@
 			"offRouteAlert": "Off-route alert - optional warning (off by default) when you drift more than 200 m from the trail: a banner with your distance and compass bearing back, plus vibration. Arms itself only after GPS places you on the trail, so it stays silent elsewhere in Croatia, and auto-disarms when you genuinely leave (bus, taxi, end of day)",
 			"waterIntelligence": "Water source intelligence - every water place carries a reliability class from OSM ground-truth tags: reliable tap, seasonal (may be dry), unverified spring (treat before drinking), or not drinkable. The class colours the marker, shows as a badge in popups and lists, and the stage planner flags days whose longest stretch without usable water exceeds 15 / 25 km",
 			"completionTracking": "Section completion tracking - mark which stretches you have hiked: automatically from GPS while on-trail, manually from the ruler selection or whole A/B/C sections, or by importing a recorded GPX track. Completed stretches draw green over any trail style; the progress panel and the location tooltip show total and per-section progress",
-			"helpPanel": "In-app help - the ? button opens a topic-grouped reference covering map basics, the elevation chart, hidden gestures (SOS long-press, GPX drag-and-drop), planning tools, and offline behaviour"
+			"helpPanel": "In-app help - the ? button opens a topic-grouped reference covering map basics, the elevation chart, hidden gestures (SOS long-press, GPX drag-and-drop), planning tools, and offline behaviour",
+			"upNext": "Up next data-book view - the nearest water source, shelter, and town ahead of you, with distances, right in the distance panel"
 		},
 		"dataAttribution": "Data & attribution",
 		"dataAttributionDesc": "Trail data is provided by the Udruga Long Distance Trail Hrvatska (LDTH) organization. Map tiles come from OpenStreetMap, OpenTopoMap, CyclOSM, and other providers. Croatian topographic maps are from the State Geodetic Administration (DGU). Weather data comes from DHMZ (Croatian Met Service) and Open-Meteo. Radar tiles are provided by RainViewer. Seasonal trail status, hazard warnings, and mountain rescue station data are sourced from HGSS (Croatian Mountain Rescue Service), HPS (Croatian Mountaineering Federation), and the national park authorities (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) together with Park prirode Velebit. Data displayed on this site may not reflect the latest conditions. When in doubt, always verify with the official sources.",
@@ -69,7 +70,9 @@
 		"sourceCode": "Source code on GitHub",
 		"githubAriaLabel": "View {title} on GitHub",
 		"createdBy": "Created by",
-		"visitAuthor": "Visit {authorName}'s website"
+		"visitAuthor": "Visit {authorName}'s website",
+		"officialApp": "Official CLDT app",
+		"officialAppDesc": "The official mobile app of the CLDT is <link>FarOut</link>, published in cooperation with the trail association. {title} is an independent project and should be used for research and educational purposes only - always cross-check critical information (water, hazards, closures) with official sources before relying on it in the field."
 	},
 	"home": {
 		"srTitle": "{companyName} Map"
@@ -216,7 +219,9 @@
 		"progressShow": "Show trail progress",
 		"progressHide": "Hide trail progress",
 		"helpShow": "Show help",
-		"helpHide": "Hide help"
+		"helpHide": "Hide help",
+		"showUpNextLabel": "Up next in distance panel",
+		"showUpNextHint": "Shows the next water source, shelter, and town ahead in your direction of travel. Tap a row to open it on the map."
 	},
 	"baseMapSelector": {
 		"standard": "Standard",
@@ -530,7 +535,11 @@
 		"elevGain": "Remaining gain",
 		"elevLoss": "Remaining loss",
 		"elevGainSection": "Remaining gain (§)",
-		"elevLossSection": "Remaining loss (§)"
+		"elevLossSection": "Remaining loss (§)",
+		"upNext": "Up next",
+		"upNextWater": "Next water source",
+		"upNextShelter": "Next shelter or hut",
+		"upNextTown": "Next town or settlement"
 	},
 	"imports": {
 		"title": "Imported tracks",
@@ -894,6 +903,7 @@
 		"offline": {
 			"precache": "The cache panel pre-downloads the whole trail corridor (tiles, places, photos) for use without signal; it re-syncs on Wi-Fi.",
 			"gps": "GPS, the emergency panel, and your progress keep working fully offline once the corridor is cached."
-		}
+		},
+		"officialAppNote": "FarOut is the official CLDT app. This map is an independent project for research and educational purposes only - verify critical information with official sources."
 	}
 }

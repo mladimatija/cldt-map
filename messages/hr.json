@@ -58,7 +58,8 @@
 			"offRouteAlert": "Upozorenje o skretanju s rute - opcionalno upozorenje (zadano isključeno) kad se udaljiš više od 200 m od staze: traka s udaljenošću i smjerom natrag, uz vibraciju. Aktivira se tek kad te GPS smjesti na stazu, pa šuti drugdje u Hrvatskoj, i samo se deaktivira kad stvarno odeš (autobus, taksi, kraj dana)",
 			"waterIntelligence": "Pametne informacije o vodi - svako mjesto s vodom nosi klasu pouzdanosti iz OSM oznaka: pouzdana slavina, sezonska (moguće presušena), neprovjereni izvor (pročistiti prije pića) ili nije za piće. Klasa boji marker, prikazuje se kao oznaka u prozorima i popisima, a planer etapa označava dane čija najdulja dionica bez upotrebljive vode prelazi 15 / 25 km",
 			"completionTracking": "Praćenje prijeđenih dionica - označi što si prehodao: automatski iz GPS-a dok si na stazi, ručno iz odabira ravnalom ili cijelih dionica A/B/C, ili uvozom snimljene GPX rute. Prijeđene dionice crtaju se zeleno preko bilo kojeg stila staze; ploča napretka i oblačić lokacije prikazuju ukupni i napredak po dionicama",
-			"helpPanel": "Pomoć u aplikaciji - gumb ? otvara tematski organiziran pregled: osnove karte, profil visine, skrivene geste (dugi pritisak SOS-a, povlačenje GPX datoteke), alati za planiranje i offline ponašanje"
+			"helpPanel": "Pomoć u aplikaciji - gumb ? otvara tematski organiziran pregled: osnove karte, profil visine, skrivene geste (dugi pritisak SOS-a, povlačenje GPX datoteke), alati za planiranje i offline ponašanje",
+			"upNext": "Prikaz \"Slijedi\" - najbliži izvor vode, sklonište i grad ispred vas, s udaljenostima, izravno u panelu udaljenosti"
 		},
 		"dataAttribution": "Podaci i atribucija",
 		"dataAttributionDesc": "Podatke o stazi pruža organizacija Udruga Long Distance Trail Hrvatska (LDTH). Karte dolaze od OpenStreetMap, OpenTopoMap, CyclOSM i drugih pružatelja. Hrvatske topografske karte su od Državne geodetske uprave (DGU). Meteorološki podaci dolaze od DHMZ-a (Državni hidrometeorološki zavod) i Open-Meteo. Radarske pločice osigurava RainViewer. Podaci o sezonskom stanju puta, upozorenja o opasnostima i podaci o stanicama gorske službe spašavanja preuzeti su od HGSS-a (Hrvatska gorska služba spašavanja), HPS-a (Hrvatski planinarski savez) te uprava nacionalnih parkova (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) i Parka prirode Velebit. Podaci prikazani na ovoj stranici možda ne odražavaju najnovije stanje. U slučaju sumnje, uvijek provjerite službene izvore.",
@@ -69,7 +70,9 @@
 		"sourceCode": "Izvorni kod na GitHubu",
 		"githubAriaLabel": "Pogledaj {title} na GitHubu",
 		"createdBy": "Autor",
-		"visitAuthor": "Posjetite web stranicu {authorName}"
+		"visitAuthor": "Posjetite web stranicu {authorName}",
+		"officialApp": "Službena CLDT aplikacija",
+		"officialAppDesc": "Službena mobilna aplikacija CLDT-a je <link>FarOut</link>, objavljena u suradnji s udrugom. {title} je neovisan projekt i namijenjen je isključivo istraživačkim i edukativnim svrhama - ključne informacije (voda, opasnosti, zatvaranja) uvijek provjerite u službenim izvorima prije oslanjanja na terenu."
 	},
 	"home": {
 		"srTitle": "Karta {companyName}"
@@ -216,7 +219,9 @@
 		"progressShow": "Prikaži napredak na stazi",
 		"progressHide": "Sakrij napredak na stazi",
 		"helpShow": "Prikaži pomoć",
-		"helpHide": "Sakrij pomoć"
+		"helpHide": "Sakrij pomoć",
+		"showUpNextLabel": "Prikaz \"Slijedi\" u panelu udaljenosti",
+		"showUpNextHint": "Prikazuje sljedeći izvor vode, sklonište i grad ispred vas u smjeru kretanja. Dodirnite redak za otvaranje na karti."
 	},
 	"baseMapSelector": {
 		"standard": "Standardna",
@@ -530,7 +535,11 @@
 		"elevGain": "Preostali uspon",
 		"elevLoss": "Preostali spust",
 		"elevGainSection": "Preostali uspon (§)",
-		"elevLossSection": "Preostali spust (§)"
+		"elevLossSection": "Preostali spust (§)",
+		"upNext": "Slijedi",
+		"upNextWater": "Sljedeći izvor vode",
+		"upNextShelter": "Sljedeće sklonište ili dom",
+		"upNextTown": "Sljedeći grad ili naselje"
 	},
 	"imports": {
 		"title": "Uvezene rute",
@@ -894,6 +903,7 @@
 		"offline": {
 			"precache": "Ploča predmemorije unaprijed preuzima cijeli koridor staze (pločice, mjesta, fotografije) za korištenje bez signala; sinkronizira se na Wi-Fi mreži.",
 			"gps": "GPS, ploča za hitne slučajeve i tvoj napredak rade potpuno offline čim je koridor spremljen."
-		}
+		},
+		"officialAppNote": "FarOut je službena CLDT aplikacija. Ova karta je neovisan projekt isključivo za istraživačke i edukativne svrhe - ključne informacije provjerite u službenim izvorima."
 	}
 }
