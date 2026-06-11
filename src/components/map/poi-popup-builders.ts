@@ -52,6 +52,12 @@ export interface PopupBuildLabels {
 	waterNotPotable: string;
 	/** Prefix for the OSM check_date shown next to the water badge. */
 	waterCheckedLabel: string;
+	/** Resupply section heading + per-kind labels + empty/verify hints. */
+	resupplyHeading: string;
+	resupplyNone: string;
+	resupplyVerify: string;
+	resupplyKinds: Record<'grocery' | 'bakery' | 'pharmacy' | 'atm' | 'post' | 'bus' | 'fuel', string>;
+	resupplyMore: string;
 }
 
 /** Builds the gallery or legacy single-image HTML block. Returns empty string
@@ -145,6 +151,39 @@ export function buildMetaRowsHtml(
 		lines.push(
 			`<p class="poi-popup__row"><span class="poi-popup__water poi-popup__water--${chipModifier}">${escapeHtml(relLabel)}</span>${checked}</p>`,
 		);
+	}
+
+	// Resupply section (towns/settlements with enrichment data). Empty
+	// places[] means the area was checked and nothing was found - say so
+	// explicitly rather than rendering nothing.
+	if (poi.resupply) {
+		lines.push(
+			`<p class="poi-popup__row"><span class="poi-popup__label">${escapeHtml(labels.resupplyHeading)}</span></p>`,
+		);
+		if (poi.resupply.places.length === 0) {
+			lines.push(`<p class="poi-popup__row poi-popup__row--muted">${escapeHtml(labels.resupplyNone)}</p>`);
+		} else {
+			const shown = poi.resupply.places.slice(0, 6);
+			for (const place of shown) {
+				const kindLabel = labels.resupplyKinds[place.kind] ?? place.kind;
+				const name = place.name ? ` ${escapeHtml(place.name)}` : '';
+				const hours = place.openingHours
+					? ` <span class="poi-popup__row--muted">(${escapeHtml(place.openingHours)})</span>`
+					: '';
+				lines.push(
+					`<p class="poi-popup__row">· <span class="poi-popup__label">${escapeHtml(kindLabel)}</span>${name}${hours}</p>`,
+				);
+			}
+			const rest = poi.resupply.places.length - shown.length;
+			if (rest > 0) {
+				lines.push(
+					`<p class="poi-popup__row poi-popup__row--muted">${escapeHtml(labels.resupplyMore.replace('{count}', String(rest)))}</p>`,
+				);
+			}
+			lines.push(
+				`<p class="poi-popup__row poi-popup__row--muted">${escapeHtml(labels.resupplyVerify.replace('{date}', formatIsoDate(poi.resupply.updated, locale)))}</p>`,
+			);
+		}
 	}
 	if (typeof poi.elevationM === 'number') {
 		const elev =

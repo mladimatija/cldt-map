@@ -61,7 +61,8 @@
 			"helpPanel": "Pomoć u aplikaciji - gumb ? otvara tematski organiziran pregled: osnove karte, profil visine, skrivene geste (dugi pritisak SOS-a, povlačenje GPX datoteke), alati za planiranje i offline ponašanje",
 			"upNext": "Prikaz \"Slijedi\" - najbliži izvor vode, sklonište i grad ispred vas, s udaljenostima, izravno u panelu udaljenosti",
 			"packWeight": "Težina ruksaka i nošenje vode - preporuke \"ponesite do X L\" po etapi iz vaše osnovne težine i potrošnje, metrički ili imperijalno",
-			"waypointsJournal": "Vlastite točke i dnevnik puta - dugi pritisak na kartu za osobne oznake s bilješkama, dnevnik s datumima, izvoz u GPX/Markdown; sve ostaje na vašem uređaju"
+			"waypointsJournal": "Vlastite točke i dnevnik puta - dugi pritisak na kartu za osobne oznake s bilješkama, dnevnik s datumima, izvoz u GPX/Markdown; sve ostaje na vašem uređaju",
+			"resupply": "Vodiči za opskrbu - trgovine, ljekarne, bankomati, pošta i autobus iz OpenStreetMapa u prozorima gradova, s oznakama opskrbe po etapi u planeru"
 		},
 		"dataAttribution": "Podaci i atribucija",
 		"dataAttributionDesc": "Podatke o stazi pruža organizacija Udruga Long Distance Trail Hrvatska (LDTH). Karte dolaze od OpenStreetMap, OpenTopoMap, CyclOSM i drugih pružatelja. Hrvatske topografske karte su od Državne geodetske uprave (DGU). Meteorološki podaci dolaze od DHMZ-a (Državni hidrometeorološki zavod) i Open-Meteo. Radarske pločice osigurava RainViewer. Podaci o sezonskom stanju puta, upozorenja o opasnostima i podaci o stanicama gorske službe spašavanja preuzeti su od HGSS-a (Hrvatska gorska služba spašavanja), HPS-a (Hrvatski planinarski savez) te uprava nacionalnih parkova (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) i Parka prirode Velebit. Podaci prikazani na ovoj stranici možda ne odražavaju najnovije stanje. U slučaju sumnje, uvijek provjerite službene izvore.",
@@ -612,7 +613,9 @@
 		"stripMapPdfCancelTooltip": "Otkaži izvoz PDF-a u tijeku.",
 		"pdfStageLabel": "Etapa",
 		"stageWaterGap": "Najdulja dionica bez vode: {distance}",
-		"stageCarry": "Ponesite do {volume} vode (ukupno {total})"
+		"stageCarry": "Ponesite do {volume} vode (ukupno {total})",
+		"stageResupplyYes": "Opskrba namirnicama dostupna u ovoj etapi",
+		"stageResupplyNo": "Nema opskrbe namirnicama u ovoj etapi - ponesite hranu"
 	},
 	"tripBrief": {
 		"defaultTitle": "CLDT plan putovanja",
@@ -651,7 +654,8 @@
 				"pois": "Mjesta uz put",
 				"emergency": "Hitne službe",
 				"generated": "Generirano u CLDT karti",
-				"pack": "Ruksak"
+				"pack": "Ruksak",
+				"resupply": "opskrba"
 			},
 			"daysHeading": "Po danima",
 			"moreLabel": "još mjesta",
@@ -807,6 +811,19 @@
 			"unverified": "Neprovjerena - pročistiti prije pića",
 			"not_potable": "Nije za piće",
 			"checked": "Provjereno"
+		},
+		"resupply": {
+			"heading": "Opskrba",
+			"none": "U blizini nisu pronađene trgovine ni usluge (OpenStreetMap)",
+			"verify": "Iz OpenStreetMapa, {date} - provjerite na licu mjesta",
+			"more": "+ još {count}",
+			"grocery": "Trgovina",
+			"bakery": "Pekarnica",
+			"pharmacy": "Ljekarna",
+			"atm": "Bankomat/banka",
+			"post": "Pošta",
+			"bus": "Autobus",
+			"fuel": "Benzinska postaja"
 		}
 	},
 	"poiDisclaimer": {

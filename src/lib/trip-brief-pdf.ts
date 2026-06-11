@@ -432,7 +432,8 @@ function renderDay(
 			pdf.setFont('NotoSans', 'normal');
 			const offTrailFrag =
 				poi.distanceFromTrailKm >= 0.5 ? ` - ${formatKmRound(poi.distanceFromTrailKm, meta.units)} off-trail` : '';
-			const metaLine = ` - ${poi.typeLabel} - km ${poi.trailKm.toFixed(0)}${offTrailFrag}`;
+			const resupplyFrag = poi.resupply ? ` - ${meta.strings.labels.resupply}` : '';
+			const metaLine = ` - ${poi.typeLabel} - km ${poi.trailKm.toFixed(0)}${offTrailFrag}${resupplyFrag}`;
 			pdf.text(metaLine, MARGIN_X + nameWidth, yCursor);
 			yCursor += 4;
 			if (poi.summary) {

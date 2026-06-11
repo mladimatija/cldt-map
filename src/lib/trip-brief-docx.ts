@@ -185,7 +185,10 @@ export async function exportTripBriefDocx(args: TripBriefDocxArgs): Promise<void
 						numbering: { reference: 'bullet', level: 0 },
 						children: [
 							new TextRun({ text: poi.name, bold: true }),
-							new TextRun({ text: `  ${poi.typeLabel} · km ${poi.trailKm.toFixed(0)}${off}`, color: '707070' }),
+							new TextRun({
+								text: `  ${poi.typeLabel} · km ${poi.trailKm.toFixed(0)}${off}${poi.resupply ? ` · ${meta.strings.labels.resupply}` : ''}`,
+								color: '707070',
+							}),
 						],
 					}),
 				);

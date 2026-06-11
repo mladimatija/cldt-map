@@ -135,6 +135,19 @@ export function PoiMarkers(): null {
 			waterUnverified: t('water.unverified'),
 			waterNotPotable: t('water.not_potable'),
 			waterCheckedLabel: t('water.checked'),
+			resupplyHeading: t('resupply.heading'),
+			resupplyNone: t('resupply.none'),
+			resupplyVerify: t('resupply.verify'),
+			resupplyMore: t('resupply.more'),
+			resupplyKinds: {
+				grocery: t('resupply.grocery'),
+				bakery: t('resupply.bakery'),
+				pharmacy: t('resupply.pharmacy'),
+				atm: t('resupply.atm'),
+				post: t('resupply.post'),
+				bus: t('resupply.bus'),
+				fuel: t('resupply.fuel'),
+			},
 		};
 
 		/** Re-render markers for the current zoom. Above CLUSTER_MAX_ZOOM we
