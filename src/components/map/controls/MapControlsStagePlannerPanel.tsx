@@ -458,7 +458,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 							return (
 								<button
 									className={cn(
-										'focus-visible:ring-cldt-green flex w-full items-center gap-1.5 px-2 py-1.5 text-left text-xs transition-colors outline-none focus-visible:ring-2 focus-visible:ring-offset-1',
+										'focus-visible:ring-cldt-green flex w-full flex-col gap-0.5 px-2 py-1.5 text-left text-xs transition-colors outline-none focus-visible:ring-2 focus-visible:ring-offset-1',
 										i === activeStageIndex
 											? 'bg-cldt-light-blue text-gray-900 dark:text-white'
 											: 'hover:bg-gray-50 dark:hover:bg-gray-700',
@@ -467,69 +467,80 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 									type="button"
 									onClick={() => handleStageClick(i)}
 								>
-									<span className="w-6 shrink-0 font-medium">{i + 1}</span>
-									<span className="min-w-0 flex-1 truncate text-gray-500 dark:text-gray-400">
-										{toDisplay(stage.startKm).toFixed(0)}-{toDisplay(stage.endKm).toFixed(0)} {distanceUnitLabel}
+									{/* Line 1: stage number, km range, elevation, ETA. */}
+									<span className="flex w-full flex-wrap items-center gap-x-1.5 gap-y-0.5">
+										<span className="min-w-4 font-medium">{i + 1}</span>
+										<span className="whitespace-nowrap text-gray-500 dark:text-gray-400">
+											{toDisplay(stage.startKm).toFixed(0)}-{toDisplay(stage.endKm).toFixed(0)} {distanceUnitLabel}
+										</span>
+										{stats && (
+											<>
+												<span className="text-cldt-green shrink-0">
+													↑{formatElevation(isNobo ? stats.lossM : stats.gainM, units)}
+												</span>
+												<span className="text-cldt-red shrink-0">
+													↓{formatElevation(isNobo ? stats.gainM : stats.lossM, units)}
+												</span>
+												<span className="shrink-0 text-gray-500 tabular-nums dark:text-gray-400">
+													{formatEta(stats.etaSec)}
+												</span>
+											</>
+										)}
 									</span>
-									{stats && (
-										<>
-											<span className="text-cldt-green shrink-0">
-												↑{formatElevation(isNobo ? stats.lossM : stats.gainM, units)}
-											</span>
-											<span className="text-cldt-red shrink-0">
-												↓{formatElevation(isNobo ? stats.gainM : stats.lossM, units)}
-											</span>
-											<span className="shrink-0 text-gray-500 tabular-nums dark:text-gray-400">
-												{formatEta(stats.etaSec)}
-											</span>
-										</>
-									)}
-									{poiCount > 0 && (
-										<span
-											aria-label={t('stagePoiCount', { count: poiCount })}
-											className="text-cldt-blue bg-cldt-blue/10 ml-1 shrink-0 rounded-full px-1.5 py-0 text-[10px] font-medium tabular-nums"
-											title={t('stagePoiCount', { count: poiCount })}
-										>
-											{poiCount}
-										</span>
-									)}
-									{waterGapByStage[i] !== undefined && waterGapByStage[i] >= WATER_GAP_WARN_KM && (
-										<span
-											aria-label={t('stageWaterGap', {
-												distance: `${toDisplay(waterGapByStage[i]).toFixed(0)} ${distanceUnitLabel}`,
-											})}
-											className={cn(
-												'ml-1 shrink-0 rounded-full px-1.5 py-0 text-[10px] font-medium tabular-nums',
-												waterGapByStage[i] >= WATER_GAP_DANGER_KM
-													? 'bg-cldt-red/10 text-cldt-red'
-													: 'bg-amber-500/15 text-amber-700 dark:text-amber-400',
+									{/* Line 2: POI count, water gap, and forecast chips - always their
+									    own row so row one stays scannable. */}
+									{(poiCount > 0 ||
+										(waterGapByStage[i] !== undefined && waterGapByStage[i] >= WATER_GAP_WARN_KM) ||
+										stageForecasts[i]) && (
+										<span className="flex w-full flex-wrap items-center gap-x-1.5 gap-y-0.5 pl-5">
+											{poiCount > 0 && (
+												<span
+													aria-label={t('stagePoiCount', { count: poiCount })}
+													className="text-cldt-blue bg-cldt-blue/10 shrink-0 rounded-full px-1.5 py-0 text-[10px] font-medium tabular-nums"
+													title={t('stagePoiCount', { count: poiCount })}
+												>
+													{poiCount}
+												</span>
 											)}
-											title={t('stageWaterGap', {
-												distance: `${toDisplay(waterGapByStage[i]).toFixed(0)} ${distanceUnitLabel}`,
-											})}
-										>
-											<span aria-hidden>💧</span>
-											{toDisplay(waterGapByStage[i]).toFixed(0)}
-										</span>
-									)}
-									{stageForecasts[i] && (
-										<span
-											aria-label={t('forecastTitle', {
-												condition: tWeather(weatherCodeToKey(stageForecasts[i].weatherCode)),
-												max: formatCompactTemp(stageForecasts[i].tMaxC, units),
-												min: formatCompactTemp(stageForecasts[i].tMinC, units),
-												precip: stageForecasts[i].precipProbPct,
-											})}
-											className="ml-1 shrink-0 text-gray-600 tabular-nums dark:text-gray-300"
-											title={t('forecastTitle', {
-												condition: tWeather(weatherCodeToKey(stageForecasts[i].weatherCode)),
-												max: formatCompactTemp(stageForecasts[i].tMaxC, units),
-												min: formatCompactTemp(stageForecasts[i].tMinC, units),
-												precip: stageForecasts[i].precipProbPct,
-											})}
-										>
-											<span aria-hidden>{weatherKeyToIcon(weatherCodeToKey(stageForecasts[i].weatherCode))}</span>{' '}
-											{formatCompactTemp(stageForecasts[i].tMaxC, units)}
+											{waterGapByStage[i] !== undefined && waterGapByStage[i] >= WATER_GAP_WARN_KM && (
+												<span
+													aria-label={t('stageWaterGap', {
+														distance: `${toDisplay(waterGapByStage[i]).toFixed(0)} ${distanceUnitLabel}`,
+													})}
+													className={cn(
+														'shrink-0 rounded-full px-1.5 py-0 text-[10px] font-medium tabular-nums',
+														waterGapByStage[i] >= WATER_GAP_DANGER_KM
+															? 'bg-cldt-red/10 text-cldt-red'
+															: 'bg-amber-500/15 text-amber-700 dark:text-amber-400',
+													)}
+													title={t('stageWaterGap', {
+														distance: `${toDisplay(waterGapByStage[i]).toFixed(0)} ${distanceUnitLabel}`,
+													})}
+												>
+													<span aria-hidden>💧</span>
+													{toDisplay(waterGapByStage[i]).toFixed(0)}
+												</span>
+											)}
+											{stageForecasts[i] && (
+												<span
+													aria-label={t('forecastTitle', {
+														condition: tWeather(weatherCodeToKey(stageForecasts[i].weatherCode)),
+														max: formatCompactTemp(stageForecasts[i].tMaxC, units),
+														min: formatCompactTemp(stageForecasts[i].tMinC, units),
+														precip: stageForecasts[i].precipProbPct,
+													})}
+													className="shrink-0 text-gray-600 tabular-nums dark:text-gray-300"
+													title={t('forecastTitle', {
+														condition: tWeather(weatherCodeToKey(stageForecasts[i].weatherCode)),
+														max: formatCompactTemp(stageForecasts[i].tMaxC, units),
+														min: formatCompactTemp(stageForecasts[i].tMinC, units),
+														precip: stageForecasts[i].precipProbPct,
+													})}
+												>
+													<span aria-hidden>{weatherKeyToIcon(weatherCodeToKey(stageForecasts[i].weatherCode))}</span>{' '}
+													{formatCompactTemp(stageForecasts[i].tMaxC, units)}
+												</span>
+											)}
 										</span>
 									)}
 								</button>
