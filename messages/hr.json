@@ -62,7 +62,8 @@
 			"upNext": "Prikaz \"Slijedi\" - najbliži izvor vode, sklonište i grad ispred vas, s udaljenostima, izravno u panelu udaljenosti",
 			"packWeight": "Težina ruksaka i nošenje vode - preporuke \"ponesite do X L\" po etapi iz vaše osnovne težine i potrošnje, metrički ili imperijalno",
 			"waypointsJournal": "Vlastite točke i dnevnik puta - dugi pritisak na kartu za osobne oznake s bilješkama, dnevnik s datumima, izvoz u GPX/Markdown; sve ostaje na vašem uređaju",
-			"resupply": "Vodiči za opskrbu - trgovine, ljekarne, bankomati, pošta i autobus iz OpenStreetMapa u prozorima gradova, s oznakama opskrbe po etapi u planeru"
+			"resupply": "Vodiči za opskrbu - trgovine, ljekarne, bankomati, pošta i autobus iz OpenStreetMapa u prozorima gradova, s oznakama opskrbe po etapi u planeru",
+			"pushAlerts": "Obavijesti o upozorenjima - neobavezne push obavijesti preglednika kad se objavi novo sezonsko upozorenje, čak i kad je aplikacija zatvorena; bez računa"
 		},
 		"dataAttribution": "Podaci i atribucija",
 		"dataAttributionDesc": "Podatke o stazi pruža organizacija Udruga Long Distance Trail Hrvatska (LDTH). Karte dolaze od OpenStreetMap, OpenTopoMap, CyclOSM i drugih pružatelja. Hrvatske topografske karte su od Državne geodetske uprave (DGU). Meteorološki podaci dolaze od DHMZ-a (Državni hidrometeorološki zavod) i Open-Meteo. Radarske pločice osigurava RainViewer. Podaci o sezonskom stanju puta, upozorenja o opasnostima i podaci o stanicama gorske službe spašavanja preuzeti su od HGSS-a (Hrvatska gorska služba spašavanja), HPS-a (Hrvatski planinarski savez) te uprava nacionalnih parkova (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) i Parka prirode Velebit. Podaci prikazani na ovoj stranici možda ne odražavaju najnovije stanje. U slučaju sumnje, uvijek provjerite službene izvore.",
@@ -393,7 +394,24 @@
 			"tiles": "Offline predmemorija pločica",
 			"poiAssets": "Offline POI sadržaj (sličice, sažeci)",
 			"store": "Trajno spremište postavki (ponovno učitava)",
-			"everything": "Sve navedeno (ponovno učitava)"
+			"everything": "Sve navedeno (ponovno učitava)",
+			"waypoints": "Obriši točke i dnevnik",
+			"pack": "Obriši težinu ruksaka i popis opreme"
+		},
+		"seed": {
+			"title": "Probni podaci",
+			"description": "Ubacite realistične podatke za novije značajke kako bi paneli, prozori i oznake imali što prikazati.",
+			"run": "Ubaci",
+			"done": "Gotovo.",
+			"needsTrail": "Staza još nije učitana - prvo jednom otvorite kartu.",
+			"waypoints": "Tri točke ispred trenutne pozicije",
+			"waypointNote": "Ubačeno s testne stranice",
+			"journal": "Dva zapisa u dnevniku (jučer + danas)",
+			"pack": "Probni popis opreme (~3,5 kg osnovno, uključene dereze)",
+			"notification": "Prikaži probnu obavijest putem service workera",
+			"notificationTitle": "CLDT Map: probno upozorenje",
+			"notificationBody": "[oprez] Ovako izgleda push obavijest sezonskog upozorenja.",
+			"notificationDenied": "Dozvola za obavijesti nije dana."
 		}
 	},
 	"zoomControls": {
@@ -926,7 +944,9 @@
 		"entryPlaceholder": "Kakav je bio dan?",
 		"attachRuler": "Priloži odabir ravnala ({range})",
 		"addEntry": "Dodaj zapis",
-		"exportJournal": "Izvezi (.md)"
+		"exportJournal": "Izvezi (.md)",
+		"focusEditor": "Pisanje u fokusiranom načinu",
+		"focusEditorClose": "Zatvori"
 	},
 	"help": {
 		"title": "Pomoć",
@@ -948,12 +968,15 @@
 		"planning": {
 			"planner": "Gumb s kalendarom dijeli bilo koji raspon staze na dnevne etape s visinom, ETA-om, vodom i vremenom po danu.",
 			"tripBrief": "Unutar planera, \"Vodič za putovanje\" izvozi PDF za ispis ili DOCX za uređivanje cijelog plana s kartama i uputama za hitne slučajeve.",
-			"progress": "Gumb s kvačicom prati koje si dionice prehodao - automatski iz GPS-a, iz odabira ravnalom ili iz uvezene rute."
+			"progress": "Gumb s kvačicom prati koje si dionice prehodao - automatski iz GPS-a, iz odabira ravnalom ili iz uvezene rute.",
+			"packWeight": "Postavite težinu ruksaka u postavkama za preporuke nošenja vode po etapi i procjene vremena prilagođene težini; uvezite LighterPack/Packstack CSV za automatsko popunjavanje.",
+			"resupply": "Prozori gradova prikazuju obližnje trgovine i usluge; oznaka košarice u planeru etapa upozorava kad etapa nema opskrbu namirnicama."
 		},
 		"offlineHeading": "Offline",
 		"offline": {
 			"precache": "Ploča predmemorije unaprijed preuzima cijeli koridor staze (pločice, mjesta, fotografije) za korištenje bez signala; sinkronizira se na Wi-Fi mreži.",
-			"gps": "GPS, ploča za hitne slučajeve i tvoj napredak rade potpuno offline čim je koridor spremljen."
+			"gps": "GPS, ploča za hitne slučajeve i tvoj napredak rade potpuno offline čim je koridor spremljen.",
+			"pushAlerts": "Uključite obavijesti o upozorenjima u postavkama za push poruku kad se objavi novo sezonsko upozorenje."
 		},
 		"officialAppNote": "FarOut je službena CLDT aplikacija. Ova karta je neovisan projekt isključivo za istraživačke i edukativne svrhe - ključne informacije provjerite u službenim izvorima."
 	},

@@ -7,6 +7,7 @@ import { useTranslations } from 'next-intl';
 import { useMapStore, useStore, type MapStoreState } from '@/lib/store';
 import { newId, nextWaypointName, type UserWaypoint } from '@/lib/user-waypoints';
 import { formatDistance } from '@/lib/utils';
+import { MAP_CONTROL_INPUT } from '@/components/map/controls/map-controls-constants';
 
 const WAYPOINT_PANE = 'userWaypointPane';
 
@@ -104,27 +105,32 @@ export function UserWaypointMarkers(): null {
 			markers.set(wp.id, marker);
 		}
 
+		/** Popup content reusing the shared POI popup vocabulary: the
+		 *  `.map-tooltip` shell comes from bindPopup, rows/meta use the
+		 *  `poi-popup__row` classes, inputs reuse the map-control input
+		 *  styling, and the action pair mirrors the POI popup's primary
+		 *  (solid) / secondary (outlined) buttons. */
 		function buildWaypointPopup(wp: UserWaypoint): HTMLElement {
 			const root = document.createElement('div');
-			root.style.minWidth = '200px';
+			root.style.minWidth = '220px';
 
 			const nameInput = document.createElement('input');
 			nameInput.type = 'text';
 			nameInput.value = wp.name;
 			nameInput.maxLength = 80;
 			nameInput.setAttribute('aria-label', t('nameLabel'));
-			nameInput.style.cssText = 'width:100%;font-weight:600;margin-bottom:4px;';
+			nameInput.className = `${MAP_CONTROL_INPUT} mb-1.5 w-full font-semibold`;
 
 			const noteArea = document.createElement('textarea');
 			noteArea.value = wp.note;
-			noteArea.rows = 3;
+			noteArea.rows = 4;
 			noteArea.maxLength = 2000;
 			noteArea.placeholder = t('notePlaceholder');
 			noteArea.setAttribute('aria-label', t('noteLabel'));
-			noteArea.style.cssText = 'width:100%;font-size:12px;margin-bottom:4px;resize:vertical;';
+			noteArea.className = `${MAP_CONTROL_INPUT} mb-1 w-full resize-y text-sm`;
 
 			const metaLine = document.createElement('p');
-			metaLine.style.cssText = 'margin:0 0 6px;font-size:11px;opacity:0.7;';
+			metaLine.className = 'poi-popup__row poi-popup__row--muted';
 			const kmText =
 				wp.trailKm !== null
 					? t('atKm', { distance: formatDistance(wp.trailKm, units, distancePrecision) })
@@ -132,23 +138,24 @@ export function UserWaypointMarkers(): null {
 			metaLine.textContent = `${kmText} · ${wp.createdAt.slice(0, 10)}`;
 
 			const buttonRow = document.createElement('div');
-			buttonRow.style.cssText = 'display:flex;gap:6px;justify-content:flex-end;';
-
-			const saveBtn = document.createElement('button');
-			saveBtn.type = 'button';
-			saveBtn.textContent = t('save');
-			saveBtn.style.cssText = 'font-size:12px;padding:2px 10px;cursor:pointer;';
-			saveBtn.addEventListener('click', () => {
-				updateUserWaypoint(wp.id, { name: nameInput.value.trim() || wp.name, note: noteArea.value });
-				markers.get(wp.id)?.closePopup();
-			});
+			buttonRow.className = 'poi-popup__actions';
 
 			const deleteBtn = document.createElement('button');
 			deleteBtn.type = 'button';
 			deleteBtn.textContent = t('delete');
-			deleteBtn.style.cssText = 'font-size:12px;padding:2px 10px;cursor:pointer;color:#dc2626;';
+			deleteBtn.className = 'poi-popup__share';
+			deleteBtn.style.cssText = 'color:var(--cldt-red,#dc2626);border-color:var(--cldt-red,#dc2626);';
 			deleteBtn.addEventListener('click', () => {
 				removeUserWaypoint(wp.id);
+			});
+
+			const saveBtn = document.createElement('button');
+			saveBtn.type = 'button';
+			saveBtn.textContent = t('save');
+			saveBtn.className = 'poi-popup__open-maps';
+			saveBtn.addEventListener('click', () => {
+				updateUserWaypoint(wp.id, { name: nameInput.value.trim() || wp.name, note: noteArea.value });
+				markers.get(wp.id)?.closePopup();
 			});
 
 			buttonRow.append(deleteBtn, saveBtn);

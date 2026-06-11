@@ -5,6 +5,7 @@ import { Link } from '@/i18n/navigation';
 import { TestWalkSimulator } from '@/components/TestWalkSimulator';
 import { TestBannerInjectors } from '@/components/TestBannerInjectors';
 import { TestResetUtilities } from '@/components/TestResetUtilities';
+import { TestDataSeeders } from '@/components/TestDataSeeders';
 import { OffRouteAlertSimulator } from '@/components/OffRouteAlertSimulator';
 import { Layout } from '@/components/layout/Layout';
 import { useTranslations } from 'next-intl';
@@ -30,6 +31,7 @@ export function TestClient(): React.ReactElement {
 					<TestWalkSimulator />
 					<TestBannerInjectors />
 					<OffRouteAlertSimulator />
+					<TestDataSeeders />
 					<TestResetUtilities />
 				</div>
 			</div>

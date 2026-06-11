@@ -62,7 +62,8 @@
 			"upNext": "Vista \"A seguire\" - la fonte d’acqua, il rifugio e la città più vicini davanti a te, con le distanze, direttamente nel pannello distanze",
 			"packWeight": "Peso dello zaino e acqua da portare - suggerimenti \"porta fino a X L\" per tappa dal peso base e dal consumo, in unità metriche o imperiali",
 			"waypointsJournal": "Punti personali e diario di viaggio - tieni premuto sulla mappa per segnaposti con note, diario datato, esportazione GPX/Markdown; tutto resta sul tuo dispositivo",
-			"resupply": "Guide al rifornimento - negozi, farmacie, bancomat, posta e autobus da OpenStreetMap nei popup delle città, con indicatori di rifornimento per tappa nel planner"
+			"resupply": "Guide al rifornimento - negozi, farmacie, bancomat, posta e autobus da OpenStreetMap nei popup delle città, con indicatori di rifornimento per tappa nel planner",
+			"pushAlerts": "Notifiche di avviso - push opzionali del browser quando viene pubblicato un nuovo avviso stagionale, anche ad app chiusa; nessun account"
 		},
 		"dataAttribution": "Dati e attribuzioni",
 		"dataAttributionDesc": "I dati del sentiero sono forniti dall'organizzazione Udruga Long Distance Trail Hrvatska (LDTH). Le tessere mappa provengono da OpenStreetMap, OpenTopoMap, CyclOSM e altri provider. Le mappe topografiche croate provengono dall'Amministrazione Geodetica Statale (DGU). I dati meteo provengono da DHMZ (Servizio Meteorologico Croato) e Open-Meteo. Le tessere radar sono fornite da RainViewer. Stato stagionale del sentiero, avvisi di pericolo e dati delle stazioni di soccorso alpino provengono da HGSS (Servizio croato di soccorso in montagna), HPS (Federazione croata di alpinismo) e dalle autorità dei parchi nazionali (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) e Parco naturale Velebit. I dati visualizzati su questo sito potrebbero non riflettere le condizioni più recenti. In caso di dubbio, verificare sempre le fonti ufficiali.",
@@ -393,7 +394,24 @@
 			"tiles": "Cache tile offline",
 			"poiAssets": "Contenuti POI offline (miniature, riassunti)",
 			"store": "Store impostazioni persistente (ricarica)",
-			"everything": "Tutto quanto sopra (ricarica)"
+			"everything": "Tutto quanto sopra (ricarica)",
+			"waypoints": "Cancella punti e diario",
+			"pack": "Cancella peso dello zaino e lista attrezzatura"
+		},
+		"seed": {
+			"title": "Dati di esempio",
+			"description": "Inserisci dati realistici per le funzioni più recenti, così pannelli, popup e indicatori hanno qualcosa da mostrare.",
+			"run": "Inserisci",
+			"done": "Fatto.",
+			"needsTrail": "Sentiero non ancora caricato - apri prima la pagina della mappa.",
+			"waypoints": "Tre punti davanti alla posizione attuale",
+			"waypointNote": "Inserito dalla pagina di test",
+			"journal": "Due voci di diario (ieri + oggi)",
+			"pack": "Lista attrezzatura di esempio (~3,5 kg base, microspikes inclusi)",
+			"notification": "Mostra una notifica di prova tramite il service worker",
+			"notificationTitle": "CLDT Map: avviso di prova",
+			"notificationBody": "[attenzione] Ecco come appare un push di avviso stagionale.",
+			"notificationDenied": "Permesso per le notifiche non concesso."
 		}
 	},
 	"zoomControls": {
@@ -926,7 +944,9 @@
 		"entryPlaceholder": "Com’è andata la giornata?",
 		"attachRuler": "Allega selezione del righello ({range})",
 		"addEntry": "Aggiungi voce",
-		"exportJournal": "Esporta (.md)"
+		"exportJournal": "Esporta (.md)",
+		"focusEditor": "Scrivi in modalità focus",
+		"focusEditorClose": "Chiudi"
 	},
 	"help": {
 		"title": "Aiuto",
@@ -948,12 +968,15 @@
 		"planning": {
 			"planner": "Il pulsante calendario divide qualsiasi tratto in tappe giornaliere con dislivello, tempi, acqua e meteo per giorno.",
 			"tripBrief": "Nel pianificatore, \"Trip brief\" esporta un PDF stampabile o un DOCX modificabile del piano completo con mappe e info di emergenza.",
-			"progress": "Il pulsante con la spunta traccia i tratti percorsi - automaticamente dal GPS, dalla selezione del righello o da una traccia importata."
+			"progress": "Il pulsante con la spunta traccia i tratti percorsi - automaticamente dal GPS, dalla selezione del righello o da una traccia importata.",
+			"packWeight": "Imposta il peso dello zaino nelle impostazioni per suggerimenti sull’acqua per tappa e stime dei tempi adattate al peso; importa un CSV LighterPack/Packstack per compilarlo automaticamente.",
+			"resupply": "I popup delle città elencano negozi e servizi vicini; un indicatore carrello nel planner avvisa quando una tappa non ha rifornimento alimentari."
 		},
 		"offlineHeading": "Offline",
 		"offline": {
 			"precache": "Il pannello cache pre-scarica tutto il corridoio del sentiero (tile, luoghi, foto) per usarlo senza segnale; si risincronizza sul Wi-Fi.",
-			"gps": "GPS, pannello di emergenza e progresso funzionano completamente offline una volta salvato il corridoio."
+			"gps": "GPS, pannello di emergenza e progresso funzionano completamente offline una volta salvato il corridoio.",
+			"pushAlerts": "Attiva le notifiche di avviso nelle impostazioni per ricevere un push quando viene pubblicato un nuovo avviso stagionale."
 		},
 		"officialAppNote": "FarOut è l’app ufficiale del CLDT. Questa mappa è un progetto indipendente solo per scopi di ricerca ed educativi - verifica le informazioni critiche con le fonti ufficiali."
 	},
