@@ -12,6 +12,7 @@ import {
 	findNearestPointIndex,
 	formatEta,
 } from '@/lib/distance-utils';
+import { totalCompletedKm } from '@/lib/completion';
 import { formatDistance, formatElevation } from '@/lib/utils';
 
 export function DistanceRemainingOverlay(): React.ReactElement | null {
@@ -57,6 +58,10 @@ export function DistanceRemainingOverlay(): React.ReactElement | null {
 		[enhancedTrailPoints, fromIndex, direction, rulerRange],
 	);
 
+	/** Personal completion progress; 0 hides the row (pre-feature look). */
+	const completedIntervals = useMapStore((s: MapStoreState) => s.completedIntervals);
+	const hikedKm = useMemo(() => totalCompletedKm(completedIntervals), [completedIntervals]);
+
 	const { etaToEndSeconds, etaToSectionSeconds } = useMemo(() => {
 		if (distanceInfo === null) return { etaToEndSeconds: 0, etaToSectionSeconds: null };
 		const etaOpts = { elevationPoints: enhancedTrailPoints, fromIndex, direction, gradeAdjusted: gradeAdjustedEta };
@@ -78,6 +83,12 @@ export function DistanceRemainingOverlay(): React.ReactElement | null {
 				<span className="text-gray-500 dark:text-[var(--text-secondary)]">{t('traveled')}</span>
 				<span>{formatDistance(distanceInfo.traveled, units, distancePrecision, true)}</span>
 			</div>
+			{hikedKm > 0 && (
+				<div className="flex justify-between gap-4">
+					<span className="text-gray-500 dark:text-[var(--text-secondary)]">{t('hiked')}</span>
+					<span>{formatDistance(hikedKm, units, distancePrecision)}</span>
+				</div>
+			)}
 			<div className="flex justify-between gap-4">
 				<span className="text-gray-500 dark:text-[var(--text-secondary)]">{t('toTrailEnd')}</span>
 				<span>{formatDistance(distanceInfo.toTrailEnd, units, distancePrecision, true)}</span>

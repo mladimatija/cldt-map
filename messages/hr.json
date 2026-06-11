@@ -495,6 +495,7 @@
 	},
 	"distanceOverlay": {
 		"traveled": "Prijeđeno",
+		"hiked": "Prehodano",
 		"toTrailEnd": "Do kraja staze",
 		"toSectionEnd": "Do kraja dionice",
 		"etaToEnd": "Dolazak na kraj",

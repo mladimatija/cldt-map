@@ -554,6 +554,21 @@
 	z-index: calc(var(--z-map-tooltips) + 4) !important;
 }
 
+/* Persistent "Your location" card: above seasonal chip markers (+2) and the
+   chip hover tooltip (+4) - the primary on-trail UI element wins. */
+.leaflet-pane.user-location-tooltip-pane {
+	z-index: calc(var(--z-map-tooltips) + 5) !important;
+}
+
+/* Completed-stretch overlay (section completion tracking). Deliberately NO
+   z-index bump: the pane shares the flattened --z-map tier and is inserted
+   into the DOM between the overlay and marker panes (CompletionOverlay.tsx),
+   so it paints above the trail polyline but below every marker - section
+   boundaries, endpoints, and the user location dot included. */
+.leaflet-pane.completion-overlay-pane {
+	pointer-events: none;
+}
+
 .seasonal-status-chip-wrapper {
 	background: transparent;
 	border: 0;

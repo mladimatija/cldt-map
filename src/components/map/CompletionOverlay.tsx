@@ -6,6 +6,15 @@ import { useMap } from 'react-leaflet';
 import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
 import { findNearestPointIndex } from '@/lib/distance-utils';
 
+/** Dedicated pane: the global stylesheet flattens every Leaflet pane to
+ *  --z-map, so inside the shared overlay pane the trail polyline would cover
+ *  this overlay whenever TrailRoute re-renders (SVG paints in add order).
+ *  With pane z-indexes flattened, paint order follows DOM order - so the
+ *  pane is inserted between the overlay pane (trail) and the marker pane,
+ *  putting the green line above the trail but below every marker (section
+ *  boundaries, endpoints, the user location dot). */
+const COMPLETION_PANE = 'completion-overlay-pane';
+
 /** Drawn over the trail polyline regardless of the active trail style, so
  *  progress stays visible with Sections / Grade / Surface colouring too.
  *  Literal colour (Leaflet writes SVG stroke attributes, where CSS variables
@@ -15,6 +24,7 @@ const COMPLETED_STYLE: L.PolylineOptions = {
 	weight: 5,
 	opacity: 0.85,
 	interactive: false,
+	pane: COMPLETION_PANE,
 };
 
 /**
@@ -43,6 +53,12 @@ export function CompletionOverlay(): null {
 			return;
 		}
 
+		if (!map.getPane(COMPLETION_PANE)) {
+			const pane = map.createPane(COMPLETION_PANE);
+			pane.classList.add(COMPLETION_PANE);
+			const markerPane = map.getPane('markerPane');
+			if (markerPane?.parentNode) markerPane.parentNode.insertBefore(pane, markerPane);
+		}
 		const group = L.layerGroup();
 		for (const iv of intervals) {
 			const startIdx = findNearestPointIndex(enhancedTrailPoints, iv.startKm * 1000);
