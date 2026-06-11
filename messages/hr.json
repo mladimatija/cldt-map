@@ -208,7 +208,9 @@
 			"chartClickPin": "Kliknite profil visine za fiksiranje točke (ostaje vidljiva dok je ne zatvorite).",
 			"chartDragRuler": "Kliknite i povucite po profilu visine za mjerenje segmenta (Ravnalo udaljenosti).",
 			"escCancelRuler": "Pritisnite <kbd>Esc</kbd> za poništavanje Ravnala udaljenosti."
-		}
+		},
+		"progressShow": "Prikaži napredak na stazi",
+		"progressHide": "Sakrij napredak na stazi"
 	},
 	"baseMapSelector": {
 		"standard": "Standardna",
@@ -780,5 +782,26 @@
 		"bannerInside": "Čini se da si unutar minski sumnjivog područja. Odmah se vrati na markiranu stazu. Hitna pomoć: 112.",
 		"bannerNear": "Minski sumnjivo područje unutar {distance}. Ostani na markiranoj stazi.",
 		"dismiss": "Odbaci upozorenje o minski sumnjivom području"
+	},
+	"progress": {
+		"title": "Napredak na stazi",
+		"completedLine": "{done} od {total} ({pct}%)",
+		"remainingLine": "Preostalo: {distance}",
+		"sectionsHeading": "Dionice",
+		"markSection": "Označi prijeđeno",
+		"unmarkSection": "Poništi",
+		"rulerHeading": "Odabir ravnalom",
+		"markRange": "Označi prijeđeno",
+		"unmarkRange": "Poništi",
+		"noRuler": "Odaberi raspon ravnalom za ručno označavanje.",
+		"tracksHeading": "Uvezene rute",
+		"addTrack": "Dodaj u napredak",
+		"noTracks": "Uvezi GPX rutu da njezinu pokrivenost staze dodaš u svoj napredak.",
+		"autoTrack": "Automatski bilježi napredak iz GPS-a",
+		"showOverlay": "Prikaži prijeđene dionice na karti",
+		"clear": "Obriši sav napredak",
+		"confirmClear": "Obrisati sav napredak?",
+		"confirmYes": "Obriši",
+		"confirmNo": "Zadrži"
 	}
 }

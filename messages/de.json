@@ -208,7 +208,9 @@
 			"chartClickPin": "Auf das Höhenprofil klicken, um einen Punkt zu fixieren (bleibt sichtbar, bis geschlossen).",
 			"chartDragRuler": "Auf dem Höhenprofil klicken und ziehen, um einen Abschnitt zu messen (Entfernungslineal).",
 			"escCancelRuler": "<kbd>Esc</kbd> drücken, um das Entfernungslineal abzubrechen."
-		}
+		},
+		"progressShow": "Trail-Fortschritt anzeigen",
+		"progressHide": "Trail-Fortschritt ausblenden"
 	},
 	"baseMapSelector": {
 		"standard": "Standard",
@@ -780,5 +782,26 @@
 		"bannerInside": "Du befindest dich offenbar in einem minenverdächtigen Gebiet. Kehre sofort auf den markierten Weg zurück. Notruf: 112.",
 		"bannerNear": "Minenverdächtiges Gebiet innerhalb von {distance}. Bleibe auf dem markierten Weg.",
 		"dismiss": "Minengebiet-Warnung verwerfen"
+	},
+	"progress": {
+		"title": "Trail-Fortschritt",
+		"completedLine": "{done} von {total} ({pct}%)",
+		"remainingLine": "Verbleibend: {distance}",
+		"sectionsHeading": "Abschnitte",
+		"markSection": "Als erledigt markieren",
+		"unmarkSection": "Zurücksetzen",
+		"rulerHeading": "Lineal-Auswahl",
+		"markRange": "Als gewandert markieren",
+		"unmarkRange": "Zurücksetzen",
+		"noRuler": "Wähle mit dem Entfernungslineal einen Bereich, um ihn manuell zu markieren.",
+		"tracksHeading": "Importierte Tracks",
+		"addTrack": "Zum Fortschritt hinzufügen",
+		"noTracks": "Importiere einen GPX-Track, um seine Trail-Abdeckung zum Fortschritt hinzuzufügen.",
+		"autoTrack": "Fortschritt automatisch per GPS aufzeichnen",
+		"showOverlay": "Erledigte Abschnitte auf der Karte zeigen",
+		"clear": "Gesamten Fortschritt löschen",
+		"confirmClear": "Gesamten Fortschritt löschen?",
+		"confirmYes": "Löschen",
+		"confirmNo": "Behalten"
 	}
 }

@@ -11,6 +11,7 @@ import { useMapStore, type MapStoreState } from '@/lib/store';
 import { DEFAULT_PATH_OPTIONS } from '@/components/map/trail-route-constants';
 import { useSevereWeatherFetch } from '@/hooks/useSevereWeatherFetch';
 import { useMineAreasFetch } from '@/hooks/useMineAreasFetch';
+import { useCompletionAutoTrack } from '@/hooks/useCompletionAutoTrack';
 import { useSeasonalStatusFetch } from '@/hooks/useSeasonalStatusFetch';
 import { useTrailOsmTagsFetch } from '@/hooks/useTrailOsmTagsFetch';
 import { usePoisFetch } from '@/hooks/usePoisFetch';
@@ -76,6 +77,10 @@ const SevereWeatherLayer = dynamic(
 	() => import('@/components/map/SevereWeatherLayer').then((m) => ({ default: m.SevereWeatherLayer })),
 	{ ssr: false },
 );
+const CompletionOverlay = dynamic(
+	() => import('@/components/map/CompletionOverlay').then((m) => ({ default: m.CompletionOverlay })),
+	{ ssr: false },
+);
 const MineAreaLayer = dynamic(
 	() => import('@/components/map/MineAreaLayer').then((m) => ({ default: m.MineAreaLayer })),
 	{ ssr: false },
@@ -93,6 +98,7 @@ export default function MapContent(): React.ReactElement {
 
 	useSevereWeatherFetch();
 	useMineAreasFetch();
+	useCompletionAutoTrack();
 	useSeasonalStatusFetch();
 	useTrailOsmTagsFetch();
 	usePoisFetch();
@@ -188,6 +194,7 @@ export default function MapContent(): React.ReactElement {
 			<NoticeMarkers />
 			<SevereWeatherLayer />
 			<MineAreaLayer />
+			<CompletionOverlay />
 			<MapControls />
 			<RulerHint />
 			<ZoomControls />
