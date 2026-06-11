@@ -73,11 +73,14 @@ export function MapControlsHelpPanel(): React.ReactElement {
 				['planner', t('planning.planner')],
 				['tripBrief', t('planning.tripBrief')],
 				['progress', t('planning.progress')],
+				['packWeight', t('planning.packWeight')],
+				['resupply', t('planning.resupply')],
 			])}
 
 			{section(t('offlineHeading'), [
 				['precache', t('offline.precache')],
 				['gps', t('offline.gps')],
+				['pushAlerts', t('offline.pushAlerts')],
 			])}
 
 			<p className="m-0 border-t border-gray-200 pt-2 text-[11px] leading-snug text-gray-500 dark:border-[var(--border-color)] dark:text-gray-400">

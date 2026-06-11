@@ -62,7 +62,8 @@
 			"upNext": "\"Als Nächstes\"-Ansicht - die nächste Wasserstelle, Schutzhütte und der nächste Ort vor Ihnen, mit Entfernungen, direkt im Distanzpanel",
 			"packWeight": "Rucksackgewicht & Wassertransport - Empfehlungen \"bis zu X L mitnehmen\" pro Etappe aus Basisgewicht und Verbrauch, metrisch oder imperial",
 			"waypointsJournal": "Eigene Wegpunkte & Reisetagebuch - langes Drücken auf die Karte für persönliche Marker mit Notizen, datiertes Tagebuch, Export als GPX/Markdown; alles bleibt auf dem Gerät",
-			"resupply": "Versorgungs-Infos - Geschäfte, Apotheken, Geldautomaten, Post und Bus aus OpenStreetMap in Orts-Popups, mit Versorgungs-Chips pro Etappe im Planer"
+			"resupply": "Versorgungs-Infos - Geschäfte, Apotheken, Geldautomaten, Post und Bus aus OpenStreetMap in Orts-Popups, mit Versorgungs-Chips pro Etappe im Planer",
+			"pushAlerts": "Warnungs-Benachrichtigungen - optionale Browser-Pushes bei neuen saisonalen Warnungen, auch bei geschlossener App; kein Konto nötig"
 		},
 		"dataAttribution": "Daten & Urheberrecht",
 		"dataAttributionDesc": "Trail-Daten werden von der Udruga Long Distance Trail Hrvatska (LDTH) bereitgestellt. Kartenkacheln kommen von OpenStreetMap, OpenTopoMap, CyclOSM und anderen Anbietern. Kroatische topografische Karten stammen vom Staatlichen Geodätischen Amt (DGU). Wetterdaten kommen von DHMZ (Kroatischer Wetterdienst) und Open-Meteo. Radarkacheln werden von RainViewer bereitgestellt. Daten zum saisonalen Wegzustand, Gefahrenwarnungen sowie Standorte der Bergwacht-Stationen stammen von HGSS (Kroatische Bergrettung), HPS (Kroatischer Bergsteigerverband) und den Verwaltungen der Nationalparks (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) sowie Naturpark Velebit. Die auf dieser Seite angezeigten Daten entsprechen möglicherweise nicht dem aktuellen Stand. Im Zweifelsfall bitte immer die offiziellen Quellen prüfen.",
@@ -393,7 +394,24 @@
 			"tiles": "Offline-Kachel-Caches",
 			"poiAssets": "Offline-POI-Inhalte (Vorschaubilder, Zusammenfassungen)",
 			"store": "Persistierter Einstellungs-Store (lädt neu)",
-			"everything": "Alles oben (lädt neu)"
+			"everything": "Alles oben (lädt neu)",
+			"waypoints": "Wegpunkte und Tagebuch löschen",
+			"pack": "Rucksackgewicht und Packliste löschen"
+		},
+		"seed": {
+			"title": "Beispieldaten",
+			"description": "Realistische Daten für die neueren Funktionen einspielen, damit Panels, Popups und Chips etwas anzeigen.",
+			"run": "Einspielen",
+			"done": "Fertig.",
+			"needsTrail": "Weg noch nicht geladen - zuerst einmal die Kartenseite öffnen.",
+			"waypoints": "Drei Wegpunkte vor der aktuellen Position",
+			"waypointNote": "Von der Testseite eingespielt",
+			"journal": "Zwei Tagebucheinträge (gestern + heute)",
+			"pack": "Beispiel-Packliste (~3,5 kg Basis, mit Microspikes)",
+			"notification": "Testbenachrichtigung über den Service Worker anzeigen",
+			"notificationTitle": "CLDT Map: Testwarnung",
+			"notificationBody": "[Vorsicht] So sieht ein Saisonwarnungs-Push aus.",
+			"notificationDenied": "Benachrichtigungsberechtigung nicht erteilt."
 		}
 	},
 	"zoomControls": {
@@ -926,7 +944,9 @@
 		"entryPlaceholder": "Wie war der Tag?",
 		"attachRuler": "Lineal-Auswahl anhängen ({range})",
 		"addEntry": "Eintrag hinzufügen",
-		"exportJournal": "Exportieren (.md)"
+		"exportJournal": "Exportieren (.md)",
+		"focusEditor": "Im Fokusmodus schreiben",
+		"focusEditorClose": "Schließen"
 	},
 	"help": {
 		"title": "Hilfe",
@@ -948,12 +968,15 @@
 		"planning": {
 			"planner": "Der Kalender-Button teilt jeden Trail-Abschnitt in Tagesetappen mit Höhe, Gehzeit, Wasser und Wetter pro Tag.",
 			"tripBrief": "Im Planer exportiert \"Trip brief\" ein druckbares PDF oder editierbares DOCX des ganzen Plans mit Karten und Notfallinfos.",
-			"progress": "Der Häkchen-Button verfolgt, welche Abschnitte du gewandert bist - automatisch per GPS, aus der Lineal-Auswahl oder aus einem importierten Track."
+			"progress": "Der Häkchen-Button verfolgt, welche Abschnitte du gewandert bist - automatisch per GPS, aus der Lineal-Auswahl oder aus einem importierten Track.",
+			"packWeight": "Rucksackgewicht in den Einstellungen setzen für Wassertransport-Empfehlungen pro Etappe und gewichtsangepasste Zeitschätzungen; LighterPack/Packstack-CSV importieren zum automatischen Ausfüllen.",
+			"resupply": "Orts-Popups listen Geschäfte und Dienste in der Nähe; ein Einkaufswagen-Chip im Etappenplaner warnt, wenn eine Etappe keine Lebensmittelversorgung hat."
 		},
 		"offlineHeading": "Offline",
 		"offline": {
 			"precache": "Das Cache-Panel lädt den ganzen Trail-Korridor vor (Kacheln, Orte, Fotos) für die Nutzung ohne Empfang; Sync erfolgt über WLAN.",
-			"gps": "GPS, Notfallpanel und dein Fortschritt funktionieren vollständig offline, sobald der Korridor gespeichert ist."
+			"gps": "GPS, Notfallpanel und dein Fortschritt funktionieren vollständig offline, sobald der Korridor gespeichert ist.",
+			"pushAlerts": "Warnungs-Benachrichtigungen in den Einstellungen aktivieren, um bei neuen saisonalen Warnungen eine Push-Nachricht zu erhalten."
 		},
 		"officialAppNote": "FarOut ist die offizielle CLDT-App. Diese Karte ist ein unabhängiges Projekt nur für Forschungs- und Bildungszwecke - prüfen Sie kritische Informationen anhand offizieller Quellen."
 	},

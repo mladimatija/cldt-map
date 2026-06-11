@@ -22,6 +22,12 @@ const POI_CACHE_NAME = 'cldt-pois-v1';
 export function TestResetUtilities(): React.ReactElement {
 	const t = useTranslations('storeTest');
 	const clearCompletion = useMapStore((s: MapStoreState) => s.clearCompletion);
+	const userWaypoints = useMapStore((s: MapStoreState) => s.userWaypoints);
+	const removeUserWaypoint = useMapStore((s: MapStoreState) => s.removeUserWaypoint);
+	const journalEntries = useMapStore((s: MapStoreState) => s.journalEntries);
+	const removeJournalEntry = useMapStore((s: MapStoreState) => s.removeJournalEntry);
+	const setPackGearList = useMapStore((s: MapStoreState) => s.setPackGearList);
+	const setPackBaseWeightKg = useMapStore((s: MapStoreState) => s.setPackBaseWeightKg);
 	const importedTracks = useMapStore((s: MapStoreState) => s.importedTracks);
 	const removeImportedTrack = useMapStore((s: MapStoreState) => s.removeImportedTrack);
 	const clearTileCacheForProvider = useMapStore((s: MapStoreState) => s.clearTileCacheForProvider);
@@ -44,6 +50,16 @@ export function TestResetUtilities(): React.ReactElement {
 		if ('caches' in window) await caches.delete(POI_CACHE_NAME);
 	};
 
+	const clearWaypointsAndJournal = (): void => {
+		for (const wp of userWaypoints) removeUserWaypoint(wp.id);
+		for (const entry of journalEntries) removeJournalEntry(entry.id);
+	};
+
+	const clearPack = (): void => {
+		setPackGearList(null);
+		setPackBaseWeightKg(null);
+	};
+
 	const clearPersistedStore = (): void => {
 		localStorage.removeItem(PERSIST_KEY);
 		window.location.reload();
@@ -51,6 +67,8 @@ export function TestResetUtilities(): React.ReactElement {
 
 	const resetEverything = async (): Promise<void> => {
 		clearCompletion();
+		clearWaypointsAndJournal();
+		clearPack();
 		clearDismissals();
 		await clearTracks();
 		await clearPoiAssets();
@@ -62,6 +80,8 @@ export function TestResetUtilities(): React.ReactElement {
 		{ id: 'completion', label: t('reset.completion'), run: clearCompletion },
 		{ id: 'dismissed', label: t('reset.dismissed'), run: clearDismissals },
 		{ id: 'tracks', label: t('reset.tracks'), run: clearTracks },
+		{ id: 'waypoints', label: t('reset.waypoints'), run: clearWaypointsAndJournal },
+		{ id: 'pack', label: t('reset.pack'), run: clearPack },
 		{ id: 'tiles', label: t('reset.tiles'), run: () => clearTileCacheForProvider() },
 		{ id: 'poiAssets', label: t('reset.poiAssets'), run: clearPoiAssets },
 		{ id: 'store', label: t('reset.store'), run: clearPersistedStore, reloads: true },
