@@ -9,7 +9,7 @@
 	},
 	"scripts": {
 		"dev": "next dev",
-		"prebuild": "node scripts/stamp-sw-version.mjs && node scripts/split-pois.mjs",
+		"prebuild": "node scripts/stamp-sw-version.mjs && node scripts/split-pois.mjs && npm run format",
 		"build": "next build",
 		"start": "next start",
 		"lint": "eslint .",
