@@ -52,7 +52,15 @@ const KG_PER: Record<string, number> = {
 	lbs: 0.453592,
 };
 
-/** Minimal CSV parser with quote support; returns rows of cells. */
+/** Minimal CSV parser with quote support; returns rows of cells.
+ *
+ *  Matches the quirks of the real exporters (verified against
+ *  lighterpack/server/views.js and Packstack-Tech/app/src/lib/download.ts):
+ *  LighterPack only quotes fields containing commas, so a bare `"` can
+ *  appear mid-cell unquoted (item names like `2" stakes`) - a quote only
+ *  opens quoted mode at the START of a cell, anywhere else it is literal.
+ *  Packstack quotes commas, quotes, and newlines RFC-style; newlines inside
+ *  quoted cells (multi-line notes) are preserved. */
 export function parseCsv(text: string): string[][] {
 	const rows: string[][] = [];
 	let row: string[] = [];
@@ -71,8 +79,10 @@ export function parseCsv(text: string): string[][] {
 			} else {
 				cell += ch;
 			}
-		} else if (ch === '"') {
+		} else if (ch === '"' && cell === '') {
 			inQuotes = true;
+		} else if (ch === '"') {
+			cell += ch;
 		} else if (ch === ',') {
 			row.push(cell);
 			cell = '';
