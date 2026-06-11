@@ -1,6 +1,19 @@
 {
-	"lastUpdated": "2026-06-10",
+	"lastUpdated": "2026-06-11",
 	"pois": [
+		{
+			"id": "water-drinking-water-6801516385",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.22351,
+			"lng": 19.37222,
+			"trailKm": 0.9,
+			"distanceFromTrailKm": 0.47,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
 		{
 			"id": "water-bunar-9147643752",
 			"type": "water",
@@ -10,9 +23,61 @@
 			"lng": 19.36269,
 			"trailKm": 5.9,
 			"distanceFromTrailKm": 0.01,
+			"water": { "kind": "tap", "reliability": "reliable" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-6296686151",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.55838,
+			"lng": 18.70203,
+			"trailKm": 102.6,
+			"distanceFromTrailKm": 0.23,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-5932482099",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.55766,
+			"lng": 18.69623,
+			"trailKm": 102.8,
+			"distanceFromTrailKm": 0.51,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-1344344374",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.80011,
+			"lng": 18.80602,
+			"trailKm": 145.2,
+			"distanceFromTrailKm": 0.48,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-5717997293",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.49048,
+			"lng": 18.09294,
+			"trailKm": 240.6,
+			"distanceFromTrailKm": 0.04,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-izvor-dobra-voda-8763519770",
@@ -23,9 +88,9 @@
 			"lng": 17.89928,
 			"trailKm": 260.8,
 			"distanceFromTrailKm": 0.09,
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-izvor-7602200610",
@@ -36,9 +101,9 @@
 			"lng": 17.89517,
 			"trailKm": 263.9,
 			"distanceFromTrailKm": 0.93,
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-izvor-iskrica-8763580317",
@@ -49,9 +114,9 @@
 			"lng": 17.86961,
 			"trailKm": 266.1,
 			"distanceFromTrailKm": 0.24,
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-izvor-hercegovac-927293728",
@@ -62,9 +127,9 @@
 			"lng": 17.83915,
 			"trailKm": 269.1,
 			"distanceFromTrailKm": 0.02,
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-izvor-uzdisaja-8598680464",
@@ -75,9 +140,178 @@
 			"lng": 17.82914,
 			"trailKm": 270.4,
 			"distanceFromTrailKm": 0.28,
+			"water": { "kind": "spring", "reliability": "reliable", "potable": "yes" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-8700823869",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.47274,
+			"lng": 17.77573,
+			"trailKm": 274.7,
+			"distanceFromTrailKm": 0.22,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-8700823906",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.46823,
+			"lng": 17.77279,
+			"trailKm": 274.7,
+			"distanceFromTrailKm": 0.77,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-8700823922",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.46715,
+			"lng": 17.77382,
+			"trailKm": 274.7,
+			"distanceFromTrailKm": 0.84,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-8700823854",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.47503,
+			"lng": 17.7744,
+			"trailKm": 275,
+			"distanceFromTrailKm": 0.14,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-8700823863",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.47461,
+			"lng": 17.77497,
+			"trailKm": 275,
+			"distanceFromTrailKm": 0.16,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-8700823903",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.4758,
+			"lng": 17.77365,
+			"trailKm": 275.1,
+			"distanceFromTrailKm": 0.08,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-8700823823",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.47138,
+			"lng": 17.77064,
+			"trailKm": 275.3,
+			"distanceFromTrailKm": 0.59,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-8700823818",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.47397,
+			"lng": 17.77057,
+			"trailKm": 275.5,
+			"distanceFromTrailKm": 0.3,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-8700823850",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.47409,
+			"lng": 17.77002,
+			"trailKm": 275.5,
+			"distanceFromTrailKm": 0.29,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-8700824027",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.47254,
+			"lng": 17.76263,
+			"trailKm": 275.7,
+			"distanceFromTrailKm": 0.72,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-8700824042",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.47653,
+			"lng": 17.76663,
+			"trailKm": 275.7,
+			"distanceFromTrailKm": 0.18,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-8700824075",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.4788,
+			"lng": 17.76482,
+			"trailKm": 276,
+			"distanceFromTrailKm": 0.06,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-8700824120",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.47898,
+			"lng": 17.76252,
+			"trailKm": 276.2,
+			"distanceFromTrailKm": 0.12,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-izvor-bistra-927293717",
@@ -88,9 +322,48 @@
 			"lng": 17.75613,
 			"trailKm": 276.7,
 			"distanceFromTrailKm": 0.03,
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-8700824185",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.47286,
+			"lng": 17.75541,
+			"trailKm": 276.8,
+			"distanceFromTrailKm": 0.94,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-8700824121",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.48206,
+			"lng": 17.75527,
+			"trailKm": 276.9,
+			"distanceFromTrailKm": 0.05,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-8700824172",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.47484,
+			"lng": 17.75364,
+			"trailKm": 276.9,
+			"distanceFromTrailKm": 0.72,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-izvor-kapavac-927293712",
@@ -101,9 +374,9 @@
 			"lng": 17.71939,
 			"trailKm": 280.4,
 			"distanceFromTrailKm": 0.01,
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-izvor-antunovac-4039607725",
@@ -114,9 +387,9 @@
 			"lng": 17.71365,
 			"trailKm": 280.4,
 			"distanceFromTrailKm": 0.47,
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-izvor-jankovackog-potoka-3478109953",
@@ -127,9 +400,22 @@
 			"lng": 17.68639,
 			"trailKm": 284.7,
 			"distanceFromTrailKm": 0.06,
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-7107915422",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.51863,
+			"lng": 17.66039,
+			"trailKm": 288.5,
+			"distanceFromTrailKm": 0.69,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-knezeva-voda-4039617742",
@@ -140,9 +426,9 @@
 			"lng": 17.60829,
 			"trailKm": 294.8,
 			"distanceFromTrailKm": 0.01,
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-izvor-8752283126",
@@ -153,9 +439,9 @@
 			"lng": 17.52921,
 			"trailKm": 303.2,
 			"distanceFromTrailKm": 0.01,
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-izvor-8667833019",
@@ -166,9 +452,9 @@
 			"lng": 17.41445,
 			"trailKm": 320.9,
 			"distanceFromTrailKm": 0.36,
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-izvor-siroko-vrelo-8667833018",
@@ -179,9 +465,9 @@
 			"lng": 17.40505,
 			"trailKm": 321.8,
 			"distanceFromTrailKm": 0.03,
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-vrani-kamen-12997950842",
@@ -192,9 +478,9 @@
 			"lng": 17.39369,
 			"trailKm": 322.7,
 			"distanceFromTrailKm": 0.09,
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-pavlov-izvor-11185193404",
@@ -205,9 +491,9 @@
 			"lng": 17.32143,
 			"trailKm": 363,
 			"distanceFromTrailKm": 0.01,
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-vrelo-grdjevice-11327479825",
@@ -218,9 +504,22 @@
 			"lng": 17.27735,
 			"trailKm": 369,
 			"distanceFromTrailKm": 0.17,
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-11161377911",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.94624,
+			"lng": 16.98199,
+			"trailKm": 408.6,
+			"distanceFromTrailKm": 0.78,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-tonin-jarak-11120024389",
@@ -231,9 +530,35 @@
 			"lng": 16.94204,
 			"trailKm": 417,
 			"distanceFromTrailKm": 0.28,
+			"water": { "kind": "spring", "reliability": "reliable", "potable": "yes" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-11873125261",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.98513,
+			"lng": 16.9369,
+			"trailKm": 418.2,
+			"distanceFromTrailKm": 0.36,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-11169493354",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.98599,
+			"lng": 16.92008,
+			"trailKm": 419.2,
+			"distanceFromTrailKm": 0.31,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-vrelo-dobrovite-11169493342",
@@ -244,9 +569,9 @@
 			"lng": 16.91995,
 			"trailKm": 419.7,
 			"distanceFromTrailKm": 0.12,
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-izvor-busijevec-12553411875",
@@ -257,9 +582,191 @@
 			"lng": 16.73463,
 			"trailKm": 457.3,
 			"distanceFromTrailKm": 0,
+			"water": { "kind": "spring", "reliability": "reliable", "potable": "yes" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-6763548138",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 46.14383,
+			"lng": 16.56571,
+			"trailKm": 476.7,
+			"distanceFromTrailKm": 0.55,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-3754382307",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 46.14963,
+			"lng": 16.5641,
+			"trailKm": 476.9,
+			"distanceFromTrailKm": 0.01,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-4820245749",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 46.1282,
+			"lng": 16.50215,
+			"trailKm": 483.5,
+			"distanceFromTrailKm": 0.87,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-856460005",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 46.13254,
+			"lng": 16.46335,
+			"trailKm": 486.8,
+			"distanceFromTrailKm": 0.01,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-4820217335",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 46.14595,
+			"lng": 16.43911,
+			"trailKm": 493.2,
+			"distanceFromTrailKm": 0.01,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-5909212211",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 46.14763,
+			"lng": 16.45396,
+			"trailKm": 495,
+			"distanceFromTrailKm": 0.19,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-1399599437",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 46.1664,
+			"lng": 16.496,
+			"trailKm": 500.4,
+			"distanceFromTrailKm": 0.06,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-1843780277",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 46.17348,
+			"lng": 16.53641,
+			"trailKm": 504.3,
+			"distanceFromTrailKm": 0.17,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-5001393642",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 46.24987,
+			"lng": 16.62252,
+			"trailKm": 519.9,
+			"distanceFromTrailKm": 0.42,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-5001393643",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 46.2497,
+			"lng": 16.62288,
+			"trailKm": 519.9,
+			"distanceFromTrailKm": 0.43,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-5001369021",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 46.25061,
+			"lng": 16.62312,
+			"trailKm": 520.3,
+			"distanceFromTrailKm": 0.47,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-5001369022",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 46.25046,
+			"lng": 16.62352,
+			"trailKm": 520.3,
+			"distanceFromTrailKm": 0.5,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-13742539422",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 46.52543,
+			"lng": 16.36275,
+			"trailKm": 587.6,
+			"distanceFromTrailKm": 0.98,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-4889468018",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 46.52368,
+			"lng": 16.3311,
+			"trailKm": 591.1,
+			"distanceFromTrailKm": 0.18,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-izvor-sutle-474790000",
@@ -270,9 +777,9 @@
 			"lng": 15.79444,
 			"trailKm": 695.3,
 			"distanceFromTrailKm": 0.23,
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-maksovo-vrelo-7684564805",
@@ -283,9 +790,35 @@
 			"lng": 16.03895,
 			"trailKm": 734.9,
 			"distanceFromTrailKm": 0.51,
+			"water": { "kind": "tap", "reliability": "reliable", "potable": "yes" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-6516179914",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 46.19644,
+			"lng": 16.05962,
+			"trailKm": 736.7,
+			"distanceFromTrailKm": 0.41,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-7431524646",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 46.20356,
+			"lng": 16.11018,
+			"trailKm": 740.4,
+			"distanceFromTrailKm": 0.89,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-mrzljak-1386029848",
@@ -297,9 +830,48 @@
 			"trailKm": 741.8,
 			"distanceFromTrailKm": 0.39,
 			"elevationM": 663,
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-1199996878",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 46.1703,
+			"lng": 16.13186,
+			"trailKm": 746.8,
+			"distanceFromTrailKm": 0.45,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-4316940543",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.98333,
+			"lng": 16.11301,
+			"trailKm": 772.7,
+			"distanceFromTrailKm": 0.6,
+			"water": { "kind": "spring", "reliability": "reliable", "potable": "yes" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-4259919179",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.97927,
+			"lng": 16.10426,
+			"trailKm": 773.3,
+			"distanceFromTrailKm": 0.34,
+			"water": { "kind": "spring", "reliability": "reliable", "potable": "yes" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-rumlec-4379272008",
@@ -310,9 +882,9 @@
 			"lng": 16.05258,
 			"trailKm": 781.8,
 			"distanceFromTrailKm": 0.05,
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-mrzlak-9465280784",
@@ -323,9 +895,35 @@
 			"lng": 16.02865,
 			"trailKm": 783.8,
 			"distanceFromTrailKm": 0.31,
+			"water": { "kind": "spring", "reliability": "reliable", "potable": "yes" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-3221768499",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.92844,
+			"lng": 16.0293,
+			"trailKm": 784.6,
+			"distanceFromTrailKm": 0.06,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-10832112823",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.91168,
+			"lng": 15.97108,
+			"trailKm": 790.3,
+			"distanceFromTrailKm": 0.09,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-micino-vrelo-3177539689",
@@ -336,9 +934,87 @@
 			"lng": 15.97053,
 			"trailKm": 790.4,
 			"distanceFromTrailKm": 0.12,
+			"water": { "kind": "spring", "reliability": "reliable", "potable": "yes" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-10832150375",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.91115,
+			"lng": 15.9711,
+			"trailKm": 790.4,
+			"distanceFromTrailKm": 0.09,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-6600611608",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.90369,
+			"lng": 15.97314,
+			"trailKm": 790.7,
+			"distanceFromTrailKm": 0.52,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-5197601045",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.90395,
+			"lng": 15.96966,
+			"trailKm": 790.9,
+			"distanceFromTrailKm": 0.47,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-3918853834",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.90147,
+			"lng": 15.96686,
+			"trailKm": 791.6,
+			"distanceFromTrailKm": 0.53,
+			"water": { "kind": "spring", "reliability": "reliable", "potable": "yes" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-470449730",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.89539,
+			"lng": 15.95532,
+			"trailKm": 792.4,
+			"distanceFromTrailKm": 0.61,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-470449728",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.89812,
+			"lng": 15.95293,
+			"trailKm": 792.5,
+			"distanceFromTrailKm": 0.33,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-izvor-9495009187",
@@ -349,9 +1025,22 @@
 			"lng": 15.95398,
 			"trailKm": 792.5,
 			"distanceFromTrailKm": 0.18,
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-9443220756",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.87816,
+			"lng": 15.91783,
+			"trailKm": 797,
+			"distanceFromTrailKm": 0.87,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-mbaric-6942567347",
@@ -362,9 +1051,9 @@
 			"lng": 15.88973,
 			"trailKm": 802.1,
 			"distanceFromTrailKm": 0.54,
+			"water": { "kind": "spring", "reliability": "reliable", "potable": "yes" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-jambrisakovo-vrelo-1364257336",
@@ -375,9 +1064,22 @@
 			"lng": 15.88213,
 			"trailKm": 802.2,
 			"distanceFromTrailKm": 0.3,
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-7022084313",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.85699,
+			"lng": 15.87975,
+			"trailKm": 802.2,
+			"distanceFromTrailKm": 0.59,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-izvor-crvenog-kriza-7022084316",
@@ -388,9 +1090,139 @@
 			"lng": 15.88019,
 			"trailKm": 802.2,
 			"distanceFromTrailKm": 0.56,
+			"water": { "kind": "spring", "reliability": "seasonal", "intermittent": true },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-7022057197",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.8567,
+			"lng": 15.87645,
+			"trailKm": 802.3,
+			"distanceFromTrailKm": 0.75,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-7022057204",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.85673,
+			"lng": 15.87659,
+			"trailKm": 802.3,
+			"distanceFromTrailKm": 0.74,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-7022084303",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.85687,
+			"lng": 15.87924,
+			"trailKm": 802.3,
+			"distanceFromTrailKm": 0.62,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-6985352947",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.86176,
+			"lng": 15.8736,
+			"trailKm": 803.4,
+			"distanceFromTrailKm": 0.28,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-6985376302",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.86089,
+			"lng": 15.87231,
+			"trailKm": 803.5,
+			"distanceFromTrailKm": 0.36,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-8234980365",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.83795,
+			"lng": 15.85804,
+			"trailKm": 809.2,
+			"distanceFromTrailKm": 0.8,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-7074543905",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.80262,
+			"lng": 15.71047,
+			"trailKm": 828.7,
+			"distanceFromTrailKm": 0.09,
+			"water": { "kind": "tap", "reliability": "reliable", "potable": "yes" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-2994545118",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.8,
+			"lng": 15.71087,
+			"trailKm": 828.8,
+			"distanceFromTrailKm": 0.2,
+			"water": { "kind": "tap", "reliability": "reliable", "potable": "yes" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-2994545117",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.79924,
+			"lng": 15.70955,
+			"trailKm": 829.2,
+			"distanceFromTrailKm": 0.22,
+			"water": { "kind": "tap", "reliability": "reliable", "potable": "yes" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-9117316295",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.79918,
+			"lng": 15.69964,
+			"trailKm": 829.8,
+			"distanceFromTrailKm": 0.11,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-gustules-971101347",
@@ -401,9 +1233,48 @@
 			"lng": 15.65807,
 			"trailKm": 835.3,
 			"distanceFromTrailKm": 0.27,
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-8158652716",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.73985,
+			"lng": 15.61494,
+			"trailKm": 841.5,
+			"distanceFromTrailKm": 0.36,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-12465079712",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.76305,
+			"lng": 15.607,
+			"trailKm": 844.7,
+			"distanceFromTrailKm": 0.54,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-509286026",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.79234,
+			"lng": 15.55209,
+			"trailKm": 850.8,
+			"distanceFromTrailKm": 0.75,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-usivka-6332003625",
@@ -414,9 +1285,35 @@
 			"lng": 15.49092,
 			"trailKm": 857.2,
 			"distanceFromTrailKm": 0.3,
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-6038626918",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.77616,
+			"lng": 15.46877,
+			"trailKm": 859.6,
+			"distanceFromTrailKm": 0.4,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-7689171624",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.76722,
+			"lng": 15.41604,
+			"trailKm": 865.8,
+			"distanceFromTrailKm": 0.98,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-obradovac-7689171625",
@@ -428,9 +1325,35 @@
 			"trailKm": 865.8,
 			"distanceFromTrailKm": 0.53,
 			"elevationM": 585,
+			"water": { "kind": "spring", "reliability": "reliable", "potable": "yes" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-6981668000",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.76812,
+			"lng": 15.39133,
+			"trailKm": 867.9,
+			"distanceFromTrailKm": 0.24,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-6981707399",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.76735,
+			"lng": 15.39331,
+			"trailKm": 867.9,
+			"distanceFromTrailKm": 0.38,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-izvor-bazgovac-10599564443",
@@ -441,9 +1364,22 @@
 			"lng": 15.42798,
 			"trailKm": 919.4,
 			"distanceFromTrailKm": 0.47,
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-12772266670",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.3814,
+			"lng": 15.17726,
+			"trailKm": 956.2,
+			"distanceFromTrailKm": 0.36,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-izvor-plavanovka-12945273787",
@@ -454,9 +1390,9 @@
 			"lng": 14.9842,
 			"trailKm": 990.7,
 			"distanceFromTrailKm": 0.8,
+			"water": { "kind": "spring", "reliability": "not_potable", "potable": "no" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-zeleni-vir-2194082665",
@@ -468,9 +1404,9 @@
 			"trailKm": 1014,
 			"distanceFromTrailKm": 0.05,
 			"url": "http://zelenivir.com.hr/",
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-izvor-kupice-2194085942",
@@ -481,9 +1417,35 @@
 			"lng": 14.85319,
 			"trailKm": 1024.3,
 			"distanceFromTrailKm": 0.01,
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-9935576732",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.48405,
+			"lng": 14.70185,
+			"trailKm": 1047.1,
+			"distanceFromTrailKm": 0.01,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-5641877724",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.48232,
+			"lng": 14.70151,
+			"trailKm": 1047.2,
+			"distanceFromTrailKm": 0.09,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-izvor-kupe-452504585",
@@ -496,9 +1458,22 @@
 			"distanceFromTrailKm": 0.16,
 			"elevationM": 321,
 			"url": "https://gorskikotar.hr/de/razloge-izvor-kupe",
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-6646589287",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.49964,
+			"lng": 14.70008,
+			"trailKm": 1050.1,
+			"distanceFromTrailKm": 0.02,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-trstenik-11180380514",
@@ -509,9 +1484,9 @@
 			"lng": 14.45776,
 			"trailKm": 1092.4,
 			"distanceFromTrailKm": 0.79,
+			"water": { "kind": "tap", "reliability": "reliable" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-izvor-vele-vode-5555956271",
@@ -522,9 +1497,9 @@
 			"lng": 14.40525,
 			"trailKm": 1098.2,
 			"distanceFromTrailKm": 0.3,
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-racka-mocila-5555874706",
@@ -536,9 +1511,35 @@
 			"trailKm": 1099.9,
 			"distanceFromTrailKm": 0.38,
 			"elevationM": 735,
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-5555892077",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.4837,
+			"lng": 14.39461,
+			"trailKm": 1100,
+			"distanceFromTrailKm": 0.02,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-8273974075",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.47538,
+			"lng": 14.39728,
+			"trailKm": 1100,
+			"distanceFromTrailKm": 0.92,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-vrbanov-izvor-10539845424",
@@ -549,9 +1550,9 @@
 			"lng": 14.38001,
 			"trailKm": 1101.6,
 			"distanceFromTrailKm": 0.05,
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-vodica-10539849473",
@@ -562,9 +1563,9 @@
 			"lng": 14.37939,
 			"trailKm": 1101.8,
 			"distanceFromTrailKm": 0.1,
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-ivina-10539850039",
@@ -575,9 +1576,9 @@
 			"lng": 14.36319,
 			"trailKm": 1103.5,
 			"distanceFromTrailKm": 0.08,
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-belnjak-7549675028",
@@ -588,9 +1589,9 @@
 			"lng": 14.21967,
 			"trailKm": 1130.4,
 			"distanceFromTrailKm": 0.9,
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-vodice-2696064977",
@@ -601,9 +1602,35 @@
 			"lng": 14.20648,
 			"trailKm": 1131.6,
 			"distanceFromTrailKm": 0.15,
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-5939265004",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.3946,
+			"lng": 14.2081,
+			"trailKm": 1131.6,
+			"distanceFromTrailKm": 0.06,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-2671966856",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.39235,
+			"lng": 14.18039,
+			"trailKm": 1134.5,
+			"distanceFromTrailKm": 0,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-izvor-korita-2673429154",
@@ -614,9 +1641,100 @@
 			"lng": 14.15958,
 			"trailKm": 1136.9,
 			"distanceFromTrailKm": 0.1,
+			"water": { "kind": "spring", "reliability": "reliable", "potable": "yes" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-10970467503",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.39118,
+			"lng": 14.1527,
+			"trailKm": 1138.4,
+			"distanceFromTrailKm": 0.19,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-5900805434",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.42663,
+			"lng": 14.09569,
+			"trailKm": 1145.7,
+			"distanceFromTrailKm": 0.87,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-5900805433",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.4485,
+			"lng": 14.06368,
+			"trailKm": 1151.5,
+			"distanceFromTrailKm": 0.32,
+			"water": { "kind": "spring", "reliability": "reliable", "potable": "yes" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-5613431686",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.45574,
+			"lng": 14.01347,
+			"trailKm": 1157.7,
+			"distanceFromTrailKm": 0.01,
+			"water": { "kind": "spring", "reliability": "reliable", "potable": "yes" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-5900805431",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.45425,
+			"lng": 14.00825,
+			"trailKm": 1158.2,
+			"distanceFromTrailKm": 0.04,
+			"water": { "kind": "spring", "reliability": "reliable", "potable": "yes" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-12872702032",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.42011,
+			"lng": 13.97764,
+			"trailKm": 1164.9,
+			"distanceFromTrailKm": 0.01,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-3507150958",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.40704,
+			"lng": 13.96387,
+			"trailKm": 1167.4,
+			"distanceFromTrailKm": 0.86,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-slatina-1921-10272873472",
@@ -627,9 +1745,22 @@
 			"lng": 13.92626,
 			"trailKm": 1171.6,
 			"distanceFromTrailKm": 0.17,
+			"water": { "kind": "spring", "reliability": "reliable", "potable": "yes" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-10272876882",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.4049,
+			"lng": 13.9186,
+			"trailKm": 1172.3,
+			"distanceFromTrailKm": 0.02,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-izvor-2659095208",
@@ -640,9 +1771,22 @@
 			"lng": 13.81658,
 			"trailKm": 1183.2,
 			"distanceFromTrailKm": 0.97,
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-7839542114",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.38837,
+			"lng": 13.81999,
+			"trailKm": 1183.2,
+			"distanceFromTrailKm": 0.05,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-slavina-2622164879",
@@ -653,9 +1797,178 @@
 			"lng": 13.77248,
 			"trailKm": 1187.9,
 			"distanceFromTrailKm": 0.16,
+			"water": { "kind": "tap", "reliability": "reliable" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-12876771197",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.37365,
+			"lng": 13.7729,
+			"trailKm": 1188.1,
+			"distanceFromTrailKm": 0.71,
+			"water": { "kind": "tap", "reliability": "reliable", "potable": "yes" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-1922365756",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.37971,
+			"lng": 13.72258,
+			"trailKm": 1192.3,
+			"distanceFromTrailKm": 0.01,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-7601247755",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.38046,
+			"lng": 13.72281,
+			"trailKm": 1192.4,
+			"distanceFromTrailKm": 0.02,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-6926897032",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.40294,
+			"lng": 13.6925,
+			"trailKm": 1196.9,
+			"distanceFromTrailKm": 0.58,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-12134169224",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.44981,
+			"lng": 13.65476,
+			"trailKm": 1203.5,
+			"distanceFromTrailKm": 0.99,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-12260949783",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.42246,
+			"lng": 13.63371,
+			"trailKm": 1237.8,
+			"distanceFromTrailKm": 0.87,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-9660736761",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.3394,
+			"lng": 13.64762,
+			"trailKm": 1251.5,
+			"distanceFromTrailKm": 0.57,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-4942050785",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.32983,
+			"lng": 13.7577,
+			"trailKm": 1263.1,
+			"distanceFromTrailKm": 0.1,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-2657357983",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.31479,
+			"lng": 13.76989,
+			"trailKm": 1265.4,
+			"distanceFromTrailKm": 0.53,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-7637452018",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.33147,
+			"lng": 13.8247,
+			"trailKm": 1274.7,
+			"distanceFromTrailKm": 0.1,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-10593480476",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.32461,
+			"lng": 13.86635,
+			"trailKm": 1279.5,
+			"distanceFromTrailKm": 0.15,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-10593523713",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.32457,
+			"lng": 13.86651,
+			"trailKm": 1279.5,
+			"distanceFromTrailKm": 0.14,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-2520693881",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.32624,
+			"lng": 13.87811,
+			"trailKm": 1280.4,
+			"distanceFromTrailKm": 0.01,
+			"water": { "kind": "tap", "reliability": "reliable", "checkDate": "2025-05-28" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-spina-3415899997",
@@ -666,9 +1979,22 @@
 			"lng": 13.92981,
 			"trailKm": 1298.4,
 			"distanceFromTrailKm": 0.83,
+			"water": { "kind": "tap", "reliability": "reliable" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-9017287341",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.23977,
+			"lng": 13.93508,
+			"trailKm": 1298.4,
+			"distanceFromTrailKm": 0.61,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-sveti-anton-9543365965",
@@ -679,9 +2005,9 @@
 			"lng": 14.02965,
 			"trailKm": 1328.4,
 			"distanceFromTrailKm": 0.04,
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-mutvica-9543374718",
@@ -693,9 +2019,9 @@
 			"trailKm": 1333.9,
 			"distanceFromTrailKm": 0.21,
 			"elevationM": 5,
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-grdak-7182642493",
@@ -706,9 +2032,9 @@
 			"lng": 14.0187,
 			"trailKm": 1334.3,
 			"distanceFromTrailKm": 0.31,
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-rakonik-9542804976",
@@ -719,9 +2045,22 @@
 			"lng": 14.02054,
 			"trailKm": 1335.2,
 			"distanceFromTrailKm": 0.03,
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-3327182688",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.0641,
+			"lng": 14.02642,
+			"trailKm": 1337.8,
+			"distanceFromTrailKm": 0.92,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-scurak-2729612036",
@@ -733,9 +2072,22 @@
 			"trailKm": 1374.8,
 			"distanceFromTrailKm": 0.54,
 			"url": "https://www.rabac-labin.com/hr/166-staza-bozanskih-izvora-rabac-labin",
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-3741338587",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.08408,
+			"lng": 14.14179,
+			"trailKm": 1376.1,
+			"distanceFromTrailKm": 0.01,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-plomin-9543419568",
@@ -747,9 +2099,22 @@
 			"trailKm": 1387.3,
 			"distanceFromTrailKm": 0.13,
 			"elevationM": 145,
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-1572273397",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.13826,
+			"lng": 14.18004,
+			"trailKm": 1387.4,
+			"distanceFromTrailKm": 0.01,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-kadanj-1572273394",
@@ -760,9 +2125,22 @@
 			"lng": 14.20368,
 			"trailKm": 1392.5,
 			"distanceFromTrailKm": 0.68,
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-2663345282",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.19193,
+			"lng": 14.19408,
+			"trailKm": 1396.2,
+			"distanceFromTrailKm": 0.67,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-pod-trebisca-1574552332",
@@ -773,9 +2151,114 @@
 			"lng": 14.20835,
 			"trailKm": 1403.8,
 			"distanceFromTrailKm": 0.71,
+			"water": { "kind": "tap", "reliability": "reliable" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-1367564757",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.27416,
+			"lng": 14.19478,
+			"trailKm": 1407.2,
+			"distanceFromTrailKm": 0.01,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-6067960439",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.27571,
+			"lng": 14.19687,
+			"trailKm": 1407.4,
+			"distanceFromTrailKm": 0.02,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-7180964454",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.28776,
+			"lng": 14.19391,
+			"trailKm": 1409.3,
+			"distanceFromTrailKm": 0.68,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-2552194467",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.29904,
+			"lng": 14.20755,
+			"trailKm": 1411.1,
+			"distanceFromTrailKm": 0.01,
+			"water": { "kind": "spring", "reliability": "reliable", "potable": "yes" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-9828988615",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.30065,
+			"lng": 14.20114,
+			"trailKm": 1411.2,
+			"distanceFromTrailKm": 0.52,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-4386738167",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.30828,
+			"lng": 14.21608,
+			"trailKm": 1412.5,
+			"distanceFromTrailKm": 0.04,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-12893806889",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.30932,
+			"lng": 14.21436,
+			"trailKm": 1412.7,
+			"distanceFromTrailKm": 0.01,
+			"image": "https://www.pp-ucka.hr/2020/wp-content/uploads/f76bb8c8-500c-4bad-8376-7782cc98a104.webp",
+			"water": { "kind": "tap", "reliability": "reliable", "checkDate": "2025-06-07" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-11688429817",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.36475,
+			"lng": 14.32131,
+			"trailKm": 1430.1,
+			"distanceFromTrailKm": 0.13,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-frlanija-2835823478",
@@ -786,9 +2269,100 @@
 			"lng": 14.33323,
 			"trailKm": 1431,
 			"distanceFromTrailKm": 0.07,
+			"water": { "kind": "spring", "reliability": "not_potable", "potable": "no" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-2351384021",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.37347,
+			"lng": 14.34752,
+			"trailKm": 1432.7,
+			"distanceFromTrailKm": 0.14,
+			"water": { "kind": "tap", "reliability": "reliable", "checkDate": "2023-12-29" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-11170278137",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.37446,
+			"lng": 14.34849,
+			"trailKm": 1432.8,
+			"distanceFromTrailKm": 0.21,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-5859606121",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.38984,
+			"lng": 14.4221,
+			"trailKm": 1440.2,
+			"distanceFromTrailKm": 0.37,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-11173563937",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.31091,
+			"lng": 14.67568,
+			"trailKm": 1474.7,
+			"distanceFromTrailKm": 0.25,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-9935594976",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.30751,
+			"lng": 14.71216,
+			"trailKm": 1479,
+			"distanceFromTrailKm": 0.34,
+			"water": { "kind": "tap", "reliability": "reliable", "checkDate": "2024-07-18" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-9971637861",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.30535,
+			"lng": 14.71366,
+			"trailKm": 1479,
+			"distanceFromTrailKm": 0.08,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-6885699027",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.28317,
+			"lng": 14.81128,
+			"trailKm": 1490.2,
+			"distanceFromTrailKm": 0.03,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-carsko-vrilo-4240103019",
@@ -799,9 +2373,48 @@
 			"lng": 14.98066,
 			"trailKm": 1555.7,
 			"distanceFromTrailKm": 0.33,
+			"water": { "kind": "tap", "reliability": "reliable", "checkDate": "2023-04-19" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-13481098532",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 44.81784,
+			"lng": 14.95847,
+			"trailKm": 1577.2,
+			"distanceFromTrailKm": 0.76,
+			"water": { "kind": "spring", "reliability": "unverified", "checkDate": "2023-12-04" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-6545209485",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 44.63469,
+			"lng": 15.02362,
+			"trailKm": 1605.7,
+			"distanceFromTrailKm": 0,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-13867904463",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 44.5618,
+			"lng": 15.10767,
+			"trailKm": 1618.6,
+			"distanceFromTrailKm": 0.03,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-rujica-10092226409",
@@ -812,9 +2425,35 @@
 			"lng": 15.11942,
 			"trailKm": 1619.6,
 			"distanceFromTrailKm": 0.78,
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-4235487989",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 44.52542,
+			"lng": 15.17707,
+			"trailKm": 1627.4,
+			"distanceFromTrailKm": 0.82,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-3511257893",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 44.45074,
+			"lng": 15.24868,
+			"trailKm": 1640.6,
+			"distanceFromTrailKm": 0.01,
+			"water": { "kind": "tap", "reliability": "reliable", "potable": "yes" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-voda-stap-2371790005",
@@ -825,9 +2464,9 @@
 			"lng": 15.31928,
 			"trailKm": 1649.7,
 			"distanceFromTrailKm": 0.03,
+			"water": { "kind": "tap", "reliability": "reliable", "potable": "yes" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-stap-9960100693",
@@ -838,9 +2477,22 @@
 			"lng": 15.31926,
 			"trailKm": 1649.7,
 			"distanceFromTrailKm": 0.03,
+			"water": { "kind": "spring", "reliability": "reliable", "potable": "yes" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-6764038019",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 44.3901,
+			"lng": 15.36326,
+			"trailKm": 1654.8,
+			"distanceFromTrailKm": 0.05,
+			"water": { "kind": "tap", "reliability": "reliable", "potable": "yes" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-bobika-12996045449",
@@ -851,9 +2503,9 @@
 			"lng": 15.37001,
 			"trailKm": 1655.1,
 			"distanceFromTrailKm": 0.62,
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-pistet-7053982208",
@@ -864,9 +2516,35 @@
 			"lng": 15.42596,
 			"trailKm": 1660.7,
 			"distanceFromTrailKm": 0.97,
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-7984055050",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 44.35854,
+			"lng": 15.42371,
+			"trailKm": 1661.3,
+			"distanceFromTrailKm": 0.03,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-1907087339",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 44.35574,
+			"lng": 15.42423,
+			"trailKm": 1661.5,
+			"distanceFromTrailKm": 0.13,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-vrilo-kameno-7053974869",
@@ -877,9 +2555,22 @@
 			"lng": 15.44639,
 			"trailKm": 1663.6,
 			"distanceFromTrailKm": 0.27,
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-7053974870",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 44.36365,
+			"lng": 15.44611,
+			"trailKm": 1664,
+			"distanceFromTrailKm": 0.4,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-strazbenica-7053974871",
@@ -890,9 +2581,9 @@
 			"lng": 15.45194,
 			"trailKm": 1664.3,
 			"distanceFromTrailKm": 0.04,
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-zanzibar-dry-in-july-8817513180",
@@ -903,9 +2594,9 @@
 			"lng": 15.45758,
 			"trailKm": 1664.8,
 			"distanceFromTrailKm": 0,
+			"water": { "kind": "spring", "reliability": "seasonal", "intermittent": true },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-m-ruja-13195610325",
@@ -916,9 +2607,9 @@
 			"lng": 15.45952,
 			"trailKm": 1666.8,
 			"distanceFromTrailKm": 0.52,
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-marasovac-drinking-well-3722715974",
@@ -929,9 +2620,48 @@
 			"lng": 15.4762,
 			"trailKm": 1667.9,
 			"distanceFromTrailKm": 0.01,
+			"water": { "kind": "spring", "reliability": "reliable", "potable": "yes" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-10101966337",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 44.38682,
+			"lng": 15.48332,
+			"trailKm": 1667.9,
+			"distanceFromTrailKm": 0.95,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-13195610320",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 44.38659,
+			"lng": 15.48402,
+			"trailKm": 1667.9,
+			"distanceFromTrailKm": 0.96,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-7053941559",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 44.34094,
+			"lng": 15.53486,
+			"trailKm": 1675.4,
+			"distanceFromTrailKm": 0.49,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-ivine-vodice-7053941526",
@@ -942,9 +2672,9 @@
 			"lng": 15.53494,
 			"trailKm": 1675.5,
 			"distanceFromTrailKm": 0.56,
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-ivine-vodice-3254171025",
@@ -955,9 +2685,22 @@
 			"lng": 15.53697,
 			"trailKm": 1675.8,
 			"distanceFromTrailKm": 0.73,
+			"water": { "kind": "spring", "reliability": "seasonal", "intermittent": true, "potable": "yes" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-7053858217",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 44.33886,
+			"lng": 15.55138,
+			"trailKm": 1676.7,
+			"distanceFromTrailKm": 0.03,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-donji-izvor-8881165940",
@@ -968,9 +2711,9 @@
 			"lng": 15.55131,
 			"trailKm": 1677.7,
 			"distanceFromTrailKm": 0.67,
+			"water": { "kind": "spring", "reliability": "reliable", "potable": "yes" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-gornji-izvor-10637479065",
@@ -981,9 +2724,9 @@
 			"lng": 15.55233,
 			"trailKm": 1677.7,
 			"distanceFromTrailKm": 0.62,
+			"water": { "kind": "spring", "reliability": "seasonal", "intermittent": true, "potable": "yes" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-bunaric-6021800835",
@@ -994,9 +2737,9 @@
 			"lng": 15.59045,
 			"trailKm": 1681.3,
 			"distanceFromTrailKm": 0.3,
+			"water": { "kind": "spring", "reliability": "seasonal", "intermittent": true, "potable": "conditional" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-ruja-6021804467",
@@ -1007,9 +2750,9 @@
 			"lng": 15.59184,
 			"trailKm": 1681.3,
 			"distanceFromTrailKm": 0.41,
+			"water": { "kind": "spring", "reliability": "reliable", "potable": "yes" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-izvoric-10594202202",
@@ -1020,9 +2763,22 @@
 			"lng": 15.58535,
 			"trailKm": 1681.5,
 			"distanceFromTrailKm": 0.04,
+			"water": { "kind": "spring", "reliability": "unverified", "potable": "conditional" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-12386675471",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 44.29708,
+			"lng": 15.5763,
+			"trailKm": 1684.5,
+			"distanceFromTrailKm": 0.53,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-gusterna-6021829834",
@@ -1033,9 +2789,9 @@
 			"lng": 15.58135,
 			"trailKm": 1685.4,
 			"distanceFromTrailKm": 0.19,
+			"water": { "kind": "tap", "reliability": "reliable" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-kapljuv-6879642446",
@@ -1046,9 +2802,9 @@
 			"lng": 15.65163,
 			"trailKm": 1693.6,
 			"distanceFromTrailKm": 0.34,
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-ridjevac-8587328088",
@@ -1059,9 +2815,9 @@
 			"lng": 15.87816,
 			"trailKm": 1722.3,
 			"distanceFromTrailKm": 0,
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-pistelj-8587328089",
@@ -1072,9 +2828,48 @@
 			"lng": 15.88155,
 			"trailKm": 1722.8,
 			"distanceFromTrailKm": 0,
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-1110091357",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 44.02808,
+			"lng": 16.4067,
+			"trailKm": 1805.9,
+			"distanceFromTrailKm": 0,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-12636015400",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 43.97345,
+			"lng": 16.4234,
+			"trailKm": 1812.4,
+			"distanceFromTrailKm": 0.43,
+			"water": { "kind": "spring", "reliability": "reliable", "potable": "yes" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-12985555654",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 43.97203,
+			"lng": 16.42058,
+			"trailKm": 1812.4,
+			"distanceFromTrailKm": 0.67,
+			"water": { "kind": "spring", "reliability": "reliable", "potable": "yes" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-jaza-2985734328",
@@ -1085,9 +2880,9 @@
 			"lng": 16.43163,
 			"trailKm": 1813.1,
 			"distanceFromTrailKm": 0.77,
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-cetina-spring-1556195627",
@@ -1099,8 +2894,8 @@
 			"trailKm": 1813.4,
 			"distanceFromTrailKm": 0.02,
 			"image": "https://upload.wikimedia.org/wikipedia/commons/f/f5/The_Eye_of_Cetina.jpg",
+			"water": { "kind": "spring", "reliability": "reliable", "potable": "yes" },
 			"source": "osm",
-			"isReachable": false,
 			"images": [
 				{
 					"url": "https://upload.wikimedia.org/wikipedia/commons/f/f5/The_Eye_of_Cetina.jpg",
@@ -1110,7 +2905,20 @@
 					"sourceUrl": "https://commons.wikimedia.org/wiki/File:The_Eye_of_Cetina.jpg"
 				}
 			],
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-957976026",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 43.61624,
+			"lng": 16.7271,
+			"trailKm": 1887.3,
+			"distanceFromTrailKm": 0.15,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-trilj-744685178",
@@ -1121,9 +2929,9 @@
 			"lng": 16.72947,
 			"trailKm": 1887.4,
 			"distanceFromTrailKm": 0.05,
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-trposnjik-8807694491",
@@ -1134,9 +2942,100 @@
 			"lng": 16.7218,
 			"trailKm": 1913.3,
 			"distanceFromTrailKm": 0.94,
+			"water": { "kind": "spring", "reliability": "reliable", "potable": "yes" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-12288464176",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 43.45735,
+			"lng": 16.70077,
+			"trailKm": 1919.5,
+			"distanceFromTrailKm": 0.01,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-10083553867",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 43.44636,
+			"lng": 16.6892,
+			"trailKm": 1921.4,
+			"distanceFromTrailKm": 0.13,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-12288476422",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 43.44225,
+			"lng": 16.68313,
+			"trailKm": 1921.4,
+			"distanceFromTrailKm": 0.69,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-4386764058",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 43.44285,
+			"lng": 16.69341,
+			"trailKm": 1921.5,
+			"distanceFromTrailKm": 0.27,
+			"water": { "kind": "tap", "reliability": "reliable", "checkDate": "2024-08-10" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-13723072454",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 43.44448,
+			"lng": 16.69193,
+			"trailKm": 1921.5,
+			"distanceFromTrailKm": 0.05,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-10990075205",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 43.44531,
+			"lng": 16.69228,
+			"trailKm": 1921.6,
+			"distanceFromTrailKm": 0.01,
+			"water": { "kind": "tap", "reliability": "reliable", "checkDate": "2023-06-19" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-5198836839",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 43.38959,
+			"lng": 16.94382,
+			"trailKm": 1945.7,
+			"distanceFromTrailKm": 0,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-pakline-1224110947",
@@ -1147,9 +3046,9 @@
 			"lng": 16.95311,
 			"trailKm": 1947.6,
 			"distanceFromTrailKm": 0.61,
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-puit-9774673408",
@@ -1160,9 +3059,9 @@
 			"lng": 17.01365,
 			"trailKm": 1955.1,
 			"distanceFromTrailKm": 0.05,
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-pompe-manuelle-9774699639",
@@ -1173,9 +3072,9 @@
 			"lng": 17.03357,
 			"trailKm": 1959,
 			"distanceFromTrailKm": 0,
+			"water": { "kind": "tap", "reliability": "reliable" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-ovcena-7702798670",
@@ -1187,9 +3086,9 @@
 			"trailKm": 1970.7,
 			"distanceFromTrailKm": 0.2,
 			"elevationM": 1140,
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-vrutak-296668543",
@@ -1200,9 +3099,74 @@
 			"lng": 17.09012,
 			"trailKm": 1978.5,
 			"distanceFromTrailKm": 0.58,
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-2373581776",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 43.24131,
+			"lng": 17.08784,
+			"trailKm": 1979.3,
+			"distanceFromTrailKm": 0.09,
+			"water": { "kind": "tap", "reliability": "reliable", "checkDate": "2025-10-04" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-5838131204",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 43.20034,
+			"lng": 17.12779,
+			"trailKm": 1986.4,
+			"distanceFromTrailKm": 0.67,
+			"water": { "kind": "spring", "reliability": "not_potable", "potable": "no" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-2376436058",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 43.20007,
+			"lng": 17.13274,
+			"trailKm": 1986.7,
+			"distanceFromTrailKm": 0.48,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-4920932030",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 43.18361,
+			"lng": 17.1647,
+			"trailKm": 1991.2,
+			"distanceFromTrailKm": 0.2,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-10948600608",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 43.18293,
+			"lng": 17.16584,
+			"trailKm": 1991.2,
+			"distanceFromTrailKm": 0.14,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-eau-potable-2999751154",
@@ -1214,9 +3178,9 @@
 			"trailKm": 2005.2,
 			"distanceFromTrailKm": 0.01,
 			"url": "https://www.geocaching.com/geocache/GC3RJ4E_mineral-spring-zaostrog?guid=f2a17517-a688-432d-b492-5c8fe02d6a82",
+			"water": { "kind": "spring", "reliability": "reliable", "potable": "yes" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-velika-voda-4839983533",
@@ -1227,9 +3191,35 @@
 			"lng": 17.31056,
 			"trailKm": 2009.6,
 			"distanceFromTrailKm": 0.07,
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-9673965103",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 43.12102,
+			"lng": 17.31531,
+			"trailKm": 2010.1,
+			"distanceFromTrailKm": 0.5,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-4327833266",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 43.10461,
+			"lng": 17.34086,
+			"trailKm": 2013.5,
+			"distanceFromTrailKm": 0.82,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-klokun-2286029393",
@@ -1240,9 +3230,256 @@
 			"lng": 17.43474,
 			"trailKm": 2026.6,
 			"distanceFromTrailKm": 0.82,
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-6810857523",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 43.05555,
+			"lng": 17.43195,
+			"trailKm": 2028.4,
+			"distanceFromTrailKm": 0.02,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-4448818627",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 43.05189,
+			"lng": 17.43473,
+			"trailKm": 2029.2,
+			"distanceFromTrailKm": 0.01,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-4448818624",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 43.00926,
+			"lng": 17.26692,
+			"trailKm": 2044.9,
+			"distanceFromTrailKm": 0.09,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-13283364555",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 43.00484,
+			"lng": 17.27712,
+			"trailKm": 2045.9,
+			"distanceFromTrailKm": 0.05,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-9202575880",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 42.96616,
+			"lng": 17.34669,
+			"trailKm": 2055.1,
+			"distanceFromTrailKm": 0,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-10983065351",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 42.85116,
+			"lng": 17.61798,
+			"trailKm": 2083.8,
+			"distanceFromTrailKm": 0.68,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-12012379569",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 42.84854,
+			"lng": 17.62569,
+			"trailKm": 2085.3,
+			"distanceFromTrailKm": 0.03,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-10779365970",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 42.78648,
+			"lng": 17.8538,
+			"trailKm": 2116.1,
+			"distanceFromTrailKm": 0.05,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-10779365971",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 42.78655,
+			"lng": 17.85413,
+			"trailKm": 2116.1,
+			"distanceFromTrailKm": 0.03,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-12615723484",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 42.78485,
+			"lng": 17.85865,
+			"trailKm": 2116.6,
+			"distanceFromTrailKm": 0.03,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-4481159875",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 42.78388,
+			"lng": 17.87803,
+			"trailKm": 2119.2,
+			"distanceFromTrailKm": 0.01,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-11068787576",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 42.79126,
+			"lng": 17.88485,
+			"trailKm": 2120.1,
+			"distanceFromTrailKm": 0.4,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-4857054721",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 42.7856,
+			"lng": 17.88954,
+			"trailKm": 2120.7,
+			"distanceFromTrailKm": 0.03,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-9202612069",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 42.78591,
+			"lng": 17.88888,
+			"trailKm": 2120.7,
+			"distanceFromTrailKm": 0.01,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-6609379271",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 42.714,
+			"lng": 17.9789,
+			"trailKm": 2137,
+			"distanceFromTrailKm": 0.01,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-9221879910",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 42.71227,
+			"lng": 17.97902,
+			"trailKm": 2137.2,
+			"distanceFromTrailKm": 0.05,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-9221829411",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 42.66177,
+			"lng": 18.07103,
+			"trailKm": 2156,
+			"distanceFromTrailKm": 0.98,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-4306010895",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 42.6426,
+			"lng": 18.10906,
+			"trailKm": 2160.2,
+			"distanceFromTrailKm": 0.72,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-4306010896",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 42.64181,
+			"lng": 18.10576,
+			"trailKm": 2160.2,
+			"distanceFromTrailKm": 0.94,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-onofrio-s-fountain-4306027796",
@@ -1253,9 +3490,9 @@
 			"lng": 18.1073,
 			"trailKm": 2160.2,
 			"distanceFromTrailKm": 0.89,
+			"water": { "kind": "tap", "reliability": "reliable" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-agua-4306072790",
@@ -1266,9 +3503,22 @@
 			"lng": 18.10752,
 			"trailKm": 2160.2,
 			"distanceFromTrailKm": 0.99,
+			"water": { "kind": "tap", "reliability": "reliable", "checkDate": "2024-05-04" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-4306072691",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 42.64209,
+			"lng": 18.11017,
+			"trailKm": 2160.3,
+			"distanceFromTrailKm": 0.72,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-kleiner-lowenkopfbrunnen-436979452",
@@ -1279,9 +3529,22 @@
 			"lng": 18.10988,
 			"trailKm": 2160.4,
 			"distanceFromTrailKm": 0.93,
+			"water": { "kind": "tap", "reliability": "reliable" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-4306418017",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 42.64105,
+			"lng": 18.11119,
+			"trailKm": 2160.4,
+			"distanceFromTrailKm": 0.79,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-izvor-vrelo-9290974037",
@@ -1292,9 +3555,9 @@
 			"lng": 18.15253,
 			"trailKm": 2165.2,
 			"distanceFromTrailKm": 0.85,
+			"water": { "kind": "spring", "reliability": "reliable", "potable": "yes" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-bravinjac-6126847649",
@@ -1305,9 +3568,87 @@
 			"lng": 18.18257,
 			"trailKm": 2168.3,
 			"distanceFromTrailKm": 0.26,
+			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-6502170433",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 42.62201,
+			"lng": 18.20753,
+			"trailKm": 2173.5,
+			"distanceFromTrailKm": 0.42,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-9787472562",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 42.60956,
+			"lng": 18.23055,
+			"trailKm": 2175.6,
+			"distanceFromTrailKm": 0.29,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-7866357123",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 42.60006,
+			"lng": 18.2313,
+			"trailKm": 2177.5,
+			"distanceFromTrailKm": 0.25,
+			"water": { "kind": "spring", "reliability": "unverified" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-8732029436",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 42.58278,
+			"lng": 18.21666,
+			"trailKm": 2181.8,
+			"distanceFromTrailKm": 0.22,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-13713140579",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 42.56081,
+			"lng": 18.26164,
+			"trailKm": 2186.6,
+			"distanceFromTrailKm": 0.98,
+			"water": { "kind": "tap", "reliability": "reliable", "checkDate": "2026-04-07" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-5168799925",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 42.49367,
+			"lng": 18.38233,
+			"trailKm": 2202.3,
+			"distanceFromTrailKm": 0.01,
+			"water": { "kind": "tap", "reliability": "reliable" },
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		}
 	]
 }
