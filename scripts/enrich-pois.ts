@@ -33,6 +33,7 @@ import { parseWikipediaRef, SUMMARY_HOST_TEMPLATE as WIKIPEDIA_SUMMARY_HOST_TEMP
 import { applyReachabilityFilter, formatStats } from './poi-reachability';
 import {
 	fetchOverpassJson,
+	fetchPolylineWithBisection,
 	overpassCacheFile,
 	readOverpassJsonCache,
 	writeOverpassJsonCache,
@@ -724,30 +725,55 @@ async function runOverpassQuery(query: string): Promise<OverpassElement[]> {
  */
 async function fetchOsmElements(cfg: TypeConfig, corridorPoly: LatLng[], bbox: Bbox): Promise<OsmFetchResult> {
 	const radiusM = Math.round((cfg.maxDistanceKm + CORRIDOR_RADIUS_SLACK_KM) * 1000);
-	const polyStr = corridorPoly.map((p) => `${p.lat.toFixed(5)},${p.lng.toFixed(5)}`).join(',');
-	const corridorQuery = buildOverpassQuery(cfg.overpassSelectors, `around:${radiusM},${polyStr}`);
 
-	const cacheFile = overpassCacheFile(OVERPASS_CACHE, cfg.type, corridorQuery);
-	const cached = await readOverpassJsonCache<OverpassElement[]>(cacheFile, OVERPASS_CACHE);
-	if (cached) {
-		console.log(
-			`     cache hit (${cached.length} elements; delete ${path.relative(PROJECT_ROOT, cacheFile)} to refetch).`,
-		);
-		return { elements: cached, failed: false };
+	// Corridor fetch with bisection-on-failure: when the full-trail query
+	// times out, the corridor is split into overlapping half slices and each
+	// half retried independently (up to 8 leaf slices). The depth-0 label and
+	// query are identical to the pre-bisection version, so existing cache
+	// files keep hitting. Halves overlap by one point - dedupe below.
+	const corridor = await fetchPolylineWithBisection<OverpassElement>({
+		slice: corridorPoly,
+		label: cfg.type,
+		onBisect: (label, message) => console.warn(`     ${label}: ${message}.`),
+		run: async (runSlice, label) => {
+			const polyStr = runSlice.map((p) => `${p.lat.toFixed(5)},${p.lng.toFixed(5)}`).join(',');
+			const query = buildOverpassQuery(cfg.overpassSelectors, `around:${radiusM},${polyStr}`);
+			const cacheFile = overpassCacheFile(OVERPASS_CACHE, label, query);
+			const cached = await readOverpassJsonCache<OverpassElement[]>(cacheFile, OVERPASS_CACHE);
+			if (cached) {
+				console.log(
+					`     ${label}: cache hit (${cached.length} elements; delete ${path.relative(PROJECT_ROOT, cacheFile)} to refetch).`,
+				);
+				return cached;
+			}
+			const elements = await runOverpassQuery(query);
+			await writeOverpassJsonCache(cacheFile, elements, OVERPASS_CACHE);
+			return elements;
+		},
+	});
+	if (!corridor.failed) {
+		const seen = new Set<string>();
+		const deduped = corridor.elements.filter((el) => {
+			const key = `${el.type}/${el.id}`;
+			if (seen.has(key)) return false;
+			seen.add(key);
+			return true;
+		});
+		return { elements: deduped, failed: false };
 	}
-
-	try {
-		const elements = await runOverpassQuery(corridorQuery);
-		await writeOverpassJsonCache(cacheFile, elements, OVERPASS_CACHE);
-		return { elements, failed: false };
-	} catch (err) {
-		console.warn(`     corridor query failed (${(err as Error).message}); falling back to bbox query.`);
-	}
+	console.warn(`     corridor query failed even after bisection; falling back to bbox query.`);
 
 	const bboxClause = `${bbox.minLat},${bbox.minLng},${bbox.maxLat},${bbox.maxLng}`;
 	try {
-		const elements = await runOverpassQuery(buildOverpassQuery(cfg.overpassSelectors, bboxClause));
-		await writeOverpassJsonCache(cacheFile, elements, OVERPASS_CACHE);
+		const bboxQuery = buildOverpassQuery(cfg.overpassSelectors, bboxClause);
+		const bboxCacheFile = overpassCacheFile(OVERPASS_CACHE, `${cfg.type}-bbox`, bboxQuery);
+		const cachedBbox = await readOverpassJsonCache<OverpassElement[]>(bboxCacheFile, OVERPASS_CACHE);
+		if (cachedBbox) {
+			console.log(`     ${cfg.type}-bbox: cache hit (${cachedBbox.length} elements).`);
+			return { elements: cachedBbox, failed: false };
+		}
+		const elements = await runOverpassQuery(bboxQuery);
+		await writeOverpassJsonCache(bboxCacheFile, elements, OVERPASS_CACHE);
 		return { elements, failed: false };
 	} catch (err) {
 		console.warn(`     Overpass error: ${(err as Error).message}; skipping this type.`);
