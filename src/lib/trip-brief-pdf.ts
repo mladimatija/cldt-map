@@ -113,7 +113,8 @@ export async function exportTripBriefPdf(args: TripBriefPdfArgs): Promise<void> 
 	const originalCenter = map.getCenter();
 	const originalZoom = map.getZoom();
 
-	const totalSteps = 1 + brief.days.length + 1; // cover + days + back page
+	const gearPages = brief.meta.gearChecklist ? 1 : 0;
+	const totalSteps = 1 + brief.days.length + gearPages + 1; // cover + days (+ gear) + back page
 	let step = 0;
 	const tick = (): void => {
 		step++;
@@ -121,7 +122,7 @@ export async function exportTripBriefPdf(args: TripBriefPdfArgs): Promise<void> 
 	};
 
 	try {
-		const totalPages = brief.days.length + 2;
+		const totalPages = brief.days.length + 2 + gearPages;
 		// Cover page
 		renderCover(pdf, brief, logoDataUrl);
 		footer(pdf, 1, totalPages);
@@ -144,6 +145,15 @@ export async function exportTripBriefPdf(args: TripBriefPdfArgs): Promise<void> 
 			);
 			renderDay(pdf, brief, day, snapshot, logoDataUrl);
 			footer(pdf, dayIdx + 2, totalPages);
+			tick();
+		}
+
+		// Gear checklist page (imported pack list)
+		if (brief.meta.gearChecklist) {
+			if (signal?.aborted) return;
+			pdf.addPage();
+			renderGearPage(pdf, brief, logoDataUrl);
+			footer(pdf, totalPages - 1, totalPages);
 			tick();
 		}
 
@@ -434,6 +444,50 @@ function renderDay(
 			pdf.setTextColor(...MUTED_TEXT_RGB);
 			pdf.text(`+ ${remainder} ${meta.strings.moreLabel}`, MARGIN_X, yCursor);
 		}
+	}
+}
+
+/** Gear checklist page: category subheads with "[ ] item" lines in two
+ *  columns; overflow past the page bottom is truncated (a pack list that
+ *  long is a packing problem, not a rendering one). */
+function renderGearPage(pdf: JsPDF, brief: TripBrief, logoDataUrl: string | null): void {
+	const gear = brief.meta.gearChecklist;
+	if (!gear) return;
+	paintHeaderBand(pdf, gear.heading, [], logoDataUrl);
+	pdf.setFontSize(9);
+	const colW = (PAGE_W - MARGIN_X * 2 - 8) / 2;
+	let col = 0;
+	let y = HEADER_H + 12;
+	const colX = (): number => MARGIN_X + col * (colW + 8);
+	const advance = (lines: number): void => {
+		y += lines * 4.2;
+		if (y > PAGE_H - 18 && col === 0) {
+			col = 1;
+			y = HEADER_H + 12;
+		}
+	};
+	if (gear.missingLine) {
+		pdf.setFont('NotoSans', 'bold');
+		pdf.setTextColor(...ALERT_RGB);
+		const warn = pdf.splitTextToSize(gear.missingLine, PAGE_W - MARGIN_X * 2) as string[];
+		pdf.text(warn, MARGIN_X, y);
+		y += warn.length * 4.2 + 4;
+	}
+	for (const cat of gear.categories) {
+		if (y > PAGE_H - 18 && col === 1) break;
+		pdf.setFont('NotoSans', 'bold');
+		pdf.setTextColor(...HEADER_TEXT_RGB);
+		pdf.text(cat.name, colX(), y);
+		advance(1.4);
+		pdf.setFont('NotoSans', 'normal');
+		pdf.setTextColor(...BODY_TEXT_RGB);
+		for (const line of cat.lines) {
+			if (y > PAGE_H - 18 && col === 1) break;
+			const wrapped = pdf.splitTextToSize(`[ ] ${line}`, colW) as string[];
+			pdf.text(wrapped, colX(), y);
+			advance(wrapped.length);
+		}
+		advance(0.8);
 	}
 }
 

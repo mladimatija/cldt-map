@@ -192,6 +192,8 @@ export function createMapStoreStub(): MapStoreState {
 		setWaterConsumptionLph: noop,
 		packEtaAdjust: false,
 		setPackEtaAdjust: noop,
+		packGearList: null,
+		setPackGearList: noop,
 		userWaypoints: [],
 		addUserWaypoint: noop,
 		updateUserWaypoint: noop,

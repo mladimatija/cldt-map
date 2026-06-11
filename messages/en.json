@@ -229,7 +229,11 @@
 		"waterConsumptionLabel": "Water consumption",
 		"packWeightHint": "Enables water carry suggestions per stage. Leave base weight empty to turn this off.",
 		"packEtaAdjustLabel": "Adjust ETAs for pack weight",
-		"packEtaAdjustHint": "Slows estimates by about 1% per kg of base weight above {reference}."
+		"packEtaAdjustHint": "Slows estimates by about 1% per kg of base weight above {reference}.",
+		"packCsvImport": "Import pack list (CSV)",
+		"packCsvSummary": "{name}: {count} items, base {base}",
+		"packCsvClear": "Clear",
+		"packCsvError": "Could not read that CSV. Export it from LighterPack or Packstack and try again."
 	},
 	"baseMapSelector": {
 		"standard": "Standard",
@@ -673,7 +677,9 @@
 			}
 		},
 		"packSummary": "{base} + water",
-		"waterCarry": "Water: carry up to {volume} across the longest dry stretch ({total} total pack weight)"
+		"waterCarry": "Water: carry up to {volume} across the longest dry stretch ({total} total pack weight)",
+		"gearHeading": "Gear checklist ({name})",
+		"gearMissing": "Recommended gear not found in your pack list: {terms}. Double-check before departure."
 	},
 	"severeWeather": {
 		"layerLabel": "Severe weather warnings",

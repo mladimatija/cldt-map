@@ -15,6 +15,7 @@ import { exportTripBriefPdf } from '@/lib/trip-brief-pdf';
 import { exportTripBriefDocx } from '@/lib/trip-brief-docx';
 import { usePopoverFocusTrap, usePackAdjustedPaceKmh } from '@/hooks';
 import { formatVolume, formatWeight, packTotalKg, waterCarryLiters } from '@/lib/pack-weight';
+import { missingGearTerms } from '@/lib/pack-csv';
 import { Locale } from '@/i18n/routing';
 
 interface MapControlsTripBriefModalProps {
@@ -54,6 +55,7 @@ export function MapControlsTripBriefModal({
 	const walkingPaceKmh = usePackAdjustedPaceKmh();
 	const packBaseWeightKg = useMapStore((s: MapStoreState) => s.packBaseWeightKg);
 	const waterConsumptionLph = useMapStore((s: MapStoreState) => s.waterConsumptionLph);
+	const packGearList = useMapStore((s: MapStoreState) => s.packGearList);
 	const gradeAdjustedEta = useMapStore((s: MapStoreState) => s.gradeAdjustedEta);
 	const units = useMapStore((s: MapStoreState) => s.units);
 	const distancePrecision = useMapStore((s: MapStoreState) => s.distancePrecision);
@@ -110,6 +112,27 @@ export function MapControlsTripBriefModal({
 				typeLabel: (type) => tPois(`type.${type}`, { default: type }),
 				distanceLabel: makeDistanceLabelFn(units, distancePrecision),
 				strings: documentStrings,
+				...(packGearList && {
+					gearChecklist: ((): NonNullable<TripBrief['meta']['gearChecklist']> => {
+						const gearStrings = seasonalEntries
+							.map((entry) => entry.gear)
+							.filter((g): g is string => typeof g === 'string' && g.trim().length > 0);
+						const missing = missingGearTerms(gearStrings, packGearList);
+						return {
+							heading: t('gearHeading', { name: packGearList.sourceName }),
+							...(missing.length > 0 && { missingLine: t('gearMissing', { terms: missing.join(', ') }) }),
+							categories: packGearList.categories.map((cat) => ({
+								name: `${cat.name} (${formatWeight(cat.kg, units)})`,
+								lines: packGearList.items
+									.filter((item) => item.category === cat.name)
+									.map(
+										(item) =>
+											`${item.name}${item.qty > 1 ? ` x${item.qty}` : ''} - ${formatWeight(item.kg * item.qty, units)}`,
+									),
+							})),
+						};
+					})(),
+				}),
 				...(packBaseWeightKg !== null && {
 					packSummary: t('packSummary', { base: formatWeight(packBaseWeightKg, units) }),
 					waterCarryLabel: (dryStretchKm: number): string | undefined => {

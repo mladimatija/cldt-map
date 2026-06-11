@@ -229,7 +229,11 @@
 		"waterConsumptionLabel": "Potrošnja vode",
 		"packWeightHint": "Uključuje preporuke nošenja vode po etapi. Ostavite osnovnu težinu praznom za isključivanje.",
 		"packEtaAdjustLabel": "Prilagodi procjene vremena težini ruksaka",
-		"packEtaAdjustHint": "Usporava procjene za oko 1% po kilogramu osnovne težine iznad {reference}."
+		"packEtaAdjustHint": "Usporava procjene za oko 1% po kilogramu osnovne težine iznad {reference}.",
+		"packCsvImport": "Uvezi popis opreme (CSV)",
+		"packCsvSummary": "{name}: {count} stavki, osnovno {base}",
+		"packCsvClear": "Ukloni",
+		"packCsvError": "CSV nije moguće pročitati. Izvezite ga iz LighterPacka ili Packstacka i pokušajte ponovno."
 	},
 	"baseMapSelector": {
 		"standard": "Standardna",
@@ -673,7 +677,9 @@
 			}
 		},
 		"packSummary": "{base} + voda",
-		"waterCarry": "Voda: ponesite do {volume} za najduži dio bez izvora (ukupna težina ruksaka {total})"
+		"waterCarry": "Voda: ponesite do {volume} za najduži dio bez izvora (ukupna težina ruksaka {total})",
+		"gearHeading": "Popis opreme ({name})",
+		"gearMissing": "Preporučena oprema nije pronađena u vašem popisu: {terms}. Provjerite prije polaska."
 	},
 	"severeWeather": {
 		"layerLabel": "Upozorenja za opasno vrijeme",

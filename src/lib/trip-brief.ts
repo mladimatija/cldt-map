@@ -50,6 +50,14 @@ export interface TripBriefMeta {
 	/** Localized pack summary for the cover table ("10.2 kg + water"),
 	 *  resolved by the caller. Absent when the pack-weight feature is off. */
 	packSummary?: string;
+	/** Fully resolved gear checklist page content (imported pack list);
+	 *  absent when no CSV was imported. */
+	gearChecklist?: {
+		heading: string;
+		/** Optional "recommended gear not found" warning line. */
+		missingLine?: string;
+		categories: { name: string; lines: string[] }[];
+	};
 }
 
 export interface TripBriefPoi {
@@ -147,6 +155,8 @@ export interface TripBriefAssemblyArgs {
 	 *  in km and returns the rendered line, or undefined to omit it. Keeps
 	 *  the pack math (pace, rate, base weight, units) at the call site. */
 	waterCarryLabel?: (dryStretchKm: number) => string | undefined;
+	/** Fully resolved gear checklist content; passed through to the meta. */
+	gearChecklist?: TripBriefMeta['gearChecklist'];
 }
 
 /**
@@ -177,6 +187,7 @@ export function assembleTripBrief(args: TripBriefAssemblyArgs): TripBrief {
 		strings,
 		packSummary,
 		waterCarryLabel,
+		gearChecklist,
 	} = args;
 
 	const totalKm =
@@ -293,6 +304,7 @@ export function assembleTripBrief(args: TripBriefAssemblyArgs): TripBrief {
 			strings,
 			...(startDate && { startDate }),
 			...(packSummary && { packSummary }),
+			...(gearChecklist && { gearChecklist }),
 		},
 		overview,
 		days,
