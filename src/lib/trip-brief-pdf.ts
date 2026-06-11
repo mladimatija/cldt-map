@@ -251,6 +251,7 @@ function renderCover(pdf: JsPDF, brief: TripBrief, logoDataUrl: string | null): 
 		[meta.strings.labels.loss, `-${formatElevation(overview.totalLossM, meta.units)}`],
 		[meta.strings.labels.eta, formatEta(overview.totalDurationSec)],
 		[meta.strings.labels.pace, `${meta.walkingPaceKmh.toFixed(1)} km/h`],
+		...(meta.packSummary ? [[meta.strings.labels.pack, meta.packSummary] as [string, string]] : []),
 	];
 	let y = HEADER_H + 26;
 	for (const [k, v] of grid) {
@@ -355,6 +356,17 @@ function renderDay(
 	const wrapped = pdf.splitTextToSize(day.narrative, PAGE_W - MARGIN_X * 2) as string[];
 	pdf.text(wrapped, MARGIN_X, yCursor);
 	yCursor += wrapped.length * 4 + 4;
+
+	// Water carry suggestion (pack-weight feature; absent when off)
+	if (day.waterCarryLabel) {
+		pdf.setFont('NotoSans', 'normal');
+		pdf.setTextColor(14, 116, 144);
+		pdf.setFontSize(10);
+		const carryWrapped = pdf.splitTextToSize(day.waterCarryLabel, PAGE_W - MARGIN_X * 2) as string[];
+		pdf.text(carryWrapped, MARGIN_X, yCursor);
+		yCursor += carryWrapped.length * 4 + 4;
+		pdf.setTextColor(...MUTED_TEXT_RGB);
+	}
 
 	// Seasonal alerts (if any)
 	if (day.seasonalAlerts.length > 0) {

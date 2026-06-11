@@ -4,6 +4,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useStore, useMapStore, type StoreState, type MapStoreState } from '@/lib/store';
+import { usePackAdjustedPaceKmh } from '@/hooks';
 import { TRAIL_OFF_TRAIL_THRESHOLD_M } from '@/lib/config';
 import {
 	computeDistanceRemaining,
@@ -15,6 +16,7 @@ import {
 import { totalCompletedKm } from '@/lib/completion';
 import { loadPois, poiDisplayName, type Poi } from '@/lib/pois';
 import { isUsableWaterSource, WATER_COLOR } from '@/lib/water-intelligence';
+import { formatVolume, waterCarryLiters } from '@/lib/pack-weight';
 import { formatDistance, formatElevation } from '@/lib/utils';
 
 /** Categories shown in the up-next data-book strip, in render order. */
@@ -50,10 +52,12 @@ export function DistanceRemainingOverlay(): React.ReactElement | null {
 	const rulerRange = useMapStore((state: MapStoreState) => state.rulerRange);
 	const units = useMapStore((state: MapStoreState) => state.units);
 	const direction = useMapStore((state: MapStoreState) => state.direction);
-	const walkingPaceKmh = useMapStore((state: MapStoreState) => state.walkingPaceKmh);
+	const walkingPaceKmh = usePackAdjustedPaceKmh();
 	const gradeAdjustedEta = useMapStore((state: MapStoreState) => state.gradeAdjustedEta);
 	const distancePrecision = useMapStore((state: MapStoreState) => state.distancePrecision);
 	const showUpNext = useMapStore((state: MapStoreState) => state.showUpNext);
+	const packBaseWeightKg = useMapStore((state: MapStoreState) => state.packBaseWeightKg);
+	const waterConsumptionLph = useMapStore((state: MapStoreState) => state.waterConsumptionLph);
 	const enabledPoiTypes = useMapStore((state: MapStoreState) => state.enabledPoiTypes);
 	const togglePoiType = useMapStore((state: MapStoreState) => state.togglePoiType);
 	const requestOpenPoi = useMapStore((state: MapStoreState) => state.requestOpenPoi);
@@ -234,25 +238,41 @@ export function DistanceRemainingOverlay(): React.ReactElement | null {
 					<p className="m-0 text-[10px] font-medium tracking-wide text-gray-400 uppercase dark:text-gray-500">
 						{t('upNext')}
 					</p>
-					{upNextRows.map(({ key, poi, km }) => (
-						<button
-							aria-label={`${upNextAriaLabel[key]}: ${poiDisplayName(poi, locale)}, ${formatDistance(km, units, distancePrecision)}`}
-							className="flex w-full cursor-pointer items-center justify-between gap-3 rounded text-left hover:bg-gray-100 dark:hover:bg-[var(--bg-primary)]"
-							key={key}
-							type="button"
-							onClick={() => handleUpNextClick(poi)}
-						>
-							<span className="flex min-w-0 items-center gap-1.5 text-gray-500 dark:text-[var(--text-secondary)]">
-								<span
-									aria-hidden="true"
-									className="size-2 shrink-0 rounded-full"
-									style={{ backgroundColor: upNextDotColor(key, poi) }}
-								/>
-								<span className="max-w-[9rem] truncate">{poiDisplayName(poi, locale)}</span>
-							</span>
-							<span className="shrink-0">{formatDistance(km, units, distancePrecision)}</span>
-						</button>
-					))}
+					{upNextRows.map(({ key, poi, km }) => {
+						// Water-to-carry hint: liters to reach the next source at the
+						// (pack-adjusted) pace; only when the pack feature is on.
+						const carryL =
+							key === 'water' && packBaseWeightKg !== null
+								? waterCarryLiters(km, walkingPaceKmh, waterConsumptionLph)
+								: 0;
+						const carryStr = carryL > 0 ? formatVolume(carryL, units) : null;
+						return (
+							<button
+								aria-label={`${upNextAriaLabel[key]}: ${poiDisplayName(poi, locale)}, ${formatDistance(km, units, distancePrecision)}${carryStr ? `, ${carryStr}` : ''}`}
+								className="flex w-full cursor-pointer items-center justify-between gap-3 rounded text-left hover:bg-gray-100 dark:hover:bg-[var(--bg-primary)]"
+								key={key}
+								type="button"
+								onClick={() => handleUpNextClick(poi)}
+							>
+								<span className="flex min-w-0 items-center gap-1.5 text-gray-500 dark:text-[var(--text-secondary)]">
+									<span
+										aria-hidden="true"
+										className="size-2 shrink-0 rounded-full"
+										style={{ backgroundColor: upNextDotColor(key, poi) }}
+									/>
+									<span className="max-w-[9rem] truncate">{poiDisplayName(poi, locale)}</span>
+								</span>
+								<span className="shrink-0">
+									{formatDistance(km, units, distancePrecision)}
+									{carryStr && (
+										<span aria-hidden="true" className="ml-1 text-[10px] text-gray-400 dark:text-gray-500">
+											≈{carryStr}
+										</span>
+									)}
+								</span>
+							</button>
+						);
+					})}
 				</div>
 			)}
 		</div>

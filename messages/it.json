@@ -59,7 +59,8 @@
 			"waterIntelligence": "Intelligenza sulle fonti d'acqua - ogni fonte porta una classe di affidabilità dai tag OSM: fontanella affidabile, stagionale (può essere secca), sorgente non verificata (trattare prima di bere) o non potabile. La classe colora il marker, appare come badge nei popup e nelle liste, e il pianificatore segnala i giorni il cui tratto più lungo senza acqua utilizzabile supera 15 / 25 km",
 			"completionTracking": "Tracciamento dei tratti completati - segna ciò che hai percorso: automaticamente dal GPS sul sentiero, manualmente dalla selezione del righello o da intere sezioni A/B/C, oppure importando una traccia GPX registrata. I tratti completati si disegnano in verde sopra qualsiasi stile; il pannello progresso e il tooltip posizione mostrano il progresso totale e per sezione",
 			"helpPanel": "Aiuto in-app - il pulsante ? apre un riferimento per argomenti: nozioni di base della mappa, profilo altimetrico, gesti nascosti (pressione lunga SOS, trascinamento GPX), strumenti di pianificazione e comportamento offline",
-			"upNext": "Vista \"A seguire\" - la fonte d’acqua, il rifugio e la città più vicini davanti a te, con le distanze, direttamente nel pannello distanze"
+			"upNext": "Vista \"A seguire\" - la fonte d’acqua, il rifugio e la città più vicini davanti a te, con le distanze, direttamente nel pannello distanze",
+			"packWeight": "Peso dello zaino e acqua da portare - suggerimenti \"porta fino a X L\" per tappa dal peso base e dal consumo, in unità metriche o imperiali"
 		},
 		"dataAttribution": "Dati e attribuzioni",
 		"dataAttributionDesc": "I dati del sentiero sono forniti dall'organizzazione Udruga Long Distance Trail Hrvatska (LDTH). Le tessere mappa provengono da OpenStreetMap, OpenTopoMap, CyclOSM e altri provider. Le mappe topografiche croate provengono dall'Amministrazione Geodetica Statale (DGU). I dati meteo provengono da DHMZ (Servizio Meteorologico Croato) e Open-Meteo. Le tessere radar sono fornite da RainViewer. Stato stagionale del sentiero, avvisi di pericolo e dati delle stazioni di soccorso alpino provengono da HGSS (Servizio croato di soccorso in montagna), HPS (Federazione croata di alpinismo) e dalle autorità dei parchi nazionali (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) e Parco naturale Velebit. I dati visualizzati su questo sito potrebbero non riflettere le condizioni più recenti. In caso di dubbio, verificare sempre le fonti ufficiali.",
@@ -221,7 +222,13 @@
 		"helpShow": "Mostra aiuto",
 		"helpHide": "Nascondi aiuto",
 		"showUpNextLabel": "\"A seguire\" nel pannello distanze",
-		"showUpNextHint": "Mostra la prossima fonte d’acqua, il prossimo rifugio e la prossima città nella tua direzione di marcia. Tocca una riga per aprirla sulla mappa."
+		"showUpNextHint": "Mostra la prossima fonte d’acqua, il prossimo rifugio e la prossima città nella tua direzione di marcia. Tocca una riga per aprirla sulla mappa.",
+		"packWeightTitle": "Peso dello zaino",
+		"packBaseWeightLabel": "Peso base (senza acqua)",
+		"waterConsumptionLabel": "Consumo di acqua",
+		"packWeightHint": "Attiva i suggerimenti sull’acqua da portare per tappa. Lascia vuoto il peso base per disattivare.",
+		"packEtaAdjustLabel": "Adatta le stime dei tempi al peso dello zaino",
+		"packEtaAdjustHint": "Rallenta le stime di circa l’1% per ogni chilogrammo di peso base oltre {reference}."
 	},
 	"baseMapSelector": {
 		"standard": "Standard",
@@ -597,7 +604,8 @@
 		"stripMapPdfCancel": "Annulla",
 		"stripMapPdfCancelTooltip": "Annulla l'esportazione PDF in corso.",
 		"pdfStageLabel": "Tappa",
-		"stageWaterGap": "Tratto più lungo senza acqua: {distance}"
+		"stageWaterGap": "Tratto più lungo senza acqua: {distance}",
+		"stageCarry": "Porta fino a {volume} di acqua (totale {total})"
 	},
 	"tripBrief": {
 		"defaultTitle": "Piano di viaggio CLDT",
@@ -635,7 +643,8 @@
 				"alerts": "Avvisi",
 				"pois": "Luoghi lungo il percorso",
 				"emergency": "Contatti di emergenza",
-				"generated": "Generato da CLDT Map il"
+				"generated": "Generato da CLDT Map il",
+				"pack": "Zaino"
 			},
 			"daysHeading": "Giorno per giorno",
 			"moreLabel": "altri luoghi",
@@ -661,7 +670,9 @@
 				"l4": "In emergenza: se possibile restare sul posto, segnalare la posizione, chiamare i soccorsi.",
 				"l5": "Zone senza copertura: SMS al 112 con le coordinate se le chiamate non funzionano."
 			}
-		}
+		},
+		"packSummary": "{base} + acqua",
+		"waterCarry": "Acqua: porta fino a {volume} per il tratto più lungo senza fonti (peso totale dello zaino {total})"
 	},
 	"severeWeather": {
 		"layerLabel": "Avvisi meteo severi",

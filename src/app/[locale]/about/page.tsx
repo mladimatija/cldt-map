@@ -80,6 +80,7 @@ export default function AboutPage(): React.ReactNode {
 						<li className="mb-2">{t('mapFeaturesList.waterIntelligence')}</li>
 						<li className="mb-2">{t('mapFeaturesList.completionTracking')}</li>
 						<li className="mb-2">{t('mapFeaturesList.upNext')}</li>
+						<li className="mb-2">{t('mapFeaturesList.packWeight')}</li>
 						<li className="mb-2">{t('mapFeaturesList.helpPanel')}</li>
 					</ul>
 				</article>

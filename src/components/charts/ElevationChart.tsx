@@ -5,7 +5,7 @@
  * Uses Recharts AreaChart; data comes from store enhancedTrailPoints / gpxElevationPoints.
  */
 import React, { useEffect, useMemo, useRef, useState, JSX } from 'react';
-import { useBlockMapPropagation } from '@/hooks';
+import { useBlockMapPropagation, usePackAdjustedPaceKmh } from '@/hooks';
 import {
 	AreaChart,
 	Area,
@@ -81,7 +81,7 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 	const gpxLoaded = useStore((state: StoreState) => state.gpxLoaded);
 	const gpxLoadFailed = useMapStore((state: MapStoreState) => state.gpxLoadFailed);
 	const rawGpxData = useMapStore((state: MapStoreState) => state.rawGpxData);
-	const walkingPaceKmh = useMapStore((state: MapStoreState) => state.walkingPaceKmh);
+	const walkingPaceKmh = usePackAdjustedPaceKmh();
 	const gradeAdjustedEta = useMapStore((state: MapStoreState) => state.gradeAdjustedEta);
 	const darkMode = useMapStore((state: MapStoreState) => state.darkMode);
 	const surfaceColoured = useMapStore((state: MapStoreState) => state.surfaceColoured);

@@ -12,6 +12,7 @@
  */
 
 import { computeStageStats } from '@/lib/stage-planner';
+import { isUsableWaterSource, longestDryStretchKm } from '@/lib/water-intelligence';
 import { formatEta } from '@/lib/distance-utils';
 import { formatDistance } from '@/lib/utils';
 import {
@@ -46,6 +47,9 @@ export interface TripBriefMeta {
 	 *  resolved by the caller via useMessages() - the PDF/DOCX generators run
 	 *  outside React/next-intl and read everything from here. */
 	strings: TripBriefStrings;
+	/** Localized pack summary for the cover table ("10.2 kg + water"),
+	 *  resolved by the caller. Absent when the pack-weight feature is off. */
+	packSummary?: string;
 }
 
 export interface TripBriefPoi {
@@ -83,6 +87,10 @@ export interface TripBriefDay {
 	narrative: string;
 	pois: TripBriefPoi[];
 	seasonalAlerts: TripBriefSeasonalAlert[];
+	/** Localized water carry line ("Carry up to 3.5 L ..."), resolved by the
+	 *  caller's resolver. Absent when the pack-weight feature is off or the
+	 *  stage has no meaningful dry stretch. */
+	waterCarryLabel?: string;
 }
 
 export interface TripBriefOverview {
@@ -133,6 +141,12 @@ export interface TripBriefAssemblyArgs {
 	typeLabel: (type: string) => string;
 	/** Localized distance label resolver - keeps the brief unit-aware. */
 	distanceLabel: (km: number) => string;
+	/** Localized pack summary for the cover; omit when the feature is off. */
+	packSummary?: string;
+	/** Per-day water carry resolver: receives the stage's longest dry stretch
+	 *  in km and returns the rendered line, or undefined to omit it. Keeps
+	 *  the pack math (pace, rate, base weight, units) at the call site. */
+	waterCarryLabel?: (dryStretchKm: number) => string | undefined;
 }
 
 /**
@@ -161,6 +175,8 @@ export function assembleTripBrief(args: TripBriefAssemblyArgs): TripBrief {
 		typeLabel,
 		distanceLabel,
 		strings,
+		packSummary,
+		waterCarryLabel,
 	} = args;
 
 	const totalKm =
@@ -182,6 +198,13 @@ export function assembleTripBrief(args: TripBriefAssemblyArgs): TripBrief {
 		: 0;
 
 	const isNobo = direction === 'NOBO';
+
+	/** Usable water source positions for the carry lines; like the planner,
+	 *  computed from the full dataset rather than the visible POI subset. */
+	const waterSourceKms =
+		waterCarryLabel === undefined
+			? []
+			: (poisFile?.pois ?? []).filter((p) => p.type === 'water' && isUsableWaterSource(p.water)).map((p) => p.trailKm);
 
 	let totalGainM = 0;
 	let totalLossM = 0;
@@ -212,6 +235,11 @@ export function assembleTripBrief(args: TripBriefAssemblyArgs): TripBrief {
 		);
 		const stageAlerts = collectStageAlerts(seasonalEntries, stage, locale);
 
+		const carryLabel =
+			waterCarryLabel && waterSourceKms.length > 0
+				? waterCarryLabel(longestDryStretchKm(stage.startKm, stage.endKm, waterSourceKms))
+				: undefined;
+
 		return {
 			index: i,
 			stageId: `stage-${i}`,
@@ -234,6 +262,7 @@ export function assembleTripBrief(args: TripBriefAssemblyArgs): TripBrief {
 			}),
 			pois: stagePois,
 			seasonalAlerts: stageAlerts,
+			...(carryLabel && { waterCarryLabel: carryLabel }),
 		};
 	});
 
@@ -263,6 +292,7 @@ export function assembleTripBrief(args: TripBriefAssemblyArgs): TripBrief {
 			gradeAdjustedEta,
 			strings,
 			...(startDate && { startDate }),
+			...(packSummary && { packSummary }),
 		},
 		overview,
 		days,

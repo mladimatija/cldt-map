@@ -13,7 +13,8 @@ import { assembleTripBrief, canAssembleTripBrief, makeDistanceLabelFn, type Trip
 import { tripBriefStringsFromMessages } from '@/lib/trip-brief-i18n';
 import { exportTripBriefPdf } from '@/lib/trip-brief-pdf';
 import { exportTripBriefDocx } from '@/lib/trip-brief-docx';
-import { usePopoverFocusTrap } from '@/hooks';
+import { usePopoverFocusTrap, usePackAdjustedPaceKmh } from '@/hooks';
+import { formatVolume, formatWeight, packTotalKg, waterCarryLiters } from '@/lib/pack-weight';
 import { Locale } from '@/i18n/routing';
 
 interface MapControlsTripBriefModalProps {
@@ -50,7 +51,9 @@ export function MapControlsTripBriefModal({
 	const starredPoiIds = useMapStore((s: MapStoreState) => s.starredPoiIds);
 	const enabledPoiTypes = useMapStore((s: MapStoreState) => s.enabledPoiTypes);
 	const enabledPoiTags = useMapStore((s: MapStoreState) => s.enabledPoiTags);
-	const walkingPaceKmh = useMapStore((s: MapStoreState) => s.walkingPaceKmh);
+	const walkingPaceKmh = usePackAdjustedPaceKmh();
+	const packBaseWeightKg = useMapStore((s: MapStoreState) => s.packBaseWeightKg);
+	const waterConsumptionLph = useMapStore((s: MapStoreState) => s.waterConsumptionLph);
 	const gradeAdjustedEta = useMapStore((s: MapStoreState) => s.gradeAdjustedEta);
 	const units = useMapStore((s: MapStoreState) => s.units);
 	const distancePrecision = useMapStore((s: MapStoreState) => s.distancePrecision);
@@ -107,6 +110,17 @@ export function MapControlsTripBriefModal({
 				typeLabel: (type) => tPois(`type.${type}`, { default: type }),
 				distanceLabel: makeDistanceLabelFn(units, distancePrecision),
 				strings: documentStrings,
+				...(packBaseWeightKg !== null && {
+					packSummary: t('packSummary', { base: formatWeight(packBaseWeightKg, units) }),
+					waterCarryLabel: (dryStretchKm: number): string | undefined => {
+						const liters = waterCarryLiters(dryStretchKm, walkingPaceKmh, waterConsumptionLph);
+						if (liters <= 0) return undefined;
+						return t('waterCarry', {
+							volume: formatVolume(liters, units),
+							total: formatWeight(packTotalKg(packBaseWeightKg, liters), units),
+						});
+					},
+				}),
 			});
 
 			// AI narratives are best-effort: any failure (offline, rate limit,

@@ -13,7 +13,8 @@ import { MapControlsTripBriefModal } from './MapControlsTripBriefModal';
 import { cn, formatElevation, kmToMiles, milesToKm } from '@/lib/utils';
 import { MAP_CONTROL_POPOVER, MAP_CONTROL_INPUT } from './map-controls-constants';
 import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
-import { usePopoverFocusTrap } from '@/hooks';
+import { usePopoverFocusTrap, usePackAdjustedPaceKmh } from '@/hooks';
+import { CARRY_WARN_L, formatVolume, formatWeight, packTotalKg, waterCarryLiters } from '@/lib/pack-weight';
 import {
 	splitByDistance,
 	splitByEta,
@@ -44,7 +45,9 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 	const stagePlan = useMapStore((s: MapStoreState) => s.stagePlan);
 	const setStagePlan = useMapStore((s: MapStoreState) => s.setStagePlan);
 	const clearStagePlan = useMapStore((s: MapStoreState) => s.clearStagePlan);
-	const walkingPaceKmh = useMapStore((s: MapStoreState) => s.walkingPaceKmh);
+	const walkingPaceKmh = usePackAdjustedPaceKmh();
+	const packBaseWeightKg = useMapStore((s: MapStoreState) => s.packBaseWeightKg);
+	const waterConsumptionLph = useMapStore((s: MapStoreState) => s.waterConsumptionLph);
 	const gradeAdjustedEta = useMapStore((s: MapStoreState) => s.gradeAdjustedEta);
 	const units = useMapStore((s: MapStoreState) => s.units);
 	const poisFile = useMapStore((s: MapStoreState) => s.poisFile);
@@ -269,6 +272,15 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 		return stagePlan.stages.map((s) => longestDryStretchKm(s.startKm, s.endKm, waterSourceKms));
 	}, [stagePlan, waterSourceKms]);
 
+	/** Liters to carry per stage across its longest dry stretch; empty when
+	 *  the pack-weight feature is off (no base weight set) or there is no
+	 *  water data. Uses the pack-adjusted pace so heavier packs (slower,
+	 *  longer exposure) suggest slightly more water. */
+	const carryByStage = useMemo((): number[] => {
+		if (packBaseWeightKg === null || waterGapByStage.length === 0) return [];
+		return waterGapByStage.map((gapKm) => waterCarryLiters(gapKm, walkingPaceKmh, waterConsumptionLph));
+	}, [packBaseWeightKg, waterGapByStage, walkingPaceKmh, waterConsumptionLph]);
+
 	/** Flat, deduplicated waypoint list across every stage in the current plan.
 	 *  Dedup by id since a POI sitting at a stage boundary can legitimately
 	 *  appear in two consecutive buckets. Pre-computed via useMemo so the
@@ -491,6 +503,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 									    own row so row one stays scannable. */}
 									{(poiCount > 0 ||
 										(waterGapByStage[i] !== undefined && waterGapByStage[i] >= WATER_GAP_WARN_KM) ||
+										(carryByStage[i] !== undefined && carryByStage[i] > 0) ||
 										stageForecasts[i]) && (
 										<span className="flex w-full flex-wrap items-center gap-x-1.5 gap-y-0.5 pl-5">
 											{poiCount > 0 && (
@@ -519,6 +532,27 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 												>
 													<span aria-hidden>💧</span>
 													{toDisplay(waterGapByStage[i]).toFixed(0)}
+												</span>
+											)}
+											{carryByStage[i] !== undefined && carryByStage[i] > 0 && packBaseWeightKg !== null && (
+												<span
+													aria-label={t('stageCarry', {
+														volume: formatVolume(carryByStage[i], units),
+														total: formatWeight(packTotalKg(packBaseWeightKg, carryByStage[i]), units),
+													})}
+													className={cn(
+														'shrink-0 rounded-full px-1.5 py-0 text-[10px] font-medium tabular-nums',
+														carryByStage[i] >= CARRY_WARN_L
+															? 'bg-amber-500/15 text-amber-700 dark:text-amber-400'
+															: 'bg-gray-500/10 text-gray-600 dark:text-gray-300',
+													)}
+													title={t('stageCarry', {
+														volume: formatVolume(carryByStage[i], units),
+														total: formatWeight(packTotalKg(packBaseWeightKg, carryByStage[i]), units),
+													})}
+												>
+													<span aria-hidden>🎒</span>
+													{formatVolume(carryByStage[i], units)}
 												</span>
 											)}
 											{stageForecasts[i] && (
@@ -571,6 +605,17 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 								})}
 							</p>
 						)}
+						{packBaseWeightKg !== null &&
+							carryByStage[activeStageIndex] !== undefined &&
+							carryByStage[activeStageIndex] > 0 && (
+								<p className="m-0 text-[10px] text-gray-500 dark:text-gray-400">
+									<span aria-hidden>🎒</span>{' '}
+									{t('stageCarry', {
+										volume: formatVolume(carryByStage[activeStageIndex], units),
+										total: formatWeight(packTotalKg(packBaseWeightKg, carryByStage[activeStageIndex]), units),
+									})}
+								</p>
+							)}
 						{activeStagePois.map((poi) => {
 							const name = poiDisplayName(poi, locale);
 							const typeLabel = tPois(`type.${poi.type}`, { default: poi.type });

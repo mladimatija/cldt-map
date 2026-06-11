@@ -12,6 +12,7 @@ import { useClickOutside } from './useClickOutside';
 import { usePanel, usePanelListeners, usePanelManager } from './usePanelManager';
 import { usePoiListRows } from './usePoiListRows';
 import { useRuler } from './useRuler';
+import { usePackAdjustedPaceKmh, packAdjustedPaceKmhFromState } from './usePackAdjustedPace';
 
 export {
 	useSiteMetadata,
@@ -25,6 +26,8 @@ export {
 	usePanelManager,
 	usePoiListRows,
 	useRuler,
+	usePackAdjustedPaceKmh,
+	packAdjustedPaceKmhFromState,
 };
 export type { UseRulerResult } from './useRuler';
 export type {
