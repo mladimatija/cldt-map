@@ -768,5 +768,17 @@
 			"residential": "Stambena ulica",
 			"road": "Cesta"
 		}
+	},
+	"mineAreas": {
+		"layerLabel": "Minski sumnjiva područja",
+		"layerTooltip": "Službeni MUP/HCR poligoni minski sumnjivih područja uz stazu. Samo informativno - uvijek poštuj oznake na terenu.",
+		"popoutTitle": "Minski sumnjivo područje",
+		"affectedRange": "Zahvaćena dionica staze: {start} - {end}",
+		"dataDate": "Podaci ažurirani",
+		"officialSource": "Službeni izvor: misportal.hcr.hr",
+		"disclaimer": "Samo informativno. Odsutnost označenog područja ne znači sigurnost - uvijek poštuj oznake na terenu i ostani na markiranoj stazi.",
+		"bannerInside": "Čini se da si unutar minski sumnjivog područja. Odmah se vrati na markiranu stazu. Hitna pomoć: 112.",
+		"bannerNear": "Minski sumnjivo područje unutar {distance}. Ostani na markiranoj stazi.",
+		"dismiss": "Odbaci upozorenje o minski sumnjivom području"
 	}
 }

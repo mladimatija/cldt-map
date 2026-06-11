@@ -17,6 +17,7 @@ import {
 	IoLayersOutline,
 	IoSettingsOutline,
 	IoHelpCircleOutline,
+	IoAlertCircleOutline,
 	IoWarningOutline,
 	IoSnowOutline,
 	IoFlagOutline,
@@ -46,6 +47,7 @@ export function MapControlsSettingsPanel({
 }: MapControlsSettingsPanelProps): React.ReactElement {
 	const t = useTranslations('mapControls');
 	const tWeather = useTranslations('severeWeather');
+	const tMineAreas = useTranslations('mineAreas');
 	const tSeasonal = useTranslations('seasonalStatus');
 	const popoverRef = usePopoverFocusTrap(isExpanded);
 
@@ -91,6 +93,9 @@ export function MapControlsSettingsPanel({
 	const setSunsetProjection = useMapStore((state: MapStoreState) => state.setSunsetProjection);
 	const severeWeatherLayer = useMapStore((state: MapStoreState) => state.severeWeatherLayer);
 	const setSevereWeatherLayer = useMapStore((state: MapStoreState) => state.setSevereWeatherLayer);
+	const mineAreasEnabled = useMapStore((state: MapStoreState) => state.mineAreasEnabled);
+	const setMineAreasEnabled = useMapStore((state: MapStoreState) => state.setMineAreasEnabled);
+	const mineAreasFile = useMapStore((state: MapStoreState) => state.mineAreasFile);
 	const seasonalStatusLayerEnabled = useMapStore((state: MapStoreState) => state.seasonalStatusLayerEnabled);
 	const setSeasonalStatusLayerEnabled = useMapStore((state: MapStoreState) => state.setSeasonalStatusLayerEnabled);
 	const seasonalStatusFile = useMapStore((state: MapStoreState) => state.seasonalStatusFile);
@@ -347,6 +352,23 @@ export function MapControlsSettingsPanel({
 							</SmartTooltip>
 						</span>
 					</label>
+
+					{mineAreasFile && mineAreasFile.areas.length > 0 && (
+						<label className="flex cursor-pointer items-center gap-2">
+							<Checkbox checked={mineAreasEnabled} onCheckedChange={(checked) => setMineAreasEnabled(checked)} />
+							<IoAlertCircleOutline className="h-4 w-4 shrink-0 text-gray-600 dark:text-white" />
+							<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">{tMineAreas('layerLabel')}</span>
+							<span
+								className="inline-flex"
+								onClick={(e) => e.stopPropagation()}
+								onMouseDown={(e) => e.stopPropagation()}
+							>
+								<SmartTooltip content={tMineAreas('layerTooltip')} position="top">
+									<IoHelpCircleOutline className="ml-0.5 h-3.5 w-3.5 shrink-0 cursor-help text-gray-400 hover:text-gray-600 dark:text-white" />
+								</SmartTooltip>
+							</span>
+						</label>
+					)}
 
 					{seasonalStatusFile && (
 						<label className="flex cursor-pointer items-center gap-2">

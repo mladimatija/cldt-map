@@ -768,5 +768,17 @@
 			"residential": "Residential road",
 			"road": "Road"
 		}
+	},
+	"mineAreas": {
+		"layerLabel": "Mine-suspected areas",
+		"layerTooltip": "Official MUP/HCR mine-suspicion polygons near the trail. Informational only - always obey on-site signage and markings.",
+		"popoutTitle": "Mine-suspected area",
+		"affectedRange": "Affected trail section: {start} - {end}",
+		"dataDate": "Data updated",
+		"officialSource": "Official source: misportal.hcr.hr",
+		"disclaimer": "Informational only. Absence of a marked area does not mean safe - always obey on-site signage and stay on the marked trail.",
+		"bannerInside": "You appear to be inside a mine-suspected area. Return to the marked trail immediately. Emergency: 112.",
+		"bannerNear": "Mine-suspected area within {distance}. Stay on the marked trail.",
+		"dismiss": "Dismiss mine area warning"
 	}
 }

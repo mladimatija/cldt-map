@@ -768,5 +768,17 @@
 			"residential": "Strada residenziale",
 			"road": "Strada"
 		}
+	},
+	"mineAreas": {
+		"layerLabel": "Aree sospette di mine",
+		"layerTooltip": "Poligoni ufficiali MUP/HCR delle aree sospette di mine vicino al sentiero. Solo a scopo informativo - rispetta sempre la segnaletica sul posto.",
+		"popoutTitle": "Area sospetta di mine",
+		"affectedRange": "Tratto del sentiero interessato: {start} - {end}",
+		"dataDate": "Dati aggiornati",
+		"officialSource": "Fonte ufficiale: misportal.hcr.hr",
+		"disclaimer": "Solo a scopo informativo. L'assenza di un'area segnalata non significa sicurezza - rispetta sempre la segnaletica sul posto e resta sul sentiero segnato.",
+		"bannerInside": "Sembra che tu sia all'interno di un'area sospetta di mine. Torna immediatamente sul sentiero segnato. Emergenza: 112.",
+		"bannerNear": "Area sospetta di mine entro {distance}. Resta sul sentiero segnato.",
+		"dismiss": "Ignora l'avviso area di mine"
 	}
 }

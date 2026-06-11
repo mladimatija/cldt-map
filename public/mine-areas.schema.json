@@ -1,0 +1,59 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"title": "CLDT mine-suspected areas dataset",
+	"type": "object",
+	"additionalProperties": false,
+	"required": ["lastUpdated", "source", "areas", "trailRanges"],
+	"properties": {
+		"lastUpdated": {
+			"type": "string",
+			"description": "ISO date (YYYY-MM-DD) of the source snapshot; empty string until the update script runs."
+		},
+		"source": {
+			"type": "string",
+			"minLength": 1
+		},
+		"areas": {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"additionalProperties": false,
+				"required": ["id", "geometry", "bbox"],
+				"properties": {
+					"id": { "type": "string", "minLength": 1 },
+					"name": { "type": "string" },
+					"geometry": {
+						"type": "object",
+						"required": ["type", "coordinates"],
+						"properties": {
+							"type": { "enum": ["Polygon", "MultiPolygon"] },
+							"coordinates": { "type": "array" }
+						}
+					},
+					"bbox": {
+						"type": "array",
+						"minItems": 4,
+						"maxItems": 4,
+						"items": { "type": "number" }
+					},
+					"nearestTrailKm": { "type": "number", "minimum": 0 },
+					"distanceFromTrailM": { "type": "number", "minimum": 0 }
+				}
+			}
+		},
+		"trailRanges": {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"additionalProperties": false,
+				"required": ["startKm", "endKm", "proximity", "areaId"],
+				"properties": {
+					"startKm": { "type": "number", "minimum": 0 },
+					"endKm": { "type": "number", "minimum": 0 },
+					"proximity": { "enum": ["crosses", "near"] },
+					"areaId": { "type": "string", "minLength": 1 }
+				}
+			}
+		}
+	}
+}

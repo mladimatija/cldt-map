@@ -148,6 +148,10 @@ export const config = {
 	/** Show severe-weather overlay by default. */
 	severeWeatherLayer: envBool('NEXT_PUBLIC_DEFAULT_SEVERE_WEATHER_LAYER', false),
 
+	/** Show mine-suspected areas by default. ON: this is a life-safety layer,
+	 *  so users opt out rather than in. */
+	mineAreasEnabled: envBool('NEXT_PUBLIC_DEFAULT_MINE_AREAS', true),
+
 	/** Auto-sync tile cache in the background by default. */
 	autoSync: envBool('NEXT_PUBLIC_DEFAULT_AUTO_SYNC', false),
 

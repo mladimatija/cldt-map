@@ -10,6 +10,7 @@ import { useTranslations } from 'next-intl';
 import { useMapStore, type MapStoreState } from '@/lib/store';
 import { DEFAULT_PATH_OPTIONS } from '@/components/map/trail-route-constants';
 import { useSevereWeatherFetch } from '@/hooks/useSevereWeatherFetch';
+import { useMineAreasFetch } from '@/hooks/useMineAreasFetch';
 import { useSeasonalStatusFetch } from '@/hooks/useSeasonalStatusFetch';
 import { useTrailOsmTagsFetch } from '@/hooks/useTrailOsmTagsFetch';
 import { usePoisFetch } from '@/hooks/usePoisFetch';
@@ -75,6 +76,10 @@ const SevereWeatherLayer = dynamic(
 	() => import('@/components/map/SevereWeatherLayer').then((m) => ({ default: m.SevereWeatherLayer })),
 	{ ssr: false },
 );
+const MineAreaLayer = dynamic(
+	() => import('@/components/map/MineAreaLayer').then((m) => ({ default: m.MineAreaLayer })),
+	{ ssr: false },
+);
 
 export default function MapContent(): React.ReactElement {
 	const [initialLocationFetched, setInitialLocationFetched] = useState(false);
@@ -87,6 +92,7 @@ export default function MapContent(): React.ReactElement {
 	const requestLocationPermission = useMapStore((state: MapStoreState) => state.requestLocationPermission);
 
 	useSevereWeatherFetch();
+	useMineAreasFetch();
 	useSeasonalStatusFetch();
 	useTrailOsmTagsFetch();
 	usePoisFetch();
@@ -181,6 +187,7 @@ export default function MapContent(): React.ReactElement {
 			<StageBoundaryMarkers />
 			<NoticeMarkers />
 			<SevereWeatherLayer />
+			<MineAreaLayer />
 			<MapControls />
 			<RulerHint />
 			<ZoomControls />
