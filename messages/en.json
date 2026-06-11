@@ -210,7 +210,9 @@
 			"escCancelRuler": "Press <kbd>Esc</kbd> to cancel the Distance Ruler."
 		},
 		"progressShow": "Show trail progress",
-		"progressHide": "Hide trail progress"
+		"progressHide": "Hide trail progress",
+		"helpShow": "Show help",
+		"helpHide": "Hide help"
 	},
 	"baseMapSelector": {
 		"standard": "Standard",
@@ -529,7 +531,7 @@
 	"imports": {
 		"title": "Imported tracks",
 		"dropToImport": "Drop GPX file to import",
-		"noImports": "No imported tracks yet",
+		"noImports": "No imported tracks yet. Drag and drop a .gpx file anywhere onto the map to import one.",
 		"removeAriaLabel": "Remove {trackName}",
 		"showPoisHit": "Show POIs you passed",
 		"hidePoisHit": "Hide POIs",
@@ -862,5 +864,32 @@
 		"confirmClear": "Clear all progress?",
 		"confirmYes": "Clear",
 		"confirmNo": "Keep"
+	},
+	"help": {
+		"title": "Help",
+		"basicsHeading": "Map basics",
+		"basics": {
+			"layers": "The layers button (top right) switches base maps, overlays like radar and severe weather, trail colouring styles, and POI categories.",
+			"trail": "Tap the trail line, POI markers, or seasonal warning chips for details; popups link onward to photos, Wikipedia, and sharing.",
+			"settings": "The gear holds units, direction (SOBO/NOBO), walking pace, dark mode, and per-feature toggles."
+		},
+		"chartHeading": "Elevation chart",
+		"gesturesHeading": "Hidden gestures",
+		"gestures": {
+			"sos": "Long-press the red SOS button for the offline emergency panel: coordinates, Plus Code, nearest road access, HGSS rescue, and one-tap 112.",
+			"gpxDrop": "Drag and drop a recorded .gpx file anywhere onto the map to overlay your hike and compare it with the official trail.",
+			"poiList": "In the places list, type a number (\"100 km\") to jump there; arrow keys navigate, S selects rows for GPX export."
+		},
+		"planningHeading": "Planning tools",
+		"planning": {
+			"planner": "The calendar button splits any trail range into daily stages with elevation, ETA, water, and weather per day.",
+			"tripBrief": "Inside the planner, \"Trip brief\" exports a printable PDF or editable DOCX of the whole plan with maps and emergency info.",
+			"progress": "The checkmark button tracks which stretches you have hiked - automatically from GPS, from the ruler selection, or from an imported track."
+		},
+		"offlineHeading": "Offline",
+		"offline": {
+			"precache": "The cache panel pre-downloads the whole trail corridor (tiles, places, photos) for use without signal; it re-syncs on Wi-Fi.",
+			"gps": "GPS, the emergency panel, and your progress keep working fully offline once the corridor is cached."
+		}
 	}
 }

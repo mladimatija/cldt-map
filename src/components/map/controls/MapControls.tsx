@@ -26,6 +26,7 @@ import {
 	IoArrowUpOutline,
 	IoCalendarOutline,
 	IoCheckmarkDoneOutline,
+	IoHelpCircleOutline,
 	IoCreateOutline,
 	IoGridOutline,
 	IoMapOutline,
@@ -45,6 +46,7 @@ import { MapControlsTestLink } from './MapControlsTestLink';
 import { MapControlsExportPanel } from './MapControlsExportPanel';
 import { MapControlsStagePlannerPanel } from './MapControlsStagePlannerPanel';
 import { MapControlsProgressPanel } from './MapControlsProgressPanel';
+import { MapControlsHelpPanel } from './MapControlsHelpPanel';
 import { MapControlsEmergencyButton } from './MapControlsEmergencyButton';
 import { MapControlsPoiList } from './MapControlsPoiList';
 import { MapControlsEmergencyPanel } from './MapControlsEmergencyPanel';
@@ -156,6 +158,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 	const exportContainerRef = useRef<HTMLDivElement>(null);
 	const stagePlannerRef = useRef<HTMLDivElement>(null);
 	const progressRef = useRef<HTMLDivElement>(null);
+	const helpRef = useRef<HTMLDivElement>(null);
 	const emergencyContainerRef = useRef<HTMLDivElement>(null);
 	const emergencyPanelRef = useRef<HTMLDivElement>(null);
 
@@ -170,6 +173,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 	const exportPanel = usePanel('export', exportContainerRef);
 	const stagePlannerPanel = usePanel('stagePlanner', stagePlannerRef);
 	const progressPanel = usePanel('progress', progressRef);
+	const helpPanel = usePanel('help', helpRef);
 	const emergencyPanel = usePanel('emergency', emergencyContainerRef);
 	const poiListPanel = usePanel('poiList', poiListContainerRef);
 
@@ -182,6 +186,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 	useBlockMapPropagation(exportPanelRef);
 	useBlockMapPropagation(stagePlannerRef);
 	useBlockMapPropagation(progressRef);
+	useBlockMapPropagation(helpRef);
 	useBlockMapPropagation(emergencyContainerRef);
 
 	const darkMode = useMapStore((state: MapStoreState) => state.darkMode);
@@ -931,6 +936,18 @@ const MapControls: React.FC<MapControlsProps> = ({
 						<IoCheckmarkDoneOutline aria-hidden className="h-5 w-5" />
 					</MapControlsButton>
 					{progressPanel.isOpen && <MapControlsProgressPanel />}
+				</div>
+
+				<div className="relative inline-block w-10 shrink-0" ref={helpRef}>
+					<MapControlsButton
+						active={helpPanel.isOpen}
+						ariaLabel={helpPanel.isOpen ? t('helpHide') : t('helpShow')}
+						content={helpPanel.isOpen ? t('helpHide') : t('helpShow')}
+						onClick={helpPanel.toggle}
+					>
+						<IoHelpCircleOutline aria-hidden className="h-5 w-5" />
+					</MapControlsButton>
+					{helpPanel.isOpen && <MapControlsHelpPanel />}
 				</div>
 
 				<div className="relative inline-block w-10 shrink-0" ref={shareContainerRef}>
