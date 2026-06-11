@@ -1,5 +1,5 @@
 {
-	"lastUpdated": "2026-06-10",
+	"lastUpdated": "2026-06-11",
 	"pois": [
 		{
 			"id": "restaurant-dunav-956440488",
@@ -13,6 +13,22 @@
 			"url": "https://www.hoteldunavilok.com/restaurant/",
 			"source": "osm",
 			"lastVerified": "2026-06-10"
+		},
+		{
+			"id": "water-drinking-water-6801516385",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.22351,
+			"lng": 19.37222,
+			"trailKm": 0.9,
+			"distanceFromTrailKm": 0.47,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "restaurant-villa-iva-1875871358",
@@ -213,9 +229,12 @@
 			"lng": 19.36269,
 			"trailKm": 5.9,
 			"distanceFromTrailKm": 0.01,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "peak-lovka-7637104883",
@@ -1475,6 +1494,22 @@
 			"lastVerified": "2026-06-03"
 		},
 		{
+			"id": "water-drinking-water-6296686151",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.55838,
+			"lng": 18.70203,
+			"trailKm": 102.6,
+			"distanceFromTrailKm": 0.23,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "restaurant-food-mljac-5846947040",
 			"type": "restaurant",
 			"name_en": "Food Mljac",
@@ -1521,6 +1556,22 @@
 			"distanceFromTrailKm": 1.39,
 			"source": "osm",
 			"lastVerified": "2026-06-10"
+		},
+		{
+			"id": "water-drinking-water-5932482099",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.55766,
+			"lng": 18.69623,
+			"trailKm": 102.8,
+			"distanceFromTrailKm": 0.51,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "shelter-skoljka-559850159",
@@ -3752,6 +3803,22 @@
 			"lastVerified": "2026-06-10"
 		},
 		{
+			"id": "water-drinking-water-1344344374",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.80011,
+			"lng": 18.80602,
+			"trailKm": 145.2,
+			"distanceFromTrailKm": 0.48,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "restaurant-josic-370696415",
 			"type": "restaurant",
 			"name_en": "Josić",
@@ -4803,6 +4870,22 @@
 			"lastVerified": "2026-06-07"
 		},
 		{
+			"id": "water-drinking-water-5717997293",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.49048,
+			"lng": 18.09294,
+			"trailKm": 240.6,
+			"distanceFromTrailKm": 0.04,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "cafe-in-455914122",
 			"type": "cafe",
 			"name_en": "IN",
@@ -5126,9 +5209,12 @@
 			"lng": 17.89928,
 			"trailKm": 260.8,
 			"distanceFromTrailKm": 0.09,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "peak-macevo-brdo-4052452918",
@@ -5168,9 +5254,12 @@
 			"lng": 17.89517,
 			"trailKm": 263.9,
 			"distanceFromTrailKm": 0.93,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "peak-petrov-vrh-4047451198",
@@ -5194,9 +5283,12 @@
 			"lng": 17.86961,
 			"trailKm": 266.1,
 			"distanceFromTrailKm": 0.24,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "hut-lovacka-kuca-8643605976",
@@ -5272,9 +5364,12 @@
 			"lng": 17.83915,
 			"trailKm": 269.1,
 			"distanceFromTrailKm": 0.02,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "peak-male-vincine-4052584160",
@@ -5290,19 +5385,6 @@
 			"lastVerified": "2026-06-07"
 		},
 		{
-			"id": "hut-lovacka-kuca-dobra-voda-8598680465",
-			"type": "hut",
-			"name_en": "Lovačka kuća Dobra voda",
-			"name_hr": "Lovačka kuća Dobra voda",
-			"lat": 45.46944,
-			"lng": 17.82909,
-			"trailKm": 270.4,
-			"distanceFromTrailKm": 0.34,
-			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
-		},
-		{
 			"id": "water-izvor-uzdisaja-8598680464",
 			"type": "water",
 			"name_en": "Izvor uzdisaja",
@@ -5311,6 +5393,23 @@
 			"lng": 17.82914,
 			"trailKm": 270.4,
 			"distanceFromTrailKm": 0.28,
+			"water": {
+				"kind": "spring",
+				"reliability": "reliable",
+				"potable": "yes"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "hut-lovacka-kuca-dobra-voda-8598680465",
+			"type": "hut",
+			"name_en": "Lovačka kuća Dobra voda",
+			"name_hr": "Lovačka kuća Dobra voda",
+			"lat": 45.46944,
+			"lng": 17.82909,
+			"trailKm": 270.4,
+			"distanceFromTrailKm": 0.34,
 			"source": "osm",
 			"isReachable": false,
 			"lastVerified": "2026-06-10"
@@ -5395,6 +5494,54 @@
 			"lastVerified": "2026-06-07"
 		},
 		{
+			"id": "water-spring-8700823869",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.47274,
+			"lng": 17.77573,
+			"trailKm": 274.7,
+			"distanceFromTrailKm": 0.22,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-8700823906",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.46823,
+			"lng": 17.77279,
+			"trailKm": 274.7,
+			"distanceFromTrailKm": 0.77,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-8700823922",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.46715,
+			"lng": 17.77382,
+			"trailKm": 274.7,
+			"distanceFromTrailKm": 0.84,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "peak-klokocica-927293723",
 			"type": "peak",
 			"name_en": "Klokočica",
@@ -5421,6 +5568,150 @@
 			"lastVerified": "2026-06-07"
 		},
 		{
+			"id": "water-spring-8700823854",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.47503,
+			"lng": 17.7744,
+			"trailKm": 275,
+			"distanceFromTrailKm": 0.14,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-8700823863",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.47461,
+			"lng": 17.77497,
+			"trailKm": 275,
+			"distanceFromTrailKm": 0.16,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-8700823903",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.4758,
+			"lng": 17.77365,
+			"trailKm": 275.1,
+			"distanceFromTrailKm": 0.08,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-8700823823",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.47138,
+			"lng": 17.77064,
+			"trailKm": 275.3,
+			"distanceFromTrailKm": 0.59,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-8700823818",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.47397,
+			"lng": 17.77057,
+			"trailKm": 275.5,
+			"distanceFromTrailKm": 0.3,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-8700823850",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.47409,
+			"lng": 17.77002,
+			"trailKm": 275.5,
+			"distanceFromTrailKm": 0.29,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-8700824027",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.47254,
+			"lng": 17.76263,
+			"trailKm": 275.7,
+			"distanceFromTrailKm": 0.72,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-8700824042",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.47653,
+			"lng": 17.76663,
+			"trailKm": 275.7,
+			"distanceFromTrailKm": 0.18,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-8700824075",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.4788,
+			"lng": 17.76482,
+			"trailKm": 276,
+			"distanceFromTrailKm": 0.06,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "peak-zeznice-927293722",
 			"type": "peak",
 			"name_en": "Žežnice",
@@ -5432,6 +5723,38 @@
 			"elevationM": 636,
 			"source": "osm",
 			"lastVerified": "2026-06-07"
+		},
+		{
+			"id": "water-spring-8700824120",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.47898,
+			"lng": 17.76252,
+			"trailKm": 276.2,
+			"distanceFromTrailKm": 0.12,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-izvor-bistra-927293717",
+			"type": "water",
+			"name_en": "Izvor Bistra",
+			"name_hr": "Izvor Bistra",
+			"lat": 45.48111,
+			"lng": 17.75613,
+			"trailKm": 276.7,
+			"distanceFromTrailKm": 0.03,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "hut-lovacka-kuca-vodice-8605336951",
@@ -5447,17 +5770,52 @@
 			"lastVerified": "2026-06-10"
 		},
 		{
-			"id": "water-izvor-bistra-927293717",
+			"id": "water-spring-8700824185",
 			"type": "water",
-			"name_en": "Izvor Bistra",
-			"name_hr": "Izvor Bistra",
-			"lat": 45.48111,
-			"lng": 17.75613,
-			"trailKm": 276.7,
-			"distanceFromTrailKm": 0.03,
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.47286,
+			"lng": 17.75541,
+			"trailKm": 276.8,
+			"distanceFromTrailKm": 0.94,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-8700824121",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.48206,
+			"lng": 17.75527,
+			"trailKm": 276.9,
+			"distanceFromTrailKm": 0.05,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-8700824172",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.47484,
+			"lng": 17.75364,
+			"trailKm": 276.9,
+			"distanceFromTrailKm": 0.72,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "peak-petkova-glava-11405177441",
@@ -5546,9 +5904,12 @@
 			"lng": 17.71939,
 			"trailKm": 280.4,
 			"distanceFromTrailKm": 0.01,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-izvor-antunovac-4039607725",
@@ -5559,9 +5920,12 @@
 			"lng": 17.71365,
 			"trailKm": 280.4,
 			"distanceFromTrailKm": 0.47,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "peak-stol-11405143063",
@@ -5737,9 +6101,12 @@
 			"lng": 17.68639,
 			"trailKm": 284.7,
 			"distanceFromTrailKm": 0.06,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "peak-kameni-vrsak-11405204978",
@@ -5808,6 +6175,22 @@
 			"elevationM": 708,
 			"source": "osm",
 			"lastVerified": "2026-06-07"
+		},
+		{
+			"id": "water-spring-7107915422",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.51863,
+			"lng": 17.66039,
+			"trailKm": 288.5,
+			"distanceFromTrailKm": 0.69,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "peak-koprivnato-brdo-7058825560",
@@ -6029,9 +6412,12 @@
 			"lng": 17.60829,
 			"trailKm": 294.8,
 			"distanceFromTrailKm": 0.01,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "hut-knezeva-voda-8620757469",
@@ -6147,9 +6533,12 @@
 			"lng": 17.52921,
 			"trailKm": 303.2,
 			"distanceFromTrailKm": 0.01,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "settlement-novo-zvecevo-983304118",
@@ -6358,9 +6747,12 @@
 			"lng": 17.41445,
 			"trailKm": 320.9,
 			"distanceFromTrailKm": 0.36,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-izvor-siroko-vrelo-8667833018",
@@ -6371,9 +6763,12 @@
 			"lng": 17.40505,
 			"trailKm": 321.8,
 			"distanceFromTrailKm": 0.03,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-vrani-kamen-12997950842",
@@ -6384,9 +6779,12 @@
 			"lng": 17.39369,
 			"trailKm": 322.7,
 			"distanceFromTrailKm": 0.09,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "peak-vrani-kamen-925752906",
@@ -6747,9 +7145,12 @@
 			"lng": 17.32143,
 			"trailKm": 363,
 			"distanceFromTrailKm": 0.01,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "peak-tromedja-6055457133",
@@ -6773,9 +7174,12 @@
 			"lng": 17.27735,
 			"trailKm": 369,
 			"distanceFromTrailKm": 0.17,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "peak-grokanica-grob-10956394521",
@@ -7234,6 +7638,22 @@
 			"lastVerified": "2026-06-07"
 		},
 		{
+			"id": "water-spring-11161377911",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.94624,
+			"lng": 16.98199,
+			"trailKm": 408.6,
+			"distanceFromTrailKm": 0.78,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "hut-mountain-lodge-kamenitovac-326018327",
 			"type": "hut",
 			"name_en": "Mountain lodge Kamenitovac",
@@ -7370,9 +7790,13 @@
 			"lng": 16.94204,
 			"trailKm": 417,
 			"distanceFromTrailKm": 0.28,
+			"water": {
+				"kind": "spring",
+				"reliability": "reliable",
+				"potable": "yes"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "settlement-kostanjevac-13110354690",
@@ -7397,6 +7821,22 @@
 			"distanceFromTrailKm": 0.43,
 			"source": "osm",
 			"lastVerified": "2026-06-07"
+		},
+		{
+			"id": "water-spring-11873125261",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.98513,
+			"lng": 16.9369,
+			"trailKm": 418.2,
+			"distanceFromTrailKm": 0.36,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "settlement-kegljevac-8390650151",
@@ -7500,6 +7940,22 @@
 			"lastVerified": "2026-06-10"
 		},
 		{
+			"id": "water-spring-11169493354",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.98599,
+			"lng": 16.92008,
+			"trailKm": 419.2,
+			"distanceFromTrailKm": 0.31,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "water-vrelo-dobrovite-11169493342",
 			"type": "water",
 			"name_en": "Vrelo Dobrovite",
@@ -7508,9 +7964,12 @@
 			"lng": 16.91995,
 			"trailKm": 419.7,
 			"distanceFromTrailKm": 0.12,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "restaurant-bilogorska-klijet-1278052937",
@@ -8199,9 +8658,13 @@
 			"lng": 16.73463,
 			"trailKm": 457.3,
 			"distanceFromTrailKm": 0,
+			"water": {
+				"kind": "spring",
+				"reliability": "reliable",
+				"potable": "yes"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "hut-planinarska-kuca-rudi-juric-935163227",
@@ -8398,6 +8861,38 @@
 			"lastVerified": "2026-06-07"
 		},
 		{
+			"id": "water-spring-6763548138",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 46.14383,
+			"lng": 16.56571,
+			"trailKm": 476.7,
+			"distanceFromTrailKm": 0.55,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-3754382307",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 46.14963,
+			"lng": 16.5641,
+			"trailKm": 476.9,
+			"distanceFromTrailKm": 0.01,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "peak-gradec-6764050390",
 			"type": "peak",
 			"name_en": "Gradec",
@@ -8447,6 +8942,22 @@
 			"elevationM": 500,
 			"source": "osm",
 			"lastVerified": "2026-06-07"
+		},
+		{
+			"id": "water-spring-4820245749",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 46.1282,
+			"lng": 16.50215,
+			"trailKm": 483.5,
+			"distanceFromTrailKm": 0.87,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "settlement-kamesnica-527352475",
@@ -8534,6 +9045,22 @@
 			"elevationM": 572,
 			"source": "osm",
 			"lastVerified": "2026-06-07"
+		},
+		{
+			"id": "water-drinking-water-856460005",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 46.13254,
+			"lng": 16.46335,
+			"trailKm": 486.8,
+			"distanceFromTrailKm": 0.01,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "hut-planinarski-dom-kalnik-383847046",
@@ -9123,6 +9650,38 @@
 			"lastVerified": "2026-06-07"
 		},
 		{
+			"id": "water-spring-4820217335",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 46.14595,
+			"lng": 16.43911,
+			"trailKm": 493.2,
+			"distanceFromTrailKm": 0.01,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-5909212211",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 46.14763,
+			"lng": 16.45396,
+			"trailKm": 495,
+			"distanceFromTrailKm": 0.19,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "peak-bracev-vrh-3255161922",
 			"type": "peak",
 			"name_en": "Bračev vrh",
@@ -9212,6 +9771,38 @@
 			"elevationM": 424,
 			"source": "osm",
 			"lastVerified": "2026-06-07"
+		},
+		{
+			"id": "water-drinking-water-1399599437",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 46.1664,
+			"lng": 16.496,
+			"trailKm": 500.4,
+			"distanceFromTrailKm": 0.06,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-1843780277",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 46.17348,
+			"lng": 16.53641,
+			"trailKm": 504.3,
+			"distanceFromTrailKm": 0.17,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "settlement-gabrinovec-1399593328",
@@ -9402,6 +9993,38 @@
 			"lastVerified": "2026-06-03"
 		},
 		{
+			"id": "water-drinking-water-5001393642",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 46.24987,
+			"lng": 16.62252,
+			"trailKm": 519.9,
+			"distanceFromTrailKm": 0.42,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-5001393643",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 46.2497,
+			"lng": 16.62288,
+			"trailKm": 519.9,
+			"distanceFromTrailKm": 0.43,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "restaurant-pizzeria-shark-1122158651",
 			"type": "restaurant",
 			"name_en": "Pizzeria \"Shark\"",
@@ -9498,6 +10121,38 @@
 			"distanceFromTrailKm": 0.09,
 			"source": "osm",
 			"lastVerified": "2026-06-03"
+		},
+		{
+			"id": "water-drinking-water-5001369021",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 46.25061,
+			"lng": 16.62312,
+			"trailKm": 520.3,
+			"distanceFromTrailKm": 0.47,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-5001369022",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 46.25046,
+			"lng": 16.62352,
+			"trailKm": 520.3,
+			"distanceFromTrailKm": 0.5,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "cafe-caffe-bar-vedran-1122969148",
@@ -10282,6 +10937,22 @@
 			"lastVerified": "2026-06-10"
 		},
 		{
+			"id": "water-drinking-water-13742539422",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 46.52543,
+			"lng": 16.36275,
+			"trailKm": 587.6,
+			"distanceFromTrailKm": 0.98,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "restaurant-arka-380445305",
 			"type": "restaurant",
 			"name_en": "Arka",
@@ -10403,6 +11074,22 @@
 			"elevationM": 297,
 			"source": "osm",
 			"lastVerified": "2026-06-07"
+		},
+		{
+			"id": "water-drinking-water-4889468018",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 46.52368,
+			"lng": 16.3311,
+			"trailKm": 591.1,
+			"distanceFromTrailKm": 0.18,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "settlement-cestijanec-1258944677",
@@ -13675,9 +14362,12 @@
 			"lng": 15.79444,
 			"trailKm": 695.3,
 			"distanceFromTrailKm": 0.23,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "peak-vrh-osovnjaka-10887544321",
@@ -15215,9 +15905,13 @@
 			"lng": 16.03895,
 			"trailKm": 734.9,
 			"distanceFromTrailKm": 0.51,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable",
+				"potable": "yes"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "peak-plat-7406396837",
@@ -15333,6 +16027,22 @@
 			"lastVerified": "2026-06-07"
 		},
 		{
+			"id": "water-drinking-water-6516179914",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 46.19644,
+			"lng": 16.05962,
+			"trailKm": 736.7,
+			"distanceFromTrailKm": 0.41,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "peak-brisce-2033284514",
 			"type": "peak",
 			"name_en": "Brišće",
@@ -15398,6 +16108,22 @@
 			"lastVerified": "2026-06-10"
 		},
 		{
+			"id": "water-spring-7431524646",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 46.20356,
+			"lng": 16.11018,
+			"trailKm": 740.4,
+			"distanceFromTrailKm": 0.89,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "shelter-paviljon-4789977710",
 			"type": "shelter",
 			"name_en": "Paviljon",
@@ -15458,9 +16184,12 @@
 			"trailKm": 741.8,
 			"distanceFromTrailKm": 0.39,
 			"elevationM": 663,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "peak-jelenska-pecina-2033284517",
@@ -15854,6 +16583,22 @@
 			"elevationM": 772,
 			"source": "osm",
 			"lastVerified": "2026-06-07"
+		},
+		{
+			"id": "water-drinking-water-1199996878",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 46.1703,
+			"lng": 16.13186,
+			"trailKm": 746.8,
+			"distanceFromTrailKm": 0.45,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "peak-gradinovec-1924062160",
@@ -17599,6 +18344,23 @@
 			"lastVerified": "2026-06-07"
 		},
 		{
+			"id": "water-spring-4316940543",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.98333,
+			"lng": 16.11301,
+			"trailKm": 772.7,
+			"distanceFromTrailKm": 0.6,
+			"water": {
+				"kind": "spring",
+				"reliability": "reliable",
+				"potable": "yes"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "peak-kukucevec-10693712342",
 			"type": "peak",
 			"name_en": "Kukučevec",
@@ -17610,6 +18372,23 @@
 			"elevationM": 421,
 			"source": "osm",
 			"lastVerified": "2026-06-07"
+		},
+		{
+			"id": "water-spring-4259919179",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.97927,
+			"lng": 16.10426,
+			"trailKm": 773.3,
+			"distanceFromTrailKm": 0.34,
+			"water": {
+				"kind": "spring",
+				"reliability": "reliable",
+				"potable": "yes"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "settlement-jarek-11993272889",
@@ -18174,6 +18953,22 @@
 			"lastVerified": "2026-06-07"
 		},
 		{
+			"id": "water-rumlec-4379272008",
+			"type": "water",
+			"name_en": "Rumlec",
+			"name_hr": "Rumlec",
+			"lat": 45.93738,
+			"lng": 16.05258,
+			"trailKm": 781.8,
+			"distanceFromTrailKm": 0.05,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "hut-planinarski-dom-lipa-rog-450493280",
 			"type": "hut",
 			"name_en": "Planinarski dom \"Lipa Rog\"",
@@ -18189,19 +18984,6 @@
 			"isReachable": false,
 			"note_en": "Medvednica eastern hut at 700 m, near Sesvete.",
 			"note_hr": "Istočna Medvednica, 700 m, kod Sesveta.",
-			"lastVerified": "2026-06-10"
-		},
-		{
-			"id": "water-rumlec-4379272008",
-			"type": "water",
-			"name_en": "Rumlec",
-			"name_hr": "Rumlec",
-			"lat": 45.93738,
-			"lng": 16.05258,
-			"trailKm": 781.8,
-			"distanceFromTrailKm": 0.05,
-			"source": "osm",
-			"isReachable": false,
 			"lastVerified": "2026-06-10"
 		},
 		{
@@ -18386,9 +19168,29 @@
 			"lng": 16.02865,
 			"trailKm": 783.8,
 			"distanceFromTrailKm": 0.31,
+			"water": {
+				"kind": "spring",
+				"reliability": "reliable",
+				"potable": "yes"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-3221768499",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.92844,
+			"lng": 16.0293,
+			"trailKm": 784.6,
+			"distanceFromTrailKm": 0.06,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "shelter-cortina-design-1155039694",
@@ -18761,6 +19563,22 @@
 			"lastVerified": "2026-06-07"
 		},
 		{
+			"id": "water-spring-10832112823",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.91168,
+			"lng": 15.97108,
+			"trailKm": 790.3,
+			"distanceFromTrailKm": 0.09,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "water-micino-vrelo-3177539689",
 			"type": "water",
 			"name_en": "Micino vrelo",
@@ -18769,9 +19587,29 @@
 			"lng": 15.97053,
 			"trailKm": 790.4,
 			"distanceFromTrailKm": 0.12,
+			"water": {
+				"kind": "spring",
+				"reliability": "reliable",
+				"potable": "yes"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-10832150375",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.91115,
+			"lng": 15.9711,
+			"trailKm": 790.4,
+			"distanceFromTrailKm": 0.09,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "peak-jelovec-10081394956",
@@ -18797,6 +19635,22 @@
 			"elevationM": 454,
 			"source": "osm",
 			"lastVerified": "2026-06-07"
+		},
+		{
+			"id": "water-spring-6600611608",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.90369,
+			"lng": 15.97314,
+			"trailKm": 790.7,
+			"distanceFromTrailKm": 0.52,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "shelter-mijatovac-9612472099",
@@ -18853,6 +19707,22 @@
 			"lastVerified": "2026-06-07"
 		},
 		{
+			"id": "water-drinking-water-5197601045",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.90395,
+			"lng": 15.96966,
+			"trailKm": 790.9,
+			"distanceFromTrailKm": 0.47,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "peak-pisana-bukva-908064722",
 			"type": "peak",
 			"name_en": "Pisana bukva",
@@ -18878,6 +19748,23 @@
 			"phone": "+385 1 4580 384",
 			"source": "osm",
 			"lastVerified": "2026-06-10"
+		},
+		{
+			"id": "water-spring-3918853834",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.90147,
+			"lng": 15.96686,
+			"trailKm": 791.6,
+			"distanceFromTrailKm": 0.53,
+			"water": {
+				"kind": "spring",
+				"reliability": "reliable",
+				"potable": "yes"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "hut-samoca-730793520",
@@ -18949,6 +19836,22 @@
 			"lastVerified": "2026-06-07"
 		},
 		{
+			"id": "water-spring-470449730",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.89539,
+			"lng": 15.95532,
+			"trailKm": 792.4,
+			"distanceFromTrailKm": 0.61,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "hut-grofica-830667352",
 			"type": "hut",
 			"name_en": "Grofica",
@@ -18962,6 +19865,38 @@
 			"source": "osm",
 			"isReachable": false,
 			"lastVerified": "2026-06-10"
+		},
+		{
+			"id": "water-spring-470449728",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.89812,
+			"lng": 15.95293,
+			"trailKm": 792.5,
+			"distanceFromTrailKm": 0.33,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-izvor-9495009187",
+			"type": "water",
+			"name_en": "Izvor",
+			"name_hr": "Izvor",
+			"lat": 45.89932,
+			"lng": 15.95398,
+			"trailKm": 792.5,
+			"distanceFromTrailKm": 0.18,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "hut-planinarska-kuca-junac-545532484",
@@ -18991,19 +19926,6 @@
 			"phone": "+385 1 4580 009;+385 98 664 414;+385 1 5626 282",
 			"url": "https://www.restoran-staralugarnica.hr/",
 			"source": "osm",
-			"lastVerified": "2026-06-10"
-		},
-		{
-			"id": "water-izvor-9495009187",
-			"type": "water",
-			"name_en": "Izvor",
-			"name_hr": "Izvor",
-			"lat": 45.89932,
-			"lng": 15.95398,
-			"trailKm": 792.5,
-			"distanceFromTrailKm": 0.18,
-			"source": "osm",
-			"isReachable": false,
 			"lastVerified": "2026-06-10"
 		},
 		{
@@ -19268,6 +20190,22 @@
 			"lastVerified": "2026-06-07"
 		},
 		{
+			"id": "water-drinking-water-9443220756",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.87816,
+			"lng": 15.91783,
+			"trailKm": 797,
+			"distanceFromTrailKm": 0.87,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "shelter-grajfova-kopanja-1024047210",
 			"type": "shelter",
 			"name_en": "Grajfova kopanja",
@@ -19406,9 +20344,13 @@
 			"lng": 15.88973,
 			"trailKm": 802.1,
 			"distanceFromTrailKm": 0.54,
+			"water": {
+				"kind": "spring",
+				"reliability": "reliable",
+				"potable": "yes"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "peak-grmoscica-3953161145",
@@ -19458,9 +20400,28 @@
 			"lng": 15.88213,
 			"trailKm": 802.2,
 			"distanceFromTrailKm": 0.3,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-7022084313",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.85699,
+			"lng": 15.87975,
+			"trailKm": 802.2,
+			"distanceFromTrailKm": 0.59,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-izvor-crvenog-kriza-7022084316",
@@ -19471,9 +20432,61 @@
 			"lng": 15.88019,
 			"trailKm": 802.2,
 			"distanceFromTrailKm": 0.56,
+			"water": {
+				"kind": "spring",
+				"reliability": "seasonal",
+				"intermittent": true
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-7022057197",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.8567,
+			"lng": 15.87645,
+			"trailKm": 802.3,
+			"distanceFromTrailKm": 0.75,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-7022057204",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.85673,
+			"lng": 15.87659,
+			"trailKm": 802.3,
+			"distanceFromTrailKm": 0.74,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-7022084303",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.85687,
+			"lng": 15.87924,
+			"trailKm": 802.3,
+			"distanceFromTrailKm": 0.62,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "peak-bradovec-3953170778",
@@ -19487,6 +20500,38 @@
 			"elevationM": 582,
 			"source": "osm",
 			"lastVerified": "2026-06-07"
+		},
+		{
+			"id": "water-spring-6985352947",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.86176,
+			"lng": 15.8736,
+			"trailKm": 803.4,
+			"distanceFromTrailKm": 0.28,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-6985376302",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.86089,
+			"lng": 15.87231,
+			"trailKm": 803.5,
+			"distanceFromTrailKm": 0.36,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "shelter-podbjelka-1759548676",
@@ -19717,6 +20762,22 @@
 			"elevationM": 476,
 			"source": "osm",
 			"lastVerified": "2026-06-07"
+		},
+		{
+			"id": "water-spring-8234980365",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.83795,
+			"lng": 15.85804,
+			"trailKm": 809.2,
+			"distanceFromTrailKm": 0.8,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "peak-srednjak-3953170780",
@@ -21591,6 +22652,23 @@
 			"lastVerified": "2026-06-10"
 		},
 		{
+			"id": "water-drinking-water-7074543905",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.80262,
+			"lng": 15.71047,
+			"trailKm": 828.7,
+			"distanceFromTrailKm": 0.09,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable",
+				"potable": "yes"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "restaurant-kuca-pizze-3014439365",
 			"type": "restaurant",
 			"name_en": "Kuća Pizze",
@@ -21714,6 +22792,23 @@
 			"distanceFromTrailKm": 0.04,
 			"source": "osm",
 			"lastVerified": "2026-06-03"
+		},
+		{
+			"id": "water-drinking-water-2994545118",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.8,
+			"lng": 15.71087,
+			"trailKm": 828.8,
+			"distanceFromTrailKm": 0.2,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable",
+				"potable": "yes"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "restaurant-samoborska-klet-3022110234",
@@ -22070,6 +23165,23 @@
 			"lastVerified": "2026-06-03"
 		},
 		{
+			"id": "water-drinking-water-2994545117",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.79924,
+			"lng": 15.70955,
+			"trailKm": 829.2,
+			"distanceFromTrailKm": 0.22,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable",
+				"potable": "yes"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "cafe-setnica-1531171077",
 			"type": "cafe",
 			"name_en": "Šetnica",
@@ -22106,6 +23218,22 @@
 			"source": "osm",
 			"isReachable": false,
 			"lastVerified": "2026-06-10"
+		},
+		{
+			"id": "water-spring-9117316295",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.79918,
+			"lng": 15.69964,
+			"trailKm": 829.8,
+			"distanceFromTrailKm": 0.11,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "restaurant-vugrinscak-757539251",
@@ -22655,6 +23783,22 @@
 			"lastVerified": "2026-06-07"
 		},
 		{
+			"id": "water-gustules-971101347",
+			"type": "water",
+			"name_en": "Gustules",
+			"name_hr": "Gustules",
+			"lat": 45.77453,
+			"lng": 15.65807,
+			"trailKm": 835.3,
+			"distanceFromTrailKm": 0.27,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "cafe-rudnik-5908796948",
 			"type": "cafe",
 			"name_en": "Rudnik",
@@ -22664,19 +23808,6 @@
 			"trailKm": 835.3,
 			"distanceFromTrailKm": 1.75,
 			"source": "osm",
-			"lastVerified": "2026-06-10"
-		},
-		{
-			"id": "water-gustules-971101347",
-			"type": "water",
-			"name_en": "Gustules",
-			"name_hr": "Gustules",
-			"lat": 45.77453,
-			"lng": 15.65807,
-			"trailKm": 835.3,
-			"distanceFromTrailKm": 0.27,
-			"source": "osm",
-			"isReachable": false,
 			"lastVerified": "2026-06-10"
 		},
 		{
@@ -23291,6 +24422,22 @@
 			"lastVerified": "2026-06-07"
 		},
 		{
+			"id": "water-spring-8158652716",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.73985,
+			"lng": 15.61494,
+			"trailKm": 841.5,
+			"distanceFromTrailKm": 0.36,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "hut-planinarski-dom-zitnica-528112098",
 			"type": "hut",
 			"name_en": "Planinarski dom Žitnica",
@@ -23619,6 +24766,22 @@
 			"elevationM": 793,
 			"source": "osm",
 			"lastVerified": "2026-06-07"
+		},
+		{
+			"id": "water-spring-12465079712",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.76305,
+			"lng": 15.607,
+			"trailKm": 844.7,
+			"distanceFromTrailKm": 0.54,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "peak-pljovica-3250412745",
@@ -24090,6 +25253,22 @@
 			"elevationM": 472,
 			"source": "osm",
 			"lastVerified": "2026-06-07"
+		},
+		{
+			"id": "water-spring-509286026",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.79234,
+			"lng": 15.55209,
+			"trailKm": 850.8,
+			"distanceFromTrailKm": 0.75,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "hut-scout-321617408",
@@ -24594,9 +25773,12 @@
 			"lng": 15.49092,
 			"trailKm": 857.2,
 			"distanceFromTrailKm": 0.3,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "settlement-mrzlo-polje-zumberacko-3224565902",
@@ -24714,6 +25896,22 @@
 			"elevationM": 556,
 			"source": "osm",
 			"lastVerified": "2026-06-07"
+		},
+		{
+			"id": "water-drinking-water-6038626918",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.77616,
+			"lng": 15.46877,
+			"trailKm": 859.6,
+			"distanceFromTrailKm": 0.4,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "settlement-gornja-vas-2550834020",
@@ -25145,6 +26343,22 @@
 			"lastVerified": "2026-06-07"
 		},
 		{
+			"id": "water-spring-7689171624",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.76722,
+			"lng": 15.41604,
+			"trailKm": 865.8,
+			"distanceFromTrailKm": 0.98,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "water-obradovac-7689171625",
 			"type": "water",
 			"name_en": "Obradovac",
@@ -25154,9 +26368,13 @@
 			"trailKm": 865.8,
 			"distanceFromTrailKm": 0.53,
 			"elevationM": 585,
+			"water": {
+				"kind": "spring",
+				"reliability": "reliable",
+				"potable": "yes"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "settlement-draga-2638822089",
@@ -25221,6 +26439,38 @@
 			"elevationM": 931,
 			"source": "osm",
 			"lastVerified": "2026-06-07"
+		},
+		{
+			"id": "water-spring-6981668000",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.76812,
+			"lng": 15.39133,
+			"trailKm": 867.9,
+			"distanceFromTrailKm": 0.24,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-6981707399",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.76735,
+			"lng": 15.39331,
+			"trailKm": 867.9,
+			"distanceFromTrailKm": 0.38,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "peak-humka-6822048545",
@@ -28597,9 +29847,12 @@
 			"lng": 15.42798,
 			"trailKm": 919.4,
 			"distanceFromTrailKm": 0.47,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "hut-planinarska-kuca-ivanova-hiza-1502059403",
@@ -32197,6 +33450,22 @@
 			"lastVerified": "2026-06-07"
 		},
 		{
+			"id": "water-spring-12772266670",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.3814,
+			"lng": 15.17726,
+			"trailKm": 956.2,
+			"distanceFromTrailKm": 0.36,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "peak-mali-glozac-13184789097",
 			"type": "peak",
 			"name_en": "Mali Gložac",
@@ -34123,9 +35392,13 @@
 			"lng": 14.9842,
 			"trailKm": 990.7,
 			"distanceFromTrailKm": 0.8,
+			"water": {
+				"kind": "spring",
+				"reliability": "not_potable",
+				"potable": "no"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "peak-trata-11364907576",
@@ -35216,9 +36489,12 @@
 			"trailKm": 1014,
 			"distanceFromTrailKm": 0.05,
 			"url": "http://zelenivir.com.hr/",
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "restaurant-zeleni-vir-537860999",
@@ -35539,9 +36815,12 @@
 			"lng": 14.85319,
 			"trailKm": 1024.3,
 			"distanceFromTrailKm": 0.01,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "settlement-gornje-tihovo-1390253811",
@@ -36550,6 +37829,22 @@
 			"lastVerified": "2026-06-07"
 		},
 		{
+			"id": "water-drinking-water-9935576732",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.48405,
+			"lng": 14.70185,
+			"trailKm": 1047.1,
+			"distanceFromTrailKm": 0.01,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "settlement-razloge-2195416194",
 			"type": "settlement",
 			"name_en": "Razloge",
@@ -36561,6 +37856,22 @@
 			"population": 8,
 			"source": "osm",
 			"lastVerified": "2026-06-07"
+		},
+		{
+			"id": "water-drinking-water-5641877724",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.48232,
+			"lng": 14.70151,
+			"trailKm": 1047.2,
+			"distanceFromTrailKm": 0.09,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "peak-tatinski-vrh-11051633767",
@@ -36651,9 +37962,12 @@
 			"distanceFromTrailKm": 0.16,
 			"elevationM": 321,
 			"url": "https://gorskikotar.hr/de/razloge-izvor-kupe",
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "peak-zajcji-vrh-11051562902",
@@ -36667,6 +37981,22 @@
 			"elevationM": 724,
 			"source": "osm",
 			"lastVerified": "2026-06-07"
+		},
+		{
+			"id": "water-spring-6646589287",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.49964,
+			"lng": 14.70008,
+			"trailKm": 1050.1,
+			"distanceFromTrailKm": 0.02,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "peak-spicasti-vrh-9871714062",
@@ -38794,6 +40124,22 @@
 			"lastVerified": "2026-06-07"
 		},
 		{
+			"id": "water-trstenik-11180380514",
+			"type": "water",
+			"name_en": "Trstenik",
+			"name_hr": "Trstenik",
+			"lat": 45.48813,
+			"lng": 14.45776,
+			"trailKm": 1092.4,
+			"distanceFromTrailKm": 0.79,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "hut-paraviceva-miza-292735170",
 			"type": "hut",
 			"name_en": "Paravićeva miza",
@@ -38803,19 +40149,6 @@
 			"trailKm": 1092.4,
 			"distanceFromTrailKm": 10.09,
 			"elevationM": 1125,
-			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
-		},
-		{
-			"id": "water-trstenik-11180380514",
-			"type": "water",
-			"name_en": "Trstenik",
-			"name_hr": "Trstenik",
-			"lat": 45.48813,
-			"lng": 14.45776,
-			"trailKm": 1092.4,
-			"distanceFromTrailKm": 0.79,
 			"source": "osm",
 			"isReachable": false,
 			"lastVerified": "2026-06-10"
@@ -39184,9 +40517,12 @@
 			"lng": 14.40525,
 			"trailKm": 1098.2,
 			"distanceFromTrailKm": 0.3,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "peak-vrh-ograje-5555876354",
@@ -39224,9 +40560,44 @@
 			"trailKm": 1099.9,
 			"distanceFromTrailKm": 0.38,
 			"elevationM": 735,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-5555892077",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.4837,
+			"lng": 14.39461,
+			"trailKm": 1100,
+			"distanceFromTrailKm": 0.02,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-8273974075",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.47538,
+			"lng": 14.39728,
+			"trailKm": 1100,
+			"distanceFromTrailKm": 0.92,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "peak-plesisce-3735079335",
@@ -39263,9 +40634,12 @@
 			"lng": 14.38001,
 			"trailKm": 1101.6,
 			"distanceFromTrailKm": 0.05,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-vodica-10539849473",
@@ -39276,9 +40650,12 @@
 			"lng": 14.37939,
 			"trailKm": 1101.8,
 			"distanceFromTrailKm": 0.1,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "peak-prvonoh-8317342832",
@@ -39302,9 +40679,12 @@
 			"lng": 14.36319,
 			"trailKm": 1103.5,
 			"distanceFromTrailKm": 0.08,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "peak-mali-liscic-8175282846",
@@ -40850,9 +42230,12 @@
 			"lng": 14.21967,
 			"trailKm": 1130.4,
 			"distanceFromTrailKm": 0.9,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "peak-pecinski-breg-11069931288",
@@ -40902,9 +42285,28 @@
 			"lng": 14.20648,
 			"trailKm": 1131.6,
 			"distanceFromTrailKm": 0.15,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-5939265004",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.3946,
+			"lng": 14.2081,
+			"trailKm": 1131.6,
+			"distanceFromTrailKm": 0.06,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "peak-cerovica-7489677729",
@@ -41089,6 +42491,22 @@
 			"lastVerified": "2026-06-07"
 		},
 		{
+			"id": "water-spring-2671966856",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.39235,
+			"lng": 14.18039,
+			"trailKm": 1134.5,
+			"distanceFromTrailKm": 0,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "peak-vrh-prdljevice-9441948437",
 			"type": "peak",
 			"name_en": "Vrh Prdljevice",
@@ -41167,6 +42585,23 @@
 			"lastVerified": "2026-06-07"
 		},
 		{
+			"id": "water-izvor-korita-2673429154",
+			"type": "water",
+			"name_en": "Izvor Korita",
+			"name_hr": "Izvor Korita",
+			"lat": 45.37891,
+			"lng": 14.15958,
+			"trailKm": 1136.9,
+			"distanceFromTrailKm": 0.1,
+			"water": {
+				"kind": "spring",
+				"reliability": "reliable",
+				"potable": "yes"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "hut-planinarska-kuca-korita-2605743890",
 			"type": "hut",
 			"name_en": "Planinarska kuća Korita",
@@ -41180,19 +42615,6 @@
 			"isReachable": false,
 			"note_en": "Ucka hut at 1010 m.",
 			"note_hr": "Učka, 1010 m.",
-			"lastVerified": "2026-06-10"
-		},
-		{
-			"id": "water-izvor-korita-2673429154",
-			"type": "water",
-			"name_en": "Izvor Korita",
-			"name_hr": "Izvor Korita",
-			"lat": 45.37891,
-			"lng": 14.15958,
-			"trailKm": 1136.9,
-			"distanceFromTrailKm": 0.1,
-			"source": "osm",
-			"isReachable": false,
 			"lastVerified": "2026-06-10"
 		},
 		{
@@ -41541,6 +42963,22 @@
 			"elevationM": 371,
 			"source": "osm",
 			"lastVerified": "2026-06-07"
+		},
+		{
+			"id": "water-spring-10970467503",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.39118,
+			"lng": 14.1527,
+			"trailKm": 1138.4,
+			"distanceFromTrailKm": 0.19,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "peak-cukarija-8231455052",
@@ -42089,6 +43527,22 @@
 			"lastVerified": "2026-06-07"
 		},
 		{
+			"id": "water-drinking-water-5900805434",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.42663,
+			"lng": 14.09569,
+			"trailKm": 1145.7,
+			"distanceFromTrailKm": 0.87,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "settlement-racja-vas-1569295978",
 			"type": "settlement",
 			"name_en": "Račja Vas",
@@ -42565,6 +44019,23 @@
 			"elevationM": 934,
 			"source": "osm",
 			"lastVerified": "2026-06-07"
+		},
+		{
+			"id": "water-spring-5900805433",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.4485,
+			"lng": 14.06368,
+			"trailKm": 1151.5,
+			"distanceFromTrailKm": 0.32,
+			"water": {
+				"kind": "spring",
+				"reliability": "reliable",
+				"potable": "yes"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "peak-cesarski-vrh-11067618925",
@@ -43057,6 +44528,23 @@
 			"lastVerified": "2026-06-07"
 		},
 		{
+			"id": "water-spring-5613431686",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.45574,
+			"lng": 14.01347,
+			"trailKm": 1157.7,
+			"distanceFromTrailKm": 0.01,
+			"water": {
+				"kind": "spring",
+				"reliability": "reliable",
+				"potable": "yes"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "hut-planinarski-dom-zbevnica-567022562",
 			"type": "hut",
 			"name_en": "Planinarski dom Žbevnica",
@@ -43072,6 +44560,23 @@
 			"note_en": "Cicarija hut at 851 m, north Istria.",
 			"note_hr": "Ćićarija, 851 m, sjeverna Istra.",
 			"lastVerified": "2026-06-10"
+		},
+		{
+			"id": "water-spring-5900805431",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.45425,
+			"lng": 14.00825,
+			"trailKm": 1158.2,
+			"distanceFromTrailKm": 0.04,
+			"water": {
+				"kind": "spring",
+				"reliability": "reliable",
+				"potable": "yes"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "settlement-brest-1569295891",
@@ -43241,6 +44746,22 @@
 			"elevationM": 231,
 			"source": "osm",
 			"lastVerified": "2026-06-07"
+		},
+		{
+			"id": "water-spring-12872702032",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.42011,
+			"lng": 13.97764,
+			"trailKm": 1164.9,
+			"distanceFromTrailKm": 0.01,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "settlement-pintori-8572939813",
@@ -43518,6 +45039,22 @@
 			"distanceFromTrailKm": 0.24,
 			"source": "osm",
 			"lastVerified": "2026-06-07"
+		},
+		{
+			"id": "water-drinking-water-3507150958",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.40704,
+			"lng": 13.96387,
+			"trailKm": 1167.4,
+			"distanceFromTrailKm": 0.86,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "restaurant-konoba-most-5491436614",
@@ -43923,9 +45460,13 @@
 			"lng": 13.92626,
 			"trailKm": 1171.6,
 			"distanceFromTrailKm": 0.17,
+			"water": {
+				"kind": "spring",
+				"reliability": "reliable",
+				"potable": "yes"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "settlement-veli-mlun-1457892243",
@@ -43978,6 +45519,22 @@
 			"elevationM": 317,
 			"source": "osm",
 			"lastVerified": "2026-06-07"
+		},
+		{
+			"id": "water-spring-10272876882",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.4049,
+			"lng": 13.9186,
+			"trailKm": 1172.3,
+			"distanceFromTrailKm": 0.02,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "settlement-pruhari-8578732491",
@@ -44608,9 +46165,28 @@
 			"lng": 13.81658,
 			"trailKm": 1183.2,
 			"distanceFromTrailKm": 0.97,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-7839542114",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.38837,
+			"lng": 13.81999,
+			"trailKm": 1183.2,
+			"distanceFromTrailKm": 0.05,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "settlement-sveta-lucija-2027830563",
@@ -45131,6 +46707,22 @@
 			"lastVerified": "2026-06-07"
 		},
 		{
+			"id": "water-slavina-2622164879",
+			"type": "water",
+			"name_en": "Slavina",
+			"name_hr": "Slavina",
+			"lat": 45.3799,
+			"lng": 13.77248,
+			"trailKm": 1187.9,
+			"distanceFromTrailKm": 0.16,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "restaurant-istarska-konoba-11518280545",
 			"type": "restaurant",
 			"name_en": "Istarska  Konoba",
@@ -45143,17 +46735,21 @@
 			"lastVerified": "2026-06-10"
 		},
 		{
-			"id": "water-slavina-2622164879",
+			"id": "water-drinking-water-12876771197",
 			"type": "water",
-			"name_en": "Slavina",
-			"name_hr": "Slavina",
-			"lat": 45.3799,
-			"lng": 13.77248,
-			"trailKm": 1187.9,
-			"distanceFromTrailKm": 0.16,
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.37365,
+			"lng": 13.7729,
+			"trailKm": 1188.1,
+			"distanceFromTrailKm": 0.71,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable",
+				"potable": "yes"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "settlement-zavrsje-3372912895",
@@ -45422,6 +47018,22 @@
 			"lastVerified": "2026-06-07"
 		},
 		{
+			"id": "water-drinking-water-1922365756",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.37971,
+			"lng": 13.72258,
+			"trailKm": 1192.3,
+			"distanceFromTrailKm": 0.01,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "restaurant-artegnana-2517646638",
 			"type": "restaurant",
 			"name_en": "Artegnana",
@@ -45481,6 +47093,22 @@
 			"distanceFromTrailKm": 1.12,
 			"source": "osm",
 			"lastVerified": "2026-06-07"
+		},
+		{
+			"id": "water-drinking-water-7601247755",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.38046,
+			"lng": 13.72281,
+			"trailKm": 1192.4,
+			"distanceFromTrailKm": 0.02,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "settlement-martincici-2112795999",
@@ -45731,6 +47359,22 @@
 			"elevationM": 229,
 			"source": "osm",
 			"lastVerified": "2026-06-07"
+		},
+		{
+			"id": "water-drinking-water-6926897032",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.40294,
+			"lng": 13.6925,
+			"trailKm": 1196.9,
+			"distanceFromTrailKm": 0.58,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "settlement-triban-1781313132",
@@ -46155,6 +47799,22 @@
 			"distanceFromTrailKm": 1.04,
 			"source": "osm",
 			"lastVerified": "2026-06-07"
+		},
+		{
+			"id": "water-drinking-water-12134169224",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.44981,
+			"lng": 13.65476,
+			"trailKm": 1203.5,
+			"distanceFromTrailKm": 0.99,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "restaurant-restaurant-stari-kastel-3772990542",
@@ -48325,6 +49985,22 @@
 			"lastVerified": "2026-06-07"
 		},
 		{
+			"id": "water-drinking-water-12260949783",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.42246,
+			"lng": 13.63371,
+			"trailKm": 1237.8,
+			"distanceFromTrailKm": 0.87,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "settlement-jurcanija-2974118969",
 			"type": "settlement",
 			"name_en": "Jurcanija",
@@ -48843,6 +50519,22 @@
 			"distanceFromTrailKm": 1.39,
 			"source": "osm",
 			"lastVerified": "2026-06-07"
+		},
+		{
+			"id": "water-drinking-water-9660736761",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.3394,
+			"lng": 13.64762,
+			"trailKm": 1251.5,
+			"distanceFromTrailKm": 0.57,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "settlement-ciglana-7389612645",
@@ -49764,6 +51456,22 @@
 			"lastVerified": "2026-06-07"
 		},
 		{
+			"id": "water-drinking-water-4942050785",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.32983,
+			"lng": 13.7577,
+			"trailKm": 1263.1,
+			"distanceFromTrailKm": 0.1,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "cafe-caffe-bar-parenzana-11813404654",
 			"type": "cafe",
 			"name_en": "Caffe Bar Parenzana",
@@ -49925,6 +51633,22 @@
 			"elevationM": 174,
 			"source": "osm",
 			"lastVerified": "2026-06-07"
+		},
+		{
+			"id": "water-spring-2657357983",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.31479,
+			"lng": 13.76989,
+			"trailKm": 1265.4,
+			"distanceFromTrailKm": 0.53,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "settlement-brig-2136327898",
@@ -51118,6 +52842,22 @@
 			"lastVerified": "2026-06-10"
 		},
 		{
+			"id": "water-drinking-water-7637452018",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.33147,
+			"lng": 13.8247,
+			"trailKm": 1274.7,
+			"distanceFromTrailKm": 0.1,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "restaurant-konoba-pod-voltom-1843133178",
 			"type": "restaurant",
 			"name_en": "Konoba Pod Voltom",
@@ -51507,6 +53247,38 @@
 			"lastVerified": "2026-06-07"
 		},
 		{
+			"id": "water-spring-10593480476",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.32461,
+			"lng": 13.86635,
+			"trailKm": 1279.5,
+			"distanceFromTrailKm": 0.15,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-10593523713",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.32457,
+			"lng": 13.86651,
+			"trailKm": 1279.5,
+			"distanceFromTrailKm": 0.14,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "settlement-brtosici-2473326974",
 			"type": "settlement",
 			"name_en": "Brtošići",
@@ -51668,6 +53440,23 @@
 			"elevationM": 392,
 			"source": "osm",
 			"lastVerified": "2026-06-07"
+		},
+		{
+			"id": "water-drinking-water-2520693881",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.32624,
+			"lng": 13.87811,
+			"trailKm": 1280.4,
+			"distanceFromTrailKm": 0.01,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable",
+				"checkDate": "2025-05-28"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "viewpoint-zamask-10593511974",
@@ -53178,6 +54967,38 @@
 			"lastVerified": "2026-06-07"
 		},
 		{
+			"id": "water-spina-3415899997",
+			"type": "water",
+			"name_en": "Špina",
+			"name_hr": "Špina",
+			"lat": 45.24073,
+			"lng": 13.92981,
+			"trailKm": 1298.4,
+			"distanceFromTrailKm": 0.83,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-9017287341",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.23977,
+			"lng": 13.93508,
+			"trailKm": 1298.4,
+			"distanceFromTrailKm": 0.61,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "shelter-skloniste-za-pastire-3777369470",
 			"type": "shelter",
 			"name_en": "Sklonište za pastire",
@@ -53309,19 +55130,6 @@
 			"trailKm": 1298.4,
 			"distanceFromTrailKm": 1.81,
 			"source": "osm",
-			"lastVerified": "2026-06-10"
-		},
-		{
-			"id": "water-spina-3415899997",
-			"type": "water",
-			"name_en": "Špina",
-			"name_hr": "Špina",
-			"lat": 45.24073,
-			"lng": 13.92981,
-			"trailKm": 1298.4,
-			"distanceFromTrailKm": 0.83,
-			"source": "osm",
-			"isReachable": false,
 			"lastVerified": "2026-06-10"
 		},
 		{
@@ -55971,9 +57779,12 @@
 			"lng": 14.02965,
 			"trailKm": 1328.4,
 			"distanceFromTrailKm": 0.04,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "settlement-mala-camparovica-8618577551",
@@ -56329,9 +58140,12 @@
 			"trailKm": 1333.9,
 			"distanceFromTrailKm": 0.21,
 			"elevationM": 5,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-grdak-7182642493",
@@ -56342,9 +58156,12 @@
 			"lng": 14.0187,
 			"trailKm": 1334.3,
 			"distanceFromTrailKm": 0.31,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "settlement-mali-turini-1559846620",
@@ -56381,9 +58198,12 @@
 			"lng": 14.02054,
 			"trailKm": 1335.2,
 			"distanceFromTrailKm": 0.03,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "settlement-prnjani-2292834291",
@@ -56562,6 +58382,22 @@
 			"distanceFromTrailKm": 1.57,
 			"source": "osm",
 			"lastVerified": "2026-06-03"
+		},
+		{
+			"id": "water-drinking-water-3327182688",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.0641,
+			"lng": 14.02642,
+			"trailKm": 1337.8,
+			"distanceFromTrailKm": 0.92,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "peak-gradiste-8691161396",
@@ -58107,9 +59943,12 @@
 			"trailKm": 1374.8,
 			"distanceFromTrailKm": 0.54,
 			"url": "https://www.rabac-labin.com/hr/166-staza-bozanskih-izvora-rabac-labin",
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "restaurant-due-fratelli-2424394889",
@@ -58405,6 +60244,22 @@
 			"distanceFromTrailKm": 1.87,
 			"source": "osm",
 			"lastVerified": "2026-06-03"
+		},
+		{
+			"id": "water-spring-3741338587",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.08408,
+			"lng": 14.14179,
+			"trailKm": 1376.1,
+			"distanceFromTrailKm": 0.01,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "peak-viskoljak-9383267992",
@@ -58965,6 +60820,23 @@
 			"lastVerified": "2026-06-07"
 		},
 		{
+			"id": "water-plomin-9543419568",
+			"type": "water",
+			"name_en": "Plomin",
+			"name_hr": "Plomin",
+			"lat": 45.13972,
+			"lng": 14.17935,
+			"trailKm": 1387.3,
+			"distanceFromTrailKm": 0.13,
+			"elevationM": 145,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "restaurant-dorina-2092870193",
 			"type": "restaurant",
 			"name_en": "Dorina",
@@ -58978,18 +60850,20 @@
 			"lastVerified": "2026-06-10"
 		},
 		{
-			"id": "water-plomin-9543419568",
+			"id": "water-drinking-water-1572273397",
 			"type": "water",
-			"name_en": "Plomin",
-			"name_hr": "Plomin",
-			"lat": 45.13972,
-			"lng": 14.17935,
-			"trailKm": 1387.3,
-			"distanceFromTrailKm": 0.13,
-			"elevationM": 145,
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.13826,
+			"lng": 14.18004,
+			"trailKm": 1387.4,
+			"distanceFromTrailKm": 0.01,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "restaurant-burra-9076719781",
@@ -59346,9 +61220,12 @@
 			"lng": 14.20368,
 			"trailKm": 1392.5,
 			"distanceFromTrailKm": 0.68,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "peak-sisol-1833460679",
@@ -59412,6 +61289,22 @@
 			"distanceFromTrailKm": 2.79,
 			"source": "osm",
 			"lastVerified": "2026-06-07"
+		},
+		{
+			"id": "water-spring-2663345282",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.19193,
+			"lng": 14.19408,
+			"trailKm": 1396.2,
+			"distanceFromTrailKm": 0.67,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "settlement-faldovija-7538288032",
@@ -59679,9 +61572,12 @@
 			"lng": 14.20835,
 			"trailKm": 1403.8,
 			"distanceFromTrailKm": 0.71,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "peak-strazevnik-1572794436",
@@ -59788,6 +61684,22 @@
 			"lastVerified": "2026-06-07"
 		},
 		{
+			"id": "water-drinking-water-1367564757",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.27416,
+			"lng": 14.19478,
+			"trailKm": 1407.2,
+			"distanceFromTrailKm": 0.01,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "settlement-mala-ucka-1574552322",
 			"type": "settlement",
 			"name_en": "Mala Učka",
@@ -59799,6 +61711,22 @@
 			"population": 2,
 			"source": "osm",
 			"lastVerified": "2026-06-07"
+		},
+		{
+			"id": "water-drinking-water-6067960439",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.27571,
+			"lng": 14.19687,
+			"trailKm": 1407.4,
+			"distanceFromTrailKm": 0.02,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "shelter-babino-skloniste-1574552304",
@@ -59972,6 +61900,22 @@
 			"lastVerified": "2026-06-07"
 		},
 		{
+			"id": "water-spring-7180964454",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.28776,
+			"lng": 14.19391,
+			"trailKm": 1409.3,
+			"distanceFromTrailKm": 0.68,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "peak-veli-brijeg-1815410012",
 			"type": "peak",
 			"name_en": "Veli brijeg",
@@ -60061,6 +62005,39 @@
 			"elevationM": 1005,
 			"source": "osm",
 			"lastVerified": "2026-06-07"
+		},
+		{
+			"id": "water-spring-2552194467",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.29904,
+			"lng": 14.20755,
+			"trailKm": 1411.1,
+			"distanceFromTrailKm": 0.01,
+			"water": {
+				"kind": "spring",
+				"reliability": "reliable",
+				"potable": "yes"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-9828988615",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.30065,
+			"lng": 14.20114,
+			"trailKm": 1411.2,
+			"distanceFromTrailKm": 0.52,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "settlement-vela-ucka-1855484635",
@@ -60219,6 +62196,22 @@
 			"lastVerified": "2026-06-07"
 		},
 		{
+			"id": "water-drinking-water-4386738167",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.30828,
+			"lng": 14.21608,
+			"trailKm": 1412.5,
+			"distanceFromTrailKm": 0.04,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "hut-planinarski-dom-poklon-440562808",
 			"type": "hut",
 			"name_en": "Planinarski dom Poklon",
@@ -60258,6 +62251,24 @@
 			"elevationM": 593,
 			"source": "osm",
 			"lastVerified": "2026-06-07"
+		},
+		{
+			"id": "water-drinking-water-12893806889",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.30932,
+			"lng": 14.21436,
+			"trailKm": 1412.7,
+			"distanceFromTrailKm": 0.01,
+			"image": "https://www.pp-ucka.hr/2020/wp-content/uploads/f76bb8c8-500c-4bad-8376-7782cc98a104.webp",
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable",
+				"checkDate": "2025-06-07"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "cafe-planinski-bar-9731933580",
@@ -61338,6 +63349,22 @@
 			"lastVerified": "2026-06-10"
 		},
 		{
+			"id": "water-drinking-water-11688429817",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.36475,
+			"lng": 14.32131,
+			"trailKm": 1430.1,
+			"distanceFromTrailKm": 0.13,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "restaurant-stacion-10141364113",
 			"type": "restaurant",
 			"name_en": "Stacion",
@@ -61493,9 +63520,13 @@
 			"lng": 14.33323,
 			"trailKm": 1431,
 			"distanceFromTrailKm": 0.07,
+			"water": {
+				"kind": "spring",
+				"reliability": "not_potable",
+				"potable": "no"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "cafe-caffe-vrata-jadrana-jug-341962566",
@@ -61536,6 +63567,23 @@
 			"lastVerified": "2026-06-07"
 		},
 		{
+			"id": "water-drinking-water-2351384021",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.37347,
+			"lng": 14.34752,
+			"trailKm": 1432.7,
+			"distanceFromTrailKm": 0.14,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable",
+				"checkDate": "2023-12-29"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "restaurant-ostarija-fortica-1422327733",
 			"type": "restaurant",
 			"name_en": "Oštarija Fortica",
@@ -61558,6 +63606,22 @@
 			"distanceFromTrailKm": 0.09,
 			"source": "osm",
 			"lastVerified": "2026-06-10"
+		},
+		{
+			"id": "water-drinking-water-11170278137",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.37446,
+			"lng": 14.34849,
+			"trailKm": 1432.8,
+			"distanceFromTrailKm": 0.21,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "restaurant-kukuriku-1874370839",
@@ -62489,6 +64553,22 @@
 			"population": 92,
 			"source": "osm",
 			"lastVerified": "2026-06-07"
+		},
+		{
+			"id": "water-spring-5859606121",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.38984,
+			"lng": 14.4221,
+			"trailKm": 1440.2,
+			"distanceFromTrailKm": 0.37,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "settlement-trnovica-1203520420",
@@ -64849,6 +66929,22 @@
 			"lastVerified": "2026-06-07"
 		},
 		{
+			"id": "water-drinking-water-11173563937",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.31091,
+			"lng": 14.67568,
+			"trailKm": 1474.7,
+			"distanceFromTrailKm": 0.25,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "settlement-benkovac-fuzinski-2689105576",
 			"type": "settlement",
 			"name_en": "Benkovac Fužinski",
@@ -65248,6 +67344,39 @@
 			"distanceFromTrailKm": 0.02,
 			"source": "osm",
 			"lastVerified": "2026-06-10"
+		},
+		{
+			"id": "water-drinking-water-9935594976",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.30751,
+			"lng": 14.71216,
+			"trailKm": 1479,
+			"distanceFromTrailKm": 0.34,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable",
+				"checkDate": "2024-07-18"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-9971637861",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 45.30535,
+			"lng": 14.71366,
+			"trailKm": 1479,
+			"distanceFromTrailKm": 0.08,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "cafe-bajer-3410783523",
@@ -66409,6 +68538,22 @@
 			"distanceFromTrailKm": 4.29,
 			"source": "osm",
 			"lastVerified": "2026-06-07"
+		},
+		{
+			"id": "water-spring-6885699027",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 45.28317,
+			"lng": 14.81128,
+			"trailKm": 1490.2,
+			"distanceFromTrailKm": 0.03,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "peak-cicki-vrh-11653845672",
@@ -70975,9 +73120,13 @@
 			"lng": 14.98066,
 			"trailKm": 1555.7,
 			"distanceFromTrailKm": 0.33,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable",
+				"checkDate": "2023-04-19"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "settlement-majorija-1854852055",
@@ -74432,6 +76581,23 @@
 			"lastVerified": "2026-06-07"
 		},
 		{
+			"id": "water-spring-13481098532",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 44.81784,
+			"lng": 14.95847,
+			"trailKm": 1577.2,
+			"distanceFromTrailKm": 0.76,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified",
+				"checkDate": "2023-12-04"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "peak-opaljenik-7116166453",
 			"type": "peak",
 			"name_en": "Opaljenik",
@@ -77353,6 +79519,22 @@
 			"lastVerified": "2026-06-07"
 		},
 		{
+			"id": "water-spring-6545209485",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 44.63469,
+			"lng": 15.02362,
+			"trailKm": 1605.7,
+			"distanceFromTrailKm": 0,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "peak-dokozinac-11186520161",
 			"type": "peak",
 			"name_en": "Dokozinac",
@@ -78877,6 +81059,22 @@
 			"lastVerified": "2026-06-07"
 		},
 		{
+			"id": "water-spring-13867904463",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 44.5618,
+			"lng": 15.10767,
+			"trailKm": 1618.6,
+			"distanceFromTrailKm": 0.03,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "peak-rujicin-kuk-10092100432",
 			"type": "peak",
 			"name_en": "Rujičin kuk",
@@ -79156,9 +81354,12 @@
 			"lng": 15.11942,
 			"trailKm": 1619.6,
 			"distanceFromTrailKm": 0.78,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "hut-planinarski-dom-ravni-dabar-423350309",
@@ -80813,6 +83014,22 @@
 			"lastVerified": "2026-06-07"
 		},
 		{
+			"id": "water-drinking-water-4235487989",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 44.52542,
+			"lng": 15.17707,
+			"trailKm": 1627.4,
+			"distanceFromTrailKm": 0.82,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "hut-planinarska-kuca-vila-velebita-424037254",
 			"type": "hut",
 			"name_en": "Planinarska kuća Vila Velebita",
@@ -82445,6 +84662,23 @@
 			"lastVerified": "2026-06-07"
 		},
 		{
+			"id": "water-drinking-water-3511257893",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 44.45074,
+			"lng": 15.24868,
+			"trailKm": 1640.6,
+			"distanceFromTrailKm": 0.01,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable",
+				"potable": "yes"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "peak-veliki-stolac-2171127697",
 			"type": "peak",
 			"name_en": "Veliki Stolac",
@@ -83473,6 +85707,40 @@
 			"lastVerified": "2026-06-07"
 		},
 		{
+			"id": "water-voda-stap-2371790005",
+			"type": "water",
+			"name_en": "Voda Stap",
+			"name_hr": "Voda Stap",
+			"lat": 44.40832,
+			"lng": 15.31928,
+			"trailKm": 1649.7,
+			"distanceFromTrailKm": 0.03,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable",
+				"potable": "yes"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-stap-9960100693",
+			"type": "water",
+			"name_en": "Stap",
+			"name_hr": "Stap",
+			"lat": 44.40833,
+			"lng": 15.31926,
+			"trailKm": 1649.7,
+			"distanceFromTrailKm": 0.03,
+			"water": {
+				"kind": "spring",
+				"reliability": "reliable",
+				"potable": "yes"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "hut-planinarsko-skloniste-tatekova-koliba-498384259",
 			"type": "hut",
 			"name_en": "Planinarsko sklonište Tatekova koliba",
@@ -83486,32 +85754,6 @@
 			"isReachable": false,
 			"note_en": "Paklenica shelter at 860 m.",
 			"note_hr": "Paklenica, sklonište na 860 m.",
-			"lastVerified": "2026-06-10"
-		},
-		{
-			"id": "water-voda-stap-2371790005",
-			"type": "water",
-			"name_en": "Voda Stap",
-			"name_hr": "Voda Stap",
-			"lat": 44.40832,
-			"lng": 15.31928,
-			"trailKm": 1649.7,
-			"distanceFromTrailKm": 0.03,
-			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
-		},
-		{
-			"id": "water-stap-9960100693",
-			"type": "water",
-			"name_en": "Stap",
-			"name_hr": "Stap",
-			"lat": 44.40833,
-			"lng": 15.31926,
-			"trailKm": 1649.7,
-			"distanceFromTrailKm": 0.03,
-			"source": "osm",
-			"isReachable": false,
 			"lastVerified": "2026-06-10"
 		},
 		{
@@ -84246,6 +86488,23 @@
 			"lastVerified": "2026-06-07"
 		},
 		{
+			"id": "water-drinking-water-6764038019",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 44.3901,
+			"lng": 15.36326,
+			"trailKm": 1654.8,
+			"distanceFromTrailKm": 0.05,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable",
+				"potable": "yes"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "peak-golic-5381319448",
 			"type": "peak",
 			"name_en": "Golić",
@@ -84277,9 +86536,12 @@
 			"lng": 15.37001,
 			"trailKm": 1655.1,
 			"distanceFromTrailKm": 0.62,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "peak-kuk-od-vrata-9981378006",
@@ -85087,9 +87349,12 @@
 			"lng": 15.42596,
 			"trailKm": 1660.7,
 			"distanceFromTrailKm": 0.97,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "settlement-gornji-marasovici-7025907089",
@@ -85102,6 +87367,38 @@
 			"distanceFromTrailKm": 0.03,
 			"source": "osm",
 			"lastVerified": "2026-06-07"
+		},
+		{
+			"id": "water-drinking-water-7984055050",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 44.35854,
+			"lng": 15.42371,
+			"trailKm": 1661.3,
+			"distanceFromTrailKm": 0.03,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-1907087339",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 44.35574,
+			"lng": 15.42423,
+			"trailKm": 1661.5,
+			"distanceFromTrailKm": 0.13,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "peak-bojin-kuk-1196661103",
@@ -85479,9 +87776,12 @@
 			"lng": 15.44639,
 			"trailKm": 1663.6,
 			"distanceFromTrailKm": 0.27,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "peak-zoljin-kuk-1312815916",
@@ -85574,6 +87874,22 @@
 			"lastVerified": "2026-06-07"
 		},
 		{
+			"id": "water-spring-7053974870",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 44.36365,
+			"lng": 15.44611,
+			"trailKm": 1664,
+			"distanceFromTrailKm": 0.4,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "peak-strazbenica-8811933281",
 			"type": "peak",
 			"name_en": "Stražbenica",
@@ -85595,9 +87911,12 @@
 			"lng": 15.45194,
 			"trailKm": 1664.3,
 			"distanceFromTrailKm": 0.04,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "peak-viserujno-3743547025",
@@ -85644,9 +87963,13 @@
 			"lng": 15.45758,
 			"trailKm": 1664.8,
 			"distanceFromTrailKm": 0,
+			"water": {
+				"kind": "spring",
+				"reliability": "seasonal",
+				"intermittent": true
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "peak-veliki-mozak-7000873454",
@@ -85758,9 +88081,12 @@
 			"lng": 15.45952,
 			"trailKm": 1666.8,
 			"distanceFromTrailKm": 0.52,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "hut-planinarsko-skloniste-struge-629914862",
@@ -85829,9 +88155,45 @@
 			"lng": 15.4762,
 			"trailKm": 1667.9,
 			"distanceFromTrailKm": 0.01,
+			"water": {
+				"kind": "spring",
+				"reliability": "reliable",
+				"potable": "yes"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-10101966337",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 44.38682,
+			"lng": 15.48332,
+			"trailKm": 1667.9,
+			"distanceFromTrailKm": 0.95,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-13195610320",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 44.38659,
+			"lng": 15.48402,
+			"trailKm": 1667.9,
+			"distanceFromTrailKm": 0.96,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "peak-badanj-2169734248",
@@ -86892,6 +89254,22 @@
 			"lastVerified": "2026-06-07"
 		},
 		{
+			"id": "water-spring-7053941559",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 44.34094,
+			"lng": 15.53486,
+			"trailKm": 1675.4,
+			"distanceFromTrailKm": 0.49,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "water-ivine-vodice-7053941526",
 			"type": "water",
 			"name_en": "Ivine vodice",
@@ -86900,9 +89278,12 @@
 			"lng": 15.53494,
 			"trailKm": 1675.5,
 			"distanceFromTrailKm": 0.56,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "peak-bat-7010638336",
@@ -87034,9 +89415,14 @@
 			"lng": 15.53697,
 			"trailKm": 1675.8,
 			"distanceFromTrailKm": 0.73,
+			"water": {
+				"kind": "spring",
+				"reliability": "seasonal",
+				"intermittent": true,
+				"potable": "yes"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "peak-badalj-7004197921",
@@ -87050,6 +89436,22 @@
 			"elevationM": 1238,
 			"source": "osm",
 			"lastVerified": "2026-06-07"
+		},
+		{
+			"id": "water-spring-7053858217",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 44.33886,
+			"lng": 15.55138,
+			"trailKm": 1676.7,
+			"distanceFromTrailKm": 0.03,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "peak-zeleni-vrh-7011169109",
@@ -87127,6 +89529,41 @@
 			"lastVerified": "2026-06-07"
 		},
 		{
+			"id": "water-donji-izvor-8881165940",
+			"type": "water",
+			"name_en": "Donji izvor",
+			"name_hr": "Donji izvor",
+			"lat": 44.32696,
+			"lng": 15.55131,
+			"trailKm": 1677.7,
+			"distanceFromTrailKm": 0.67,
+			"water": {
+				"kind": "spring",
+				"reliability": "reliable",
+				"potable": "yes"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-gornji-izvor-10637479065",
+			"type": "water",
+			"name_en": "Gornji izvor",
+			"name_hr": "Gornji izvor",
+			"lat": 44.32692,
+			"lng": 15.55233,
+			"trailKm": 1677.7,
+			"distanceFromTrailKm": 0.62,
+			"water": {
+				"kind": "spring",
+				"reliability": "seasonal",
+				"intermittent": true,
+				"potable": "yes"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "hut-planinarsko-skloniste-vlaski-grad-828057096",
 			"type": "hut",
 			"name_en": "Planinarsko sklonište Vlaški Grad",
@@ -87141,32 +89578,6 @@
 			"isReachable": false,
 			"note_en": "Southern Velebit shelter at 1280 m.",
 			"note_hr": "Južni Velebit, sklonište na 1280 m.",
-			"lastVerified": "2026-06-10"
-		},
-		{
-			"id": "water-donji-izvor-8881165940",
-			"type": "water",
-			"name_en": "Donji izvor",
-			"name_hr": "Donji izvor",
-			"lat": 44.32696,
-			"lng": 15.55131,
-			"trailKm": 1677.7,
-			"distanceFromTrailKm": 0.67,
-			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
-		},
-		{
-			"id": "water-gornji-izvor-10637479065",
-			"type": "water",
-			"name_en": "Gornji izvor",
-			"name_hr": "Gornji izvor",
-			"lat": 44.32692,
-			"lng": 15.55233,
-			"trailKm": 1677.7,
-			"distanceFromTrailKm": 0.62,
-			"source": "osm",
-			"isReachable": false,
 			"lastVerified": "2026-06-10"
 		},
 		{
@@ -87647,9 +90058,14 @@
 			"lng": 15.59045,
 			"trailKm": 1681.3,
 			"distanceFromTrailKm": 0.3,
+			"water": {
+				"kind": "spring",
+				"reliability": "seasonal",
+				"intermittent": true,
+				"potable": "conditional"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "water-ruja-6021804467",
@@ -87660,9 +90076,13 @@
 			"lng": 15.59184,
 			"trailKm": 1681.3,
 			"distanceFromTrailKm": 0.41,
+			"water": {
+				"kind": "spring",
+				"reliability": "reliable",
+				"potable": "yes"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "peak-malo-bilo-7006516673",
@@ -87844,6 +90264,23 @@
 			"lastVerified": "2026-06-07"
 		},
 		{
+			"id": "water-izvoric-10594202202",
+			"type": "water",
+			"name_en": "Izvorić",
+			"name_hr": "Izvorić",
+			"lat": 44.31777,
+			"lng": 15.58535,
+			"trailKm": 1681.5,
+			"distanceFromTrailKm": 0.04,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified",
+				"potable": "conditional"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "hut-planinarsko-skloniste-dusice-630242490",
 			"type": "hut",
 			"name_en": "Planinarsko sklonište Dušice",
@@ -87858,19 +90295,6 @@
 			"isReachable": false,
 			"note_en": "Southern Velebit shelter at 1262 m.",
 			"note_hr": "Južni Velebit, sklonište na 1262 m.",
-			"lastVerified": "2026-06-10"
-		},
-		{
-			"id": "water-izvoric-10594202202",
-			"type": "water",
-			"name_en": "Izvorić",
-			"name_hr": "Izvorić",
-			"lat": 44.31777,
-			"lng": 15.58535,
-			"trailKm": 1681.5,
-			"distanceFromTrailKm": 0.04,
-			"source": "osm",
-			"isReachable": false,
 			"lastVerified": "2026-06-10"
 		},
 		{
@@ -88115,6 +90539,22 @@
 			"lastVerified": "2026-06-07"
 		},
 		{
+			"id": "water-spring-12386675471",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 44.29708,
+			"lng": 15.5763,
+			"trailKm": 1684.5,
+			"distanceFromTrailKm": 0.53,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "settlement-matkovic-basa-6083320669",
 			"type": "settlement",
 			"name_en": "Matković, Basa",
@@ -88125,6 +90565,22 @@
 			"distanceFromTrailKm": 0.04,
 			"source": "osm",
 			"lastVerified": "2026-06-07"
+		},
+		{
+			"id": "water-gusterna-6021829834",
+			"type": "water",
+			"name_en": "Gusterna",
+			"name_hr": "Gusterna",
+			"lat": 44.29179,
+			"lng": 15.58135,
+			"trailKm": 1685.4,
+			"distanceFromTrailKm": 0.19,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "hut-planinarsko-skloniste-zlatino-skloniste-500541663",
@@ -88140,19 +90596,6 @@
 			"isReachable": false,
 			"note_en": "Tulove grede shelter at 900 m, southern Velebit.",
 			"note_hr": "Tulove grede, sklonište na 900 m, južni Velebit.",
-			"lastVerified": "2026-06-10"
-		},
-		{
-			"id": "water-gusterna-6021829834",
-			"type": "water",
-			"name_en": "Gusterna",
-			"name_hr": "Gusterna",
-			"lat": 44.29179,
-			"lng": 15.58135,
-			"trailKm": 1685.4,
-			"distanceFromTrailKm": 0.19,
-			"source": "osm",
-			"isReachable": false,
 			"lastVerified": "2026-06-10"
 		},
 		{
@@ -89441,9 +91884,12 @@
 			"lng": 15.65163,
 			"trailKm": 1693.6,
 			"distanceFromTrailKm": 0.34,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "peak-velika-bobija-6092544964",
@@ -92303,9 +94749,12 @@
 			"lng": 15.87816,
 			"trailKm": 1722.3,
 			"distanceFromTrailKm": 0,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "peak-stremusni-vrh-9379787634",
@@ -92329,9 +94778,12 @@
 			"lng": 15.88155,
 			"trailKm": 1722.8,
 			"distanceFromTrailKm": 0,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "peak-durdjev-vrh-7116408993",
@@ -94475,6 +96927,22 @@
 			"lastVerified": "2026-06-10"
 		},
 		{
+			"id": "water-spring-1110091357",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 44.02808,
+			"lng": 16.4067,
+			"trailKm": 1805.9,
+			"distanceFromTrailKm": 0,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "settlement-glavas-8328782081",
 			"type": "settlement",
 			"name_en": "Glavaš",
@@ -94561,6 +97029,40 @@
 			"elevationM": 462,
 			"source": "osm",
 			"lastVerified": "2026-06-07"
+		},
+		{
+			"id": "water-spring-12636015400",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 43.97345,
+			"lng": 16.4234,
+			"trailKm": 1812.4,
+			"distanceFromTrailKm": 0.43,
+			"water": {
+				"kind": "spring",
+				"reliability": "reliable",
+				"potable": "yes"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-12985555654",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 43.97203,
+			"lng": 16.42058,
+			"trailKm": 1812.4,
+			"distanceFromTrailKm": 0.67,
+			"water": {
+				"kind": "spring",
+				"reliability": "reliable",
+				"potable": "yes"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "settlement-batice-2354418323",
@@ -94780,6 +97282,22 @@
 			"lastVerified": "2026-06-07"
 		},
 		{
+			"id": "water-jaza-2985734328",
+			"type": "water",
+			"name_en": "Jaža",
+			"name_hr": "Jaža",
+			"lat": 43.96821,
+			"lng": 16.43163,
+			"trailKm": 1813.1,
+			"distanceFromTrailKm": 0.77,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "hut-planinarska-kuca-sveti-jure-544667369",
 			"type": "hut",
 			"name_en": "Planinarska kuća Sveti Jure",
@@ -94805,19 +97323,6 @@
 			"trailKm": 1813.1,
 			"distanceFromTrailKm": 12.31,
 			"elevationM": 1119,
-			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
-		},
-		{
-			"id": "water-jaza-2985734328",
-			"type": "water",
-			"name_en": "Jaža",
-			"name_hr": "Jaža",
-			"lat": 43.96821,
-			"lng": 16.43163,
-			"trailKm": 1813.1,
-			"distanceFromTrailKm": 0.77,
 			"source": "osm",
 			"isReachable": false,
 			"lastVerified": "2026-06-10"
@@ -94945,8 +97450,12 @@
 			"trailKm": 1813.4,
 			"distanceFromTrailKm": 0.02,
 			"image": "https://upload.wikimedia.org/wikipedia/commons/f/f5/The_Eye_of_Cetina.jpg",
+			"water": {
+				"kind": "spring",
+				"reliability": "reliable",
+				"potable": "yes"
+			},
 			"source": "osm",
-			"isReachable": false,
 			"images": [
 				{
 					"url": "https://upload.wikimedia.org/wikipedia/commons/f/f5/The_Eye_of_Cetina.jpg",
@@ -94956,7 +97465,7 @@
 					"sourceUrl": "https://commons.wikimedia.org/wiki/File:The_Eye_of_Cetina.jpg"
 				}
 			],
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "settlement-palacevici-9626691388",
@@ -97213,6 +99722,22 @@
 			"lastVerified": "2026-06-03"
 		},
 		{
+			"id": "water-spring-957976026",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 43.61624,
+			"lng": 16.7271,
+			"trailKm": 1887.3,
+			"distanceFromTrailKm": 0.15,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "restaurant-marinero-2609288803",
 			"type": "restaurant",
 			"name_en": "Marinero",
@@ -97281,9 +99806,12 @@
 			"lng": 16.72947,
 			"trailKm": 1887.4,
 			"distanceFromTrailKm": 0.05,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "settlement-budici-9496515243",
@@ -100410,9 +102938,13 @@
 			"lng": 16.7218,
 			"trailKm": 1913.3,
 			"distanceFromTrailKm": 0.94,
+			"water": {
+				"kind": "spring",
+				"reliability": "reliable",
+				"potable": "yes"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "hut-trposnjik-536744900",
@@ -100648,6 +103180,22 @@
 			"lastVerified": "2026-06-07"
 		},
 		{
+			"id": "water-drinking-water-12288464176",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 43.45735,
+			"lng": 16.70077,
+			"trailKm": 1919.5,
+			"distanceFromTrailKm": 0.01,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "settlement-zakucac-1597665208",
 			"type": "settlement",
 			"name_en": "Zakučac",
@@ -100734,6 +103282,38 @@
 			"distanceFromTrailKm": 0.02,
 			"source": "osm",
 			"lastVerified": "2026-06-10"
+		},
+		{
+			"id": "water-drinking-water-10083553867",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 43.44636,
+			"lng": 16.6892,
+			"trailKm": 1921.4,
+			"distanceFromTrailKm": 0.13,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-12288476422",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 43.44225,
+			"lng": 16.68313,
+			"trailKm": 1921.4,
+			"distanceFromTrailKm": 0.69,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "restaurant-gajeta-1587453801",
@@ -101329,6 +103909,39 @@
 			"distanceFromTrailKm": 0.34,
 			"source": "osm",
 			"lastVerified": "2026-06-03"
+		},
+		{
+			"id": "water-drinking-water-4386764058",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 43.44285,
+			"lng": 16.69341,
+			"trailKm": 1921.5,
+			"distanceFromTrailKm": 0.27,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable",
+				"checkDate": "2024-08-10"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-13723072454",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 43.44448,
+			"lng": 16.69193,
+			"trailKm": 1921.5,
+			"distanceFromTrailKm": 0.05,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "restaurant-pod-oodrinom-1801351225",
@@ -101947,6 +104560,23 @@
 			"distanceFromTrailKm": 0.2,
 			"source": "osm",
 			"lastVerified": "2026-06-03"
+		},
+		{
+			"id": "water-drinking-water-10990075205",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 43.44531,
+			"lng": 16.69228,
+			"trailKm": 1921.6,
+			"distanceFromTrailKm": 0.01,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable",
+				"checkDate": "2023-06-19"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "restaurant-puljiz-1587453817",
@@ -104136,6 +106766,22 @@
 			"lastVerified": "2026-06-07"
 		},
 		{
+			"id": "water-spring-5198836839",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 43.38959,
+			"lng": 16.94382,
+			"trailKm": 1945.7,
+			"distanceFromTrailKm": 0,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "viewpoint-biokovo-eye-5590981455",
 			"type": "viewpoint",
 			"name_en": "Biokovo eye",
@@ -104229,9 +106875,12 @@
 			"lng": 16.95311,
 			"trailKm": 1947.6,
 			"distanceFromTrailKm": 0.61,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "peak-bukovac-1224119847",
@@ -104584,9 +107233,12 @@
 			"lng": 17.01365,
 			"trailKm": 1955.1,
 			"distanceFromTrailKm": 0.05,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "peak-vardisce-336442927",
@@ -104860,6 +107512,22 @@
 			"lastVerified": "2026-06-07"
 		},
 		{
+			"id": "water-pompe-manuelle-9774699639",
+			"type": "water",
+			"name_en": "Pompe manuelle",
+			"name_hr": "Pompe manuelle",
+			"lat": 43.33827,
+			"lng": 17.03357,
+			"trailKm": 1959,
+			"distanceFromTrailKm": 0,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "hut-slobodan-ravlic-mountain-lodge-on-lokva-1296268839",
 			"type": "hut",
 			"name_en": "Slobodan Ravlić Mountain Lodge on Lokva",
@@ -104872,19 +107540,6 @@
 			"isReachable": false,
 			"note_en": "Biokovo hut at 1467 m.",
 			"note_hr": "Biokovo, 1467 m.",
-			"lastVerified": "2026-06-10"
-		},
-		{
-			"id": "water-pompe-manuelle-9774699639",
-			"type": "water",
-			"name_en": "Pompe manuelle",
-			"name_hr": "Pompe manuelle",
-			"lat": 43.33827,
-			"lng": 17.03357,
-			"trailKm": 1959,
-			"distanceFromTrailKm": 0,
-			"source": "osm",
-			"isReachable": false,
 			"lastVerified": "2026-06-10"
 		},
 		{
@@ -105895,9 +108550,12 @@
 			"trailKm": 1970.7,
 			"distanceFromTrailKm": 0.2,
 			"elevationM": 1140,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "peak-vitrenik-336399903",
@@ -106336,9 +108994,12 @@
 			"lng": 17.09012,
 			"trailKm": 1978.5,
 			"distanceFromTrailKm": 0.58,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "settlement-gornja-mala-335565983",
@@ -106511,6 +109172,23 @@
 			"distanceFromTrailKm": 1.01,
 			"source": "osm",
 			"lastVerified": "2026-06-03"
+		},
+		{
+			"id": "water-drinking-water-2373581776",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 43.24131,
+			"lng": 17.08784,
+			"trailKm": 1979.3,
+			"distanceFromTrailKm": 0.09,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable",
+				"checkDate": "2025-10-04"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "settlement-srida-sela-335566974",
@@ -107090,6 +109768,23 @@
 			"lastVerified": "2026-06-07"
 		},
 		{
+			"id": "water-spring-5838131204",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 43.20034,
+			"lng": 17.12779,
+			"trailKm": 1986.4,
+			"distanceFromTrailKm": 0.67,
+			"water": {
+				"kind": "spring",
+				"reliability": "not_potable",
+				"potable": "no"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "peak-zivac-335600431",
 			"type": "peak",
 			"name_en": "Živac",
@@ -107101,6 +109796,22 @@
 			"elevationM": 801,
 			"source": "osm",
 			"lastVerified": "2026-06-07"
+		},
+		{
+			"id": "water-spring-2376436058",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 43.20007,
+			"lng": 17.13274,
+			"trailKm": 1986.7,
+			"distanceFromTrailKm": 0.48,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "restaurant-culinarium-restaurant-383852121",
@@ -107721,6 +110432,38 @@
 			"distanceFromTrailKm": 0.4,
 			"source": "osm",
 			"lastVerified": "2026-06-07"
+		},
+		{
+			"id": "water-drinking-water-4920932030",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 43.18361,
+			"lng": 17.1647,
+			"trailKm": 1991.2,
+			"distanceFromTrailKm": 0.2,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-10948600608",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 43.18293,
+			"lng": 17.16584,
+			"trailKm": 1991.2,
+			"distanceFromTrailKm": 0.14,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "settlement-porat-361120974",
@@ -109277,9 +112020,13 @@
 			"trailKm": 2005.2,
 			"distanceFromTrailKm": 0.01,
 			"url": "https://www.geocaching.com/geocache/GC3RJ4E_mineral-spring-zaostrog?guid=f2a17517-a688-432d-b492-5c8fe02d6a82",
+			"water": {
+				"kind": "spring",
+				"reliability": "reliable",
+				"potable": "yes"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "restaurant-pizzeria-skalinada-463811988",
@@ -109430,9 +112177,12 @@
 			"lng": 17.31056,
 			"trailKm": 2009.6,
 			"distanceFromTrailKm": 0.07,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "peak-kriz-7468012634",
@@ -109446,6 +112196,22 @@
 			"elevationM": 681,
 			"source": "osm",
 			"lastVerified": "2026-06-07"
+		},
+		{
+			"id": "water-drinking-water-9673965103",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 43.12102,
+			"lng": 17.31531,
+			"trailKm": 2010.1,
+			"distanceFromTrailKm": 0.5,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "restaurant-porobilo-bufet-13505751414",
@@ -109815,6 +112581,22 @@
 			"distanceFromTrailKm": 0.64,
 			"source": "osm",
 			"lastVerified": "2026-06-10"
+		},
+		{
+			"id": "water-drinking-water-4327833266",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 43.10461,
+			"lng": 17.34086,
+			"trailKm": 2013.5,
+			"distanceFromTrailKm": 0.82,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "restaurant-niccolo-polo-2468825821",
@@ -110642,9 +113424,12 @@
 			"lng": 17.43474,
 			"trailKm": 2026.6,
 			"distanceFromTrailKm": 0.82,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "settlement-bacina-776444087",
@@ -110735,6 +113520,22 @@
 			"elevationM": 228,
 			"source": "osm",
 			"lastVerified": "2026-06-07"
+		},
+		{
+			"id": "water-drinking-water-6810857523",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 43.05555,
+			"lng": 17.43195,
+			"trailKm": 2028.4,
+			"distanceFromTrailKm": 0.02,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "cafe-gloria-2352507713",
@@ -111213,6 +114014,22 @@
 			"lastVerified": "2026-06-07"
 		},
 		{
+			"id": "water-drinking-water-4448818627",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 43.05189,
+			"lng": 17.43473,
+			"trailKm": 2029.2,
+			"distanceFromTrailKm": 0.01,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "restaurant-stara-dama-2351593862",
 			"type": "restaurant",
 			"name_en": "Stara dama",
@@ -111685,6 +114502,22 @@
 			"lastVerified": "2026-06-07"
 		},
 		{
+			"id": "water-drinking-water-4448818624",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 43.00926,
+			"lng": 17.26692,
+			"trailKm": 2044.9,
+			"distanceFromTrailKm": 0.09,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "restaurant-dundo-3036425678",
 			"type": "restaurant",
 			"name_en": "Dundo",
@@ -111805,6 +114638,22 @@
 			"population": 598,
 			"source": "osm",
 			"lastVerified": "2026-06-07"
+		},
+		{
+			"id": "water-drinking-water-13283364555",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 43.00484,
+			"lng": 17.27712,
+			"trailKm": 2045.9,
+			"distanceFromTrailKm": 0.05,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "peak-v-zasadica-9898200558",
@@ -112136,6 +114985,22 @@
 			"elevationM": 546,
 			"source": "osm",
 			"lastVerified": "2026-06-07"
+		},
+		{
+			"id": "water-drinking-water-9202575880",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 42.96616,
+			"lng": 17.34669,
+			"trailKm": 2055.1,
+			"distanceFromTrailKm": 0,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "restaurant-opg-antunovic-4331001496",
@@ -113802,6 +116667,22 @@
 			"lastVerified": "2026-06-07"
 		},
 		{
+			"id": "water-drinking-water-10983065351",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 42.85116,
+			"lng": 17.61798,
+			"trailKm": 2083.8,
+			"distanceFromTrailKm": 0.68,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "peak-krusac-8215405966",
 			"type": "peak",
 			"name_en": "Krušac",
@@ -113839,6 +116720,22 @@
 			"elevationM": 386,
 			"source": "osm",
 			"lastVerified": "2026-06-07"
+		},
+		{
+			"id": "water-drinking-water-12012379569",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 42.84854,
+			"lng": 17.62569,
+			"trailKm": 2085.3,
+			"distanceFromTrailKm": 0.03,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "settlement-boljenovici-505059050",
@@ -116307,6 +119204,54 @@
 			"lastVerified": "2026-06-07"
 		},
 		{
+			"id": "water-spring-10779365970",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 42.78648,
+			"lng": 17.8538,
+			"trailKm": 2116.1,
+			"distanceFromTrailKm": 0.05,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-10779365971",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 42.78655,
+			"lng": 17.85413,
+			"trailKm": 2116.1,
+			"distanceFromTrailKm": 0.03,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-spring-12615723484",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 42.78485,
+			"lng": 17.85865,
+			"trailKm": 2116.6,
+			"distanceFromTrailKm": 0.03,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "settlement-sladjenovici-1606974014",
 			"type": "settlement",
 			"name_en": "Slađenovići",
@@ -116343,6 +119288,22 @@
 			"elevationM": 188,
 			"source": "osm",
 			"lastVerified": "2026-06-07"
+		},
+		{
+			"id": "water-drinking-water-4481159875",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 42.78388,
+			"lng": 17.87803,
+			"trailKm": 2119.2,
+			"distanceFromTrailKm": 0.01,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "restaurant-konoba-peronospora-2391984669",
@@ -116445,6 +119406,22 @@
 			"elevationM": 66,
 			"source": "osm",
 			"lastVerified": "2026-06-07"
+		},
+		{
+			"id": "water-drinking-water-11068787576",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 42.79126,
+			"lng": 17.88485,
+			"trailKm": 2120.1,
+			"distanceFromTrailKm": 0.4,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "peak-kadinica-9201841975",
@@ -116651,6 +119628,38 @@
 			"distanceFromTrailKm": 0.01,
 			"source": "osm",
 			"lastVerified": "2026-06-10"
+		},
+		{
+			"id": "water-drinking-water-4857054721",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 42.7856,
+			"lng": 17.88954,
+			"trailKm": 2120.7,
+			"distanceFromTrailKm": 0.03,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-9202612069",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 42.78591,
+			"lng": 17.88888,
+			"trailKm": 2120.7,
+			"distanceFromTrailKm": 0.01,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "restaurant-riva-375983075",
@@ -117450,6 +120459,22 @@
 			"lastVerified": "2026-06-07"
 		},
 		{
+			"id": "water-drinking-water-6609379271",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 42.714,
+			"lng": 17.9789,
+			"trailKm": 2137,
+			"distanceFromTrailKm": 0.01,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "peak-kurijec-9280556763",
 			"type": "peak",
 			"name_en": "Kuriječ",
@@ -117474,6 +120499,22 @@
 			"elevationM": 436,
 			"source": "osm",
 			"lastVerified": "2026-06-07"
+		},
+		{
+			"id": "water-drinking-water-9221879910",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 42.71227,
+			"lng": 17.97902,
+			"trailKm": 2137.2,
+			"distanceFromTrailKm": 0.05,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "peak-polacica-1607458875",
@@ -118460,6 +121501,22 @@
 			"distanceFromTrailKm": 1.55,
 			"source": "osm",
 			"lastVerified": "2026-06-07"
+		},
+		{
+			"id": "water-drinking-water-9221829411",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 42.66177,
+			"lng": 18.07103,
+			"trailKm": 2156,
+			"distanceFromTrailKm": 0.98,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "restaurant-levanat-4841701103",
@@ -120205,6 +123262,71 @@
 			"lastVerified": "2026-06-10"
 		},
 		{
+			"id": "water-drinking-water-4306010895",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 42.6426,
+			"lng": 18.10906,
+			"trailKm": 2160.2,
+			"distanceFromTrailKm": 0.72,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-4306010896",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 42.64181,
+			"lng": 18.10576,
+			"trailKm": 2160.2,
+			"distanceFromTrailKm": 0.94,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-onofrio-s-fountain-4306027796",
+			"type": "water",
+			"name_en": "Onofrio's fountain",
+			"name_hr": "Velika Onofrijeva česma",
+			"lat": 42.64155,
+			"lng": 18.1073,
+			"trailKm": 2160.2,
+			"distanceFromTrailKm": 0.89,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-agua-4306072790",
+			"type": "water",
+			"name_en": "Agua",
+			"name_hr": "Agua",
+			"lat": 42.64037,
+			"lng": 18.10752,
+			"trailKm": 2160.2,
+			"distanceFromTrailKm": 0.99,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable",
+				"checkDate": "2024-05-04"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "restaurant-buffet-skola-1787483382",
 			"type": "restaurant",
 			"name_en": "Buffet Škola",
@@ -120759,32 +123881,6 @@
 			"lastVerified": "2026-06-10"
 		},
 		{
-			"id": "water-onofrio-s-fountain-4306027796",
-			"type": "water",
-			"name_en": "Onofrio's fountain",
-			"name_hr": "Velika Onofrijeva česma",
-			"lat": 42.64155,
-			"lng": 18.1073,
-			"trailKm": 2160.2,
-			"distanceFromTrailKm": 0.89,
-			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
-		},
-		{
-			"id": "water-agua-4306072790",
-			"type": "water",
-			"name_en": "Agua",
-			"name_hr": "Agua",
-			"lat": 42.64037,
-			"lng": 18.10752,
-			"trailKm": 2160.2,
-			"distanceFromTrailKm": 0.99,
-			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
-		},
-		{
 			"id": "viewpoint-old-town-and-lokrum-viewpoint-4443270890",
 			"type": "viewpoint",
 			"name_en": "Old Town and Lokrum Viewpoint",
@@ -120879,6 +123975,22 @@
 			"distanceFromTrailKm": 0.93,
 			"source": "osm",
 			"lastVerified": "2026-06-03"
+		},
+		{
+			"id": "water-drinking-water-4306072691",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 42.64209,
+			"lng": 18.11017,
+			"trailKm": 2160.3,
+			"distanceFromTrailKm": 0.72,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "restaurant-taj-mahal-1790616385",
@@ -121271,6 +124383,38 @@
 			"distanceFromTrailKm": 0.85,
 			"source": "osm",
 			"lastVerified": "2026-06-03"
+		},
+		{
+			"id": "water-kleiner-lowenkopfbrunnen-436979452",
+			"type": "water",
+			"name_en": "Kleiner Löwenkopfbrunnen",
+			"name_hr": "Kleiner Löwenkopfbrunnen",
+			"lat": 42.64013,
+			"lng": 18.10988,
+			"trailKm": 2160.4,
+			"distanceFromTrailKm": 0.93,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
+			"id": "water-drinking-water-4306418017",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 42.64105,
+			"lng": 18.11119,
+			"trailKm": 2160.4,
+			"distanceFromTrailKm": 0.79,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "restaurant-poklisar-1823529771",
@@ -121861,19 +125005,6 @@
 			"lastVerified": "2026-06-10"
 		},
 		{
-			"id": "water-kleiner-lowenkopfbrunnen-436979452",
-			"type": "water",
-			"name_en": "Kleiner Löwenkopfbrunnen",
-			"name_hr": "Kleiner Löwenkopfbrunnen",
-			"lat": 42.64013,
-			"lng": 18.10988,
-			"trailKm": 2160.4,
-			"distanceFromTrailKm": 0.93,
-			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
-		},
-		{
 			"id": "restaurant-komarda-3039374063",
 			"type": "restaurant",
 			"name_en": "Komarda",
@@ -122210,9 +125341,13 @@
 			"lng": 18.15253,
 			"trailKm": 2165.2,
 			"distanceFromTrailKm": 0.85,
+			"water": {
+				"kind": "spring",
+				"reliability": "reliable",
+				"potable": "yes"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "settlement-zakucanovac-7552316062",
@@ -122273,9 +125408,12 @@
 			"lng": 18.18257,
 			"trailKm": 2168.3,
 			"distanceFromTrailKm": 0.26,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-10"
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "settlement-martinovici-1045611031",
@@ -122723,6 +125861,22 @@
 			"lastVerified": "2026-06-07"
 		},
 		{
+			"id": "water-drinking-water-6502170433",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 42.62201,
+			"lng": 18.20753,
+			"trailKm": 2173.5,
+			"distanceFromTrailKm": 0.42,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
+		},
+		{
 			"id": "restaurant-basilico-pizza-pasta-5699183862",
 			"type": "restaurant",
 			"name_en": "Basilico Pizza Pasta",
@@ -122846,6 +126000,22 @@
 			"url": "https://zupaho.eatbu.com/",
 			"source": "osm",
 			"lastVerified": "2026-06-10"
+		},
+		{
+			"id": "water-drinking-water-9787472562",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 42.60956,
+			"lng": 18.23055,
+			"trailKm": 2175.6,
+			"distanceFromTrailKm": 0.29,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "restaurant-poseydon-9986358483",
@@ -123051,6 +126221,22 @@
 			"elevationM": 591,
 			"source": "osm",
 			"lastVerified": "2026-06-07"
+		},
+		{
+			"id": "water-spring-7866357123",
+			"type": "water",
+			"name_en": "Spring",
+			"name_hr": "Izvor",
+			"lat": 42.60006,
+			"lng": 18.2313,
+			"trailKm": 2177.5,
+			"distanceFromTrailKm": 0.25,
+			"water": {
+				"kind": "spring",
+				"reliability": "unverified"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "settlement-velji-do-1378963273",
@@ -123420,6 +126606,22 @@
 			"distanceFromTrailKm": 0.02,
 			"source": "osm",
 			"lastVerified": "2026-06-03"
+		},
+		{
+			"id": "water-drinking-water-8732029436",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 42.58278,
+			"lng": 18.21666,
+			"trailKm": 2181.8,
+			"distanceFromTrailKm": 0.22,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "restaurant-dalmacija-1707317766",
@@ -123865,6 +127067,23 @@
 			"population": 447,
 			"source": "osm",
 			"lastVerified": "2026-06-07"
+		},
+		{
+			"id": "water-drinking-water-13713140579",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 42.56081,
+			"lng": 18.26164,
+			"trailKm": 2186.6,
+			"distanceFromTrailKm": 0.98,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable",
+				"checkDate": "2026-04-07"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "restaurant-the-lunch-by-newrest-11062136950",
@@ -124981,6 +128200,22 @@
 			"population": 70,
 			"source": "wikidata",
 			"lastVerified": "2026-06-07"
+		},
+		{
+			"id": "water-drinking-water-5168799925",
+			"type": "water",
+			"name_en": "Drinking water",
+			"name_hr": "Pitka voda",
+			"lat": 42.49367,
+			"lng": 18.38233,
+			"trailKm": 2202.3,
+			"distanceFromTrailKm": 0.01,
+			"water": {
+				"kind": "tap",
+				"reliability": "reliable"
+			},
+			"source": "osm",
+			"lastVerified": "2026-06-11"
 		},
 		{
 			"id": "peak-ilijin-vrh-8214768256",
