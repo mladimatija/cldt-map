@@ -74,6 +74,24 @@ export interface WaterInfo {
 	checkDate?: string;
 }
 
+export type ResupplyKind = 'grocery' | 'bakery' | 'pharmacy' | 'atm' | 'post' | 'bus' | 'fuel';
+
+export interface ResupplyPlace {
+	kind: ResupplyKind;
+	name?: string;
+	/** Raw OSM opening_hours value - free text, verify locally. */
+	openingHours?: string;
+}
+
+/** Resupply amenities near a town/settlement, attached at enrichment time.
+ *  Empty `places` means "checked, nothing found" - distinct from the field
+ *  being absent (never checked), which renderers treat as "no data". */
+export interface PoiResupply {
+	/** ISO date the amenities were last fetched. */
+	updated: string;
+	places: ResupplyPlace[];
+}
+
 export interface PoiImage {
 	/** Full-resolution image URL (typically a Commons file URL). */
 	url: string;
@@ -142,6 +160,8 @@ export interface Poi {
 	 *  time from OSM tags; absent on rows that predate the
 	 *  water-intelligence pass. */
 	water?: WaterInfo;
+	/** Town/settlement only: nearby resupply amenities. */
+	resupply?: PoiResupply;
 }
 
 export interface PoisFile {

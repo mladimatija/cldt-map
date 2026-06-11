@@ -70,6 +70,8 @@ export interface TripBriefPoi {
 	summary?: string;
 	thumbUrl?: string;
 	attribution?: string;
+	/** True when the town has at least one grocery in its resupply data. */
+	resupply?: boolean;
 	wikipediaUrl?: string;
 }
 
@@ -377,6 +379,7 @@ function collectStagePois(
 			...(thumbUrl && { thumbUrl }),
 			...(p.images?.[0]?.attribution && { attribution: p.images[0].attribution }),
 			...(p.wikipedia && { wikipediaUrl: p.wikipedia }),
+			...(p.resupply?.places.some((place) => place.kind === 'grocery') && { resupply: true }),
 		};
 	});
 }

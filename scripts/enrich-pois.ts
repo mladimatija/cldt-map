@@ -27,7 +27,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { haversineDistanceM as haversineM } from '../src/lib/haversine';
 import { foldDiacritics } from '@/lib/pois';
-import type { Poi, PoiImage, PoisFile } from '../src/lib/poi-types';
+import type { Poi, PoiImage, PoiResupply, PoisFile, ResupplyKind, ResupplyPlace } from '../src/lib/poi-types';
 import { classifyWater } from '../src/lib/water-intelligence';
 import { parseWikipediaRef, SUMMARY_HOST_TEMPLATE as WIKIPEDIA_SUMMARY_HOST_TEMPLATE } from '../src/lib/wikipedia';
 import { applyReachabilityFilter, formatStats } from './poi-reachability';
@@ -454,6 +454,18 @@ async function main(): Promise<void> {
 	const prior = await readJsonOptional<PoisFile>(OUTPUT_PATH);
 	const merged = mergePreservingCurated([...byId.values()], prior?.pois ?? [], failedTypes, polys);
 	merged.sort((a, b) => a.trailKm - b.trailKm);
+
+	// ---- Pass 7: Town resupply amenities ----
+	// Runs on the merged set so towns carried forward from a partial run are
+	// covered too. A failed query carries each town's prior resupply forward
+	// by id rather than wiping it.
+	console.log('\n=== Pass 7: Town resupply amenities ===');
+	if (process.env.SKIP_RESUPPLY === '1') {
+		console.log('-> Skipped (SKIP_RESUPPLY=1) - prior resupply data carries forward.');
+		carryForwardResupply(merged, prior?.pois ?? []);
+	} else {
+		await enrichResupply(merged, corridorPoly, paddedBbox, prior?.pois ?? []);
+	}
 
 	// Normalize em/en-dashes in all string fields before writing so the
 	// committed JSON never contains U+2013 or U+2014 regardless of upstream
@@ -1642,3 +1654,110 @@ main().catch((err) => {
 	console.error('POI enrichment failed:', err);
 	process.exit(1);
 });
+
+// ── Pass 7: resupply helpers ────────────────────────────────────────────────
+
+const RESUPPLY_CONFIG: TypeConfig = {
+	type: 'resupply',
+	overpassSelectors: [
+		{ key: 'shop', values: ['supermarket', 'convenience', 'general', 'greengrocer', 'bakery'] },
+		{ key: 'amenity', values: ['pharmacy', 'atm', 'bank', 'post_office', 'fuel', 'bus_station'] },
+		{ key: 'highway', values: ['bus_stop'] },
+	],
+	// Towns are capped at 3 km off trail; amenities sit inside towns, so the
+	// corridor needs town cap + assignment radius of slack.
+	maxDistanceKm: 4.5,
+};
+
+/** Amenity-to-town assignment radius. */
+const RESUPPLY_ASSIGN_KM = 1.5;
+/** Cap per town so a city centre cannot bloat the dataset. */
+const RESUPPLY_MAX_PLACES = 12;
+
+const RESUPPLY_KIND_ORDER: ResupplyKind[] = ['grocery', 'bakery', 'pharmacy', 'atm', 'post', 'bus', 'fuel'];
+
+function classifyResupply(tags: Record<string, string>): ResupplyKind | null {
+	const shop = tags.shop ?? '';
+	if (['supermarket', 'convenience', 'general', 'greengrocer'].includes(shop)) return 'grocery';
+	if (shop === 'bakery') return 'bakery';
+	const amenity = tags.amenity ?? '';
+	if (amenity === 'pharmacy') return 'pharmacy';
+	if (amenity === 'atm' || amenity === 'bank') return 'atm';
+	if (amenity === 'post_office') return 'post';
+	if (amenity === 'fuel') return 'fuel';
+	if (amenity === 'bus_station' || tags.highway === 'bus_stop') return 'bus';
+	return null;
+}
+
+/** Copies prior resupply blocks onto the merged towns by id (failure path). */
+function carryForwardResupply(merged: Poi[], prior: Poi[]): void {
+	const priorById = new Map(prior.filter((p) => p.resupply).map((p) => [p.id, p.resupply]));
+	let carried = 0;
+	for (const poi of merged) {
+		const prev = priorById.get(poi.id);
+		if (prev && !poi.resupply) {
+			poi.resupply = prev;
+			carried++;
+		}
+	}
+	console.log(`  carried forward resupply for ${carried} towns.`);
+}
+
+/**
+ * Queries resupply amenities along the corridor and attaches each to the
+ * nearest town/settlement within RESUPPLY_ASSIGN_KM. On success every town
+ * gets a `resupply` block - an empty `places` array documents "checked,
+ * nothing nearby", which the planner renders as a no-resupply warning.
+ */
+async function enrichResupply(merged: Poi[], corridorPoly: LatLng[], bbox: Bbox, prior: Poi[]): Promise<void> {
+	const towns = merged.filter((p) => p.type === 'town' || p.type === 'settlement');
+	if (towns.length === 0) {
+		console.log('  no towns in dataset; skipping.');
+		return;
+	}
+	const { elements, failed } = await fetchOsmElements(RESUPPLY_CONFIG, corridorPoly, bbox);
+	if (failed) {
+		console.log('  Overpass query failed - prior resupply data carries forward.');
+		carryForwardResupply(merged, prior);
+		return;
+	}
+	console.log(`  ${elements.length} amenity candidates.`);
+
+	const placesByTown = new Map<string, ResupplyPlace[]>();
+	let assigned = 0;
+	for (const el of elements) {
+		const point = elementToLatLng(el);
+		if (!point) continue;
+		const kind = classifyResupply(el.tags ?? {});
+		if (!kind) continue;
+		let best: Poi | null = null;
+		let bestM = RESUPPLY_ASSIGN_KM * 1000;
+		for (const town of towns) {
+			const d = haversineM(point, town);
+			if (d < bestM) {
+				bestM = d;
+				best = town;
+			}
+		}
+		if (!best) continue;
+		const place: ResupplyPlace = {
+			kind,
+			...(el.tags?.name && { name: el.tags.name }),
+			...(el.tags?.opening_hours && { openingHours: el.tags.opening_hours }),
+		};
+		const list = placesByTown.get(best.id) ?? [];
+		list.push(place);
+		placesByTown.set(best.id, list);
+		assigned++;
+	}
+
+	const updated = new Date().toISOString().slice(0, 10);
+	for (const town of towns) {
+		const places = (placesByTown.get(town.id) ?? [])
+			.sort((a, b) => RESUPPLY_KIND_ORDER.indexOf(a.kind) - RESUPPLY_KIND_ORDER.indexOf(b.kind))
+			.slice(0, RESUPPLY_MAX_PLACES);
+		const block: PoiResupply = { updated, places };
+		town.resupply = block;
+	}
+	console.log(`  assigned ${assigned} amenities across ${placesByTown.size} towns (${towns.length} towns stamped).`);
+}

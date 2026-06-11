@@ -194,6 +194,37 @@
 								"pattern": "^\\d{4}-\\d{2}-\\d{2}$"
 							}
 						}
+					},
+					"resupply": {
+						"type": "object",
+						"description": "Resupply amenities near a town/settlement POI, from OSM at enrichment time. Empty places[] means the area was checked and nothing was found (distinct from the field being absent = never checked).",
+						"additionalProperties": false,
+						"required": ["updated", "places"],
+						"properties": {
+							"updated": {
+								"type": "string",
+								"pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+							},
+							"places": {
+								"type": "array",
+								"items": {
+									"type": "object",
+									"additionalProperties": false,
+									"required": ["kind"],
+									"properties": {
+										"kind": {
+											"enum": ["grocery", "bakery", "pharmacy", "atm", "post", "bus", "fuel"]
+										},
+										"name": {
+											"type": "string"
+										},
+										"openingHours": {
+											"type": "string"
+										}
+									}
+								}
+							}
+						}
 					}
 				}
 			}

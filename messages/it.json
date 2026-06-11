@@ -61,7 +61,8 @@
 			"helpPanel": "Aiuto in-app - il pulsante ? apre un riferimento per argomenti: nozioni di base della mappa, profilo altimetrico, gesti nascosti (pressione lunga SOS, trascinamento GPX), strumenti di pianificazione e comportamento offline",
 			"upNext": "Vista \"A seguire\" - la fonte d’acqua, il rifugio e la città più vicini davanti a te, con le distanze, direttamente nel pannello distanze",
 			"packWeight": "Peso dello zaino e acqua da portare - suggerimenti \"porta fino a X L\" per tappa dal peso base e dal consumo, in unità metriche o imperiali",
-			"waypointsJournal": "Punti personali e diario di viaggio - tieni premuto sulla mappa per segnaposti con note, diario datato, esportazione GPX/Markdown; tutto resta sul tuo dispositivo"
+			"waypointsJournal": "Punti personali e diario di viaggio - tieni premuto sulla mappa per segnaposti con note, diario datato, esportazione GPX/Markdown; tutto resta sul tuo dispositivo",
+			"resupply": "Guide al rifornimento - negozi, farmacie, bancomat, posta e autobus da OpenStreetMap nei popup delle città, con indicatori di rifornimento per tappa nel planner"
 		},
 		"dataAttribution": "Dati e attribuzioni",
 		"dataAttributionDesc": "I dati del sentiero sono forniti dall'organizzazione Udruga Long Distance Trail Hrvatska (LDTH). Le tessere mappa provengono da OpenStreetMap, OpenTopoMap, CyclOSM e altri provider. Le mappe topografiche croate provengono dall'Amministrazione Geodetica Statale (DGU). I dati meteo provengono da DHMZ (Servizio Meteorologico Croato) e Open-Meteo. Le tessere radar sono fornite da RainViewer. Stato stagionale del sentiero, avvisi di pericolo e dati delle stazioni di soccorso alpino provengono da HGSS (Servizio croato di soccorso in montagna), HPS (Federazione croata di alpinismo) e dalle autorità dei parchi nazionali (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) e Parco naturale Velebit. I dati visualizzati su questo sito potrebbero non riflettere le condizioni più recenti. In caso di dubbio, verificare sempre le fonti ufficiali.",
@@ -612,7 +613,9 @@
 		"stripMapPdfCancelTooltip": "Annulla l'esportazione PDF in corso.",
 		"pdfStageLabel": "Tappa",
 		"stageWaterGap": "Tratto più lungo senza acqua: {distance}",
-		"stageCarry": "Porta fino a {volume} di acqua (totale {total})"
+		"stageCarry": "Porta fino a {volume} di acqua (totale {total})",
+		"stageResupplyYes": "Rifornimento alimentari disponibile in questa tappa",
+		"stageResupplyNo": "Nessun rifornimento alimentari in questa tappa - porta il cibo"
 	},
 	"tripBrief": {
 		"defaultTitle": "Piano di viaggio CLDT",
@@ -651,7 +654,8 @@
 				"pois": "Luoghi lungo il percorso",
 				"emergency": "Contatti di emergenza",
 				"generated": "Generato da CLDT Map il",
-				"pack": "Zaino"
+				"pack": "Zaino",
+				"resupply": "rifornimento"
 			},
 			"daysHeading": "Giorno per giorno",
 			"moreLabel": "altri luoghi",
@@ -807,6 +811,19 @@
 			"unverified": "Non verificata - trattare prima di bere",
 			"not_potable": "Non potabile",
 			"checked": "Verificata"
+		},
+		"resupply": {
+			"heading": "Rifornimento",
+			"none": "Nessun negozio o servizio trovato nelle vicinanze (OpenStreetMap)",
+			"verify": "Da OpenStreetMap, {date} - verifica sul posto",
+			"more": "+ altri {count}",
+			"grocery": "Alimentari",
+			"bakery": "Panetteria",
+			"pharmacy": "Farmacia",
+			"atm": "Bancomat/banca",
+			"post": "Ufficio postale",
+			"bus": "Autobus",
+			"fuel": "Stazione di servizio"
 		}
 	},
 	"poiDisclaimer": {

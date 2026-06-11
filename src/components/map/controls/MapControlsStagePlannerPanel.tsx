@@ -272,6 +272,23 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 		return stagePlan.stages.map((s) => longestDryStretchKm(s.startKm, s.endKm, waterSourceKms));
 	}, [stagePlan, waterSourceKms]);
 
+	/** Per-stage resupply availability from the towns' enrichment data:
+	 *  'yes' when a town in the stage has a grocery, 'no' when the stage has
+	 *  checked towns but none with groceries, null when there is nothing to
+	 *  say (no resupply data yet, or no checked towns in the stage). */
+	const resupplyByStage = useMemo((): ('yes' | 'no' | null)[] => {
+		if (!stagePlan || !poisFile?.pois?.length) return [];
+		const towns = poisFile.pois.filter((p) => (p.type === 'town' || p.type === 'settlement') && p.resupply);
+		if (towns.length === 0) return stagePlan.stages.map(() => null);
+		return stagePlan.stages.map((stage) => {
+			const lo = Math.min(stage.startKm, stage.endKm);
+			const hi = Math.max(stage.startKm, stage.endKm);
+			const inStage = towns.filter((t) => t.trailKm >= lo && t.trailKm <= hi);
+			if (inStage.length === 0) return null;
+			return inStage.some((t) => t.resupply?.places.some((place) => place.kind === 'grocery')) ? 'yes' : 'no';
+		});
+	}, [stagePlan, poisFile]);
+
 	/** Liters to carry per stage across its longest dry stretch; empty when
 	 *  the pack-weight feature is off (no base weight set) or there is no
 	 *  water data. Uses the pack-adjusted pace so heavier packs (slower,
@@ -504,6 +521,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 									{(poiCount > 0 ||
 										(waterGapByStage[i] !== undefined && waterGapByStage[i] >= WATER_GAP_WARN_KM) ||
 										(carryByStage[i] !== undefined && carryByStage[i] > 0) ||
+										(resupplyByStage[i] !== null && resupplyByStage[i] !== undefined) ||
 										stageForecasts[i]) && (
 										<span className="flex w-full flex-wrap items-center gap-x-1.5 gap-y-0.5 pl-5">
 											{poiCount > 0 && (
@@ -553,6 +571,21 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 												>
 													<span aria-hidden>🎒</span>
 													{formatVolume(carryByStage[i], units)}
+												</span>
+											)}
+											{resupplyByStage[i] !== null && resupplyByStage[i] !== undefined && (
+												<span
+													aria-label={resupplyByStage[i] === 'yes' ? t('stageResupplyYes') : t('stageResupplyNo')}
+													className={cn(
+														'shrink-0 rounded-full px-1.5 py-0 text-[10px] font-medium',
+														resupplyByStage[i] === 'yes'
+															? 'bg-gray-500/10 text-gray-600 dark:text-gray-300'
+															: 'bg-amber-500/15 text-amber-700 dark:text-amber-400',
+													)}
+													title={resupplyByStage[i] === 'yes' ? t('stageResupplyYes') : t('stageResupplyNo')}
+												>
+													<span aria-hidden>🛒</span>
+													{resupplyByStage[i] === 'no' && <span aria-hidden>✕</span>}
 												</span>
 											)}
 											{stageForecasts[i] && (
