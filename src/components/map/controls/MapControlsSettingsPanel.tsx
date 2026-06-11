@@ -17,6 +17,7 @@ import {
 	weightUnitLabel,
 } from '@/lib/pack-weight';
 import { parsePackCsv } from '@/lib/pack-csv';
+import { disablePushAlerts, enablePushAlerts, pushAlertsSupported } from '@/lib/push-alerts';
 import { useMapStore, type MapStoreState } from '@/lib/store';
 import {
 	IoMoonOutline,
@@ -120,6 +121,19 @@ export function MapControlsSettingsPanel({
 	const seasonalStatusLayerEnabled = useMapStore((state: MapStoreState) => state.seasonalStatusLayerEnabled);
 	const setSeasonalStatusLayerEnabled = useMapStore((state: MapStoreState) => state.setSeasonalStatusLayerEnabled);
 	const seasonalStatusFile = useMapStore((state: MapStoreState) => state.seasonalStatusFile);
+	const pushAlertsEnabled = useMapStore((state: MapStoreState) => state.pushAlertsEnabled);
+	const setPushAlertsEnabled = useMapStore((state: MapStoreState) => state.setPushAlertsEnabled);
+
+	/** Permission prompt must run inside this click handler; failures (denied,
+	 *  unsupported, deploy without VAPID keys) revert the toggle silently. */
+	const handlePushAlertsToggle = async (checked: boolean): Promise<void> => {
+		if (!checked) {
+			setPushAlertsEnabled(false);
+			void disablePushAlerts();
+			return;
+		}
+		setPushAlertsEnabled(await enablePushAlerts());
+	};
 	const units = useMapStore((state: MapStoreState) => state.units);
 
 	// Capture "now" once at mount via a lazy useState init
@@ -443,6 +457,19 @@ export function MapControlsSettingsPanel({
 								</p>
 							)}
 						</div>
+					)}
+
+					{pushAlertsSupported() && (
+						<label className="flex cursor-pointer items-start gap-2">
+							<Checkbox
+								checked={pushAlertsEnabled}
+								onCheckedChange={(checked) => void handlePushAlertsToggle(checked)}
+							/>
+							<div className="flex flex-col">
+								<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">{t('pushAlertsLabel')}</span>
+								<span className="text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('pushAlertsHint')}</span>
+							</div>
+						</label>
 					)}
 
 					<div className="flex flex-col gap-1">

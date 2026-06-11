@@ -233,7 +233,9 @@
 		"packCsvImport": "Importa lista attrezzatura (CSV)",
 		"packCsvSummary": "{name}: {count} articoli, base {base}",
 		"packCsvClear": "Rimuovi",
-		"packCsvError": "Impossibile leggere il CSV. Esportalo da LighterPack o Packstack e riprova."
+		"packCsvError": "Impossibile leggere il CSV. Esportalo da LighterPack o Packstack e riprova.",
+		"pushAlertsLabel": "Notifica nuovi avvisi del sentiero",
+		"pushAlertsHint": "Notifica del browser quando viene pubblicato un nuovo avviso stagionale per il sentiero. Funziona anche ad app chiusa; nessun account."
 	},
 	"baseMapSelector": {
 		"standard": "Standard",

@@ -233,7 +233,9 @@
 		"packCsvImport": "Import pack list (CSV)",
 		"packCsvSummary": "{name}: {count} items, base {base}",
 		"packCsvClear": "Clear",
-		"packCsvError": "Could not read that CSV. Export it from LighterPack or Packstack and try again."
+		"packCsvError": "Could not read that CSV. Export it from LighterPack or Packstack and try again.",
+		"pushAlertsLabel": "Notify about new trail warnings",
+		"pushAlertsHint": "Browser notification when a new seasonal warning is published for the trail. Works while the app is closed; no account needed."
 	},
 	"baseMapSelector": {
 		"standard": "Standard",

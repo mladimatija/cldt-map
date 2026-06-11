@@ -326,6 +326,9 @@ export interface MapStoreState {
 	 *  Importing also fills packBaseWeightKg. Persisted. */
 	packGearList: PackList | null;
 	setPackGearList: (list: PackList | null) => void;
+	/** Seasonal-alert web push opt-in (mirrors the browser subscription). Persisted. */
+	pushAlertsEnabled: boolean;
+	setPushAlertsEnabled: (enabled: boolean) => void;
 
 	/** Personal map annotations (long-press to add). Persisted. */
 	userWaypoints: UserWaypoint[];

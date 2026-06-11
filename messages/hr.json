@@ -233,7 +233,9 @@
 		"packCsvImport": "Uvezi popis opreme (CSV)",
 		"packCsvSummary": "{name}: {count} stavki, osnovno {base}",
 		"packCsvClear": "Ukloni",
-		"packCsvError": "CSV nije moguće pročitati. Izvezite ga iz LighterPacka ili Packstacka i pokušajte ponovno."
+		"packCsvError": "CSV nije moguće pročitati. Izvezite ga iz LighterPacka ili Packstacka i pokušajte ponovno.",
+		"pushAlertsLabel": "Obavijesti o novim upozorenjima",
+		"pushAlertsHint": "Obavijest preglednika kad se objavi novo sezonsko upozorenje za stazu. Radi i dok je aplikacija zatvorena; bez računa."
 	},
 	"baseMapSelector": {
 		"standard": "Standardna",
