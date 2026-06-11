@@ -10,6 +10,8 @@ Interactive web map for the **Croatian Long Distance Trail (CLDT)** – a 2,200+
 
 **Live:** [map.cldt.hr](https://map.cldt.hr)
 
+> **Note:** The official mobile app of the CLDT is [FarOut](https://faroutguides.com/croatian-long-distance-trail-map/), published in cooperation with the trail association. CLDT Map is an independent project intended for research and educational purposes only - always cross-check critical information (water, hazards, closures) with official sources before relying on it in the field.
+
 ---
 
 ## Table of Contents
@@ -36,6 +38,7 @@ Interactive web map for the **Croatian Long Distance Trail (CLDT)** – a 2,200+
 - **Elevation profile** – Chart showing terrain along the route; hover to preview on the map, click to pin a point
 - **Distance ruler** – Measure segments; see estimated hiking time (based on configurable walking pace), elevation gain/loss, and section name for the selected range
 - **Distance & ETA overlay** – Live HUD chip showing traveled distance, distance remaining, elevation gain/loss remaining, and ETA to trail end (and active ruler section); updates as you move
+- **Up next data-book view** - Strip in the distance HUD listing the nearest usable water source, shelter/hut, and town/settlement ahead in your direction of travel, with distance to each; tap a row to fly to it on the map (works regardless of which marker layers are visible; toggleable in Settings)
 - **GPX export** – Download the full trail or any ruler-selected segment as a GPX file; on mobile, hand the file straight to OsmAnd / Locus / Gaia via the system share sheet
 - **Print / export** - Print the current map view as a PDF (landscape, segment auto-fitted) or download as a PNG image
 - **Map layers** – Standard, Topo, Satellite, Terrain, CyclOSM, Croatia Topo

@@ -374,14 +374,18 @@ export function PoiMarkers(): null {
 		if (target) flyAndOpenPoi(target);
 	}, [poisFile, poiById, flyAndOpenPoi]);
 
-	// In-app requests (e.g. clicking a POI in the stage planner list) set
-	// `pendingOpenPoiId` in the store; mirror the deep-link fly+open dance
-	// then clear the field so subsequent requests retrigger correctly.
+	// In-app requests (e.g. clicking a POI in the stage planner list or the
+	// up-next strip) set `pendingOpenPoiId` in the store; mirror the deep-link
+	// fly+open dance then clear the field so subsequent requests retrigger
+	// correctly. A miss keeps the request pending instead of clearing it: the
+	// up-next strip enables a disabled marker layer right before requesting,
+	// so the target only appears once the refetched poisFile lands here.
 	useEffect(() => {
 		if (!pendingOpenPoiId || !poisFile) return;
 		const target = poiById.get(pendingOpenPoiId);
+		if (!target) return;
 		clearPendingOpenPoi();
-		if (target) flyAndOpenPoi(target);
+		flyAndOpenPoi(target);
 	}, [pendingOpenPoiId, poisFile, poiById, flyAndOpenPoi, clearPendingOpenPoi]);
 
 	return null;

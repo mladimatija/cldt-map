@@ -91,6 +91,8 @@ export function MapControlsSettingsPanel({
 	const setGradeAdjustedEta = useMapStore((state: MapStoreState) => state.setGradeAdjustedEta);
 	const sunsetProjection = useMapStore((state: MapStoreState) => state.sunsetProjection);
 	const setSunsetProjection = useMapStore((state: MapStoreState) => state.setSunsetProjection);
+	const showUpNext = useMapStore((state: MapStoreState) => state.showUpNext);
+	const setShowUpNext = useMapStore((state: MapStoreState) => state.setShowUpNext);
 	const severeWeatherLayer = useMapStore((state: MapStoreState) => state.severeWeatherLayer);
 	const setSevereWeatherLayer = useMapStore((state: MapStoreState) => state.setSevereWeatherLayer);
 	const mineAreasEnabled = useMapStore((state: MapStoreState) => state.mineAreasEnabled);
@@ -468,6 +470,14 @@ export function MapControlsSettingsPanel({
 							<span className="text-xs text-gray-500 dark:text-[var(--text-secondary)]">
 								{t('sunsetProjectionHint')}
 							</span>
+						</div>
+					</label>
+
+					<label className="flex cursor-pointer items-start gap-2">
+						<Checkbox checked={showUpNext} onCheckedChange={(checked) => setShowUpNext(checked)} />
+						<div className="flex flex-col">
+							<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">{t('showUpNextLabel')}</span>
+							<span className="text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('showUpNextHint')}</span>
 						</div>
 					</label>
 

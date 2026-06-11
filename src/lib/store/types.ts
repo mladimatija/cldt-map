@@ -348,6 +348,9 @@ export interface MapStoreState {
 	showCompletionOverlay: boolean;
 	setShowCompletionOverlay: (show: boolean) => void;
 
+	showUpNext: boolean;
+	setShowUpNext: (show: boolean) => void;
+
 	// ── Dev walk simulator (test page; session-only, never persisted) ───
 	/** Mirrored UI state of the dev walk simulator; null when not active. */
 	walkSim: {

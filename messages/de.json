@@ -58,7 +58,8 @@
 			"offRouteAlert": "Routenabweichungs-Alarm - optionale Warnung (standardmäßig aus), wenn du dich mehr als 200 m vom Trail entfernst: Banner mit Distanz und Kompassrichtung zurück, plus Vibration. Schärft sich erst, nachdem GPS dich auf dem Trail verortet hat - anderswo in Kroatien bleibt er stumm - und entschärft sich automatisch, wenn du den Trail wirklich verlässt (Bus, Taxi, Tagesende)",
 			"waterIntelligence": "Wasserstellen-Intelligenz - jede Wasserstelle trägt eine Zuverlässigkeitsklasse aus OSM-Tags: zuverlässiger Hahn, saisonal (kann trocken sein), ungeprüfte Quelle (vor dem Trinken aufbereiten) oder kein Trinkwasser. Die Klasse färbt den Marker, erscheint als Badge in Popups und Listen, und der Etappenplaner markiert Tage, deren längster Abschnitt ohne nutzbares Wasser 15 / 25 km überschreitet",
 			"completionTracking": "Abschnitts-Fortschritt - markiere, was du gewandert bist: automatisch per GPS auf dem Trail, manuell aus der Lineal-Auswahl oder ganzen A/B/C-Abschnitten, oder per Import eines aufgezeichneten GPX-Tracks. Erledigte Abschnitte werden grün über jeden Trail-Stil gezeichnet; Fortschrittspanel und Standort-Tooltip zeigen Gesamt- und Abschnittsfortschritt",
-			"helpPanel": "In-App-Hilfe - der ?-Button öffnet eine thematisch gegliederte Referenz: Kartengrundlagen, Höhenprofil, versteckte Gesten (SOS gedrückt halten, GPX-Drag-and-drop), Planungswerkzeuge und Offline-Verhalten"
+			"helpPanel": "In-App-Hilfe - der ?-Button öffnet eine thematisch gegliederte Referenz: Kartengrundlagen, Höhenprofil, versteckte Gesten (SOS gedrückt halten, GPX-Drag-and-drop), Planungswerkzeuge und Offline-Verhalten",
+			"upNext": "\"Als Nächstes\"-Ansicht - die nächste Wasserstelle, Schutzhütte und der nächste Ort vor Ihnen, mit Entfernungen, direkt im Distanzpanel"
 		},
 		"dataAttribution": "Daten & Urheberrecht",
 		"dataAttributionDesc": "Trail-Daten werden von der Udruga Long Distance Trail Hrvatska (LDTH) bereitgestellt. Kartenkacheln kommen von OpenStreetMap, OpenTopoMap, CyclOSM und anderen Anbietern. Kroatische topografische Karten stammen vom Staatlichen Geodätischen Amt (DGU). Wetterdaten kommen von DHMZ (Kroatischer Wetterdienst) und Open-Meteo. Radarkacheln werden von RainViewer bereitgestellt. Daten zum saisonalen Wegzustand, Gefahrenwarnungen sowie Standorte der Bergwacht-Stationen stammen von HGSS (Kroatische Bergrettung), HPS (Kroatischer Bergsteigerverband) und den Verwaltungen der Nationalparks (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) sowie Naturpark Velebit. Die auf dieser Seite angezeigten Daten entsprechen möglicherweise nicht dem aktuellen Stand. Im Zweifelsfall bitte immer die offiziellen Quellen prüfen.",
@@ -69,7 +70,9 @@
 		"sourceCode": "Quellcode auf GitHub",
 		"githubAriaLabel": "{title} auf GitHub ansehen",
 		"createdBy": "Erstellt von",
-		"visitAuthor": "{authorName}'s Website besuchen"
+		"visitAuthor": "{authorName}'s Website besuchen",
+		"officialApp": "Offizielle CLDT-App",
+		"officialAppDesc": "Die offizielle mobile App des CLDT ist <link>FarOut</link>, veröffentlicht in Zusammenarbeit mit dem Trail-Verein. {title} ist ein unabhängiges Projekt und sollte nur zu Forschungs- und Bildungszwecken verwendet werden - prüfen Sie kritische Informationen (Wasser, Gefahren, Sperrungen) immer anhand offizieller Quellen, bevor Sie sich im Gelände darauf verlassen."
 	},
 	"home": {
 		"srTitle": "{companyName} Karte"
@@ -216,7 +219,9 @@
 		"progressShow": "Trail-Fortschritt anzeigen",
 		"progressHide": "Trail-Fortschritt ausblenden",
 		"helpShow": "Hilfe anzeigen",
-		"helpHide": "Hilfe ausblenden"
+		"helpHide": "Hilfe ausblenden",
+		"showUpNextLabel": "\"Als Nächstes\" im Distanzpanel",
+		"showUpNextHint": "Zeigt die nächste Wasserstelle, Schutzhütte und den nächsten Ort in Ihrer Gehrichtung. Tippen Sie auf eine Zeile, um sie auf der Karte zu öffnen."
 	},
 	"baseMapSelector": {
 		"standard": "Standard",
@@ -530,7 +535,11 @@
 		"elevGain": "Verbleibender Anstieg",
 		"elevLoss": "Verbleibender Abstieg",
 		"elevGainSection": "Verbleibender Anstieg (§)",
-		"elevLossSection": "Verbleibender Abstieg (§)"
+		"elevLossSection": "Verbleibender Abstieg (§)",
+		"upNext": "Als Nächstes",
+		"upNextWater": "Nächste Wasserstelle",
+		"upNextShelter": "Nächste Schutzhütte",
+		"upNextTown": "Nächster Ort"
 	},
 	"imports": {
 		"title": "Importierte Tracks",
@@ -894,6 +903,7 @@
 		"offline": {
 			"precache": "Das Cache-Panel lädt den ganzen Trail-Korridor vor (Kacheln, Orte, Fotos) für die Nutzung ohne Empfang; Sync erfolgt über WLAN.",
 			"gps": "GPS, Notfallpanel und dein Fortschritt funktionieren vollständig offline, sobald der Korridor gespeichert ist."
-		}
+		},
+		"officialAppNote": "FarOut ist die offizielle CLDT-App. Diese Karte ist ein unabhängiges Projekt nur für Forschungs- und Bildungszwecke - prüfen Sie kritische Informationen anhand offizieller Quellen."
 	}
 }

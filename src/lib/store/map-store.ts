@@ -712,6 +712,11 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 						set({ showCompletionOverlay: show });
 					},
 
+					showUpNext: true,
+					setShowUpNext: (show: boolean): void => {
+						set({ showUpNext: show });
+					},
+
 					walkSim: null,
 					setWalkSim: (state): void => {
 						set({ walkSim: state });
@@ -872,6 +877,7 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					stagePlan: state.stagePlan,
 					severeWeatherLayer: state.severeWeatherLayer,
 					mineAreasEnabled: state.mineAreasEnabled,
+					showUpNext: state.showUpNext,
 					completedIntervals: state.completedIntervals,
 					completionAutoTrack: state.completionAutoTrack,
 					showCompletionOverlay: state.showCompletionOverlay,

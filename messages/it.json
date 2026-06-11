@@ -58,7 +58,8 @@
 			"offRouteAlert": "Avviso fuori percorso - avviso opzionale (disattivato di default) quando ti allontani più di 200 m dal sentiero: banner con distanza e direzione di ritorno, più vibrazione. Si arma solo dopo che il GPS ti colloca sul sentiero, quindi resta muto altrove in Croazia, e si disarma da solo quando te ne vai davvero (bus, taxi, fine giornata)",
 			"waterIntelligence": "Intelligenza sulle fonti d'acqua - ogni fonte porta una classe di affidabilità dai tag OSM: fontanella affidabile, stagionale (può essere secca), sorgente non verificata (trattare prima di bere) o non potabile. La classe colora il marker, appare come badge nei popup e nelle liste, e il pianificatore segnala i giorni il cui tratto più lungo senza acqua utilizzabile supera 15 / 25 km",
 			"completionTracking": "Tracciamento dei tratti completati - segna ciò che hai percorso: automaticamente dal GPS sul sentiero, manualmente dalla selezione del righello o da intere sezioni A/B/C, oppure importando una traccia GPX registrata. I tratti completati si disegnano in verde sopra qualsiasi stile; il pannello progresso e il tooltip posizione mostrano il progresso totale e per sezione",
-			"helpPanel": "Aiuto in-app - il pulsante ? apre un riferimento per argomenti: nozioni di base della mappa, profilo altimetrico, gesti nascosti (pressione lunga SOS, trascinamento GPX), strumenti di pianificazione e comportamento offline"
+			"helpPanel": "Aiuto in-app - il pulsante ? apre un riferimento per argomenti: nozioni di base della mappa, profilo altimetrico, gesti nascosti (pressione lunga SOS, trascinamento GPX), strumenti di pianificazione e comportamento offline",
+			"upNext": "Vista \"A seguire\" - la fonte d’acqua, il rifugio e la città più vicini davanti a te, con le distanze, direttamente nel pannello distanze"
 		},
 		"dataAttribution": "Dati e attribuzioni",
 		"dataAttributionDesc": "I dati del sentiero sono forniti dall'organizzazione Udruga Long Distance Trail Hrvatska (LDTH). Le tessere mappa provengono da OpenStreetMap, OpenTopoMap, CyclOSM e altri provider. Le mappe topografiche croate provengono dall'Amministrazione Geodetica Statale (DGU). I dati meteo provengono da DHMZ (Servizio Meteorologico Croato) e Open-Meteo. Le tessere radar sono fornite da RainViewer. Stato stagionale del sentiero, avvisi di pericolo e dati delle stazioni di soccorso alpino provengono da HGSS (Servizio croato di soccorso in montagna), HPS (Federazione croata di alpinismo) e dalle autorità dei parchi nazionali (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) e Parco naturale Velebit. I dati visualizzati su questo sito potrebbero non riflettere le condizioni più recenti. In caso di dubbio, verificare sempre le fonti ufficiali.",
@@ -69,7 +70,9 @@
 		"sourceCode": "Codice sorgente su GitHub",
 		"githubAriaLabel": "Visualizza {title} su GitHub",
 		"createdBy": "Creato da",
-		"visitAuthor": "Visita il sito di {authorName}"
+		"visitAuthor": "Visita il sito di {authorName}",
+		"officialApp": "App ufficiale del CLDT",
+		"officialAppDesc": "L’app mobile ufficiale del CLDT è <link>FarOut</link>, pubblicata in collaborazione con l’associazione del sentiero. {title} è un progetto indipendente e va usato solo per scopi di ricerca ed educativi - verifica sempre le informazioni critiche (acqua, pericoli, chiusure) con le fonti ufficiali prima di farvi affidamento sul campo."
 	},
 	"home": {
 		"srTitle": "Mappa {companyName}"
@@ -216,7 +219,9 @@
 		"progressShow": "Mostra progresso sul sentiero",
 		"progressHide": "Nascondi progresso sul sentiero",
 		"helpShow": "Mostra aiuto",
-		"helpHide": "Nascondi aiuto"
+		"helpHide": "Nascondi aiuto",
+		"showUpNextLabel": "\"A seguire\" nel pannello distanze",
+		"showUpNextHint": "Mostra la prossima fonte d’acqua, il prossimo rifugio e la prossima città nella tua direzione di marcia. Tocca una riga per aprirla sulla mappa."
 	},
 	"baseMapSelector": {
 		"standard": "Standard",
@@ -530,7 +535,11 @@
 		"elevGain": "Salita rimanente",
 		"elevLoss": "Discesa rimanente",
 		"elevGainSection": "Salita rimanente (§)",
-		"elevLossSection": "Discesa rimanente (§)"
+		"elevLossSection": "Discesa rimanente (§)",
+		"upNext": "A seguire",
+		"upNextWater": "Prossima fonte d’acqua",
+		"upNextShelter": "Prossimo rifugio o bivacco",
+		"upNextTown": "Prossima città o paese"
 	},
 	"imports": {
 		"title": "Tracce importate",
@@ -894,6 +903,7 @@
 		"offline": {
 			"precache": "Il pannello cache pre-scarica tutto il corridoio del sentiero (tile, luoghi, foto) per usarlo senza segnale; si risincronizza sul Wi-Fi.",
 			"gps": "GPS, pannello di emergenza e progresso funzionano completamente offline una volta salvato il corridoio."
-		}
+		},
+		"officialAppNote": "FarOut è l’app ufficiale del CLDT. Questa mappa è un progetto indipendente solo per scopi di ricerca ed educativi - verifica le informazioni critiche con le fonti ufficiali."
 	}
 }
