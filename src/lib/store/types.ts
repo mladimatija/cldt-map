@@ -348,6 +348,18 @@ export interface MapStoreState {
 	showCompletionOverlay: boolean;
 	setShowCompletionOverlay: (show: boolean) => void;
 
+	// ── Dev walk simulator (test page; session-only, never persisted) ───
+	/** Mirrored UI state of the dev walk simulator; null when not active. */
+	walkSim: {
+		running: boolean;
+		posKm: number;
+		speedKmh: number;
+		walkDirection: TrailDirection;
+		offsetM: number;
+		totalKm: number;
+	} | null;
+	setWalkSim: (state: MapStoreState['walkSim']) => void;
+
 	// ── Mine-suspected areas (MSP) ──────────────────────────────────────
 	/** Layer toggle; persisted, defaults ON (safety layer, opt-out). */
 	mineAreasEnabled: boolean;

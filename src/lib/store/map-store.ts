@@ -712,6 +712,11 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 						set({ showCompletionOverlay: show });
 					},
 
+					walkSim: null,
+					setWalkSim: (state): void => {
+						set({ walkSim: state });
+					},
+
 					// Mine-suspected areas: safety layer, ON by default (opt-out).
 					mineAreasEnabled: config.mineAreasEnabled,
 					setMineAreasEnabled: (enabled: boolean): void => {
