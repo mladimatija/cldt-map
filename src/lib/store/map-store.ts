@@ -37,6 +37,7 @@ import { loadImportedTracks, removeImportedTrack } from '../imported-tracks';
 import { loadPois } from '@/lib/pois';
 import { prefetchPoiAssets, prefetchPoisAlongSlice } from '@/lib/poi-prefetch';
 import { addInterval, removeInterval } from '../completion';
+import { DEFAULT_WATER_CONSUMPTION_LPH } from '../pack-weight';
 import {
 	filterActiveEntries,
 	isSeasonalStatusDefaultEnabled,
@@ -641,6 +642,19 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 						set({ walkingPaceKmh: pace });
 					},
 
+					packBaseWeightKg: null,
+					setPackBaseWeightKg: (kg: number | null): void => {
+						set({ packBaseWeightKg: kg });
+					},
+					waterConsumptionLph: DEFAULT_WATER_CONSUMPTION_LPH,
+					setWaterConsumptionLph: (lph: number): void => {
+						set({ waterConsumptionLph: lph });
+					},
+					packEtaAdjust: false,
+					setPackEtaAdjust: (enabled: boolean): void => {
+						set({ packEtaAdjust: enabled });
+					},
+
 					gradeAdjustedEta: config.gradeAdjustedEta,
 					setGradeAdjustedEta: (enabled: boolean): void => {
 						set({ gradeAdjustedEta: enabled });
@@ -872,6 +886,9 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					autoSync: state.autoSync,
 					predictivePrecache: state.predictivePrecache,
 					walkingPaceKmh: state.walkingPaceKmh,
+					packBaseWeightKg: state.packBaseWeightKg,
+					waterConsumptionLph: state.waterConsumptionLph,
+					packEtaAdjust: state.packEtaAdjust,
 					gradeAdjustedEta: state.gradeAdjustedEta,
 					sunsetProjection: state.sunsetProjection,
 					stagePlan: state.stagePlan,

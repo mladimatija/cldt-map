@@ -35,6 +35,8 @@ export interface TripBriefStrings {
 		pois: string;
 		emergency: string;
 		generated: string;
+		/** Cover-table label for the pack summary row. */
+		pack: string;
 	};
 	daysHeading: string;
 	moreLabel: string;

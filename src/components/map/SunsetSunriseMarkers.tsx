@@ -5,6 +5,7 @@ import { Marker, Tooltip } from 'react-leaflet';
 import { useTranslations } from 'next-intl';
 import L from 'leaflet';
 import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
+import { usePackAdjustedPaceKmh } from '@/hooks';
 import { TRAIL_OFF_TRAIL_THRESHOLD_M } from '@/lib/config';
 import { findNearestPointIndex, projectPositionAtTime, type ProjectedPosition } from '@/lib/distance-utils';
 import { fetchWeather, type WeatherData } from '@/lib/weather';
@@ -55,7 +56,7 @@ export default function SunsetSunriseMarkers(): React.ReactElement | null {
 
 	const sunsetProjection = useMapStore((state: MapStoreState) => state.sunsetProjection);
 	const userLocation = useMapStore((state: MapStoreState) => state.userLocation);
-	const walkingPaceKmh = useMapStore((state: MapStoreState) => state.walkingPaceKmh);
+	const walkingPaceKmh = usePackAdjustedPaceKmh();
 	const gradeAdjustedEta = useMapStore((state: MapStoreState) => state.gradeAdjustedEta);
 	const units = useMapStore((state: MapStoreState) => state.units);
 	const direction = useMapStore((state: MapStoreState) => state.direction);

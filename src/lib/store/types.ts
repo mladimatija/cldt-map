@@ -310,6 +310,17 @@ export interface MapStoreState {
 	walkingPaceKmh: number;
 	setWalkingPaceKmh: (pace: number) => void;
 
+	/** Pack base weight in kg (canonical metric; converted at the UI
+	 *  boundary). Null disables every pack-weight surface. Persisted. */
+	packBaseWeightKg: number | null;
+	setPackBaseWeightKg: (kg: number | null) => void;
+	/** Drinking rate in L/h used for water carry suggestions. Persisted. */
+	waterConsumptionLph: number;
+	setWaterConsumptionLph: (lph: number) => void;
+	/** Apply the pack-weight pace penalty to ETAs. Persisted. */
+	packEtaAdjust: boolean;
+	setPackEtaAdjust: (enabled: boolean) => void;
+
 	gradeAdjustedEta: boolean;
 	setGradeAdjustedEta: (enabled: boolean) => void;
 

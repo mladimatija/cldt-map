@@ -48,7 +48,7 @@ import {
 import { buildWindCompassPayload } from '@/lib/distance-utils';
 import type { UnitSystem } from '@/lib/types';
 import { useLocale, useTranslations } from 'next-intl';
-import { useFitToRoute } from '@/hooks';
+import { useFitToRoute, usePackAdjustedPaceKmh, packAdjustedPaceKmhFromState } from '@/hooks';
 
 interface SectionTooltipStats {
 	/** Distance from current start to section start (m). */
@@ -261,7 +261,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 	// does not re-trigger the trail-loading effect when no visible bucket branch
 	// would consume `tagRuns`.
 	const activeOsmTagsFile = surfaceColoured || sacColoured ? trailOsmTagsFile : null;
-	const walkingPaceKmh = useMapStore((state: MapStoreState) => state.walkingPaceKmh);
+	const walkingPaceKmh = usePackAdjustedPaceKmh();
 
 	const highlightedPoint = useStore((state: StoreState) => state.highlightedTrailPoint);
 	const tooltipPinnedFromShare = useStore((state: StoreState) => state.tooltipPinnedFromShare);
@@ -792,7 +792,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 						const totalDescentM = sectionDescentM.reduce((a, b) => a + b, 0);
 						const currentUnits = useMapStore.getState().units;
 						const currentPrecision = useMapStore.getState().distancePrecision;
-						const currentPaceKmh = useMapStore.getState().walkingPaceKmh;
+						const currentPaceKmh = packAdjustedPaceKmhFromState(useMapStore.getState());
 
 						// Draw each geographic section with its own label and color (A=green, B=blue, C=red by position along the trail).
 						const newSectionMarkers: L.Marker[] = [];

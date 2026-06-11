@@ -6,6 +6,16 @@ import { usePopoverFocusTrap } from '@/hooks';
 import SmartTooltip from '@/components/ui/SmartTooltip';
 import { Checkbox } from '@/components/ui/Checkbox';
 import { formatPace } from '@/lib/distance-utils';
+import {
+	displayToKg,
+	displayToLph,
+	kgToDisplay,
+	lphToDisplay,
+	PACK_ETA_REFERENCE_KG,
+	formatWeight,
+	volumeUnitLabel,
+	weightUnitLabel,
+} from '@/lib/pack-weight';
 import { useMapStore, type MapStoreState } from '@/lib/store';
 import {
 	IoMoonOutline,
@@ -26,7 +36,7 @@ import { severityColor, type SeasonalSeverity } from '@/lib/seasonal-status';
 import { GRADE_BAND_ASCENT_COLORS, SAC_COLORS, SURFACE_COLORS } from '@/components/map/trail-route-constants';
 import { Button } from '@/components/ui/Button';
 import { cn } from '@/lib/utils';
-import { MAP_CONTROL_POPOVER } from './map-controls-constants';
+import { MAP_CONTROL_INPUT, MAP_CONTROL_POPOVER } from './map-controls-constants';
 import { MapControlsTileCachePanel } from './MapControlsTileCachePanel';
 import { MapControlsImportsPanel } from './MapControlsImportsPanel';
 import { SURFACE_BUCKETS } from '@/components/charts/ElevationChart';
@@ -93,6 +103,12 @@ export function MapControlsSettingsPanel({
 	const setSunsetProjection = useMapStore((state: MapStoreState) => state.setSunsetProjection);
 	const showUpNext = useMapStore((state: MapStoreState) => state.showUpNext);
 	const setShowUpNext = useMapStore((state: MapStoreState) => state.setShowUpNext);
+	const packBaseWeightKg = useMapStore((state: MapStoreState) => state.packBaseWeightKg);
+	const setPackBaseWeightKg = useMapStore((state: MapStoreState) => state.setPackBaseWeightKg);
+	const waterConsumptionLph = useMapStore((state: MapStoreState) => state.waterConsumptionLph);
+	const setWaterConsumptionLph = useMapStore((state: MapStoreState) => state.setWaterConsumptionLph);
+	const packEtaAdjust = useMapStore((state: MapStoreState) => state.packEtaAdjust);
+	const setPackEtaAdjust = useMapStore((state: MapStoreState) => state.setPackEtaAdjust);
 	const severeWeatherLayer = useMapStore((state: MapStoreState) => state.severeWeatherLayer);
 	const setSevereWeatherLayer = useMapStore((state: MapStoreState) => state.setSevereWeatherLayer);
 	const mineAreasEnabled = useMapStore((state: MapStoreState) => state.mineAreasEnabled);
@@ -478,6 +494,59 @@ export function MapControlsSettingsPanel({
 						<div className="flex flex-col">
 							<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">{t('showUpNextLabel')}</span>
 							<span className="text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('showUpNextHint')}</span>
+						</div>
+					</label>
+
+					<div className="flex flex-col gap-1.5">
+						<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">{t('packWeightTitle')}</span>
+						<label className="flex items-center justify-between gap-2 text-xs text-gray-600 dark:text-gray-400">
+							{t('packBaseWeightLabel')}
+							<span className="flex shrink-0 items-center gap-1">
+								<input
+									className={cn(MAP_CONTROL_INPUT, 'w-20 text-right')}
+									min={0}
+									step={0.1}
+									type="number"
+									value={packBaseWeightKg === null ? '' : Math.round(kgToDisplay(packBaseWeightKg, units) * 10) / 10}
+									onChange={(e) => {
+										if (e.target.value === '') {
+											setPackBaseWeightKg(null);
+											return;
+										}
+										const v = Number(e.target.value);
+										if (Number.isFinite(v) && v >= 0) setPackBaseWeightKg(displayToKg(v, units));
+									}}
+								/>
+								<span className="w-5">{weightUnitLabel(units)}</span>
+							</span>
+						</label>
+						<label className="flex items-center justify-between gap-2 text-xs text-gray-600 dark:text-gray-400">
+							{t('waterConsumptionLabel')}
+							<span className="flex shrink-0 items-center gap-1">
+								<input
+									className={cn(MAP_CONTROL_INPUT, 'w-20 text-right')}
+									min={0.1}
+									step={0.1}
+									type="number"
+									value={Math.round(lphToDisplay(waterConsumptionLph, units) * 100) / 100}
+									onChange={(e) => {
+										const v = Number(e.target.value);
+										if (Number.isFinite(v) && v > 0) setWaterConsumptionLph(displayToLph(v, units));
+									}}
+								/>
+								<span className="w-5">{volumeUnitLabel(units)}/h</span>
+							</span>
+						</label>
+						<p className="m-0 text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('packWeightHint')}</p>
+					</div>
+
+					<label className="flex cursor-pointer items-start gap-2">
+						<Checkbox checked={packEtaAdjust} onCheckedChange={(checked) => setPackEtaAdjust(checked)} />
+						<div className="flex flex-col">
+							<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">{t('packEtaAdjustLabel')}</span>
+							<span className="text-xs text-gray-500 dark:text-[var(--text-secondary)]">
+								{t('packEtaAdjustHint', { reference: formatWeight(PACK_ETA_REFERENCE_KG, units) })}
+							</span>
 						</div>
 					</label>
 

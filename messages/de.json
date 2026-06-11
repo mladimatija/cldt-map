@@ -59,7 +59,8 @@
 			"waterIntelligence": "Wasserstellen-Intelligenz - jede Wasserstelle trägt eine Zuverlässigkeitsklasse aus OSM-Tags: zuverlässiger Hahn, saisonal (kann trocken sein), ungeprüfte Quelle (vor dem Trinken aufbereiten) oder kein Trinkwasser. Die Klasse färbt den Marker, erscheint als Badge in Popups und Listen, und der Etappenplaner markiert Tage, deren längster Abschnitt ohne nutzbares Wasser 15 / 25 km überschreitet",
 			"completionTracking": "Abschnitts-Fortschritt - markiere, was du gewandert bist: automatisch per GPS auf dem Trail, manuell aus der Lineal-Auswahl oder ganzen A/B/C-Abschnitten, oder per Import eines aufgezeichneten GPX-Tracks. Erledigte Abschnitte werden grün über jeden Trail-Stil gezeichnet; Fortschrittspanel und Standort-Tooltip zeigen Gesamt- und Abschnittsfortschritt",
 			"helpPanel": "In-App-Hilfe - der ?-Button öffnet eine thematisch gegliederte Referenz: Kartengrundlagen, Höhenprofil, versteckte Gesten (SOS gedrückt halten, GPX-Drag-and-drop), Planungswerkzeuge und Offline-Verhalten",
-			"upNext": "\"Als Nächstes\"-Ansicht - die nächste Wasserstelle, Schutzhütte und der nächste Ort vor Ihnen, mit Entfernungen, direkt im Distanzpanel"
+			"upNext": "\"Als Nächstes\"-Ansicht - die nächste Wasserstelle, Schutzhütte und der nächste Ort vor Ihnen, mit Entfernungen, direkt im Distanzpanel",
+			"packWeight": "Rucksackgewicht & Wassertransport - Empfehlungen \"bis zu X L mitnehmen\" pro Etappe aus Basisgewicht und Verbrauch, metrisch oder imperial"
 		},
 		"dataAttribution": "Daten & Urheberrecht",
 		"dataAttributionDesc": "Trail-Daten werden von der Udruga Long Distance Trail Hrvatska (LDTH) bereitgestellt. Kartenkacheln kommen von OpenStreetMap, OpenTopoMap, CyclOSM und anderen Anbietern. Kroatische topografische Karten stammen vom Staatlichen Geodätischen Amt (DGU). Wetterdaten kommen von DHMZ (Kroatischer Wetterdienst) und Open-Meteo. Radarkacheln werden von RainViewer bereitgestellt. Daten zum saisonalen Wegzustand, Gefahrenwarnungen sowie Standorte der Bergwacht-Stationen stammen von HGSS (Kroatische Bergrettung), HPS (Kroatischer Bergsteigerverband) und den Verwaltungen der Nationalparks (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) sowie Naturpark Velebit. Die auf dieser Seite angezeigten Daten entsprechen möglicherweise nicht dem aktuellen Stand. Im Zweifelsfall bitte immer die offiziellen Quellen prüfen.",
@@ -221,7 +222,13 @@
 		"helpShow": "Hilfe anzeigen",
 		"helpHide": "Hilfe ausblenden",
 		"showUpNextLabel": "\"Als Nächstes\" im Distanzpanel",
-		"showUpNextHint": "Zeigt die nächste Wasserstelle, Schutzhütte und den nächsten Ort in Ihrer Gehrichtung. Tippen Sie auf eine Zeile, um sie auf der Karte zu öffnen."
+		"showUpNextHint": "Zeigt die nächste Wasserstelle, Schutzhütte und den nächsten Ort in Ihrer Gehrichtung. Tippen Sie auf eine Zeile, um sie auf der Karte zu öffnen.",
+		"packWeightTitle": "Rucksackgewicht",
+		"packBaseWeightLabel": "Basisgewicht (ohne Wasser)",
+		"waterConsumptionLabel": "Wasserverbrauch",
+		"packWeightHint": "Aktiviert Wassertransport-Empfehlungen pro Etappe. Basisgewicht leer lassen, um dies auszuschalten.",
+		"packEtaAdjustLabel": "Zeitschätzungen ans Rucksackgewicht anpassen",
+		"packEtaAdjustHint": "Verlangsamt Schätzungen um etwa 1% pro Kilogramm Basisgewicht über {reference}."
 	},
 	"baseMapSelector": {
 		"standard": "Standard",
@@ -597,7 +604,8 @@
 		"stripMapPdfCancel": "Abbrechen",
 		"stripMapPdfCancelTooltip": "Laufenden PDF-Export abbrechen.",
 		"pdfStageLabel": "Etappe",
-		"stageWaterGap": "Längster Abschnitt ohne Wasser: {distance}"
+		"stageWaterGap": "Längster Abschnitt ohne Wasser: {distance}",
+		"stageCarry": "Bis zu {volume} Wasser mitnehmen (insgesamt {total})"
 	},
 	"tripBrief": {
 		"defaultTitle": "CLDT Reiseplan",
@@ -635,7 +643,8 @@
 				"alerts": "Warnungen",
 				"pois": "Orte am Weg",
 				"emergency": "Notfallkontakte",
-				"generated": "Erstellt mit CLDT Map am"
+				"generated": "Erstellt mit CLDT Map am",
+				"pack": "Rucksack"
 			},
 			"daysHeading": "Tag für Tag",
 			"moreLabel": "weitere Orte",
@@ -661,7 +670,9 @@
 				"l4": "Im Notfall: nach Möglichkeit am Ort bleiben, Position markieren, Rettung verständigen.",
 				"l5": "In Offline-Gebieten: SMS an 112 mit Koordinaten, falls Anrufe nicht funktionieren."
 			}
-		}
+		},
+		"packSummary": "{base} + Wasser",
+		"waterCarry": "Wasser: bis zu {volume} für den längsten Abschnitt ohne Quelle mitnehmen (Gesamtgewicht {total})"
 	},
 	"severeWeather": {
 		"layerLabel": "Unwetterwarnungen",

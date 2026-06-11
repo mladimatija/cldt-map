@@ -78,6 +78,7 @@ export async function exportTripBriefDocx(args: TripBriefDocxArgs): Promise<void
 			[meta.strings.labels.loss, `-${formatElevation(overview.totalLossM, meta.units)}`],
 			[meta.strings.labels.eta, formatEta(overview.totalDurationSec)],
 			[meta.strings.labels.pace, `${meta.walkingPaceKmh.toFixed(1)} km/h`],
+			...(meta.packSummary ? [[meta.strings.labels.pack, meta.packSummary] as [string, string]] : []),
 		];
 		for (const [k, v] of grid) {
 			out.push(
@@ -129,6 +130,9 @@ export async function exportTripBriefDocx(args: TripBriefDocxArgs): Promise<void
 				],
 			}),
 		);
+		if (day.waterCarryLabel) {
+			out.push(new Paragraph({ children: [new TextRun({ text: day.waterCarryLabel, color: '0e7490' })] }));
+		}
 		out.push(
 			new Paragraph({
 				children: [new TextRun({ text: day.narrative, italics: true })],

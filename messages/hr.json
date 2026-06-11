@@ -59,7 +59,8 @@
 			"waterIntelligence": "Pametne informacije o vodi - svako mjesto s vodom nosi klasu pouzdanosti iz OSM oznaka: pouzdana slavina, sezonska (moguće presušena), neprovjereni izvor (pročistiti prije pića) ili nije za piće. Klasa boji marker, prikazuje se kao oznaka u prozorima i popisima, a planer etapa označava dane čija najdulja dionica bez upotrebljive vode prelazi 15 / 25 km",
 			"completionTracking": "Praćenje prijeđenih dionica - označi što si prehodao: automatski iz GPS-a dok si na stazi, ručno iz odabira ravnalom ili cijelih dionica A/B/C, ili uvozom snimljene GPX rute. Prijeđene dionice crtaju se zeleno preko bilo kojeg stila staze; ploča napretka i oblačić lokacije prikazuju ukupni i napredak po dionicama",
 			"helpPanel": "Pomoć u aplikaciji - gumb ? otvara tematski organiziran pregled: osnove karte, profil visine, skrivene geste (dugi pritisak SOS-a, povlačenje GPX datoteke), alati za planiranje i offline ponašanje",
-			"upNext": "Prikaz \"Slijedi\" - najbliži izvor vode, sklonište i grad ispred vas, s udaljenostima, izravno u panelu udaljenosti"
+			"upNext": "Prikaz \"Slijedi\" - najbliži izvor vode, sklonište i grad ispred vas, s udaljenostima, izravno u panelu udaljenosti",
+			"packWeight": "Težina ruksaka i nošenje vode - preporuke \"ponesite do X L\" po etapi iz vaše osnovne težine i potrošnje, metrički ili imperijalno"
 		},
 		"dataAttribution": "Podaci i atribucija",
 		"dataAttributionDesc": "Podatke o stazi pruža organizacija Udruga Long Distance Trail Hrvatska (LDTH). Karte dolaze od OpenStreetMap, OpenTopoMap, CyclOSM i drugih pružatelja. Hrvatske topografske karte su od Državne geodetske uprave (DGU). Meteorološki podaci dolaze od DHMZ-a (Državni hidrometeorološki zavod) i Open-Meteo. Radarske pločice osigurava RainViewer. Podaci o sezonskom stanju puta, upozorenja o opasnostima i podaci o stanicama gorske službe spašavanja preuzeti su od HGSS-a (Hrvatska gorska služba spašavanja), HPS-a (Hrvatski planinarski savez) te uprava nacionalnih parkova (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) i Parka prirode Velebit. Podaci prikazani na ovoj stranici možda ne odražavaju najnovije stanje. U slučaju sumnje, uvijek provjerite službene izvore.",
@@ -221,7 +222,13 @@
 		"helpShow": "Prikaži pomoć",
 		"helpHide": "Sakrij pomoć",
 		"showUpNextLabel": "Prikaz \"Slijedi\" u panelu udaljenosti",
-		"showUpNextHint": "Prikazuje sljedeći izvor vode, sklonište i grad ispred vas u smjeru kretanja. Dodirnite redak za otvaranje na karti."
+		"showUpNextHint": "Prikazuje sljedeći izvor vode, sklonište i grad ispred vas u smjeru kretanja. Dodirnite redak za otvaranje na karti.",
+		"packWeightTitle": "Težina ruksaka",
+		"packBaseWeightLabel": "Osnovna težina (bez vode)",
+		"waterConsumptionLabel": "Potrošnja vode",
+		"packWeightHint": "Uključuje preporuke nošenja vode po etapi. Ostavite osnovnu težinu praznom za isključivanje.",
+		"packEtaAdjustLabel": "Prilagodi procjene vremena težini ruksaka",
+		"packEtaAdjustHint": "Usporava procjene za oko 1% po kilogramu osnovne težine iznad {reference}."
 	},
 	"baseMapSelector": {
 		"standard": "Standardna",
@@ -597,7 +604,8 @@
 		"stripMapPdfCancel": "Odustani",
 		"stripMapPdfCancelTooltip": "Otkaži izvoz PDF-a u tijeku.",
 		"pdfStageLabel": "Etapa",
-		"stageWaterGap": "Najdulja dionica bez vode: {distance}"
+		"stageWaterGap": "Najdulja dionica bez vode: {distance}",
+		"stageCarry": "Ponesite do {volume} vode (ukupno {total})"
 	},
 	"tripBrief": {
 		"defaultTitle": "CLDT plan putovanja",
@@ -635,7 +643,8 @@
 				"alerts": "Upozorenja",
 				"pois": "Mjesta uz put",
 				"emergency": "Hitne službe",
-				"generated": "Generirano u CLDT karti"
+				"generated": "Generirano u CLDT karti",
+				"pack": "Ruksak"
 			},
 			"daysHeading": "Po danima",
 			"moreLabel": "još mjesta",
@@ -661,7 +670,9 @@
 				"l4": "U hitnoj situaciji: ostani na mjestu ako možeš, označi poziciju, kontaktiraj spasioce.",
 				"l5": "U područjima bez signala: SMS 112 s koordinatama ako poziv ne radi."
 			}
-		}
+		},
+		"packSummary": "{base} + voda",
+		"waterCarry": "Voda: ponesite do {volume} za najduži dio bez izvora (ukupna težina ruksaka {total})"
 	},
 	"severeWeather": {
 		"layerLabel": "Upozorenja za opasno vrijeme",
