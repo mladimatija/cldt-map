@@ -22,6 +22,7 @@
 import { haversineDistanceM as haversineM } from '../src/lib/haversine';
 import {
 	fetchOverpassJson,
+	fetchPolylineWithBisection,
 	overpassCacheFile,
 	readOverpassJsonCache,
 	writeOverpassJsonCache,
@@ -237,36 +238,44 @@ export async function fetchHighwaysAlongCorridor(
 		const slice = corridorPoly.slice(start, (c + 1) * chunkSize);
 		if (slice.length < 2) continue;
 
-		const polyStr = slice.map((p) => `${p.lat.toFixed(5)},${p.lng.toFixed(5)}`).join(',');
-		const query =
-			`[out:json][timeout:${OVERPASS_TIMEOUT_S}];` +
-			`way[highway~"^(${HIGHWAY_REGEX})$"](around:${radiusM},${polyStr});` +
-			`out geom;`;
-
-		const cacheFile = overpassCacheFile(opts.cache, `highways-${c + 1}of${HIGHWAY_CHUNKS}`, query);
-		let elements = await readOverpassJsonCache<OverpassWayElement[]>(cacheFile, opts.cache);
-		if (elements) {
-			console.log(`     chunk ${c + 1}/${HIGHWAY_CHUNKS}: cache hit (${elements.length} ways).`);
-		} else {
-			try {
+		// Bisection-on-failure: a chunk whose query keeps timing out is split
+		// into two overlapping half slices and retried, so one overloaded
+		// stretch of corridor degrades to a few smaller queries instead of
+		// failing the whole chunk. Leaf labels gain an "a"/"b" suffix per
+		// split; the depth-0 label and query match the pre-bisection cache
+		// files, so existing caches stay valid.
+		const result = await fetchPolylineWithBisection<OverpassWayElement>({
+			slice,
+			label: `highways-${c + 1}of${HIGHWAY_CHUNKS}`,
+			onBisect: (label, message) => console.warn(`     ${label}: ${message}.`),
+			run: async (runSlice, label) => {
+				const polyStr = runSlice.map((p) => `${p.lat.toFixed(5)},${p.lng.toFixed(5)}`).join(',');
+				const query =
+					`[out:json][timeout:${OVERPASS_TIMEOUT_S}];` +
+					`way[highway~"^(${HIGHWAY_REGEX})$"](around:${radiusM},${polyStr});` +
+					`out geom;`;
+				const cacheFile = overpassCacheFile(opts.cache, label, query);
+				const cached = await readOverpassJsonCache<OverpassWayElement[]>(cacheFile, opts.cache);
+				if (cached) {
+					console.log(`     ${label}: cache hit (${cached.length} ways).`);
+					return cached;
+				}
 				const data = await fetchOverpassJson<OverpassResponse & { remark?: string }>({
 					url: opts.overpassUrl,
 					fallbackUrls: opts.fallbackUrls,
 					body: `data=${encodeURIComponent(query)}`,
 					userAgent: opts.userAgent,
 					fetchTimeoutMs: FETCH_TIMEOUT_MS,
-					onRetry: ({ message }) => console.warn(`     chunk ${c + 1}/${HIGHWAY_CHUNKS}: Overpass ${message}.`),
+					onRetry: ({ message }) => console.warn(`     ${label}: Overpass ${message}.`),
 				});
-				elements = (data.elements ?? []).filter((e): e is OverpassWayElement => e.type === 'way');
+				const elements = (data.elements ?? []).filter((e): e is OverpassWayElement => e.type === 'way');
 				await writeOverpassJsonCache(cacheFile, elements, opts.cache);
-				console.log(`     chunk ${c + 1}/${HIGHWAY_CHUNKS}: ${elements.length} ways.`);
-			} catch (err) {
-				console.warn(`     chunk ${c + 1}/${HIGHWAY_CHUNKS}: FAILED (${(err as Error).message}).`);
-				failed = true;
-				continue;
-			}
-		}
-		for (const way of elements) {
+				console.log(`     ${label}: ${elements.length} ways.`);
+				return elements;
+			},
+		});
+		if (result.failed) failed = true;
+		for (const way of result.elements) {
 			byId.set(way.id, way);
 		}
 	}

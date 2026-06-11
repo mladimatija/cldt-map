@@ -263,3 +263,60 @@ export async function writeOverpassJsonCache<T>(file: string, data: T, opts: Ove
 		console.warn(`     cache write failed (${(err as Error).message}); continuing without cache.`);
 	}
 }
+
+// ---- Corridor bisection ------------------------------------------------------
+
+export interface BisectionResult<T> {
+	elements: T[];
+	/** True when at least one leaf slice still failed at max depth. */
+	failed: boolean;
+}
+
+/**
+ * Runs a polyline-corridor Overpass fetch with bisection-on-failure: when a
+ * slice's query fails (timeout, exhausted retries and mirrors), the slice is
+ * split in half (one point of overlap so geometries spanning the cut are seen
+ * from both sides) and each half is retried independently, recursing up to
+ * `maxDepth`. One overloaded stretch of corridor then costs a few smaller
+ * queries instead of failing the whole chunk or type.
+ *
+ * `run` performs the actual query for a slice (building the query string,
+ * consulting its cache, fetching) and throws on failure; leaf labels are the
+ * parent label plus "a"/"b" so per-leaf cache files stay distinguishable.
+ * Callers must dedupe the merged elements - halves overlap by design.
+ */
+export async function fetchPolylineWithBisection<T>(args: {
+	slice: { lat: number; lng: number }[];
+	label: string;
+	run: (slice: { lat: number; lng: number }[], label: string) => Promise<T[]>;
+	/** Bisection depth budget; 3 means up to 8 leaf slices. */
+	maxDepth?: number;
+	onBisect?: (label: string, message: string) => void;
+	depth?: number;
+}): Promise<BisectionResult<T>> {
+	const { slice, label, run, maxDepth = 3, onBisect, depth = 0 } = args;
+	try {
+		return { elements: await run(slice, label), failed: false };
+	} catch (err) {
+		const message = (err as Error).message;
+		if (depth >= maxDepth || slice.length < 4) {
+			onBisect?.(label, `FAILED (${message}) - not bisecting further`);
+			return { elements: [], failed: true };
+		}
+		onBisect?.(label, `failed (${message}) - bisecting into two half slices`);
+		const mid = Math.ceil(slice.length / 2);
+		const first = await fetchPolylineWithBisection({
+			...args,
+			slice: slice.slice(0, mid + 1),
+			label: `${label}a`,
+			depth: depth + 1,
+		});
+		const second = await fetchPolylineWithBisection({
+			...args,
+			slice: slice.slice(mid - 1),
+			label: `${label}b`,
+			depth: depth + 1,
+		});
+		return { elements: [...first.elements, ...second.elements], failed: first.failed || second.failed };
+	}
+}
