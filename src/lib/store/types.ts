@@ -6,6 +6,7 @@ import type { TrackPoint } from '../gpx-parser';
 import type { SeasonalStatusEntry, SeasonalStatusFile } from '../seasonal-status';
 import type { TrailOsmTagsFile } from '../trail-osm-tags';
 import type { MineAreasFile } from '../mine-areas';
+import type { CompletionInterval } from '../completion';
 import type { PoiImage, PoisFile } from '../pois';
 import { RulerRange } from '@/lib/distance-utils';
 
@@ -333,6 +334,19 @@ export interface MapStoreState {
 	setSevereWeatherLayer: (enabled: boolean) => void;
 	severeWeatherData: GeoJSON.FeatureCollection | null;
 	setSevereWeatherData: (data: GeoJSON.FeatureCollection | null) => void;
+
+	// ── Section completion tracking ─────────────────────────────────────
+	/** Normalized completed [startKm, endKm] intervals (SOBO km); persisted. */
+	completedIntervals: CompletionInterval[];
+	markCompleted: (startKm: number, endKm: number) => void;
+	unmarkCompleted: (startKm: number, endKm: number) => void;
+	clearCompletion: () => void;
+	/** Record progress automatically from on-trail GPS fixes; persisted. */
+	completionAutoTrack: boolean;
+	setCompletionAutoTrack: (enabled: boolean) => void;
+	/** Draw completed stretches as a green overlay on the trail; persisted. */
+	showCompletionOverlay: boolean;
+	setShowCompletionOverlay: (show: boolean) => void;
 
 	// ── Mine-suspected areas (MSP) ──────────────────────────────────────
 	/** Layer toggle; persisted, defaults ON (safety layer, opt-out). */

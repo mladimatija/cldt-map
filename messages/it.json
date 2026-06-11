@@ -208,7 +208,9 @@
 			"chartClickPin": "Clicca sul profilo altimetrico per fissare un punto (rimane visibile fino alla chiusura).",
 			"chartDragRuler": "Clicca e trascina sul profilo altimetrico per misurare un segmento (Righello).",
 			"escCancelRuler": "Premi <kbd>Esc</kbd> per annullare il Righello."
-		}
+		},
+		"progressShow": "Mostra progresso sul sentiero",
+		"progressHide": "Nascondi progresso sul sentiero"
 	},
 	"baseMapSelector": {
 		"standard": "Standard",
@@ -780,5 +782,26 @@
 		"bannerInside": "Sembra che tu sia all'interno di un'area sospetta di mine. Torna immediatamente sul sentiero segnato. Emergenza: 112.",
 		"bannerNear": "Area sospetta di mine entro {distance}. Resta sul sentiero segnato.",
 		"dismiss": "Ignora l'avviso area di mine"
+	},
+	"progress": {
+		"title": "Progresso sul sentiero",
+		"completedLine": "{done} di {total} ({pct}%)",
+		"remainingLine": "Rimanente: {distance}",
+		"sectionsHeading": "Sezioni",
+		"markSection": "Segna completata",
+		"unmarkSection": "Annulla",
+		"rulerHeading": "Selezione righello",
+		"markRange": "Segna percorso",
+		"unmarkRange": "Annulla",
+		"noRuler": "Seleziona un tratto con il righello per segnarlo manualmente.",
+		"tracksHeading": "Tracce importate",
+		"addTrack": "Aggiungi al progresso",
+		"noTracks": "Importa una traccia GPX per aggiungere la sua copertura del sentiero al progresso.",
+		"autoTrack": "Registra il progresso automaticamente dal GPS",
+		"showOverlay": "Mostra i tratti completati sulla mappa",
+		"clear": "Cancella tutto il progresso",
+		"confirmClear": "Cancellare tutto il progresso?",
+		"confirmYes": "Cancella",
+		"confirmNo": "Mantieni"
 	}
 }

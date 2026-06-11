@@ -36,6 +36,7 @@ import { findNearestPointIndex, RulerRange } from '@/lib/distance-utils';
 import { loadImportedTracks, removeImportedTrack } from '../imported-tracks';
 import { loadPois } from '@/lib/pois';
 import { prefetchPoiAssets, prefetchPoisAlongSlice } from '@/lib/poi-prefetch';
+import { addInterval, removeInterval } from '../completion';
 import {
 	filterActiveEntries,
 	isSeasonalStatusDefaultEnabled,
@@ -692,6 +693,25 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 						set({ severeWeatherData: data });
 					},
 
+					completedIntervals: [],
+					markCompleted: (startKm: number, endKm: number): void => {
+						set({ completedIntervals: addInterval(get().completedIntervals, startKm, endKm) });
+					},
+					unmarkCompleted: (startKm: number, endKm: number): void => {
+						set({ completedIntervals: removeInterval(get().completedIntervals, startKm, endKm) });
+					},
+					clearCompletion: (): void => {
+						set({ completedIntervals: [] });
+					},
+					completionAutoTrack: true,
+					setCompletionAutoTrack: (enabled: boolean): void => {
+						set({ completionAutoTrack: enabled });
+					},
+					showCompletionOverlay: true,
+					setShowCompletionOverlay: (show: boolean): void => {
+						set({ showCompletionOverlay: show });
+					},
+
 					// Mine-suspected areas: safety layer, ON by default (opt-out).
 					mineAreasEnabled: config.mineAreasEnabled,
 					setMineAreasEnabled: (enabled: boolean): void => {
@@ -847,6 +867,9 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					stagePlan: state.stagePlan,
 					severeWeatherLayer: state.severeWeatherLayer,
 					mineAreasEnabled: state.mineAreasEnabled,
+					completedIntervals: state.completedIntervals,
+					completionAutoTrack: state.completionAutoTrack,
+					showCompletionOverlay: state.showCompletionOverlay,
 					seasonalStatusLayerEnabled: state.seasonalStatusLayerEnabled,
 					seasonalStatusLayerUserToggled: state.seasonalStatusLayerUserToggled,
 				}),

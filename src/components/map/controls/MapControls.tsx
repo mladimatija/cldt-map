@@ -25,6 +25,7 @@ import {
 	IoArrowDownOutline,
 	IoArrowUpOutline,
 	IoCalendarOutline,
+	IoCheckmarkDoneOutline,
 	IoCreateOutline,
 	IoGridOutline,
 	IoMapOutline,
@@ -43,6 +44,7 @@ import { MapControlsColorAdjust } from './MapControlsColorAdjust';
 import { MapControlsTestLink } from './MapControlsTestLink';
 import { MapControlsExportPanel } from './MapControlsExportPanel';
 import { MapControlsStagePlannerPanel } from './MapControlsStagePlannerPanel';
+import { MapControlsProgressPanel } from './MapControlsProgressPanel';
 import { MapControlsEmergencyButton } from './MapControlsEmergencyButton';
 import { MapControlsPoiList } from './MapControlsPoiList';
 import { MapControlsEmergencyPanel } from './MapControlsEmergencyPanel';
@@ -153,6 +155,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 	const exportPanelRef = useRef<HTMLDivElement>(null);
 	const exportContainerRef = useRef<HTMLDivElement>(null);
 	const stagePlannerRef = useRef<HTMLDivElement>(null);
+	const progressRef = useRef<HTMLDivElement>(null);
 	const emergencyContainerRef = useRef<HTMLDivElement>(null);
 	const emergencyPanelRef = useRef<HTMLDivElement>(null);
 
@@ -166,6 +169,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 	const sharePanel = usePanel('share', shareContainerRef);
 	const exportPanel = usePanel('export', exportContainerRef);
 	const stagePlannerPanel = usePanel('stagePlanner', stagePlannerRef);
+	const progressPanel = usePanel('progress', progressRef);
 	const emergencyPanel = usePanel('emergency', emergencyContainerRef);
 	const poiListPanel = usePanel('poiList', poiListContainerRef);
 
@@ -177,6 +181,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 	useBlockMapPropagation(colorAdjustContainerRef);
 	useBlockMapPropagation(exportPanelRef);
 	useBlockMapPropagation(stagePlannerRef);
+	useBlockMapPropagation(progressRef);
 	useBlockMapPropagation(emergencyContainerRef);
 
 	const darkMode = useMapStore((state: MapStoreState) => state.darkMode);
@@ -914,6 +919,18 @@ const MapControls: React.FC<MapControlsProps> = ({
 						<IoCalendarOutline aria-hidden className="h-5 w-5" />
 					</MapControlsButton>
 					{stagePlannerPanel.isOpen && <MapControlsStagePlannerPanel />}
+				</div>
+
+				<div className="relative inline-block w-10 shrink-0" ref={progressRef}>
+					<MapControlsButton
+						active={progressPanel.isOpen}
+						ariaLabel={progressPanel.isOpen ? t('progressHide') : t('progressShow')}
+						content={progressPanel.isOpen ? t('progressHide') : t('progressShow')}
+						onClick={progressPanel.toggle}
+					>
+						<IoCheckmarkDoneOutline aria-hidden className="h-5 w-5" />
+					</MapControlsButton>
+					{progressPanel.isOpen && <MapControlsProgressPanel />}
 				</div>
 
 				<div className="relative inline-block w-10 shrink-0" ref={shareContainerRef}>

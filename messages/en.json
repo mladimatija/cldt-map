@@ -208,7 +208,9 @@
 			"chartClickPin": "Click the elevation chart to pin a point (stays visible until you close it).",
 			"chartDragRuler": "Click and drag on the elevation chart to measure a segment (Distance Ruler).",
 			"escCancelRuler": "Press <kbd>Esc</kbd> to cancel the Distance Ruler."
-		}
+		},
+		"progressShow": "Show trail progress",
+		"progressHide": "Hide trail progress"
 	},
 	"baseMapSelector": {
 		"standard": "Standard",
@@ -780,5 +782,26 @@
 		"bannerInside": "You appear to be inside a mine-suspected area. Return to the marked trail immediately. Emergency: 112.",
 		"bannerNear": "Mine-suspected area within {distance}. Stay on the marked trail.",
 		"dismiss": "Dismiss mine area warning"
+	},
+	"progress": {
+		"title": "Trail progress",
+		"completedLine": "{done} of {total} ({pct}%)",
+		"remainingLine": "Remaining: {distance}",
+		"sectionsHeading": "Sections",
+		"markSection": "Mark done",
+		"unmarkSection": "Unmark",
+		"rulerHeading": "Ruler selection",
+		"markRange": "Mark hiked",
+		"unmarkRange": "Unmark",
+		"noRuler": "Select a range with the distance ruler to mark it manually.",
+		"tracksHeading": "Imported tracks",
+		"addTrack": "Add to progress",
+		"noTracks": "Import a GPX track to add its on-trail coverage to your progress.",
+		"autoTrack": "Record progress from GPS automatically",
+		"showOverlay": "Show completed stretches on the map",
+		"clear": "Clear all progress",
+		"confirmClear": "Clear all progress?",
+		"confirmYes": "Clear",
+		"confirmNo": "Keep"
 	}
 }
