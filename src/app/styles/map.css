@@ -201,6 +201,32 @@
 	opacity: 0.6;
 }
 
+/* Mine-suspected area overlay: trail warning chip + popup details. */
+.mine-area-chip-wrapper {
+	background: transparent;
+	border: none;
+}
+.mine-area-chip {
+	display: flex;
+	width: 22px;
+	height: 22px;
+	align-items: center;
+	justify-content: center;
+	border-radius: 50%;
+	background: #dc2626;
+	border: 2px solid var(--marker-on-color);
+	color: var(--marker-on-color);
+	font-size: 13px;
+	font-weight: 800;
+	box-shadow: var(--trail-marker-shadow);
+	cursor: pointer;
+}
+.mine-area-popup__disclaimer {
+	margin: 6px 0;
+	font-size: 11px;
+	opacity: 0.75;
+}
+
 /* Water reliability chip (water POIs only). Colour comes from the same
    theme.css variables that tint the map markers, so badge and marker always
    agree. White text passes contrast on all four fills in both palettes. */

@@ -692,6 +692,16 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 						set({ severeWeatherData: data });
 					},
 
+					// Mine-suspected areas: safety layer, ON by default (opt-out).
+					mineAreasEnabled: config.mineAreasEnabled,
+					setMineAreasEnabled: (enabled: boolean): void => {
+						set({ mineAreasEnabled: enabled });
+					},
+					mineAreasFile: null,
+					setMineAreasFile: (file): void => {
+						set({ mineAreasFile: file });
+					},
+
 					trailOsmTagsFile: null,
 					setTrailOsmTagsFile: (file): void => {
 						set({ trailOsmTagsFile: file });
@@ -836,6 +846,7 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					sunsetProjection: state.sunsetProjection,
 					stagePlan: state.stagePlan,
 					severeWeatherLayer: state.severeWeatherLayer,
+					mineAreasEnabled: state.mineAreasEnabled,
 					seasonalStatusLayerEnabled: state.seasonalStatusLayerEnabled,
 					seasonalStatusLayerUserToggled: state.seasonalStatusLayerUserToggled,
 				}),

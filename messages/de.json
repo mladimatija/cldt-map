@@ -768,5 +768,17 @@
 			"residential": "Wohnstraße",
 			"road": "Straße"
 		}
+	},
+	"mineAreas": {
+		"layerLabel": "Minenverdächtige Gebiete",
+		"layerTooltip": "Offizielle MUP/HCR-Polygone minenverdächtiger Gebiete nahe dem Trail. Nur zur Information - beachte immer die Beschilderung vor Ort.",
+		"popoutTitle": "Minenverdächtiges Gebiet",
+		"affectedRange": "Betroffener Trailabschnitt: {start} - {end}",
+		"dataDate": "Daten aktualisiert",
+		"officialSource": "Offizielle Quelle: misportal.hcr.hr",
+		"disclaimer": "Nur zur Information. Das Fehlen eines markierten Gebiets bedeutet nicht Sicherheit - beachte immer die Beschilderung vor Ort und bleibe auf dem markierten Weg.",
+		"bannerInside": "Du befindest dich offenbar in einem minenverdächtigen Gebiet. Kehre sofort auf den markierten Weg zurück. Notruf: 112.",
+		"bannerNear": "Minenverdächtiges Gebiet innerhalb von {distance}. Bleibe auf dem markierten Weg.",
+		"dismiss": "Minengebiet-Warnung verwerfen"
 	}
 }

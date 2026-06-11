@@ -5,6 +5,7 @@ import type { TileCacheMeta } from '../tile-cache';
 import type { TrackPoint } from '../gpx-parser';
 import type { SeasonalStatusEntry, SeasonalStatusFile } from '../seasonal-status';
 import type { TrailOsmTagsFile } from '../trail-osm-tags';
+import type { MineAreasFile } from '../mine-areas';
 import type { PoiImage, PoisFile } from '../pois';
 import { RulerRange } from '@/lib/distance-utils';
 
@@ -332,6 +333,14 @@ export interface MapStoreState {
 	setSevereWeatherLayer: (enabled: boolean) => void;
 	severeWeatherData: GeoJSON.FeatureCollection | null;
 	setSevereWeatherData: (data: GeoJSON.FeatureCollection | null) => void;
+
+	// ── Mine-suspected areas (MSP) ──────────────────────────────────────
+	/** Layer toggle; persisted, defaults ON (safety layer, opt-out). */
+	mineAreasEnabled: boolean;
+	setMineAreasEnabled: (enabled: boolean) => void;
+	/** Bundled dataset loaded at runtime; null until fetched. */
+	mineAreasFile: MineAreasFile | null;
+	setMineAreasFile: (file: MineAreasFile | null) => void;
 
 	// ── Trail OSM tag enrichment (surface, highway, SAC, MTB scale) ──
 	trailOsmTagsFile: TrailOsmTagsFile | null;

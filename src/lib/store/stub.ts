@@ -202,6 +202,10 @@ export function createMapStoreStub(): MapStoreState {
 		setHoveredImportedTrackId: noop,
 
 		severeWeatherLayer: false,
+		mineAreasEnabled: true,
+		setMineAreasEnabled: () => {},
+		mineAreasFile: null,
+		setMineAreasFile: () => {},
 		setSevereWeatherLayer: noop,
 		severeWeatherData: null,
 		setSevereWeatherData: noop,
