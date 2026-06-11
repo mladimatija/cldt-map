@@ -359,6 +359,13 @@ function renderDay(
 		yCursor += MAP_H + 6;
 	}
 
+	// Day elevation profile thumbnail (16:9-ish strip under the map)
+	if (day.elevationThumb) {
+		const thumbH = (MAP_W * 180) / 1044;
+		pdf.addImage(day.elevationThumb, 'PNG', MARGIN_X, yCursor, MAP_W, thumbH);
+		yCursor += thumbH + 5;
+	}
+
 	// Day narrative
 	pdf.setFont('NotoSans', 'normal');
 	pdf.setTextColor(...MUTED_TEXT_RGB);

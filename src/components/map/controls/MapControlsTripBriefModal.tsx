@@ -16,6 +16,7 @@ import { exportTripBriefDocx } from '@/lib/trip-brief-docx';
 import { usePopoverFocusTrap, usePackAdjustedPaceKmh } from '@/hooks';
 import { formatVolume, formatWeight, packTotalKg, waterCarryLiters } from '@/lib/pack-weight';
 import { missingGearTerms } from '@/lib/pack-csv';
+import { renderElevationThumbnail } from '@/lib/elevation-thumbnail';
 import { Locale } from '@/i18n/routing';
 
 interface MapControlsTripBriefModalProps {
@@ -145,6 +146,16 @@ export function MapControlsTripBriefModal({
 					},
 				}),
 			});
+
+			// Per-day elevation thumbnails for the exporters; canvas-only, so
+			// attached here rather than in the pure assembler.
+			brief = {
+				...brief,
+				days: brief.days.map((day) => {
+					const thumb = renderElevationThumbnail(enhancedTrailPoints, day.startKm, day.endKm, direction === 'NOBO');
+					return thumb ? { ...day, elevationThumb: thumb } : day;
+				}),
+			};
 
 			// AI narratives are best-effort: any failure (offline, rate limit,
 			// unconfigured deploy, model hiccup) keeps the templated text and
