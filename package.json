@@ -22,7 +22,7 @@
 		"build:emergency-data": "tsx scripts/build-emergency-data.ts",
 		"update-seasonal": "tsx --env-file-if-exists=.env.local scripts/update-seasonal-status.ts",
 		"enrich-osm": "tsx --env-file-if-exists=.env.local scripts/enrich-trail-osm.ts",
-		"enrich-pois": "tsx --env-file-if-exists=.env.local scripts/enrich-pois.ts",
+		"enrich-pois": "tsx --env-file-if-exists=.env.local scripts/enrich-pois.ts && node scripts/split-pois.mjs",
 		"clean-install": "rm -rf node_modules .next package-lock.json && npm install"
 	},
 	"dependencies": {
