@@ -14,8 +14,7 @@ import { formatEta } from '@/lib/distance-utils';
 import { formatElevation } from '@/lib/utils';
 import type { TripBrief } from '@/lib/trip-brief';
 import {
-	EMERGENCY_BODY,
-	LBL,
+	emergencyLines,
 	dayHeader,
 	directionDisplay,
 	formatGeneratedAt,
@@ -69,16 +68,16 @@ export async function exportTripBriefDocx(args: TripBriefDocxArgs): Promise<void
 			}),
 		);
 
-		out.push(new Paragraph({ text: LBL[meta.locale].overview, heading: HeadingLevel.HEADING_1 }));
+		out.push(new Paragraph({ text: meta.strings.labels.overview, heading: HeadingLevel.HEADING_1 }));
 
 		const grid: [string, string][] = [
-			[LBL[meta.locale].totalDistance, formatKmRound(overview.totalKm, meta.units)],
-			[LBL[meta.locale].dayCount, `${overview.dayCount}`],
-			[LBL[meta.locale].direction, directionDisplay(meta.direction, meta.locale)],
-			[LBL[meta.locale].gain, `+${formatElevation(overview.totalGainM, meta.units)}`],
-			[LBL[meta.locale].loss, `-${formatElevation(overview.totalLossM, meta.units)}`],
-			[LBL[meta.locale].eta, formatEta(overview.totalDurationSec)],
-			[LBL[meta.locale].pace, `${meta.walkingPaceKmh.toFixed(1)} km/h`],
+			[meta.strings.labels.totalDistance, formatKmRound(overview.totalKm, meta.units)],
+			[meta.strings.labels.dayCount, `${overview.dayCount}`],
+			[meta.strings.labels.direction, directionDisplay(meta.direction, meta.strings)],
+			[meta.strings.labels.gain, `+${formatElevation(overview.totalGainM, meta.units)}`],
+			[meta.strings.labels.loss, `-${formatElevation(overview.totalLossM, meta.units)}`],
+			[meta.strings.labels.eta, formatEta(overview.totalDurationSec)],
+			[meta.strings.labels.pace, `${meta.walkingPaceKmh.toFixed(1)} km/h`],
 		];
 		for (const [k, v] of grid) {
 			out.push(
@@ -116,7 +115,7 @@ export async function exportTripBriefDocx(args: TripBriefDocxArgs): Promise<void
 
 		out.push(
 			new Paragraph({
-				text: dayHeader(day, meta.locale, meta.units),
+				text: dayHeader(day, meta.strings, meta.units),
 				heading: HeadingLevel.HEADING_1,
 				pageBreakBefore: true,
 			}),
@@ -138,7 +137,7 @@ export async function exportTripBriefDocx(args: TripBriefDocxArgs): Promise<void
 		);
 
 		if (day.seasonalAlerts.length > 0) {
-			out.push(new Paragraph({ text: LBL[meta.locale].alerts, heading: HeadingLevel.HEADING_2 }));
+			out.push(new Paragraph({ text: meta.strings.labels.alerts, heading: HeadingLevel.HEADING_2 }));
 			for (const alert of day.seasonalAlerts) {
 				out.push(
 					new Paragraph({
@@ -155,7 +154,7 @@ export async function exportTripBriefDocx(args: TripBriefDocxArgs): Promise<void
 		if (day.pois.length > 0) {
 			out.push(
 				new Paragraph({
-					text: `${LBL[meta.locale].pois} (${day.pois.length})`,
+					text: `${meta.strings.labels.pois} (${day.pois.length})`,
 					heading: HeadingLevel.HEADING_2,
 				}),
 			);
@@ -191,12 +190,12 @@ export async function exportTripBriefDocx(args: TripBriefDocxArgs): Promise<void
 
 		out.push(
 			new Paragraph({
-				text: LBL[meta.locale].emergency,
+				text: meta.strings.labels.emergency,
 				heading: HeadingLevel.HEADING_1,
 				pageBreakBefore: true,
 			}),
 		);
-		for (const line of EMERGENCY_BODY[meta.locale]) {
+		for (const line of emergencyLines(meta.strings)) {
 			out.push(new Paragraph({ children: [new TextRun({ text: line })], spacing: { after: 100 } }));
 		}
 
@@ -204,7 +203,7 @@ export async function exportTripBriefDocx(args: TripBriefDocxArgs): Promise<void
 			new Paragraph({
 				children: [
 					new TextRun({
-						text: `${LBL[meta.locale].generated} ${formatGeneratedAt(meta.generatedAt, meta.locale)} | map.cldt.hr`,
+						text: `${meta.strings.labels.generated} ${formatGeneratedAt(meta.generatedAt, meta.locale)} | map.cldt.hr`,
 						italics: true,
 						color: '8c8c8c',
 						size: 18,

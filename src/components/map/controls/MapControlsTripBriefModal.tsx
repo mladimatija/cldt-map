@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useLocale, useTranslations } from 'next-intl';
+import { useLocale, useMessages, useTranslations } from 'next-intl';
 import { useMap } from 'react-leaflet';
 import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
 import { Button } from '@/components/ui/Button';
@@ -10,6 +10,7 @@ import { Checkbox } from '@/components/ui/Checkbox';
 import { applyAiNarratives, fetchAiNarratives } from '@/lib/trip-brief-ai';
 import { cn } from '@/lib/utils';
 import { assembleTripBrief, canAssembleTripBrief, makeDistanceLabelFn, type TripBrief } from '@/lib/trip-brief';
+import { tripBriefStringsFromMessages } from '@/lib/trip-brief-i18n';
 import { exportTripBriefPdf } from '@/lib/trip-brief-pdf';
 import { exportTripBriefDocx } from '@/lib/trip-brief-docx';
 import { usePopoverFocusTrap } from '@/hooks';
@@ -40,6 +41,7 @@ export function MapControlsTripBriefModal({
 	const t = useTranslations('tripBrief');
 	const tPois = useTranslations('pois');
 	const locale = useLocale();
+	const messages = useMessages();
 	const map = useMap();
 	const trailTitle = t('defaultTitle');
 
@@ -71,6 +73,13 @@ export function MapControlsTripBriefModal({
 		[stagePlan, enhancedTrailPoints],
 	);
 
+	/** Exporter strings for the active locale, from messages tripBrief.document.
+	 *  Resolved here because the PDF/DOCX generators run outside React. */
+	const documentStrings = useMemo(
+		() => tripBriefStringsFromMessages((messages as { tripBrief?: { document?: unknown } }).tripBrief?.document),
+		[messages],
+	);
+
 	const handleGenerate = async (): Promise<void> => {
 		if (!stagePlan) return;
 		const controller = new AbortController();
@@ -97,6 +106,7 @@ export function MapControlsTripBriefModal({
 				seasonalEntries,
 				typeLabel: (type) => tPois(`type.${type}`, { default: type }),
 				distanceLabel: makeDistanceLabelFn(units, distancePrecision),
+				strings: documentStrings,
 			});
 
 			// AI narratives are best-effort: any failure (offline, rate limit,

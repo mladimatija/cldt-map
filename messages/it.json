@@ -588,7 +588,47 @@
 		"generating": "Generazione...",
 		"cancel": "Annulla",
 		"close": "Chiudi",
-		"exportError": "Esportazione non riuscita. Riprovare."
+		"exportError": "Esportazione non riuscita. Riprovare.",
+		"document": {
+			"labels": {
+				"overview": "Panoramica",
+				"totalDistance": "Distanza totale",
+				"dayCount": "Giorni",
+				"direction": "Direzione",
+				"gain": "Dislivello positivo",
+				"loss": "Dislivello negativo",
+				"eta": "Tempo di cammino",
+				"pace": "Andatura",
+				"alerts": "Avvisi",
+				"pois": "Luoghi lungo il percorso",
+				"emergency": "Contatti di emergenza",
+				"generated": "Generato da CLDT Map il"
+			},
+			"daysHeading": "Giorno per giorno",
+			"moreLabel": "altri luoghi",
+			"narrativeDirection": {
+				"SOBO": "verso sud (Ilok verso Prevlaka)",
+				"NOBO": "verso nord (Prevlaka verso Ilok)"
+			},
+			"dayNarrative": "Giorno {day} di {totalDays}: {distanceLabel}, +{gain} m / -{loss} m. {poiSentence}",
+			"dayPoiSentence": {
+				"withPois": "{poiCount} luoghi lungo il percorso.",
+				"empty": "Nessun luogo notabile in questa tappa."
+			},
+			"overviewNarrative": "Il piano copre {totalDistanceLabel} in {dayCount} giorni {direction}. Tempo di cammino stimato: {etaLabel}.",
+			"directionDisplay": {
+				"SOBO": "Verso sud (Ilok - Prevlaka)",
+				"NOBO": "Verso nord (Prevlaka - Ilok)"
+			},
+			"dayHeader": "Giorno {day} - {unit} {start} a {end}",
+			"emergencyBody": {
+				"l1": "Emergenza: 112",
+				"l2": "Soccorso alpino (HGSS): 112 (chiedere HGSS)",
+				"l3": "Portare sempre: acqua, lampada frontale, fischietto, kit di primo soccorso, telefono con GPS.",
+				"l4": "In emergenza: se possibile restare sul posto, segnalare la posizione, chiamare i soccorsi.",
+				"l5": "Zone senza copertura: SMS al 112 con le coordinate se le chiamate non funzionano."
+			}
+		}
 	},
 	"severeWeather": {
 		"layerLabel": "Avvisi meteo severi",

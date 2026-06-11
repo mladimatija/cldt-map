@@ -588,7 +588,47 @@
 		"generating": "Wird erstellt...",
 		"cancel": "Abbrechen",
 		"close": "Schliessen",
-		"exportError": "Export fehlgeschlagen. Bitte erneut versuchen."
+		"exportError": "Export fehlgeschlagen. Bitte erneut versuchen.",
+		"document": {
+			"labels": {
+				"overview": "Übersicht",
+				"totalDistance": "Gesamtdistanz",
+				"dayCount": "Tage",
+				"direction": "Richtung",
+				"gain": "Aufstieg",
+				"loss": "Abstieg",
+				"eta": "Gehzeit",
+				"pace": "Tempo",
+				"alerts": "Warnungen",
+				"pois": "Orte am Weg",
+				"emergency": "Notfallkontakte",
+				"generated": "Erstellt mit CLDT Map am"
+			},
+			"daysHeading": "Tag für Tag",
+			"moreLabel": "weitere Orte",
+			"narrativeDirection": {
+				"SOBO": "südwärts (Ilok nach Prevlaka)",
+				"NOBO": "nordwärts (Prevlaka nach Ilok)"
+			},
+			"dayNarrative": "Tag {day} von {totalDays}: {distanceLabel}, +{gain} m / -{loss} m. {poiSentence}",
+			"dayPoiSentence": {
+				"withPois": "{poiCount} Orte am Weg.",
+				"empty": "Keine besonderen Orte auf dieser Etappe."
+			},
+			"overviewNarrative": "Der Plan umfasst {totalDistanceLabel} in {dayCount} Tagen {direction}. Geschätzte Gehzeit: {etaLabel}.",
+			"directionDisplay": {
+				"SOBO": "Südwärts (Ilok - Prevlaka)",
+				"NOBO": "Nordwärts (Prevlaka - Ilok)"
+			},
+			"dayHeader": "Tag {day} - {unit} {start} bis {end}",
+			"emergencyBody": {
+				"l1": "Notruf: 112",
+				"l2": "Bergrettung (HGSS): 112 (HGSS anfordern)",
+				"l3": "Immer mitnehmen: Wasser, Stirnlampe, Trillerpfeife, Erste-Hilfe-Set, GPS-Telefon.",
+				"l4": "Im Notfall: nach Möglichkeit am Ort bleiben, Position markieren, Rettung verständigen.",
+				"l5": "In Offline-Gebieten: SMS an 112 mit Koordinaten, falls Anrufe nicht funktionieren."
+			}
+		}
 	},
 	"severeWeather": {
 		"layerLabel": "Unwetterwarnungen",
