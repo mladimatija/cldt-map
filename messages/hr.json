@@ -210,7 +210,9 @@
 			"escCancelRuler": "Pritisnite <kbd>Esc</kbd> za poništavanje Ravnala udaljenosti."
 		},
 		"progressShow": "Prikaži napredak na stazi",
-		"progressHide": "Sakrij napredak na stazi"
+		"progressHide": "Sakrij napredak na stazi",
+		"helpShow": "Prikaži pomoć",
+		"helpHide": "Sakrij pomoć"
 	},
 	"baseMapSelector": {
 		"standard": "Standardna",
@@ -529,7 +531,7 @@
 	"imports": {
 		"title": "Uvezene rute",
 		"dropToImport": "Ispusti GPX datoteku za uvoz",
-		"noImports": "Još nema uvezenih ruta",
+		"noImports": "Još nema uvezenih ruta. Povuci i ispusti .gpx datoteku bilo gdje na kartu za uvoz.",
 		"removeAriaLabel": "Ukloni {trackName}",
 		"showPoisHit": "Prikaži POI-jeve kroz koje ste prošli",
 		"hidePoisHit": "Sakrij POI-jeve",
@@ -862,5 +864,32 @@
 		"confirmClear": "Obrisati sav napredak?",
 		"confirmYes": "Obriši",
 		"confirmNo": "Zadrži"
+	},
+	"help": {
+		"title": "Pomoć",
+		"basicsHeading": "Osnove karte",
+		"basics": {
+			"layers": "Gumb slojeva (gore desno) mijenja podloge, preklope poput radara i opasnog vremena, stilove bojanja staze i kategorije mjesta.",
+			"trail": "Dodirni liniju staze, markere mjesta ili sezonske oznake upozorenja za detalje; skočni prozori vode dalje na fotografije, Wikipediju i dijeljenje.",
+			"settings": "Zupčanik sadrži jedinice, smjer (SOBO/NOBO), tempo hodanja, tamni način i pojedinačne prekidače značajki."
+		},
+		"chartHeading": "Profil visine",
+		"gesturesHeading": "Skrivene geste",
+		"gestures": {
+			"sos": "Dugo pritisni crveni SOS gumb za offline ploču za hitne slučajeve: koordinate, Plus kod, najbliži prilaz cestom, HGSS i poziv 112 jednim dodirom.",
+			"gpxDrop": "Povuci i ispusti snimljenu .gpx datoteku bilo gdje na kartu da preklopiš svoju rutu i usporediš je sa službenom stazom.",
+			"poiList": "U popisu mjesta upiši broj (\"100 km\") za skok na tu točku; strelice za navigaciju, S označava retke za GPX izvoz."
+		},
+		"planningHeading": "Alati za planiranje",
+		"planning": {
+			"planner": "Gumb s kalendarom dijeli bilo koji raspon staze na dnevne etape s visinom, ETA-om, vodom i vremenom po danu.",
+			"tripBrief": "Unutar planera, \"Vodič za putovanje\" izvozi PDF za ispis ili DOCX za uređivanje cijelog plana s kartama i uputama za hitne slučajeve.",
+			"progress": "Gumb s kvačicom prati koje si dionice prehodao - automatski iz GPS-a, iz odabira ravnalom ili iz uvezene rute."
+		},
+		"offlineHeading": "Offline",
+		"offline": {
+			"precache": "Ploča predmemorije unaprijed preuzima cijeli koridor staze (pločice, mjesta, fotografije) za korištenje bez signala; sinkronizira se na Wi-Fi mreži.",
+			"gps": "GPS, ploča za hitne slučajeve i tvoj napredak rade potpuno offline čim je koridor spremljen."
+		}
 	}
 }

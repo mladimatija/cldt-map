@@ -210,7 +210,9 @@
 			"escCancelRuler": "<kbd>Esc</kbd> drücken, um das Entfernungslineal abzubrechen."
 		},
 		"progressShow": "Trail-Fortschritt anzeigen",
-		"progressHide": "Trail-Fortschritt ausblenden"
+		"progressHide": "Trail-Fortschritt ausblenden",
+		"helpShow": "Hilfe anzeigen",
+		"helpHide": "Hilfe ausblenden"
 	},
 	"baseMapSelector": {
 		"standard": "Standard",
@@ -529,7 +531,7 @@
 	"imports": {
 		"title": "Importierte Tracks",
 		"dropToImport": "GPX-Datei zum Importieren ablegen",
-		"noImports": "Noch keine importierten Tracks",
+		"noImports": "Noch keine importierten Tracks. Ziehe eine .gpx-Datei irgendwo auf die Karte, um einen zu importieren.",
 		"removeAriaLabel": "{trackName} entfernen",
 		"showPoisHit": "POIs anzeigen, an denen du vorbeigekommen bist",
 		"hidePoisHit": "POIs ausblenden",
@@ -862,5 +864,32 @@
 		"confirmClear": "Gesamten Fortschritt löschen?",
 		"confirmYes": "Löschen",
 		"confirmNo": "Behalten"
+	},
+	"help": {
+		"title": "Hilfe",
+		"basicsHeading": "Kartengrundlagen",
+		"basics": {
+			"layers": "Der Ebenen-Button (oben rechts) wechselt Basiskarten, Overlays wie Radar und Unwetter, Trail-Farbstile und POI-Kategorien.",
+			"trail": "Tippe auf die Trail-Linie, Orts-Marker oder saisonale Warn-Chips für Details; Popups verlinken zu Fotos, Wikipedia und Teilen.",
+			"settings": "Das Zahnrad enthält Einheiten, Richtung (SOBO/NOBO), Gehtempo, Dunkelmodus und Feature-Schalter."
+		},
+		"chartHeading": "Höhenprofil",
+		"gesturesHeading": "Versteckte Gesten",
+		"gestures": {
+			"sos": "Halte den roten SOS-Button gedrückt für das Offline-Notfallpanel: Koordinaten, Plus Code, nächste Straßenanbindung, HGSS-Bergrettung und 112 mit einem Tipp.",
+			"gpxDrop": "Ziehe eine aufgezeichnete .gpx-Datei irgendwo auf die Karte, um deine Wanderung zu überlagern und mit dem offiziellen Trail zu vergleichen.",
+			"poiList": "In der Ortsliste eine Zahl tippen (\"100 km\") springt dorthin; Pfeiltasten navigieren, S wählt Zeilen für den GPX-Export."
+		},
+		"planningHeading": "Planungswerkzeuge",
+		"planning": {
+			"planner": "Der Kalender-Button teilt jeden Trail-Abschnitt in Tagesetappen mit Höhe, Gehzeit, Wasser und Wetter pro Tag.",
+			"tripBrief": "Im Planer exportiert \"Trip brief\" ein druckbares PDF oder editierbares DOCX des ganzen Plans mit Karten und Notfallinfos.",
+			"progress": "Der Häkchen-Button verfolgt, welche Abschnitte du gewandert bist - automatisch per GPS, aus der Lineal-Auswahl oder aus einem importierten Track."
+		},
+		"offlineHeading": "Offline",
+		"offline": {
+			"precache": "Das Cache-Panel lädt den ganzen Trail-Korridor vor (Kacheln, Orte, Fotos) für die Nutzung ohne Empfang; Sync erfolgt über WLAN.",
+			"gps": "GPS, Notfallpanel und dein Fortschritt funktionieren vollständig offline, sobald der Korridor gespeichert ist."
+		}
 	}
 }

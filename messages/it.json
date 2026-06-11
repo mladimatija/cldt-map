@@ -210,7 +210,9 @@
 			"escCancelRuler": "Premi <kbd>Esc</kbd> per annullare il Righello."
 		},
 		"progressShow": "Mostra progresso sul sentiero",
-		"progressHide": "Nascondi progresso sul sentiero"
+		"progressHide": "Nascondi progresso sul sentiero",
+		"helpShow": "Mostra aiuto",
+		"helpHide": "Nascondi aiuto"
 	},
 	"baseMapSelector": {
 		"standard": "Standard",
@@ -529,7 +531,7 @@
 	"imports": {
 		"title": "Tracce importate",
 		"dropToImport": "Trascina un file GPX per importarlo",
-		"noImports": "Nessuna traccia importata",
+		"noImports": "Nessuna traccia importata. Trascina un file .gpx sulla mappa per importarne una.",
 		"removeAriaLabel": "Rimuovi {trackName}",
 		"showPoisHit": "Mostra POI vicini al percorso",
 		"hidePoisHit": "Nascondi POI",
@@ -862,5 +864,32 @@
 		"confirmClear": "Cancellare tutto il progresso?",
 		"confirmYes": "Cancella",
 		"confirmNo": "Mantieni"
+	},
+	"help": {
+		"title": "Aiuto",
+		"basicsHeading": "Nozioni di base",
+		"basics": {
+			"layers": "Il pulsante livelli (in alto a destra) cambia mappe di base, overlay come radar e maltempo, stili di colorazione del sentiero e categorie di luoghi.",
+			"trail": "Tocca la linea del sentiero, i marker dei luoghi o i chip di avviso stagionale per i dettagli; i popup portano a foto, Wikipedia e condivisione.",
+			"settings": "L'ingranaggio contiene unità, direzione (SOBO/NOBO), passo di marcia, modalità scura e interruttori delle funzioni."
+		},
+		"chartHeading": "Profilo altimetrico",
+		"gesturesHeading": "Gesti nascosti",
+		"gestures": {
+			"sos": "Tieni premuto il pulsante rosso SOS per il pannello di emergenza offline: coordinate, Plus Code, accesso stradale più vicino, soccorso HGSS e 112 con un tocco.",
+			"gpxDrop": "Trascina un file .gpx registrato sulla mappa per sovrapporre la tua escursione e confrontarla con il sentiero ufficiale.",
+			"poiList": "Nella lista dei luoghi digita un numero (\"100 km\") per saltarci; le frecce navigano, S seleziona le righe per l'export GPX."
+		},
+		"planningHeading": "Strumenti di pianificazione",
+		"planning": {
+			"planner": "Il pulsante calendario divide qualsiasi tratto in tappe giornaliere con dislivello, tempi, acqua e meteo per giorno.",
+			"tripBrief": "Nel pianificatore, \"Trip brief\" esporta un PDF stampabile o un DOCX modificabile del piano completo con mappe e info di emergenza.",
+			"progress": "Il pulsante con la spunta traccia i tratti percorsi - automaticamente dal GPS, dalla selezione del righello o da una traccia importata."
+		},
+		"offlineHeading": "Offline",
+		"offline": {
+			"precache": "Il pannello cache pre-scarica tutto il corridoio del sentiero (tile, luoghi, foto) per usarlo senza segnale; si risincronizza sul Wi-Fi.",
+			"gps": "GPS, pannello di emergenza e progresso funzionano completamente offline una volta salvato il corridoio."
+		}
 	}
 }
