@@ -99,6 +99,9 @@ export interface TripBriefDay {
 	 *  caller's resolver. Absent when the pack-weight feature is off or the
 	 *  stage has no meaningful dry stretch. */
 	waterCarryLabel?: string;
+	/** PNG data URL of the day's elevation profile, attached by the modal
+	 *  after assembly (canvas is a browser API; the assembler stays pure). */
+	elevationThumb?: string;
 }
 
 export interface TripBriefOverview {

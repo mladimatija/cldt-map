@@ -13,6 +13,7 @@
 import { formatEta } from '@/lib/distance-utils';
 import { formatElevation } from '@/lib/utils';
 import type { TripBrief } from '@/lib/trip-brief';
+import { dataUrlToBytes } from './elevation-thumbnail';
 import {
 	emergencyLines,
 	dayHeader,
@@ -42,7 +43,8 @@ export async function exportTripBriefDocx(args: TripBriefDocxArgs): Promise<void
 		onProgress?.(step, totalSteps);
 	};
 
-	const { Document, Packer, Paragraph, HeadingLevel, TextRun, AlignmentType, LevelFormat } = await import('docx');
+	const { Document, Packer, Paragraph, HeadingLevel, TextRun, AlignmentType, LevelFormat, ImageRun } =
+		await import('docx');
 	type DocxParagraph = InstanceType<typeof Paragraph>;
 
 	// ── Section builders (closures over imported docx classes) ────────────────
@@ -130,6 +132,19 @@ export async function exportTripBriefDocx(args: TripBriefDocxArgs): Promise<void
 				],
 			}),
 		);
+		if (day.elevationThumb) {
+			out.push(
+				new Paragraph({
+					children: [
+						new ImageRun({
+							data: dataUrlToBytes(day.elevationThumb),
+							transformation: { width: 522, height: 90 },
+							type: 'png',
+						}),
+					],
+				}),
+			);
+		}
 		if (day.waterCarryLabel) {
 			out.push(new Paragraph({ children: [new TextRun({ text: day.waterCarryLabel, color: '0e7490' })] }));
 		}
