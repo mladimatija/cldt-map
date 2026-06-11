@@ -66,6 +66,7 @@ export function MapControlsHelpPanel(): React.ReactElement {
 				['sos', t('gestures.sos')],
 				['gpxDrop', t('gestures.gpxDrop')],
 				['poiList', t('gestures.poiList')],
+				['waypoint', t('gestures.waypoint')],
 			])}
 
 			{section(t('planningHeading'), [

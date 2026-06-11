@@ -60,7 +60,8 @@
 			"completionTracking": "Praćenje prijeđenih dionica - označi što si prehodao: automatski iz GPS-a dok si na stazi, ručno iz odabira ravnalom ili cijelih dionica A/B/C, ili uvozom snimljene GPX rute. Prijeđene dionice crtaju se zeleno preko bilo kojeg stila staze; ploča napretka i oblačić lokacije prikazuju ukupni i napredak po dionicama",
 			"helpPanel": "Pomoć u aplikaciji - gumb ? otvara tematski organiziran pregled: osnove karte, profil visine, skrivene geste (dugi pritisak SOS-a, povlačenje GPX datoteke), alati za planiranje i offline ponašanje",
 			"upNext": "Prikaz \"Slijedi\" - najbliži izvor vode, sklonište i grad ispred vas, s udaljenostima, izravno u panelu udaljenosti",
-			"packWeight": "Težina ruksaka i nošenje vode - preporuke \"ponesite do X L\" po etapi iz vaše osnovne težine i potrošnje, metrički ili imperijalno"
+			"packWeight": "Težina ruksaka i nošenje vode - preporuke \"ponesite do X L\" po etapi iz vaše osnovne težine i potrošnje, metrički ili imperijalno",
+			"waypointsJournal": "Vlastite točke i dnevnik puta - dugi pritisak na kartu za osobne oznake s bilješkama, dnevnik s datumima, izvoz u GPX/Markdown; sve ostaje na vašem uređaju"
 		},
 		"dataAttribution": "Podaci i atribucija",
 		"dataAttributionDesc": "Podatke o stazi pruža organizacija Udruga Long Distance Trail Hrvatska (LDTH). Karte dolaze od OpenStreetMap, OpenTopoMap, CyclOSM i drugih pružatelja. Hrvatske topografske karte su od Državne geodetske uprave (DGU). Meteorološki podaci dolaze od DHMZ-a (Državni hidrometeorološki zavod) i Open-Meteo. Radarske pločice osigurava RainViewer. Podaci o sezonskom stanju puta, upozorenja o opasnostima i podaci o stanicama gorske službe spašavanja preuzeti su od HGSS-a (Hrvatska gorska služba spašavanja), HPS-a (Hrvatski planinarski savez) te uprava nacionalnih parkova (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) i Parka prirode Velebit. Podaci prikazani na ovoj stranici možda ne odražavaju najnovije stanje. U slučaju sumnje, uvijek provjerite službene izvore.",
@@ -887,7 +888,20 @@
 		"clear": "Obriši sav napredak",
 		"confirmClear": "Obrisati sav napredak?",
 		"confirmYes": "Obriši",
-		"confirmNo": "Zadrži"
+		"confirmNo": "Zadrži",
+		"waypointsHeading": "Moje točke",
+		"waypointDelete": "Obriši",
+		"exportWaypoints": "Izvezi točke (GPX)",
+		"noWaypoints": "Još nema točaka. Dugo pritisnite (ili desni klik) na kartu za dodavanje.",
+		"journalHeading": "Dnevnik puta",
+		"journalRangeLine": "Dionica: {range}",
+		"noEntries": "Još nema zapisa u dnevniku.",
+		"entryDateLabel": "Datum zapisa",
+		"entryTextLabel": "Tekst zapisa",
+		"entryPlaceholder": "Kakav je bio dan?",
+		"attachRuler": "Priloži odabir ravnala ({range})",
+		"addEntry": "Dodaj zapis",
+		"exportJournal": "Izvezi (.md)"
 	},
 	"help": {
 		"title": "Pomoć",
@@ -902,7 +916,8 @@
 		"gestures": {
 			"sos": "Dugo pritisni crveni SOS gumb za offline ploču za hitne slučajeve: koordinate, Plus kod, najbliži prilaz cestom, HGSS i poziv 112 jednim dodirom.",
 			"gpxDrop": "Povuci i ispusti snimljenu .gpx datoteku bilo gdje na kartu da preklopiš svoju rutu i usporediš je sa službenom stazom.",
-			"poiList": "U popisu mjesta upiši broj (\"100 km\") za skok na tu točku; strelice za navigaciju, S označava retke za GPX izvoz."
+			"poiList": "U popisu mjesta upiši broj (\"100 km\") za skok na tu točku; strelice za navigaciju, S označava retke za GPX izvoz.",
+			"waypoint": "Dugo pritisnite (ili desni klik) bilo gdje na karti za osobnu točku s bilješkom."
 		},
 		"planningHeading": "Alati za planiranje",
 		"planning": {
@@ -916,5 +931,15 @@
 			"gps": "GPS, ploča za hitne slučajeve i tvoj napredak rade potpuno offline čim je koridor spremljen."
 		},
 		"officialAppNote": "FarOut je službena CLDT aplikacija. Ova karta je neovisan projekt isključivo za istraživačke i edukativne svrhe - ključne informacije provjerite u službenim izvorima."
+	},
+	"waypoints": {
+		"defaultName": "Točka",
+		"nameLabel": "Naziv točke",
+		"noteLabel": "Bilješka",
+		"notePlaceholder": "Dodajte bilješku (zaliha vode, kamp...)",
+		"atKm": "na {distance}",
+		"offTrail": "izvan staze",
+		"save": "Spremi",
+		"delete": "Obriši"
 	}
 }

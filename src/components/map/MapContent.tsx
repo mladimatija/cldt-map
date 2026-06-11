@@ -59,6 +59,10 @@ const TrailDistanceMarkers = dynamic(
 const PoiMarkers = dynamic(() => import('@/components/map/PoiMarkers').then((m) => ({ default: m.PoiMarkers })), {
 	ssr: false,
 });
+const UserWaypointMarkers = dynamic(
+	() => import('@/components/map/UserWaypointMarkers').then((m) => ({ default: m.UserWaypointMarkers })),
+	{ ssr: false },
+);
 const PoiImageLightbox = dynamic(
 	() => import('@/components/map/PoiImageLightbox').then((m) => ({ default: m.PoiImageLightbox })),
 	{ ssr: false },
@@ -187,6 +191,7 @@ export default function MapContent(): React.ReactElement {
 			<ImportedTrackLayer />
 			<TrailDistanceMarkers />
 			<PoiMarkers />
+			<UserWaypointMarkers />
 			<PoiImageLightbox />
 			<MapMarkers />
 			<SunsetSunriseMarkers />

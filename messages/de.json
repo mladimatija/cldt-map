@@ -60,7 +60,8 @@
 			"completionTracking": "Abschnitts-Fortschritt - markiere, was du gewandert bist: automatisch per GPS auf dem Trail, manuell aus der Lineal-Auswahl oder ganzen A/B/C-Abschnitten, oder per Import eines aufgezeichneten GPX-Tracks. Erledigte Abschnitte werden grün über jeden Trail-Stil gezeichnet; Fortschrittspanel und Standort-Tooltip zeigen Gesamt- und Abschnittsfortschritt",
 			"helpPanel": "In-App-Hilfe - der ?-Button öffnet eine thematisch gegliederte Referenz: Kartengrundlagen, Höhenprofil, versteckte Gesten (SOS gedrückt halten, GPX-Drag-and-drop), Planungswerkzeuge und Offline-Verhalten",
 			"upNext": "\"Als Nächstes\"-Ansicht - die nächste Wasserstelle, Schutzhütte und der nächste Ort vor Ihnen, mit Entfernungen, direkt im Distanzpanel",
-			"packWeight": "Rucksackgewicht & Wassertransport - Empfehlungen \"bis zu X L mitnehmen\" pro Etappe aus Basisgewicht und Verbrauch, metrisch oder imperial"
+			"packWeight": "Rucksackgewicht & Wassertransport - Empfehlungen \"bis zu X L mitnehmen\" pro Etappe aus Basisgewicht und Verbrauch, metrisch oder imperial",
+			"waypointsJournal": "Eigene Wegpunkte & Reisetagebuch - langes Drücken auf die Karte für persönliche Marker mit Notizen, datiertes Tagebuch, Export als GPX/Markdown; alles bleibt auf dem Gerät"
 		},
 		"dataAttribution": "Daten & Urheberrecht",
 		"dataAttributionDesc": "Trail-Daten werden von der Udruga Long Distance Trail Hrvatska (LDTH) bereitgestellt. Kartenkacheln kommen von OpenStreetMap, OpenTopoMap, CyclOSM und anderen Anbietern. Kroatische topografische Karten stammen vom Staatlichen Geodätischen Amt (DGU). Wetterdaten kommen von DHMZ (Kroatischer Wetterdienst) und Open-Meteo. Radarkacheln werden von RainViewer bereitgestellt. Daten zum saisonalen Wegzustand, Gefahrenwarnungen sowie Standorte der Bergwacht-Stationen stammen von HGSS (Kroatische Bergrettung), HPS (Kroatischer Bergsteigerverband) und den Verwaltungen der Nationalparks (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) sowie Naturpark Velebit. Die auf dieser Seite angezeigten Daten entsprechen möglicherweise nicht dem aktuellen Stand. Im Zweifelsfall bitte immer die offiziellen Quellen prüfen.",
@@ -887,7 +888,20 @@
 		"clear": "Gesamten Fortschritt löschen",
 		"confirmClear": "Gesamten Fortschritt löschen?",
 		"confirmYes": "Löschen",
-		"confirmNo": "Behalten"
+		"confirmNo": "Behalten",
+		"waypointsHeading": "Meine Wegpunkte",
+		"waypointDelete": "Löschen",
+		"exportWaypoints": "Wegpunkte exportieren (GPX)",
+		"noWaypoints": "Noch keine Wegpunkte. Lange drücken (oder Rechtsklick) auf die Karte zum Hinzufügen.",
+		"journalHeading": "Reisetagebuch",
+		"journalRangeLine": "Abschnitt: {range}",
+		"noEntries": "Noch keine Einträge.",
+		"entryDateLabel": "Datum des Eintrags",
+		"entryTextLabel": "Text des Eintrags",
+		"entryPlaceholder": "Wie war der Tag?",
+		"attachRuler": "Lineal-Auswahl anhängen ({range})",
+		"addEntry": "Eintrag hinzufügen",
+		"exportJournal": "Exportieren (.md)"
 	},
 	"help": {
 		"title": "Hilfe",
@@ -902,7 +916,8 @@
 		"gestures": {
 			"sos": "Halte den roten SOS-Button gedrückt für das Offline-Notfallpanel: Koordinaten, Plus Code, nächste Straßenanbindung, HGSS-Bergrettung und 112 mit einem Tipp.",
 			"gpxDrop": "Ziehe eine aufgezeichnete .gpx-Datei irgendwo auf die Karte, um deine Wanderung zu überlagern und mit dem offiziellen Trail zu vergleichen.",
-			"poiList": "In der Ortsliste eine Zahl tippen (\"100 km\") springt dorthin; Pfeiltasten navigieren, S wählt Zeilen für den GPX-Export."
+			"poiList": "In der Ortsliste eine Zahl tippen (\"100 km\") springt dorthin; Pfeiltasten navigieren, S wählt Zeilen für den GPX-Export.",
+			"waypoint": "Lange drücken (oder Rechtsklick) irgendwo auf der Karte für einen persönlichen Wegpunkt mit Notiz."
 		},
 		"planningHeading": "Planungswerkzeuge",
 		"planning": {
@@ -916,5 +931,15 @@
 			"gps": "GPS, Notfallpanel und dein Fortschritt funktionieren vollständig offline, sobald der Korridor gespeichert ist."
 		},
 		"officialAppNote": "FarOut ist die offizielle CLDT-App. Diese Karte ist ein unabhängiges Projekt nur für Forschungs- und Bildungszwecke - prüfen Sie kritische Informationen anhand offizieller Quellen."
+	},
+	"waypoints": {
+		"defaultName": "Wegpunkt",
+		"nameLabel": "Wegpunktname",
+		"noteLabel": "Notiz",
+		"notePlaceholder": "Notiz hinzufügen (Wasserdepot, Lagerplatz...)",
+		"atKm": "bei {distance}",
+		"offTrail": "abseits des Weges",
+		"save": "Speichern",
+		"delete": "Löschen"
 	}
 }
