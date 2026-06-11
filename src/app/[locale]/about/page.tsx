@@ -40,6 +40,7 @@ export default function AboutPage(): React.ReactNode {
 						<li className="mb-2">{t('mapFeaturesList.elevation')}</li>
 						<li className="mb-2">{t('mapFeaturesList.ruler')}</li>
 						<li className="mb-2">{t('mapFeaturesList.gpxExport')}</li>
+						<li className="mb-2">{t('mapFeaturesList.printExport')}</li>
 						<li className="mb-2">{t('mapFeaturesList.layers')}</li>
 						<li className="mb-2">{t('mapFeaturesList.location')}</li>
 						<li className="mb-2">{t('mapFeaturesList.share')}</li>
@@ -59,6 +60,10 @@ export default function AboutPage(): React.ReactNode {
 						<li className="mb-2">{t('mapFeaturesList.distanceMarkers')}</li>
 						<li className="mb-2">{t('mapFeaturesList.pois')}</li>
 						<li className="mb-2">{t('mapFeaturesList.tripBrief')}</li>
+						<li className="mb-2">{t('mapFeaturesList.offRouteAlert')}</li>
+						<li className="mb-2">{t('mapFeaturesList.waterIntelligence')}</li>
+						<li className="mb-2">{t('mapFeaturesList.completionTracking')}</li>
+						<li className="mb-2">{t('mapFeaturesList.helpPanel')}</li>
 					</ul>
 				</article>
 
