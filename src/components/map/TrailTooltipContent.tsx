@@ -23,6 +23,11 @@ export interface TrailTooltipData {
 	distanceToEndPct: string;
 	/** Set to the formatted ruler-end distance when the ruler is active; null otherwise. */
 	distanceToSection: string | null;
+	/** Personal completion progress (section completion tracking); null hides
+	 *  the row. Distinct from distanceFromStart, which is the position along
+	 *  the route, not what the hiker has actually completed. */
+	hiked?: string | null;
+	hikedPct?: string | null;
 	accumulatedGain: string | null;
 	accumulatedGainPct: string | null;
 	accumulatedLoss: string | null;
@@ -49,6 +54,7 @@ export interface TrailTooltipLabels {
 	distanceFromStart: string;
 	distanceToEnd: string;
 	distanceToSection: string;
+	hiked?: string;
 	accumulatedGain: string;
 	accumulatedLoss: string;
 	temperature: string;
@@ -136,6 +142,12 @@ export function TrailTooltipContent({
 						<span className="font-medium">{labels.distanceToEnd}</span> {trailData.distanceToEnd} (
 						{trailData.distanceToEndPct}%)
 					</div>
+					{trailData.hiked && labels.hiked && (
+						<div>
+							<span className="font-medium">{labels.hiked}</span> {trailData.hiked}
+							{trailData.hikedPct && ` (${trailData.hikedPct}%)`}
+						</div>
+					)}
 					{trailData.distanceToSection !== null && (
 						<div>
 							<span className="font-medium">{labels.distanceToSection}</span> {trailData.distanceToSection}

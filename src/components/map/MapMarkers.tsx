@@ -9,6 +9,7 @@ import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/li
 import { isWithinMapBoundary, getNavigateToPointUrl, formatDistance, formatElevation } from '@/lib/utils';
 import { TRAIL_OFF_TRAIL_THRESHOLD_M } from '@/lib/config';
 import { buildWindCompassPayload, computeDistanceRemaining, findNearestPointIndex } from '@/lib/distance-utils';
+import { totalCompletedKm } from '@/lib/completion';
 import { useCompassHeading } from '@/hooks/useCompassHeading';
 import {
 	fetchWeather,
@@ -29,6 +30,9 @@ import {
 
 /** @see TRAIL_OFF_TRAIL_THRESHOLD_M in src/lib/config.ts */
 const OFF_TRAIL_DISTANCE_M = TRAIL_OFF_TRAIL_THRESHOLD_M;
+
+/** Pane for the persistent location card; z-index in map.css. */
+const USER_TOOLTIP_PANE = 'user-location-tooltip-pane';
 
 /**
  * User location marker and optional "off trail" tooltip with the "navigate-to-trail" link.
@@ -71,6 +75,7 @@ export default function MapMarkers(): React.ReactElement | null {
 	const showUserMarker = useMapStore((state: MapStoreState) => state.showUserMarker);
 	const permissionStatus = useMapStore((state: MapStoreState) => state.permissionStatus);
 	const rulerRange = useMapStore((state: MapStoreState) => state.rulerRange);
+	const completedIntervals = useMapStore((state: MapStoreState) => state.completedIntervals);
 	const units = useMapStore((state: MapStoreState) => state.units);
 	const distancePrecision = useMapStore((state: MapStoreState) => state.distancePrecision);
 	const maybeRunPredictivePrecache = useMapStore((state: MapStoreState) => state.maybeRunPredictivePrecache);
@@ -205,10 +210,22 @@ export default function MapMarkers(): React.ReactElement | null {
 			accumulatedGainPct: gainPct,
 			accumulatedLoss: best.elevationLossFromStart > 0 ? formatElevation(best.elevationLossFromStart, units) : null,
 			accumulatedLossPct: lossPct,
+			// Personal progress from section completion tracking - shown only
+			// once something is marked, so pre-feature tooltips look unchanged.
+			...((): { hiked?: string; hikedPct?: string } => {
+				const doneKm = totalCompletedKm(completedIntervals);
+				if (doneKm <= 0) return {};
+				const totalKm = trailMetadata?.totalDistance ?? 0;
+				return {
+					hiked: formatDistance(doneKm, units, distancePrecision),
+					...(totalKm > 0 && { hikedPct: Math.min(100, (doneKm / totalKm) * 100).toFixed(1) }),
+				};
+			})(),
 		};
 	}, [
 		closestPoint,
 		rulerRange,
+		completedIntervals,
 		enhancedTrailPoints,
 		nearestEnhancedPointIdx,
 		trailMetadata,
@@ -304,6 +321,7 @@ export default function MapMarkers(): React.ReactElement | null {
 					section: tRoute('tooltipSection'),
 					elevation: tRoute('tooltipElevation'),
 					distanceFromStart: `${tOverlay('traveled')}:`,
+					hiked: `${tOverlay('hiked')}:`,
 					distanceToEnd: `${tOverlay('toTrailEnd')}:`,
 					distanceToSection: `${tOverlay('toSectionEnd')}:`,
 					accumulatedGain: tRoute('tooltipAccumulatedGain'),
@@ -382,11 +400,19 @@ export default function MapMarkers(): React.ReactElement | null {
 		tooltipRootRef.current = createRoot(container);
 		renderTooltipContent();
 
+		// Dedicated pane: the default tooltip pane is flattened to --z-map by
+		// the global pane rule, which let seasonal-status chip markers
+		// (z-map-tooltips + 2) paint over the location card. z-index lives in
+		// map.css (.user-location-tooltip-pane).
+		if (!map.getPane(USER_TOOLTIP_PANE)) {
+			map.createPane(USER_TOOLTIP_PANE).classList.add(USER_TOOLTIP_PANE);
+		}
 		marker.bindTooltip(container, {
 			offset: L.point(0, -15),
 			direction: 'top',
 			permanent: true,
 			className: 'map-tooltip map-tooltip--wide',
+			pane: USER_TOOLTIP_PANE,
 		});
 		marker.openTooltip();
 
