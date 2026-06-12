@@ -4,9 +4,11 @@ import { useEffect, useRef } from 'react';
 import { useMap } from 'react-leaflet';
 import L from 'leaflet';
 import { useLocale, useTranslations } from 'next-intl';
+import { usePathname, useRouter } from '@/i18n/navigation';
 import { useMapStore, useStore, type MapStoreState } from '@/lib/store';
 import { newId, nextWaypointName, type UserWaypoint } from '@/lib/user-waypoints';
-import { formatDistance } from '@/lib/utils';
+import { buildWaypointShareUrl, clearShareUrlParams, formatDistance, getInitialShareUrlParams } from '@/lib/utils';
+import { resolveShareUrlForCopy } from '@/lib/share-shortener-client';
 import { formatIsoDate } from '@/lib/date-format';
 
 const WAYPOINT_PANE = 'userWaypointPane';
@@ -40,17 +42,22 @@ function buildWaypointIcon(): L.DivIcon {
  */
 export function UserWaypointMarkers(): null {
 	const map = useMap();
+	const router = useRouter();
+	const pathname = usePathname();
 	const t = useTranslations('waypoints');
+	const tPois = useTranslations('pois');
 	const locale = useLocale();
 	const userWaypoints = useMapStore((s: MapStoreState) => s.userWaypoints);
 	const updateUserWaypoint = useMapStore((s: MapStoreState) => s.updateUserWaypoint);
 	const removeUserWaypoint = useMapStore((s: MapStoreState) => s.removeUserWaypoint);
 	const pendingOpenWaypointId = useMapStore((s: MapStoreState) => s.pendingOpenWaypointId);
+	const requestOpenWaypoint = useMapStore((s: MapStoreState) => s.requestOpenWaypoint);
 	const clearPendingOpenWaypoint = useMapStore((s: MapStoreState) => s.clearPendingOpenWaypoint);
 	const units = useMapStore((s: MapStoreState) => s.units);
 	const distancePrecision = useMapStore((s: MapStoreState) => s.distancePrecision);
 
 	const markersRef = useRef<Map<string, L.Marker>>(new Map());
+	const deepLinkAppliedRef = useRef(false);
 
 	// Dedicated pane just above the POI markers so personal pins are never
 	// buried under clusters; created once, DOM-ordered after markerPane.
@@ -87,6 +94,21 @@ export function UserWaypointMarkers(): null {
 		};
 	}, [map, t]);
 
+	// Consume `?wp=<id>` once per page load (including after a `/s/{code}` redirect).
+	// ShareUrlHandler applies `trip` state first so imported waypoints keep their ids.
+	useEffect(() => {
+		if (deepLinkAppliedRef.current) return;
+		const params = getInitialShareUrlParams();
+		const targetId = params?.wp;
+		if (!targetId) return;
+		deepLinkAppliedRef.current = true;
+		if (userWaypoints.some((wp) => wp.id === targetId)) {
+			requestOpenWaypoint(targetId);
+		}
+		clearShareUrlParams();
+		router.replace(pathname);
+	}, [userWaypoints, requestOpenWaypoint, pathname, router]);
+
 	// Render markers; full rebuild on collection/unit changes (the list is
 	// small - personal annotations, not a dataset).
 	useEffect(() => {
@@ -104,6 +126,14 @@ export function UserWaypointMarkers(): null {
 			// Same shell as POI popups: chrome lives on .poi-popup's content
 			// wrapper CSS, so the look is identical to every other map popup.
 			marker.bindPopup(() => buildWaypointPopup(wp), { className: 'poi-popup', maxWidth: 300 });
+			marker.on('popupopen', () => {
+				wireWaypointShareButton(marker, wp, {
+					shareCopied: tPois('shareCopied'),
+					shareCopiedShort: tPois('shareCopiedShort'),
+					shareFailed: tPois('shareFailed'),
+					shareLink: tPois('shareLink'),
+				});
+			});
 			marker.addTo(map);
 			markers.set(wp.id, marker);
 		}
@@ -164,7 +194,13 @@ export function UserWaypointMarkers(): null {
 				markers.get(wp.id)?.closePopup();
 			});
 
-			buttonRow.append(deleteBtn, saveBtn);
+			const shareBtn = document.createElement('button');
+			shareBtn.type = 'button';
+			shareBtn.textContent = tPois('shareLink');
+			shareBtn.className = 'poi-popup__share';
+			shareBtn.dataset.waypointShare = wp.id;
+
+			buttonRow.append(deleteBtn, saveBtn, shareBtn);
 			root.append(nameInput, noteArea, metaLine, buttonRow);
 			return root;
 		}
@@ -173,7 +209,7 @@ export function UserWaypointMarkers(): null {
 			for (const m of markers.values()) m.remove();
 			markers.clear();
 		};
-	}, [map, userWaypoints, units, distancePrecision, t, locale, updateUserWaypoint, removeUserWaypoint]);
+	}, [map, userWaypoints, units, distancePrecision, t, tPois, locale, updateUserWaypoint, removeUserWaypoint]);
 
 	// Panel-initiated open (and the just-created flow): fly to the waypoint
 	// and open its popup once the marker exists.
@@ -190,4 +226,48 @@ export function UserWaypointMarkers(): null {
 	}, [pendingOpenWaypointId, userWaypoints, map, clearPendingOpenWaypoint]);
 
 	return null;
+}
+
+function wireWaypointShareButton(
+	marker: L.Marker,
+	wp: UserWaypoint,
+	labels: { shareLink: string; shareCopied: string; shareCopiedShort: string; shareFailed: string },
+): void {
+	const popup = marker.getPopup();
+	if (!popup) return;
+	const el = popup.getElement();
+	if (!el) return;
+	const btn = el.querySelector<HTMLButtonElement>(`[data-waypoint-share="${cssEscape(wp.id)}"]`);
+	if (!btn) return;
+	if (btn.dataset.wired === '1') return;
+	btn.dataset.wired = '1';
+	const originalLabel = btn.textContent ?? labels.shareLink;
+	btn.addEventListener('click', async (e) => {
+		e.preventDefault();
+		const longUrl = buildWaypointShareUrl(wp.id);
+		const { url, short } = await resolveShareUrlForCopy(longUrl, {
+			useShortLinks: useMapStore.getState().shareShortLinks,
+			online: navigator.onLine,
+		});
+		let ok = false;
+		try {
+			if (typeof navigator !== 'undefined' && navigator.clipboard?.writeText) {
+				await navigator.clipboard.writeText(url);
+				ok = true;
+			}
+		} catch {
+			ok = false;
+		}
+		btn.textContent = ok ? (short ? labels.shareCopiedShort : labels.shareCopied) : labels.shareFailed;
+		window.setTimeout(() => {
+			btn.textContent = originalLabel;
+		}, 1800);
+	});
+}
+
+function cssEscape(value: string): string {
+	if (typeof CSS !== 'undefined' && typeof CSS.escape === 'function') {
+		return CSS.escape(value);
+	}
+	return value.replace(/["\\]/g, '\\$&');
 }
