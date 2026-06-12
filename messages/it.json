@@ -588,13 +588,16 @@
 		"elapsed": "Durata",
 		"avgPace": "Passo medio",
 		"errorMalformed": "Impossibile leggere il file GPX. Verificare che sia un file GPX valido.",
-		"errorTooLarge": "Il file GPX è troppo grande (max. 10 MB).",
+		"errorTooLarge": "Il file GPX è troppo grande (max 50 MB).",
 		"alreadyImported": "Questa traccia è già stata importata.",
 		"pickFile": "Scegli file",
 		"distanceFromTrail": "{distance} m dal sentiero",
 		"moving": "Tempo in movimento",
 		"maxDeviation": "Dev. massima",
-		"coverage": "Copertura"
+		"coverage": "Sul sentiero",
+		"colorLabel": "Colore della traccia per {trackName}",
+		"showTrack": "Mostra {trackName} sulla mappa",
+		"hideTrack": "Nascondi {trackName} dalla mappa"
 	},
 	"stagePlanner": {
 		"title": "Pianificatore tappe",

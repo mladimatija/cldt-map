@@ -2,9 +2,9 @@ import localforage from 'localforage';
 import type { ParsedTrack } from './gpx-parser';
 import type { ImportedTrack, TrackStats } from './store/types';
 import { haversineDistanceM as haversineM } from './haversine';
-import { buildSpatialGrid } from './spatial-grid';
+import { buildSpatialGrid, type SpatialGrid } from './spatial-grid';
 
-const MAX_GPX_SIZE = 10_000_000; // 10 MB
+const MAX_GPX_SIZE = 50_000_000; // 50 MB
 
 const importedTracksStore = localforage.createInstance({
 	name: 'cldt-map',
@@ -37,13 +37,73 @@ function isValidImportedTrack(value: unknown): value is ImportedTrack {
 	);
 }
 
+/** Douglas-Peucker tolerance for imported tracks, meters. GPS recorders emit
+ *  a point every 1-5 m; 5 m keeps the visual shape and every stat the app
+ *  derives (completion uses a 150 m gate, coverage a 25 m gate) while cutting
+ *  a recorded multi-day hike by 80-95% - the difference between a panel that
+ *  opens instantly and one that locks the main thread for seconds. */
+const SIMPLIFY_TOLERANCE_M = 5;
+
+/** Iterative Douglas-Peucker on track points (equirectangular meters).
+ *  Keeps the original point objects, so timestamps and elevation survive
+ *  for the moving-time stats. Endpoints always survive. */
+export function simplifyTrackPoints<T extends { lat: number; lng: number }>(points: T[], toleranceM: number): T[] {
+	if (points.length <= 2) return points;
+	const cosLat = Math.cos((points[0].lat * Math.PI) / 180);
+	const M_PER_DEG = 111_320;
+	const x = (p: T): number => p.lng * cosLat * M_PER_DEG;
+	const y = (p: T): number => p.lat * M_PER_DEG;
+	const keep = new Uint8Array(points.length);
+	keep[0] = 1;
+	keep[points.length - 1] = 1;
+	const stack: [number, number][] = [[0, points.length - 1]];
+	while (stack.length > 0) {
+		const [lo, hi] = stack.pop() as [number, number];
+		if (hi - lo < 2) continue;
+		const ax = x(points[lo]);
+		const ay = y(points[lo]);
+		const bx = x(points[hi]);
+		const by = y(points[hi]);
+		const dx = bx - ax;
+		const dy = by - ay;
+		const len2 = dx * dx + dy * dy;
+		let maxD2 = -1;
+		let maxIdx = -1;
+		for (let i = lo + 1; i < hi; i++) {
+			const px = x(points[i]) - ax;
+			const py = y(points[i]) - ay;
+			let d2: number;
+			if (len2 === 0) {
+				d2 = px * px + py * py;
+			} else {
+				const t = Math.max(0, Math.min(1, (px * dx + py * dy) / len2));
+				const ex = px - t * dx;
+				const ey = py - t * dy;
+				d2 = ex * ex + ey * ey;
+			}
+			if (d2 > maxD2) {
+				maxD2 = d2;
+				maxIdx = i;
+			}
+		}
+		if (maxD2 > toleranceM * toleranceM) {
+			keep[maxIdx] = 1;
+			stack.push([lo, maxIdx], [maxIdx, hi]);
+		}
+	}
+	const out: T[] = [];
+	for (let i = 0; i < points.length; i++) if (keep[i]) out.push(points[i]);
+	return out;
+}
+
 export async function saveImportedTrack(
 	rawXml: string,
 	parsed: ParsedTrack,
 	existingColorCount: number,
 ): Promise<ImportedTrack> {
 	if (rawXml.length > MAX_GPX_SIZE) {
-		throw new Error(`GPX file exceeds maximum allowed size of ${MAX_GPX_SIZE / 1_000_000} MB`);
+		// 'too large' is matched by the dropzone's error mapping.
+		throw new Error(`GPX file too large: exceeds maximum of ${MAX_GPX_SIZE / 1_000_000} MB`);
 	}
 
 	const id = fnv1aHash(rawXml);
@@ -57,9 +117,10 @@ export async function saveImportedTrack(
 			.replace(/<[^>]*>/g, '')
 			.slice(0, 255)
 			.replace(/[\x00-\x1F]/g, ''),
-		points: parsed.points,
+		points: simplifyTrackPoints(parsed.points, SIMPLIFY_TOLERANCE_M),
 		importedAt: Date.now(),
 		color: TRACK_COLOR_PALETTE[existingColorCount % TRACK_COLOR_PALETTE.length],
+		visible: true,
 	};
 	await importedTracksStore.setItem(id, track);
 	return track;
@@ -75,7 +136,39 @@ export async function removeImportedTrack(id: string): Promise<void> {
 	await importedTracksStore.removeItem(id);
 }
 
-export function computeTrackStats(track: ImportedTrack, enhancedPoints: { lat: number; lng: number }[]): TrackStats {
+/** Persists user-adjustable fields (color, visibility) for a stored track. */
+export async function persistImportedTrackPatch(
+	id: string,
+	patch: Partial<Pick<ImportedTrack, 'color' | 'visible'>>,
+): Promise<void> {
+	const existing = await importedTracksStore.getItem<ImportedTrack>(id);
+	if (!existing) return;
+	await importedTracksStore.setItem(id, { ...existing, ...patch });
+}
+
+/** Stats memo, keyed by content-hash id + trail size. Track points are
+ *  immutable after import (the id IS the content hash), so entries never go
+ *  stale; the trail-size component invalidates if a different GPX loads. */
+const statsCache = new Map<string, TrackStats>();
+
+export function computeTrackStats(
+	track: ImportedTrack,
+	enhancedPoints: { lat: number; lng: number }[],
+	sharedGrid?: SpatialGrid,
+): TrackStats {
+	const cacheKey = `${track.id}:${enhancedPoints.length}`;
+	const cached = statsCache.get(cacheKey);
+	if (cached) return cached;
+	const stats = computeTrackStatsUncached(track, enhancedPoints, sharedGrid);
+	statsCache.set(cacheKey, stats);
+	return stats;
+}
+
+function computeTrackStatsUncached(
+	track: ImportedTrack,
+	enhancedPoints: { lat: number; lng: number }[],
+	sharedGrid?: SpatialGrid,
+): TrackStats {
 	if (track.points.length === 0) {
 		return {
 			totalDistanceM: 0,
@@ -115,31 +208,44 @@ export function computeTrackStats(track: ImportedTrack, enhancedPoints: { lat: n
 
 	const avgMovingPaceSecPerKm = totalDistanceM > 0 && totalMovingSec > 0 ? totalMovingSec / (totalDistanceM / 1000) : 0;
 
-	// Exact nearest-trail-point lookups via a spatial grid (built once per call,
-	// O(trail) build + ~O(1) per track point). Replaces the previous hint-based
-	// monotone scan, which assumed the track follows the trail in one direction:
-	// out-and-back hikes or tracks recorded against the SOBO point order could
-	// degrade to a full scan per point and its early-break heuristic could
-	// settle on a local minimum across switchbacks, overstating deviation.
+	// Deviation and coverage are computed over the track RESAMPLED every 50 m,
+	// not over the stored vertices: import-time simplification keeps few
+	// vertices on straight stretches, which would starve both metrics (and
+	// "covered" used to mean "% of the whole 2,220 km trail", a number that
+	// rounds to 0 for any day hike). Coverage now answers the question a
+	// hiker actually asks: what share of MY TRACK followed the official
+	// route (within 25 m).
 	let maxDeviationM = 0;
 	let coveragePercent = 0;
 
-	if (enhancedPoints.length > 0) {
-		const grid = buildSpatialGrid(enhancedPoints);
-		const coverage = new Uint8Array(enhancedPoints.length);
-		let covered = 0;
-
-		for (const pt of trackPoints) {
-			const hit = grid.nearest(pt.lat, pt.lng);
-			if (!hit) continue;
+	if (enhancedPoints.length > 0 && trackPoints.length > 0) {
+		const grid = sharedGrid ?? buildSpatialGrid(enhancedPoints);
+		const SAMPLE_STEP_M = 50;
+		let samples = 0;
+		let onTrailSamples = 0;
+		const measure = (lat: number, lng: number): void => {
+			const hit = grid.nearest(lat, lng);
+			if (!hit) return;
+			samples++;
 			if (hit.distanceM > maxDeviationM) maxDeviationM = hit.distanceM;
-			if (hit.distanceM <= 25 && coverage[hit.index] === 0) {
-				coverage[hit.index] = 1;
-				covered++;
+			if (hit.distanceM <= 25) onTrailSamples++;
+		};
+		measure(trackPoints[0].lat, trackPoints[0].lng);
+		let carryM = 0;
+		for (let i = 1; i < trackPoints.length; i++) {
+			const a = trackPoints[i - 1];
+			const b = trackPoints[i];
+			const segM = haversineM(a.lat, a.lng, b.lat, b.lng);
+			if (segM === 0) continue;
+			let along = SAMPLE_STEP_M - carryM;
+			while (along <= segM) {
+				const f = along / segM;
+				measure(a.lat + (b.lat - a.lat) * f, a.lng + (b.lng - a.lng) * f);
+				along += SAMPLE_STEP_M;
 			}
+			carryM = (carryM + segM) % SAMPLE_STEP_M;
 		}
-
-		coveragePercent = (covered / enhancedPoints.length) * 100;
+		if (samples > 0) coveragePercent = (onTrailSamples / samples) * 100;
 	}
 
 	return {

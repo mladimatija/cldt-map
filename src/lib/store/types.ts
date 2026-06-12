@@ -361,6 +361,8 @@ export interface MapStoreState {
 	addImportedTrack: (track: ImportedTrack) => void;
 	removeImportedTrack: (id: string) => Promise<void>;
 	setImportedTracks: (tracks: ImportedTrack[]) => void;
+	/** Updates color/visibility in the store and persists to localforage. */
+	updateImportedTrack: (id: string, patch: Partial<Pick<ImportedTrack, 'color' | 'visible'>>) => void;
 	loadImportedTracksFromStorage: () => Promise<void>;
 
 	hoveredImportedTrackId: string | null;
@@ -495,7 +497,10 @@ export interface ImportedTrack {
 	name: string;
 	points: TrackPoint[];
 	importedAt: number; // Date.now()
-	color: string; // from TRACK_COLOR_PALETTE cycle
+	color: string; // from TRACK_COLOR_PALETTE cycle; user-adjustable
+	/** Hidden from the map without deleting; undefined means visible
+	 *  (pre-feature tracks stay shown). */
+	visible?: boolean;
 }
 
 export interface TrackStats {
@@ -504,5 +509,6 @@ export interface TrackStats {
 	totalMovingSec: number; // 0 if no timestamps
 	avgMovingPaceSecPerKm: number; // 0 if no distance or no timestamps
 	maxDeviationM: number;
+	/** Share of the TRACK that runs within 25 m of the official trail. */
 	coveragePercent: number;
 }

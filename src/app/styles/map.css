@@ -1194,3 +1194,25 @@ div:has(> .poi-sort-select__control) > span[class*='a11yText'] {
 	transform: scale(0);
 	width: 1px;
 }
+
+/* Imported-track color picker: native input[type=color] carries UA padding
+   and a bordered swatch wrapper that ignore width/height; strip them so the
+   control renders as a flat clickable swatch at the size the panel sets. */
+.track-color-input {
+	-webkit-appearance: none;
+	appearance: none;
+	padding: 0;
+	border: none;
+	background: transparent;
+}
+.track-color-input::-webkit-color-swatch-wrapper {
+	padding: 0;
+}
+.track-color-input::-webkit-color-swatch {
+	border: none;
+	border-radius: 3px;
+}
+.track-color-input::-moz-color-swatch {
+	border: none;
+	border-radius: 3px;
+}

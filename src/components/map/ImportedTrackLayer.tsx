@@ -5,6 +5,7 @@ import L from 'leaflet';
 import { useMap } from 'react-leaflet';
 import { useTranslations } from 'next-intl';
 import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
+import { buildSpatialGrid, type SpatialGrid } from '@/lib/spatial-grid';
 
 export default function ImportedTrackLayer(): null {
 	const map = useMap();
@@ -13,12 +14,22 @@ export default function ImportedTrackLayer(): null {
 	const setHoveredImportedTrackId = useMapStore((s: MapStoreState) => s.setHoveredImportedTrackId);
 	const enhancedTrailPoints = useStore((s: StoreState) => s.enhancedTrailPoints);
 
-	const polylinesRef = useRef<Map<string, L.Polyline>>(new Map());
+	const polylinesRef = useRef<Map<string, { poly: L.Polyline; color: string }>>(new Map());
+	/** One shared canvas renderer for every imported track: huge recorded
+	 *  hikes as SVG paths make every hover restyle and zoom reproject the
+	 *  whole DOM path; canvas redraws are an order of magnitude cheaper. */
+	const rendererRef = useRef<L.Canvas | null>(null);
 	const tooltipRef = useRef<L.Tooltip | null>(null);
 	// Keep enhancedTrailPoints in a ref so mousemove handlers always see the latest value
 	// without requiring polylines to be recreated on every trail-point update
 	const enhancedTrailPointsRef = useRef(enhancedTrailPoints);
 	const lastMoveRef = useRef(0);
+	/** Trail spatial grid for the hover tooltip, built lazily on first
+	 *  mousemove and rebuilt only when the trail changes. The previous
+	 *  forward scan started at trail km 0 and bailed on the first divergence,
+	 *  so hovering a track hundreds of km in reported the distance to the
+	 *  trailhead (six-digit "m from trail" values). */
+	const gridRef = useRef<{ grid: SpatialGrid; forLength: number } | null>(null);
 
 	useEffect(() => {
 		enhancedTrailPointsRef.current = enhancedTrailPoints;
@@ -26,19 +37,31 @@ export default function ImportedTrackLayer(): null {
 
 	useEffect(() => {
 		const existing = polylinesRef.current;
-		const newIds = new Set(importedTracks.map((t) => t.id));
+		// Hidden tracks are torn down entirely (not just transparent), so they
+		// cost nothing while hidden; re-showing rebuilds from the stored points.
+		const wantedIds = new Set(importedTracks.filter((t) => t.visible !== false).map((t) => t.id));
 
-		// Remove deleted tracks
-		for (const [id, poly] of existing) {
-			if (!newIds.has(id)) {
-				poly.remove();
+		// Remove deleted and hidden tracks
+		for (const [id, entry] of existing) {
+			if (!wantedIds.has(id)) {
+				entry.poly.remove();
 				existing.delete(id);
 			}
 		}
 
-		// Add new tracks
+		rendererRef.current ??= L.canvas({ padding: 0.3 });
+
 		for (const track of importedTracks) {
-			if (existing.has(track.id)) continue;
+			if (track.visible === false) continue;
+			// Live color update without rebuild
+			const present = existing.get(track.id);
+			if (present) {
+				if (present.color !== track.color) {
+					present.poly.setStyle({ color: track.color });
+					present.color = track.color;
+				}
+				continue;
+			}
 			const latlngs = track.points.map((p) => [p.lat, p.lng] as L.LatLngTuple);
 			if (latlngs.length === 0) continue;
 
@@ -46,7 +69,8 @@ export default function ImportedTrackLayer(): null {
 				color: track.color,
 				weight: 3,
 				opacity: 0.85,
-				smoothFactor: 1,
+				smoothFactor: 1.5,
+				renderer: rendererRef.current,
 			});
 
 			poly.on('mouseover', () => {
@@ -70,16 +94,13 @@ export default function ImportedTrackLayer(): null {
 				const pts = enhancedTrailPointsRef.current;
 				if (pts.length === 0) return;
 
-				const cursor = e.latlng;
-				let minDist = Infinity;
-				// Use hint-based forward scan to avoid full O(n) scan every move
-				for (const pt of pts) {
-					const d = cursor.distanceTo(L.latLng(pt.lat, pt.lng));
-					if (d < minDist) minDist = d;
-					else if (d > minDist + 200) break; // early exit when diverging
+				if (gridRef.current?.forLength !== pts.length) {
+					gridRef.current = { grid: buildSpatialGrid(pts), forLength: pts.length };
 				}
+				const hit = gridRef.current.grid.nearest(e.latlng.lat, e.latlng.lng);
+				if (!hit) return;
 
-				const label = t('distanceFromTrail', { distance: Math.round(minDist) });
+				const label = t('distanceFromTrail', { distance: Math.round(hit.distanceM) });
 				if (!tooltipRef.current) {
 					tooltipRef.current = L.tooltip({ permanent: false, direction: 'top' })
 						.setContent(label)
@@ -91,7 +112,7 @@ export default function ImportedTrackLayer(): null {
 			});
 
 			poly.addTo(map);
-			existing.set(track.id, poly);
+			existing.set(track.id, { poly, color: track.color });
 		}
 	}, [importedTracks, map, setHoveredImportedTrackId, t]);
 
@@ -100,7 +121,7 @@ export default function ImportedTrackLayer(): null {
 		const polylines = polylinesRef.current;
 		const tooltip = tooltipRef;
 		return () => {
-			for (const poly of polylines.values()) poly.remove();
+			for (const entry of polylines.values()) entry.poly.remove();
 			polylines.clear();
 			if (tooltip.current) {
 				tooltip.current.remove();

@@ -1,18 +1,19 @@
 'use client';
 
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useMap } from 'react-leaflet';
 import L from 'leaflet';
 import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
-import type { ImportedTrack } from '@/lib/store/types';
+import type { ImportedTrack, TrackStats } from '@/lib/store/types';
 import { computeTrackStats } from '@/lib/imported-tracks';
+import { buildSpatialGrid } from '@/lib/spatial-grid';
 import { formatEta, formatDistanceM, formatPaceFromSecPerKm } from '@/lib/distance-utils';
 import { findPoisNearTrack } from '@/lib/poi-proximity';
 import { isKnownType, poiDisplayName } from '@/lib/pois';
 import { formatDistance } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
-import { IoDownloadOutline } from 'react-icons/io5';
+import { IoDownloadOutline, IoEyeOffOutline, IoEyeOutline, IoTrashOutline } from 'react-icons/io5';
 
 export function MapControlsImportsPanel(): React.ReactElement {
 	const t = useTranslations('imports');
@@ -22,6 +23,7 @@ export function MapControlsImportsPanel(): React.ReactElement {
 	const tPois = useTranslations('pois');
 	const importedTracks = useMapStore((s: MapStoreState) => s.importedTracks);
 	const removeImportedTrack = useMapStore((s: MapStoreState) => s.removeImportedTrack);
+	const updateImportedTrack = useMapStore((s: MapStoreState) => s.updateImportedTrack);
 	const hoveredImportedTrackId = useMapStore((s: MapStoreState) => s.hoveredImportedTrackId);
 	const setHoveredImportedTrackId = useMapStore((s: MapStoreState) => s.setHoveredImportedTrackId);
 	const units = useMapStore((s: MapStoreState) => s.units);
@@ -30,10 +32,28 @@ export function MapControlsImportsPanel(): React.ReactElement {
 	const enabledPoiTypes = useMapStore((s: MapStoreState) => s.enabledPoiTypes);
 	const enhancedTrailPoints = useStore((s: StoreState) => s.enhancedTrailPoints);
 
-	const trackStats = useMemo(
-		() => importedTracks.map((track) => computeTrackStats(track, enhancedTrailPoints)),
-		[importedTracks, enhancedTrailPoints],
-	);
+	/** Stats computed AFTER first paint, one track per frame, against a
+	 *  single shared spatial grid. computeTrackStats memoises by content
+	 *  hash, so after the first pass this effect is a cache walk - the panel
+	 *  opens instantly regardless of how many multi-MB tracks are loaded. */
+	const [trackStats, setTrackStats] = useState<Record<string, TrackStats>>({});
+	const statsRunRef = useRef(0);
+	useEffect(() => {
+		const runId = ++statsRunRef.current;
+		if (importedTracks.length === 0 || enhancedTrailPoints.length === 0) return;
+		const grid = buildSpatialGrid(enhancedTrailPoints);
+		let i = 0;
+		const tick = (): void => {
+			if (runId !== statsRunRef.current || i >= importedTracks.length) return;
+			const track = importedTracks[i];
+			const stats = computeTrackStats(track, enhancedTrailPoints, grid);
+			setTrackStats((prev) => (prev[track.id] === stats ? prev : { ...prev, [track.id]: stats }));
+			i++;
+			if (i < importedTracks.length) setTimeout(tick, 0);
+		};
+		const start = setTimeout(tick, 0);
+		return () => clearTimeout(start);
+	}, [importedTracks, enhancedTrailPoints]);
 
 	/** POI proximity hits per track, computed lazily per track id so a
 	 *  several-MB recorded hike doesn't block the panel mount. Only the
@@ -60,14 +80,20 @@ export function MapControlsImportsPanel(): React.ReactElement {
 
 	const fitToTrack = (track: ImportedTrack): void => {
 		if (track.points.length === 0) return;
-		const bounds = track.points.reduce(
-			(b, p) => b.extend([p.lat, p.lng] as L.LatLngTuple),
-			L.latLngBounds([
-				[track.points[0].lat, track.points[0].lng],
-				[track.points[0].lat, track.points[0].lng],
-			]),
-		);
-		map.fitBounds(bounds, { padding: [20, 20] });
+		// Single numeric min/max pass; the previous reduce allocated a LatLng
+		// and a bounds-extend call per point, which on a recorded multi-day
+		// hike made every row click visibly stall.
+		let minLat = Infinity;
+		let maxLat = -Infinity;
+		let minLng = Infinity;
+		let maxLng = -Infinity;
+		for (const pt of track.points) {
+			if (pt.lat < minLat) minLat = pt.lat;
+			if (pt.lat > maxLat) maxLat = pt.lat;
+			if (pt.lng < minLng) minLng = pt.lng;
+			if (pt.lng > maxLng) maxLng = pt.lng;
+		}
+		map.fitBounds(L.latLngBounds([minLat, minLng], [maxLat, maxLng]), { padding: [20, 20] });
 	};
 
 	const openFilePicker = (): void => {
@@ -92,8 +118,8 @@ export function MapControlsImportsPanel(): React.ReactElement {
 				<p className="text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('noImports')}</p>
 			) : (
 				<ul className="space-y-2">
-					{importedTracks.map((track, i) => {
-						const stats = trackStats[i];
+					{importedTracks.map((track) => {
+						const stats = trackStats[track.id];
 						const isHovered = hoveredImportedTrackId === track.id;
 						return (
 							<li
@@ -102,16 +128,23 @@ export function MapControlsImportsPanel(): React.ReactElement {
 								onMouseEnter={() => setHoveredImportedTrackId(track.id)}
 								onMouseLeave={() => setHoveredImportedTrackId(null)}
 							>
-								<button
-									className="focus-visible:ring-cldt-green flex w-full cursor-pointer items-center gap-2 rounded border-0 bg-transparent p-0 text-left outline-none focus-visible:ring-2 focus-visible:ring-offset-1"
-									type="button"
-									onClick={() => fitToTrack(track)}
-								>
-									<span aria-hidden className="h-3 w-3 shrink-0 rounded-sm" style={{ backgroundColor: track.color }} />
-									<span className="flex-1 truncate text-xs font-medium text-gray-700 dark:text-[var(--text-primary)]">
+								<div className="flex w-full items-center gap-2">
+									<input
+										aria-label={t('colorLabel', { trackName: track.name })}
+										className="track-color-input h-4 w-4 shrink-0 cursor-pointer rounded-sm"
+										title={t('colorLabel', { trackName: track.name })}
+										type="color"
+										value={track.color}
+										onChange={(e) => updateImportedTrack(track.id, { color: e.target.value })}
+									/>
+									<button
+										className="focus-visible:ring-cldt-green min-w-0 flex-1 cursor-pointer truncate rounded border-0 bg-transparent p-0 text-left text-xs font-medium text-gray-700 outline-none focus-visible:ring-2 focus-visible:ring-offset-1 dark:text-[var(--text-primary)]"
+										type="button"
+										onClick={() => fitToTrack(track)}
+									>
 										{track.name}
-									</span>
-								</button>
+									</button>
+								</div>
 								<div className="mt-1 flex flex-wrap gap-x-3 gap-y-0.5 pl-5 text-xs text-gray-500 dark:text-[var(--text-secondary)]">
 									<span>
 										{t('distance')}: {stats ? formatDistanceM(stats.totalDistanceM, units) : '-'}
@@ -136,12 +169,28 @@ export function MapControlsImportsPanel(): React.ReactElement {
 								</div>
 								<div className="mt-1 flex items-center gap-2 pl-5">
 									<Button
+										aria-label={
+											track.visible === false
+												? t('showTrack', { trackName: track.name })
+												: t('hideTrack', { trackName: track.name })
+										}
+										size="sm"
+										variant="mapControlOutlineSecondary"
+										onClick={() => updateImportedTrack(track.id, { visible: track.visible === false })}
+									>
+										{track.visible === false ? (
+											<IoEyeOffOutline aria-hidden className="h-3.5 w-3.5" />
+										) : (
+											<IoEyeOutline aria-hidden className="h-3.5 w-3.5" />
+										)}
+									</Button>
+									<Button
 										aria-label={t('removeAriaLabel', { trackName: track.name })}
 										size="sm"
 										variant="mapControlOutlineSecondary"
 										onClick={() => void removeImportedTrack(track.id)}
 									>
-										✕
+										<IoTrashOutline aria-hidden className="h-3.5 w-3.5" />
 									</Button>
 									{poisFile?.pois?.length ? (
 										<button
@@ -178,8 +227,9 @@ export function MapControlsImportsPanel(): React.ReactElement {
 													{hits.map((hit) => {
 														const name = poiDisplayName(hit.poi, locale);
 														const typeLabel = tPois(`type.${hit.poi.type}`, { default: hit.poi.type });
-														const distLabel = formatDistance(hit.minDistanceM / 1000, units, distancePrecision, true);
-														const atLabel = formatDistance(hit.atTrackKm, units, 1, true);
+														// Both values are already km; needsConversion would divide by 1000 again.
+														const distLabel = formatDistance(hit.minDistanceM / 1000, units, distancePrecision);
+														const atLabel = formatDistance(hit.atTrackKm, units, 1);
 														return (
 															<div
 																className="flex items-baseline gap-2 py-0.5 text-xs text-gray-700 dark:text-[var(--text-primary)]"
