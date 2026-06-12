@@ -6,6 +6,7 @@ import type { StoreState, TrailSlice, TrailState, ClosestPoint, EnhancedTrailPoi
 import { L } from './leaflet';
 import { TRAIL_SECTIONS } from '../trail-sections';
 import { computeBearing, findNearestPointIndex } from '../distance-utils';
+import { buildSpatialGrid, type SpatialGrid } from '../spatial-grid';
 
 /** Bucket an absolute grade percent into one of five bands. */
 function bucketGradePct(absGradePct: number): 0 | 1 | 2 | 3 | 4 {
@@ -39,9 +40,15 @@ function nearestIndexByCoords(points: { lat: number; lng: number }[], targetLat:
 /**
  * Compute the closest point on the trail to a given location. Pure helper
  * used by calculateClosestPoint and forceCalculateClosestPointFromLocation.
- * Uses squared lat/lng deltas to rank candidates without sqrt, then resolves
- * the metric distance and pre-computed derived values from the enhanced point.
+ *
+ * setUserLocation resets closestPointCalculated, so this runs on EVERY GPS
+ * fix. The previous linear nearest-index scan walked the full ~2,200 km
+ * point array per tick; a spatial grid (built once per trail array, cached
+ * by array identity so a reload or direction rebuild naturally invalidates)
+ * makes the per-tick lookup near-constant.
  */
+const trailGridCache = new WeakMap<LatLng[], SpatialGrid>();
+
 function computeClosestPointData(
 	points: LatLng[],
 	enhancedPoints: EnhancedTrailPoint[],
@@ -50,7 +57,13 @@ function computeClosestPointData(
 ): ClosestPoint | null {
 	if (points.length === 0) return null;
 
-	const closestIndex = nearestIndexByCoords(points, userLatLng.lat, userLatLng.lng);
+	let grid = trailGridCache.get(points);
+	if (!grid) {
+		grid = buildSpatialGrid(points);
+		trailGridCache.set(points, grid);
+	}
+	const hit = grid.nearest(userLatLng.lat, userLatLng.lng);
+	const closestIndex = hit ? hit.index : nearestIndexByCoords(points, userLatLng.lat, userLatLng.lng);
 	const closestPoint = points[closestIndex];
 	const closestDistance = userLatLng.distanceTo(closestPoint);
 	const enhanced = enhancedPoints[closestIndex];
