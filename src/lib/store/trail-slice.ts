@@ -149,6 +149,23 @@ export const createTrailSlice: StateCreator<StoreState, [], [], TrailSlice> = (s
 			userLatLng,
 		);
 		if (closestPointData) {
+			// Publish suppression: every GPS fix resets closestPointCalculated,
+			// so this runs per tick even when the hiker is standing still and
+			// the fix only jitters by a few meters. A fresh object here would
+			// re-render every closestPoint subscriber (HUD, sunset projection,
+			// off-route machinery, tooltips) for a visually identical state.
+			// Re-publish only when the snapped trail position moved or the
+			// off-trail distance changed by >= 5 m - far below anything the
+			// UI displays (0.1 km formatting) or thresholds on (200 m).
+			const prev = state.closestPoint;
+			const unchanged =
+				prev !== null &&
+				prev.distanceFromStart === closestPointData.distanceFromStart &&
+				Math.abs(prev.distance - closestPointData.distance) < 5;
+			if (unchanged) {
+				set({ closestPointCalculated: true });
+				return;
+			}
 			set({
 				closestPoint: closestPointData,
 				closestPointCalculated: true,
