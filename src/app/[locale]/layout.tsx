@@ -22,24 +22,13 @@ export default async function LocaleLayout({ children, params }: Props): Promise
 	}
 	setRequestLocale(locale);
 
-	const [enMessages, hrMessages, deMessages, itMessages] = await Promise.all([
-		import('../../../messages/en.json').then((m) => m.default),
-		import('../../../messages/hr.json').then((m) => m.default),
-		import('../../../messages/de.json').then((m) => m.default),
-		import('../../../messages/it.json').then((m) => m.default),
-	]);
-
-	const allMessages = { en: enMessages, hr: hrMessages, de: deMessages, it: itMessages };
-	const initialMessages = allMessages[locale] ?? allMessages[routing.defaultLocale];
+	// Only the ACTIVE locale's messages go into the flight payload; the
+	// client provider lazy-loads other locales when the user switches.
+	const initialMessages = (await import(`../../../messages/${locale}.json`)).default;
 	const timeZone = await getTimeZone();
 
 	return (
-		<ClientIntlProvider
-			allMessages={allMessages}
-			initialLocale={locale}
-			initialMessages={initialMessages}
-			timeZone={timeZone}
-		>
+		<ClientIntlProvider initialLocale={locale} initialMessages={initialMessages} timeZone={timeZone}>
 			<ServiceWorkerProvider>{children}</ServiceWorkerProvider>
 		</ClientIntlProvider>
 	);
