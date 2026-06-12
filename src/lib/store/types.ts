@@ -329,6 +329,9 @@ export interface MapStoreState {
 	/** Seasonal-alert web push opt-in (mirrors the browser subscription). Persisted. */
 	pushAlertsEnabled: boolean;
 	setPushAlertsEnabled: (enabled: boolean) => void;
+	/** Waymarked Trails hiking-routes overlay on top of the base map. Persisted. */
+	waymarkedTrailsOverlay: boolean;
+	setWaymarkedTrailsOverlay: (enabled: boolean) => void;
 
 	/** Personal map annotations (long-press to add). Persisted. */
 	userWaypoints: UserWaypoint[];

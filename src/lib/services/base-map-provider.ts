@@ -10,6 +10,8 @@ export enum BaseMapProvider {
 	SATELLITE = 'Satellite',
 	TERRAIN = 'Terrain',
 	CYCL_OSM = 'CyclOSM',
+	/** OpenHikingMap (openmaps.fr) - OpenTopoMap-based style with hiking-specific additions. */
+	OPEN_HIKING_MAP = 'OpenHikingMap',
 	CROATIA_TOPO = 'CroatiaTopo',
 	/** Dark / low-light base layer (CartoDB Dark Matter) for night use. */
 	DARK = 'Dark',

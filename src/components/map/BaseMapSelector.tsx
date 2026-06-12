@@ -88,7 +88,14 @@ export default function BaseMapSelector({ initialProvider }: BaseMapSelectorProp
 		const service = MapService.getInstance();
 		try {
 			map.eachLayer((layer) => {
-				if (L && layer instanceof L.TileLayer && layer.options.pane !== 'radarPane') {
+				// Base layers live in the default tile pane; overlays (radar,
+				// Waymarked Trails) set their own pane and must survive a
+				// base-map switch.
+				if (
+					L &&
+					layer instanceof L.TileLayer &&
+					(layer.options.pane === undefined || layer.options.pane === 'tilePane')
+				) {
 					map.removeLayer(layer);
 				}
 			});

@@ -123,6 +123,8 @@ export function MapControlsSettingsPanel({
 	const seasonalStatusFile = useMapStore((state: MapStoreState) => state.seasonalStatusFile);
 	const pushAlertsEnabled = useMapStore((state: MapStoreState) => state.pushAlertsEnabled);
 	const setPushAlertsEnabled = useMapStore((state: MapStoreState) => state.setPushAlertsEnabled);
+	const waymarkedTrailsOverlay = useMapStore((state: MapStoreState) => state.waymarkedTrailsOverlay);
+	const setWaymarkedTrailsOverlay = useMapStore((state: MapStoreState) => state.setWaymarkedTrailsOverlay);
 
 	/** Permission prompt must run inside this click handler; failures (denied,
 	 *  unsupported, deploy without VAPID keys) revert the toggle silently. */
@@ -471,6 +473,17 @@ export function MapControlsSettingsPanel({
 							</div>
 						</label>
 					)}
+
+					<label className="flex cursor-pointer items-start gap-2">
+						<Checkbox
+							checked={waymarkedTrailsOverlay}
+							onCheckedChange={(checked) => setWaymarkedTrailsOverlay(checked)}
+						/>
+						<div className="flex flex-col">
+							<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">{t('waymarkedLabel')}</span>
+							<span className="text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('waymarkedHint')}</span>
+						</div>
+					</label>
 
 					<div className="flex flex-col gap-1">
 						<div className="flex items-center gap-2">

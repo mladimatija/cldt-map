@@ -66,7 +66,7 @@
 			"pushAlerts": "Notifiche di avviso - push opzionali del browser quando viene pubblicato un nuovo avviso stagionale, anche ad app chiusa; nessun account"
 		},
 		"dataAttribution": "Dati e attribuzioni",
-		"dataAttributionDesc": "I dati del sentiero sono forniti dall'organizzazione Udruga Long Distance Trail Hrvatska (LDTH). Le tessere mappa provengono da OpenStreetMap, OpenTopoMap, CyclOSM e altri provider. Le mappe topografiche croate provengono dall'Amministrazione Geodetica Statale (DGU). I dati meteo provengono da DHMZ (Servizio Meteorologico Croato) e Open-Meteo. Le tessere radar sono fornite da RainViewer. Stato stagionale del sentiero, avvisi di pericolo e dati delle stazioni di soccorso alpino provengono da HGSS (Servizio croato di soccorso in montagna), HPS (Federazione croata di alpinismo) e dalle autorità dei parchi nazionali (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) e Parco naturale Velebit. I dati visualizzati su questo sito potrebbero non riflettere le condizioni più recenti. In caso di dubbio, verificare sempre le fonti ufficiali.",
+		"dataAttributionDesc": "I dati del sentiero sono forniti dall'organizzazione Udruga Long Distance Trail Hrvatska (LDTH). Le tessere mappa provengono da OpenStreetMap, OpenTopoMap, OpenHikingMap (openmaps.fr), Waymarked Trails, CyclOSM e altri provider. Le mappe topografiche croate provengono dall'Amministrazione Geodetica Statale (DGU). I dati meteo provengono da DHMZ (Servizio Meteorologico Croato) e Open-Meteo. Le tessere radar sono fornite da RainViewer. Stato stagionale del sentiero, avvisi di pericolo e dati delle stazioni di soccorso alpino provengono da HGSS (Servizio croato di soccorso in montagna), HPS (Federazione croata di alpinismo) e dalle autorità dei parchi nazionali (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) e Parco naturale Velebit. I dati visualizzati su questo sito potrebbero non riflettere le condizioni più recenti. In caso di dubbio, verificare sempre le fonti ufficiali.",
 		"privacy": "Privacy",
 		"privacyDesc": "La tua posizione viene utilizzata solo quando la abiliti e concedi il permesso. Non viene mai inviata a nessun server - tutto funziona nel tuo browser. Non è necessario un account o un accesso.",
 		"links": "Link",
@@ -237,7 +237,9 @@
 		"packCsvClear": "Rimuovi",
 		"packCsvError": "Impossibile leggere il CSV. Esportalo da LighterPack o Packstack e riprova.",
 		"pushAlertsLabel": "Notifica nuovi avvisi del sentiero",
-		"pushAlertsHint": "Notifica del browser quando viene pubblicato un nuovo avviso stagionale per il sentiero. Funziona anche ad app chiusa; nessun account."
+		"pushAlertsHint": "Notifica del browser quando viene pubblicato un nuovo avviso stagionale per il sentiero. Funziona anche ad app chiusa; nessun account.",
+		"waymarkedLabel": "Overlay sentieri segnalati",
+		"waymarkedHint": "Disegna le rotte escursionistiche OSM (Waymarked Trails) sopra la mappa di base. Solo online."
 	},
 	"baseMapSelector": {
 		"standard": "Standard",
@@ -254,7 +256,9 @@
 		"cyclingDescription": "OpenCycleMap per ciclisti ed escursionisti",
 		"croatiaTopoDescription": "Mappe topografiche ufficiali croate",
 		"darkMapDescription": "Livello base scuro per uso notturno o in condizioni di scarsa luminosità",
-		"changeMapStyle": "Cambia stile mappa ({name})"
+		"changeMapStyle": "Cambia stile mappa ({name})",
+		"openHikingMap": "Escursionismo",
+		"openHikingMapDescription": "OpenHikingMap: stile topografico con dettagli escursionistici"
 	},
 	"test": {
 		"backToMap": "Torna alla mappa",

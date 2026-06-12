@@ -662,6 +662,10 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					setPushAlertsEnabled: (enabled: boolean): void => {
 						set({ pushAlertsEnabled: enabled });
 					},
+					waymarkedTrailsOverlay: false,
+					setWaymarkedTrailsOverlay: (enabled: boolean): void => {
+						set({ waymarkedTrailsOverlay: enabled });
+					},
 
 					userWaypoints: [],
 					addUserWaypoint: (wp): void => {
@@ -955,6 +959,7 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					packEtaAdjust: state.packEtaAdjust,
 					packGearList: state.packGearList,
 					pushAlertsEnabled: state.pushAlertsEnabled,
+					waymarkedTrailsOverlay: state.waymarkedTrailsOverlay,
 					userWaypoints: state.userWaypoints,
 					journalEntries: state.journalEntries,
 					gradeAdjustedEta: state.gradeAdjustedEta,

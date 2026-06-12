@@ -63,6 +63,7 @@ export const PROVIDER_CACHE_KEY: Record<string, string> = {
 	Terrain: 'esri',
 	CyclOSM: 'cyclosm',
 	CroatiaTopo: 'dgu',
+	OpenHikingMap: 'ohm',
 	Dark: 'carto',
 };
 
@@ -81,8 +82,13 @@ export function getProviderCacheKey(providerName: string): string {
  * Returns true when the provider uses a stable z/x/y tile URL that can be
  * pre-fetched. WMS (DGU) is excluded because tile URLs include dynamic params.
  */
+/** Providers whose tile usage policy forbids bulk download / prefetch
+ *  (openmaps.fr) or whose terms are restrictive (DGU). They still render
+ *  live but are excluded from the offline pre-cache. */
+const NON_PRECACHEABLE_PROVIDERS = new Set(['CroatiaTopo', 'OpenHikingMap']);
+
 export function isProviderCacheable(providerName: string): boolean {
-	return providerName in PROVIDER_CACHE_KEY && providerName !== 'CroatiaTopo';
+	return providerName in PROVIDER_CACHE_KEY && !NON_PRECACHEABLE_PROVIDERS.has(providerName);
 }
 
 // ── Tile math ─────────────────────────────────────────────────────────────────

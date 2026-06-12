@@ -1245,3 +1245,20 @@ textarea.poi-popup__input {
 	border: none;
 	border-radius: 3px;
 }
+
+/* Attribution control: required interaction-free licence credit for every
+   tile provider (OSM ODbL, CC-BY-SA styles, Esri, DGU, openmaps.fr).
+   Styled to stay readable but unobtrusive, dark-mode aware. */
+.leaflet-control-attribution {
+	background: var(--map-tooltip-bg, rgba(255, 255, 255, 0.8)) !important;
+	color: var(--map-tooltip-color, #333) !important;
+	font-size: 10px;
+	line-height: 1.4;
+	padding: 1px 6px;
+	border-radius: 4px 4px 0 0;
+	max-width: min(80vw, 560px);
+	opacity: 0.9;
+}
+.leaflet-control-attribution a {
+	color: var(--cldt-blue, #0369a1) !important;
+}

@@ -196,6 +196,8 @@ export function createMapStoreStub(): MapStoreState {
 		setPackGearList: noop,
 		pushAlertsEnabled: false,
 		setPushAlertsEnabled: noop,
+		waymarkedTrailsOverlay: false,
+		setWaymarkedTrailsOverlay: noop,
 		userWaypoints: [],
 		addUserWaypoint: noop,
 		updateUserWaypoint: noop,
