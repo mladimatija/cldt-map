@@ -242,7 +242,9 @@
 		"waymarkedLabel": "Overlay sentieri segnalati",
 		"waymarkedHint": "Disegna le rotte escursionistiche OSM (Waymarked Trails) sopra la mappa di base. Solo online.",
 		"shareShortLinksLabel": "Usa link brevi per la condivisione",
-		"shareShortLinksHint": "Copia un link compatto che apre la stessa vista mappa. Serve una connessione internet per crearlo."
+		"shareShortLinksHint": "Copia un link compatto che apre la stessa vista mappa. Serve una connessione internet per crearlo.",
+		"includeRemotePoisLabel": "Includi POI remoti",
+		"includeRemotePoisHint": "Mostra i luoghi che il dataset segna come difficili da raggiungere dal sentiero (es. oltre un fiume o su una strada senza uscita). Disattivato per impostazione predefinita."
 	},
 	"baseMapSelector": {
 		"standard": "Standard",

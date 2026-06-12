@@ -242,7 +242,9 @@
 		"waymarkedLabel": "Sloj markiranih planinarskih ruta",
 		"waymarkedHint": "Iscrtava OSM planinarske rute (Waymarked Trails) preko osnovne karte. Samo online.",
 		"shareShortLinksLabel": "Koristi kratke poveznice za dijeljenje",
-		"shareShortLinksHint": "Kopira kratku poveznicu koja otvara isti prikaz karte. Za stvaranje poveznice potrebna je internetska veza."
+		"shareShortLinksHint": "Kopira kratku poveznicu koja otvara isti prikaz karte. Za stvaranje poveznice potrebna je internetska veza.",
+		"includeRemotePoisLabel": "Ukljuci udaljene POI-je",
+		"includeRemotePoisHint": "Prikazuje mjesta koja skup podataka oznacava kao tesko dostupna s staze (npr. preko rijeke ili na slijepoj cesti). Prema zadanim postavkama iskljuceno."
 	},
 	"baseMapSelector": {
 		"standard": "Standardna",

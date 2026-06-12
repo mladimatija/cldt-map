@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
-import { isKnownType, poiMatchesTagFilter, searchPoisByName, type Poi } from '@/lib/pois';
+import { isKnownType, poiMatchesTagFilter, poiPassesReachabilityFilter, searchPoisByName, type Poi } from '@/lib/pois';
 import { milesToKm, UnitSystem } from '@/lib/utils';
 import { DistanceUnit, TrailDirection } from '@/lib/types';
 
@@ -51,6 +51,7 @@ export interface UsePoiListRowsArgs {
 	pois: Poi[] | null;
 	enabledPoiTypes: ReadonlySet<string>;
 	enabledPoiTags: ReadonlySet<string>;
+	includeRemotePois: boolean;
 	debouncedQuery: string;
 	units: UnitSystem;
 	direction: TrailDirection;
@@ -82,6 +83,7 @@ export function usePoiListRows(args: UsePoiListRowsArgs): UsePoiListRowsResult {
 		pois,
 		enabledPoiTypes,
 		enabledPoiTags,
+		includeRemotePois,
 		debouncedQuery,
 		units,
 		direction,
@@ -103,7 +105,11 @@ export function usePoiListRows(args: UsePoiListRowsArgs): UsePoiListRowsResult {
 	const rows = useMemo((): Poi[] => {
 		if (!pois?.length) return [];
 		const visible = pois.filter(
-			(p) => isKnownType(p.type) && enabledPoiTypes.has(p.type) && poiMatchesTagFilter(p, enabledPoiTags),
+			(p) =>
+				isKnownType(p.type) &&
+				enabledPoiTypes.has(p.type) &&
+				poiMatchesTagFilter(p, enabledPoiTags) &&
+				poiPassesReachabilityFilter(p, includeRemotePois),
 		);
 		const q = debouncedQuery.trim();
 		// Numeric jump query: surface POIs within NEARBY_KM of the target.
@@ -146,6 +152,7 @@ export function usePoiListRows(args: UsePoiListRowsArgs): UsePoiListRowsResult {
 		pois,
 		enabledPoiTypes,
 		enabledPoiTags,
+		includeRemotePois,
 		sort,
 		locale,
 		direction,

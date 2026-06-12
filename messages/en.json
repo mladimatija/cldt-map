@@ -242,7 +242,9 @@
 		"waymarkedLabel": "Marked hiking routes overlay",
 		"waymarkedHint": "Draws OSM hiking route relations (Waymarked Trails) over the base map. Online only.",
 		"shareShortLinksLabel": "Use short share links",
-		"shareShortLinksHint": "Copies a compact link that opens the same map view. Requires an internet connection to create."
+		"shareShortLinksHint": "Copies a compact link that opens the same map view. Requires an internet connection to create.",
+		"includeRemotePoisLabel": "Include remote POIs",
+		"includeRemotePoisHint": "Shows places the dataset marks as hard to reach from the trail (e.g. across a river or on a dead-end road). Off by default."
 	},
 	"baseMapSelector": {
 		"standard": "Standard",

@@ -14,7 +14,7 @@ import {
 	formatEta,
 } from '@/lib/distance-utils';
 import { totalCompletedKm } from '@/lib/completion';
-import { loadPois, poiDisplayName, type Poi } from '@/lib/pois';
+import { loadPois, poiDisplayName, poiPassesReachabilityFilter, type Poi } from '@/lib/pois';
 import { isUsableWaterSource, WATER_COLOR } from '@/lib/water-intelligence';
 import { formatVolume, waterCarryLiters } from '@/lib/pack-weight';
 import { formatDistance, formatElevation } from '@/lib/utils';
@@ -59,6 +59,7 @@ export function DistanceRemainingOverlay(): React.ReactElement | null {
 	const packBaseWeightKg = useMapStore((state: MapStoreState) => state.packBaseWeightKg);
 	const waterConsumptionLph = useMapStore((state: MapStoreState) => state.waterConsumptionLph);
 	const enabledPoiTypes = useMapStore((state: MapStoreState) => state.enabledPoiTypes);
+	const includeRemotePois = useMapStore((state: MapStoreState) => state.includeRemotePois);
 	const togglePoiType = useMapStore((state: MapStoreState) => state.togglePoiType);
 	const requestOpenPoi = useMapStore((state: MapStoreState) => state.requestOpenPoi);
 	const locale = useLocale();
@@ -79,12 +80,13 @@ export function DistanceRemainingOverlay(): React.ReactElement | null {
 	// Per-category km-sorted indexes; rebuilt only when the dataset changes.
 	const upNextIndex = useMemo(() => {
 		const byKm = (a: Poi, b: Poi): number => a.trailKm - b.trailKm;
+		const reachable = upNextPois.filter((p) => poiPassesReachabilityFilter(p, includeRemotePois));
 		return {
-			water: upNextPois.filter((p) => p.type === 'water' && isUsableWaterSource(p.water)).sort(byKm),
-			shelter: upNextPois.filter((p) => p.type === 'shelter' || p.type === 'hut').sort(byKm),
-			town: upNextPois.filter((p) => p.type === 'town' || p.type === 'settlement').sort(byKm),
+			water: reachable.filter((p) => p.type === 'water' && isUsableWaterSource(p.water)).sort(byKm),
+			shelter: reachable.filter((p) => p.type === 'shelter' || p.type === 'hut').sort(byKm),
+			town: reachable.filter((p) => p.type === 'town' || p.type === 'settlement').sort(byKm),
 		};
-	}, [upNextPois]);
+	}, [upNextPois, includeRemotePois]);
 
 	// Nearest POI ahead in the direction of travel for each category.
 	// trailKm is measured SOBO from the northern trailhead, matching

@@ -268,6 +268,8 @@ export function createMapStoreStub(): MapStoreState {
 		setEnabledPoiTags: noop,
 		togglePoiTag: noop,
 		clearPoiTags: noop,
+		includeRemotePois: false,
+		setIncludeRemotePois: noop,
 		poiFiltersUserModified: false,
 		resetPoiFiltersToDefaults: noop,
 		starredPoiIds: new Set<string>(),

@@ -5,7 +5,14 @@ import { useLocale, useTranslations } from 'next-intl';
 import { useMap, Polyline } from 'react-leaflet';
 import { IoHelpCircleOutline } from 'react-icons/io5';
 import SmartTooltip from '@/components/ui/SmartTooltip';
-import { isKnownType, poiDisplayName, poiMatchesTagFilter, STAGE_POI_OFFTRAIL_KM, type Poi } from '@/lib/pois';
+import {
+	isKnownType,
+	poiDisplayName,
+	poiMatchesTagFilter,
+	poiPassesReachabilityFilter,
+	STAGE_POI_OFFTRAIL_KM,
+	type Poi,
+} from '@/lib/pois';
 import { Button } from '@/components/ui/Button';
 import { Radio } from '@/components/ui/Radio';
 import { Checkbox } from '@/components/ui/Checkbox';
@@ -54,6 +61,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 	const poisLayerEnabled = useMapStore((s: MapStoreState) => s.poisLayerEnabled);
 	const enabledPoiTypes = useMapStore((s: MapStoreState) => s.enabledPoiTypes);
 	const enabledPoiTags = useMapStore((s: MapStoreState) => s.enabledPoiTags);
+	const includeRemotePois = useMapStore((s: MapStoreState) => s.includeRemotePois);
 	const requestOpenPoi = useMapStore((s: MapStoreState) => s.requestOpenPoi);
 
 	const enhancedTrailPoints = useStore((s: StoreState) => s.enhancedTrailPoints);
@@ -230,9 +238,10 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 				isKnownType(p.type) &&
 				enabledPoiTypes.has(p.type) &&
 				poiMatchesTagFilter(p, enabledPoiTags) &&
+				poiPassesReachabilityFilter(p, includeRemotePois) &&
 				p.distanceFromTrailKm <= STAGE_POI_OFFTRAIL_KM,
 		);
-	}, [poisFile, poisLayerEnabled, enabledPoiTypes, enabledPoiTags]);
+	}, [poisFile, poisLayerEnabled, enabledPoiTypes, enabledPoiTags, includeRemotePois]);
 
 	/** Per-stage POI buckets keyed by stage index. SOBO km of each POI is
 	 *  compared against the stage's [startKm, endKm] window (also SOBO). Sorted
