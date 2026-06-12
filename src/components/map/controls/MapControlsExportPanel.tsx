@@ -30,7 +30,7 @@ export function MapControlsExportPanel({
 		<div
 			aria-labelledby="export-panel-title"
 			aria-modal="true"
-			className={`z-controls-popover absolute top-1/2 right-[calc(100%+0.5rem)] flex w-80 -translate-y-1/2 flex-col gap-2 ${MAP_CONTROL_POPOVER}`}
+			className={`z-controls-popover fixed top-2 right-16 flex w-80 flex-col gap-2 ${MAP_CONTROL_POPOVER}`}
 			ref={containerRef}
 			role="dialog"
 			onContextMenu={(e) => e.preventDefault()}

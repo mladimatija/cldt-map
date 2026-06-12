@@ -39,7 +39,7 @@ export function MapControlsPrecisionSlider({
 				<div
 					aria-label={tooltipExpanded}
 					aria-modal="true"
-					className="z-controls-popover absolute top-1/2 right-[calc(100%+0.5rem)] flex w-32 -translate-y-1/2 items-center gap-3 rounded-full border border-gray-200 bg-white px-3 py-2 shadow-md"
+					className="z-controls-popover fixed top-2 right-16 flex w-32 items-center gap-3 rounded-full border border-gray-200 bg-white px-3 py-2 shadow-md"
 					ref={popoverRef}
 					role="dialog"
 				>

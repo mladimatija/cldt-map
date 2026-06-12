@@ -34,7 +34,7 @@ export function MapControlsImportsPanel(): React.ReactElement {
 	const requestOpenPoi = useMapStore((s: MapStoreState) => s.requestOpenPoi);
 	const enhancedTrailPoints = useStore((s: StoreState) => s.enhancedTrailPoints);
 
-	/** Stats computed AFTER first paint, one track per frame, against a
+	/** Stats computed AFTER the first paint, one track per frame, against a
 	 *  single shared spatial grid. computeTrackStats memoises by content
 	 *  hash, so after the first pass this effect is a cache walk - the panel
 	 *  opens instantly regardless of how many multi-MB tracks are loaded. */
