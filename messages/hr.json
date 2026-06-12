@@ -646,6 +646,8 @@
 		"noStages": "Nema plana. Unesite raspon i generirajte.",
 		"gpxExport": "GPX (aktivna etapa)",
 		"gpxExportTooltip": "Preuzmi trenutnu aktivnu etapu kao GPX trag za GPS uređaje.",
+		"fitExport": "FIT / Garmin (aktivna etapa)",
+		"fitExportTooltip": "Preuzmi trenutnu aktivnu etapu kao Garmin FIT datoteku kursa.",
 		"gpxPoisExport": "POI-evi kao GPX (sve etape)",
 		"gpxPoisExportTooltip": "Preuzmi sve POI-eve cijelog plana kao GPX točke u redoslijedu hoda.",
 		"gpxStagePoisExport": "Izvezi odabrane kao GPX",

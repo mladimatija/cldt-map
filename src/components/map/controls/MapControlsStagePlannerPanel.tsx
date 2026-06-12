@@ -45,6 +45,7 @@ import {
 	WATER_GAP_WARN_KM,
 } from '@/lib/water-intelligence';
 import { buildGpxXml, buildGpxWaypointXml, downloadGpxFile, type GpxWaypoint } from '@/lib/gpx-export';
+import { buildFitCourseBytes, downloadFitFile } from '@/lib/fit-export';
 import { exportStripMapPdf, pointsToBounds } from '@/lib/export-utils';
 import { buildStagePlanIcs, downloadIcsFile, stageCalendarDate } from '@/lib/stage-ical-export';
 import { TRAIL_OFF_TRAIL_THRESHOLD_M } from '@/lib/config';
@@ -201,6 +202,24 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 			`CLDT Stage ${activeStageIndex + 1}`,
 		);
 		downloadGpxFile(gpx, `cldt-stage-${activeStageIndex + 1}.gpx`);
+	};
+
+	const handleFitExport = async (): Promise<void> => {
+		if (activeStageIndex === null || !stagePlan || !enhancedTrailPoints?.length) return;
+		const stage = stagePlan.stages[activeStageIndex];
+		const startIdx = findNearestPointIndex(enhancedTrailPoints, stage.startKm * 1000);
+		const endIdx = findNearestPointIndex(enhancedTrailPoints, stage.endKm * 1000);
+		let pts = enhancedTrailPoints.slice(Math.min(startIdx, endIdx), Math.max(startIdx, endIdx) + 1);
+		if (isNobo) pts = [...pts].reverse();
+		if (pts.length < 2) return;
+		const stats = stageStats[activeStageIndex];
+		const fitBytes = await buildFitCourseBytes({
+			points: pts.map((p) => ({ lat: p.lat, lng: p.lng, elevation: p.elevation })),
+			courseName: `CLDT Stage ${activeStageIndex + 1}`,
+			totalAscentM: stats ? (isNobo ? stats.lossM : stats.gainM) : undefined,
+			totalDescentM: stats ? (isNobo ? stats.gainM : stats.lossM) : undefined,
+		});
+		downloadFitFile(fitBytes, `cldt-stage-${activeStageIndex + 1}.fit`);
 	};
 
 	const handleIcalExport = (): void => {
@@ -858,6 +877,14 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 							onClick={handleGpxExport}
 						>
 							{t('gpxExport')}
+						</Button>
+						<Button
+							disabled={activeStageIndex === null}
+							title={t('fitExportTooltip')}
+							variant="mapControlOutline"
+							onClick={() => void handleFitExport()}
+						>
+							{t('fitExport')}
 						</Button>
 						<Button
 							disabled={allStagesWaypoints.length === 0}
