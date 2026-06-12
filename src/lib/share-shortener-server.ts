@@ -13,6 +13,8 @@ export const SHARE_LINKS_BLOB_STORE = 'share-links';
 export const SHARE_LINK_TTL_MS = 90 * 86_400_000;
 export const SHARE_TARGET_MAX_LEN = 2048;
 export const SHARE_CODE_PATTERN = /^[A-Za-z0-9_-]{7}$/;
+/** Backoff after a Blobs write before treating a code as missing (eventual consistency). */
+export const SHARE_LINK_READ_RETRY_DELAYS_MS = [100, 200, 300, 500, 1000] as const;
 
 export interface ShareLinkRecord {
 	/** Pathname + search only, e.g. `/?progress=42.50&dir=SOBO`. */
@@ -114,6 +116,40 @@ export function isShareLinkExpired(record: ShareLinkRecord, now = Date.now()): b
 	return Date.parse(record.expiresAt) <= now;
 }
 
+function sleep(ms: number): Promise<void> {
+	return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function readShareLinkRecord(code: string): Promise<ShareLinkRecord | 'missing' | 'expired'> {
+	if (!SHARE_CODE_PATTERN.test(code)) return 'missing';
+
+	const store = getShareLinksStore();
+	const record = (await store.get(code, { type: 'json' })) as ShareLinkRecord | null;
+	if (!record || typeof record.target !== 'string') return 'missing';
+	if (isShareLinkExpired(record)) return 'expired';
+	return record;
+}
+
+/** Re-read a code with backoff until Blobs catches up after a fresh write. */
+async function readShareLinkWithRetry(code: string): Promise<ShareLinkRecord | 'missing' | 'expired'> {
+	let result = await readShareLinkRecord(code);
+	if (result !== 'missing') return result;
+
+	for (const delayMs of SHARE_LINK_READ_RETRY_DELAYS_MS) {
+		await sleep(delayMs);
+		result = await readShareLinkRecord(code);
+		if (result !== 'missing') return result;
+	}
+
+	return 'missing';
+}
+
+/** True when a freshly written code is readable (not missing or expired). */
+export async function waitForShareLinkReadable(code: string): Promise<boolean> {
+	const result = await readShareLinkWithRetry(code);
+	return result !== 'missing' && result !== 'expired';
+}
+
 export async function createShortShareLink(target: string): Promise<{ code: string; record: ShareLinkRecord } | null> {
 	const store = getShareLinksStore();
 	const record = createShareLinkRecord(target);
@@ -123,6 +159,14 @@ export async function createShortShareLink(target: string): Promise<{ code: stri
 		const existing = await store.get(code);
 		if (existing) continue;
 		await store.setJSON(code, record);
+		if (!(await waitForShareLinkReadable(code))) {
+			try {
+				await store.delete(code);
+			} catch {
+				// ignore cleanup failure; next redirect will still fall back to home
+			}
+			continue;
+		}
 		return { code, record };
 	}
 
@@ -130,16 +174,13 @@ export async function createShortShareLink(target: string): Promise<{ code: stri
 }
 
 export async function resolveShortShareLink(code: string): Promise<ShareLinkRecord | 'missing' | 'expired'> {
-	if (!SHARE_CODE_PATTERN.test(code)) return 'missing';
+	const result = await readShareLinkWithRetry(code);
+	if (result === 'missing' || result === 'expired') return result;
 
 	const store = getShareLinksStore();
-	const record = (await store.get(code, { type: 'json' })) as ShareLinkRecord | null;
-	if (!record || typeof record.target !== 'string') return 'missing';
-	if (isShareLinkExpired(record)) return 'expired';
-
-	record.hits = (record.hits ?? 0) + 1;
-	await store.setJSON(code, record);
-	return record;
+	result.hits = (result.hits ?? 0) + 1;
+	await store.setJSON(code, result);
+	return result;
 }
 
 export async function deleteExpiredShareLinks(): Promise<{ scanned: number; deleted: number }> {
