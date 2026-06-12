@@ -681,6 +681,11 @@
 		"generating": "Wird erstellt...",
 		"cancel": "Abbrechen",
 		"close": "Schließen",
+		"continue": "Weiter",
+		"back": "Zurück",
+		"preparing": "Brief wird vorbereitet...",
+		"editTitle": "Texte prüfen",
+		"editDescription": "Überblick und Tagestexte vor dem Export bearbeiten.",
 		"exportError": "Export fehlgeschlagen. Bitte erneut versuchen.",
 		"document": {
 			"labels": {

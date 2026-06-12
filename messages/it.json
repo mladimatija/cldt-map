@@ -681,6 +681,11 @@
 		"generating": "Generazione...",
 		"cancel": "Annulla",
 		"close": "Chiudi",
+		"continue": "Continua",
+		"back": "Indietro",
+		"preparing": "Preparazione del brief...",
+		"editTitle": "Rivedi i testi",
+		"editDescription": "Modifica panoramica e testi giornalieri prima di generare il documento.",
 		"exportError": "Esportazione non riuscita. Riprovare.",
 		"document": {
 			"labels": {

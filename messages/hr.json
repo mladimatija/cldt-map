@@ -681,6 +681,11 @@
 		"generating": "Generiram...",
 		"cancel": "Prekini",
 		"close": "Zatvori",
+		"continue": "Nastavi",
+		"back": "Natrag",
+		"preparing": "Priprema sažetka...",
+		"editTitle": "Pregled tekstova",
+		"editDescription": "Uredite pregled i dnevne tekstove prije generiranja dokumenta.",
 		"exportError": "Izvoz nije uspio. Pokušajte ponovno.",
 		"document": {
 			"labels": {

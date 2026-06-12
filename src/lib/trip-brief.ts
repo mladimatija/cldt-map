@@ -6,6 +6,8 @@
  * Day narratives default to deterministic templated strings. Optional
  * AI-written paragraphs are applied after assembly via `trip-brief-ai.ts`
  * when the user enables them in the trip brief modal (online, `/api/narrative`).
+ * The modal then offers a pre-export edit step; `applyNarrativeEdits` merges
+ * the user's changes before PDF/DOCX/HTML generation.
  */
 
 import { computeStageStats } from '@/lib/stage-planner';
@@ -431,4 +433,28 @@ export function canAssembleTripBrief(stagePlan: StagePlan | null, trailLoaded: b
 	if (!trailLoaded) return false;
 	if (!stagePlan) return false;
 	return stagePlan.stages.length > 0;
+}
+
+/** User-edited narrative slots from the pre-export review step. */
+export interface NarrativeEdits {
+	overview: string;
+	days: string[];
+}
+
+/** Merge edited overview and per-day narratives into a brief copy. Empty or
+ *  whitespace-only edits keep the existing slot text. */
+export function applyNarrativeEdits(brief: TripBrief, edits: NarrativeEdits): TripBrief {
+	const overviewText = edits.overview.trim();
+	const days = brief.days.map((day, i) => {
+		const edited = edits.days[i]?.trim();
+		return { ...day, narrative: edited && edited.length > 0 ? edited : day.narrative };
+	});
+	return {
+		...brief,
+		overview: {
+			...brief.overview,
+			narrative: overviewText.length > 0 ? overviewText : brief.overview.narrative,
+		},
+		days,
+	};
 }
