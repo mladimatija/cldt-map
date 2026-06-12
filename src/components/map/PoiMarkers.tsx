@@ -187,15 +187,11 @@ export function PoiMarkers(): null {
 
 			// Shallow dirty-check: skip teardown when the candidate set hasn't
 			// moved. Cluster path reuses the pre-sorted visiblePois superset
-			// (sortedVisiblePoiIds memo). Non-cluster path always builds the
-			// sorted-id join so a single POI sliding in or out is detected
-			// instead of relying on length alone.
-			const newCandidateIds = shouldCluster
-				? sortedVisiblePoiIds
-				: candidates
-						.map((p) => p.id)
-						.sort()
-						.join(',');
+			// (sortedVisiblePoiIds memo). Non-cluster path joins ids WITHOUT
+			// sorting: candidates are a filter of visiblePois, so identical
+			// sets always arrive in identical order - the previous per-moveend
+			// sort bought nothing.
+			const newCandidateIds = shouldCluster ? sortedVisiblePoiIds : candidates.map((p) => p.id).join(',');
 			if (newCandidateIds === prevCandidateIdsRef.current) return;
 			prevCandidateIdsRef.current = newCandidateIds;
 
