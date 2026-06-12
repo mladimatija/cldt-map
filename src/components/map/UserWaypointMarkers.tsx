@@ -7,7 +7,6 @@ import { useTranslations } from 'next-intl';
 import { useMapStore, useStore, type MapStoreState } from '@/lib/store';
 import { newId, nextWaypointName, type UserWaypoint } from '@/lib/user-waypoints';
 import { formatDistance } from '@/lib/utils';
-import { MAP_CONTROL_INPUT } from '@/components/map/controls/map-controls-constants';
 
 const WAYPOINT_PANE = 'userWaypointPane';
 
@@ -100,16 +99,18 @@ export function UserWaypointMarkers(): null {
 				title: wp.name,
 				alt: wp.name,
 			});
-			marker.bindPopup(() => buildWaypointPopup(wp), { className: 'map-tooltip', maxWidth: 260 });
+			// Same shell as POI popups: chrome lives on .poi-popup's content
+			// wrapper CSS, so the look is identical to every other map popup.
+			marker.bindPopup(() => buildWaypointPopup(wp), { className: 'poi-popup', maxWidth: 300 });
 			marker.addTo(map);
 			markers.set(wp.id, marker);
 		}
 
-		/** Popup content reusing the shared POI popup vocabulary: the
-		 *  `.map-tooltip` shell comes from bindPopup, rows/meta use the
-		 *  `poi-popup__row` classes, inputs reuse the map-control input
-		 *  styling, and the action pair mirrors the POI popup's primary
-		 *  (solid) / secondary (outlined) buttons. */
+		/** Popup content in the shared POI popup vocabulary: the `.poi-popup`
+		 *  shell comes from bindPopup, rows/meta use the `poi-popup__row`
+		 *  classes, inputs use the popup-scale `poi-popup__input` styles, and
+		 *  the action pair mirrors the POI popup's primary (solid) /
+		 *  secondary (outlined) buttons. */
 		function buildWaypointPopup(wp: UserWaypoint): HTMLElement {
 			const root = document.createElement('div');
 			root.style.minWidth = '220px';
@@ -119,7 +120,7 @@ export function UserWaypointMarkers(): null {
 			nameInput.value = wp.name;
 			nameInput.maxLength = 80;
 			nameInput.setAttribute('aria-label', t('nameLabel'));
-			nameInput.className = `${MAP_CONTROL_INPUT} mb-1.5 w-full font-semibold`;
+			nameInput.className = 'poi-popup__input poi-popup__input--title';
 
 			const noteArea = document.createElement('textarea');
 			noteArea.value = wp.note;
@@ -127,7 +128,7 @@ export function UserWaypointMarkers(): null {
 			noteArea.maxLength = 2000;
 			noteArea.placeholder = t('notePlaceholder');
 			noteArea.setAttribute('aria-label', t('noteLabel'));
-			noteArea.className = `${MAP_CONTROL_INPUT} mb-1 w-full resize-y text-sm`;
+			noteArea.className = 'poi-popup__input';
 
 			const metaLine = document.createElement('p');
 			metaLine.className = 'poi-popup__row poi-popup__row--muted';

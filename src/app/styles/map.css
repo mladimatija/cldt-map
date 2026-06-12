@@ -138,7 +138,7 @@
    transparent base, subtle bg + cldt-blue text on hover/focus, green focus ring. */
 .leaflet-popup.poi-popup .leaflet-popup-close-button {
 	color: var(--map-tooltip-color) !important;
-	border-radius: 4px;
+	border-radius: var(--map-tooltip-radius);
 	transition:
 		background-color 100ms ease-out,
 		color 100ms ease-out;
@@ -1193,6 +1193,35 @@ div:has(> .poi-sort-select__control) > span[class*='a11yText'] {
 	position: relative;
 	transform: scale(0);
 	width: 1px;
+}
+
+/* Editable fields inside the waypoint popup: sized to the poi-popup row
+   vocabulary (13px title weight, 12px body) instead of the larger panel
+   inputs, so the popup reads like every other map popup. */
+.poi-popup__input {
+	width: 100%;
+	border: 1px solid var(--border-color, #e5e7eb);
+	border-radius: 4px;
+	background: var(--map-tooltip-bg);
+	color: var(--map-tooltip-color, inherit);
+	padding: 3px 6px;
+	font-size: 12px;
+	line-height: 1.4;
+	outline: none;
+}
+.poi-popup__input:focus-visible {
+	border-color: var(--cldt-green);
+	box-shadow: 0 0 0 1px var(--cldt-green);
+}
+.poi-popup__input--title {
+	font-size: 14px;
+	font-weight: 600;
+	color: var(--cldt-blue);
+	margin-bottom: 4px;
+}
+textarea.poi-popup__input {
+	resize: vertical;
+	margin-bottom: 2px;
 }
 
 /* Imported-track color picker: native input[type=color] carries UA padding
