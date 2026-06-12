@@ -205,6 +205,7 @@
 		"tileBoundaryDisabling": "disabling",
 		"shareText": "Check out this location on the CLDT",
 		"linkCopied": "Link copied to clipboard!",
+		"linkCopiedShort": "Short link copied to clipboard!",
 		"southbound": "Southbound",
 		"northbound": "Northbound",
 		"directionTitleNorthSouth": "North to South",
@@ -239,7 +240,9 @@
 		"pushAlertsLabel": "Notify about new trail warnings",
 		"pushAlertsHint": "Browser notification when a new seasonal warning is published for the trail. Works while the app is closed; no account needed.",
 		"waymarkedLabel": "Marked hiking routes overlay",
-		"waymarkedHint": "Draws OSM hiking route relations (Waymarked Trails) over the base map. Online only."
+		"waymarkedHint": "Draws OSM hiking route relations (Waymarked Trails) over the base map. Online only.",
+		"shareShortLinksLabel": "Use short share links",
+		"shareShortLinksHint": "Copies a compact link that opens the same map view. Requires an internet connection to create."
 	},
 	"baseMapSelector": {
 		"standard": "Standard",
@@ -764,6 +767,7 @@
 		"wikipediaSource": "Wikipedia",
 		"shareLink": "Share link",
 		"shareCopied": "Link copied",
+		"shareCopiedShort": "Short link copied",
 		"shareFailed": "Could not copy",
 		"openInMaps": "Open in Maps",
 		"listTitle": "Places along the trail",

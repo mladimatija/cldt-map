@@ -7,6 +7,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { useMapStore, type MapStoreState } from '@/lib/store';
 import { isKnownType, poiDisplayName, poiMatchesTagFilter, type Poi } from '@/lib/pois';
 import { buildPoiShareUrl, isSafeUrl, openCoordinatesInMaps, parseShareUrlParams } from '@/lib/utils';
+import { resolveShareUrlForCopy } from '@/lib/share-shortener-client';
 import { fetchWikipediaSummary, truncateExtract } from '@/lib/wikipedia';
 import {
 	CLUSTER_CELL_PX,
@@ -120,6 +121,7 @@ export function PoiMarkers(): null {
 			wikipediaSource: t('wikipediaSource'),
 			shareLink: t('shareLink'),
 			shareCopied: t('shareCopied'),
+			shareCopiedShort: t('shareCopiedShort'),
 			shareFailed: t('shareFailed'),
 			openInMaps: t('openInMaps'),
 			starAddLabel: t('starAdd', { name: '' }).replace(/\s+/g, ' ').trim(),
@@ -272,6 +274,7 @@ export function PoiMarkers(): null {
 					wireOpenInMapsButton(marker, poi);
 					wireShareButton(marker, poi, {
 						shareCopied: popupLabels.shareCopied,
+						shareCopiedShort: popupLabels.shareCopiedShort,
 						shareFailed: popupLabels.shareFailed,
 					});
 					wireStarButton(marker, poi, {
@@ -529,7 +532,11 @@ function wireStarButton(marker: L.Marker, poi: Poi, labels: { starAddLabel: stri
  * back to a manual prompt when the clipboard API isn't available (e.g.
  * non-https contexts or older browsers).
  */
-function wireShareButton(marker: L.Marker, poi: Poi, labels: { shareCopied: string; shareFailed: string }): void {
+function wireShareButton(
+	marker: L.Marker,
+	poi: Poi,
+	labels: { shareCopied: string; shareCopiedShort: string; shareFailed: string },
+): void {
 	const popup = marker.getPopup();
 	if (!popup) return;
 	const el = popup.getElement();
@@ -542,7 +549,11 @@ function wireShareButton(marker: L.Marker, poi: Poi, labels: { shareCopied: stri
 	const originalLabel = btn.textContent ?? '';
 	btn.addEventListener('click', async (e) => {
 		e.preventDefault();
-		const url = buildPoiShareUrl(poi.id);
+		const longUrl = buildPoiShareUrl(poi.id);
+		const { url, short } = await resolveShareUrlForCopy(longUrl, {
+			useShortLinks: useMapStore.getState().shareShortLinks,
+			online: navigator.onLine,
+		});
 		let ok = false;
 		try {
 			if (typeof navigator !== 'undefined' && navigator.clipboard?.writeText) {
@@ -552,7 +563,7 @@ function wireShareButton(marker: L.Marker, poi: Poi, labels: { shareCopied: stri
 		} catch {
 			ok = false;
 		}
-		btn.textContent = ok ? labels.shareCopied : labels.shareFailed;
+		btn.textContent = ok ? (short ? labels.shareCopiedShort : labels.shareCopied) : labels.shareFailed;
 		// Reset the label after a short interval so the button stays usable.
 		window.setTimeout(() => {
 			btn.textContent = originalLabel;

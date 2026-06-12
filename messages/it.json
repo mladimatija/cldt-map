@@ -205,6 +205,7 @@
 		"tileBoundaryDisabling": "la disattivazione",
 		"shareText": "Guarda questa posizione sul CLDT",
 		"linkCopied": "Link copiato negli appunti!",
+		"linkCopiedShort": "Link breve copiato negli appunti!",
 		"southbound": "Verso sud",
 		"northbound": "Verso nord",
 		"directionTitleNorthSouth": "Da nord a sud",
@@ -239,7 +240,9 @@
 		"pushAlertsLabel": "Notifica nuovi avvisi del sentiero",
 		"pushAlertsHint": "Notifica del browser quando viene pubblicato un nuovo avviso stagionale per il sentiero. Funziona anche ad app chiusa; nessun account.",
 		"waymarkedLabel": "Overlay sentieri segnalati",
-		"waymarkedHint": "Disegna le rotte escursionistiche OSM (Waymarked Trails) sopra la mappa di base. Solo online."
+		"waymarkedHint": "Disegna le rotte escursionistiche OSM (Waymarked Trails) sopra la mappa di base. Solo online.",
+		"shareShortLinksLabel": "Usa link brevi per la condivisione",
+		"shareShortLinksHint": "Copia un link compatto che apre la stessa vista mappa. Serve una connessione internet per crearlo."
 	},
 	"baseMapSelector": {
 		"standard": "Standard",
@@ -764,6 +767,7 @@
 		"wikipediaSource": "Wikipedia",
 		"shareLink": "Condividi link",
 		"shareCopied": "Link copiato",
+		"shareCopiedShort": "Link breve copiato",
 		"shareFailed": "Copia non riuscita",
 		"openInMaps": "Apri in Mappe",
 		"listTitle": "Luoghi lungo il sentiero",

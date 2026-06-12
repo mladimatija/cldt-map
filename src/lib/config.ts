@@ -148,6 +148,9 @@ export const config = {
 	/** Show severe-weather overlay by default. */
 	severeWeatherLayer: envBool('NEXT_PUBLIC_DEFAULT_SEVERE_WEATHER_LAYER', false),
 
+	/** Use compact share links (`/s/{code}`) by default. */
+	shareShortLinks: envBool('NEXT_PUBLIC_DEFAULT_SHARE_SHORT_LINKS', true),
+
 	/** Show mine-suspected areas by default. ON: this is a life-safety layer,
 	 *  so users opt out rather than in. */
 	mineAreasEnabled: envBool('NEXT_PUBLIC_DEFAULT_MINE_AREAS', true),

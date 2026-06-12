@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/Button';
 interface MapControlsSharePanelProps {
 	sharePopupRef: RefObject<HTMLDivElement | null>;
 	getShareUrl: () => string;
-	copyToClipboard: (url: string, withText?: boolean) => void;
+	copyToClipboard: (url: string, withText?: boolean) => void | Promise<void>;
 	onClose: () => void;
 }
 
@@ -64,7 +64,7 @@ export function MapControlsSharePanel({
 				{t('shareTitle')}
 			</h3>
 			<div className="flex flex-col gap-2">
-				<Button variant="mapControlOutline" onClick={() => copyToClipboard(getShareUrl(), true)}>
+				<Button variant="mapControlOutline" onClick={() => void copyToClipboard(getShareUrl(), true)}>
 					{t('copyLink')}
 				</Button>
 				<Button variant="mapControlOutlineSecondary" onClick={onClose}>

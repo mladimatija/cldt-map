@@ -18,7 +18,7 @@ import {
 	useStore,
 } from '@/lib/store';
 import { buildShareProgressUrl, buildShareViewUrl, collectShareMapStyleParams, isWithinMapBoundary } from '@/lib/utils';
-import type { BaseMapProvider } from '@/lib/services/map-service';
+import { resolveShareUrlForCopy } from '@/lib/share-shortener-client';
 import type * as GeoJSON from 'geojson';
 import {
 	IoArrowDownOutline,
@@ -188,8 +188,6 @@ const MapControls: React.FC<MapControlsProps> = ({
 	useBlockMapPropagation(helpRef);
 	useBlockMapPropagation(emergencyContainerRef);
 
-	const darkMode = useMapStore((state: MapStoreState) => state.darkMode);
-	const showSections = useMapStore((state: MapStoreState) => state.showSections);
 	const userLocation = useMapStore((state: MapStoreState) => state.userLocation);
 	const permissionStatus = useMapStore((state: MapStoreState) => state.permissionStatus);
 	const largeTouchTargets = useMapStore((state: MapStoreState) => state.largeTouchTargets);
@@ -451,26 +449,32 @@ const MapControls: React.FC<MapControlsProps> = ({
 	};
 
 	const [showCopyToast, setShowCopyToast] = useState(false);
+	const [copyToastShort, setCopyToastShort] = useState(false);
 	const [tileBoundaryError, setTileBoundaryError] = useState<string | null>(null);
 	const copyToastTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 	const tileBoundaryErrorTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+	const shareShortLinks = useMapStore((state: MapStoreState) => state.shareShortLinks);
 
-	const copyToClipboard = (url: string, withText = false): void => {
-		const text = withText ? `${t('shareText')}\n${url}` : url;
-		navigator.clipboard
-			.writeText(text)
-			.then(() => {
-				setShowCopyToast(true);
-				if (copyToastTimeoutRef.current) clearTimeout(copyToastTimeoutRef.current);
-				copyToastTimeoutRef.current = setTimeout(() => {
-					setShowCopyToast(false);
-					closePanel();
-					copyToastTimeoutRef.current = null;
-				}, 1500);
-			})
-			.catch((err) => {
-				console.error('Could not copy text:', err);
-			});
+	const copyToClipboard = async (url: string, withText = false): Promise<void> => {
+		const { url: finalUrl, short } = await resolveShareUrlForCopy(url, {
+			useShortLinks: shareShortLinks,
+			online: typeof navigator !== 'undefined' ? navigator.onLine : false,
+		});
+		const text = withText ? `${t('shareText')}\n${finalUrl}` : finalUrl;
+		try {
+			await navigator.clipboard.writeText(text);
+			setCopyToastShort(short);
+			setShowCopyToast(true);
+			if (copyToastTimeoutRef.current) clearTimeout(copyToastTimeoutRef.current);
+			copyToastTimeoutRef.current = setTimeout(() => {
+				setShowCopyToast(false);
+				setCopyToastShort(false);
+				closePanel();
+				copyToastTimeoutRef.current = null;
+			}, 1500);
+		} catch (err) {
+			console.error('Could not copy text:', err);
+		}
 	};
 
 	useEffect(
@@ -956,7 +960,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 							className="map-tooltip map-tooltip--pwa animate-slide-in-from-top fixed top-4 right-4 z-[var(--z-toast)] motion-reduce:animate-none"
 							role="status"
 						>
-							<p className="font-medium">{t('linkCopied')}</p>
+							<p className="font-medium">{copyToastShort ? t('linkCopiedShort') : t('linkCopied')}</p>
 						</div>
 					)}
 					{tileBoundaryError && (

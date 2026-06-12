@@ -205,6 +205,7 @@
 		"tileBoundaryDisabling": "onemogućivanju",
 		"shareText": "Pogledajte ovu lokaciju na CLDT-u",
 		"linkCopied": "Link kopiran u međuspremnik!",
+		"linkCopiedShort": "Kratka poveznica kopirana u međuspremnik!",
 		"southbound": "Južni smjer",
 		"northbound": "Sjeverni smjer",
 		"directionTitleNorthSouth": "Sjever prema jugu",
@@ -239,7 +240,9 @@
 		"pushAlertsLabel": "Obavijesti o novim upozorenjima",
 		"pushAlertsHint": "Obavijest preglednika kad se objavi novo sezonsko upozorenje za stazu. Radi i dok je aplikacija zatvorena; bez računa.",
 		"waymarkedLabel": "Sloj markiranih planinarskih ruta",
-		"waymarkedHint": "Iscrtava OSM planinarske rute (Waymarked Trails) preko osnovne karte. Samo online."
+		"waymarkedHint": "Iscrtava OSM planinarske rute (Waymarked Trails) preko osnovne karte. Samo online.",
+		"shareShortLinksLabel": "Koristi kratke poveznice za dijeljenje",
+		"shareShortLinksHint": "Kopira kratku poveznicu koja otvara isti prikaz karte. Za stvaranje poveznice potrebna je internetska veza."
 	},
 	"baseMapSelector": {
 		"standard": "Standardna",
@@ -764,6 +767,7 @@
 		"wikipediaSource": "Wikipedija",
 		"shareLink": "Podijeli poveznicu",
 		"shareCopied": "Poveznica kopirana",
+		"shareCopiedShort": "Kratka poveznica kopirana",
 		"shareFailed": "Kopiranje nije uspjelo",
 		"openInMaps": "Otvori u Kartama",
 		"listTitle": "Mjesta uz stazu",

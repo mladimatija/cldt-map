@@ -12,6 +12,7 @@ import type { DistanceUnit, TrailDirection, UnitSystem } from '@/lib/types';
 import { RulerRange } from '@/lib/distance-utils';
 import { PROVIDER_TO_KEY, KEY_TO_PROVIDER } from '@/components/map/base-map-options';
 import { BaseMapProvider } from '@/lib/services/map-service';
+import { SHARE_QUERY_PARAM_KEYS } from '@/lib/share-url-constants';
 
 export type { UnitSystem };
 
@@ -361,25 +362,7 @@ export type ShareUrlParams = ShareMapStyleParams & {
 };
 
 /** Share URL param keys that we add/remove */
-const SHARE_URL_PARAMS = [
-	'lat',
-	'lng',
-	'zoom',
-	'dir',
-	'progress',
-	'unit',
-	'baseMap',
-	'trailStyle',
-	'sections',
-	'dark',
-	'ruler',
-	'pois',
-	'weather',
-	'radar',
-	'distanceMarkers',
-	'waymarked',
-	'poi',
-] as const;
+const SHARE_URL_PARAMS = SHARE_QUERY_PARAM_KEYS;
 
 /** POI ids are token-like (alphanumeric, dot, dash, underscore). Anything
  *  else is rejected to avoid the URL becoming an injection vector or
@@ -522,8 +505,7 @@ export function applyShareMapStyleParams(params: ShareMapStyleParams): void {
 		}
 	}
 	const trailStyle =
-		params.trailStyle ??
-		(params.sections !== undefined ? (params.sections ? 'sections' : 'default') : undefined);
+		params.trailStyle ?? (params.sections !== undefined ? (params.sections ? 'sections' : 'default') : undefined);
 	if (trailStyle !== undefined) {
 		applyShareTrailStyle(trailStyle);
 	}

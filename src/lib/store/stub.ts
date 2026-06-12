@@ -199,6 +199,8 @@ export function createMapStoreStub(): MapStoreState {
 		setPushAlertsEnabled: noop,
 		waymarkedTrailsOverlay: false,
 		setWaymarkedTrailsOverlay: noop,
+		shareShortLinks: true,
+		setShareShortLinks: noop,
 		userWaypoints: [],
 		addUserWaypoint: noop,
 		updateUserWaypoint: noop,
