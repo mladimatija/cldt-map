@@ -9,35 +9,49 @@ import { Button } from '@/components/ui/Button';
 
 export default function GpxImportDropzone(): React.ReactElement {
 	const t = useTranslations('imports');
-	const importedTracks = useMapStore((s: MapStoreState) => s.importedTracks);
 	const addImportedTrack = useMapStore((s: MapStoreState) => s.addImportedTrack);
 
 	const [isDragging, setIsDragging] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const dragCounter = useRef(0);
-	// Ref so drag handlers don't need to re-register on every track addition
-	const trackCountRef = useRef(importedTracks.length);
 	const fileInputRef = useRef<HTMLInputElement>(null);
 
-	useEffect(() => {
-		trackCountRef.current = importedTracks.length;
-	}, [importedTracks.length]);
-
-	async function processFile(file: File): Promise<void> {
+	async function processFile(file: File): Promise<string | null> {
 		const xml = await file.text();
 		try {
 			const parsed = parseGpx(xml);
 			const firstTrack = parsed.tracks[0];
 			if (!firstTrack || firstTrack.points.length === 0) {
-				setError(t('errorMalformed'));
-				return;
+				return t('errorMalformed');
 			}
-			const track = await saveImportedTrack(xml, firstTrack, trackCountRef.current);
-			addImportedTrack(track);
+			// getState() reads synchronously, so sequential batch imports see
+			// each other immediately - the ref-based count only updates after a
+			// render and would hand every file in a batch the same color.
+			const currentTracks = useMapStore.getState().importedTracks;
+			const track = await saveImportedTrack(xml, firstTrack, currentTracks.length);
+			// Content-hash dedup: re-importing an identical file returns the
+			// stored track; don't add a duplicate row.
+			if (!currentTracks.some((existing) => existing.id === track.id)) {
+				addImportedTrack(track);
+			}
+			return null;
 		} catch (err) {
 			const msg = err instanceof Error ? err.message : '';
-			setError(msg.includes('large') ? t('errorTooLarge') : t('errorMalformed'));
+			return msg.includes('large') ? t('errorTooLarge') : t('errorMalformed');
 		}
+	}
+
+	/** Imports a batch sequentially: order keeps the palette color cycle
+	 *  deterministic and one malformed file never aborts the rest. Errors
+	 *  are aggregated into a single banner naming the failing files. */
+	async function processFiles(files: File[]): Promise<void> {
+		setError(null);
+		const failures: string[] = [];
+		for (const file of files) {
+			const err = await processFile(file);
+			if (err) failures.push(`${file.name}: ${err}`);
+		}
+		if (failures.length > 0) setError(failures.join('\n'));
 	}
 
 	useEffect(() => {
@@ -60,9 +74,9 @@ export default function GpxImportDropzone(): React.ReactElement {
 			e.preventDefault();
 			dragCounter.current = 0;
 			setIsDragging(false);
-			const file = Array.from(e.dataTransfer?.files ?? []).find((f) => f.name.endsWith('.gpx'));
-			if (!file) return;
-			void processFile(file);
+			const files = Array.from(e.dataTransfer?.files ?? []).filter((f) => f.name.toLowerCase().endsWith('.gpx'));
+			if (files.length === 0) return;
+			void processFiles(files);
 		};
 
 		document.addEventListener('dragenter', onDragEnter);
@@ -80,8 +94,8 @@ export default function GpxImportDropzone(): React.ReactElement {
 	}, []);
 
 	const onFileChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-		const file = e.target.files?.[0];
-		if (file) void processFile(file);
+		const files = Array.from(e.target.files ?? []);
+		if (files.length > 0) void processFiles(files);
 		e.target.value = '';
 	};
 
@@ -89,6 +103,7 @@ export default function GpxImportDropzone(): React.ReactElement {
 		<>
 			{/* Hidden file picker - triggered from MapControlsImportsPanel */}
 			<input
+				multiple
 				accept=".gpx"
 				aria-label={t('pickFile')}
 				className="sr-only"
@@ -116,7 +131,7 @@ export default function GpxImportDropzone(): React.ReactElement {
 					<Button className="user-location-close-btn" variant="closeIcon" onClick={() => setError(null)}>
 						×
 					</Button>
-					<span>{error}</span>
+					<span className="whitespace-pre-line">{error}</span>
 				</div>
 			)}
 		</>
