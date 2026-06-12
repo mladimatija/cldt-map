@@ -45,7 +45,22 @@ export function usePoisFetch(): void {
 			}
 		};
 
-		void fetchData();
+		// The default POI set is ~3 MB of JSON (peaks alone are 1.7 MB with
+		// baked Wikipedia summaries); fetching and parsing it during map
+		// startup competes with the GPX parse and first tile paint. Defer the
+		// INITIAL load to browser idle time - everything downstream (markers,
+		// planner water stats, up-next strip) is reactive and simply fills in
+		// a moment later. Subsequent enabled-type changes fetch immediately:
+		// those are explicit user actions on a warm page.
+		let idleHandle: number | null = null;
+		let timeoutHandle: ReturnType<typeof setTimeout> | null = null;
+		if (lastFetchedAt === 0 && 'requestIdleCallback' in window) {
+			idleHandle = window.requestIdleCallback(() => void fetchData(), { timeout: 4000 });
+		} else if (lastFetchedAt === 0) {
+			timeoutHandle = setTimeout(() => void fetchData(), 1500);
+		} else {
+			void fetchData();
+		}
 
 		const onVisibility = (): void => {
 			if (document.visibilityState === 'visible') {
@@ -59,6 +74,8 @@ export function usePoisFetch(): void {
 
 		return () => {
 			document.removeEventListener('visibilitychange', onVisibility);
+			if (idleHandle !== null && 'cancelIdleCallback' in window) window.cancelIdleCallback(idleHandle);
+			if (timeoutHandle !== null) clearTimeout(timeoutHandle);
 		};
 	}, [setPoisFile, enabledKey]);
 }
