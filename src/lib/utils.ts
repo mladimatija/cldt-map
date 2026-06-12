@@ -12,6 +12,7 @@ import type { DistanceUnit, TrailDirection, UnitSystem } from '@/lib/types';
 import { RulerRange } from '@/lib/distance-utils';
 import { PROVIDER_TO_KEY, KEY_TO_PROVIDER } from '@/components/map/base-map-options';
 import { BaseMapProvider } from '@/lib/services/map-service';
+import { siteMetadata } from '@/lib/metadata';
 import { SHARE_QUERY_PARAM_KEYS } from '@/lib/share-url-constants';
 
 export type { UnitSystem };
@@ -532,7 +533,10 @@ export function applyShareMapStyleParams(params: ShareMapStyleParams): void {
 /** Canonical origin + `/` for share links (locale lives in middleware, not the URL path). */
 export function getShareBaseUrl(): string {
 	if (typeof window === 'undefined') return '/';
-	return `${window.location.origin}/`;
+	const { hostname } = window.location;
+	const origin =
+		hostname === 'localhost' || hostname === '127.0.0.1' ? window.location.origin : siteMetadata.url.replace(/\/$/, '');
+	return `${origin}/`;
 }
 
 /**

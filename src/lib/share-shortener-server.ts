@@ -6,6 +6,7 @@ import { randomBytes } from 'crypto';
 import { getStore, type Store } from '@netlify/blobs';
 import type { NextRequest } from 'next/server';
 import { LOCALES } from '@/i18n/routing';
+import { siteMetadata } from '@/lib/metadata';
 import { SHARE_QUERY_PARAM_KEYS } from '@/lib/share-url-constants';
 
 export const SHARE_LINKS_BLOB_STORE = 'share-links';
@@ -53,14 +54,22 @@ export function collectShareAllowedHosts(request: NextRequest): Set<string> {
 	return hosts;
 }
 
-/** Public origin for short links (Host / X-Forwarded-* on Netlify, not internal nextUrl). */
+function isLocalDevHost(host: string): boolean {
+	const hostname = host.split(':')[0]?.toLowerCase() ?? '';
+	return hostname === 'localhost' || hostname === '127.0.0.1';
+}
+
+/** Canonical public origin for short links and redirects (always map.cldt.hr in prod). */
 export function resolvePublicOrigin(request: NextRequest): string {
 	const host =
 		request.headers.get('x-forwarded-host')?.split(',')[0]?.trim() ||
 		request.headers.get('host') ||
 		request.nextUrl.host;
-	const proto = request.headers.get('x-forwarded-proto') || (request.nextUrl.protocol === 'http:' ? 'http' : 'https');
-	return `${proto}://${host}`;
+	if (isLocalDevHost(host)) {
+		const proto = request.headers.get('x-forwarded-proto') || (request.nextUrl.protocol === 'http:' ? 'http' : 'https');
+		return `${proto}://${host}`;
+	}
+	return siteMetadata.url.replace(/\/$/, '');
 }
 
 function isAllowedSharePathname(pathname: string): boolean {
