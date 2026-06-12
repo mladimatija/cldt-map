@@ -8,6 +8,12 @@ import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/li
 import { completedKmInRange, intervalsFromKms, totalCompletedKm, IMPORT_MAX_OFF_TRAIL_M } from '@/lib/completion';
 import { buildGpxWaypointXml, downloadGpxFile, type GpxWaypoint } from '@/lib/gpx-export';
 import { downloadTextFile, journalToMarkdown, newId, todayIsoDate, type JournalEntry } from '@/lib/user-waypoints';
+import {
+	parseGpxWaypoints,
+	parseJournalMarkdown,
+	gpxWaypointsToUserWaypoints,
+	parsedJournalToEntries,
+} from '@/lib/user-waypoint-import';
 import { TRAIL_SECTIONS } from '@/lib/trail-sections';
 import { buildSpatialGrid } from '@/lib/spatial-grid';
 import { computeTrackStats, trackBounds, trackOnTrailKms } from '@/lib/imported-tracks';
@@ -46,6 +52,7 @@ export function MapControlsProgressPanel(): React.ReactElement {
 	const removeProgressTrackId = useMapStore((s: MapStoreState) => s.removeProgressTrackId);
 
 	const userWaypoints = useMapStore((s: MapStoreState) => s.userWaypoints);
+	const addUserWaypoint = useMapStore((s: MapStoreState) => s.addUserWaypoint);
 	const removeUserWaypoint = useMapStore((s: MapStoreState) => s.removeUserWaypoint);
 	const requestOpenWaypoint = useMapStore((s: MapStoreState) => s.requestOpenWaypoint);
 	const journalEntries = useMapStore((s: MapStoreState) => s.journalEntries);
@@ -70,6 +77,12 @@ export function MapControlsProgressPanel(): React.ReactElement {
 	 *  the same draft state as the inline form, so expanding mid-sentence
 	 *  keeps the text, and saving from either place is equivalent. */
 	const [focusEditorOpen, setFocusEditorOpen] = useState(false);
+	const [waypointImportError, setWaypointImportError] = useState<string | null>(null);
+	const [journalImportError, setJournalImportError] = useState<string | null>(null);
+	const waypointImportInputRef = useRef<HTMLInputElement>(null);
+	const journalImportInputRef = useRef<HTMLInputElement>(null);
+
+	const SNAP_MAX_M = 2000;
 
 	const doneKm = useMemo(
 		() => Math.min(totalCompletedKm(completedIntervals), totalKm || Infinity),
@@ -189,6 +202,63 @@ export function MapControlsProgressPanel(): React.ReactElement {
 			units,
 		);
 		downloadTextFile(md, 'cldt-journal.md');
+	};
+
+	const snapTrailKm = (lat: number, lng: number): number | null => {
+		const snapped = useStore.getState().findTrailPointByCoordinates(lat, lng, SNAP_MAX_M);
+		return snapped ? snapped.distanceFromStart / 1000 : null;
+	};
+
+	const mapWaypointImportError = (code: string): string => {
+		switch (code) {
+			case 'FILE_TOO_LARGE':
+				return t('importWaypointsTooLarge');
+			case 'UNSUPPORTED_DOCTYPE':
+			case 'MALFORMED':
+			case 'NO_WAYPOINTS':
+				return t('importWaypointsError');
+			default:
+				return t('importWaypointsError');
+		}
+	};
+
+	const mapJournalImportError = (code: string): string => {
+		switch (code) {
+			case 'FILE_TOO_LARGE':
+				return t('importJournalTooLarge');
+			case 'NO_ENTRIES':
+				return t('importJournalError');
+			default:
+				return t('importJournalError');
+		}
+	};
+
+	const handleImportWaypointsFile = async (file: File): Promise<void> => {
+		setWaypointImportError(null);
+		try {
+			const parsed = parseGpxWaypoints(await file.text());
+			const imported = gpxWaypointsToUserWaypoints(parsed, useMapStore.getState().userWaypoints, {
+				newId,
+				snapTrailKm,
+			});
+			for (const wp of imported) addUserWaypoint(wp);
+		} catch (err) {
+			const code = err instanceof Error ? err.message : '';
+			setWaypointImportError(mapWaypointImportError(code));
+		}
+	};
+
+	const handleImportJournalFile = async (file: File): Promise<void> => {
+		setJournalImportError(null);
+		try {
+			const parsed = parseJournalMarkdown(await file.text());
+			for (const entry of parsedJournalToEntries(parsed, newId)) {
+				addJournalEntry(entry);
+			}
+		} catch (err) {
+			const code = err instanceof Error ? err.message : '';
+			setJournalImportError(mapJournalImportError(code));
+		}
 	};
 
 	const journalSorted = useMemo(
@@ -330,13 +400,43 @@ export function MapControlsProgressPanel(): React.ReactElement {
 									</Button>
 								</div>
 							))}
-							<Button size="sm" variant="mapControlOutlineSecondary" onClick={handleExportWaypoints}>
-								{t('exportWaypoints')}
-							</Button>
+							<div className="flex flex-wrap gap-2">
+								<Button size="sm" variant="mapControlOutlineSecondary" onClick={handleExportWaypoints}>
+									{t('exportWaypoints')}
+								</Button>
+								<Button
+									size="sm"
+									variant="mapControlOutlineSecondary"
+									onClick={() => waypointImportInputRef.current?.click()}
+								>
+									{t('importWaypoints')}
+								</Button>
+							</div>
 						</>
 					) : (
-						<p className="m-0 text-xs text-gray-500 dark:text-gray-400">{t('noWaypoints')}</p>
+						<>
+							<p className="m-0 text-xs text-gray-500 dark:text-gray-400">{t('noWaypoints')}</p>
+							<Button
+								size="sm"
+								variant="mapControlOutlineSecondary"
+								onClick={() => waypointImportInputRef.current?.click()}
+							>
+								{t('importWaypoints')}
+							</Button>
+						</>
 					)}
+					<input
+						accept=".gpx,application/gpx+xml"
+						className="hidden"
+						ref={waypointImportInputRef}
+						type="file"
+						onChange={(e) => {
+							const file = e.target.files?.[0];
+							if (file) void handleImportWaypointsFile(file);
+							e.target.value = '';
+						}}
+					/>
+					{waypointImportError && <p className="text-cldt-red m-0 text-xs">{waypointImportError}</p>}
 				</div>
 
 				<div className="flex flex-col gap-1.5">
@@ -403,6 +503,13 @@ export function MapControlsProgressPanel(): React.ReactElement {
 							</label>
 						)}
 						<div className="flex justify-end gap-2">
+							<Button
+								size="sm"
+								variant="mapControlOutlineSecondary"
+								onClick={() => journalImportInputRef.current?.click()}
+							>
+								{t('importJournal')}
+							</Button>
 							{journalEntries.length > 0 && (
 								<Button size="sm" variant="mapControlOutlineSecondary" onClick={handleExportJournal}>
 									{t('exportJournal')}
@@ -413,6 +520,18 @@ export function MapControlsProgressPanel(): React.ReactElement {
 							</Button>
 						</div>
 					</div>
+					<input
+						accept=".md,text/markdown"
+						className="hidden"
+						ref={journalImportInputRef}
+						type="file"
+						onChange={(e) => {
+							const file = e.target.files?.[0];
+							if (file) void handleImportJournalFile(file);
+							e.target.value = '';
+						}}
+					/>
+					{journalImportError && <p className="text-cldt-red m-0 text-xs">{journalImportError}</p>}
 				</div>
 
 				<label className="flex cursor-pointer items-center gap-2 text-xs text-gray-600 dark:text-gray-400">

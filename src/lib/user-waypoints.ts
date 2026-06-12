@@ -76,6 +76,7 @@ export function journalToMarkdown(
 	for (const e of sorted) {
 		parts.push(`## ${e.date}`);
 		if (e.startKm !== undefined && e.endKm !== undefined) {
+			parts.push(`<!-- cldt-journal-range:${e.startKm},${e.endKm} -->`);
 			parts.push(labels.rangeLine(`${formatKm(e.startKm, units)} - ${formatKm(e.endKm, units)}`));
 		}
 		parts.push('', e.text.trim(), '');
