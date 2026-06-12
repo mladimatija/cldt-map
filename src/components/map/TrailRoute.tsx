@@ -24,6 +24,11 @@ import {
 	SAC_COLORS,
 } from '@/components/map/trail-route-constants';
 import { bucketSac, bucketSurface, findRunAtKm, type SacBucket, type SurfaceBucket } from '@/lib/trail-osm-tags';
+import {
+	computeSurfaceBreakdownBySection,
+	surfaceMixForSection,
+	type SurfaceMixEntry,
+} from '@/lib/surface-section-stats';
 import { TRAIL_SECTIONS } from '@/lib/trail-sections';
 import { fetchGPXWithCache } from '@/lib/gpx-cache';
 import { computeTrailDataInWorker } from '@/lib/trail-compute-client';
@@ -69,6 +74,23 @@ interface SectionTooltipStats {
 	sectionIndex: number;
 }
 
+function buildSurfaceMixHtml(
+	entries: SurfaceMixEntry[],
+	heading: string,
+	bucketLabel: (bucket: SurfaceBucket) => string,
+): string {
+	if (entries.length === 0) return '';
+	const rows = entries
+		.map((e) => {
+			const color = SURFACE_COLORS[e.bucket];
+			const label = bucketLabel(e.bucket);
+			const pct = e.pct >= 10 ? e.pct.toFixed(0) : e.pct.toFixed(1);
+			return `<li><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${color};vertical-align:middle;margin-right:4px" aria-hidden="true"></span>${label} ${pct}%</li>`;
+		})
+		.join('');
+	return `<p class="font-medium mt-1 mb-0.5">${heading}</p><ul class="list-none m-0 p-0 text-xs">${rows}</ul>`;
+}
+
 function buildSectionTooltipHtml(
 	stats: SectionTooltipStats,
 	totals: { totalDistanceM: number; totalAscentM: number; totalDescentM: number },
@@ -76,6 +98,8 @@ function buildSectionTooltipHtml(
 	precision: number,
 	t: (key: string) => string,
 	paceKmh: number,
+	surfaceMix: SurfaceMixEntry[] | null,
+	surfaceBucketLabel: (bucket: SurfaceBucket) => string,
 ): string {
 	const { startDistM, endDistM, secDistM, secAscent, secDescent, sectionIndex } = stats;
 	const section = TRAIL_SECTIONS[sectionIndex];
@@ -87,6 +111,10 @@ function buildSectionTooltipHtml(
 	const descentPct = totalDescentM > 0 ? ((secDescent / totalDescentM) * 100).toFixed(1) : '0.0';
 	const estimatedDays = estimatePassageDays(secDistM, secAscent, paceKmh);
 	const ofTrail = t('sectionOfTrail');
+	const surfaceHtml =
+		surfaceMix && surfaceMix.length > 0
+			? buildSurfaceMixHtml(surfaceMix, t('sectionSurfaceMix'), surfaceBucketLabel)
+			: '';
 	return `
 		<div class="map-tooltip__inner">
 			<p class="font-bold text-sm mb-1 trail-section-title-${sectionIndex}">${t(section.nameKey)}</p>
@@ -96,6 +124,7 @@ function buildSectionTooltipHtml(
 			<p><span class="font-medium">${t('sectionAscent')}</span> ${formatElevation(secAscent, units)} (${ascentPct}% ${ofTrail})</p>
 			<p><span class="font-medium">${t('sectionDescent')}</span> ${formatElevation(secDescent, units)} (${descentPct}% ${ofTrail})</p>
 			<p><span class="font-medium">${t('sectionAvgPassageTime')}</span> ${estimatedDays} ${t('sectionDays')}</p>
+			${surfaceHtml}
 		</div>
 	`;
 }
@@ -212,6 +241,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 	const t = useTranslations('trailRoute');
 	const tChart = useTranslations('elevationChart');
 	const tControls = useTranslations('mapControls');
+	const tSurfaceBucket = useTranslations('mapControls.layers.trailStyle.surfaceBuckets');
 	const tWeather = useTranslations('weather');
 	const locale = useLocale();
 	const map = useMap();
@@ -840,6 +870,11 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 						const currentUnits = useMapStore.getState().units;
 						const currentPrecision = useMapStore.getState().distancePrecision;
 						const currentPaceKmh = packAdjustedPaceKmhFromState(useMapStore.getState());
+						const osmTags = useMapStore.getState().trailOsmTagsFile;
+						const osmTrailKm = osmTags?.totalKm ?? totalDistanceM / 1000;
+						const surfaceBreakdown = osmTags?.runs?.length
+							? computeSurfaceBreakdownBySection(osmTags.runs, osmTrailKm)
+							: null;
 
 						// Draw each geographic section with its own label and color (A=green, B=blue, C=red by position along the trail).
 						const newSectionMarkers: L.Marker[] = [];
@@ -886,6 +921,8 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 								currentPrecision,
 								t,
 								currentPaceKmh,
+								surfaceBreakdown ? surfaceMixForSection(surfaceBreakdown, si) : null,
+								(bucket) => tSurfaceBucket(bucket),
 							);
 							const marker = L.marker(L.latLng(lat0, lng0), {
 								icon: sectionBoundaryIcon(section.shortName, si),
@@ -1081,6 +1118,9 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 
 		const markers = sectionBoundaryMarkersRef.current;
 		const stats = sectionStatsRef.current;
+		const osmTags = trailOsmTagsFile;
+		const osmTrailKm = osmTags?.totalKm ?? meta?.totalDistance ?? 0;
+		const surfaceBreakdown = osmTags?.runs?.length ? computeSurfaceBreakdownBySection(osmTags.runs, osmTrailKm) : null;
 		for (let i = 0; i < markers.length && i < stats.length; i++) {
 			const tooltipHtml = buildSectionTooltipHtml(
 				stats[i],
@@ -1089,13 +1129,26 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 				currentPrecision,
 				t,
 				walkingPaceKmh,
+				surfaceBreakdown ? surfaceMixForSection(surfaceBreakdown, stats[i].sectionIndex) : null,
+				(bucket) => tSurfaceBucket(bucket),
 			);
 			const tooltip = markers[i].getTooltip();
 			if (tooltip) {
 				tooltip.setContent(tooltipHtml);
 			}
 		}
-	}, [showSections, units, distancePrecision, locale, trailMetadata, t, direction, walkingPaceKmh]);
+	}, [
+		showSections,
+		units,
+		distancePrecision,
+		locale,
+		trailMetadata,
+		t,
+		tSurfaceBucket,
+		direction,
+		walkingPaceKmh,
+		trailOsmTagsFile,
+	]);
 
 	useEffect(() => {
 		if (isRulerEnabled) {
