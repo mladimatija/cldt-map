@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useMap } from 'react-leaflet';
+import L from 'leaflet';
 import { useTranslations } from 'next-intl';
 import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
 import { completedKmInRange, intervalsFromKms, totalCompletedKm, IMPORT_MAX_OFF_TRAIL_M } from '@/lib/completion';
@@ -8,7 +10,7 @@ import { buildGpxWaypointXml, downloadGpxFile, type GpxWaypoint } from '@/lib/gp
 import { downloadTextFile, journalToMarkdown, newId, todayIsoDate, type JournalEntry } from '@/lib/user-waypoints';
 import { TRAIL_SECTIONS } from '@/lib/trail-sections';
 import { buildSpatialGrid } from '@/lib/spatial-grid';
-import { computeTrackStats, trackOnTrailKms } from '@/lib/imported-tracks';
+import { computeTrackStats, trackBounds, trackOnTrailKms } from '@/lib/imported-tracks';
 import SmartTooltip from '@/components/ui/SmartTooltip';
 import { cn, formatDistance } from '@/lib/utils';
 import { IoExpandOutline } from 'react-icons/io5';
@@ -54,6 +56,12 @@ export function MapControlsProgressPanel(): React.ReactElement {
 	const totalKm = useStore((s: StoreState) => s.trailMetadata.totalDistance);
 
 	const popoverRef = usePopoverFocusTrap(true);
+	const map = useMap();
+
+	const fitToTrack = (track: (typeof importedTracks)[number]): void => {
+		const bounds = trackBounds(track);
+		if (bounds) map.fitBounds(L.latLngBounds(bounds[0], bounds[1]), { padding: [20, 20] });
+	};
 	const [confirmClear, setConfirmClear] = useState(false);
 	const [entryDate, setEntryDate] = useState(todayIsoDate);
 	const [entryText, setEntryText] = useState('');
@@ -270,7 +278,14 @@ export function MapControlsProgressPanel(): React.ReactElement {
 						importedTracks.map((track) => (
 							<div className="flex items-center gap-2 text-xs" key={track.id}>
 								<span aria-hidden className="h-2 w-2 shrink-0 rounded-full" style={{ background: track.color }} />
-								<span className="min-w-0 flex-1 truncate text-gray-600 dark:text-gray-300">{track.name}</span>
+								<button
+									className="hover:text-cldt-blue focus-visible:ring-cldt-green min-w-0 flex-1 cursor-pointer truncate rounded border-0 bg-transparent p-0 text-left text-gray-600 outline-none focus-visible:ring-2 focus-visible:ring-offset-1 dark:text-gray-300"
+									title={track.name}
+									type="button"
+									onClick={() => fitToTrack(track)}
+								>
+									{track.name}
+								</button>
 								{addableById[track.id] === false && !progressTrackIds.includes(track.id) ? (
 									<SmartTooltip content={t('trackNoCoverage')} position="top">
 										<span className="inline-flex">

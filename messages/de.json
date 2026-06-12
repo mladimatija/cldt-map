@@ -591,7 +591,7 @@
 		"errorTooLarge": "GPX-Datei ist zu groß (max. 50 MB).",
 		"alreadyImported": "Dieser Track wurde bereits importiert.",
 		"pickFile": "Datei wählen",
-		"distanceFromTrail": "{distance} m vom Weg",
+		"distanceFromTrail": "{distance} vom Weg",
 		"moving": "Gehzeit",
 		"maxDeviation": "Max. Abweichung",
 		"coverage": "Auf dem Weg",

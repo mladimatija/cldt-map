@@ -3,10 +3,11 @@
 import { useEffect, useRef } from 'react';
 import { useMap } from 'react-leaflet';
 import L from 'leaflet';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { useMapStore, useStore, type MapStoreState } from '@/lib/store';
 import { newId, nextWaypointName, type UserWaypoint } from '@/lib/user-waypoints';
 import { formatDistance } from '@/lib/utils';
+import { formatIsoDate } from '@/lib/date-format';
 
 const WAYPOINT_PANE = 'userWaypointPane';
 
@@ -40,6 +41,7 @@ function buildWaypointIcon(): L.DivIcon {
 export function UserWaypointMarkers(): null {
 	const map = useMap();
 	const t = useTranslations('waypoints');
+	const locale = useLocale();
 	const userWaypoints = useMapStore((s: MapStoreState) => s.userWaypoints);
 	const updateUserWaypoint = useMapStore((s: MapStoreState) => s.updateUserWaypoint);
 	const removeUserWaypoint = useMapStore((s: MapStoreState) => s.removeUserWaypoint);
@@ -139,7 +141,7 @@ export function UserWaypointMarkers(): null {
 				wp.trailKm !== null
 					? t('atKm', { distance: formatDistance(wp.trailKm, units, distancePrecision) })
 					: t('offTrail');
-			metaLine.textContent = `${kmText} · ${wp.createdAt.slice(0, 10)}`;
+			metaLine.textContent = `${kmText} · ${formatIsoDate(wp.createdAt.slice(0, 10), locale)}`;
 
 			const buttonRow = document.createElement('div');
 			buttonRow.className = 'poi-popup__actions';
@@ -171,7 +173,7 @@ export function UserWaypointMarkers(): null {
 			for (const m of markers.values()) m.remove();
 			markers.clear();
 		};
-	}, [map, userWaypoints, units, distancePrecision, t, updateUserWaypoint, removeUserWaypoint]);
+	}, [map, userWaypoints, units, distancePrecision, t, locale, updateUserWaypoint, removeUserWaypoint]);
 
 	// Panel-initiated open (and the just-created flow): fly to the waypoint
 	// and open its popup once the marker exists.
