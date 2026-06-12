@@ -79,6 +79,32 @@ export function isUsableWaterSource(water: WaterInfo | undefined): boolean {
 	return water ? water.reliability !== 'not_potable' : true;
 }
 
+export const WATER_RELIABILITY_OPTIONS = [
+	'reliable',
+	'seasonal',
+	'unverified',
+	'not_potable',
+] as const satisfies readonly WaterReliability[];
+
+/** Reliability class for a water POI; null for non-water rows. Legacy rows
+ *  without `water` metadata are treated as unverified. */
+export function poiWaterReliability(poi: { type: string; water?: WaterInfo }): WaterReliability | null {
+	if (poi.type !== 'water') return null;
+	return poi.water?.reliability ?? 'unverified';
+}
+
+/** Empty set = show all. When non-empty, water POIs must match a selected
+ *  class; other POI types are unaffected. */
+export function poiMatchesWaterReliabilityFilter(
+	poi: { type: string; water?: WaterInfo },
+	enabled: ReadonlySet<WaterReliability>,
+): boolean {
+	if (enabled.size === 0) return true;
+	const rel = poiWaterReliability(poi);
+	if (rel === null) return true;
+	return enabled.has(rel);
+}
+
 /** Stage water chip turns amber at this dry stretch (km). */
 export const WATER_GAP_WARN_KM = 15;
 /** Stage water chip turns red at this dry stretch (km). */
