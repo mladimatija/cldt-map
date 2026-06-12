@@ -91,11 +91,17 @@ export default function SunsetSunriseMarkers(): React.ReactElement | null {
 	// Derive effective weather: null when off-trail
 	const effectiveWeatherData: WeatherData | null = isOnTrail ? weatherData : null;
 
+	// Quantize the projection origin to 100 m buckets: walking 100 m moves a
+	// sunset marker hours away by a negligible amount, but using the raw
+	// closestPoint object re-ran the O(trail-walk) projection on every GPS
+	// publish.
+	const fromM100 = closestPoint ? Math.round(closestPoint.distanceFromStart / 100) : null;
+
 	const projections = useMemo((): SunProjection[] => {
-		if (!isOnTrail || !effectiveWeatherData?.sunset || enhancedTrailPoints.length < 2 || !closestPoint) return [];
+		if (!isOnTrail || !effectiveWeatherData?.sunset || enhancedTrailPoints.length < 2 || fromM100 === null) return [];
 
 		const utcOffset = effectiveWeatherData.utcOffsetSeconds;
-		const fromIndex = findNearestPointIndex(enhancedTrailPoints, closestPoint.distanceFromStart);
+		const fromIndex = findNearestPointIndex(enhancedTrailPoints, fromM100 * 100);
 		const lastIndex = enhancedTrailPoints.length - 1;
 
 		const candidates: { deltaSec: number; timeStr: string; icon: L.DivIcon; tooltipKey: 'sunset' | 'sunrise' }[] = [
@@ -141,7 +147,7 @@ export default function SunsetSunriseMarkers(): React.ReactElement | null {
 		isOnTrail,
 		effectiveWeatherData,
 		enhancedTrailPoints,
-		closestPoint,
+		fromM100,
 		direction,
 		walkingPaceKmh,
 		gradeAdjustedEta,
