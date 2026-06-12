@@ -721,7 +721,24 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 
 					removeImportedTrack: async (id: string): Promise<void> => {
 						await removeImportedTrack(id);
-						set((state) => ({ importedTracks: state.importedTracks.filter((t) => t.id !== id) }));
+						set((state) => ({
+							importedTracks: state.importedTracks.filter((t) => t.id !== id),
+							// Prune the progress-toggle marker; the completed intervals
+							// themselves stay (deleting a file should not erase hiked km).
+							progressTrackIds: state.progressTrackIds.filter((tid) => tid !== id),
+						}));
+					},
+
+					progressTrackIds: [],
+					addProgressTrackId: (id: string): void => {
+						set((state) => ({
+							progressTrackIds: state.progressTrackIds.includes(id)
+								? state.progressTrackIds
+								: [...state.progressTrackIds, id],
+						}));
+					},
+					removeProgressTrackId: (id: string): void => {
+						set((state) => ({ progressTrackIds: state.progressTrackIds.filter((tid) => tid !== id) }));
 					},
 
 					setImportedTracks: (tracks: ImportedTrack[]): void => {
@@ -947,6 +964,7 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					mineAreasEnabled: state.mineAreasEnabled,
 					showUpNext: state.showUpNext,
 					completedIntervals: state.completedIntervals,
+					progressTrackIds: state.progressTrackIds,
 					completionAutoTrack: state.completionAutoTrack,
 					showCompletionOverlay: state.showCompletionOverlay,
 					seasonalStatusLayerEnabled: state.seasonalStatusLayerEnabled,

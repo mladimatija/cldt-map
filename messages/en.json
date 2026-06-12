@@ -949,7 +949,9 @@
 		"addEntry": "Add entry",
 		"exportJournal": "Export (.md)",
 		"focusEditor": "Write in focus mode",
-		"focusEditorClose": "Close"
+		"focusEditorClose": "Close",
+		"removeTrack": "Remove from progress",
+		"trackNoCoverage": "This track is 0% on the trail - there is nothing to add to your progress."
 	},
 	"help": {
 		"title": "Help",

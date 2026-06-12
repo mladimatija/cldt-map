@@ -363,6 +363,12 @@ export interface MapStoreState {
 	setImportedTracks: (tracks: ImportedTrack[]) => void;
 	/** Updates color/visibility in the store and persists to localforage. */
 	updateImportedTrack: (id: string, patch: Partial<Pick<ImportedTrack, 'color' | 'visible'>>) => void;
+	/** Track ids whose on-trail coverage has been folded into completion
+	 *  progress; lets the progress panel offer add/remove as a toggle.
+	 *  Persisted. */
+	progressTrackIds: string[];
+	addProgressTrackId: (id: string) => void;
+	removeProgressTrackId: (id: string) => void;
 	loadImportedTracksFromStorage: () => Promise<void>;
 
 	hoveredImportedTrackId: string | null;
