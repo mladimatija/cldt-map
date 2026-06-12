@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { enforceRateLimit } from '@/lib/api-defense';
-import { createShortShareLink, isShareShortenerConfigured, normalizeShareTarget } from '@/lib/share-shortener-server';
+import {
+	collectShareAllowedHosts,
+	createShortShareLink,
+	isShareShortenerConfigured,
+	normalizeShareTarget,
+	resolvePublicOrigin,
+} from '@/lib/share-shortener-server';
 
 interface ShareCreateBody {
 	url?: unknown;
@@ -25,8 +31,7 @@ export async function POST(request: NextRequest): Promise<Response> {
 		return NextResponse.json({ error: 'Missing url' }, { status: 400 });
 	}
 
-	const allowedHost = request.nextUrl.host;
-	const target = normalizeShareTarget(body.url, allowedHost);
+	const target = normalizeShareTarget(body.url, collectShareAllowedHosts(request));
 	if (!target) {
 		return NextResponse.json({ error: 'URL is not an allowed share link' }, { status: 400 });
 	}
@@ -37,7 +42,7 @@ export async function POST(request: NextRequest): Promise<Response> {
 			return NextResponse.json({ error: 'Could not allocate short code' }, { status: 503 });
 		}
 
-		const shortUrl = `${request.nextUrl.origin}/s/${created.code}`;
+		const shortUrl = `${resolvePublicOrigin(request)}/s/${created.code}`;
 		return NextResponse.json(
 			{
 				code: created.code,

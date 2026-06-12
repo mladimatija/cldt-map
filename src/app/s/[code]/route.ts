@@ -1,5 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { isShareShortenerConfigured, resolveShortShareLink, SHARE_CODE_PATTERN } from '@/lib/share-shortener-server';
+import {
+	isShareShortenerConfigured,
+	resolvePublicOrigin,
+	resolveShortShareLink,
+	SHARE_CODE_PATTERN,
+} from '@/lib/share-shortener-server';
 
 interface RouteContext {
 	params: Promise<{ code: string }>;
@@ -21,7 +26,7 @@ export async function GET(request: NextRequest, context: RouteContext): Promise<
 			return NextResponse.redirect(new URL('/', request.url));
 		}
 
-		const destination = new URL(result.target, request.url);
+		const destination = new URL(result.target, resolvePublicOrigin(request));
 		return NextResponse.redirect(destination, 302);
 	} catch (err) {
 		console.error('share-redirect failed:', err instanceof Error ? err.message : String(err));

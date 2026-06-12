@@ -17,7 +17,13 @@ import {
 	useMapStore,
 	useStore,
 } from '@/lib/store';
-import { buildShareProgressUrl, buildShareViewUrl, collectShareMapStyleParams, isWithinMapBoundary } from '@/lib/utils';
+import {
+	buildShareProgressUrl,
+	buildShareViewUrl,
+	collectShareMapStyleParams,
+	getShareBaseUrl,
+	isWithinMapBoundary,
+} from '@/lib/utils';
 import { resolveShareUrlForCopy } from '@/lib/share-shortener-client';
 import type * as GeoJSON from 'geojson';
 import {
@@ -408,7 +414,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 
 	const getShareViewUrl = (): string => {
 		const center = map.getCenter();
-		return buildShareViewUrl(window.location.origin + window.location.pathname, {
+		return buildShareViewUrl(getShareBaseUrl(), {
 			lat: center.lat,
 			lng: center.lng,
 			zoom: map.getZoom(),
@@ -427,7 +433,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 
 		if (highlightedTrailPoint) {
 			const kmFromStart = highlightedTrailPoint.distanceFromStart / 1000;
-			return buildShareProgressUrl(window.location.origin + window.location.pathname, {
+			return buildShareProgressUrl(getShareBaseUrl(), {
 				kmFromStart,
 				direction: direction,
 				zoom,
@@ -437,7 +443,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 
 		if (closestPoint) {
 			const kmFromStart = closestPoint.distanceFromStart / 1000;
-			return buildShareProgressUrl(window.location.origin + window.location.pathname, {
+			return buildShareProgressUrl(getShareBaseUrl(), {
 				kmFromStart,
 				direction: direction,
 				zoom,
