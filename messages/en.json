@@ -681,6 +681,11 @@
 		"generating": "Generating...",
 		"cancel": "Cancel",
 		"close": "Close",
+		"continue": "Continue",
+		"back": "Back",
+		"preparing": "Preparing brief...",
+		"editTitle": "Review narratives",
+		"editDescription": "Edit the overview and day text before generating the document.",
 		"exportError": "Export failed. Please try again.",
 		"document": {
 			"labels": {
