@@ -10,6 +10,13 @@ import { computeTrackStats, trackBounds } from '@/lib/imported-tracks';
 import { buildSpatialGrid } from '@/lib/spatial-grid';
 import { formatEta, formatDistanceM, formatPaceFromSecPerKm } from '@/lib/distance-utils';
 import { findPoisNearTrack } from '@/lib/poi-proximity';
+import {
+	downloadCoverageReportCsv,
+	exportCoverageReportPdf,
+	type CoverageReportContent,
+	type CoverageReportPoiRow,
+} from '@/lib/import-coverage-report';
+import { formatIsoDate } from '@/lib/date-format';
 import { isKnownType, poiDisplayName, poiPassesReachabilityFilter } from '@/lib/pois';
 import { formatDistance } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
@@ -73,14 +80,64 @@ export function MapControlsImportsPanel(): React.ReactElement {
 		}
 		setExpandedTrackId(track.id);
 		if (!proximityByTrackId[track.id] && poisFile?.pois?.length) {
-			// Apply the same enabled-type filter the live map uses so the
-			// report shows the user the POIs they've actually opted into.
-			const visiblePois = poisFile.pois.filter(
-				(p) => isKnownType(p.type) && enabledPoiTypes.has(p.type) && poiPassesReachabilityFilter(p, includeRemotePois),
-			);
-			const hits = findPoisNearTrack(track.points, visiblePois);
+			const hits = computePoiHits(track);
 			setProximityByTrackId((prev) => ({ ...prev, [track.id]: hits }));
 		}
+	};
+
+	const computePoiHits = (track: ImportedTrack): ReturnType<typeof findPoisNearTrack> => {
+		if (!poisFile?.pois?.length) return [];
+		const visiblePois = poisFile.pois.filter(
+			(p) => isKnownType(p.type) && enabledPoiTypes.has(p.type) && poiPassesReachabilityFilter(p, includeRemotePois),
+		);
+		return findPoisNearTrack(track.points, visiblePois);
+	};
+
+	const buildReportContent = (track: ImportedTrack, stats: TrackStats): CoverageReportContent => {
+		const hits = proximityByTrackId[track.id] ?? computePoiHits(track);
+		const poiRows: CoverageReportPoiRow[] = hits.map((hit) => {
+			const closestDistance = formatDistance(hit.minDistanceM / 1000, units, distancePrecision);
+			const atTrackKm = formatDistance(hit.atTrackKm, units, 1);
+			return {
+				name: poiDisplayName(hit.poi, locale),
+				type: tPois(`type.${hit.poi.type}`, { default: hit.poi.type }),
+				closestDistance,
+				atTrackKm,
+				summaryLine: t('poiHitSummary', { closest: closestDistance, atRecording: atTrackKm }),
+			};
+		});
+		const now = new Date();
+		return {
+			title: t('reportTitle'),
+			trackLabel: t('reportTrack'),
+			trackName: track.name,
+			importedLabel: t('reportImportedAt'),
+			importedAt: formatIsoDate(new Date(track.importedAt).toISOString().slice(0, 10), locale),
+			generatedLabel: t('reportGeneratedAt'),
+			generatedAt: now.toLocaleString(locale === 'en' ? 'en-GB' : locale),
+			summaryHeading: t('reportSummaryHeading'),
+			distanceLabel: t('distance'),
+			distanceValue: formatDistanceM(stats.totalDistanceM, units),
+			elapsedLabel: t('elapsed'),
+			elapsedValue: stats.totalElapsedSec > 0 ? formatEta(stats.totalElapsedSec) : '-',
+			movingLabel: t('moving'),
+			movingValue: stats.totalMovingSec > 0 ? formatEta(stats.totalMovingSec) : null,
+			avgPaceLabel: t('avgPace'),
+			avgPaceValue: formatPaceFromSecPerKm(stats.avgMovingPaceSecPerKm, units),
+			maxDeviationLabel: t('maxDeviation'),
+			maxDeviationValue: `${Math.round(stats.maxDeviationM)} m`,
+			coverageLabel: t('coverage'),
+			coverageValue: `${stats.coveragePercent.toFixed(0)}%`,
+			coverageNote: t('reportCoverageNote'),
+			poisHeading: t('reportPoisHeading'),
+			poisLegend: t('reportPoisLegend'),
+			poisNone: t('reportPoisNone'),
+			poiColName: t('reportPoiColName'),
+			poiColType: t('reportPoiColType'),
+			poiColClosest: t('reportPoiColClosest'),
+			poiColAtKm: t('reportPoiColAtKm'),
+			poiRows,
+		};
 	};
 
 	/** Fly to a proximity-hit POI and open its popup; mirrors the up-next
@@ -89,6 +146,18 @@ export function MapControlsImportsPanel(): React.ReactElement {
 	const handlePoiHitClick = (poi: { id: string; type: string }): void => {
 		if (!enabledPoiTypes.has(poi.type)) togglePoiType(poi.type);
 		requestOpenPoi(poi.id);
+	};
+
+	const handleExportCsv = (track: ImportedTrack): void => {
+		const stats = trackStats[track.id];
+		if (!stats) return;
+		downloadCoverageReportCsv(buildReportContent(track, stats), track);
+	};
+
+	const handleExportPdf = async (track: ImportedTrack): Promise<void> => {
+		const stats = trackStats[track.id];
+		if (!stats) return;
+		await exportCoverageReportPdf(buildReportContent(track, stats), track);
 	};
 
 	const fitToTrack = (track: ImportedTrack): void => {
@@ -168,41 +237,65 @@ export function MapControlsImportsPanel(): React.ReactElement {
 										{t('coverage')}: {stats ? `${stats.coveragePercent.toFixed(0)}%` : '-'}
 									</span>
 								</div>
-								<div className="mt-1 flex items-center gap-2 pl-5">
-									<Button
-										aria-label={
-											track.visible === false
-												? t('showTrack', { trackName: track.name })
-												: t('hideTrack', { trackName: track.name })
-										}
-										size="sm"
-										title={
-											track.visible === false
-												? t('showTrack', { trackName: track.name })
-												: t('hideTrack', { trackName: track.name })
-										}
-										variant="mapControlOutlineSecondary"
-										onClick={() => updateImportedTrack(track.id, { visible: track.visible === false })}
-									>
-										{track.visible === false ? (
-											<IoEyeOffOutline aria-hidden className="h-3.5 w-3.5" />
-										) : (
-											<IoEyeOutline aria-hidden className="h-3.5 w-3.5" />
-										)}
-									</Button>
-									<Button
-										aria-label={t('removeAriaLabel', { trackName: track.name })}
-										size="sm"
-										title={t('removeAriaLabel', { trackName: track.name })}
-										variant="mapControlOutlineSecondary"
-										onClick={() => void removeImportedTrack(track.id)}
-									>
-										<IoTrashOutline aria-hidden className="h-3.5 w-3.5" />
-									</Button>
+								<div className="mt-1 flex flex-col gap-1.5 pl-5">
+									<div className="flex flex-wrap items-center gap-2">
+										<Button
+											aria-label={
+												track.visible === false
+													? t('showTrack', { trackName: track.name })
+													: t('hideTrack', { trackName: track.name })
+											}
+											className="h-8 w-8 shrink-0 px-0"
+											size="sm"
+											title={
+												track.visible === false
+													? t('showTrack', { trackName: track.name })
+													: t('hideTrack', { trackName: track.name })
+											}
+											variant="mapControlOutlineSecondary"
+											onClick={() => updateImportedTrack(track.id, { visible: track.visible === false })}
+										>
+											{track.visible === false ? (
+												<IoEyeOffOutline aria-hidden className="h-3.5 w-3.5" />
+											) : (
+												<IoEyeOutline aria-hidden className="h-3.5 w-3.5" />
+											)}
+										</Button>
+										<Button
+											aria-label={t('removeAriaLabel', { trackName: track.name })}
+											className="h-8 w-8 shrink-0 px-0"
+											size="sm"
+											title={t('removeAriaLabel', { trackName: track.name })}
+											variant="mapControlOutlineSecondary"
+											onClick={() => void removeImportedTrack(track.id)}
+										>
+											<IoTrashOutline aria-hidden className="h-3.5 w-3.5" />
+										</Button>
+										<Button
+											className="h-8 shrink-0"
+											disabled={!stats}
+											size="sm"
+											title={t('exportReportCsvTooltip')}
+											variant="mapControlOutlineSecondary"
+											onClick={() => handleExportCsv(track)}
+										>
+											{t('exportReportCsv')}
+										</Button>
+										<Button
+											className="h-8 shrink-0"
+											disabled={!stats}
+											size="sm"
+											title={t('exportReportPdfTooltip')}
+											variant="mapControlOutlineSecondary"
+											onClick={() => void handleExportPdf(track)}
+										>
+											{t('exportReportPdf')}
+										</Button>
+									</div>
 									{poisFile?.pois?.length ? (
 										<button
 											aria-expanded={expandedTrackId === track.id}
-											className="text-cldt-blue focus-visible:ring-cldt-green rounded text-xs underline focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:outline-none"
+											className="text-cldt-blue focus-visible:ring-cldt-green w-fit rounded text-xs underline focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:outline-none"
 											type="button"
 											onClick={() => toggleProximity(track)}
 										>
@@ -231,12 +324,15 @@ export function MapControlsImportsPanel(): React.ReactElement {
 													<p className="mb-1 text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400">
 														{t('poisCountHit', { count: hits.length })}
 													</p>
+													<p className="mb-1.5 text-[10px] leading-snug text-gray-500 dark:text-gray-400">
+														{t('reportPoisLegend')}
+													</p>
 													{hits.map((hit) => {
 														const name = poiDisplayName(hit.poi, locale);
 														const typeLabel = tPois(`type.${hit.poi.type}`, { default: hit.poi.type });
-														// Both values are already km; needsConversion would divide by 1000 again.
-														const distLabel = formatDistance(hit.minDistanceM / 1000, units, distancePrecision);
-														const atLabel = formatDistance(hit.atTrackKm, units, 1);
+														const closestDistance = formatDistance(hit.minDistanceM / 1000, units, distancePrecision);
+														const atRecording = formatDistance(hit.atTrackKm, units, 1);
+														const summaryLine = t('poiHitSummary', { closest: closestDistance, atRecording });
 														return (
 															<button
 																className="hover:bg-cldt-blue/10 focus-visible:ring-cldt-green flex w-full cursor-pointer items-baseline gap-2 rounded border-0 bg-transparent px-0.5 py-0.5 text-left text-xs text-gray-700 outline-none focus-visible:ring-2 dark:text-[var(--text-primary)]"
@@ -247,7 +343,7 @@ export function MapControlsImportsPanel(): React.ReactElement {
 															>
 																<span className="truncate font-medium">{name}</span>
 																<span className="ml-auto shrink-0 text-[10px] text-gray-500 dark:text-gray-400">
-																	{typeLabel} · {distLabel} ({atLabel})
+																	{typeLabel} · {summaryLine}
 																</span>
 															</button>
 														);
