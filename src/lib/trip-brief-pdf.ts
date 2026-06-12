@@ -375,14 +375,19 @@ function renderDay(
 	pdf.text(wrapped, MARGIN_X, yCursor);
 	yCursor += wrapped.length * 4 + 4;
 
-	// Water carry suggestion (pack-weight feature; absent when off)
-	if (day.waterCarryLabel) {
+	// Pack weight scenarios (base vs max load with water carry)
+	if (day.packBaseLabel) {
 		pdf.setFont('NotoSans', 'normal');
 		pdf.setTextColor(14, 116, 144);
 		pdf.setFontSize(10);
-		const carryWrapped = pdf.splitTextToSize(day.waterCarryLabel, PAGE_W - MARGIN_X * 2) as string[];
-		pdf.text(carryWrapped, MARGIN_X, yCursor);
-		yCursor += carryWrapped.length * 4 + 4;
+		const baseWrapped = pdf.splitTextToSize(day.packBaseLabel, PAGE_W - MARGIN_X * 2) as string[];
+		pdf.text(baseWrapped, MARGIN_X, yCursor);
+		yCursor += baseWrapped.length * 4 + 2;
+		if (day.packLoadedLabel) {
+			const loadedWrapped = pdf.splitTextToSize(day.packLoadedLabel, PAGE_W - MARGIN_X * 2) as string[];
+			pdf.text(loadedWrapped, MARGIN_X, yCursor);
+			yCursor += loadedWrapped.length * 4 + 2;
+		}
 		pdf.setTextColor(...MUTED_TEXT_RGB);
 	}
 

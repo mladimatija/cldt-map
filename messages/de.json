@@ -658,6 +658,11 @@
 		"pdfStageLabel": "Etappe",
 		"stageWaterGap": "Längster Abschnitt ohne Wasser: {distance}",
 		"stageCarry": "Bis zu {volume} Wasser mitnehmen (insgesamt {total})",
+		"stagePackBase": "Basisgewicht: {weight}",
+		"stagePackLoaded": "Max. Gewicht: {weight} (bis zu {volume} Wasser mitnehmen)",
+		"stagePackLoadedSame": "Max. Gewicht: wie Basis (kein extra Wasser nötig)",
+		"stagePackTooltipBase": "Basisgewicht {base}",
+		"stagePackTooltipLoaded": "Basisgewicht {base}, max. Gewicht {loaded} (bis zu {volume} Wasser mitnehmen)",
 		"stageResupplyYes": "Lebensmittelversorgung in dieser Etappe verfügbar",
 		"stageResupplyNo": "Keine Lebensmittelversorgung in dieser Etappe - Essen mitnehmen"
 	},
@@ -733,6 +738,8 @@
 			}
 		},
 		"packSummary": "{base} + Wasser",
+		"packBaseLine": "Basisgewicht: {weight}",
+		"packLoadedLine": "Max. Gewicht: {weight} (bis zu {volume} Wasser über die längste Trockenstrecke mitnehmen)",
 		"waterCarry": "Wasser: bis zu {volume} für den längsten Abschnitt ohne Quelle mitnehmen (Gesamtgewicht {total})",
 		"gearHeading": "Ausrüstungsliste ({name})",
 		"gearMissing": "Empfohlene Ausrüstung nicht in Ihrer Packliste gefunden: {terms}. Vor Abreise prüfen."

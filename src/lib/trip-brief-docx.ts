@@ -174,8 +174,11 @@ export async function exportTripBriefDocx(args: TripBriefDocxArgs): Promise<void
 				}),
 			);
 		}
-		if (day.waterCarryLabel) {
-			out.push(new Paragraph({ children: [new TextRun({ text: day.waterCarryLabel, color: '0e7490' })] }));
+		if (day.packBaseLabel) {
+			out.push(new Paragraph({ children: [new TextRun({ text: day.packBaseLabel, color: '0e7490' })] }));
+		}
+		if (day.packLoadedLabel) {
+			out.push(new Paragraph({ children: [new TextRun({ text: day.packLoadedLabel, color: '0e7490' })] }));
 		}
 		out.push(
 			new Paragraph({

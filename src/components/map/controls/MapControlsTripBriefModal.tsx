@@ -21,7 +21,7 @@ import { exportTripBriefPdf } from '@/lib/trip-brief-pdf';
 import { exportTripBriefDocx } from '@/lib/trip-brief-docx';
 import { exportTripBriefHtml } from '@/lib/trip-brief-html';
 import { usePopoverFocusTrap, usePackAdjustedPaceKmh } from '@/hooks';
-import { formatVolume, formatWeight, packTotalKg, waterCarryLiters } from '@/lib/pack-weight';
+import { computeStagePackScenarios, formatVolume, formatWeight } from '@/lib/pack-weight';
 import { missingGearTerms } from '@/lib/pack-csv';
 import { renderElevationThumbnail } from '@/lib/elevation-thumbnail';
 import { Locale } from '@/i18n/routing';
@@ -163,13 +163,22 @@ export function MapControlsTripBriefModal({
 			}),
 			...(packBaseWeightKg !== null && {
 				packSummary: t('packSummary', { base: formatWeight(packBaseWeightKg, units) }),
-				waterCarryLabel: (dryStretchKm: number): string | undefined => {
-					const liters = waterCarryLiters(dryStretchKm, walkingPaceKmh, waterConsumptionLph);
-					if (liters <= 0) return undefined;
-					return t('waterCarry', {
-						volume: formatVolume(liters, units),
-						total: formatWeight(packTotalKg(packBaseWeightKg, liters), units),
-					});
+				packScenarioLabels: (dryStretchKm: number): { base: string; loaded?: string } | undefined => {
+					const scenarios = computeStagePackScenarios(
+						packBaseWeightKg,
+						dryStretchKm,
+						walkingPaceKmh,
+						waterConsumptionLph,
+					);
+					const base = t('packBaseLine', { weight: formatWeight(scenarios.baseKg, units) });
+					if (scenarios.carryLiters <= 0) return { base };
+					return {
+						base,
+						loaded: t('packLoadedLine', {
+							weight: formatWeight(scenarios.loadedKg, units),
+							volume: formatVolume(scenarios.carryLiters, units),
+						}),
+					};
 				},
 			}),
 		});

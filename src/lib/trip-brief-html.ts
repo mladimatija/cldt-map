@@ -124,7 +124,10 @@ function buildDaySection(brief: TripBrief, day: TripBriefDay): string {
 		? `<img class="elevation-thumb" src="${day.elevationThumb}" alt="" loading="lazy">`
 		: '';
 
-	const waterBlock = day.waterCarryLabel ? `<p class="water-carry">${escapeHtml(day.waterCarryLabel)}</p>` : '';
+	const packBlock = [
+		day.packBaseLabel ? `<p class="water-carry">${escapeHtml(day.packBaseLabel)}</p>` : '',
+		day.packLoadedLabel ? `<p class="water-carry">${escapeHtml(day.packLoadedLabel)}</p>` : '',
+	].join('');
 
 	let alertsBlock = '';
 	if (day.seasonalAlerts.length > 0) {
@@ -170,7 +173,7 @@ function buildDaySection(brief: TripBrief, day: TripBriefDay): string {
   </p>
   ${elevBlock}
   <p class="narrative">${escapeHtml(day.narrative)}</p>
-  ${waterBlock}
+  ${packBlock}
   ${alertsBlock}
   ${poisBlock}
 </section>`;

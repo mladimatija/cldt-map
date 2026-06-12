@@ -21,7 +21,13 @@ import { cn, formatElevation, kmToMiles, milesToKm } from '@/lib/utils';
 import { MAP_CONTROL_POPOVER, MAP_CONTROL_INPUT } from './map-controls-constants';
 import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
 import { usePopoverFocusTrap, usePackAdjustedPaceKmh } from '@/hooks';
-import { CARRY_WARN_L, formatVolume, formatWeight, packTotalKg, waterCarryLiters } from '@/lib/pack-weight';
+import {
+	CARRY_WARN_L,
+	computeStagePackScenarios,
+	formatPackWeightRange,
+	formatVolume,
+	formatWeight,
+} from '@/lib/pack-weight';
 import {
 	splitByDistance,
 	splitByEta,
@@ -348,13 +354,12 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 		});
 	}, [stagePlan, poisFile]);
 
-	/** Liters to carry per stage across its longest dry stretch; empty when
-	 *  the pack-weight feature is off (no base weight set) or there is no
-	 *  water data. Uses the pack-adjusted pace so heavier packs (slower,
-	 *  longer exposure) suggest slightly more water. */
-	const carryByStage = useMemo((): number[] => {
+	/** Per-stage base vs loaded pack scenarios across the longest dry stretch. */
+	const packScenariosByStage = useMemo(() => {
 		if (packBaseWeightKg === null || waterGapByStage.length === 0) return [];
-		return waterGapByStage.map((gapKm) => waterCarryLiters(gapKm, walkingPaceKmh, waterConsumptionLph));
+		return waterGapByStage.map((gapKm) =>
+			computeStagePackScenarios(packBaseWeightKg, gapKm, walkingPaceKmh, waterConsumptionLph),
+		);
 	}, [packBaseWeightKg, waterGapByStage, walkingPaceKmh, waterConsumptionLph]);
 
 	/** Flat, deduplicated waypoint list across every stage in the current plan.
@@ -589,7 +594,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 									    own row so row one stays scannable. */}
 									{(poiCount > 0 ||
 										(waterGapByStage[i] !== undefined && waterGapByStage[i] >= WATER_GAP_WARN_KM) ||
-										(carryByStage[i] !== undefined && carryByStage[i] > 0) ||
+										packScenariosByStage[i] !== undefined ||
 										(resupplyByStage[i] !== null && resupplyByStage[i] !== undefined) ||
 										stageForecasts[i]) && (
 										<span className="flex w-full flex-wrap items-center gap-x-1.5 gap-y-0.5 pl-5">
@@ -621,25 +626,43 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 													{toDisplay(waterGapByStage[i]).toFixed(0)}
 												</span>
 											)}
-											{carryByStage[i] !== undefined && carryByStage[i] > 0 && packBaseWeightKg !== null && (
+											{packScenariosByStage[i] !== undefined && (
 												<span
-													aria-label={t('stageCarry', {
-														volume: formatVolume(carryByStage[i], units),
-														total: formatWeight(packTotalKg(packBaseWeightKg, carryByStage[i]), units),
-													})}
+													aria-label={
+														packScenariosByStage[i].carryLiters > 0
+															? t('stagePackTooltipLoaded', {
+																	base: formatWeight(packScenariosByStage[i].baseKg, units),
+																	loaded: formatWeight(packScenariosByStage[i].loadedKg, units),
+																	volume: formatVolume(packScenariosByStage[i].carryLiters, units),
+																})
+															: t('stagePackTooltipBase', {
+																	base: formatWeight(packScenariosByStage[i].baseKg, units),
+																})
+													}
 													className={cn(
 														'shrink-0 rounded-full px-1.5 py-0 text-[10px] font-medium tabular-nums',
-														carryByStage[i] >= CARRY_WARN_L
+														packScenariosByStage[i].carryLiters >= CARRY_WARN_L
 															? 'bg-amber-500/15 text-amber-700 dark:text-amber-400'
 															: 'bg-gray-500/10 text-gray-600 dark:text-gray-300',
 													)}
-													title={t('stageCarry', {
-														volume: formatVolume(carryByStage[i], units),
-														total: formatWeight(packTotalKg(packBaseWeightKg, carryByStage[i]), units),
-													})}
+													title={
+														packScenariosByStage[i].carryLiters > 0
+															? t('stagePackTooltipLoaded', {
+																	base: formatWeight(packScenariosByStage[i].baseKg, units),
+																	loaded: formatWeight(packScenariosByStage[i].loadedKg, units),
+																	volume: formatVolume(packScenariosByStage[i].carryLiters, units),
+																})
+															: t('stagePackTooltipBase', {
+																	base: formatWeight(packScenariosByStage[i].baseKg, units),
+																})
+													}
 												>
 													<span aria-hidden>🎒</span>
-													{formatVolume(carryByStage[i], units)}
+													{formatPackWeightRange(
+														packScenariosByStage[i].baseKg,
+														packScenariosByStage[i].loadedKg,
+														units,
+													)}
 												</span>
 											)}
 											{resupplyByStage[i] !== null && resupplyByStage[i] !== undefined && (
@@ -707,17 +730,26 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 								})}
 							</p>
 						)}
-						{packBaseWeightKg !== null &&
-							carryByStage[activeStageIndex] !== undefined &&
-							carryByStage[activeStageIndex] > 0 && (
-								<p className="m-0 text-[10px] text-gray-500 dark:text-gray-400">
+						{packScenariosByStage[activeStageIndex] !== undefined && (
+							<div className="m-0 flex flex-col gap-0.5 text-[10px] text-gray-500 dark:text-gray-400">
+								<p className="m-0">
 									<span aria-hidden>🎒</span>{' '}
-									{t('stageCarry', {
-										volume: formatVolume(carryByStage[activeStageIndex], units),
-										total: formatWeight(packTotalKg(packBaseWeightKg, carryByStage[activeStageIndex]), units),
+									{t('stagePackBase', {
+										weight: formatWeight(packScenariosByStage[activeStageIndex].baseKg, units),
 									})}
 								</p>
-							)}
+								{packScenariosByStage[activeStageIndex].carryLiters > 0 ? (
+									<p className="m-0">
+										{t('stagePackLoaded', {
+											weight: formatWeight(packScenariosByStage[activeStageIndex].loadedKg, units),
+											volume: formatVolume(packScenariosByStage[activeStageIndex].carryLiters, units),
+										})}
+									</p>
+								) : (
+									<p className="m-0">{t('stagePackLoadedSame')}</p>
+								)}
+							</div>
+						)}
 						{activeStagePois.map((poi) => {
 							const name = poiDisplayName(poi, locale);
 							const typeLabel = tPois(`type.${poi.type}`, { default: poi.type });
