@@ -46,6 +46,7 @@ export function createStoreStub(): StoreState {
 		forceCalculateClosestPointFromLocation: () => {},
 		broadcastDirectionChange: () => {},
 		processTrailData: () => {},
+		applyComputedTrailData: () => {},
 		highlightTrailPosition: () => {},
 		clearTrailHighlight: () => {},
 		setTooltipPinnedFromShare: () => {},

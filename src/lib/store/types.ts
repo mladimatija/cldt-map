@@ -117,6 +117,9 @@ export interface TrailActions {
 		elevGain: number,
 		elevLoss: number,
 	) => void;
+	/** Applies a dataset precomputed by the trail worker (parse + enhance
+	 *  done off-thread); replaces processTrailData's O(n) main-thread loop. */
+	applyComputedTrailData: (data: import('../trail-compute').ComputedTrailData) => void;
 	highlightTrailPosition: (
 		position: { lat: number; lng: number; maxDistance?: number } | { distance: number; elevation?: number },
 	) => void;
