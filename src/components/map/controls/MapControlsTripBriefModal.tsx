@@ -185,7 +185,13 @@ export function MapControlsTripBriefModal({
 					signal: controller.signal,
 				});
 			} else {
-				await exportTripBriefDocx({ brief, onProgress, signal: controller.signal });
+				await exportTripBriefDocx({
+					brief,
+					enhancedTrailPoints,
+					map,
+					onProgress,
+					signal: controller.signal,
+				});
 			}
 			onClose();
 		} catch (err) {

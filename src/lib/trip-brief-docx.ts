@@ -4,15 +4,16 @@
  * dietary restrictions, kit checklist) can drop the file into Word /
  * LibreOffice / Pages and finish it by hand.
  *
- * The `docx` dependency is lazy-imported so the main bundle stays slim. No
- * map snapshots in v1 (Word's image-embedding story is fiddlier than
- * jsPDF's; we leave room for a follow-up to take the same Leaflet
- * snapshots and embed them via `ImageRun`).
+ * The `docx` dependency is lazy-imported so the main bundle stays slim.
+ * Per-day map snapshots reuse the same Leaflet capture pipeline as the PDF
+ * exporter (`captureStageMapSnapshot` in export-utils).
  */
 
 import { formatEta } from '@/lib/distance-utils';
+import { captureStageMapSnapshot, makeCaptureFilter, type LeafletMapForExport } from '@/lib/export-utils';
 import { formatElevation } from '@/lib/utils';
 import type { TripBrief } from '@/lib/trip-brief';
+import type { EnhancedTrailPoint } from '@/lib/store/types';
 import { dataUrlToBytes } from './elevation-thumbnail';
 import {
 	emergencyLines,
@@ -23,8 +24,15 @@ import {
 	todayIsoDate,
 } from '@/lib/trip-brief-i18n';
 
+/** Display width matches the elevation thumbnail; height keeps PDF map aspect. */
+const MAP_IMG_W = 522;
+const MAP_IMG_H = 330;
+
 export interface TripBriefDocxArgs {
 	brief: TripBrief;
+	enhancedTrailPoints: EnhancedTrailPoint[];
+	map: LeafletMapForExport;
+	mapEl?: HTMLElement;
 	onProgress?: (current: number, total: number) => void;
 	signal?: AbortSignal;
 }
@@ -35,7 +43,7 @@ export interface TripBriefDocxArgs {
  * boundaries.
  */
 export async function exportTripBriefDocx(args: TripBriefDocxArgs): Promise<void> {
-	const { brief, onProgress, signal } = args;
+	const { brief, enhancedTrailPoints, map, mapEl, onProgress, signal } = args;
 	const totalSteps = 1 + brief.days.length + 1;
 	let step = 0;
 	const tick = (): void => {
@@ -43,9 +51,16 @@ export async function exportTripBriefDocx(args: TripBriefDocxArgs): Promise<void
 		onProgress?.(step, totalSteps);
 	};
 
-	const { Document, Packer, Paragraph, HeadingLevel, TextRun, AlignmentType, LevelFormat, ImageRun } =
-		await import('docx');
+	const resolvedMapEl = mapEl ?? document.querySelector<HTMLElement>('.leaflet-container');
+	if (!resolvedMapEl) throw new Error('leaflet-container not found');
+
+	const [{ Document, Packer, Paragraph, HeadingLevel, TextRun, AlignmentType, LevelFormat, ImageRun }, { toBlob }] =
+		await Promise.all([import('docx'), import('html-to-image')]);
 	type DocxParagraph = InstanceType<typeof Paragraph>;
+
+	const captureFilter = makeCaptureFilter(resolvedMapEl);
+	const originalCenter = map.getCenter();
+	const originalZoom = map.getZoom();
 
 	// ── Section builders (closures over imported docx classes) ────────────────
 
@@ -111,7 +126,7 @@ export async function exportTripBriefDocx(args: TripBriefDocxArgs): Promise<void
 		return out;
 	}
 
-	function buildDay(dayIndex: number): DocxParagraph[] {
+	function buildDay(dayIndex: number, mapSnapshot: string | null): DocxParagraph[] {
 		const day = brief.days[dayIndex];
 		const { meta } = brief;
 		const out: DocxParagraph[] = [];
@@ -132,6 +147,20 @@ export async function exportTripBriefDocx(args: TripBriefDocxArgs): Promise<void
 				],
 			}),
 		);
+		if (mapSnapshot) {
+			out.push(
+				new Paragraph({
+					children: [
+						new ImageRun({
+							data: dataUrlToBytes(mapSnapshot),
+							transformation: { width: MAP_IMG_W, height: MAP_IMG_H },
+							type: 'png',
+						}),
+					],
+					spacing: { after: 120 },
+				}),
+			);
+		}
 		if (day.elevationThumb) {
 			out.push(
 				new Paragraph({
@@ -264,10 +293,31 @@ export async function exportTripBriefDocx(args: TripBriefDocxArgs): Promise<void
 	if (signal?.aborted) return;
 
 	const dayBlocks: DocxParagraph[] = [];
-	for (let i = 0; i < brief.days.length; i++) {
-		if (signal?.aborted) return;
-		dayBlocks.push(...buildDay(i));
-		tick();
+	try {
+		for (let i = 0; i < brief.days.length; i++) {
+			if (signal?.aborted) return;
+			const day = brief.days[i];
+			const mapSnapshot = await captureStageMapSnapshot(
+				map,
+				resolvedMapEl,
+				enhancedTrailPoints,
+				day.startKm,
+				day.endKm,
+				captureFilter,
+				toBlob,
+				MAP_IMG_W,
+				MAP_IMG_H,
+				signal,
+			);
+			dayBlocks.push(...buildDay(i, mapSnapshot));
+			tick();
+		}
+	} finally {
+		try {
+			map.setView(originalCenter, originalZoom);
+		} catch {
+			// best-effort
+		}
 	}
 
 	if (signal?.aborted) return;

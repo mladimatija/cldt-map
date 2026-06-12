@@ -25,14 +25,12 @@
  */
 
 import {
-	MAP_RENDER_SETTLE_MS,
 	blobToDataUrl,
-	cropToAspect,
+	captureStageMapSnapshot,
 	makeCaptureFilter,
-	pointsToBounds,
 	type LeafletMapForExport,
 } from '@/lib/export-utils';
-import { findNearestPointIndex, formatEta } from '@/lib/distance-utils';
+import { formatEta } from '@/lib/distance-utils';
 import { formatElevation } from '@/lib/utils';
 import { siteMetadata } from '@/lib/metadata';
 import type { TripBrief, TripBriefDay } from '@/lib/trip-brief';
@@ -134,13 +132,16 @@ export async function exportTripBriefPdf(args: TripBriefPdfArgs): Promise<void> 
 			const day = brief.days[dayIdx];
 			if (signal?.aborted) return;
 			pdf.addPage();
-			const snapshot = await captureStageMap(
+			const snapshot = await captureStageMapSnapshot(
 				map,
 				resolvedMapEl,
 				enhancedTrailPoints,
-				day,
+				day.startKm,
+				day.endKm,
 				captureFilter,
 				toBlob,
+				MAP_W,
+				MAP_H,
 				signal,
 			);
 			renderDay(pdf, brief, day, snapshot, logoDataUrl);
@@ -530,38 +531,6 @@ function footer(pdf: JsPDF, page: number, totalPages: number): void {
 	pdf.setFont('NotoSans', 'normal');
 	pdf.text(`${page} / ${totalPages}`, PAGE_W - MARGIN_X, PAGE_H - 6, { align: 'right' });
 	pdf.text('map.cldt.hr', MARGIN_X, PAGE_H - 6);
-}
-
-// ── Map snapshot helper ─────────────────────────────────────────────────────
-
-async function captureStageMap(
-	map: LeafletMapForExport,
-	mapEl: HTMLElement,
-	enhancedTrailPoints: EnhancedTrailPoint[],
-	day: TripBriefDay,
-	captureFilter: (node: Element) => boolean,
-	toBlob: typeof import('html-to-image').toBlob,
-	signal?: AbortSignal,
-): Promise<string | null> {
-	if (signal?.aborted) return null;
-	const startIdx = findNearestPointIndex(enhancedTrailPoints, day.startKm * 1000);
-	const endIdx = findNearestPointIndex(enhancedTrailPoints, day.endKm * 1000);
-	const lo = Math.min(startIdx, endIdx);
-	const hi = Math.max(startIdx, endIdx);
-	if (hi - lo < 1) return null;
-	const pts = enhancedTrailPoints.slice(lo, hi + 1);
-	map.fitBounds(pointsToBounds(pts), {
-		paddingTopLeft: [40, 40],
-		paddingBottomRight: [40, 40],
-		animate: false,
-	});
-	map.invalidateSize({ animate: false });
-	await new Promise<void>((resolve) => setTimeout(resolve, MAP_RENDER_SETTLE_MS));
-	if (signal?.aborted) return null;
-	const blob = await toBlob(mapEl, { cacheBust: true, filter: captureFilter });
-	if (!blob) return null;
-	const dataUrl = await blobToDataUrl(blob);
-	return cropToAspect(dataUrl, MAP_W, MAP_H);
 }
 
 // ── Localisation helpers ────────────────────────────────────────────────────
