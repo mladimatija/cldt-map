@@ -112,7 +112,7 @@ export default function ShareUrlHandler(): null {
 				setRulerEnabled(true);
 			}
 
-			if (!params.poi) {
+			if (!params.poi && !params.wp) {
 				clearShareUrl();
 			}
 		};

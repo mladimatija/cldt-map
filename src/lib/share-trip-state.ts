@@ -28,7 +28,7 @@ export interface ShareTripStatePayload {
 		b: 'd' | 'e';
 		sd?: string;
 	};
-	wp?: { la: number; ln: number; n: string; no?: string; tk?: number | null }[];
+	wp?: { i?: string; la: number; ln: number; n: string; no?: string; tk?: number | null }[];
 	j?: { d: string; t: string; s?: number; e?: number }[];
 	done?: [number, number][];
 	stars?: string[];
@@ -75,6 +75,7 @@ function encodeStagePlan(plan: StagePlan): ShareTripStatePayload['sp'] {
 
 function encodeWaypoint(wp: UserWaypoint): NonNullable<ShareTripStatePayload['wp']>[number] {
 	return {
+		...(POI_ID_RE.test(wp.id) && { i: wp.id }),
 		la: Math.round(wp.lat * 1e5) / 1e5,
 		ln: Math.round(wp.lng * 1e5) / 1e5,
 		n: trimText(wp.name, MAX_WAYPOINT_NAME),
@@ -240,8 +241,9 @@ function parseWaypoints(raw: unknown): UserWaypoint[] {
 		const wp = item as NonNullable<ShareTripStatePayload['wp']>[number];
 		if (typeof wp.la !== 'number' || typeof wp.ln !== 'number' || typeof wp.n !== 'string') continue;
 		if (!Number.isFinite(wp.la) || !Number.isFinite(wp.ln)) continue;
+		const id = typeof wp.i === 'string' && POI_ID_RE.test(wp.i) && !result.some((w) => w.id === wp.i) ? wp.i : newId();
 		result.push({
-			id: newId(),
+			id,
 			lat: wp.la,
 			lng: wp.ln,
 			name: trimText(wp.n, MAX_WAYPOINT_NAME),

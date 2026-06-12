@@ -365,12 +365,14 @@ export type ShareUrlParams = ShareMapStyleParams & {
 	dir?: TrailDirection;
 	progress?: number;
 	poi?: string;
+	wp?: string;
 	tripState?: ShareTripStatePayload;
 };
 
 /** True when map/POI handlers still need to read positional or deep-link params from the URL. */
 export function shareParamsNeedMapFollowUp(params: ShareUrlParams): boolean {
 	if (params.poi) return true;
+	if (params.wp) return true;
 	if (params.progress !== undefined) return true;
 	if (params.lat !== undefined && params.lng !== undefined) return true;
 	if (params.rulerRange) return true;
@@ -381,6 +383,7 @@ export function shareParamsNeedMapFollowUp(params: ShareUrlParams): boolean {
 export function shareParamsSkipInitialTrailFitBounds(params: ShareUrlParams | null): boolean {
 	if (!params) return false;
 	if (params.poi) return true;
+	if (params.wp) return true;
 	if (params.progress !== undefined) return true;
 	if (params.lat !== undefined && params.lng !== undefined) return true;
 	return false;
@@ -657,6 +660,7 @@ export function parseShareUrlParams(): ShareUrlParams | null {
 	const dark = params.get('dark');
 	const ruler = params.get('ruler');
 	const poi = params.get('poi');
+	const wp = params.get('wp');
 	const tripState = parseShareTripStateParam(params.get(SHARE_TRIP_PARAM_KEY));
 
 	let rulerRange: RulerRange | undefined;
@@ -698,6 +702,7 @@ export function parseShareUrlParams(): ShareUrlParams | null {
 		}),
 		...(rulerRange && { rulerRange }),
 		...(poi && POI_ID_RE.test(poi) && { poi }),
+		...(wp && POI_ID_RE.test(wp) && { wp }),
 		...(tripState && { tripState }),
 	};
 }
@@ -713,6 +718,18 @@ export function buildPoiShareUrl(poiId: string): string {
 	// Recipients must see POI markers for the deep link to open the popup.
 	url.searchParams.set('pois', '1');
 	url.searchParams.set('poi', poiId);
+	appendShareTripStateToUrl(url);
+	return url.toString();
+}
+
+/** Build a deep-link URL that points to a personal waypoint by id. Trip-local
+ *  waypoints are embedded in the `trip` param so recipients can open the popup
+ *  even when the id is not already in their browser storage. */
+export function buildWaypointShareUrl(waypointId: string): string {
+	if (typeof window === 'undefined') return '';
+	const url = new URL(getShareBaseUrl());
+	appendShareStyleParams(url, collectShareMapStyleParams());
+	url.searchParams.set('wp', waypointId);
 	appendShareTripStateToUrl(url);
 	return url.toString();
 }

@@ -23,5 +23,6 @@ export const SHARE_QUERY_PARAM_KEYS = [
 	'distanceMarkers',
 	'waymarked',
 	'poi',
+	'wp',
 	SHARE_TRIP_PARAM_KEY,
 ] as const;
