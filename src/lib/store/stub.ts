@@ -218,6 +218,7 @@ export function createMapStoreStub(): MapStoreState {
 		addImportedTrack: noop,
 		removeImportedTrack: noopAsyncVoid,
 		setImportedTracks: noop,
+		updateImportedTrack: noop,
 		loadImportedTracksFromStorage: noopAsyncVoid,
 		hoveredImportedTrackId: null,
 		setHoveredImportedTrackId: noop,

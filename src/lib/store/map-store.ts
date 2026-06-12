@@ -33,7 +33,7 @@ import {
 	type PredictivePrecacheSlicePoint,
 } from '../tile-cache';
 import { findNearestPointIndex, RulerRange } from '@/lib/distance-utils';
-import { loadImportedTracks, removeImportedTrack } from '../imported-tracks';
+import { loadImportedTracks, persistImportedTrackPatch, removeImportedTrack } from '../imported-tracks';
 import { loadPois } from '@/lib/pois';
 import { prefetchPoiAssets, prefetchPoisAlongSlice } from '@/lib/poi-prefetch';
 import { addInterval, removeInterval } from '../completion';
@@ -726,6 +726,12 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 
 					setImportedTracks: (tracks: ImportedTrack[]): void => {
 						set({ importedTracks: tracks });
+					},
+					updateImportedTrack: (id, patch): void => {
+						set((state) => ({
+							importedTracks: state.importedTracks.map((t) => (t.id === id ? { ...t, ...patch } : t)),
+						}));
+						void persistImportedTrackPatch(id, patch);
 					},
 
 					loadImportedTracksFromStorage: async (): Promise<void> => {

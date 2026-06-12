@@ -588,13 +588,16 @@
 		"elapsed": "Elapsed",
 		"avgPace": "Avg. pace",
 		"errorMalformed": "Could not read GPX file. Check that it is a valid GPX file.",
-		"errorTooLarge": "GPX file is too large (max 10 MB).",
+		"errorTooLarge": "GPX file is too large (max 50 MB).",
 		"alreadyImported": "This track is already imported.",
 		"pickFile": "Pick file",
 		"distanceFromTrail": "{distance} m from trail",
 		"moving": "Moving",
 		"maxDeviation": "Max deviation",
-		"coverage": "Coverage"
+		"coverage": "On trail",
+		"colorLabel": "Track color for {trackName}",
+		"showTrack": "Show {trackName} on the map",
+		"hideTrack": "Hide {trackName} from the map"
 	},
 	"stagePlanner": {
 		"title": "Stage Planner",

@@ -588,13 +588,16 @@
 		"elapsed": "Ukupno",
 		"avgPace": "Prosj. tempo",
 		"errorMalformed": "Nije moguće pročitati GPX datoteku. Provjerite je li valjana GPX datoteka.",
-		"errorTooLarge": "GPX datoteka je prevelika (maks. 10 MB).",
+		"errorTooLarge": "GPX datoteka je prevelika (najviše 50 MB).",
 		"alreadyImported": "Ova ruta je već uvezena.",
 		"pickFile": "Odaberi datoteku",
 		"distanceFromTrail": "{distance} m od staze",
 		"moving": "U pokretu",
 		"maxDeviation": "Maks. odstupanje",
-		"coverage": "Pokrivenost"
+		"coverage": "Na stazi",
+		"colorLabel": "Boja trake za {trackName}",
+		"showTrack": "Prikaži {trackName} na karti",
+		"hideTrack": "Sakrij {trackName} s karte"
 	},
 	"stagePlanner": {
 		"title": "Planer etapa",
