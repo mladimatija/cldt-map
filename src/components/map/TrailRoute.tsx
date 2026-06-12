@@ -849,8 +849,12 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 							featureGroup.addLayer(sectionPolyline);
 							sectionPolylines.push(sectionPolyline);
 
-							const firstPt = sectionPts[0];
-							const [lat0, lng0] = firstPt as L.LatLngTuple;
+							// sectionPts entries are L.LatLng in worker mode and
+							// [lat, lng] tuples in the sync fallback; L.latLng
+							// normalises both.
+							const firstLatLng = L.latLng(sectionPts[0]);
+							const lat0 = firstLatLng.lat;
+							const lng0 = firstLatLng.lng;
 							const fi = sectionFirstIdx[si];
 							const li = sectionLastIdx[si];
 							const startDistM = fi >= 0 ? cumDistances[fi] : 0;
@@ -924,12 +928,12 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 
 					const directionText = direction === 'SOBO' ? tChart('directionNorthSouth') : tChart('directionSouthNorth');
 					const startPoint = L.latLng(
-						(directionAdjustedPoints[0] as L.LatLngTuple)[0],
-						(directionAdjustedPoints[0] as L.LatLngTuple)[1],
+						latLngPoints[0].lat,
+						latLngPoints[0].lng,
 					);
 					const finishPoint = L.latLng(
-						(directionAdjustedPoints[directionAdjustedPoints.length - 1] as L.LatLngTuple)[0],
-						(directionAdjustedPoints[directionAdjustedPoints.length - 1] as L.LatLngTuple)[1],
+						latLngPoints[latLngPoints.length - 1].lat,
+						latLngPoints[latLngPoints.length - 1].lng,
 					);
 
 					// Hide the start marker when any colored trail style is shown, so the colored layer is unobstructed.
