@@ -243,8 +243,8 @@
 		"waymarkedHint": "Iscrtava OSM planinarske rute (Waymarked Trails) preko osnovne karte. Samo online.",
 		"shareShortLinksLabel": "Koristi kratke poveznice za dijeljenje",
 		"shareShortLinksHint": "Kopira kratku poveznicu koja otvara isti prikaz karte. Za stvaranje poveznice potrebna je internetska veza.",
-		"includeRemotePoisLabel": "Ukljuci udaljene POI-je",
-		"includeRemotePoisHint": "Prikazuje mjesta koja skup podataka oznacava kao tesko dostupna s staze (npr. preko rijeke ili na slijepoj cesti). Prema zadanim postavkama iskljuceno."
+		"includeRemotePoisLabel": "Uključi udaljene POI-je",
+		"includeRemotePoisHint": "Prikazuje mjesta koja skup podataka označava kao teško dostupna sa staze (npr. preko rijeke ili na slijepoj cesti). Prema zadanim postavkama isključeno."
 	},
 	"baseMapSelector": {
 		"standard": "Standardna",
@@ -454,7 +454,7 @@
 	},
 	"staleCacheNotification": {
 		"title": "Predmemorija offline karte zastarjela",
-		"description": "Vaše predmemorirane karte starije su od {days} dana. Preuzmite ih ponovo u Postavkama.",
+		"description": "Vaše predmemorirane karte starije su od {days} dana. Preuzmite ih ponovno u Postavkama.",
 		"dismiss": "Zatvori"
 	},
 	"tileCache": {
@@ -465,12 +465,12 @@
 		"downloading": "Preuzimanje {done} / {total} pločica…",
 		"cancel": "Odustani",
 		"clear": "Obriši",
-		"redownload": "Preuzmi ponovo",
+		"redownload": "Preuzmi ponovno",
 		"lastDownloaded": "Predmemorirano {time}",
 		"tilesCached": "{count} pločica",
 		"cacheStale": "Predmemorija je starija od {days} dana",
 		"quotaExceeded": "Nema dovoljno prostora za pohranu pločica.",
-		"downloadError": "Preuzimanje nije uspjelo. Pokušajte ponovo.",
+		"downloadError": "Preuzimanje nije uspjelo. Pokušajte ponovno.",
 		"autoSync": "Automatska sinkronizacija",
 		"autoSyncTooltip": "Automatski preuzima zastarjele pločice kada uređaj dođe online.",
 		"predictive": {
@@ -649,7 +649,7 @@
 	},
 	"tripBrief": {
 		"defaultTitle": "CLDT plan putovanja",
-		"aboutLine": "Izvoz vodiča za putovanje - PDF za ispis ili DOCX za uređivanhe s planom etapa, mjestima uz put, sezonskim upozorenjima i kontaktima za hitne situacije. Dostupno na sva četiri jezika sučelja.",
+		"aboutLine": "Izvoz vodiča za putovanje - PDF za ispis ili DOCX za uređivanje s planom etapa, mjestima uz put, sezonskim upozorenjima i kontaktima za hitne situacije. Dostupno na sva četiri jezika sučelja.",
 		"title": "Generiraj vodič za putovanje",
 		"description": "Dokument za ispis s planom etapa, mjestima uz put i kontaktima za hitne situacije.",
 		"needsPlan": "Prvo izradi plan etapa.",
@@ -669,7 +669,7 @@
 		"generating": "Generiram...",
 		"cancel": "Prekini",
 		"close": "Zatvori",
-		"exportError": "Izvoz nije uspio. Pokušajte ponovo.",
+		"exportError": "Izvoz nije uspio. Pokušajte ponovno.",
 		"document": {
 			"labels": {
 				"overview": "Pregled",
