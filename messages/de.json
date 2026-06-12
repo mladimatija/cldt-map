@@ -629,6 +629,8 @@
 		"gpxExportTooltip": "Lade die aktuell aktive Etappe als GPX-Track für GPS-Geräte herunter.",
 		"gpxPoisExport": "POIs als GPX (alle Etappen)",
 		"gpxPoisExportTooltip": "Lade alle POIs des Plans als GPX-Wegpunkte in Gehrichtung herunter.",
+		"gpxStagePoisExport": "Auswahl als GPX exportieren",
+		"gpxStagePoisExportTooltip": "Markierte Orte aus Etappe {index} als GPX-Wegpunkte in Gehrichtung herunterladen.",
 		"stagePoiCount": "{count, plural, =1 {# Ort am Weg} other {# Orte am Weg}}",
 		"stagePoisHeading": "Orte in Etappe {index}",
 		"tripBriefOpen": "Trip-Brief...",
