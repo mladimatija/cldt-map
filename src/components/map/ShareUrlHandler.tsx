@@ -11,6 +11,7 @@ import {
 	shareParamsNeedMapFollowUp,
 	type ShareUrlParams,
 } from '@/lib/utils';
+import { applyShareTripState } from '@/lib/share-trip-state';
 import { useMapStore, useStore, type MapStoreState, type StoreState, TrailState } from '@/lib/store';
 
 /**
@@ -50,6 +51,9 @@ export default function ShareUrlHandler(): null {
 		const params = shareParamsRef.current;
 		if (!params) return;
 		applyShareMapStyleParams(params);
+		if (params.tripState) {
+			applyShareTripState(params.tripState);
+		}
 		if (params.dir && params.dir !== useMapStore.getState().direction) {
 			setDirection(params.dir);
 			useStore.getState().broadcastDirectionChange?.(params.dir);
