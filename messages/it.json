@@ -646,6 +646,8 @@
 		"noStages": "Nessun piano generato. Inserisci un intervallo e genera.",
 		"gpxExport": "GPX (tappa attiva)",
 		"gpxExportTooltip": "Scarica la tappa attiva come traccia GPX per dispositivi GPS.",
+		"fitExport": "FIT / Garmin (tappa attiva)",
+		"fitExportTooltip": "Scarica la tappa attiva come file corso FIT per dispositivi Garmin.",
 		"gpxPoisExport": "POI come GPX (tutte le tappe)",
 		"gpxPoisExportTooltip": "Scarica tutti i POI del piano come waypoint GPX nell'ordine di marcia.",
 		"gpxStagePoisExport": "Esporta selezionati come GPX",

@@ -646,6 +646,8 @@
 		"noStages": "No plan generated. Enter a range and generate.",
 		"gpxExport": "GPX (active stage)",
 		"gpxExportTooltip": "Download the currently active stage as a GPX track for GPS devices.",
+		"fitExport": "FIT / Garmin (active stage)",
+		"fitExportTooltip": "Download the currently active stage as a Garmin FIT course file.",
 		"gpxPoisExport": "POIs as GPX (all stages)",
 		"gpxPoisExportTooltip": "Download every POI across the whole plan as GPX waypoints in walking order.",
 		"gpxStagePoisExport": "Export selected as GPX",
