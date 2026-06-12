@@ -137,8 +137,10 @@ export function PoiMarkers(): null {
 			waterCheckedLabel: t('water.checked'),
 			resupplyHeading: t('resupply.heading'),
 			resupplyNone: t('resupply.none'),
-			resupplyVerify: t('resupply.verify'),
-			resupplyMore: t('resupply.more'),
+			// Raw templates: the popup builder substitutes {date}/{count} itself
+			// (it runs outside React), so t() would error on missing variables.
+			resupplyVerify: t.raw('resupply.verify'),
+			resupplyMore: t.raw('resupply.more'),
 			resupplyKinds: {
 				grocery: t('resupply.grocery'),
 				bakery: t('resupply.bakery'),
