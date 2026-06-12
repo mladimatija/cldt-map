@@ -1023,7 +1023,15 @@
 		"focusEditor": "Write in focus mode",
 		"focusEditorClose": "Close",
 		"removeTrack": "Remove from progress",
-		"trackNoCoverage": "This track never comes within 50 m of the trail - there is nothing to add to your progress."
+		"trackNoCoverage": "This track never comes within 50 m of the trail - there is nothing to add to your progress.",
+		"previewPrompt": "Mark these stretches as hiked?",
+		"previewSummary": "{count, plural, =1 {# stretch} other {# stretches}}, {distance} on trail",
+		"previewCoverage": "{percent}% on trail",
+		"previewNewKm": "{distance} new (rest already marked)",
+		"previewRange": "{start} - {end}",
+		"previewConfirm": "Add to progress",
+		"previewCancel": "Cancel",
+		"previewShowOnMap": "Show on map"
 	},
 	"help": {
 		"title": "Help",

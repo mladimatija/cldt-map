@@ -5,7 +5,14 @@ import { useMap } from 'react-leaflet';
 import L from 'leaflet';
 import { useTranslations } from 'next-intl';
 import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
-import { completedKmInRange, intervalsFromKms, totalCompletedKm, IMPORT_MAX_OFF_TRAIL_M } from '@/lib/completion';
+import {
+	completedKmInRange,
+	intervalsFromKms,
+	totalCompletedKm,
+	IMPORT_MAX_OFF_TRAIL_M,
+	additionalKmFromIntervals,
+	totalIntervalKm,
+} from '@/lib/completion';
 import { buildGpxWaypointXml, downloadGpxFile, type GpxWaypoint } from '@/lib/gpx-export';
 import { downloadTextFile, journalToMarkdown, newId, todayIsoDate, type JournalEntry } from '@/lib/user-waypoints';
 import {
@@ -50,6 +57,8 @@ export function MapControlsProgressPanel(): React.ReactElement {
 	const progressTrackIds = useMapStore((s: MapStoreState) => s.progressTrackIds);
 	const addProgressTrackId = useMapStore((s: MapStoreState) => s.addProgressTrackId);
 	const removeProgressTrackId = useMapStore((s: MapStoreState) => s.removeProgressTrackId);
+	const progressPreviewTrackId = useMapStore((s: MapStoreState) => s.progressPreviewTrackId);
+	const setProgressPreview = useMapStore((s: MapStoreState) => s.setProgressPreview);
 
 	const userWaypoints = useMapStore((s: MapStoreState) => s.userWaypoints);
 	const addUserWaypoint = useMapStore((s: MapStoreState) => s.addUserWaypoint);
@@ -70,6 +79,7 @@ export function MapControlsProgressPanel(): React.ReactElement {
 		if (bounds) map.fitBounds(L.latLngBounds(bounds[0], bounds[1]), { padding: [20, 20] });
 	};
 	const [confirmClear, setConfirmClear] = useState(false);
+	const [previewCoveragePercent, setPreviewCoveragePercent] = useState<number | null>(null);
 	const [entryDate, setEntryDate] = useState(todayIsoDate);
 	const [entryText, setEntryText] = useState('');
 	const [attachRuler, setAttachRuler] = useState(false);
@@ -153,18 +163,47 @@ export function MapControlsProgressPanel(): React.ReactElement {
 	/** Toggle: the first click folds the track's on-trail stretch into progress,
 	 *   the second click unmarks that same stretch. Unmarking removes shared km if
 	 *  two tracks overlap - completion is a plain interval set, not refcounted. */
-	const handleToggleTrack = (trackId: string): void => {
+	const handleRemoveTrack = (trackId: string): void => {
 		const track = importedTracks.find((tr) => tr.id === trackId);
 		if (!track) return;
 		const intervals = trackIntervals(track);
 		if (intervals.length === 0) return;
-		const added = progressTrackIds.includes(trackId);
 		for (const iv of intervals) {
-			if (added) unmarkCompleted(iv.startKm, iv.endKm);
-			else markCompleted(iv.startKm, iv.endKm);
+			unmarkCompleted(iv.startKm, iv.endKm);
 		}
-		if (added) removeProgressTrackId(trackId);
-		else addProgressTrackId(trackId);
+		removeProgressTrackId(trackId);
+	};
+
+	const clearPreview = (): void => {
+		setPreviewCoveragePercent(null);
+		setProgressPreview(null, []);
+	};
+
+	const handleStartPreview = (trackId: string): void => {
+		const track = importedTracks.find((tr) => tr.id === trackId);
+		if (!track) return;
+		const intervals = trackIntervals(track);
+		if (intervals.length === 0) return;
+		setProgressPreview(trackId, intervals);
+		if (enhancedTrailPoints.length > 0) {
+			const stats = computeTrackStats(track, enhancedTrailPoints);
+			setPreviewCoveragePercent(stats.coveragePercent);
+		} else {
+			setPreviewCoveragePercent(null);
+		}
+		fitToTrack(track);
+	};
+
+	const handleConfirmAddTrack = (trackId: string): void => {
+		const track = importedTracks.find((tr) => tr.id === trackId);
+		if (!track) return;
+		const intervals = trackIntervals(track);
+		if (intervals.length === 0) return;
+		for (const iv of intervals) {
+			markCompleted(iv.startKm, iv.endKm);
+		}
+		addProgressTrackId(trackId);
+		clearPreview();
 	};
 
 	const handleExportWaypoints = (): void => {
@@ -345,32 +384,94 @@ export function MapControlsProgressPanel(): React.ReactElement {
 						{t('tracksHeading')}
 					</p>
 					{importedTracks.length > 0 ? (
-						importedTracks.map((track) => (
-							<div className="flex items-center gap-2 text-xs" key={track.id}>
-								<span aria-hidden className="h-2 w-2 shrink-0 rounded-full" style={{ background: track.color }} />
-								<button
-									className="hover:text-cldt-blue focus-visible:ring-cldt-green min-w-0 flex-1 cursor-pointer truncate rounded border-0 bg-transparent p-0 text-left text-gray-600 outline-none focus-visible:ring-2 focus-visible:ring-offset-1 dark:text-gray-300"
-									title={track.name}
-									type="button"
-									onClick={() => fitToTrack(track)}
-								>
-									{track.name}
-								</button>
-								{addableById[track.id] === false && !progressTrackIds.includes(track.id) ? (
-									<SmartTooltip content={t('trackNoCoverage')} position="top">
-										<span className="inline-flex">
-											<Button disabled size="sm" variant="base">
+						importedTracks.map((track) => {
+							const isPreviewing = progressPreviewTrackId === track.id;
+							const previewIntervals = isPreviewing ? trackIntervals(track) : [];
+							const previewOnTrailKm = totalIntervalKm(previewIntervals);
+							const previewNewKm = additionalKmFromIntervals(completedIntervals, previewIntervals);
+							return (
+								<div className="flex flex-col gap-1.5" key={track.id}>
+									<div className="flex items-center gap-2 text-xs">
+										<span aria-hidden className="h-2 w-2 shrink-0 rounded-full" style={{ background: track.color }} />
+										<button
+											className="hover:text-cldt-blue focus-visible:ring-cldt-green min-w-0 flex-1 cursor-pointer truncate rounded border-0 bg-transparent p-0 text-left text-gray-600 outline-none focus-visible:ring-2 focus-visible:ring-offset-1 dark:text-gray-300"
+											title={track.name}
+											type="button"
+											onClick={() => fitToTrack(track)}
+										>
+											{track.name}
+										</button>
+										{addableById[track.id] === false && !progressTrackIds.includes(track.id) ? (
+											<SmartTooltip content={t('trackNoCoverage')} position="top">
+												<span className="inline-flex">
+													<Button disabled size="sm" variant="base">
+														{t('addTrack')}
+													</Button>
+												</span>
+											</SmartTooltip>
+										) : progressTrackIds.includes(track.id) ? (
+											<Button size="sm" variant="base" onClick={() => handleRemoveTrack(track.id)}>
+												{t('removeTrack')}
+											</Button>
+										) : isPreviewing ? (
+											<Button size="sm" variant="mapControlOutlineSecondary" onClick={clearPreview}>
+												{t('previewCancel')}
+											</Button>
+										) : (
+											<Button size="sm" variant="base" onClick={() => handleStartPreview(track.id)}>
 												{t('addTrack')}
 											</Button>
-										</span>
-									</SmartTooltip>
-								) : (
-									<Button size="sm" variant="base" onClick={() => handleToggleTrack(track.id)}>
-										{progressTrackIds.includes(track.id) ? t('removeTrack') : t('addTrack')}
-									</Button>
-								)}
-							</div>
-						))
+										)}
+									</div>
+									{isPreviewing && previewIntervals.length > 0 && (
+										<div
+											aria-labelledby={`progress-preview-${track.id}`}
+											className="rounded border border-amber-200 bg-amber-50/80 p-2 pl-5 text-xs dark:border-amber-900/50 dark:bg-amber-950/30"
+											role="region"
+										>
+											<p
+												className="m-0 font-medium text-gray-700 dark:text-[var(--text-primary)]"
+												id={`progress-preview-${track.id}`}
+											>
+												{t('previewPrompt')}
+											</p>
+											<p className="m-0 mt-1 text-gray-600 dark:text-gray-300">
+												{t('previewSummary', {
+													count: previewIntervals.length,
+													distance: fmt(previewOnTrailKm),
+												})}
+												{previewCoveragePercent !== null && (
+													<> · {t('previewCoverage', { percent: previewCoveragePercent.toFixed(0) })}</>
+												)}
+											</p>
+											{previewNewKm < previewOnTrailKm - 0.05 && (
+												<p className="m-0 mt-0.5 text-gray-500 dark:text-gray-400">
+													{t('previewNewKm', { distance: fmt(previewNewKm) })}
+												</p>
+											)}
+											<ul className="m-0 mt-1.5 max-h-24 list-none space-y-0.5 overflow-y-auto p-0 text-gray-600 dark:text-gray-300">
+												{previewIntervals.map((iv) => (
+													<li key={`${iv.startKm}-${iv.endKm}`}>
+														{t('previewRange', { start: fmt(iv.startKm), end: fmt(iv.endKm) })}
+													</li>
+												))}
+											</ul>
+											<div className="mt-2 flex flex-wrap items-center gap-2">
+												<Button size="sm" variant="mapControlOutline" onClick={() => handleConfirmAddTrack(track.id)}>
+													{t('previewConfirm')}
+												</Button>
+												<Button size="sm" variant="mapControlOutlineSecondary" onClick={clearPreview}>
+													{t('previewCancel')}
+												</Button>
+												<Button size="sm" variant="mapControlOutlineSecondary" onClick={() => fitToTrack(track)}>
+													{t('previewShowOnMap')}
+												</Button>
+											</div>
+										</div>
+									)}
+								</div>
+							);
+						})
 					) : (
 						<p className="m-0 text-xs text-gray-500 dark:text-gray-400">{t('noTracks')}</p>
 					)}

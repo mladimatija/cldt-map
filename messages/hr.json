@@ -1023,7 +1023,15 @@
 		"focusEditor": "Pisanje u fokusiranom načinu",
 		"focusEditorClose": "Zatvori",
 		"removeTrack": "Ukloni iz napretka",
-		"trackNoCoverage": "Ova traka nikad ne prilazi stazi bliže od 50 m - nema se što dodati u napredak."
+		"trackNoCoverage": "Ova traka nikad ne prilazi stazi bliže od 50 m - nema se što dodati u napredak.",
+		"previewPrompt": "Označiti ove dionice kao prehodene?",
+		"previewSummary": "{count, plural, =1 {# dionica} few {# dionice} other {# dionica}}, {distance} na stazi",
+		"previewCoverage": "{percent}% na stazi",
+		"previewNewKm": "{distance} novo (ostatak je već označen)",
+		"previewRange": "{start} - {end}",
+		"previewConfirm": "Dodaj u napredak",
+		"previewCancel": "Odustani",
+		"previewShowOnMap": "Prikaži na karti"
 	},
 	"help": {
 		"title": "Pomoć",

@@ -578,6 +578,10 @@
 	pointer-events: none;
 }
 
+.leaflet-pane.progress-preview-pane {
+	pointer-events: none;
+}
+
 .seasonal-status-chip-wrapper {
 	background: transparent;
 	border: 0;
