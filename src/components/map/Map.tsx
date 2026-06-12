@@ -11,7 +11,7 @@ import dynamic from 'next/dynamic';
 import { mapDefaults } from '@/lib/config';
 import 'leaflet/dist/leaflet.css';
 import { BaseMapProvider } from '@/lib/services/map-service';
-import { parseShareUrlParams } from '@/lib/utils';
+import { getInitialShareUrlParams } from '@/lib/utils';
 
 const MapContent = dynamic(() => import('./MapContent'), { ssr: false });
 const BaseMapSelector = dynamic(() => import('./BaseMapSelector'), { ssr: false });
@@ -32,7 +32,7 @@ export default function Map({
 	// Use share URL params for the initial view so the map opens at the correct position (no location permission needed)
 	const initialView = useMemo((): { center: LatLngTuple; zoom: number } => {
 		if (typeof window === 'undefined') return { center: mapDefaults.center, zoom: mapDefaults.zoom };
-		const params = parseShareUrlParams();
+		const params = getInitialShareUrlParams();
 		const hasViewParams =
 			params?.lat !== null && params?.lat !== undefined && params?.lng !== null && params?.lng !== undefined;
 		const hasProgressParams = params?.progress !== null;
