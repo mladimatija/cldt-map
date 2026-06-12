@@ -13,6 +13,7 @@ import { assembleTripBrief, canAssembleTripBrief, makeDistanceLabelFn, type Trip
 import { tripBriefStringsFromMessages } from '@/lib/trip-brief-i18n';
 import { exportTripBriefPdf } from '@/lib/trip-brief-pdf';
 import { exportTripBriefDocx } from '@/lib/trip-brief-docx';
+import { exportTripBriefHtml } from '@/lib/trip-brief-html';
 import { usePopoverFocusTrap, usePackAdjustedPaceKmh } from '@/hooks';
 import { formatVolume, formatWeight, packTotalKg, waterCarryLiters } from '@/lib/pack-weight';
 import { missingGearTerms } from '@/lib/pack-csv';
@@ -24,7 +25,7 @@ interface MapControlsTripBriefModalProps {
 	onClose: () => void;
 }
 
-type Format = 'pdf' | 'docx';
+type Format = 'pdf' | 'docx' | 'html';
 type PoiScope = 'selected' | 'allInStage';
 
 /**
@@ -184,11 +185,17 @@ export function MapControlsTripBriefModal({
 					onProgress,
 					signal: controller.signal,
 				});
-			} else {
+			} else if (format === 'docx') {
 				await exportTripBriefDocx({
 					brief,
 					enhancedTrailPoints,
 					map,
+					onProgress,
+					signal: controller.signal,
+				});
+			} else {
+				await exportTripBriefHtml({
+					brief,
 					onProgress,
 					signal: controller.signal,
 				});
@@ -264,6 +271,15 @@ export function MapControlsTripBriefModal({
 							onChange={() => setFormat('docx')}
 						/>
 						{t('docx')}
+					</label>
+					<label className="flex items-center gap-2 text-sm text-gray-700 dark:text-[var(--text-primary)]">
+						<Radio
+							checked={format === 'html'}
+							name="trip-brief-format"
+							value="html"
+							onChange={() => setFormat('html')}
+						/>
+						{t('html')}
 					</label>
 				</fieldset>
 

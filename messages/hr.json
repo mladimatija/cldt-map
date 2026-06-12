@@ -667,6 +667,7 @@
 		"format": "Format",
 		"pdf": "PDF (za ispis)",
 		"docx": "DOCX (za uređivanje)",
+		"html": "HTML (mobitel)",
 		"poiScope": "Koji POI-evi",
 		"poisAll": "Svi POI-evi uz etape",
 		"poisSelected": "Samo POI-evi koje ste označili zvjezdicom",

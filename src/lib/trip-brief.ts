@@ -1,10 +1,7 @@
 /**
  * Trip brief data model + assembler. Aggregates the stage plan, selected POIs,
  * seasonal status, and (later) weather into a single structured object that
- * the PDF and DOCX generators consume.
- *
- * Stays runtime-only: no React, no DOM, no map snapshotting. The PDF/DOCX
- * paths add their own snapshots after assembly.
+ * the PDF, DOCX, and HTML generators consume.
  *
  * Day narratives default to deterministic templated strings. Optional
  * AI-written paragraphs are applied after assembly via `trip-brief-ai.ts`

@@ -667,6 +667,7 @@
 		"format": "Format",
 		"pdf": "PDF (print)",
 		"docx": "DOCX (editable)",
+		"html": "HTML (mobile)",
 		"poiScope": "POIs to include",
 		"poisAll": "All POIs along the stages",
 		"poisSelected": "Only POIs you have starred",
