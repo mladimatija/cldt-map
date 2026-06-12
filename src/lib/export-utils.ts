@@ -122,6 +122,40 @@ export function fitMapToRulerBounds(
 	map.fitBounds(pointsToBounds(segmentPoints), { padding: [40, 40], ...options });
 }
 
+/** Capture the live Leaflet map framed to a stage km window, cropped to aspect. */
+export async function captureStageMapSnapshot(
+	map: LeafletMapForExport,
+	mapEl: HTMLElement,
+	enhancedTrailPoints: PointWithDistance[],
+	startKm: number,
+	endKm: number,
+	captureFilter: (node: Element) => boolean,
+	toBlob: typeof import('html-to-image').toBlob,
+	aspectW: number,
+	aspectH: number,
+	signal?: AbortSignal,
+): Promise<string | null> {
+	if (signal?.aborted) return null;
+	const startIdx = findNearestPointIndex(enhancedTrailPoints, startKm * 1000);
+	const endIdx = findNearestPointIndex(enhancedTrailPoints, endKm * 1000);
+	const lo = Math.min(startIdx, endIdx);
+	const hi = Math.max(startIdx, endIdx);
+	if (hi - lo < 1) return null;
+	const pts = enhancedTrailPoints.slice(lo, hi + 1);
+	map.fitBounds(pointsToBounds(pts), {
+		paddingTopLeft: [40, 40],
+		paddingBottomRight: [40, 40],
+		animate: false,
+	});
+	map.invalidateSize({ animate: false });
+	await new Promise<void>((resolve) => setTimeout(resolve, MAP_RENDER_SETTLE_MS));
+	if (signal?.aborted) return null;
+	const blob = await toBlob(mapEl, { cacheBust: true, filter: captureFilter });
+	if (!blob) return null;
+	const dataUrl = await blobToDataUrl(blob);
+	return cropToAspect(dataUrl, aspectW, aspectH);
+}
+
 export async function cropToAspect(dataUrl: string, targetW: number, targetH: number): Promise<string> {
 	return new Promise((resolve) => {
 		const img = new Image();
