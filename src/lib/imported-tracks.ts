@@ -242,6 +242,26 @@ function computeTrackStatsUncached(
 	};
 }
 
+/** Track bounding box as [[minLat, minLng], [maxLat, maxLng]], or null for
+ *  empty tracks. Single numeric pass - feed straight into map.fitBounds. */
+export function trackBounds(track: ImportedTrack): [[number, number], [number, number]] | null {
+	if (track.points.length === 0) return null;
+	let minLat = Infinity;
+	let maxLat = -Infinity;
+	let minLng = Infinity;
+	let maxLng = -Infinity;
+	for (const pt of track.points) {
+		if (pt.lat < minLat) minLat = pt.lat;
+		if (pt.lat > maxLat) maxLat = pt.lat;
+		if (pt.lng < minLng) minLng = pt.lng;
+		if (pt.lng > maxLng) maxLng = pt.lng;
+	}
+	return [
+		[minLat, minLng],
+		[maxLat, maxLng],
+	];
+}
+
 /** Step used whenever a metric walks the track geometry. Import-time
  *  simplification keeps only shape vertices, so straight stretches carry
  *  almost no points - every gate (coverage 25 m, completion 50 m) must

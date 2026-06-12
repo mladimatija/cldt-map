@@ -6,7 +6,7 @@ import { useMap } from 'react-leaflet';
 import L from 'leaflet';
 import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
 import type { ImportedTrack, TrackStats } from '@/lib/store/types';
-import { computeTrackStats } from '@/lib/imported-tracks';
+import { computeTrackStats, trackBounds } from '@/lib/imported-tracks';
 import { buildSpatialGrid } from '@/lib/spatial-grid';
 import { formatEta, formatDistanceM, formatPaceFromSecPerKm } from '@/lib/distance-utils';
 import { findPoisNearTrack } from '@/lib/poi-proximity';
@@ -79,21 +79,8 @@ export function MapControlsImportsPanel(): React.ReactElement {
 	};
 
 	const fitToTrack = (track: ImportedTrack): void => {
-		if (track.points.length === 0) return;
-		// Single numeric min/max pass; the previous reduce allocated a LatLng
-		// and a bounds-extend call per point, which on a recorded multi-day
-		// hike made every row click visibly stall.
-		let minLat = Infinity;
-		let maxLat = -Infinity;
-		let minLng = Infinity;
-		let maxLng = -Infinity;
-		for (const pt of track.points) {
-			if (pt.lat < minLat) minLat = pt.lat;
-			if (pt.lat > maxLat) maxLat = pt.lat;
-			if (pt.lng < minLng) minLng = pt.lng;
-			if (pt.lng > maxLng) maxLng = pt.lng;
-		}
-		map.fitBounds(L.latLngBounds([minLat, minLng], [maxLat, maxLng]), { padding: [20, 20] });
+		const bounds = trackBounds(track);
+		if (bounds) map.fitBounds(L.latLngBounds(bounds[0], bounds[1]), { padding: [20, 20] });
 	};
 
 	const openFilePicker = (): void => {
@@ -139,6 +126,7 @@ export function MapControlsImportsPanel(): React.ReactElement {
 									/>
 									<button
 										className="focus-visible:ring-cldt-green min-w-0 flex-1 cursor-pointer truncate rounded border-0 bg-transparent p-0 text-left text-xs font-medium text-gray-700 outline-none focus-visible:ring-2 focus-visible:ring-offset-1 dark:text-[var(--text-primary)]"
+										title={track.name}
 										type="button"
 										onClick={() => fitToTrack(track)}
 									>
