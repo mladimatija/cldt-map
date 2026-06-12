@@ -927,10 +927,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 					sectionLayersRef.current = sectionPolylines;
 
 					const directionText = direction === 'SOBO' ? tChart('directionNorthSouth') : tChart('directionSouthNorth');
-					const startPoint = L.latLng(
-						latLngPoints[0].lat,
-						latLngPoints[0].lng,
-					);
+					const startPoint = L.latLng(latLngPoints[0].lat, latLngPoints[0].lng);
 					const finishPoint = L.latLng(
 						latLngPoints[latLngPoints.length - 1].lat,
 						latLngPoints[latLngPoints.length - 1].lng,
