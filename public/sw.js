@@ -18,6 +18,29 @@ const CACHE_NAME = `cldt-map-cache-v${CACHE_VERSION}`;
 const OFFLINE_URL = '/offline';
 const TILE_CACHE_PREFIX = 'cldt-tiles-';
 
+// Tile cache ceiling per provider bucket. The deliberate full-corridor
+// pre-cache (zooms 8-14 along 2,200 km) produces tens of thousands of tiles
+// that must NOT be evicted - this ceiling only guards against unbounded
+// growth from years of casual browsing on top of that. Trim drops the
+// oldest-inserted entries (Cache Storage keeps insertion order), and the
+// check runs on ~2% of writes so the hot tile path stays cheap.
+const MAX_TILES_PER_PROVIDER = 60000;
+const TILE_TRIM_TARGET = 55000;
+const TILE_TRIM_SAMPLE_RATE = 0.02;
+
+async function trimTileCache(cache) {
+    try {
+        const keys = await cache.keys();
+        if (keys.length <= MAX_TILES_PER_PROVIDER) return;
+        const excess = keys.length - TILE_TRIM_TARGET;
+        for (let i = 0; i < excess; i++) {
+            await cache.delete(keys[i]);
+        }
+    } catch {
+        // best-effort housekeeping; never fail a tile response over it
+    }
+}
+
 const CORE_ASSETS = [
 	'/',
 	OFFLINE_URL,
@@ -153,6 +176,10 @@ async function handleTileRequest(request, url) {
         if (networkResponse.ok || networkResponse.type === 'opaque') {
             try {
                 await cache.put(request, networkResponse.clone());
+                if (Math.random() < TILE_TRIM_SAMPLE_RATE) {
+                    // Out-of-band: don't delay the tile response on housekeeping.
+                    trimTileCache(cache);
+                }
             } catch (cacheErr) {
                 // Storage quota exceeded or other cache write error - serve the tile anyway
                 if (cacheErr && cacheErr.name === 'QuotaExceededError') {
