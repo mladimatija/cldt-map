@@ -53,7 +53,7 @@ Interactive web map for the **Croatian Long Distance Trail (CLDT)** – a 2,200+
 - **Precipitation radar** – RainViewer radar overlay with animated past + nowcast frames, play/pause controls, and a color-scale legend
 - **Location tracking** – Optional GPS to see your position on the trail; optional compass heading cone shows which way you are facing (device orientation, iOS permission-gated)
 - **Off-route alert** - Optional warning (Settings toggle, off by default) when you drift more than 200 m from the trail: red banner with your distance from the route and the compass bearing back to it, plus device vibration where supported. Arms itself only after GPS places you on the trail (3 consecutive fixes within 100 m), so it stays silent for users elsewhere in Croatia; auto-disarms after sustained travel beyond 2 km (bus/car ride away); inaccurate fixes (>75 m) are ignored
-- **Share links** – Share current map view or progress on the trail
+- **Share links** - Share your current map view or progress on the trail. Links carry the full map state (position, direction, units, base map, trail style, layer toggles, ruler range). When short links are enabled (Settings toggle, on by default), the app stores the long URL server-side and copies a compact `/s/{code}` link instead (e.g. `https://map.cldt.hr/s/a3Kx9m`). POI popups use the same shortener. Opening a short link redirects to the stored view; expired or unknown codes fall back to the home map. Shortening needs an internet connection at copy time and works on Netlify production (Netlify Blobs); plain `npm run dev` copies the long URL instead
 - **Units** – Metric (km) and imperial (miles)
 - **Trail style** – Choose how the route polyline is colored from the layers panel: Default (single color), Sections (A/B/C colored zones with boundary markers and per-section stats), or Grade (Strava-style gradient tinting with five bands – warm colors for ascents, cool for descents in the active travel direction; color-ramp legend in the panel; recomputed automatically when the SOBO/NOBO direction toggles); the three options are mutually exclusive
 - **Walking pace** – Configurable hiking pace for all ETA estimates; optional grade-adjusted mode applies Naismith + Tobler per-segment integration for more accurate ETAs on climbs and descents
@@ -143,6 +143,7 @@ Optional overrides (see `src/lib/config.ts`, `src/lib/gpx-cache.ts`):
 - `NEXT_PUBLIC_DEFAULT_GRADE_ADJUSTED_ETA` - apply Tobler-style grade adjustment to ETA (default `true`)
 - `NEXT_PUBLIC_DEFAULT_SUNSET_PROJECTION` - show sunset projection along the trail on load (default `false`)
 - `NEXT_PUBLIC_DEFAULT_SEVERE_WEATHER_LAYER` - show severe-weather overlay on load (default `false`)
+- `NEXT_PUBLIC_DEFAULT_SHARE_SHORT_LINKS` - copy compact `/s/{code}` share links by default (default `true`). Set to `false` to always copy the full query-string URL. The Settings panel toggle overrides this per user once changed. Shortening is server-side only (see [Share link shortener](#share-link-shortener) under Deploy to Netlify); local `npm run dev` always falls back to the long URL
 - `NEXT_PUBLIC_DEFAULT_SEASONAL_STATUS_ENABLED` - show seasonal-status overlay on load. When unset, defaults to on during the winter window (Nov 1–May 31) and off otherwise; setting to `true` or `false` overrides the auto-default
 - `NEXT_PUBLIC_DEFAULT_AUTO_SYNC` - auto-sync tile cache in the background by default (default `false`)
 - `NEXT_PUBLIC_DEFAULT_PREDICTIVE_PRECACHE` - predictively pre-cache tiles near the user position by default (default `false`)
@@ -189,6 +190,22 @@ Open [http://localhost:3000](http://localhost:3000).
 
 **If you see "Page not found" or "publish directory cannot be the same as base directory":** In Site settings → Build & deploy → Build settings, clear **Base directory** and **Publish directory** (leave both empty) so `netlify.toml` applies. The config sets `publish = ".next"`.
 
+### Share link shortener
+
+Map and POI share links can be shortened to `/s/{code}` so they fit SMS and chat apps. The long URL (all query params) is stored in **Netlify Blobs** (`share-links` store); no extra env vars are required beyond a normal Netlify deploy.
+
+| Route / function                            | Role                                                                                                                                                            |
+| ------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `POST /api/share`                           | Validate a same-origin share URL, allocate a 7-character code, store the target path + query in Blobs (90-day TTL). Rate limited to 30 creates per IP per hour. |
+| `GET /s/{code}`                             | Look up the code and `302` redirect to the stored target. Increments a hit counter. Expired or missing codes redirect to `/`.                                   |
+| `netlify/functions/share-links-cleanup.mts` | Scheduled monthly job that deletes expired entries from the Blobs store (redirects also reject expired links lazily).                                           |
+
+**Client behaviour:** When "Use short share links" is on (Settings, default from `NEXT_PUBLIC_DEFAULT_SHARE_SHORT_LINKS`), copy/share calls `POST /api/share` first and falls back to the long URL if the API is unavailable (offline, rate limit, or Blobs not configured).
+
+**Local development:** `npm run dev` does not configure Netlify Blobs, so shortening returns `503` and the client copies the long URL. Use [`netlify dev`](https://docs.netlify.com/api-and-deploy-docs/cli/local-development/) to exercise the shortener against a local Blobs store.
+
+**Security:** Only same-origin URLs whose query string contains recognised share params are accepted (no open redirects). Codes are random, not sequential.
+
 ---
 
 ## Scripts
@@ -217,7 +234,8 @@ src/
 │   │   ├── page.tsx  # Map (home)
 │   │   ├── about/    # About page
 │   │   └── test/     # Store test page
-│   ├── api/          # API routes (e.g. proxy for GPX)
+│   ├── api/          # API routes (GPX proxy, share shortener, weather, narrative)
+│   ├── s/[code]/     # Short share link redirects (/s/{code} → stored map URL)
 │   └── styles/       # CSS (base, theme, map, components)
 ├── components/
 │   ├── map/          # Map, BaseMapSelector, TrailRoute, MapMarkers, controls
@@ -255,12 +273,16 @@ src/
 │   ├── trip-brief-pdf.ts # PDF trip-brief generator (jspdf, lazy-imported)
 │   ├── trip-brief-docx.ts # DOCX trip-brief generator (docx, lazy-imported)
 │   ├── types.ts          # Shared TypeScript types (UnitSystem, etc.)
-│   ├── utils.ts          # Formatting, URL parsing, boundary check, unit conversion
+│   ├── share-url-constants.ts   # Share query param keys (encode, parse, shortener validation)
+│   ├── share-shortener-server.ts # Blobs storage, validation, TTL (server-only)
+│   ├── share-shortener-client.ts # Client fetch with long-URL fallback
 │   ├── weather.ts        # Weather fetch, icon mapping, unit converters
-│   └── wikipedia.ts      # Wikipedia REST summary fetch with per-session in-memory cache
+│   ├── wikipedia.ts      # Wikipedia REST summary fetch with per-session in-memory cache
+│   └── utils.ts          # Formatting, URL parsing, boundary check, unit conversion, share URL builders
 ├── i18n/             # next-intl routing and request config
 ├── types/            # TypeScript definitions
 └── messages/         # en.json, hr.json, de.json, it.json translations
+netlify/functions/    # Scheduled jobs (seasonal push, share-link cleanup)
 ```
 
 ---

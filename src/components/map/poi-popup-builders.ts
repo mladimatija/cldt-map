@@ -34,6 +34,7 @@ export interface PopupBuildLabels {
 	wikipediaSource: string;
 	shareLink: string;
 	shareCopied: string;
+	shareCopiedShort: string;
 	shareFailed: string;
 	openInMaps: string;
 	starAddLabel: string;

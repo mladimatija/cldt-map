@@ -666,6 +666,10 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					setWaymarkedTrailsOverlay: (enabled: boolean): void => {
 						set({ waymarkedTrailsOverlay: enabled });
 					},
+					shareShortLinks: config.shareShortLinks,
+					setShareShortLinks: (enabled: boolean): void => {
+						set({ shareShortLinks: enabled });
+					},
 
 					userWaypoints: [],
 					addUserWaypoint: (wp): void => {
@@ -960,6 +964,7 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					packGearList: state.packGearList,
 					pushAlertsEnabled: state.pushAlertsEnabled,
 					waymarkedTrailsOverlay: state.waymarkedTrailsOverlay,
+					shareShortLinks: state.shareShortLinks,
 					userWaypoints: state.userWaypoints,
 					journalEntries: state.journalEntries,
 					gradeAdjustedEta: state.gradeAdjustedEta,

@@ -128,6 +128,8 @@ export function MapControlsSettingsPanel({
 	const setPushAlertsEnabled = useMapStore((state: MapStoreState) => state.setPushAlertsEnabled);
 	const waymarkedTrailsOverlay = useMapStore((state: MapStoreState) => state.waymarkedTrailsOverlay);
 	const setWaymarkedTrailsOverlay = useMapStore((state: MapStoreState) => state.setWaymarkedTrailsOverlay);
+	const shareShortLinks = useMapStore((state: MapStoreState) => state.shareShortLinks);
+	const setShareShortLinks = useMapStore((state: MapStoreState) => state.setShareShortLinks);
 
 	/** Permission prompt must run inside this click handler; failures (denied,
 	 *  unsupported, deploy without VAPID keys) revert the toggle silently. */
@@ -476,6 +478,16 @@ export function MapControlsSettingsPanel({
 							</div>
 						</label>
 					)}
+
+					<label className="flex cursor-pointer items-start gap-2">
+						<Checkbox checked={shareShortLinks} onCheckedChange={(checked) => setShareShortLinks(checked)} />
+						<div className="flex flex-col">
+							<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">{t('shareShortLinksLabel')}</span>
+							<span className="text-xs text-gray-500 dark:text-[var(--text-secondary)]">
+								{t('shareShortLinksHint')}
+							</span>
+						</div>
+					</label>
 
 					<label className="flex cursor-pointer items-start gap-2">
 						<Checkbox

@@ -335,6 +335,9 @@ export interface MapStoreState {
 	/** Waymarked Trails hiking-routes overlay on top of the base map. Persisted. */
 	waymarkedTrailsOverlay: boolean;
 	setWaymarkedTrailsOverlay: (enabled: boolean) => void;
+	/** Copy compact `/s/{code}` links when sharing the map or a POI. Persisted. */
+	shareShortLinks: boolean;
+	setShareShortLinks: (enabled: boolean) => void;
 
 	/** Personal map annotations (long-press to add). Persisted. */
 	userWaypoints: UserWaypoint[];

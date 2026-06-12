@@ -205,6 +205,7 @@
 		"tileBoundaryDisabling": "Deaktivieren",
 		"shareText": "Schau dir diesen Ort auf dem CLDT an",
 		"linkCopied": "Link in die Zwischenablage kopiert!",
+		"linkCopiedShort": "Kurzlink in die Zwischenablage kopiert!",
 		"southbound": "Richtung Süden",
 		"northbound": "Richtung Norden",
 		"directionTitleNorthSouth": "Nord nach Süd",
@@ -239,7 +240,9 @@
 		"pushAlertsLabel": "Über neue Warnungen benachrichtigen",
 		"pushAlertsHint": "Browser-Benachrichtigung bei neuen saisonalen Warnungen für den Weg. Funktioniert auch bei geschlossener App; kein Konto nötig.",
 		"waymarkedLabel": "Overlay markierter Wanderwege",
-		"waymarkedHint": "Zeichnet OSM-Wanderrouten (Waymarked Trails) über die Basiskarte. Nur online."
+		"waymarkedHint": "Zeichnet OSM-Wanderrouten (Waymarked Trails) über die Basiskarte. Nur online.",
+		"shareShortLinksLabel": "Kurzlinks zum Teilen verwenden",
+		"shareShortLinksHint": "Kopiert einen kompakten Link mit derselben Kartenansicht. Zum Erstellen ist eine Internetverbindung nötig."
 	},
 	"baseMapSelector": {
 		"standard": "Standard",
@@ -764,6 +767,7 @@
 		"wikipediaSource": "Wikipedia",
 		"shareLink": "Link teilen",
 		"shareCopied": "Link kopiert",
+		"shareCopiedShort": "Kurzlink kopiert",
 		"shareFailed": "Kopieren fehlgeschlagen",
 		"openInMaps": "In Karten öffnen",
 		"listTitle": "Orte entlang des Wegs",
