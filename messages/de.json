@@ -667,6 +667,7 @@
 		"format": "Format",
 		"pdf": "PDF (Druck)",
 		"docx": "DOCX (bearbeitbar)",
+		"html": "HTML (Mobil)",
 		"poiScope": "POIs einbeziehen",
 		"poisAll": "Alle POIs entlang der Etappen",
 		"poisSelected": "Nur POIs, die du markiert hast",

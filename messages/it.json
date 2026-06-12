@@ -667,6 +667,7 @@
 		"format": "Formato",
 		"pdf": "PDF (stampa)",
 		"docx": "DOCX (modificabile)",
+		"html": "HTML (mobile)",
 		"poiScope": "POI da includere",
 		"poisAll": "Tutti i POI lungo le tappe",
 		"poisSelected": "Solo POI che hai contrassegnato",
