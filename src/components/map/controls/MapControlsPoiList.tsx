@@ -13,6 +13,7 @@ import {
 	POI_TYPE_GROUPS,
 	poiDisplayName,
 	poiMatchesTagFilter,
+	poiPassesReachabilityFilter,
 	type Poi,
 } from '@/lib/pois';
 import { defaultEnabledPoiTypes } from '@/lib/config';
@@ -289,6 +290,7 @@ export function MapControlsPoiList({
 	const enabledPoiTypes = useMapStore((s: MapStoreState) => s.enabledPoiTypes);
 	const setEnabledPoiTypes = useMapStore((s: MapStoreState) => s.setEnabledPoiTypes);
 	const enabledPoiTags = useMapStore((s: MapStoreState) => s.enabledPoiTags);
+	const includeRemotePois = useMapStore((s: MapStoreState) => s.includeRemotePois);
 	const togglePoiTag = useMapStore((s: MapStoreState) => s.togglePoiTag);
 	const clearPoiTags = useMapStore((s: MapStoreState) => s.clearPoiTags);
 	const direction = useMapStore((s: MapStoreState) => s.direction);
@@ -356,10 +358,11 @@ export function MapControlsPoiList({
 		for (const p of poisFile.pois) {
 			if (!filterTypes.has(p.type)) continue;
 			if (!poiMatchesTagFilter(p, filterTags)) continue;
+			if (!poiPassesReachabilityFilter(p, includeRemotePois)) continue;
 			out.set(p.id, haversineDistanceM(snappedLat, snappedLng, p.lat, p.lng));
 		}
 		return out;
-	}, [hasGps, snappedLat, snappedLng, poisFile, enabledPoiTypes, enabledPoiTags]);
+	}, [hasGps, snappedLat, snappedLng, poisFile, enabledPoiTypes, enabledPoiTags, includeRemotePois]);
 
 	/** All tags present in the dataset, sorted alphabetically. Empty list
 	 *  hides the tag-chip row entirely - keeps the panel clean for datasets
@@ -425,6 +428,7 @@ export function MapControlsPoiList({
 		pois: poisFile?.pois ?? null,
 		enabledPoiTypes,
 		enabledPoiTags,
+		includeRemotePois,
 		debouncedQuery,
 		units,
 		direction,

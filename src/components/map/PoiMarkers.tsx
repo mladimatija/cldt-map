@@ -5,7 +5,7 @@ import { useMap } from 'react-leaflet';
 import L from 'leaflet';
 import { useLocale, useTranslations } from 'next-intl';
 import { useMapStore, type MapStoreState } from '@/lib/store';
-import { isKnownType, poiDisplayName, poiMatchesTagFilter, type Poi } from '@/lib/pois';
+import { isKnownType, poiDisplayName, poiMatchesTagFilter, poiPassesReachabilityFilter, type Poi } from '@/lib/pois';
 import {
 	buildPoiShareUrl,
 	clearShareUrlParams,
@@ -46,6 +46,9 @@ function preparePoiDeepLink(poi: Poi): void {
 	if (!poiMatchesTagFilter(poi, store.enabledPoiTags)) {
 		store.setEnabledPoiTags(new Set());
 	}
+	if (!poiPassesReachabilityFilter(poi, store.includeRemotePois)) {
+		store.setIncludeRemotePois(true);
+	}
 }
 
 /**
@@ -73,6 +76,7 @@ export function PoiMarkers(): null {
 	const gpxLoaded = useMapStore((s: MapStoreState) => s.gpxLoaded);
 	const enabledPoiTypes = useMapStore((s: MapStoreState) => s.enabledPoiTypes);
 	const enabledPoiTags = useMapStore((s: MapStoreState) => s.enabledPoiTags);
+	const includeRemotePois = useMapStore((s: MapStoreState) => s.includeRemotePois);
 	const openLightbox = useMapStore((s: MapStoreState) => s.openLightbox);
 	const pendingOpenPoiId = useMapStore((s: MapStoreState) => s.pendingOpenPoiId);
 	const requestOpenPoi = useMapStore((s: MapStoreState) => s.requestOpenPoi);
@@ -84,9 +88,13 @@ export function PoiMarkers(): null {
 	const visiblePois = useMemo((): Poi[] => {
 		if (!poisFile || !poisLayerEnabled) return [];
 		return poisFile.pois.filter(
-			(p) => isKnownType(p.type) && enabledPoiTypes.has(p.type) && poiMatchesTagFilter(p, enabledPoiTags),
+			(p) =>
+				isKnownType(p.type) &&
+				enabledPoiTypes.has(p.type) &&
+				poiMatchesTagFilter(p, enabledPoiTags) &&
+				poiPassesReachabilityFilter(p, includeRemotePois),
 		);
-	}, [poisFile, poisLayerEnabled, enabledPoiTypes, enabledPoiTags]);
+	}, [poisFile, poisLayerEnabled, enabledPoiTypes, enabledPoiTags, includeRemotePois]);
 
 	/** id -> Poi index used by the deep-link and in-app open-by-id paths so they
 	 *  can resolve a target POI in O(1) instead of scanning the full ~8k row

@@ -242,7 +242,9 @@
 		"waymarkedLabel": "Overlay markierter Wanderwege",
 		"waymarkedHint": "Zeichnet OSM-Wanderrouten (Waymarked Trails) über die Basiskarte. Nur online.",
 		"shareShortLinksLabel": "Kurzlinks zum Teilen verwenden",
-		"shareShortLinksHint": "Kopiert einen kompakten Link mit derselben Kartenansicht. Zum Erstellen ist eine Internetverbindung nötig."
+		"shareShortLinksHint": "Kopiert einen kompakten Link mit derselben Kartenansicht. Zum Erstellen ist eine Internetverbindung nötig.",
+		"includeRemotePoisLabel": "Entfernte POIs einbeziehen",
+		"includeRemotePoisHint": "Zeigt Orte, die der Datensatz als schwer von der Route erreichbar markiert (z. B. jenseits eines Flusses oder an einer Sackgasse). Standardmäßig aus."
 	},
 	"baseMapSelector": {
 		"standard": "Standard",

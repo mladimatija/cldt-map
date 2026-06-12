@@ -10,7 +10,7 @@ import { computeTrackStats, trackBounds } from '@/lib/imported-tracks';
 import { buildSpatialGrid } from '@/lib/spatial-grid';
 import { formatEta, formatDistanceM, formatPaceFromSecPerKm } from '@/lib/distance-utils';
 import { findPoisNearTrack } from '@/lib/poi-proximity';
-import { isKnownType, poiDisplayName } from '@/lib/pois';
+import { isKnownType, poiDisplayName, poiPassesReachabilityFilter } from '@/lib/pois';
 import { formatDistance } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
 import { IoDownloadOutline, IoEyeOffOutline, IoEyeOutline, IoTrashOutline } from 'react-icons/io5';
@@ -30,6 +30,7 @@ export function MapControlsImportsPanel(): React.ReactElement {
 	const distancePrecision = useMapStore((s: MapStoreState) => s.distancePrecision);
 	const poisFile = useMapStore((s: MapStoreState) => s.poisFile);
 	const enabledPoiTypes = useMapStore((s: MapStoreState) => s.enabledPoiTypes);
+	const includeRemotePois = useMapStore((s: MapStoreState) => s.includeRemotePois);
 	const togglePoiType = useMapStore((s: MapStoreState) => s.togglePoiType);
 	const requestOpenPoi = useMapStore((s: MapStoreState) => s.requestOpenPoi);
 	const enhancedTrailPoints = useStore((s: StoreState) => s.enhancedTrailPoints);
@@ -74,7 +75,9 @@ export function MapControlsImportsPanel(): React.ReactElement {
 		if (!proximityByTrackId[track.id] && poisFile?.pois?.length) {
 			// Apply the same enabled-type filter the live map uses so the
 			// report shows the user the POIs they've actually opted into.
-			const visiblePois = poisFile.pois.filter((p) => isKnownType(p.type) && enabledPoiTypes.has(p.type));
+			const visiblePois = poisFile.pois.filter(
+				(p) => isKnownType(p.type) && enabledPoiTypes.has(p.type) && poiPassesReachabilityFilter(p, includeRemotePois),
+			);
 			const hits = findPoisNearTrack(track.points, visiblePois);
 			setProximityByTrackId((prev) => ({ ...prev, [track.id]: hits }));
 		}

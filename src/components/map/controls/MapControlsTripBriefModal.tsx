@@ -53,6 +53,7 @@ export function MapControlsTripBriefModal({
 	const starredPoiIds = useMapStore((s: MapStoreState) => s.starredPoiIds);
 	const enabledPoiTypes = useMapStore((s: MapStoreState) => s.enabledPoiTypes);
 	const enabledPoiTags = useMapStore((s: MapStoreState) => s.enabledPoiTags);
+	const includeRemotePois = useMapStore((s: MapStoreState) => s.includeRemotePois);
 	const walkingPaceKmh = usePackAdjustedPaceKmh();
 	const packBaseWeightKg = useMapStore((s: MapStoreState) => s.packBaseWeightKg);
 	const waterConsumptionLph = useMapStore((s: MapStoreState) => s.waterConsumptionLph);
@@ -103,6 +104,7 @@ export function MapControlsTripBriefModal({
 				includeAllInStage: poiScope === 'allInStage',
 				enabledPoiTypes,
 				enabledPoiTags,
+				includeRemotePois,
 				walkingPaceKmh,
 				gradeAdjustedEta,
 				units,

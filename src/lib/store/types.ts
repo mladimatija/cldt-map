@@ -453,6 +453,9 @@ export interface MapStoreState {
 	setEnabledPoiTags: (tags: ReadonlySet<string>) => void;
 	togglePoiTag: (tag: string) => void;
 	clearPoiTags: () => void;
+	/** When false (default), POIs with `isReachable === false` are hidden. */
+	includeRemotePois: boolean;
+	setIncludeRemotePois: (enabled: boolean) => void;
 	/** True once the user has explicitly modified either POI filter (types or
 	 *  tags). Lets the POI disclaimer handlers re-seed defaults the first time
 	 *  the layer is enabled without overwriting a user's prior customisation. */

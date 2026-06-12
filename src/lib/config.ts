@@ -151,6 +151,9 @@ export const config = {
 	/** Use compact share links (`/s/{code}`) by default. */
 	shareShortLinks: envBool('NEXT_PUBLIC_DEFAULT_SHARE_SHORT_LINKS', true),
 
+	/** Show POIs the enricher marked unreachable (`isReachable === false`). */
+	includeRemotePois: envBool('NEXT_PUBLIC_DEFAULT_INCLUDE_REMOTE_POIS', false),
+
 	/** Show mine-suspected areas by default. ON: this is a life-safety layer,
 	 *  so users opt out rather than in. */
 	mineAreasEnabled: envBool('NEXT_PUBLIC_DEFAULT_MINE_AREAS', true),

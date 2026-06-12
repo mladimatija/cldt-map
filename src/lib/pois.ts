@@ -397,6 +397,13 @@ export function poiMatchesTagFilter(p: Poi, enabledTags: ReadonlySet<string>): b
 	return p.tags.some((tag) => enabledTags.has(tag));
 }
 
+/** When `includeRemotePois` is false, hide POIs tagged unreachable by the
+ *  enricher (`isReachable === false`). Missing field means reachable. */
+export function poiPassesReachabilityFilter(p: Poi, includeRemotePois: boolean): boolean {
+	if (includeRemotePois) return true;
+	return p.isReachable !== false;
+}
+
 /** Collects the unique sorted set of tags present in the dataset. Used by
  *  the settings UI to render a chip per tag. */
 export function collectPoiTags(pois: Poi[]): string[] {

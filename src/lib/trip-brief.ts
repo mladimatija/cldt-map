@@ -6,9 +6,9 @@
  * Stays runtime-only: no React, no DOM, no map snapshotting. The PDF/DOCX
  * paths add their own snapshots after assembly.
  *
- * AI narrative is deliberately out of scope; the feature is not yet implemented.
- * Each narrative slot is filled by a deterministic templated string, so the
- * brief is fully functional without an API call.
+ * Day narratives default to deterministic templated strings. Optional
+ * AI-written paragraphs are applied after assembly via `trip-brief-ai.ts`
+ * when the user enables them in the trip brief modal (online, `/api/narrative`).
  */
 
 import { computeStageStats } from '@/lib/stage-planner';
@@ -20,6 +20,7 @@ import {
 	pickThumbUrl,
 	poiDisplayName,
 	poiMatchesTagFilter,
+	poiPassesReachabilityFilter,
 	STAGE_POI_OFFTRAIL_KM,
 	type Poi,
 	type PoisFile,
@@ -141,6 +142,8 @@ export interface TripBriefAssemblyArgs {
 	 *  Empty set means "no tag filter active" (all types passing the type filter
 	 *  are included). Non-empty set requires tag intersection via poiMatchesTagFilter. */
 	enabledPoiTags: ReadonlySet<string>;
+	/** Same reachability filter as the map renderer (Settings toggle). */
+	includeRemotePois: boolean;
 	walkingPaceKmh: number;
 	gradeAdjustedEta: boolean;
 	units: UnitSystem;
@@ -179,6 +182,7 @@ export function assembleTripBrief(args: TripBriefAssemblyArgs): TripBrief {
 		includeAllInStage,
 		enabledPoiTypes,
 		enabledPoiTags,
+		includeRemotePois,
 		walkingPaceKmh,
 		gradeAdjustedEta,
 		units,
@@ -203,6 +207,7 @@ export function assembleTripBrief(args: TripBriefAssemblyArgs): TripBrief {
 			isKnownType(p.type) &&
 			enabledPoiTypes.has(p.type) &&
 			poiMatchesTagFilter(p, enabledPoiTags) &&
+			poiPassesReachabilityFilter(p, includeRemotePois) &&
 			p.distanceFromTrailKm <= STAGE_POI_OFFTRAIL_KM,
 	);
 	// Sort once by trailKm so each stage's POI window can be located with a

@@ -862,6 +862,10 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					clearPoiTags: (): void => {
 						set({ enabledPoiTags: new Set<string>(), poiFiltersUserModified: true });
 					},
+					includeRemotePois: config.includeRemotePois,
+					setIncludeRemotePois: (enabled: boolean): void => {
+						set({ includeRemotePois: enabled });
+					},
 					poiFiltersUserModified: false,
 					resetPoiFiltersToDefaults: (): void => {
 						set({ enabledPoiTypes: defaultEnabledPoiTypes, enabledPoiTags: new Set<string>() });
@@ -965,6 +969,7 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					pushAlertsEnabled: state.pushAlertsEnabled,
 					waymarkedTrailsOverlay: state.waymarkedTrailsOverlay,
 					shareShortLinks: state.shareShortLinks,
+					includeRemotePois: state.includeRemotePois,
 					userWaypoints: state.userWaypoints,
 					journalEntries: state.journalEntries,
 					gradeAdjustedEta: state.gradeAdjustedEta,
