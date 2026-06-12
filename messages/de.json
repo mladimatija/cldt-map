@@ -66,7 +66,7 @@
 			"pushAlerts": "Warnungs-Benachrichtigungen - optionale Browser-Pushes bei neuen saisonalen Warnungen, auch bei geschlossener App; kein Konto nötig"
 		},
 		"dataAttribution": "Daten & Urheberrecht",
-		"dataAttributionDesc": "Trail-Daten werden von der Udruga Long Distance Trail Hrvatska (LDTH) bereitgestellt. Kartenkacheln kommen von OpenStreetMap, OpenTopoMap, CyclOSM und anderen Anbietern. Kroatische topografische Karten stammen vom Staatlichen Geodätischen Amt (DGU). Wetterdaten kommen von DHMZ (Kroatischer Wetterdienst) und Open-Meteo. Radarkacheln werden von RainViewer bereitgestellt. Daten zum saisonalen Wegzustand, Gefahrenwarnungen sowie Standorte der Bergwacht-Stationen stammen von HGSS (Kroatische Bergrettung), HPS (Kroatischer Bergsteigerverband) und den Verwaltungen der Nationalparks (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) sowie Naturpark Velebit. Die auf dieser Seite angezeigten Daten entsprechen möglicherweise nicht dem aktuellen Stand. Im Zweifelsfall bitte immer die offiziellen Quellen prüfen.",
+		"dataAttributionDesc": "Trail-Daten werden von der Udruga Long Distance Trail Hrvatska (LDTH) bereitgestellt. Kartenkacheln kommen von OpenStreetMap, OpenTopoMap, OpenHikingMap (openmaps.fr), Waymarked Trails, CyclOSM und anderen Anbietern. Kroatische topografische Karten stammen vom Staatlichen Geodätischen Amt (DGU). Wetterdaten kommen von DHMZ (Kroatischer Wetterdienst) und Open-Meteo. Radarkacheln werden von RainViewer bereitgestellt. Daten zum saisonalen Wegzustand, Gefahrenwarnungen sowie Standorte der Bergwacht-Stationen stammen von HGSS (Kroatische Bergrettung), HPS (Kroatischer Bergsteigerverband) und den Verwaltungen der Nationalparks (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) sowie Naturpark Velebit. Die auf dieser Seite angezeigten Daten entsprechen möglicherweise nicht dem aktuellen Stand. Im Zweifelsfall bitte immer die offiziellen Quellen prüfen.",
 		"privacy": "Datenschutz",
 		"privacyDesc": "Dein Standort wird nur verwendet, wenn du ihn aktivierst und die Berechtigung erteilst. Er wird niemals an einen Server gesendet - alles läuft in deinem Browser. Es ist kein Konto oder Login erforderlich.",
 		"links": "Links",
@@ -237,7 +237,9 @@
 		"packCsvClear": "Entfernen",
 		"packCsvError": "CSV konnte nicht gelesen werden. Aus LighterPack oder Packstack exportieren und erneut versuchen.",
 		"pushAlertsLabel": "Über neue Warnungen benachrichtigen",
-		"pushAlertsHint": "Browser-Benachrichtigung bei neuen saisonalen Warnungen für den Weg. Funktioniert auch bei geschlossener App; kein Konto nötig."
+		"pushAlertsHint": "Browser-Benachrichtigung bei neuen saisonalen Warnungen für den Weg. Funktioniert auch bei geschlossener App; kein Konto nötig.",
+		"waymarkedLabel": "Overlay markierter Wanderwege",
+		"waymarkedHint": "Zeichnet OSM-Wanderrouten (Waymarked Trails) über die Basiskarte. Nur online."
 	},
 	"baseMapSelector": {
 		"standard": "Standard",
@@ -254,7 +256,9 @@
 		"cyclingDescription": "OpenCycleMap für Radfahrer und Wanderer",
 		"croatiaTopoDescription": "Offizielle kroatische topografische Karten",
 		"darkMapDescription": "Dunkle Basiskarte für Nacht oder schwache Lichtverhältnisse",
-		"changeMapStyle": "Kartenstil ändern ({name})"
+		"changeMapStyle": "Kartenstil ändern ({name})",
+		"openHikingMap": "Wandern",
+		"openHikingMapDescription": "OpenHikingMap: Topo-Stil mit wanderspezifischen Details"
 	},
 	"test": {
 		"backToMap": "Zurück zur Karte",

@@ -2,7 +2,16 @@
 
 import React from 'react';
 import { BaseMapProvider } from '@/lib/services/map-service';
-import { FaMap, FaMountain, FaSatellite, FaMapMarkedAlt, FaBiking, FaLocationArrow, FaMoon } from 'react-icons/fa';
+import {
+	FaMap,
+	FaMountain,
+	FaSatellite,
+	FaMapMarkedAlt,
+	FaBiking,
+	FaLocationArrow,
+	FaMoon,
+	FaHiking,
+} from 'react-icons/fa';
 
 export const PROVIDER_TO_KEY: Record<BaseMapProvider, string> = {
 	[BaseMapProvider.OPEN_STREET_MAP]: 'standard',
@@ -10,6 +19,7 @@ export const PROVIDER_TO_KEY: Record<BaseMapProvider, string> = {
 	[BaseMapProvider.SATELLITE]: 'satellite',
 	[BaseMapProvider.TERRAIN]: 'terrain',
 	[BaseMapProvider.CYCL_OSM]: 'cycling',
+	[BaseMapProvider.OPEN_HIKING_MAP]: 'openHikingMap',
 	[BaseMapProvider.CROATIA_TOPO]: 'croatiaTopo',
 	[BaseMapProvider.DARK]: 'darkMap',
 };
@@ -21,6 +31,7 @@ export const KEY_TO_PROVIDER: Record<string, BaseMapProvider> = {
 	satellite: BaseMapProvider.SATELLITE,
 	terrain: BaseMapProvider.TERRAIN,
 	cycling: BaseMapProvider.CYCL_OSM,
+	openHikingMap: BaseMapProvider.OPEN_HIKING_MAP,
 	croatiaTopo: BaseMapProvider.CROATIA_TOPO,
 	darkMap: BaseMapProvider.DARK,
 };
@@ -46,6 +57,12 @@ export const mapOptions: MapOption[] = [
 		name: 'Topo',
 		description: 'Topographic map with contour lines',
 		icon: <FaMountain className={`${iconClass} text-cldt-green`} />,
+	},
+	{
+		id: BaseMapProvider.OPEN_HIKING_MAP,
+		name: 'Hiking',
+		description: 'OpenHikingMap: topo style with hiking-specific details',
+		icon: <FaHiking className={`${iconClass} text-cldt-blue`} />,
 	},
 	{
 		id: BaseMapProvider.SATELLITE,

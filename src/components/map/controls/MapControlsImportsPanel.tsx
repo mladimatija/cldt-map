@@ -173,6 +173,11 @@ export function MapControlsImportsPanel(): React.ReactElement {
 												: t('hideTrack', { trackName: track.name })
 										}
 										size="sm"
+										title={
+											track.visible === false
+												? t('showTrack', { trackName: track.name })
+												: t('hideTrack', { trackName: track.name })
+										}
 										variant="mapControlOutlineSecondary"
 										onClick={() => updateImportedTrack(track.id, { visible: track.visible === false })}
 									>
@@ -185,6 +190,7 @@ export function MapControlsImportsPanel(): React.ReactElement {
 									<Button
 										aria-label={t('removeAriaLabel', { trackName: track.name })}
 										size="sm"
+										title={t('removeAriaLabel', { trackName: track.name })}
 										variant="mapControlOutlineSecondary"
 										onClick={() => void removeImportedTrack(track.id)}
 									>

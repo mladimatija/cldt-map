@@ -59,6 +59,10 @@ const TrailDistanceMarkers = dynamic(
 const PoiMarkers = dynamic(() => import('@/components/map/PoiMarkers').then((m) => ({ default: m.PoiMarkers })), {
 	ssr: false,
 });
+const WaymarkedTrailsOverlay = dynamic(
+	() => import('@/components/map/WaymarkedTrailsOverlay').then((m) => ({ default: m.WaymarkedTrailsOverlay })),
+	{ ssr: false },
+);
 const UserWaypointMarkers = dynamic(
 	() => import('@/components/map/UserWaypointMarkers').then((m) => ({ default: m.UserWaypointMarkers })),
 	{ ssr: false },
@@ -184,6 +188,7 @@ export default function MapContent(): React.ReactElement {
 			<ShareUrlHandler />
 			<BaseMapSelector />
 			<RadarOverlay />
+			<WaymarkedTrailsOverlay />
 			<Suspense fallback={<MapTrailLoadingFallback />}>
 				<TrailRoute pathOptions={DEFAULT_PATH_OPTIONS} />
 			</Suspense>

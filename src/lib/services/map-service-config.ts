@@ -20,6 +20,17 @@ export const DEFAULT_MAP_SERVICES: BaseMapConfig[] = [
 		subdomains: 'abc',
 	},
 	{
+		name: BaseMapProvider.OPEN_HIKING_MAP,
+		url: 'https://tile.openmaps.fr/openhikingmap/{z}/{x}/{y}.png',
+		// Attribution wording (incl. the donation link) is REQUIRED by the
+		// openmaps.fr tile usage policy.
+		attribution:
+			'<a href="https://wiki.openstreetmap.org/wiki/OpenHikingMap">&copy; OpenHikingMap</a> <a href="https://openmaps.fr/donate">&#10084;&#65039; Donation</a> <a href="https://www.openstreetmap.org/copyright">&copy; OpenStreetMap</a>',
+		maxZoom: 17,
+		minZoom: 0,
+		subdomains: '',
+	},
+	{
 		name: BaseMapProvider.SATELLITE,
 		url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
 		attribution:

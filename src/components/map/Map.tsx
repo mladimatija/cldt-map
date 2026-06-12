@@ -5,7 +5,7 @@
  * MapContent loads controls, trail polyline, markers, and share handler dynamically (no SSR).
  */
 import React, { useMemo, useState } from 'react';
-import { MapContainer } from 'react-leaflet';
+import { MapContainer, AttributionControl } from 'react-leaflet';
 import { LatLngTuple } from 'leaflet';
 import dynamic from 'next/dynamic';
 import { mapDefaults } from '@/lib/config';
@@ -70,6 +70,13 @@ export default function Map({
 				zoomControl={false}
 				zoomSnap={zoomSnap}
 			>
+				{/* Tile providers' licences (OSM ODbL, CC-BY-SA styles, Esri, DGU,
+				    openmaps.fr) require interaction-free visible attribution ON the
+				    map; the container control is disabled, so this component is the
+				    single place it renders. Layers feed it via their attribution
+				    option and it updates automatically on base-map switches. */}
+				<AttributionControl position="bottomleft" prefix={false} />
+
 				{/* Dynamic base map selector for changing map styles */}
 				<BaseMapSelector initialProvider={initialProvider} />
 

@@ -66,7 +66,7 @@
 			"pushAlerts": "Obavijesti o upozorenjima - neobavezne push obavijesti preglednika kad se objavi novo sezonsko upozorenje, čak i kad je aplikacija zatvorena; bez računa"
 		},
 		"dataAttribution": "Podaci i atribucija",
-		"dataAttributionDesc": "Podatke o stazi pruža organizacija Udruga Long Distance Trail Hrvatska (LDTH). Karte dolaze od OpenStreetMap, OpenTopoMap, CyclOSM i drugih pružatelja. Hrvatske topografske karte su od Državne geodetske uprave (DGU). Meteorološki podaci dolaze od DHMZ-a (Državni hidrometeorološki zavod) i Open-Meteo. Radarske pločice osigurava RainViewer. Podaci o sezonskom stanju puta, upozorenja o opasnostima i podaci o stanicama gorske službe spašavanja preuzeti su od HGSS-a (Hrvatska gorska služba spašavanja), HPS-a (Hrvatski planinarski savez) te uprava nacionalnih parkova (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) i Parka prirode Velebit. Podaci prikazani na ovoj stranici možda ne odražavaju najnovije stanje. U slučaju sumnje, uvijek provjerite službene izvore.",
+		"dataAttributionDesc": "Podatke o stazi pruža organizacija Udruga Long Distance Trail Hrvatska (LDTH). Karte dolaze od OpenStreetMap, OpenTopoMap, OpenHikingMap (openmaps.fr), Waymarked Trails, CyclOSM i drugih pružatelja. Hrvatske topografske karte su od Državne geodetske uprave (DGU). Meteorološki podaci dolaze od DHMZ-a (Državni hidrometeorološki zavod) i Open-Meteo. Radarske pločice osigurava RainViewer. Podaci o sezonskom stanju puta, upozorenja o opasnostima i podaci o stanicama gorske službe spašavanja preuzeti su od HGSS-a (Hrvatska gorska služba spašavanja), HPS-a (Hrvatski planinarski savez) te uprava nacionalnih parkova (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) i Parka prirode Velebit. Podaci prikazani na ovoj stranici možda ne odražavaju najnovije stanje. U slučaju sumnje, uvijek provjerite službene izvore.",
 		"privacy": "Privatnost",
 		"privacyDesc": "Vaša lokacija se koristi samo kada je omogućite i date dopuštenje. Nikada se ne šalje na server - sve se izvodi u vašem pregledniku. Nije potreban račun ili prijava.",
 		"links": "Linkovi",
@@ -237,7 +237,9 @@
 		"packCsvClear": "Ukloni",
 		"packCsvError": "CSV nije moguće pročitati. Izvezite ga iz LighterPacka ili Packstacka i pokušajte ponovno.",
 		"pushAlertsLabel": "Obavijesti o novim upozorenjima",
-		"pushAlertsHint": "Obavijest preglednika kad se objavi novo sezonsko upozorenje za stazu. Radi i dok je aplikacija zatvorena; bez računa."
+		"pushAlertsHint": "Obavijest preglednika kad se objavi novo sezonsko upozorenje za stazu. Radi i dok je aplikacija zatvorena; bez računa.",
+		"waymarkedLabel": "Sloj markiranih planinarskih ruta",
+		"waymarkedHint": "Iscrtava OSM planinarske rute (Waymarked Trails) preko osnovne karte. Samo online."
 	},
 	"baseMapSelector": {
 		"standard": "Standardna",
@@ -254,7 +256,9 @@
 		"cyclingDescription": "OpenCycleMap za bicikliste i planinare",
 		"croatiaTopoDescription": "Službene hrvatske topografske karte",
 		"darkMapDescription": "Tamna podloga za noćnu ili slabu osvijetljenost",
-		"changeMapStyle": "Promijeni stil karte ({name})"
+		"changeMapStyle": "Promijeni stil karte ({name})",
+		"openHikingMap": "Planinarska",
+		"openHikingMapDescription": "OpenHikingMap: topografski stil s planinarskim detaljima"
 	},
 	"test": {
 		"backToMap": "Natrag na kartu",

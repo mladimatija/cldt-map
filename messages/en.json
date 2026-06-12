@@ -66,7 +66,7 @@
 			"pushAlerts": "Trail warning notifications - optional browser push when a new seasonal warning is published, even with the app closed; no account needed"
 		},
 		"dataAttribution": "Data & attribution",
-		"dataAttributionDesc": "Trail data is provided by the Udruga Long Distance Trail Hrvatska (LDTH) organization. Map tiles come from OpenStreetMap, OpenTopoMap, CyclOSM, and other providers. Croatian topographic maps are from the State Geodetic Administration (DGU). Weather data comes from DHMZ (Croatian Met Service) and Open-Meteo. Radar tiles are provided by RainViewer. Seasonal trail status, hazard warnings, and mountain rescue station data are sourced from HGSS (Croatian Mountain Rescue Service), HPS (Croatian Mountaineering Federation), and the national park authorities (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) together with Park prirode Velebit. Data displayed on this site may not reflect the latest conditions. When in doubt, always verify with the official sources.",
+		"dataAttributionDesc": "Trail data is provided by the Udruga Long Distance Trail Hrvatska (LDTH) organization. Map tiles come from OpenStreetMap, OpenTopoMap, OpenHikingMap (openmaps.fr), CyclOSM, Waymarked Trails, and other providers. Croatian topographic maps are from the State Geodetic Administration (DGU). Weather data comes from DHMZ (Croatian Met Service) and Open-Meteo. Radar tiles are provided by RainViewer. Seasonal trail status, hazard warnings, and mountain rescue station data are sourced from HGSS (Croatian Mountain Rescue Service), HPS (Croatian Mountaineering Federation), and the national park authorities (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) together with Park prirode Velebit. Data displayed on this site may not reflect the latest conditions. When in doubt, always verify with the official sources.",
 		"privacy": "Privacy",
 		"privacyDesc": "Your location is used only when you enable it and grant permission. It is never sent to any server - everything runs in your browser. No account or login is required.",
 		"links": "Links",
@@ -237,7 +237,9 @@
 		"packCsvClear": "Clear",
 		"packCsvError": "Could not read that CSV. Export it from LighterPack or Packstack and try again.",
 		"pushAlertsLabel": "Notify about new trail warnings",
-		"pushAlertsHint": "Browser notification when a new seasonal warning is published for the trail. Works while the app is closed; no account needed."
+		"pushAlertsHint": "Browser notification when a new seasonal warning is published for the trail. Works while the app is closed; no account needed.",
+		"waymarkedLabel": "Marked hiking routes overlay",
+		"waymarkedHint": "Draws OSM hiking route relations (Waymarked Trails) over the base map. Online only."
 	},
 	"baseMapSelector": {
 		"standard": "Standard",
@@ -254,7 +256,9 @@
 		"cyclingDescription": "OpenCycleMap for cyclists and hiking",
 		"croatiaTopoDescription": "Official Croatian topographic maps",
 		"darkMapDescription": "Dark base layer for night or low-light use",
-		"changeMapStyle": "Change map style ({name})"
+		"changeMapStyle": "Change map style ({name})",
+		"openHikingMap": "Hiking",
+		"openHikingMapDescription": "OpenHikingMap: topo style with hiking-specific details"
 	},
 	"test": {
 		"backToMap": "Back to Map",
