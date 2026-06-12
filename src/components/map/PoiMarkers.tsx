@@ -34,6 +34,20 @@ const DEEPLINK_MAX_POLL_ATTEMPTS = 15;
 /** Deep-link popup: milliseconds between each marker-existence poll tick. */
 const DEEPLINK_POLL_INTERVAL_MS = 200;
 
+/** Ensure a shared POI link can materialise a marker (layer, type, tag filter). */
+function preparePoiDeepLink(poi: Poi): void {
+	const store = useMapStore.getState();
+	if (!store.poisLayerEnabled) {
+		store.setPoisLayerEnabled(true);
+	}
+	if (!store.enabledPoiTypes.has(poi.type)) {
+		store.togglePoiType(poi.type);
+	}
+	if (!poiMatchesTagFilter(poi, store.enabledPoiTags)) {
+		store.setEnabledPoiTags(new Set());
+	}
+}
+
 /**
  * Renders POI markers on the map. Markers respect the master layer toggle and
  * the per-type filter from the map store. Clicks open a Leaflet popup with
@@ -56,10 +70,12 @@ export function PoiMarkers(): null {
 	const locale = useLocale();
 	const poisFile = useMapStore((s: MapStoreState) => s.poisFile);
 	const poisLayerEnabled = useMapStore((s: MapStoreState) => s.poisLayerEnabled);
+	const gpxLoaded = useMapStore((s: MapStoreState) => s.gpxLoaded);
 	const enabledPoiTypes = useMapStore((s: MapStoreState) => s.enabledPoiTypes);
 	const enabledPoiTags = useMapStore((s: MapStoreState) => s.enabledPoiTags);
 	const openLightbox = useMapStore((s: MapStoreState) => s.openLightbox);
 	const pendingOpenPoiId = useMapStore((s: MapStoreState) => s.pendingOpenPoiId);
+	const requestOpenPoi = useMapStore((s: MapStoreState) => s.requestOpenPoi);
 	const clearPendingOpenPoi = useMapStore((s: MapStoreState) => s.clearPendingOpenPoi);
 	const direction = useMapStore((s: MapStoreState) => s.direction);
 	const units = useMapStore((s: MapStoreState) => s.units);
@@ -367,17 +383,22 @@ export function PoiMarkers(): null {
 			const targetZoom = Math.max(map.getZoom(), CLUSTER_MAX_ZOOM + 1);
 			map.flyTo([target.lat, target.lng], targetZoom, { duration: 0.6 });
 			map.once('moveend', () => {
-				let attempts = 0;
-				const tick = (): void => {
-					attempts += 1;
-					const marker = markerByIdRef.current.get(target.id);
-					if (marker) {
-						marker.openPopup();
-					} else if (attempts < DEEPLINK_MAX_POLL_ATTEMPTS) {
-						window.setTimeout(tick, DEEPLINK_POLL_INTERVAL_MS);
-					}
-				};
-				tick();
+				// Let marker re-render finish after the zoom before polling.
+				requestAnimationFrame(() => {
+					requestAnimationFrame(() => {
+						let attempts = 0;
+						const tick = (): void => {
+							attempts += 1;
+							const marker = markerByIdRef.current.get(target.id);
+							if (marker) {
+								marker.openPopup();
+							} else if (attempts < DEEPLINK_MAX_POLL_ATTEMPTS) {
+								window.setTimeout(tick, DEEPLINK_POLL_INTERVAL_MS);
+							}
+						};
+						tick();
+					});
+				});
 			});
 		},
 		[map],
@@ -395,32 +416,31 @@ export function PoiMarkers(): null {
 		deepLinkAppliedRef.current = true;
 		const target = poiById.get(targetId);
 		if (target) {
-			const store = useMapStore.getState();
-			if (!store.poisLayerEnabled) {
-				store.setPoisLayerEnabled(true);
-			}
-			if (!store.enabledPoiTypes.has(target.type)) {
-				store.togglePoiType(target.type);
-			}
-			flyAndOpenPoi(target);
+			preparePoiDeepLink(target);
+			requestOpenPoi(targetId);
 		}
 		clearShareUrlParams();
 		router.replace(pathname);
-	}, [poisFile, poiById, flyAndOpenPoi, pathname, router]);
+	}, [poisFile, poiById, requestOpenPoi, pathname, router]);
 
 	// In-app requests (e.g. clicking a POI in the stage planner list or the
 	// up-next strip) set `pendingOpenPoiId` in the store; mirror the deep-link
 	// fly+open dance then clear the field so subsequent requests retrigger
-	// correctly. A miss keeps the request pending instead of clearing it: the
-	// up-next strip enables a disabled marker layer right before requesting,
-	// so the target only appears once the refetched poisFile lands here.
+	// correctly. Share deep links wait for GPX so TrailRoute fitBounds does
+	// not zoom back out over the whole trail after the POI fly.
 	useEffect(() => {
 		if (!pendingOpenPoiId || !poisFile) return;
 		const target = poiById.get(pendingOpenPoiId);
-		if (!target) return;
+		if (!target) {
+			clearPendingOpenPoi();
+			return;
+		}
+		const sharePoiId = getInitialShareUrlParams()?.poi;
+		if (sharePoiId === pendingOpenPoiId && !gpxLoaded) return;
+		if (!visiblePois.some((poi) => poi.id === pendingOpenPoiId)) return;
 		clearPendingOpenPoi();
 		flyAndOpenPoi(target);
-	}, [pendingOpenPoiId, poisFile, poiById, flyAndOpenPoi, clearPendingOpenPoi]);
+	}, [pendingOpenPoiId, poisFile, poiById, visiblePois, gpxLoaded, flyAndOpenPoi, clearPendingOpenPoi]);
 
 	return null;
 }
