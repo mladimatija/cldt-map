@@ -13,7 +13,12 @@ import { RulerRange } from '@/lib/distance-utils';
 import { PROVIDER_TO_KEY, KEY_TO_PROVIDER } from '@/components/map/base-map-options';
 import { BaseMapProvider } from '@/lib/services/map-service';
 import { siteMetadata } from '@/lib/metadata';
-import { SHARE_QUERY_PARAM_KEYS } from '@/lib/share-url-constants';
+import { SHARE_QUERY_PARAM_KEYS, SHARE_TRIP_PARAM_KEY } from '@/lib/share-url-constants';
+import {
+	appendShareTripStateToUrl,
+	parseShareTripStateParam,
+	type ShareTripStatePayload,
+} from '@/lib/share-trip-state';
 
 export type { UnitSystem };
 
@@ -360,6 +365,7 @@ export type ShareUrlParams = ShareMapStyleParams & {
 	dir?: TrailDirection;
 	progress?: number;
 	poi?: string;
+	tripState?: ShareTripStatePayload;
 };
 
 /** True when map/POI handlers still need to read positional or deep-link params from the URL. */
@@ -585,6 +591,7 @@ export function buildShareViewUrl(
 	url.searchParams.set('lng', params.lng.toFixed(5));
 	url.searchParams.set('zoom', String(params.zoom));
 	appendShareStyleParams(url, params);
+	appendShareTripStateToUrl(url);
 	return url.toString();
 }
 
@@ -607,6 +614,7 @@ export function buildShareProgressUrl(
 		url.searchParams.set('zoom', String(params.zoom));
 	}
 	appendShareStyleParams(url, { ...params, direction: params.direction });
+	appendShareTripStateToUrl(url);
 	return url.toString();
 }
 
@@ -649,6 +657,7 @@ export function parseShareUrlParams(): ShareUrlParams | null {
 	const dark = params.get('dark');
 	const ruler = params.get('ruler');
 	const poi = params.get('poi');
+	const tripState = parseShareTripStateParam(params.get(SHARE_TRIP_PARAM_KEY));
 
 	let rulerRange: RulerRange | undefined;
 	if (ruler) {
@@ -689,6 +698,7 @@ export function parseShareUrlParams(): ShareUrlParams | null {
 		}),
 		...(rulerRange && { rulerRange }),
 		...(poi && POI_ID_RE.test(poi) && { poi }),
+		...(tripState && { tripState }),
 	};
 }
 
@@ -703,6 +713,7 @@ export function buildPoiShareUrl(poiId: string): string {
 	// Recipients must see POI markers for the deep link to open the popup.
 	url.searchParams.set('pois', '1');
 	url.searchParams.set('poi', poiId);
+	appendShareTripStateToUrl(url);
 	return url.toString();
 }
 

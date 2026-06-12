@@ -7,11 +7,10 @@ import { getStore, type Store } from '@netlify/blobs';
 import type { NextRequest } from 'next/server';
 import { LOCALES } from '@/i18n/routing';
 import { siteMetadata } from '@/lib/metadata';
-import { SHARE_QUERY_PARAM_KEYS } from '@/lib/share-url-constants';
+import { SHARE_QUERY_PARAM_KEYS, SHARE_TARGET_MAX_LEN } from '@/lib/share-url-constants';
 
 export const SHARE_LINKS_BLOB_STORE = 'share-links';
 export const SHARE_LINK_TTL_MS = 90 * 86_400_000;
-export const SHARE_TARGET_MAX_LEN = 2048;
 export const SHARE_CODE_PATTERN = /^[A-Za-z0-9_-]{7}$/;
 /** Backoff after a Blobs write before treating a code as missing (eventual consistency). */
 export const SHARE_LINK_READ_RETRY_DELAYS_MS = [100, 200, 300, 500, 1000] as const;
