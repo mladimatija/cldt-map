@@ -40,6 +40,7 @@ import {
 } from '@/lib/water-intelligence';
 import { buildGpxXml, buildGpxWaypointXml, downloadGpxFile, type GpxWaypoint } from '@/lib/gpx-export';
 import { exportStripMapPdf, pointsToBounds } from '@/lib/export-utils';
+import { buildStagePlanIcs, downloadIcsFile, stageCalendarDate } from '@/lib/stage-ical-export';
 
 const MAX_STAGES = 200;
 
@@ -172,6 +173,38 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 			`CLDT Stage ${activeStageIndex + 1}`,
 		);
 		downloadGpxFile(gpx, `cldt-stage-${activeStageIndex + 1}.gpx`);
+	};
+
+	const handleIcalExport = (): void => {
+		if (!stagePlan?.startDate || stagePlan.stages.length === 0 || stageStats.length === 0) return;
+		const events = stagePlan.stages.map((stage, index) => {
+			const stats = stageStats[index];
+			const startDisplay = toDisplay(stage.startKm).toFixed(1);
+			const endDisplay = toDisplay(stage.endKm).toFixed(1);
+			const distDisplay = toDisplay(stats.distanceM / 1000).toFixed(1);
+			const gainM = isNobo ? stats.lossM : stats.gainM;
+			const lossM = isNobo ? stats.gainM : stats.lossM;
+			const date = stageCalendarDate(stagePlan.startDate!, index);
+			return {
+				date,
+				summary: t('icalEventSummary', {
+					index: index + 1,
+					start: startDisplay,
+					end: endDisplay,
+					unit: distanceUnitLabel,
+				}),
+				description: [
+					t('icalKmRange', { start: startDisplay, end: endDisplay, unit: distanceUnitLabel }),
+					t('icalDistance', { value: `${distDisplay} ${distanceUnitLabel}` }),
+					t('icalGain', { value: formatElevation(gainM, units) }),
+					t('icalLoss', { value: formatElevation(lossM, units) }),
+					t('icalEta', { value: formatEta(stats.etaSec) }),
+					t('icalDirection', { direction: direction === 'NOBO' ? 'NOBO' : 'SOBO' }),
+				].join('\n'),
+			};
+		});
+		const ics = buildStagePlanIcs(events, t('icalCalendarName'));
+		downloadIcsFile(ics, `cldt-stages-${stagePlan.startDate}.ics`);
 	};
 
 	const handleStripMapPdfExport = async (): Promise<void> => {
@@ -715,6 +748,14 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 								{t('stripMapPdf')}
 							</Button>
 						)}
+						<Button
+							disabled={!stagePlan.startDate}
+							title={stagePlan.startDate ? t('icalExportTooltip') : t('icalNeedsStartDate')}
+							variant="mapControlOutline"
+							onClick={handleIcalExport}
+						>
+							{t('icalExport')}
+						</Button>
 						<Button
 							disabled={!stagePlan || stagePlan.stages.length === 0}
 							title={t('tripBriefOpenTooltip')}
