@@ -41,7 +41,10 @@ import { cn } from '@/lib/utils';
 import { MAP_CONTROL_INPUT, MAP_CONTROL_POPOVER } from './map-controls-constants';
 import { MapControlsTileCachePanel } from './MapControlsTileCachePanel';
 import { MapControlsImportsPanel } from './MapControlsImportsPanel';
-import { SURFACE_BUCKETS } from '@/components/charts/ElevationChart';
+// From the shared constants module, NOT the chart component: importing the
+// component would statically pull recharts into the main bundle and defeat
+// the dynamic() split on ElevationChart.
+import { SURFACE_BUCKETS } from '@/components/charts/elevation-chart-shared';
 import { requestCompassPermission } from '@/hooks/useCompassHeading';
 import { Radio } from '@/components/ui/Radio';
 
