@@ -73,10 +73,7 @@ export function MapControlsColorAdjust({
 				<div
 					aria-label={t('colorMapAppearance')}
 					aria-modal="true"
-					className={cn(
-						'absolute top-1/2 right-[calc(100%+0.5rem)] flex w-48 -translate-y-1/2 flex-col gap-3',
-						MAP_CONTROL_POPOVER,
-					)}
+					className={cn('fixed top-2 right-16 flex w-48 flex-col gap-3', MAP_CONTROL_POPOVER)}
 					ref={popoverRef}
 					role="dialog"
 				>

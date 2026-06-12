@@ -68,7 +68,7 @@ export function MapControlsProgressPanel(): React.ReactElement {
 	const [attachRuler, setAttachRuler] = useState(false);
 	/** Distraction-free overlay editor for the journal entry draft. Shares
 	 *  the same draft state as the inline form, so expanding mid-sentence
-	 *  keeps the text and saving from either place is equivalent. */
+	 *  keeps the text, and saving from either place is equivalent. */
 	const [focusEditorOpen, setFocusEditorOpen] = useState(false);
 
 	const doneKm = useMemo(
@@ -137,8 +137,8 @@ export function MapControlsProgressPanel(): React.ReactElement {
 		return intervalsFromKms(trackOnTrailKms(track, enhancedTrailPoints, IMPORT_MAX_OFF_TRAIL_M));
 	};
 
-	/** Toggle: first click folds the track's on-trail stretch into progress,
-	 *  second click unmarks that same stretch. Unmarking removes shared km if
+	/** Toggle: the first click folds the track's on-trail stretch into progress,
+	 *   the second click unmarks that same stretch. Unmarking removes shared km if
 	 *  two tracks overlap - completion is a plain interval set, not refcounted. */
 	const handleToggleTrack = (trackId: string): void => {
 		const track = importedTracks.find((tr) => tr.id === trackId);
