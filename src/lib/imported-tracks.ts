@@ -220,31 +220,15 @@ function computeTrackStatsUncached(
 
 	if (enhancedPoints.length > 0 && trackPoints.length > 0) {
 		const grid = sharedGrid ?? buildSpatialGrid(enhancedPoints);
-		const SAMPLE_STEP_M = 50;
 		let samples = 0;
 		let onTrailSamples = 0;
-		const measure = (lat: number, lng: number): void => {
+		forEachResampledPoint(trackPoints, RESAMPLE_STEP_M, (lat, lng) => {
 			const hit = grid.nearest(lat, lng);
 			if (!hit) return;
 			samples++;
 			if (hit.distanceM > maxDeviationM) maxDeviationM = hit.distanceM;
 			if (hit.distanceM <= 25) onTrailSamples++;
-		};
-		measure(trackPoints[0].lat, trackPoints[0].lng);
-		let carryM = 0;
-		for (let i = 1; i < trackPoints.length; i++) {
-			const a = trackPoints[i - 1];
-			const b = trackPoints[i];
-			const segM = haversineM(a.lat, a.lng, b.lat, b.lng);
-			if (segM === 0) continue;
-			let along = SAMPLE_STEP_M - carryM;
-			while (along <= segM) {
-				const f = along / segM;
-				measure(a.lat + (b.lat - a.lat) * f, a.lng + (b.lng - a.lng) * f);
-				along += SAMPLE_STEP_M;
-			}
-			carryM = (carryM + segM) % SAMPLE_STEP_M;
-		}
+		});
 		if (samples > 0) coveragePercent = (onTrailSamples / samples) * 100;
 	}
 
@@ -256,4 +240,57 @@ function computeTrackStatsUncached(
 		maxDeviationM,
 		coveragePercent,
 	};
+}
+
+/** Step used whenever a metric walks the track geometry. Import-time
+ *  simplification keeps only shape vertices, so straight stretches carry
+ *  almost no points - every gate (coverage 25 m, completion 50 m) must
+ *  measure interpolated samples, never the sparse vertices. */
+const RESAMPLE_STEP_M = 50;
+
+/** Invokes cb for the first point and then every `stepM` meters along the
+ *  track, interpolating linearly inside segments. */
+export function forEachResampledPoint(
+	points: readonly { lat: number; lng: number }[],
+	stepM: number,
+	cb: (lat: number, lng: number) => void,
+): void {
+	if (points.length === 0) return;
+	cb(points[0].lat, points[0].lng);
+	let carryM = 0;
+	for (let i = 1; i < points.length; i++) {
+		const a = points[i - 1];
+		const b = points[i];
+		const segM = haversineM(a.lat, a.lng, b.lat, b.lng);
+		if (segM === 0) continue;
+		let along = stepM - carryM;
+		while (along <= segM) {
+			const f = along / segM;
+			cb(a.lat + (b.lat - a.lat) * f, a.lng + (b.lng - a.lng) * f);
+			along += stepM;
+		}
+		carryM = (carryM + segM) % stepM;
+	}
+}
+
+/** Trail km positions (SOBO) where the RESAMPLED track runs within
+ *  `maxOffTrailM` of the trail. Feed into intervalsFromKms for completion
+ *  import; resampling is what lets a simplified track with two vertices on
+ *  a 5 km on-trail straight still register the whole stretch. */
+export function trackOnTrailKms(
+	track: ImportedTrack,
+	enhancedPoints: readonly { lat: number; lng: number; distanceFromStart: number }[],
+	maxOffTrailM: number,
+	sharedGrid?: SpatialGrid,
+): number[] {
+	if (enhancedPoints.length === 0 || track.points.length === 0) return [];
+	const grid = sharedGrid ?? buildSpatialGrid(enhancedPoints);
+	const kms: number[] = [];
+	forEachResampledPoint(track.points, RESAMPLE_STEP_M, (lat, lng) => {
+		const hit = grid.nearest(lat, lng);
+		if (hit && hit.distanceM <= maxOffTrailM) {
+			kms.push(enhancedPoints[hit.index].distanceFromStart / 1000);
+		}
+	});
+	return kms;
 }

@@ -951,7 +951,7 @@
 		"focusEditor": "Im Fokusmodus schreiben",
 		"focusEditorClose": "Schließen",
 		"removeTrack": "Aus Fortschritt entfernen",
-		"trackNoCoverage": "Dieser Track liegt zu 0% auf dem Weg - es gibt nichts zum Fortschritt hinzuzufügen."
+		"trackNoCoverage": "Dieser Track kommt dem Weg nie näher als 50 m - es gibt nichts zum Fortschritt hinzuzufügen."
 	},
 	"help": {
 		"title": "Hilfe",

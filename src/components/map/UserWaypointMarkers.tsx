@@ -32,7 +32,7 @@ function buildWaypointIcon(): L.DivIcon {
 /**
  * Personal waypoint layer: long-press (mobile) or right-click (desktop) on
  * the map drops a waypoint and opens its popup for naming. Popups edit in
- * place - name input, note textarea, save and delete - built with DOM APIs
+ * place - name input, note textarea, save, and delete - built with DOM APIs
  * so user text can never be interpreted as markup. The progress panel's
  * waypoint list opens popups through `pendingOpenWaypointId`, mirroring the
  * POI deep-link mechanism.
@@ -114,6 +114,9 @@ export function UserWaypointMarkers(): null {
 		function buildWaypointPopup(wp: UserWaypoint): HTMLElement {
 			const root = document.createElement('div');
 			root.style.minWidth = '220px';
+			// Clear Leaflet's corner close button, which would otherwise sit
+			// on top of the full-width name input.
+			root.style.paddingTop = '14px';
 
 			const nameInput = document.createElement('input');
 			nameInput.type = 'text';

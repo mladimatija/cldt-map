@@ -8,7 +8,7 @@ import { buildGpxWaypointXml, downloadGpxFile, type GpxWaypoint } from '@/lib/gp
 import { downloadTextFile, journalToMarkdown, newId, todayIsoDate, type JournalEntry } from '@/lib/user-waypoints';
 import { TRAIL_SECTIONS } from '@/lib/trail-sections';
 import { buildSpatialGrid } from '@/lib/spatial-grid';
-import { computeTrackStats } from '@/lib/imported-tracks';
+import { computeTrackStats, trackOnTrailKms } from '@/lib/imported-tracks';
 import SmartTooltip from '@/components/ui/SmartTooltip';
 import { cn, formatDistance } from '@/lib/utils';
 import { IoExpandOutline } from 'react-icons/io5';
@@ -94,7 +94,7 @@ export function MapControlsProgressPanel(): React.ReactElement {
 	 *  hash, so this is a cache walk after the imports panel has run once.
 	 *  Used to disable "Add to progress" for tracks that never touch the
 	 *  trail (nothing to add). */
-	const [coverageById, setCoverageById] = useState<Record<string, number>>({});
+	const [addableById, setAddableById] = useState<Record<string, boolean>>({});
 	const coverageRunRef = useRef(0);
 	useEffect(() => {
 		const runId = ++coverageRunRef.current;
@@ -104,8 +104,13 @@ export function MapControlsProgressPanel(): React.ReactElement {
 		const tick = (): void => {
 			if (runId !== coverageRunRef.current || i >= importedTracks.length) return;
 			const track = importedTracks[i];
-			const pct = computeTrackStats(track, enhancedTrailPoints, grid).coveragePercent;
-			setCoverageById((prev) => (prev[track.id] === pct ? prev : { ...prev, [track.id]: pct }));
+			// Warm the shared stats cache and gate the button on the SAME
+			// computation the toggle performs - a track is addable iff its
+			// resampled on-trail kms form at least one interval.
+			computeTrackStats(track, enhancedTrailPoints, grid);
+			const addable =
+				intervalsFromKms(trackOnTrailKms(track, enhancedTrailPoints, IMPORT_MAX_OFF_TRAIL_M, grid)).length > 0;
+			setAddableById((prev) => (prev[track.id] === addable ? prev : { ...prev, [track.id]: addable }));
 			i++;
 			if (i < importedTracks.length) setTimeout(tick, 0);
 		};
@@ -118,15 +123,10 @@ export function MapControlsProgressPanel(): React.ReactElement {
 	 *  user action. */
 	const trackIntervals = (track: (typeof importedTracks)[number]): { startKm: number; endKm: number }[] => {
 		if (enhancedTrailPoints.length === 0) return [];
-		const grid = buildSpatialGrid(enhancedTrailPoints);
-		const kms: number[] = [];
-		for (const pt of track.points) {
-			const hit = grid.nearest(pt.lat, pt.lng);
-			if (hit && hit.distanceM <= IMPORT_MAX_OFF_TRAIL_M) {
-				kms.push(enhancedTrailPoints[hit.index].distanceFromStart / 1000);
-			}
-		}
-		return intervalsFromKms(kms);
+		// Resampled, not raw vertices: import simplification leaves straight
+		// on-trail stretches nearly vertex-free, which used to yield zero
+		// intervals for perfectly valid day hikes.
+		return intervalsFromKms(trackOnTrailKms(track, enhancedTrailPoints, IMPORT_MAX_OFF_TRAIL_M));
 	};
 
 	/** Toggle: first click folds the track's on-trail stretch into progress,
@@ -271,7 +271,7 @@ export function MapControlsProgressPanel(): React.ReactElement {
 							<div className="flex items-center gap-2 text-xs" key={track.id}>
 								<span aria-hidden className="h-2 w-2 shrink-0 rounded-full" style={{ background: track.color }} />
 								<span className="min-w-0 flex-1 truncate text-gray-600 dark:text-gray-300">{track.name}</span>
-								{coverageById[track.id] === 0 && !progressTrackIds.includes(track.id) ? (
+								{addableById[track.id] === false && !progressTrackIds.includes(track.id) ? (
 									<SmartTooltip content={t('trackNoCoverage')} position="top">
 										<span className="inline-flex">
 											<Button disabled size="sm" variant="base">

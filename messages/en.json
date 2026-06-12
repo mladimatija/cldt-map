@@ -951,7 +951,7 @@
 		"focusEditor": "Write in focus mode",
 		"focusEditorClose": "Close",
 		"removeTrack": "Remove from progress",
-		"trackNoCoverage": "This track is 0% on the trail - there is nothing to add to your progress."
+		"trackNoCoverage": "This track never comes within 50 m of the trail - there is nothing to add to your progress."
 	},
 	"help": {
 		"title": "Help",
