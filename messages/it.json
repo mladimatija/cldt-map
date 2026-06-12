@@ -1023,7 +1023,15 @@
 		"focusEditor": "Scrivi in modalità focus",
 		"focusEditorClose": "Chiudi",
 		"removeTrack": "Rimuovi dai progressi",
-		"trackNoCoverage": "Questa traccia non si avvicina mai a meno di 50 m dal sentiero - non c’è nulla da aggiungere ai progressi."
+		"trackNoCoverage": "Questa traccia non si avvicina mai a meno di 50 m dal sentiero - non c’è nulla da aggiungere ai progressi.",
+		"previewPrompt": "Segnare questi tratti come percorsi?",
+		"previewSummary": "{count, plural, =1 {# tratto} other {# tratti}}, {distance} sul sentiero",
+		"previewCoverage": "{percent}% sul sentiero",
+		"previewNewKm": "{distance} nuovi (il resto è già segnato)",
+		"previewRange": "{start} - {end}",
+		"previewConfirm": "Aggiungi ai progressi",
+		"previewCancel": "Annulla",
+		"previewShowOnMap": "Mostra sulla mappa"
 	},
 	"help": {
 		"title": "Aiuto",

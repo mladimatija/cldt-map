@@ -37,7 +37,7 @@ import { findNearestPointIndex, RulerRange } from '@/lib/distance-utils';
 import { loadImportedTracks, persistImportedTrackPatch, removeImportedTrack } from '../imported-tracks';
 import { loadPois } from '@/lib/pois';
 import { prefetchPoiAssets, prefetchPoisAlongSlice } from '@/lib/poi-prefetch';
-import { addInterval, removeInterval } from '../completion';
+import { addInterval, removeInterval, type CompletionInterval } from '../completion';
 import { DEFAULT_WATER_CONSUMPTION_LPH } from '../pack-weight';
 import {
 	filterActiveEntries,
@@ -735,6 +735,8 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 							// Prune the progress-toggle marker; the completed intervals
 							// themselves stay (deleting a file should not erase hiked km).
 							progressTrackIds: state.progressTrackIds.filter((tid) => tid !== id),
+							progressPreviewTrackId: state.progressPreviewTrackId === id ? null : state.progressPreviewTrackId,
+							progressPreviewIntervals: state.progressPreviewTrackId === id ? [] : state.progressPreviewIntervals,
 						}));
 					},
 
@@ -797,6 +799,11 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					showCompletionOverlay: true,
 					setShowCompletionOverlay: (show: boolean): void => {
 						set({ showCompletionOverlay: show });
+					},
+					progressPreviewTrackId: null,
+					progressPreviewIntervals: [],
+					setProgressPreview: (trackId: string | null, intervals: CompletionInterval[]): void => {
+						set({ progressPreviewTrackId: trackId, progressPreviewIntervals: intervals });
 					},
 
 					showUpNext: true,

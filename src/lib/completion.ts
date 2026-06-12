@@ -84,6 +84,20 @@ export function totalCompletedKm(intervals: CompletionInterval[]): number {
 	return intervals.reduce((sum, iv) => sum + (iv.endKm - iv.startKm), 0);
 }
 
+/** Total km covered by a set of intervals (alias for preview summaries). */
+export function totalIntervalKm(intervals: CompletionInterval[]): number {
+	return totalCompletedKm(intervals);
+}
+
+/** Km that would be newly completed after folding `toAdd` into `existing`. */
+export function additionalKmFromIntervals(existing: CompletionInterval[], toAdd: CompletionInterval[]): number {
+	let merged = existing;
+	for (const iv of toAdd) {
+		merged = addInterval(merged, iv.startKm, iv.endKm);
+	}
+	return totalCompletedKm(merged) - totalCompletedKm(existing);
+}
+
 /** Completed km that fall inside [startKm, endKm] - per-section stats. */
 export function completedKmInRange(intervals: CompletionInterval[], startKm: number, endKm: number): number {
 	const lo = Math.min(startKm, endKm);

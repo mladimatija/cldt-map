@@ -401,6 +401,10 @@ export interface MapStoreState {
 	/** Draw completed stretches as a green overlay on the trail; persisted. */
 	showCompletionOverlay: boolean;
 	setShowCompletionOverlay: (show: boolean) => void;
+	/** Ephemeral preview of km intervals before confirming a GPX add-to-progress. */
+	progressPreviewTrackId: string | null;
+	progressPreviewIntervals: CompletionInterval[];
+	setProgressPreview: (trackId: string | null, intervals: CompletionInterval[]) => void;
 
 	showUpNext: boolean;
 	setShowUpNext: (show: boolean) => void;

@@ -1023,7 +1023,15 @@
 		"focusEditor": "Im Fokusmodus schreiben",
 		"focusEditorClose": "Schließen",
 		"removeTrack": "Aus Fortschritt entfernen",
-		"trackNoCoverage": "Dieser Track kommt dem Weg nie näher als 50 m - es gibt nichts zum Fortschritt hinzuzufügen."
+		"trackNoCoverage": "Dieser Track kommt dem Weg nie näher als 50 m - es gibt nichts zum Fortschritt hinzuzufügen.",
+		"previewPrompt": "Diese Abschnitte als gewandert markieren?",
+		"previewSummary": "{count, plural, =1 {# Abschnitt} other {# Abschnitte}}, {distance} auf dem Weg",
+		"previewCoverage": "{percent}% auf dem Weg",
+		"previewNewKm": "{distance} neu (Rest bereits markiert)",
+		"previewRange": "{start} - {end}",
+		"previewConfirm": "Zum Fortschritt hinzufügen",
+		"previewCancel": "Abbrechen",
+		"previewShowOnMap": "Auf Karte anzeigen"
 	},
 	"help": {
 		"title": "Hilfe",

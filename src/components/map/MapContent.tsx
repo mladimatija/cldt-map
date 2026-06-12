@@ -89,6 +89,10 @@ const CompletionOverlay = dynamic(
 	() => import('@/components/map/CompletionOverlay').then((m) => ({ default: m.CompletionOverlay })),
 	{ ssr: false },
 );
+const ProgressPreviewOverlay = dynamic(
+	() => import('@/components/map/ProgressPreviewOverlay').then((m) => ({ default: m.ProgressPreviewOverlay })),
+	{ ssr: false },
+);
 const MineAreaLayer = dynamic(
 	() => import('@/components/map/MineAreaLayer').then((m) => ({ default: m.MineAreaLayer })),
 	{ ssr: false },
@@ -205,6 +209,7 @@ export default function MapContent(): React.ReactElement {
 			<SevereWeatherLayer />
 			<MineAreaLayer />
 			<CompletionOverlay />
+			<ProgressPreviewOverlay />
 			<MapControls />
 			<RulerHint />
 			<ZoomControls />
