@@ -581,7 +581,8 @@
 		"upNext": "Slijedi",
 		"upNextWater": "Sljedeći izvor vode",
 		"upNextShelter": "Sljedeće sklonište ili dom",
-		"upNextTown": "Sljedeći grad ili naselje"
+		"upNextTown": "Sljedeći grad ili naselje",
+		"upNextSeeAll": "Prikaži svih {count} mjesta ispred"
 	},
 	"imports": {
 		"title": "Uvezene rute",
@@ -621,6 +622,8 @@
 		"maxHoursPerDay": "Maks. sati/dan",
 		"autoBumpNotice": "Prilagođeno na {actual} etapa (tražili ste {requested}) kako bi svaki dan ostao ispod ~{hours}h pri {pace} km/h.",
 		"generatePlan": "Generiraj plan",
+		"previewAhead": "Pregled sljedećih {distance}",
+		"previewAheadTooltip": "Otvori popis mjesta filtriranih na POI-je duž sljedećih {distance} od vaše pozicije.",
 		"noStages": "Nema plana. Unesite raspon i generirajte.",
 		"gpxExport": "GPX (aktivna etapa)",
 		"gpxExportTooltip": "Preuzmi trenutnu aktivnu etapu kao GPX trag za GPS uređaje.",
@@ -800,6 +803,11 @@
 		"sortByName": "Po imenu",
 		"sortByOffTrail": "Po udaljenosti",
 		"sortByGps": "Blizu mene",
+		"sortByAhead": "Sljedećih {distance}",
+		"aheadHorizonLabel": "Udaljenost ispred",
+		"aheadSummary": "{count, plural, =0 {Nema mjesta ispred} one {# mjesto ispred} few {# mjesta ispred} other {# mjesta ispred}} · {unit} {from} do {to}",
+		"aheadOfYou": "{distance} ispred",
+		"aheadNeedsAnchor": "Uključite GPS na stazi ili postavite raspon ravnala za pregled mjesta ispred.",
 		"fromYou": "{distance} od tebe",
 		"tagFilterHeading": "Filtriraj po oznakama",
 		"tagFilterClear": "Očisti",

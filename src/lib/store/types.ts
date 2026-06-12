@@ -405,6 +405,15 @@ export interface MapStoreState {
 	showUpNext: boolean;
 	setShowUpNext: (show: boolean) => void;
 
+	/** Forward corridor length (km) for "along next N km" POI browsing; persisted. */
+	aheadHorizonKm: number;
+	setAheadHorizonKm: (km: number) => void;
+	/** One-shot sort request consumed when the POI list panel opens. */
+	pendingPoiListSort: 'ahead' | null;
+	/** Open the POI list in "along next N km" sort mode. */
+	requestPoiListAhead: () => void;
+	clearPendingPoiListSort: () => void;
+
 	// ── Dev walk simulator (test page; session-only, never persisted) ───
 	/** Mirrored UI state of the dev walk simulator; null when not active. */
 	walkSim: {

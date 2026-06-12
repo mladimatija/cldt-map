@@ -2,6 +2,7 @@ import type * as GeoJSON from 'geojson';
 import type { LatLng } from 'leaflet';
 import { create, type StoreApi, type UseBoundStore } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
+import { isAheadHorizonKm } from '../poi-ahead-corridor';
 import {
 	config,
 	defaultEnabledPoiTypes,
@@ -803,6 +804,19 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 						set({ showUpNext: show });
 					},
 
+					aheadHorizonKm: 50,
+					setAheadHorizonKm: (km: number): void => {
+						if (!isAheadHorizonKm(km)) return;
+						set({ aheadHorizonKm: km });
+					},
+					pendingPoiListSort: null,
+					requestPoiListAhead: (): void => {
+						set({ pendingPoiListSort: 'ahead', openPanel: 'poiList' });
+					},
+					clearPendingPoiListSort: (): void => {
+						set({ pendingPoiListSort: null });
+					},
+
 					walkSim: null,
 					setWalkSim: (state): void => {
 						set({ walkSim: state });
@@ -978,6 +992,7 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					severeWeatherLayer: state.severeWeatherLayer,
 					mineAreasEnabled: state.mineAreasEnabled,
 					showUpNext: state.showUpNext,
+					aheadHorizonKm: state.aheadHorizonKm,
 					completedIntervals: state.completedIntervals,
 					progressTrackIds: state.progressTrackIds,
 					completionAutoTrack: state.completionAutoTrack,
@@ -1010,6 +1025,7 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					if (rehydratedTags) merged.enabledPoiTags = rehydratedTags;
 					const rehydratedStarred = rehydrateSet((persistedState as { starredPoiIds?: unknown })?.starredPoiIds);
 					if (rehydratedStarred) merged.starredPoiIds = rehydratedStarred;
+					if (!isAheadHorizonKm(merged.aheadHorizonKm)) merged.aheadHorizonKm = 50;
 					return merged;
 				},
 			},

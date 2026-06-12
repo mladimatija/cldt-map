@@ -581,7 +581,8 @@
 		"upNext": "A seguire",
 		"upNextWater": "Prossima fonte d’acqua",
 		"upNextShelter": "Prossimo rifugio o bivacco",
-		"upNextTown": "Prossima città o paese"
+		"upNextTown": "Prossima città o paese",
+		"upNextSeeAll": "Vedi tutti i {count} luoghi avanti"
 	},
 	"imports": {
 		"title": "Tracce importate",
@@ -621,6 +622,8 @@
 		"maxHoursPerDay": "Ore max/giorno",
 		"autoBumpNotice": "Regolato a {actual} tappe (richieste: {requested}) per mantenere ogni giornata sotto ~{hours}h a {pace} km/h.",
 		"generatePlan": "Genera piano",
+		"previewAhead": "Anteprima prossimi {distance}",
+		"previewAheadTooltip": "Apre l'elenco luoghi filtrato sui POI lungo i prossimi {distance} dalla tua posizione.",
 		"noStages": "Nessun piano generato. Inserisci un intervallo e genera.",
 		"gpxExport": "GPX (tappa attiva)",
 		"gpxExportTooltip": "Scarica la tappa attiva come traccia GPX per dispositivi GPS.",
@@ -800,6 +803,11 @@
 		"sortByName": "Nome",
 		"sortByOffTrail": "Distanza",
 		"sortByGps": "Vicino a me",
+		"sortByAhead": "Prossimi {distance}",
+		"aheadHorizonLabel": "Distanza avanti",
+		"aheadSummary": "{count, plural, =0 {Nessun luogo avanti} one {# luogo avanti} other {# luoghi avanti}} · {unit} {from} a {to}",
+		"aheadOfYou": "{distance} avanti",
+		"aheadNeedsAnchor": "Attiva il GPS sul sentiero o imposta un righello per vedere i luoghi avanti.",
 		"fromYou": "{distance} da te",
 		"tagFilterHeading": "Filtra per tag",
 		"tagFilterClear": "Cancella",
