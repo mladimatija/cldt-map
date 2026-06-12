@@ -41,6 +41,8 @@ import {
 import { buildGpxXml, buildGpxWaypointXml, downloadGpxFile, type GpxWaypoint } from '@/lib/gpx-export';
 import { exportStripMapPdf, pointsToBounds } from '@/lib/export-utils';
 import { buildStagePlanIcs, downloadIcsFile, stageCalendarDate } from '@/lib/stage-ical-export';
+import { TRAIL_OFF_TRAIL_THRESHOLD_M } from '@/lib/config';
+import { resolveTrailAnchor, formatAheadHorizon } from '@/lib/poi-ahead-corridor';
 
 const MAX_STAGES = 200;
 
@@ -64,9 +66,14 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 	const enabledPoiTags = useMapStore((s: MapStoreState) => s.enabledPoiTags);
 	const includeRemotePois = useMapStore((s: MapStoreState) => s.includeRemotePois);
 	const requestOpenPoi = useMapStore((s: MapStoreState) => s.requestOpenPoi);
+	const rulerRange = useMapStore((s: MapStoreState) => s.rulerRange);
+	const aheadHorizonKm = useMapStore((s: MapStoreState) => s.aheadHorizonKm);
+	const distancePrecision = useMapStore((s: MapStoreState) => s.distancePrecision);
+	const requestPoiListAhead = useMapStore((s: MapStoreState) => s.requestPoiListAhead);
 
 	const enhancedTrailPoints = useStore((s: StoreState) => s.enhancedTrailPoints);
 	const trailMetadata = useStore((s: StoreState) => s.trailMetadata);
+	const closestPoint = useStore((s: StoreState) => s.closestPoint);
 	const direction = useStore((s: StoreState) => s.direction);
 	const isNobo = direction === 'NOBO';
 
@@ -74,6 +81,16 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 	const popoverRef = usePopoverFocusTrap(true);
 
 	const isImperial = units === 'imperial';
+
+	const trailAnchor = useMemo(
+		() => resolveTrailAnchor(closestPoint, rulerRange, TRAIL_OFF_TRAIL_THRESHOLD_M),
+		[closestPoint, rulerRange],
+	);
+
+	const aheadHorizonLabel = useMemo(
+		() => formatAheadHorizon(aheadHorizonKm, units, distancePrecision),
+		[aheadHorizonKm, units, distancePrecision],
+	);
 
 	const [startKm, setStartKm] = useState(0);
 	const [endKm, setEndKm] = useState(() =>
@@ -506,6 +523,16 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 					<Button variant="mapControlOutline" onClick={handleGenerate}>
 						{t('generatePlan')}
 					</Button>
+
+					{trailAnchor && (
+						<Button
+							title={t('previewAheadTooltip', { distance: aheadHorizonLabel })}
+							variant="mapControlOutline"
+							onClick={() => requestPoiListAhead()}
+						>
+							{t('previewAhead', { distance: aheadHorizonLabel })}
+						</Button>
+					)}
 
 					{autoBumpNotice && (
 						<p className="text-cldt-blue dark:text-cldt-blue m-0 text-[11px]">

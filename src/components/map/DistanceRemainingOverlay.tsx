@@ -15,6 +15,7 @@ import {
 } from '@/lib/distance-utils';
 import { totalCompletedKm } from '@/lib/completion';
 import { loadPois, poiDisplayName, poiPassesReachabilityFilter, type Poi } from '@/lib/pois';
+import { poisInAheadCorridor, resolveTrailAnchor } from '@/lib/poi-ahead-corridor';
 import { isUsableWaterSource, WATER_COLOR } from '@/lib/water-intelligence';
 import { formatVolume, waterCarryLiters } from '@/lib/pack-weight';
 import { formatDistance, formatElevation } from '@/lib/utils';
@@ -59,7 +60,11 @@ export function DistanceRemainingOverlay(): React.ReactElement | null {
 	const packBaseWeightKg = useMapStore((state: MapStoreState) => state.packBaseWeightKg);
 	const waterConsumptionLph = useMapStore((state: MapStoreState) => state.waterConsumptionLph);
 	const enabledPoiTypes = useMapStore((state: MapStoreState) => state.enabledPoiTypes);
+	const enabledPoiTags = useMapStore((state: MapStoreState) => state.enabledPoiTags);
 	const includeRemotePois = useMapStore((state: MapStoreState) => state.includeRemotePois);
+	const poisFile = useMapStore((state: MapStoreState) => state.poisFile);
+	const aheadHorizonKm = useMapStore((state: MapStoreState) => state.aheadHorizonKm);
+	const requestPoiListAhead = useMapStore((state: MapStoreState) => state.requestPoiListAhead);
 	const togglePoiType = useMapStore((state: MapStoreState) => state.togglePoiType);
 	const requestOpenPoi = useMapStore((state: MapStoreState) => state.requestOpenPoi);
 	const locale = useLocale();
@@ -110,6 +115,24 @@ export function DistanceRemainingOverlay(): React.ReactElement | null {
 		}
 		return rows;
 	}, [showUpNext, closestPoint, direction, upNextIndex]);
+
+	const trailAnchor = useMemo(
+		() => resolveTrailAnchor(closestPoint, rulerRange, TRAIL_OFF_TRAIL_THRESHOLD_M),
+		[closestPoint, rulerRange],
+	);
+
+	const aheadCorridorCount = useMemo((): number => {
+		if (!trailAnchor || !poisFile?.pois?.length) return 0;
+		return poisInAheadCorridor({
+			pois: poisFile.pois,
+			anchorSoboKm: trailAnchor.soboKm,
+			horizonKm: aheadHorizonKm,
+			direction,
+			enabledPoiTypes,
+			enabledPoiTags,
+			includeRemotePois,
+		}).length;
+	}, [trailAnchor, poisFile, aheadHorizonKm, direction, enabledPoiTypes, enabledPoiTags, includeRemotePois]);
 
 	/** Open the POI popup; if its marker layer is toggled off, enable the
 	 *  layer first so the pending-open request has a marker to land on. */
@@ -275,6 +298,15 @@ export function DistanceRemainingOverlay(): React.ReactElement | null {
 							</button>
 						);
 					})}
+					{aheadCorridorCount > 0 && (
+						<button
+							className="text-cldt-blue mt-1 w-full cursor-pointer rounded text-left text-[10px] hover:underline focus-visible:underline focus-visible:outline-none dark:text-[var(--text-primary)]"
+							type="button"
+							onClick={() => requestPoiListAhead()}
+						>
+							{t('upNextSeeAll', { count: aheadCorridorCount })}
+						</button>
+					)}
 				</div>
 			)}
 		</div>

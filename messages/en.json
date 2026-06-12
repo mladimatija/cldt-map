@@ -581,7 +581,8 @@
 		"upNext": "Up next",
 		"upNextWater": "Next water source",
 		"upNextShelter": "Next shelter or hut",
-		"upNextTown": "Next town or settlement"
+		"upNextTown": "Next town or settlement",
+		"upNextSeeAll": "See all {count} places ahead"
 	},
 	"imports": {
 		"title": "Imported tracks",
@@ -621,6 +622,8 @@
 		"maxHoursPerDay": "Max hours/day",
 		"autoBumpNotice": "Adjusted to {actual} stages (you asked for {requested}) so each day stays under ~{hours}h at {pace} km/h.",
 		"generatePlan": "Generate plan",
+		"previewAhead": "Preview next {distance}",
+		"previewAheadTooltip": "Open the places list filtered to POIs along the next {distance} from your position.",
 		"noStages": "No plan generated. Enter a range and generate.",
 		"gpxExport": "GPX (active stage)",
 		"gpxExportTooltip": "Download the currently active stage as a GPX track for GPS devices.",
@@ -800,6 +803,11 @@
 		"sortByName": "Name",
 		"sortByOffTrail": "Off trail",
 		"sortByGps": "Near me",
+		"sortByAhead": "Along next {distance}",
+		"aheadHorizonLabel": "Distance ahead",
+		"aheadSummary": "{count, plural, =0 {No places ahead} =1 {# place ahead} other {# places ahead}} · {unit} {from} to {to}",
+		"aheadOfYou": "{distance} ahead",
+		"aheadNeedsAnchor": "Enable GPS on the trail or set a ruler range to browse places ahead.",
 		"fromYou": "{distance} from you",
 		"tagFilterHeading": "Filter by tag",
 		"tagFilterClear": "Clear",

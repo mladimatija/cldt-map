@@ -581,7 +581,8 @@
 		"upNext": "Als Nächstes",
 		"upNextWater": "Nächste Wasserstelle",
 		"upNextShelter": "Nächste Schutzhütte",
-		"upNextTown": "Nächster Ort"
+		"upNextTown": "Nächster Ort",
+		"upNextSeeAll": "Alle {count} Orte voraus anzeigen"
 	},
 	"imports": {
 		"title": "Importierte Tracks",
@@ -621,6 +622,8 @@
 		"maxHoursPerDay": "Max. Stunden/Tag",
 		"autoBumpNotice": "Auf {actual} Etappen angepasst (angefordert: {requested}), damit jeder Tag unter ca. {hours}h bei {pace} km/h bleibt.",
 		"generatePlan": "Plan erstellen",
+		"previewAhead": "Nächste {distance} anzeigen",
+		"previewAheadTooltip": "Öffnet die Ortsliste mit POIs entlang der nächsten {distance} ab Ihrer Position.",
 		"noStages": "Kein Plan erstellt. Bereich eingeben und generieren.",
 		"gpxExport": "GPX (aktive Etappe)",
 		"gpxExportTooltip": "Lade die aktuell aktive Etappe als GPX-Track für GPS-Geräte herunter.",
@@ -800,6 +803,11 @@
 		"sortByName": "Name",
 		"sortByOffTrail": "Abstand",
 		"sortByGps": "In der Nähe",
+		"sortByAhead": "Nächste {distance}",
+		"aheadHorizonLabel": "Strecke voraus",
+		"aheadSummary": "{count, plural, =0 {Keine Orte voraus} one {# Ort voraus} other {# Orte voraus}} · {unit} {from} bis {to}",
+		"aheadOfYou": "{distance} voraus",
+		"aheadNeedsAnchor": "GPS auf dem Weg aktivieren oder ein Lineal setzen, um Orte voraus anzuzeigen.",
 		"fromYou": "{distance} von dir",
 		"tagFilterHeading": "Nach Tag filtern",
 		"tagFilterClear": "Zurücksetzen",

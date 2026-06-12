@@ -16,8 +16,15 @@ import {
 	poiPassesReachabilityFilter,
 	type Poi,
 } from '@/lib/pois';
-import { defaultEnabledPoiTypes } from '@/lib/config';
+import { defaultEnabledPoiTypes, TRAIL_OFF_TRAIL_THRESHOLD_M } from '@/lib/config';
 import { WATER_COLOR } from '@/lib/water-intelligence';
+import {
+	AHEAD_HORIZON_OPTIONS,
+	aheadCorridorSoboRange,
+	formatAheadHorizon,
+	poiAheadKm,
+	resolveTrailAnchor,
+} from '@/lib/poi-ahead-corridor';
 import { usePoiListRows, usePopoverFocusTrap, type ParsedDistance, type SortMode } from '@/hooks';
 import { cn, formatDistance, formatOffTrail } from '@/lib/utils';
 import { findNearestPointIndex } from '@/lib/distance-utils';
@@ -101,6 +108,7 @@ interface PoiListRowProps {
 	distancePrecision: number;
 	hasGps: boolean;
 	gpsDistanceM: number | undefined;
+	aheadKm: number | undefined;
 	rowRefsRef: MutableRefObject<(HTMLDivElement | null)[]>;
 	tStarAdd: string;
 	tStarRemove: string;
@@ -111,6 +119,7 @@ interface PoiListRowProps {
 	tWater: string;
 	tOffTrailShort: (distance: string) => string;
 	tFromYou: (distance: string) => string;
+	tAheadOfYou: (distance: string) => string;
 	onPick: () => void;
 	onToggleStar: () => void;
 	onToggleSelected: () => void;
@@ -133,6 +142,7 @@ const PoiListRow = React.memo(function PoiListRow({
 	distancePrecision,
 	hasGps,
 	gpsDistanceM,
+	aheadKm,
 	rowRefsRef,
 	tStarAdd,
 	tStarRemove,
@@ -142,6 +152,7 @@ const PoiListRow = React.memo(function PoiListRow({
 	tWater,
 	tOffTrailShort,
 	tFromYou,
+	tAheadOfYou,
 	onPick,
 	onToggleStar,
 	onToggleSelected,
@@ -161,6 +172,10 @@ const PoiListRow = React.memo(function PoiListRow({
 	const offTrailLabel = poi.distanceFromTrailKm >= 0.5 ? formatOffTrail(poi.distanceFromTrailKm, units) : '';
 	const gpsLabel =
 		hasGps && typeof gpsDistanceM === 'number' ? formatDistance(gpsDistanceM, units, distancePrecision, true) : '';
+	const aheadLabel =
+		sort === 'ahead' && typeof aheadKm === 'number'
+			? tAheadOfYou(formatDistance(aheadKm, units, distancePrecision))
+			: '';
 	return (
 		<div
 			className={cn(
@@ -207,6 +222,7 @@ const PoiListRow = React.memo(function PoiListRow({
 					{tType} · {distLabel}
 					{offTrailLabel && <> · {tOffTrailShort(offTrailLabel)}</>}
 					{sort === 'gps' && gpsLabel && <> · {tFromYou(gpsLabel)}</>}
+					{sort === 'ahead' && aheadLabel && <> · {aheadLabel}</>}
 					{poi.water && tWater && (
 						<>
 							{' · '}
@@ -303,6 +319,12 @@ export function MapControlsPoiList({
 	const toggleStarredPoi = useMapStore((s: MapStoreState) => s.toggleStarredPoi);
 	const clearStarredPois = useMapStore((s: MapStoreState) => s.clearStarredPois);
 	const requestOpenPoi = useMapStore((s: MapStoreState) => s.requestOpenPoi);
+	const aheadHorizonKm = useMapStore((s: MapStoreState) => s.aheadHorizonKm);
+	const setAheadHorizonKm = useMapStore((s: MapStoreState) => s.setAheadHorizonKm);
+	const pendingPoiListSort = useMapStore((s: MapStoreState) => s.pendingPoiListSort);
+	const clearPendingPoiListSort = useMapStore((s: MapStoreState) => s.clearPendingPoiListSort);
+	const rulerRange = useMapStore((s: MapStoreState) => s.rulerRange);
+	const closestPoint = useStore((s: StoreState) => s.closestPoint);
 	const trailMetadata = useStore((s: StoreState) => s.trailMetadata);
 	const enhancedTrailPoints = useStore((s: StoreState) => s.enhancedTrailPoints);
 	const highlightTrailPosition = useStore((s: StoreState) => s.highlightTrailPosition);
@@ -334,9 +356,16 @@ export function MapControlsPoiList({
 	const rowRefs = useRef<(HTMLDivElement | null)[]>([]);
 
 	const totalKm = useMemo((): number => {
+		if (trailMetadata?.totalDistance) return trailMetadata.totalDistance;
 		if (!poisFile?.pois?.length) return 0;
 		return poisFile.pois.reduce((m, p) => (p.trailKm > m ? p.trailKm : m), 0);
-	}, [poisFile]);
+	}, [poisFile, trailMetadata]);
+
+	const trailAnchor = useMemo(
+		() => resolveTrailAnchor(closestPoint, rulerRange, TRAIL_OFF_TRAIL_THRESHOLD_M),
+		[closestPoint, rulerRange],
+	);
+	const anchorSoboKm = trailAnchor?.soboKm ?? null;
 
 	/** Snapped GPS coordinates: rounded to ~0.001 deg (~100 m), so the
 	 *  O(N) haversine loop below only re-runs when the user has moved
@@ -404,9 +433,17 @@ export function MapControlsPoiList({
 			{ value: 'name', label: t('sortByName') },
 			{ value: 'offTrail', label: t('sortByOffTrail') },
 		];
+		if (trailAnchor) {
+			base.push({
+				value: 'ahead',
+				label: t('sortByAhead', {
+					distance: formatAheadHorizon(aheadHorizonKm, units, distancePrecision),
+				}),
+			});
+		}
 		if (hasGps) base.push({ value: 'gps', label: t('sortByGps') });
 		return base;
-	}, [t, hasGps]);
+	}, [t, hasGps, trailAnchor, aheadHorizonKm, units, distancePrecision]);
 	const selectedSortOption = useMemo(
 		() => sortOptions.find((o) => o.value === sort) ?? sortOptions[0],
 		[sortOptions, sort],
@@ -438,9 +475,50 @@ export function MapControlsPoiList({
 		locale,
 		hasGps,
 		gpsDistanceById,
+		anchorSoboKm,
+		aheadHorizonKm,
 		displayNameById,
 		groupByDecade,
 	});
+
+	const aheadKmById = useMemo((): Map<string, number> => {
+		const out = new Map<string, number>();
+		if (sort !== 'ahead' || anchorSoboKm === null) return out;
+		for (const p of rows) {
+			const km = poiAheadKm(p.trailKm, anchorSoboKm, direction);
+			if (km !== null) out.set(p.id, km);
+		}
+		return out;
+	}, [sort, anchorSoboKm, direction, rows]);
+
+	const aheadSummary = useMemo((): string | null => {
+		if (sort !== 'ahead' || anchorSoboKm === null) return null;
+		const range = aheadCorridorSoboRange(anchorSoboKm, aheadHorizonKm, direction, totalKm);
+		const fromTrailKm = direction === 'SOBO' ? range.from : totalKm - range.to;
+		const toTrailKm = direction === 'SOBO' ? range.to : totalKm - range.from;
+		const scale = units === 'imperial' ? 0.621371 : 1;
+		return t('aheadSummary', {
+			count: rows.length,
+			from: (fromTrailKm * scale).toFixed(0),
+			to: (toTrailKm * scale).toFixed(0),
+			unit: units === 'imperial' ? 'mi' : 'km',
+		});
+	}, [sort, anchorSoboKm, aheadHorizonKm, direction, totalKm, rows.length, units, t]);
+
+	// Deep-link from Up next chip or stage planner preview.
+	useEffect(() => {
+		if (!isExpanded || pendingPoiListSort !== 'ahead') return;
+		queueMicrotask(() => {
+			setSort('ahead');
+			clearPendingPoiListSort();
+		});
+	}, [isExpanded, pendingPoiListSort, clearPendingPoiListSort]);
+
+	// If ahead sort is active but the anchor disappears, fall back to trail order.
+	useEffect(() => {
+		if (sort !== 'ahead' || trailAnchor) return;
+		queueMicrotask(() => setSort('trail'));
+	}, [sort, trailAnchor]);
 
 	// Auto-promote to "Near me" the first time GPS becomes available and the
 	// user hasn't already manually picked a different sort. Manual picks are
@@ -486,6 +564,7 @@ export function MapControlsPoiList({
 	// Stable translation helpers - only re-created when `t` changes (i.e. locale change).
 	const tOffTrailShort = useCallback((distance: string) => t('offTrailShort', { distance }), [t]);
 	const tFromYou = useCallback((distance: string) => t('fromYou', { distance }), [t]);
+	const tAheadOfYou = useCallback((distance: string) => t('aheadOfYou', { distance }), [t]);
 
 	const handleExportSelection = (): void => {
 		if (selected.size === 0) return;
@@ -639,6 +718,7 @@ export function MapControlsPoiList({
 			const name = displayNameById.get(poi.id) ?? poiDisplayName(poi, locale);
 			return (
 				<PoiListRow
+					aheadKm={aheadKmById.get(poi.id)}
 					direction={direction}
 					displayName={name}
 					distancePrecision={distancePrecision}
@@ -652,6 +732,7 @@ export function MapControlsPoiList({
 					poi={poi}
 					rowRefsRef={rowRefs}
 					sort={sort}
+					tAheadOfYou={tAheadOfYou}
 					tExportDeselect={rowLabels.exportDeselect[i]}
 					tExportSelect={rowLabels.exportSelect[i]}
 					tFromYou={tFromYou}
@@ -670,6 +751,7 @@ export function MapControlsPoiList({
 		},
 		[
 			activeIndex,
+			aheadKmById,
 			direction,
 			displayNameById,
 			distancePrecision,
@@ -684,6 +766,7 @@ export function MapControlsPoiList({
 			sort,
 			starHandlers,
 			starredPoiIds,
+			tAheadOfYou,
 			tFromYou,
 			tOffTrailShort,
 			totalKm,
@@ -791,9 +874,38 @@ export function MapControlsPoiList({
 				</div>
 			</div>
 
-			<p className="text-xs text-gray-500 italic dark:text-[var(--text-secondary)]">
-				{t('listCount', { count: rows.length })}
-			</p>
+			{sort === 'ahead' && (
+				<div className="flex flex-wrap items-center gap-1">
+					<span className="text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400">
+						{t('aheadHorizonLabel')}
+					</span>
+					{AHEAD_HORIZON_OPTIONS.map((km) => (
+						<button
+							className={cn(
+								'focus-visible:ring-cldt-green min-h-[28px] rounded-full border px-2 py-0.5 text-[10px] font-medium tabular-nums focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:outline-none',
+								aheadHorizonKm === km
+									? 'border-cldt-blue bg-cldt-blue text-[var(--marker-on-color)]'
+									: 'hover:border-cldt-blue border-gray-300 text-gray-600 dark:border-[var(--border-color)] dark:text-[var(--text-secondary)]',
+							)}
+							key={km}
+							type="button"
+							onClick={() => setAheadHorizonKm(km)}
+						>
+							{formatAheadHorizon(km, units, distancePrecision)}
+						</button>
+					))}
+				</div>
+			)}
+
+			{sort === 'ahead' && !trailAnchor ? (
+				<p className="text-xs text-amber-700 italic dark:text-amber-300">{t('aheadNeedsAnchor')}</p>
+			) : aheadSummary ? (
+				<p className="text-xs text-gray-500 italic dark:text-[var(--text-secondary)]">{aheadSummary}</p>
+			) : (
+				<p className="text-xs text-gray-500 italic dark:text-[var(--text-secondary)]">
+					{t('listCount', { count: rows.length })}
+				</p>
+			)}
 
 			{/* Decade grouping: only meaningful when sorted by trail km.
 					    The checkbox is disabled (and read-only-visual) otherwise,

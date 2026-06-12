@@ -2,6 +2,7 @@
 
 import { useMemo } from 'react';
 import { isKnownType, poiMatchesTagFilter, poiPassesReachabilityFilter, searchPoisByName, type Poi } from '@/lib/pois';
+import { isPoiInAheadCorridor, poiAheadKm } from '@/lib/poi-ahead-corridor';
 import { milesToKm, UnitSystem } from '@/lib/utils';
 import { DistanceUnit, TrailDirection } from '@/lib/types';
 
@@ -9,7 +10,7 @@ import { DistanceUnit, TrailDirection } from '@/lib/types';
  *  nearby POIs in the list. */
 const NEARBY_KM = 5;
 
-export type SortMode = 'trail' | 'name' | 'offTrail' | 'gps';
+export type SortMode = 'trail' | 'name' | 'offTrail' | 'gps' | 'ahead';
 
 export interface ParsedDistance {
 	value: number;
@@ -63,6 +64,9 @@ export interface UsePoiListRowsArgs {
 	locale: string;
 	hasGps: boolean;
 	gpsDistanceById: Map<string, number>;
+	/** SOBO km anchor for ahead sort; null disables the corridor filter. */
+	anchorSoboKm: number | null;
+	aheadHorizonKm: number;
 	displayNameById: Map<string, string>;
 	groupByDecade: boolean;
 }
@@ -93,6 +97,8 @@ export function usePoiListRows(args: UsePoiListRowsArgs): UsePoiListRowsResult {
 		locale,
 		hasGps,
 		gpsDistanceById,
+		anchorSoboKm,
+		aheadHorizonKm,
 		displayNameById,
 		groupByDecade,
 	} = args;
@@ -121,7 +127,18 @@ export function usePoiListRows(args: UsePoiListRowsArgs): UsePoiListRowsResult {
 		}
 		// Text query: name-search the type/tag-filtered pool. Falls back to the
 		// full pool below if the query is empty.
-		const pool = q.length > 0 ? searchPoisByName(visible, q, 200) : visible;
+		let pool = q.length > 0 ? searchPoisByName(visible, q, 200) : visible;
+
+		if (sort === 'ahead') {
+			if (anchorSoboKm === null) return [];
+			pool = pool.filter((p) => isPoiInAheadCorridor(p.trailKm, anchorSoboKm, aheadHorizonKm, direction));
+			return [...pool].sort((a, b) => {
+				const da = poiAheadKm(a.trailKm, anchorSoboKm, direction) ?? Number.POSITIVE_INFINITY;
+				const db = poiAheadKm(b.trailKm, anchorSoboKm, direction) ?? Number.POSITIVE_INFINITY;
+				return da - db;
+			});
+		}
+
 		// displayNameById is pre-computed by the caller; the comparator reads
 		// from it to avoid O(N) poiDisplayName calls inside the sort.
 		const cmp = (a: Poi, b: Poi): number => {
@@ -159,6 +176,8 @@ export function usePoiListRows(args: UsePoiListRowsArgs): UsePoiListRowsResult {
 		totalKm,
 		hasGps,
 		gpsDistanceById,
+		anchorSoboKm,
+		aheadHorizonKm,
 	]);
 
 	// When grouping is active, transform `rows` into alternating
