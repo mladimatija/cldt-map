@@ -3,6 +3,7 @@
 import { useMemo } from 'react';
 import { isKnownType, poiMatchesTagFilter, poiPassesReachabilityFilter, searchPoisByName, type Poi } from '@/lib/pois';
 import { isPoiInAheadCorridor, poiAheadKm } from '@/lib/poi-ahead-corridor';
+import { poiMatchesWaterReliabilityFilter, type WaterReliability } from '@/lib/water-intelligence';
 import { milesToKm, UnitSystem } from '@/lib/utils';
 import { DistanceUnit, TrailDirection } from '@/lib/types';
 
@@ -52,6 +53,8 @@ export interface UsePoiListRowsArgs {
 	pois: Poi[] | null;
 	enabledPoiTypes: ReadonlySet<string>;
 	enabledPoiTags: ReadonlySet<string>;
+	/** When non-empty, only water POIs in these reliability classes appear. */
+	enabledWaterReliability: ReadonlySet<WaterReliability>;
 	includeRemotePois: boolean;
 	debouncedQuery: string;
 	units: UnitSystem;
@@ -87,6 +90,7 @@ export function usePoiListRows(args: UsePoiListRowsArgs): UsePoiListRowsResult {
 		pois,
 		enabledPoiTypes,
 		enabledPoiTags,
+		enabledWaterReliability,
 		includeRemotePois,
 		debouncedQuery,
 		units,
@@ -115,6 +119,7 @@ export function usePoiListRows(args: UsePoiListRowsArgs): UsePoiListRowsResult {
 				isKnownType(p.type) &&
 				enabledPoiTypes.has(p.type) &&
 				poiMatchesTagFilter(p, enabledPoiTags) &&
+				poiMatchesWaterReliabilityFilter(p, enabledWaterReliability) &&
 				poiPassesReachabilityFilter(p, includeRemotePois),
 		);
 		const q = debouncedQuery.trim();
@@ -169,6 +174,7 @@ export function usePoiListRows(args: UsePoiListRowsArgs): UsePoiListRowsResult {
 		pois,
 		enabledPoiTypes,
 		enabledPoiTags,
+		enabledWaterReliability,
 		includeRemotePois,
 		sort,
 		locale,

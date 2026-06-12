@@ -17,7 +17,12 @@ import {
 	type Poi,
 } from '@/lib/pois';
 import { defaultEnabledPoiTypes, TRAIL_OFF_TRAIL_THRESHOLD_M } from '@/lib/config';
-import { WATER_COLOR } from '@/lib/water-intelligence';
+import {
+	WATER_COLOR,
+	WATER_RELIABILITY_OPTIONS,
+	poiMatchesWaterReliabilityFilter,
+	type WaterReliability,
+} from '@/lib/water-intelligence';
 import {
 	AHEAD_HORIZON_OPTIONS,
 	aheadCorridorSoboRange,
@@ -345,6 +350,10 @@ export function MapControlsPoiList({
 	 *  with a header per bucket. Useful for 8k+ POI datasets where a flat
 	 *  list is too long to scan. */
 	const [groupByDecade, setGroupByDecade] = useState(false);
+	/** When non-empty, only water POIs in the selected reliability classes appear. */
+	const [enabledWaterReliability, setEnabledWaterReliability] = useState<ReadonlySet<WaterReliability>>(
+		() => new Set(),
+	);
 	/** POI ids selected for GPX export. Lives only while the panel is open;
 	 *  reset on close so re-opening starts with a fresh selection. */
 	const [selected, setSelected] = useState<ReadonlySet<string>>(new Set());
@@ -387,11 +396,21 @@ export function MapControlsPoiList({
 		for (const p of poisFile.pois) {
 			if (!filterTypes.has(p.type)) continue;
 			if (!poiMatchesTagFilter(p, filterTags)) continue;
+			if (!poiMatchesWaterReliabilityFilter(p, enabledWaterReliability)) continue;
 			if (!poiPassesReachabilityFilter(p, includeRemotePois)) continue;
 			out.set(p.id, haversineDistanceM(snappedLat, snappedLng, p.lat, p.lng));
 		}
 		return out;
-	}, [hasGps, snappedLat, snappedLng, poisFile, enabledPoiTypes, enabledPoiTags, includeRemotePois]);
+	}, [
+		hasGps,
+		snappedLat,
+		snappedLng,
+		poisFile,
+		enabledPoiTypes,
+		enabledPoiTags,
+		enabledWaterReliability,
+		includeRemotePois,
+	]);
 
 	/** All tags present in the dataset, sorted alphabetically. Empty list
 	 *  hides the tag-chip row entirely - keeps the panel clean for datasets
@@ -425,6 +444,16 @@ export function MapControlsPoiList({
 	const selectedTypeOptions = useMemo(
 		() => typeOptions.flatMap((g) => g.options).filter((o) => enabledPoiTypes.has(o.value)),
 		[typeOptions, enabledPoiTypes],
+	);
+
+	const waterReliabilityOptions = useMemo(
+		(): { value: WaterReliability; label: string }[] =>
+			WATER_RELIABILITY_OPTIONS.map((rel) => ({ value: rel, label: t(`water.${rel}`) })),
+		[t],
+	);
+	const selectedWaterReliabilityOptions = useMemo(
+		() => waterReliabilityOptions.filter((o) => enabledWaterReliability.has(o.value)),
+		[waterReliabilityOptions, enabledWaterReliability],
 	);
 
 	const sortOptions = useMemo((): { value: SortMode; label: string }[] => {
@@ -465,6 +494,7 @@ export function MapControlsPoiList({
 		pois: poisFile?.pois ?? null,
 		enabledPoiTypes,
 		enabledPoiTags,
+		enabledWaterReliability,
 		includeRemotePois,
 		debouncedQuery,
 		units,
@@ -560,6 +590,8 @@ export function MapControlsPoiList({
 			return next;
 		});
 	}, []);
+
+	const showWaterReliabilityFilter = enabledPoiTypes.has('water');
 
 	// Stable translation helpers - only re-created when `t` changes (i.e. locale change).
 	const tOffTrailShort = useCallback((distance: string) => t('offTrailShort', { distance }), [t]);
@@ -834,9 +866,6 @@ export function MapControlsPoiList({
 				classNamePrefix="poi-type-select"
 				classNames={poiSelectClassNames}
 				closeMenuOnSelect={false}
-				// Counts only in the open menu (context 'menu'), so the selected
-				// chips stay compact. Falls back to the plain label while the
-				// manifest is loading or unavailable.
 				formatOptionLabel={(option, meta) =>
 					meta.context === 'menu' && typeCounts ? (
 						<span>
@@ -847,9 +876,18 @@ export function MapControlsPoiList({
 						option.label
 					)
 				}
+				// Counts only in the open menu (context 'menu'), so the selected
+				// chips stay compact. Falls back to the plain label while the
+				// manifest is loading or unavailable.
 				noOptionsMessage={() => t('typeFilterNoMatches')}
 				options={typeOptions}
 				placeholder={t('typeFilterPlaceholder')}
+				styles={{
+					menu: (base) => ({
+						...base,
+						zIndex: 'calc(var(--z-map-overlay) + 1)',
+					}),
+				}}
 				value={selectedTypeOptions}
 				onChange={(val: MultiValue<{ value: string; label: string }>) =>
 					setEnabledPoiTypes(new Set(val.map((o) => o.value)))
@@ -866,6 +904,12 @@ export function MapControlsPoiList({
 						isSearchable={false}
 						options={sortOptions}
 						placeholder={t('sortLabel')}
+						styles={{
+							menu: (base) => ({
+								...base,
+								zIndex: 'calc(var(--z-map-overlay) + 1)',
+							}),
+						}}
 						value={selectedSortOption}
 						onChange={(val) => {
 							if (val) setSort(val.value);
@@ -873,6 +917,47 @@ export function MapControlsPoiList({
 					/>
 				</div>
 			</div>
+
+			{showWaterReliabilityFilter && (
+				<Select<{ value: WaterReliability; label: string }, true>
+					hideSelectedOptions
+					isMulti
+					unstyled
+					aria-label={t('waterReliabilityFilterHeading')}
+					classNamePrefix="poi-water-reliability-select"
+					classNames={poiSelectClassNames}
+					closeMenuOnSelect={false}
+					formatOptionLabel={(option) => (
+						<span className="inline-flex items-center gap-1.5">
+							<span
+								aria-hidden
+								className="inline-block size-1.5 shrink-0 rounded-full"
+								style={{ background: WATER_COLOR[option.value] }}
+							/>
+							{option.label}
+						</span>
+					)}
+					isSearchable={false}
+					options={waterReliabilityOptions}
+					placeholder={t('waterReliabilityFilterPlaceholder')}
+					styles={{
+						menu: (base) => ({
+							...base,
+							zIndex: 'calc(var(--z-map-overlay) + 1)',
+						}),
+					}}
+					value={selectedWaterReliabilityOptions}
+					onChange={(val: MultiValue<{ value: WaterReliability; label: string }>) =>
+						setEnabledWaterReliability(new Set((val ?? []).map((o) => o.value)))
+					}
+				/>
+			)}
+
+			{showWaterReliabilityFilter && enabledWaterReliability.size === 0 && (
+				<p className="m-0 text-[10px] text-gray-500 dark:text-[var(--text-secondary)]">
+					{t('waterReliabilityFilterHint')}
+				</p>
+			)}
 
 			{sort === 'ahead' && (
 				<div className="flex flex-wrap items-center gap-1">
@@ -959,7 +1044,7 @@ export function MapControlsPoiList({
 				</div>
 			)}
 
-			<div className="-mr-1 flex flex-col gap-0.5 overflow-y-auto pr-1" role="listbox">
+			<div className="-mr-1 flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto pr-1" role="listbox">
 				{rows.length === 0 &&
 					(poisFile?.pois?.length && poisLayerEnabled && enabledPoiTypes.size === 0 ? (
 						<div className="flex flex-col gap-1.5 px-1 py-2">
