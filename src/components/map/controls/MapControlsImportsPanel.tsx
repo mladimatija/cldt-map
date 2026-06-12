@@ -30,6 +30,8 @@ export function MapControlsImportsPanel(): React.ReactElement {
 	const distancePrecision = useMapStore((s: MapStoreState) => s.distancePrecision);
 	const poisFile = useMapStore((s: MapStoreState) => s.poisFile);
 	const enabledPoiTypes = useMapStore((s: MapStoreState) => s.enabledPoiTypes);
+	const togglePoiType = useMapStore((s: MapStoreState) => s.togglePoiType);
+	const requestOpenPoi = useMapStore((s: MapStoreState) => s.requestOpenPoi);
 	const enhancedTrailPoints = useStore((s: StoreState) => s.enhancedTrailPoints);
 
 	/** Stats computed AFTER first paint, one track per frame, against a
@@ -76,6 +78,14 @@ export function MapControlsImportsPanel(): React.ReactElement {
 			const hits = findPoisNearTrack(track.points, visiblePois);
 			setProximityByTrackId((prev) => ({ ...prev, [track.id]: hits }));
 		}
+	};
+
+	/** Fly to a proximity-hit POI and open its popup; mirrors the up-next
+	 *  strip's behavior, enabling the marker layer first if it is off so the
+	 *  pending-open request has a marker to land on. */
+	const handlePoiHitClick = (poi: { id: string; type: string }): void => {
+		if (!enabledPoiTypes.has(poi.type)) togglePoiType(poi.type);
+		requestOpenPoi(poi.id);
 	};
 
 	const fitToTrack = (track: ImportedTrack): void => {
@@ -219,15 +229,18 @@ export function MapControlsImportsPanel(): React.ReactElement {
 														const distLabel = formatDistance(hit.minDistanceM / 1000, units, distancePrecision);
 														const atLabel = formatDistance(hit.atTrackKm, units, 1);
 														return (
-															<div
-																className="flex items-baseline gap-2 py-0.5 text-xs text-gray-700 dark:text-[var(--text-primary)]"
+															<button
+																className="hover:bg-cldt-blue/10 focus-visible:ring-cldt-green flex w-full cursor-pointer items-baseline gap-2 rounded border-0 bg-transparent px-0.5 py-0.5 text-left text-xs text-gray-700 outline-none focus-visible:ring-2 dark:text-[var(--text-primary)]"
 																key={hit.poi.id}
+																title={name}
+																type="button"
+																onClick={() => handlePoiHitClick(hit.poi)}
 															>
 																<span className="truncate font-medium">{name}</span>
 																<span className="ml-auto shrink-0 text-[10px] text-gray-500 dark:text-gray-400">
 																	{typeLabel} · {distLabel} ({atLabel})
 																</span>
-															</div>
+															</button>
 														);
 													})}
 												</>
