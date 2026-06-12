@@ -658,6 +658,11 @@
 		"pdfStageLabel": "Tappa",
 		"stageWaterGap": "Tratto più lungo senza acqua: {distance}",
 		"stageCarry": "Porta fino a {volume} di acqua (totale {total})",
+		"stagePackBase": "Zaino base: {weight}",
+		"stagePackLoaded": "Carico max: {weight} (porta fino a {volume} di acqua)",
+		"stagePackLoadedSame": "Carico max: uguale al base (nessuna acqua extra necessaria)",
+		"stagePackTooltipBase": "Zaino base {base}",
+		"stagePackTooltipLoaded": "Zaino base {base}, carico max {loaded} (porta fino a {volume} di acqua)",
 		"stageResupplyYes": "Rifornimento alimentari disponibile in questa tappa",
 		"stageResupplyNo": "Nessun rifornimento alimentari in questa tappa - porta il cibo"
 	},
@@ -733,6 +738,8 @@
 			}
 		},
 		"packSummary": "{base} + acqua",
+		"packBaseLine": "Zaino base: {weight}",
+		"packLoadedLine": "Carico max: {weight} (porta fino a {volume} di acqua lungo il tratto più lungo senza acqua)",
 		"waterCarry": "Acqua: porta fino a {volume} per il tratto più lungo senza fonti (peso totale dello zaino {total})",
 		"gearHeading": "Lista attrezzatura ({name})",
 		"gearMissing": "Attrezzatura consigliata non trovata nella tua lista: {terms}. Verifica prima della partenza."

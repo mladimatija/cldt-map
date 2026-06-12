@@ -93,6 +93,43 @@ export function packTotalKg(baseKg: number, liters: number): number {
 	return baseKg + liters;
 }
 
+/** Per-stage pack weight: base gear/food vs max load including water carry. */
+export interface StagePackScenarios {
+	carryLiters: number;
+	baseKg: number;
+	loadedKg: number;
+}
+
+/** Base-only and loaded weights for a stage's longest dry stretch. */
+export function computeStagePackScenarios(
+	baseKg: number,
+	dryStretchKm: number,
+	paceKmh: number,
+	consumptionLph: number,
+): StagePackScenarios {
+	const carryLiters = waterCarryLiters(dryStretchKm, paceKmh, consumptionLph);
+	return {
+		carryLiters,
+		baseKg,
+		loadedKg: packTotalKg(baseKg, carryLiters),
+	};
+}
+
+function formatWeightAmount(kg: number, units: UnitSystem): string {
+	const v = kgToDisplay(kg, units);
+	const rounded = Math.round(v * 10) / 10;
+	return rounded % 1 === 0 ? rounded.toFixed(0) : rounded.toFixed(1);
+}
+
+/** Compact chip label: "12 kg" when loaded equals base, else "12-15 kg". */
+export function formatPackWeightRange(baseKg: number, loadedKg: number, units: UnitSystem): string {
+	const unit = weightUnitLabel(units);
+	if (loadedKg <= baseKg + 1e-9) {
+		return `${formatWeightAmount(baseKg, units)} ${unit}`;
+	}
+	return `${formatWeightAmount(baseKg, units)}-${formatWeightAmount(loadedKg, units)} ${unit}`;
+}
+
 // ── Optional ETA adjustment ──────────────────────────────────────────────
 
 /** Multiplier (>= 1) applied to travel time when the user enabled the

@@ -658,6 +658,11 @@
 		"pdfStageLabel": "Etapa",
 		"stageWaterGap": "Najdulja dionica bez vode: {distance}",
 		"stageCarry": "Ponesite do {volume} vode (ukupno {total})",
+		"stagePackBase": "Osnovni ruksak: {weight}",
+		"stagePackLoaded": "Maks. opterećenje: {weight} (ponesite do {volume} vode)",
+		"stagePackLoadedSame": "Maks. opterećenje: isto kao osnovni (nije potrebna dodatna voda)",
+		"stagePackTooltipBase": "Osnovni ruksak {base}",
+		"stagePackTooltipLoaded": "Osnovni ruksak {base}, maks. opterećenje {loaded} (ponesite do {volume} vode)",
 		"stageResupplyYes": "Opskrba namirnicama dostupna u ovoj etapi",
 		"stageResupplyNo": "Nema opskrbe namirnicama u ovoj etapi - ponesite hranu"
 	},
@@ -733,6 +738,8 @@
 			}
 		},
 		"packSummary": "{base} + voda",
+		"packBaseLine": "Osnovni ruksak: {weight}",
+		"packLoadedLine": "Maks. opterećenje: {weight} (ponesite do {volume} vode duž najduže suhe dionice)",
 		"waterCarry": "Voda: ponesite do {volume} za najduži dio bez izvora (ukupna težina ruksaka {total})",
 		"gearHeading": "Popis opreme ({name})",
 		"gearMissing": "Preporučena oprema nije pronađena u vašem popisu: {terms}. Provjerite prije polaska."

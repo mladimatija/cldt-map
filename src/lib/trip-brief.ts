@@ -97,10 +97,10 @@ export interface TripBriefDay {
 	narrative: string;
 	pois: TripBriefPoi[];
 	seasonalAlerts: TripBriefSeasonalAlert[];
-	/** Localized water carry line ("Carry up to 3.5 L ..."), resolved by the
-	 *  caller's resolver. Absent when the pack-weight feature is off or the
-	 *  stage has no meaningful dry stretch. */
-	waterCarryLabel?: string;
+	/** Localized base-pack line for the day page; present when pack weight is on. */
+	packBaseLabel?: string;
+	/** Localized max-load line when the stage needs extra water carry. */
+	packLoadedLabel?: string;
 	/** PNG data URL of the day's elevation profile, attached by the modal
 	 *  after assembly (canvas is a browser API; the assembler stays pure). */
 	elevationThumb?: string;
@@ -158,10 +158,9 @@ export interface TripBriefAssemblyArgs {
 	distanceLabel: (km: number) => string;
 	/** Localized pack summary for the cover; omit when the feature is off. */
 	packSummary?: string;
-	/** Per-day water carry resolver: receives the stage's longest dry stretch
-	 *  in km and returns the rendered line, or undefined to omit it. Keeps
-	 *  the pack math (pace, rate, base weight, units) at the call site. */
-	waterCarryLabel?: (dryStretchKm: number) => string | undefined;
+	/** Per-day base vs loaded pack resolver; receives the stage's longest dry
+	 *  stretch in km. Keeps pack math at the call site. */
+	packScenarioLabels?: (dryStretchKm: number) => { base: string; loaded?: string } | undefined;
 	/** Fully resolved gear checklist content; passed through to the meta. */
 	gearChecklist?: TripBriefMeta['gearChecklist'];
 }
@@ -194,7 +193,7 @@ export function assembleTripBrief(args: TripBriefAssemblyArgs): TripBrief {
 		distanceLabel,
 		strings,
 		packSummary,
-		waterCarryLabel,
+		packScenarioLabels,
 		gearChecklist,
 	} = args;
 
@@ -222,7 +221,7 @@ export function assembleTripBrief(args: TripBriefAssemblyArgs): TripBrief {
 	/** Usable water source positions for the carry lines; like the planner,
 	 *  computed from the full dataset rather than the visible POI subset. */
 	const waterSourceKms =
-		waterCarryLabel === undefined
+		packScenarioLabels === undefined
 			? []
 			: (poisFile?.pois ?? []).filter((p) => p.type === 'water' && isUsableWaterSource(p.water)).map((p) => p.trailKm);
 
@@ -255,9 +254,9 @@ export function assembleTripBrief(args: TripBriefAssemblyArgs): TripBrief {
 		);
 		const stageAlerts = collectStageAlerts(seasonalEntries, stage, locale);
 
-		const carryLabel =
-			waterCarryLabel && waterSourceKms.length > 0
-				? waterCarryLabel(longestDryStretchKm(stage.startKm, stage.endKm, waterSourceKms))
+		const packLabels =
+			packScenarioLabels && waterSourceKms.length > 0
+				? packScenarioLabels(longestDryStretchKm(stage.startKm, stage.endKm, waterSourceKms))
 				: undefined;
 
 		return {
@@ -282,7 +281,8 @@ export function assembleTripBrief(args: TripBriefAssemblyArgs): TripBrief {
 			}),
 			pois: stagePois,
 			seasonalAlerts: stageAlerts,
-			...(carryLabel && { waterCarryLabel: carryLabel }),
+			...(packLabels?.base && { packBaseLabel: packLabels.base }),
+			...(packLabels?.loaded && { packLoadedLabel: packLabels.loaded }),
 		};
 	});
 

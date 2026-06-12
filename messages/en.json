@@ -658,6 +658,11 @@
 		"pdfStageLabel": "Stage",
 		"stageWaterGap": "Longest stretch without water: {distance}",
 		"stageCarry": "Carry up to {volume} of water ({total} total)",
+		"stagePackBase": "Base pack: {weight}",
+		"stagePackLoaded": "Max load: {weight} (carry up to {volume} water)",
+		"stagePackLoadedSame": "Max load: same as base (no extra water carry needed)",
+		"stagePackTooltipBase": "Base pack {base}",
+		"stagePackTooltipLoaded": "Base pack {base}, max load {loaded} (carry up to {volume} water)",
 		"stageResupplyYes": "Grocery resupply available in this stage",
 		"stageResupplyNo": "No grocery resupply in this stage - carry food through"
 	},
@@ -733,6 +738,8 @@
 			}
 		},
 		"packSummary": "{base} + water",
+		"packBaseLine": "Base pack: {weight}",
+		"packLoadedLine": "Max load: {weight} (carry up to {volume} water across the longest dry stretch)",
 		"waterCarry": "Water: carry up to {volume} across the longest dry stretch ({total} total pack weight)",
 		"gearHeading": "Gear checklist ({name})",
 		"gearMissing": "Recommended gear not found in your pack list: {terms}. Double-check before departure."
