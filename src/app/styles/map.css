@@ -45,6 +45,15 @@
 .leaflet-pane.poi-marker-pane {
 	z-index: var(--z-map-markers, 3) !important;
 }
+/* Personal waypoints sit in the marker tier but below Leaflet's tooltip pane
+   so section-boundary and other map tooltips are never obscured by a pin. */
+.leaflet-pane.user-waypoint-pane {
+	z-index: var(--z-map-markers, 3) !important;
+}
+/* Default tooltip pane (section boundaries, etc.) above marker tiers. */
+.leaflet-pane.leaflet-tooltip-pane {
+	z-index: calc(var(--z-map-markers, 3) + 1) !important;
+}
 .leaflet-pane.poi-tooltip-pane {
 	z-index: calc(var(--z-tooltips, 200) - 10) !important;
 }

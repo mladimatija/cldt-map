@@ -59,11 +59,12 @@ export function UserWaypointMarkers(): null {
 	const markersRef = useRef<Map<string, L.Marker>>(new Map());
 	const deepLinkAppliedRef = useRef(false);
 
-	// Dedicated pane just above the POI markers so personal pins are never
-	// buried under clusters; created once, DOM-ordered after markerPane.
+	// Dedicated pane in the marker tier; z-index in map.css keeps pins below
+	// section tooltips while staying visible above the trail polyline.
 	useEffect(() => {
 		if (!map.getPane(WAYPOINT_PANE)) {
 			map.createPane(WAYPOINT_PANE);
+			map.getPane(WAYPOINT_PANE)?.classList.add('user-waypoint-pane');
 		}
 	}, [map]);
 
