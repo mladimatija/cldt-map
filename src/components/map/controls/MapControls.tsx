@@ -43,7 +43,6 @@ import SmartTooltip from '@/components/ui/SmartTooltip';
 import { Button } from '@/components/ui/Button';
 import { useTranslations } from 'next-intl';
 import { MapControlsButton } from './MapControlsButton';
-import { MapControlsSharePanel } from './MapControlsSharePanel';
 import { MapControlsPrecisionSlider } from './MapControlsPrecisionSlider';
 import { MapControlsSettingsPanel } from './MapControlsSettingsPanel';
 import { MapControlsColorAdjust } from './MapControlsColorAdjust';
@@ -157,8 +156,6 @@ const MapControls: React.FC<MapControlsProps> = ({
 	const colorAdjustContainerRef = useRef<HTMLDivElement>(null);
 	const testLinkRef = useRef<HTMLDivElement>(null);
 	const topRightControlsRef = useRef<HTMLDivElement>(null);
-	const sharePopupRef = useRef<HTMLDivElement>(null);
-	const shareContainerRef = useRef<HTMLDivElement>(null);
 	const exportPanelRef = useRef<HTMLDivElement>(null);
 	const exportContainerRef = useRef<HTMLDivElement>(null);
 	const stagePlannerRef = useRef<HTMLDivElement>(null);
@@ -174,7 +171,6 @@ const MapControls: React.FC<MapControlsProps> = ({
 	const precisionPanel = usePanel('precision', precisionContainerRef);
 	const colorAdjustPanel = usePanel('colorAdjust', colorAdjustContainerRef);
 	const settingsPanel = usePanel('settings', settingsContainerRef);
-	const sharePanel = usePanel('share', shareContainerRef);
 	const exportPanel = usePanel('export', exportContainerRef);
 	const stagePlannerPanel = usePanel('stagePlanner', stagePlannerRef);
 	const progressPanel = usePanel('progress', progressRef);
@@ -202,14 +198,6 @@ const MapControls: React.FC<MapControlsProps> = ({
 	const withinMapBoundary = userLocation ? isWithinMapBoundary(userLocation.lat, userLocation.lng) : false;
 	const hasUserLocationInBounds = !!userLocation && permissionStatus === 'granted' && withinMapBoundary;
 	const canShare = hasUserLocationInBounds || !!highlightedTrailPoint;
-
-	// Block map propagation on the share popup when it mounts
-	useEffect(() => {
-		if (sharePanel.isOpen && sharePopupRef.current) {
-			L.DomEvent.disableClickPropagation(sharePopupRef.current);
-			L.DomEvent.disableScrollPropagation(sharePopupRef.current);
-		}
-	}, [sharePanel.isOpen]);
 
 	const boundaryLayerRef = useRef<L.GeoJSON | null>(null);
 	const boundaryCanvasLayerRef = useRef<L.TileLayer | null>(null);
@@ -475,7 +463,6 @@ const MapControls: React.FC<MapControlsProps> = ({
 			copyToastTimeoutRef.current = setTimeout(() => {
 				setShowCopyToast(false);
 				setCopyToastShort(false);
-				closePanel();
 				copyToastTimeoutRef.current = null;
 			}, 1500);
 		} catch (err) {
@@ -943,23 +930,17 @@ const MapControls: React.FC<MapControlsProps> = ({
 					{helpPanel.isOpen && <MapControlsHelpPanel />}
 				</div>
 
-				<div className="relative inline-block w-10 shrink-0" ref={shareContainerRef}>
+				<div className="relative inline-block w-10 shrink-0">
 					<MapControlsButton
 						ariaLabel={canShare ? t('shareMap') : t('shareUnavailable')}
 						content={canShare ? t('shareMap') : t('shareUnavailable')}
 						disabled={!canShare}
-						onClick={canShare ? sharePanel.toggle : undefined}
+						onClick={
+							canShare ? () => void copyToClipboard(getShareProgressUrl() ?? getShareViewUrl(), true) : undefined
+						}
 					>
 						<IoShareSocialOutline aria-hidden className="h-5 w-5" />
 					</MapControlsButton>
-					{sharePanel.isOpen && (
-						<MapControlsSharePanel
-							copyToClipboard={copyToClipboard}
-							getShareUrl={() => getShareProgressUrl() ?? getShareViewUrl()}
-							sharePopupRef={sharePopupRef}
-							onClose={closePanel}
-						/>
-					)}
 					{showCopyToast && (
 						<div
 							aria-live="polite"
