@@ -362,8 +362,29 @@ export type ShareUrlParams = ShareMapStyleParams & {
 	poi?: string;
 };
 
+/** True when map/POI handlers still need to read positional or deep-link params from the URL. */
+export function shareParamsNeedMapFollowUp(params: ShareUrlParams): boolean {
+	if (params.poi) return true;
+	if (params.progress !== undefined) return true;
+	if (params.lat !== undefined && params.lng !== undefined) return true;
+	if (params.rulerRange) return true;
+	return false;
+}
+
 /** Share URL param keys that we add/remove */
 const SHARE_URL_PARAMS = SHARE_QUERY_PARAM_KEYS;
+
+/** Params captured once on first read so handlers keep working after the URL is cleaned. */
+let initialShareUrlParams: ShareUrlParams | null | undefined;
+
+/** Read share params from the landing URL once (e.g. after a `/s/{code}` redirect). */
+export function getInitialShareUrlParams(): ShareUrlParams | null {
+	if (typeof window === 'undefined') return null;
+	if (initialShareUrlParams === undefined) {
+		initialShareUrlParams = parseShareUrlParams();
+	}
+	return initialShareUrlParams;
+}
 
 /** POI ids are token-like (alphanumeric, dot, dash, underscore). Anything
  *  else is rejected to avoid the URL becoming an injection vector or
@@ -670,6 +691,8 @@ export function buildPoiShareUrl(poiId: string): string {
 	if (typeof window === 'undefined') return '';
 	const url = new URL(getShareBaseUrl());
 	appendShareStyleParams(url, collectShareMapStyleParams());
+	// Recipients must see POI markers for the deep link to open the popup.
+	url.searchParams.set('pois', '1');
 	url.searchParams.set('poi', poiId);
 	return url.toString();
 }

@@ -6,7 +6,14 @@ import L from 'leaflet';
 import { useLocale, useTranslations } from 'next-intl';
 import { useMapStore, type MapStoreState } from '@/lib/store';
 import { isKnownType, poiDisplayName, poiMatchesTagFilter, type Poi } from '@/lib/pois';
-import { buildPoiShareUrl, isSafeUrl, openCoordinatesInMaps, parseShareUrlParams } from '@/lib/utils';
+import {
+	buildPoiShareUrl,
+	clearShareUrlParams,
+	getInitialShareUrlParams,
+	isSafeUrl,
+	openCoordinatesInMaps,
+} from '@/lib/utils';
+import { usePathname, useRouter } from '@/i18n/navigation';
 import { resolveShareUrlForCopy } from '@/lib/share-shortener-client';
 import { fetchWikipediaSummary, truncateExtract } from '@/lib/wikipedia';
 import {
@@ -43,6 +50,8 @@ const DEEPLINK_POLL_INTERVAL_MS = 200;
  */
 export function PoiMarkers(): null {
 	const map = useMap();
+	const router = useRouter();
+	const pathname = usePathname();
 	const t = useTranslations('pois');
 	const locale = useLocale();
 	const poisFile = useMapStore((s: MapStoreState) => s.poisFile);
@@ -374,19 +383,30 @@ export function PoiMarkers(): null {
 		[map],
 	);
 
-	// Consume `?poi=<id>` once per page load.
+	// Consume `?poi=<id>` once per page load (including after a `/s/{code}` redirect).
 	useEffect(() => {
 		if (deepLinkAppliedRef.current) return;
 		if (!poisFile) return;
-		const params = parseShareUrlParams();
+		const params = getInitialShareUrlParams();
 		const targetId = params?.poi;
 		if (!targetId) return;
 		// Mark applied unconditionally so a missing id is also a one-shot - we
 		// don't want the effect to keep re-evaluating on zoom-triggered renders.
 		deepLinkAppliedRef.current = true;
 		const target = poiById.get(targetId);
-		if (target) flyAndOpenPoi(target);
-	}, [poisFile, poiById, flyAndOpenPoi]);
+		if (target) {
+			const store = useMapStore.getState();
+			if (!store.poisLayerEnabled) {
+				store.setPoisLayerEnabled(true);
+			}
+			if (!store.enabledPoiTypes.has(target.type)) {
+				store.togglePoiType(target.type);
+			}
+			flyAndOpenPoi(target);
+		}
+		clearShareUrlParams();
+		router.replace(pathname);
+	}, [poisFile, poiById, flyAndOpenPoi, pathname, router]);
 
 	// In-app requests (e.g. clicking a POI in the stage planner list or the
 	// up-next strip) set `pendingOpenPoiId` in the store; mirror the deep-link
