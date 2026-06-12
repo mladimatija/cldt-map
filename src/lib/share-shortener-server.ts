@@ -4,6 +4,8 @@
  */
 import { randomBytes } from 'crypto';
 import { getStore, type Store } from '@netlify/blobs';
+import type { NextRequest } from 'next/server';
+import { LOCALES } from '@/i18n/routing';
 import { SHARE_QUERY_PARAM_KEYS } from '@/lib/share-url-constants';
 
 export const SHARE_LINKS_BLOB_STORE = 'share-links';
@@ -27,8 +29,48 @@ export function generateShareCode(): string {
 	return randomBytes(5).toString('base64url').slice(0, 7);
 }
 
+function addAllowedShareHost(hosts: Set<string>, value: string | null | undefined): void {
+	if (!value) return;
+	const first = value.split(',')[0]?.trim();
+	if (!first) return;
+	try {
+		const host = (first.includes('://') ? new URL(first).host : first).toLowerCase();
+		if (host) hosts.add(host);
+	} catch {
+		// ignore malformed host values
+	}
+}
+
+/** Hostnames that may appear in share URLs (custom domain, Netlify URL, request Host header). */
+export function collectShareAllowedHosts(request: NextRequest): Set<string> {
+	const hosts = new Set<string>();
+	addAllowedShareHost(hosts, request.headers.get('x-forwarded-host'));
+	addAllowedShareHost(hosts, request.headers.get('host'));
+	addAllowedShareHost(hosts, request.nextUrl.host);
+	addAllowedShareHost(hosts, process.env.URL);
+	addAllowedShareHost(hosts, process.env.DEPLOY_PRIME_URL);
+	addAllowedShareHost(hosts, process.env.DEPLOY_URL);
+	return hosts;
+}
+
+/** Public origin for short links (Host / X-Forwarded-* on Netlify, not internal nextUrl). */
+export function resolvePublicOrigin(request: NextRequest): string {
+	const host =
+		request.headers.get('x-forwarded-host')?.split(',')[0]?.trim() ||
+		request.headers.get('host') ||
+		request.nextUrl.host;
+	const proto = request.headers.get('x-forwarded-proto') || (request.nextUrl.protocol === 'http:' ? 'http' : 'https');
+	return `${proto}://${host}`;
+}
+
+function isAllowedSharePathname(pathname: string): boolean {
+	const normalized = pathname.replace(/\/$/, '') || '/';
+	if (normalized === '/') return true;
+	return LOCALES.some((locale) => normalized === `/${locale}`);
+}
+
 /** Returns pathname + search when the URL is a same-origin share link, else null. */
-export function normalizeShareTarget(inputUrl: string, allowedHost: string): string | null {
+export function normalizeShareTarget(inputUrl: string, allowedHosts: ReadonlySet<string>): string | null {
 	let parsed: URL;
 	try {
 		parsed = new URL(inputUrl);
@@ -38,8 +80,8 @@ export function normalizeShareTarget(inputUrl: string, allowedHost: string): str
 
 	if (parsed.protocol !== 'https:' && parsed.protocol !== 'http:') return null;
 	if (parsed.username || parsed.password) return null;
-	if (parsed.host !== allowedHost) return null;
-	if (parsed.pathname !== '/') return null;
+	if (!allowedHosts.has(parsed.host.toLowerCase())) return null;
+	if (!isAllowedSharePathname(parsed.pathname)) return null;
 	if (parsed.hash) return null;
 	if (parsed.search.length > SHARE_TARGET_MAX_LEN) return null;
 

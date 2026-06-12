@@ -529,6 +529,12 @@ export function applyShareMapStyleParams(params: ShareMapStyleParams): void {
 	}
 }
 
+/** Canonical origin + `/` for share links (locale lives in middleware, not the URL path). */
+export function getShareBaseUrl(): string {
+	if (typeof window === 'undefined') return '/';
+	return `${window.location.origin}/`;
+}
+
 /**
  * Build a shareable URL with the current map view (center, zoom, direction, style)
  */
@@ -658,7 +664,7 @@ export function parseShareUrlParams(): ShareUrlParams | null {
  *  store so the recipient sees the same layers the sharer had enabled. */
 export function buildPoiShareUrl(poiId: string): string {
 	if (typeof window === 'undefined') return '';
-	const url = new URL(`${window.location.origin}${window.location.pathname}`);
+	const url = new URL(getShareBaseUrl());
 	appendShareStyleParams(url, collectShareMapStyleParams());
 	url.searchParams.set('poi', poiId);
 	return url.toString();

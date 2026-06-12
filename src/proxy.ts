@@ -68,7 +68,7 @@ export default function proxy(request: NextRequest): ReturnType<ReturnType<typeo
 	return response;
 }
 
-/** Only run middleware on page routes; skip /_next, /api, and static files so they are served correctly. */
+/** Only run middleware on page routes; skip /_next, /api, /s short links, and static files. */
 export const config = {
-	matcher: ['/((?!api|trpc|_next|_vercel|.*\\..*).*)'],
+	matcher: ['/((?!api|s/|trpc|_next|_vercel|.*\\..*).*)'],
 };
