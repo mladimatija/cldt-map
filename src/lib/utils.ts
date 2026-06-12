@@ -371,6 +371,15 @@ export function shareParamsNeedMapFollowUp(params: ShareUrlParams): boolean {
 	return false;
 }
 
+/** Skip the default trail fitBounds on load when a share link will fly elsewhere. */
+export function shareParamsSkipInitialTrailFitBounds(params: ShareUrlParams | null): boolean {
+	if (!params) return false;
+	if (params.poi) return true;
+	if (params.progress !== undefined) return true;
+	if (params.lat !== undefined && params.lng !== undefined) return true;
+	return false;
+}
+
 /** Share URL param keys that we add/remove */
 const SHARE_URL_PARAMS = SHARE_QUERY_PARAM_KEYS;
 

@@ -29,7 +29,13 @@ import { fetchGPXWithCache } from '@/lib/gpx-cache';
 import { computeTrailDataInWorker } from '@/lib/trail-compute-client';
 import { parseGpx } from '@/lib/gpx-parser';
 import { calculateTrailMetadata, estimatePassageDays } from '@/lib/map';
-import { clearShareUrlParams, formatDistance, formatElevation, getInitialShareUrlParams } from '@/lib/utils';
+import {
+	clearShareUrlParams,
+	formatDistance,
+	formatElevation,
+	getInitialShareUrlParams,
+	shareParamsSkipInitialTrailFitBounds,
+} from '@/lib/utils';
 import {
 	fetchWeather,
 	buildHourlyStripData,
@@ -989,7 +995,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 					finishMarkerRef.current = finishMarker;
 
 					const shareParams = getInitialShareUrlParams();
-					if (!shareParams?.progress) {
+					if (!shareParamsSkipInitialTrailFitBounds(shareParams)) {
 						map.fitBounds(featureGroup.getBounds(), { padding: [50, 50] });
 					}
 
