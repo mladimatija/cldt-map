@@ -297,6 +297,31 @@ export const createTrailSlice: StateCreator<StoreState, [], [], TrailSlice> = (s
 		get().calculateClosestPoint();
 	},
 
+	applyComputedTrailData: (data): void => {
+		if (typeof L === 'undefined') return;
+		// The only main-thread cost left: materialise Leaflet LatLng instances
+		// (closest-point consumers call .distanceTo on trailPoints). Enhanced
+		// points are plain objects and transfer straight from the worker.
+		const latLngPoints = data.points.map((p) => L.latLng(p.lat, p.lng));
+		set({
+			trailPoints: latLngPoints,
+			closestPoint: null,
+			closestPointCalculated: false,
+			showClosestPointLine: false,
+			trailMetadata: {
+				startPoint: latLngPoints[0] ?? null,
+				endPoint: latLngPoints[latLngPoints.length - 1] ?? null,
+				totalDistance: data.metadata.totalDistanceM / 1000,
+				elevationGain: data.metadata.elevationGain,
+				elevationLoss: data.metadata.elevationLoss,
+			},
+			gpxElevationPoints: data.elevationPoints,
+			gpxLoaded: true,
+			enhancedTrailPoints: data.enhanced,
+		});
+		get().calculateClosestPoint();
+	},
+
 	findTrailPointByDistance: (distance): EnhancedTrailPoint | null => {
 		const { enhancedTrailPoints, trailMetadata } = get();
 

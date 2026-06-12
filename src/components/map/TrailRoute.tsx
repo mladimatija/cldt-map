@@ -26,6 +26,7 @@ import {
 import { bucketSac, bucketSurface, findRunAtKm, type SacBucket, type SurfaceBucket } from '@/lib/trail-osm-tags';
 import { TRAIL_SECTIONS } from '@/lib/trail-sections';
 import { fetchGPXWithCache } from '@/lib/gpx-cache';
+import { computeTrailDataInWorker } from '@/lib/trail-compute-client';
 import { parseGpx } from '@/lib/gpx-parser';
 import { calculateTrailMetadata, estimatePassageDays } from '@/lib/map';
 import { clearShareUrlParams, formatDistance, formatElevation, parseShareUrlParams } from '@/lib/utils';
@@ -605,48 +606,88 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 					setRawGpxData(result.data);
 				}
 
-				const parsed = parseGpx(result.data);
-				const trackPts = parsed.tracks[0]?.points ?? [];
-				const points: L.LatLngExpression[] = trackPts.map(({ lat, lng }) => [lat, lng] as L.LatLngTuple);
-				const hasElevation = trackPts.some((p) => p.ele !== undefined && p.ele !== null);
-				const elevationPoints = trackPts.map(({ lat, lng, ele }) => ({
-					lat,
-					lng,
-					elevation: ele ?? 0,
-				}));
+				// Worker-first: parse + enhance off the main thread. On a cold
+				// load this is the largest single main-thread block in the app
+				// (XML parse + O(n) enhancement over the full trail). Any
+				// worker failure (unsupported, bundler hiccup, timeout) falls
+				// back to the historical synchronous path below.
+				const workerData = await computeTrailDataInWorker(result.data, direction).catch(() => null);
 
-				const directionAdjustedPoints = direction === 'NOBO' ? [...points].reverse() : points;
-				const directionAdjustedElevPoints = direction === 'NOBO' ? [...elevationPoints].reverse() : elevationPoints;
+				if (!isMounted) {
+					return;
+				}
 
-				if (points.length > 0) {
+				let latLngPoints: L.LatLng[];
+				let cumDistances: number[];
+				let hasElevation: boolean;
+				let directionAdjustedElevPoints: { lat: number; lng: number; elevation: number }[];
+				let directionAdjustedPoints: L.LatLngExpression[];
+
+				if (workerData && workerData.points.length > 0) {
+					// Worker output is already direction-adjusted; the only
+					// main-thread loops left are cheap materialisations.
+					latLngPoints = workerData.points.map((p) => L.latLng(p.lat, p.lng));
+					directionAdjustedPoints = latLngPoints;
+					cumDistances = workerData.enhanced.map((p) => p.distanceFromStart);
+					hasElevation = workerData.hasElevation;
+					directionAdjustedElevPoints = workerData.elevationPoints;
+
+					useStore.getState().applyComputedTrailData?.(workerData);
+					processTrailData?.(
+						latLngPoints,
+						directionAdjustedElevPoints,
+						latLngPoints[0] ?? null,
+						latLngPoints[latLngPoints.length - 1] ?? null,
+						workerData.metadata.totalDistanceM / 1000,
+						workerData.metadata.elevationGain,
+						workerData.metadata.elevationLoss,
+					);
+				} else {
+					const parsed = parseGpx(result.data);
+					const trackPts = parsed.tracks[0]?.points ?? [];
+					const points: L.LatLngExpression[] = trackPts.map(({ lat, lng }) => [lat, lng] as L.LatLngTuple);
+					hasElevation = trackPts.some((p) => p.ele !== undefined && p.ele !== null);
+					const elevationPoints = trackPts.map(({ lat, lng, ele }) => ({
+						lat,
+						lng,
+						elevation: ele ?? 0,
+					}));
+
+					directionAdjustedPoints = direction === 'NOBO' ? [...points].reverse() : points;
+					directionAdjustedElevPoints = direction === 'NOBO' ? [...elevationPoints].reverse() : elevationPoints;
+
 					// Compute cumulative distances to split points into sections.
-					const latLngPoints = directionAdjustedPoints.map((p) => {
+					latLngPoints = directionAdjustedPoints.map((p) => {
 						const tuple = p as L.LatLngTuple;
 						return L.latLng(tuple[0], tuple[1]);
 					});
 					let cumDistM = 0;
-					const cumDistances: number[] = [0];
+					cumDistances = [0];
 					for (let i = 1; i < latLngPoints.length; i++) {
 						cumDistM += latLngPoints[i - 1].distanceTo(latLngPoints[i]);
 						cumDistances.push(cumDistM);
 					}
 
-					// Enrich early so `enhancedTrailPoints` (with gradeBand/gradePct) is in the store
-					// before the grade-tinted render branch consumes it. Both stores hold parallel trail
-					// state; their enrichment actions are independent and each must be invoked.
-					const computedMetadata = calculateTrailMetadata(latLngPoints, directionAdjustedElevPoints);
-					const processArgs = [
-						latLngPoints,
-						directionAdjustedElevPoints,
-						computedMetadata.startPoint,
-						computedMetadata.endPoint,
-						computedMetadata.totalDistance / 1000,
-						computedMetadata.elevationGain,
-						computedMetadata.elevationLoss,
-					] as const;
-					processTrailData?.(...processArgs);
-					useStore.getState().processTrailData?.(...processArgs);
+					if (latLngPoints.length > 0) {
+						// Enrich early so `enhancedTrailPoints` (with gradeBand/gradePct) is in the store
+						// before the grade-tinted render branch consumes it. Both stores hold parallel trail
+						// state; their enrichment actions are independent and each must be invoked.
+						const computedMetadata = calculateTrailMetadata(latLngPoints, directionAdjustedElevPoints);
+						const processArgs = [
+							latLngPoints,
+							directionAdjustedElevPoints,
+							computedMetadata.startPoint,
+							computedMetadata.endPoint,
+							computedMetadata.totalDistance / 1000,
+							computedMetadata.elevationGain,
+							computedMetadata.elevationLoss,
+						] as const;
+						processTrailData?.(...processArgs);
+						useStore.getState().processTrailData?.(...processArgs);
+					}
+				}
 
+				if (latLngPoints.length > 0) {
 					const featureGroup = L.featureGroup();
 					const sectionPolylines: L.Polyline[] = [];
 
@@ -808,8 +849,12 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 							featureGroup.addLayer(sectionPolyline);
 							sectionPolylines.push(sectionPolyline);
 
-							const firstPt = sectionPts[0];
-							const [lat0, lng0] = firstPt as L.LatLngTuple;
+							// sectionPts entries are L.LatLng in worker mode and
+							// [lat, lng] tuples in the sync fallback; L.latLng
+							// normalises both.
+							const firstLatLng = L.latLng(sectionPts[0]);
+							const lat0 = firstLatLng.lat;
+							const lng0 = firstLatLng.lng;
 							const fi = sectionFirstIdx[si];
 							const li = sectionLastIdx[si];
 							const startDistM = fi >= 0 ? cumDistances[fi] : 0;
@@ -883,12 +928,12 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 
 					const directionText = direction === 'SOBO' ? tChart('directionNorthSouth') : tChart('directionSouthNorth');
 					const startPoint = L.latLng(
-						(directionAdjustedPoints[0] as L.LatLngTuple)[0],
-						(directionAdjustedPoints[0] as L.LatLngTuple)[1],
+						latLngPoints[0].lat,
+						latLngPoints[0].lng,
 					);
 					const finishPoint = L.latLng(
-						(directionAdjustedPoints[directionAdjustedPoints.length - 1] as L.LatLngTuple)[0],
-						(directionAdjustedPoints[directionAdjustedPoints.length - 1] as L.LatLngTuple)[1],
+						latLngPoints[latLngPoints.length - 1].lat,
+						latLngPoints[latLngPoints.length - 1].lng,
 					);
 
 					// Hide the start marker when any colored trail style is shown, so the colored layer is unobstructed.
