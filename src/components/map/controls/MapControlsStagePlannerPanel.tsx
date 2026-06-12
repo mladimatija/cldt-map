@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useMap, Polyline } from 'react-leaflet';
 import { IoHelpCircleOutline } from 'react-icons/io5';
@@ -125,6 +125,10 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 	const [isTripBriefOpen, setIsTripBriefOpen] = useState(false);
 	const [pdfProgress, setPdfProgress] = useState<{ current: number; total: number } | null>(null);
 	const pdfAbortRef = useRef<AbortController | null>(null);
+	/** POI ids selected for per-stage GPX export, keyed by stage index. */
+	const [selectedStagePoiIdsByStage, setSelectedStagePoiIdsByStage] = useState<
+		ReadonlyMap<number, ReadonlySet<string>>
+	>(() => new Map());
 
 	const toDisplay = (km: number): number => (isImperial ? Math.round(kmToMiles(km) * 10) / 10 : km);
 	const fromDisplay = (display: number): number => (isImperial ? milesToKm(display) : display);
@@ -162,6 +166,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 			: splitByDistance(startKm, endKm, (endKm - startKm) / finalCount);
 		setStagePlan({ ...plan, startDate: tripStartDate || undefined });
 		setActiveStageIndex(0);
+		setSelectedStagePoiIdsByStage(new Map());
 		setConfirmReset(false);
 	};
 
@@ -269,6 +274,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 	const handleConfirmReset = (): void => {
 		clearStagePlan();
 		setActiveStageIndex(null);
+		setSelectedStagePoiIdsByStage(new Map());
 		setConfirmReset(false);
 	};
 
@@ -317,6 +323,11 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 		const pois = poisByStage[activeStageIndex];
 		return isNobo ? [...pois].reverse() : pois;
 	}, [activeStageIndex, poisByStage, isNobo]);
+
+	const selectedStagePoiIds = useMemo((): ReadonlySet<string> => {
+		if (activeStageIndex === null) return new Set();
+		return selectedStagePoiIdsByStage.get(activeStageIndex) ?? new Set();
+	}, [activeStageIndex, selectedStagePoiIdsByStage]);
 
 	/** Trail-km positions of water sources a hiker can plan around (explicitly
 	 *  non-potable excluded). Deliberately ignores the layer / type visibility
@@ -395,6 +406,43 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 		if (allStagesWaypoints.length === 0) return;
 		const xml = buildGpxWaypointXml(allStagesWaypoints, t('title'));
 		downloadGpxFile(xml, 'cldt-stages-pois.gpx');
+	};
+
+	const toggleStagePoiSelected = useCallback(
+		(id: string): void => {
+			if (activeStageIndex === null) return;
+			setSelectedStagePoiIdsByStage((prev) => {
+				const next = new Map(prev);
+				const stageSet = new Set(next.get(activeStageIndex) ?? []);
+				if (stageSet.has(id)) stageSet.delete(id);
+				else stageSet.add(id);
+				if (stageSet.size === 0) next.delete(activeStageIndex);
+				else next.set(activeStageIndex, stageSet);
+				return next;
+			});
+		},
+		[activeStageIndex],
+	);
+
+	const handleStagePoiExport = (): void => {
+		if (activeStageIndex === null || selectedStagePoiIds.size === 0) return;
+		const picked = activeStagePois.filter((p) => selectedStagePoiIds.has(p.id));
+		if (picked.length === 0) return;
+		const waypoints: GpxWaypoint[] = picked.map((p) => {
+			const name = poiDisplayName(p, locale);
+			const typeLabel = tPois(`type.${p.type}`, { default: p.type });
+			return {
+				lat: p.lat,
+				lng: p.lng,
+				name,
+				type: typeLabel,
+				elevation: typeof p.elevationM === 'number' ? p.elevationM : undefined,
+				description: p.note_en || p.note_hr || undefined,
+				url: p.url || undefined,
+			};
+		});
+		const xml = buildGpxWaypointXml(waypoints, t('stagePoisHeading', { index: activeStageIndex + 1 }));
+		downloadGpxFile(xml, `cldt-stage-${activeStageIndex + 1}-pois.gpx`);
 	};
 
 	const handlePoiClick = (poi: Poi): void => {
@@ -731,40 +779,73 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 							</p>
 						)}
 						{packScenariosByStage[activeStageIndex] !== undefined && (
-							<div className="m-0 flex flex-col gap-0.5 text-[10px] text-gray-500 dark:text-gray-400">
-								<p className="m-0">
+							<div className="m-0 flex flex-col gap-0.5 text-gray-500 dark:text-gray-400">
+								<p className="m-0 text-[10px] leading-snug">
 									<span aria-hidden>🎒</span>{' '}
 									{t('stagePackBase', {
 										weight: formatWeight(packScenariosByStage[activeStageIndex].baseKg, units),
 									})}
 								</p>
 								{packScenariosByStage[activeStageIndex].carryLiters > 0 ? (
-									<p className="m-0">
+									<p className="m-0 text-[10px] leading-snug">
 										{t('stagePackLoaded', {
 											weight: formatWeight(packScenariosByStage[activeStageIndex].loadedKg, units),
 											volume: formatVolume(packScenariosByStage[activeStageIndex].carryLiters, units),
 										})}
 									</p>
 								) : (
-									<p className="m-0">{t('stagePackLoadedSame')}</p>
+									<p className="m-0 text-[10px] leading-snug">{t('stagePackLoadedSame')}</p>
 								)}
 							</div>
 						)}
 						{activeStagePois.map((poi) => {
 							const name = poiDisplayName(poi, locale);
 							const typeLabel = tPois(`type.${poi.type}`, { default: poi.type });
+							const isSelected = selectedStagePoiIds.has(poi.id);
 							return (
-								<button
-									className="hover:bg-cldt-blue/10 focus-visible:bg-cldt-blue/10 dark:hover:bg-cldt-blue/20 focus-visible:ring-cldt-green flex w-full items-baseline gap-1 rounded px-1 py-0.5 text-left text-xs focus-visible:ring-2 focus-visible:outline-none"
+								<div
+									className={cn(
+										'group hover:bg-cldt-blue/10 dark:hover:bg-cldt-blue/20 flex w-full items-center gap-1.5 rounded px-0.5 py-0',
+										isSelected && 'bg-cldt-blue/5 dark:bg-cldt-blue/15',
+									)}
 									key={poi.id}
-									type="button"
-									onClick={() => handlePoiClick(poi)}
 								>
-									<span className="truncate font-medium text-gray-800 dark:text-[var(--text-primary)]">{name}</span>
-									<span className="ml-auto shrink-0 text-[10px] text-gray-500 dark:text-gray-400">{typeLabel}</span>
-								</button>
+									<Checkbox
+										aria-label={isSelected ? tPois('exportDeselect', { name }) : tPois('exportSelect', { name })}
+										checked={isSelected}
+										className="shrink-0"
+										title={isSelected ? tPois('exportDeselect', { name }) : tPois('exportSelect', { name })}
+										onCheckedChange={() => toggleStagePoiSelected(poi.id)}
+									/>
+									<button
+										className="focus-visible:ring-cldt-green flex min-h-0 min-w-0 flex-1 items-baseline gap-1 rounded py-0 text-left text-xs leading-tight focus-visible:ring-2 focus-visible:outline-none"
+										type="button"
+										onClick={() => handlePoiClick(poi)}
+									>
+										<span className="truncate font-medium text-gray-800 dark:text-[var(--text-primary)]">{name}</span>
+										<span className="ml-auto shrink-0 text-[10px] text-gray-500 dark:text-gray-400">{typeLabel}</span>
+									</button>
+								</div>
 							);
 						})}
+						<div className="flex items-center justify-between gap-2 border-t border-gray-100 pt-1 dark:border-[var(--border-color)]">
+							<span className="text-[10px] text-gray-500 dark:text-[var(--text-secondary)]">
+								{tPois('exportSelectionCount', { count: selectedStagePoiIds.size })}
+							</span>
+							<Button
+								disabled={selectedStagePoiIds.size === 0}
+								size="sm"
+								title={
+									activeStageIndex !== null
+										? t('gpxStagePoisExportTooltip', { index: activeStageIndex + 1 })
+										: undefined
+								}
+								variant="mapControlOutline"
+								onClick={handleStagePoiExport}
+							>
+								{t('gpxStagePoisExport')}
+							</Button>
+						</div>
 					</div>
 				)}
 

@@ -629,6 +629,8 @@
 		"gpxExportTooltip": "Preuzmi trenutnu aktivnu etapu kao GPX trag za GPS uređaje.",
 		"gpxPoisExport": "POI-evi kao GPX (sve etape)",
 		"gpxPoisExportTooltip": "Preuzmi sve POI-eve cijelog plana kao GPX točke u redoslijedu hoda.",
+		"gpxStagePoisExport": "Izvezi odabrane kao GPX",
+		"gpxStagePoisExportTooltip": "Preuzmi označena mjesta s etape {index} kao GPX točke u redoslijedu hoda.",
 		"stagePoiCount": "{count, plural, =1 {# mjesto na putu} few {# mjesta na putu} other {# mjesta na putu}}",
 		"stagePoisHeading": "Mjesta na etapi {index}",
 		"tripBriefOpen": "Vodič za putovanje...",
