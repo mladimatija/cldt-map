@@ -949,7 +949,9 @@
 		"addEntry": "Dodaj zapis",
 		"exportJournal": "Izvezi (.md)",
 		"focusEditor": "Pisanje u fokusiranom načinu",
-		"focusEditorClose": "Zatvori"
+		"focusEditorClose": "Zatvori",
+		"removeTrack": "Ukloni iz napretka",
+		"trackNoCoverage": "Ova traka je 0% na stazi - nema se što dodati u napredak."
 	},
 	"help": {
 		"title": "Pomoć",

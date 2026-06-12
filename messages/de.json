@@ -949,7 +949,9 @@
 		"addEntry": "Eintrag hinzufügen",
 		"exportJournal": "Exportieren (.md)",
 		"focusEditor": "Im Fokusmodus schreiben",
-		"focusEditorClose": "Schließen"
+		"focusEditorClose": "Schließen",
+		"removeTrack": "Aus Fortschritt entfernen",
+		"trackNoCoverage": "Dieser Track liegt zu 0% auf dem Weg - es gibt nichts zum Fortschritt hinzuzufügen."
 	},
 	"help": {
 		"title": "Hilfe",

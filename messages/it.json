@@ -949,7 +949,9 @@
 		"addEntry": "Aggiungi voce",
 		"exportJournal": "Esporta (.md)",
 		"focusEditor": "Scrivi in modalità focus",
-		"focusEditorClose": "Chiudi"
+		"focusEditorClose": "Chiudi",
+		"removeTrack": "Rimuovi dai progressi",
+		"trackNoCoverage": "Questa traccia è allo 0% sul sentiero - non c’è nulla da aggiungere ai progressi."
 	},
 	"help": {
 		"title": "Aiuto",

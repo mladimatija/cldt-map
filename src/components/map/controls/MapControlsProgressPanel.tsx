@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
 import { completedKmInRange, intervalsFromKms, totalCompletedKm, IMPORT_MAX_OFF_TRAIL_M } from '@/lib/completion';
@@ -8,6 +8,8 @@ import { buildGpxWaypointXml, downloadGpxFile, type GpxWaypoint } from '@/lib/gp
 import { downloadTextFile, journalToMarkdown, newId, todayIsoDate, type JournalEntry } from '@/lib/user-waypoints';
 import { TRAIL_SECTIONS } from '@/lib/trail-sections';
 import { buildSpatialGrid } from '@/lib/spatial-grid';
+import { computeTrackStats } from '@/lib/imported-tracks';
+import SmartTooltip from '@/components/ui/SmartTooltip';
 import { cn, formatDistance } from '@/lib/utils';
 import { IoExpandOutline } from 'react-icons/io5';
 import { Button } from '@/components/ui/Button';
@@ -37,6 +39,9 @@ export function MapControlsProgressPanel(): React.ReactElement {
 	const distancePrecision = useMapStore((s: MapStoreState) => s.distancePrecision);
 	const rulerRange = useMapStore((s: MapStoreState) => s.rulerRange);
 	const importedTracks = useMapStore((s: MapStoreState) => s.importedTracks);
+	const progressTrackIds = useMapStore((s: MapStoreState) => s.progressTrackIds);
+	const addProgressTrackId = useMapStore((s: MapStoreState) => s.addProgressTrackId);
+	const removeProgressTrackId = useMapStore((s: MapStoreState) => s.removeProgressTrackId);
 
 	const userWaypoints = useMapStore((s: MapStoreState) => s.userWaypoints);
 	const removeUserWaypoint = useMapStore((s: MapStoreState) => s.removeUserWaypoint);
@@ -84,12 +89,35 @@ export function MapControlsProgressPanel(): React.ReactElement {
 		return { lo: Math.min(a, b), hi: Math.max(a, b) };
 	}, [rulerRange]);
 
-	/** Converts an imported track's on-trail coverage into completed
-	 *  intervals. The spatial grid is built per click - a one-off O(trail)
-	 *  cost is fine for an explicit user action. */
-	const handleAddTrack = (trackId: string): void => {
-		const track = importedTracks.find((tr) => tr.id === trackId);
-		if (!track || enhancedTrailPoints.length === 0) return;
+	/** Per-track on-trail coverage (%), computed post-paint one track per
+	 *  tick against a shared grid. computeTrackStats memoises by content
+	 *  hash, so this is a cache walk after the imports panel has run once.
+	 *  Used to disable "Add to progress" for tracks that never touch the
+	 *  trail (nothing to add). */
+	const [coverageById, setCoverageById] = useState<Record<string, number>>({});
+	const coverageRunRef = useRef(0);
+	useEffect(() => {
+		const runId = ++coverageRunRef.current;
+		if (importedTracks.length === 0 || enhancedTrailPoints.length === 0) return;
+		const grid = buildSpatialGrid(enhancedTrailPoints);
+		let i = 0;
+		const tick = (): void => {
+			if (runId !== coverageRunRef.current || i >= importedTracks.length) return;
+			const track = importedTracks[i];
+			const pct = computeTrackStats(track, enhancedTrailPoints, grid).coveragePercent;
+			setCoverageById((prev) => (prev[track.id] === pct ? prev : { ...prev, [track.id]: pct }));
+			i++;
+			if (i < importedTracks.length) setTimeout(tick, 0);
+		};
+		const start = setTimeout(tick, 0);
+		return () => clearTimeout(start);
+	}, [importedTracks, enhancedTrailPoints]);
+
+	/** The track's on-trail stretch as completed intervals. The spatial grid
+	 *  is built per click - a one-off O(trail) cost is fine for an explicit
+	 *  user action. */
+	const trackIntervals = (track: (typeof importedTracks)[number]): { startKm: number; endKm: number }[] => {
+		if (enhancedTrailPoints.length === 0) return [];
 		const grid = buildSpatialGrid(enhancedTrailPoints);
 		const kms: number[] = [];
 		for (const pt of track.points) {
@@ -98,9 +126,24 @@ export function MapControlsProgressPanel(): React.ReactElement {
 				kms.push(enhancedTrailPoints[hit.index].distanceFromStart / 1000);
 			}
 		}
-		for (const iv of intervalsFromKms(kms)) {
-			markCompleted(iv.startKm, iv.endKm);
+		return intervalsFromKms(kms);
+	};
+
+	/** Toggle: first click folds the track's on-trail stretch into progress,
+	 *  second click unmarks that same stretch. Unmarking removes shared km if
+	 *  two tracks overlap - completion is a plain interval set, not refcounted. */
+	const handleToggleTrack = (trackId: string): void => {
+		const track = importedTracks.find((tr) => tr.id === trackId);
+		if (!track) return;
+		const intervals = trackIntervals(track);
+		if (intervals.length === 0) return;
+		const added = progressTrackIds.includes(trackId);
+		for (const iv of intervals) {
+			if (added) unmarkCompleted(iv.startKm, iv.endKm);
+			else markCompleted(iv.startKm, iv.endKm);
 		}
+		if (added) removeProgressTrackId(trackId);
+		else addProgressTrackId(trackId);
 	};
 
 	const handleExportWaypoints = (): void => {
@@ -228,9 +271,19 @@ export function MapControlsProgressPanel(): React.ReactElement {
 							<div className="flex items-center gap-2 text-xs" key={track.id}>
 								<span aria-hidden className="h-2 w-2 shrink-0 rounded-full" style={{ background: track.color }} />
 								<span className="min-w-0 flex-1 truncate text-gray-600 dark:text-gray-300">{track.name}</span>
-								<Button size="sm" variant="base" onClick={() => handleAddTrack(track.id)}>
-									{t('addTrack')}
-								</Button>
+								{coverageById[track.id] === 0 && !progressTrackIds.includes(track.id) ? (
+									<SmartTooltip content={t('trackNoCoverage')} position="top">
+										<span className="inline-flex">
+											<Button disabled size="sm" variant="base">
+												{t('addTrack')}
+											</Button>
+										</span>
+									</SmartTooltip>
+								) : (
+									<Button size="sm" variant="base" onClick={() => handleToggleTrack(track.id)}>
+										{progressTrackIds.includes(track.id) ? t('removeTrack') : t('addTrack')}
+									</Button>
+								)}
 							</div>
 						))
 					) : (
