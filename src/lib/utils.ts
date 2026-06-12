@@ -10,6 +10,8 @@ import { useStore, useMapStore } from '@/lib/store';
 import { config } from '@/lib/config';
 import type { DistanceUnit, TrailDirection, UnitSystem } from '@/lib/types';
 import { RulerRange } from '@/lib/distance-utils';
+import { PROVIDER_TO_KEY, KEY_TO_PROVIDER } from '@/components/map/base-map-options';
+import { BaseMapProvider } from '@/lib/services/map-service';
 
 export type { UnitSystem };
 
@@ -329,92 +331,34 @@ export type ShareBaseMapKey =
 	| 'croatiaTopo'
 	| 'darkMap';
 
-/**
- * Build a shareable URL with the current map view (center, zoom, direction, style)
- */
-export function buildShareViewUrl(
-	baseUrl: string,
-	params: {
-		lat: number;
-		lng: number;
-		zoom: number;
-		direction?: TrailDirection;
-		baseMap?: ShareBaseMapKey;
-		sections?: boolean;
-		dark?: boolean;
-		rulerRange?: RulerRange | null;
-	},
-): string {
-	const url = new URL(baseUrl);
-	url.searchParams.set('lat', params.lat.toFixed(5));
-	url.searchParams.set('lng', params.lng.toFixed(5));
-	url.searchParams.set('zoom', String(params.zoom));
-	if (params.direction) {
-		url.searchParams.set('dir', params.direction);
-	}
-	if (params.baseMap) {
-		url.searchParams.set('baseMap', params.baseMap);
-	}
-	if (params.sections !== undefined) {
-		url.searchParams.set('sections', params.sections ? '1' : '0');
-	}
-	if (params.dark !== undefined) {
-		url.searchParams.set('dark', params.dark ? '1' : '0');
-	}
-	if (params.rulerRange) {
-		const a = Math.round(params.rulerRange.distanceFromStartA);
-		const b = Math.round(params.rulerRange.distanceFromStartB);
-		if (Number.isFinite(a) && Number.isFinite(b) && a >= 0 && b >= 0) {
-			url.searchParams.set('ruler', `${a},${b}`);
-		}
-	}
-	return url.toString();
+/** Mutually exclusive trail rendering modes encoded in share URLs. */
+export type ShareTrailStyle = 'default' | 'sections' | 'grade' | 'surface' | 'sac';
+
+/** Map style and layer flags shared across view, progress, and POI links. */
+export interface ShareMapStyleParams {
+	direction?: TrailDirection;
+	unit?: DistanceUnit;
+	baseMap?: ShareBaseMapKey;
+	trailStyle?: ShareTrailStyle;
+	/** Legacy share links used `sections=0|1` before `trailStyle` existed. */
+	sections?: boolean;
+	dark?: boolean;
+	rulerRange?: RulerRange | null;
+	pois?: boolean;
+	weather?: boolean;
+	radar?: boolean;
+	distanceMarkers?: boolean;
+	waymarked?: boolean;
 }
 
-/**
- * Build a shareable URL with progress (distance from start in km, direction, unit, zoom, style).
- * Total is not needed: we find the point by matching progress (km) to distanceFromStart.
- */
-export function buildShareProgressUrl(
-	baseUrl: string,
-	params: {
-		kmFromStart: number;
-		direction: TrailDirection;
-		unit?: DistanceUnit;
-		zoom?: number;
-		baseMap?: ShareBaseMapKey;
-		sections?: boolean;
-		dark?: boolean;
-		rulerRange?: RulerRange | null;
-	},
-): string {
-	const url = new URL(baseUrl);
-	url.searchParams.set('progress', params.kmFromStart.toFixed(2));
-	url.searchParams.set('dir', params.direction);
-	if (params.unit) {
-		url.searchParams.set('unit', params.unit);
-	}
-	if (params.zoom !== null && params.zoom !== undefined) {
-		url.searchParams.set('zoom', String(params.zoom));
-	}
-	if (params.baseMap) {
-		url.searchParams.set('baseMap', params.baseMap);
-	}
-	if (params.sections !== undefined) {
-		url.searchParams.set('sections', params.sections ? '1' : '0');
-	}
-	if (params.dark !== undefined) {
-		url.searchParams.set('dark', params.dark ? '1' : '0');
-	}
-	if (params.rulerRange) {
-		const a = Math.round(params.rulerRange.distanceFromStartA);
-		const b = Math.round(params.rulerRange.distanceFromStartB);
-		if (Number.isFinite(a) && Number.isFinite(b) && a >= 0 && b >= 0) {
-			url.searchParams.set('ruler', `${a},${b}`);
-		}
-	}
-	return url.toString();
-}
+export type ShareUrlParams = ShareMapStyleParams & {
+	lat?: number;
+	lng?: number;
+	zoom?: number;
+	dir?: TrailDirection;
+	progress?: number;
+	poi?: string;
+};
 
 /** Share URL param keys that we add/remove */
 const SHARE_URL_PARAMS = [
@@ -425,9 +369,15 @@ const SHARE_URL_PARAMS = [
 	'progress',
 	'unit',
 	'baseMap',
+	'trailStyle',
 	'sections',
 	'dark',
 	'ruler',
+	'pois',
+	'weather',
+	'radar',
+	'distanceMarkers',
+	'waymarked',
 	'poi',
 ] as const;
 
@@ -435,6 +385,208 @@ const SHARE_URL_PARAMS = [
  *  else is rejected to avoid the URL becoming an injection vector or
  *  carrying surprising whitespace into selectors. */
 const POI_ID_RE = /^[A-Za-z0-9._-]{1,128}$/;
+
+const VALID_SHARE_BASE_MAP_KEYS = new Set<ShareBaseMapKey>([
+	'standard',
+	'topo',
+	'satellite',
+	'terrain',
+	'cycling',
+	'openHikingMap',
+	'croatiaTopo',
+	'darkMap',
+]);
+
+const VALID_SHARE_TRAIL_STYLES = new Set<ShareTrailStyle>(['default', 'sections', 'grade', 'surface', 'sac']);
+
+function parseShareFlag(value: string | null): boolean | undefined {
+	if (value === null) return undefined;
+	return value === '1';
+}
+
+function appendShareStyleParams(url: URL, params: ShareMapStyleParams): void {
+	if (params.direction) {
+		url.searchParams.set('dir', params.direction);
+	}
+	if (params.unit) {
+		url.searchParams.set('unit', params.unit);
+	}
+	if (params.baseMap) {
+		url.searchParams.set('baseMap', params.baseMap);
+	}
+	if (params.trailStyle) {
+		url.searchParams.set('trailStyle', params.trailStyle);
+	}
+	if (params.dark !== undefined) {
+		url.searchParams.set('dark', params.dark ? '1' : '0');
+	}
+	if (params.pois !== undefined) {
+		url.searchParams.set('pois', params.pois ? '1' : '0');
+	}
+	if (params.weather !== undefined) {
+		url.searchParams.set('weather', params.weather ? '1' : '0');
+	}
+	if (params.radar !== undefined) {
+		url.searchParams.set('radar', params.radar ? '1' : '0');
+	}
+	if (params.distanceMarkers !== undefined) {
+		url.searchParams.set('distanceMarkers', params.distanceMarkers ? '1' : '0');
+	}
+	if (params.waymarked !== undefined) {
+		url.searchParams.set('waymarked', params.waymarked ? '1' : '0');
+	}
+	if (params.rulerRange) {
+		const a = Math.round(params.rulerRange.distanceFromStartA);
+		const b = Math.round(params.rulerRange.distanceFromStartB);
+		if (Number.isFinite(a) && Number.isFinite(b) && a >= 0 && b >= 0) {
+			url.searchParams.set('ruler', `${a},${b}`);
+		}
+	}
+}
+
+/** Derive the active trail style from store flags (SAC > surface > grade > sections > default). */
+export function resolveShareTrailStyle(state: {
+	sacColoured: boolean;
+	surfaceColoured: boolean;
+	gradeTintedTrail: boolean;
+	showSections: boolean;
+}): ShareTrailStyle {
+	if (state.sacColoured) return 'sac';
+	if (state.surfaceColoured) return 'surface';
+	if (state.gradeTintedTrail) return 'grade';
+	if (state.showSections) return 'sections';
+	return 'default';
+}
+
+/** Read the current map style/layer toggles from the store for share URL encoding. */
+export function collectShareMapStyleParams(options?: {
+	rulerEnabled?: boolean;
+	rulerRange?: RulerRange | null;
+}): ShareMapStyleParams {
+	const state = useMapStore.getState();
+	const rulerEnabled = options?.rulerEnabled ?? state.isRulerEnabled;
+	const baseMapKey = PROVIDER_TO_KEY[state.baseMapProvider as BaseMapProvider] as ShareBaseMapKey | undefined;
+
+	return {
+		direction: state.direction,
+		unit: state.units === 'imperial' ? 'mi' : 'km',
+		baseMap: baseMapKey,
+		trailStyle: resolveShareTrailStyle(state),
+		dark: state.darkMode,
+		pois: state.poisLayerEnabled,
+		weather: state.severeWeatherLayer,
+		radar: state.showRadarOverlay,
+		distanceMarkers: state.showDistanceMarkers,
+		waymarked: state.waymarkedTrailsOverlay,
+		rulerRange: rulerEnabled ? (options?.rulerRange ?? state.rulerRange) : null,
+	};
+}
+
+/** Apply a share trail style, clearing the other mutually exclusive modes. */
+export function applyShareTrailStyle(trailStyle: ShareTrailStyle): void {
+	const store = useMapStore.getState();
+	switch (trailStyle) {
+		case 'sac':
+			store.setSacColoured(true);
+			break;
+		case 'surface':
+			store.setSurfaceColoured(true);
+			break;
+		case 'grade':
+			store.setGradeTintedTrail(true);
+			break;
+		case 'sections':
+			store.setShowSections(true);
+			break;
+		case 'default':
+			store.setShowSections(false);
+			store.setGradeTintedTrail(false);
+			store.setSurfaceColoured(false);
+			store.setSacColoured(false);
+			break;
+	}
+}
+
+/** Apply parsed share style params to the map store (not direction or location). */
+export function applyShareMapStyleParams(params: ShareMapStyleParams): void {
+	const store = useMapStore.getState();
+	if (params.unit) {
+		const units: UnitSystem = params.unit === 'mi' ? 'imperial' : 'metric';
+		store.setUnits(units);
+		useStore.getState().setUnits?.(units);
+	}
+	if (params.baseMap) {
+		const provider = KEY_TO_PROVIDER[params.baseMap];
+		if (provider) {
+			store.setBaseMapProvider(provider);
+		}
+	}
+	const trailStyle =
+		params.trailStyle ??
+		(params.sections !== undefined ? (params.sections ? 'sections' : 'default') : undefined);
+	if (trailStyle !== undefined) {
+		applyShareTrailStyle(trailStyle);
+	}
+	if (params.dark !== undefined) {
+		store.setDarkMode(params.dark);
+	}
+	if (params.pois !== undefined) {
+		store.setPoisLayerEnabled(params.pois);
+	}
+	if (params.weather !== undefined) {
+		store.setSevereWeatherLayer(params.weather);
+	}
+	if (params.radar !== undefined) {
+		store.setShowRadarOverlay(params.radar);
+	}
+	if (params.distanceMarkers !== undefined) {
+		store.setShowDistanceMarkers(params.distanceMarkers);
+	}
+	if (params.waymarked !== undefined) {
+		store.setWaymarkedTrailsOverlay(params.waymarked);
+	}
+}
+
+/**
+ * Build a shareable URL with the current map view (center, zoom, direction, style)
+ */
+export function buildShareViewUrl(
+	baseUrl: string,
+	params: ShareMapStyleParams & {
+		lat: number;
+		lng: number;
+		zoom: number;
+	},
+): string {
+	const url = new URL(baseUrl);
+	url.searchParams.set('lat', params.lat.toFixed(5));
+	url.searchParams.set('lng', params.lng.toFixed(5));
+	url.searchParams.set('zoom', String(params.zoom));
+	appendShareStyleParams(url, params);
+	return url.toString();
+}
+
+/**
+ * Build a shareable URL with progress (distance from start in km, direction, unit, zoom, style).
+ * Total is not needed: we find the point by matching progress (km) to distanceFromStart.
+ */
+export function buildShareProgressUrl(
+	baseUrl: string,
+	params: ShareMapStyleParams & {
+		kmFromStart: number;
+		direction: TrailDirection;
+		zoom?: number;
+	},
+): string {
+	const url = new URL(baseUrl);
+	url.searchParams.set('progress', params.kmFromStart.toFixed(2));
+	url.searchParams.set('dir', params.direction);
+	if (params.zoom !== null && params.zoom !== undefined) {
+		url.searchParams.set('zoom', String(params.zoom));
+	}
+	appendShareStyleParams(url, { ...params, direction: params.direction });
+	return url.toString();
+}
 
 /**
  * Remove share URL params from the current location (clean URL when the share tooltip is closed)
@@ -455,34 +607,14 @@ export function clearShareUrlParams(): void {
 	}
 }
 
-const VALID_SHARE_BASE_MAP_KEYS = new Set<ShareBaseMapKey>([
-	'standard',
-	'topo',
-	'satellite',
-	'terrain',
-	'cycling',
-	'croatiaTopo',
-	'darkMap',
-]);
-
 /**
  * Parse share URL params from the current location. Returns null if no share-related params are present.
  */
-export function parseShareUrlParams(): {
-	lat?: number;
-	lng?: number;
-	zoom?: number;
-	dir?: TrailDirection;
-	progress?: number;
-	unit?: DistanceUnit;
-	baseMap?: ShareBaseMapKey;
-	sections?: boolean;
-	dark?: boolean;
-	rulerRange?: RulerRange;
-	poi?: string;
-} | null {
+export function parseShareUrlParams(): ShareUrlParams | null {
 	if (typeof window === 'undefined') return null;
 	const params = new URLSearchParams(window.location.search);
+	if (!SHARE_URL_PARAMS.some((key) => params.has(key))) return null;
+
 	const lat = params.get('lat');
 	const lng = params.get('lng');
 	const zoom = params.get('zoom');
@@ -490,11 +622,11 @@ export function parseShareUrlParams(): {
 	const progress = params.get('progress');
 	const unit = params.get('unit');
 	const baseMap = params.get('baseMap');
+	const trailStyle = params.get('trailStyle');
 	const sections = params.get('sections');
 	const dark = params.get('dark');
 	const ruler = params.get('ruler');
 	const poi = params.get('poi');
-	if (!lat && !lng && !zoom && !progress && !baseMap && !sections && !dark && !ruler && !poi) return null;
 
 	let rulerRange: RulerRange | undefined;
 	if (ruler) {
@@ -507,24 +639,32 @@ export function parseShareUrlParams(): {
 			}
 		}
 	}
+
 	return {
 		...(lat && lng && { lat: parseFloat(lat), lng: parseFloat(lng) }),
 		...(zoom && { zoom: parseFloat(zoom) }),
 		...(dir && (dir === 'NOBO' || dir === 'SOBO') && { dir }),
 		...(progress && { progress: parseFloat(progress) }),
-		...(unit && (unit === 'km' || unit === 'mi') && { unit: unit }),
+		...(unit && (unit === 'km' || unit === 'mi') && { unit }),
 		...(baseMap &&
 			VALID_SHARE_BASE_MAP_KEYS.has(baseMap as ShareBaseMapKey) && {
 				baseMap: baseMap as ShareBaseMapKey,
 			}),
-		...(sections !== null &&
-			sections !== undefined && {
-				sections: sections === '1',
+		...(trailStyle &&
+			VALID_SHARE_TRAIL_STYLES.has(trailStyle as ShareTrailStyle) && {
+				trailStyle: trailStyle as ShareTrailStyle,
 			}),
-		...(dark !== null &&
-			dark !== undefined && {
-				dark: dark === '1',
-			}),
+		...(sections !== null && sections !== undefined && { sections: sections === '1' }),
+		...(dark !== null && dark !== undefined && { dark: dark === '1' }),
+		...(parseShareFlag(params.get('pois')) !== undefined && { pois: parseShareFlag(params.get('pois')) }),
+		...(parseShareFlag(params.get('weather')) !== undefined && { weather: parseShareFlag(params.get('weather')) }),
+		...(parseShareFlag(params.get('radar')) !== undefined && { radar: parseShareFlag(params.get('radar')) }),
+		...(parseShareFlag(params.get('distanceMarkers')) !== undefined && {
+			distanceMarkers: parseShareFlag(params.get('distanceMarkers')),
+		}),
+		...(parseShareFlag(params.get('waymarked')) !== undefined && {
+			waymarked: parseShareFlag(params.get('waymarked')),
+		}),
 		...(rulerRange && { rulerRange }),
 		...(poi && POI_ID_RE.test(poi) && { poi }),
 	};
@@ -532,15 +672,14 @@ export function parseShareUrlParams(): {
 
 /** Build a deep-link URL that points to a specific POI by id. The handler
  *  on load uses the id to look up the POI in the dataset, fly the map to its
- *  coordinates, and open its popup. Returns an absolute URL based on the
- *  current `window.location.origin + pathname`. */
+ *  coordinates, and open its popup. Merges the current map style from the
+ *  store so the recipient sees the same layers the sharer had enabled. */
 export function buildPoiShareUrl(poiId: string): string {
 	if (typeof window === 'undefined') return '';
-	const params = new URLSearchParams(window.location.search);
-	// Replace any existing poi param so re-sharing from a different POI does
-	// the right thing instead of stacking.
-	params.set('poi', poiId);
-	return `${window.location.origin}${window.location.pathname}?${params.toString()}`;
+	const url = new URL(`${window.location.origin}${window.location.pathname}`);
+	appendShareStyleParams(url, collectShareMapStyleParams());
+	url.searchParams.set('poi', poiId);
+	return url.toString();
 }
 
 /**
