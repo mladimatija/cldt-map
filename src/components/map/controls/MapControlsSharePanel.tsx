@@ -8,7 +8,22 @@ import { resolveShareUrlForCopy } from '@/lib/share-shortener-client';
 import { usePopoverFocusTrap } from '@/hooks';
 import { MAP_CONTROL_POPOVER } from './map-controls-constants';
 
-const QRCode = dynamic(() => import('react-qr-code'), { ssr: false });
+const ShareQrLoader: React.FC<{ label?: string }> = ({ label }) => (
+	<div
+		className="flex h-[200px] w-[200px] items-center justify-center"
+		{...(label ? { 'aria-label': label, role: 'status' as const } : { 'aria-hidden': true })}
+	>
+		<div
+			aria-hidden
+			className="border-t-cldt-blue h-10 w-10 animate-spin rounded-full border-4 border-gray-200 motion-reduce:animate-none dark:border-[var(--border-color)]"
+		/>
+	</div>
+);
+
+const QRCode = dynamic(() => import('react-qr-code'), {
+	ssr: false,
+	loading: () => <ShareQrLoader />,
+});
 
 interface MapControlsSharePanelProps {
 	longUrl: string;
@@ -25,6 +40,8 @@ export function MapControlsSharePanel({
 	onClose,
 }: MapControlsSharePanelProps): React.ReactElement {
 	const t = useTranslations('mapControls');
+	const tCommon = useTranslations('common');
+	const loadingLabel = tCommon('loading');
 	const popoverRef = usePopoverFocusTrap(true);
 	const snapshotUrlRef = useRef(longUrl);
 	const [displayUrl, setDisplayUrl] = useState<string | null>(null);
@@ -61,12 +78,12 @@ export function MapControlsSharePanel({
 				{t('shareTitle')}
 			</h3>
 			<p className="m-0 text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('shareQrHint')}</p>
-			<div className="flex justify-center rounded-md border border-gray-100 bg-white p-3 dark:border-[var(--border-color)]">
+			<div
+				aria-busy={loading || !displayUrl}
+				className="flex justify-center rounded-md border border-gray-100 bg-white p-3 dark:border-[var(--border-color)]"
+			>
 				{loading || !displayUrl ? (
-					<div
-						aria-hidden
-						className="h-[200px] w-[200px] animate-pulse rounded bg-gray-100 dark:bg-[var(--bg-primary)]"
-					/>
+					<ShareQrLoader label={loadingLabel} />
 				) : (
 					<div aria-label={t('shareQrLabel')} role="img">
 						<QRCode level="M" size={200} value={displayUrl} />
