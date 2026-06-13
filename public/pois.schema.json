@@ -168,6 +168,15 @@
 						"type": "boolean",
 						"description": "True if the POI's nearest highway is in the same connected component of the corridor highway graph as the trail polyline. False means the road network around the POI is disconnected from the trail (typical for POIs separated from the trail by an unbridged river, cliff, or military zone)."
 					},
+					"nearestPublicTransportM": {
+						"type": "number",
+						"minimum": 0,
+						"description": "Distance in metres from the POI to the nearest trail-side bus or train stop on the walking-reachable highway network. Populated when public-transport escape rescue applies."
+					},
+					"isReachableViaPublicTransport": {
+						"type": "boolean",
+						"description": "True when a trail-side public transport stop is near enough that the POI is kept despite failing walking reachability (`isReachable === false`). Schedules are not verified - treat as a bail-out hint only."
+					},
 					"water": {
 						"type": "object",
 						"description": "Water-source intelligence (type \"water\" only), derived from OSM tags at enrichment time.",

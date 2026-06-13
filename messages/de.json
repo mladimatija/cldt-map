@@ -250,7 +250,7 @@
 		"shareShortLinksLabel": "Kurzlinks zum Teilen verwenden",
 		"shareShortLinksHint": "Kopiert einen kompakten Link mit derselben Kartenansicht. Zum Erstellen ist eine Internetverbindung nötig.",
 		"includeRemotePoisLabel": "Entfernte POIs einbeziehen",
-		"includeRemotePoisHint": "Zeigt Orte, die der Datensatz als schwer von der Route erreichbar markiert (z. B. jenseits eines Flusses oder an einer Sackgasse). Standardmäßig aus."
+		"includeRemotePoisHint": "Zeigt Orte, die im Datensatz als zu Fuß schwer erreichbar gelten und keine nahe Bushaltestelle oder Bahnstation auf der Wegseite haben. Standardmäßig aus."
 	},
 	"baseMapSelector": {
 		"standard": "Standard",
@@ -876,6 +876,7 @@
 		"trailKmLabel": "km {km}",
 		"trailPositionLabel": "Position auf dem Trail:",
 		"offTrailLabel": "Abseits:",
+		"publicTransportEscape": "ÖPNV-Haltestelle {distance} entfernt (Wegseite)",
 		"elevationLabel": "Höhe:",
 		"phoneLabel": "Telefon:",
 		"capacityLabel": "Kapazität:",

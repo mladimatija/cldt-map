@@ -398,9 +398,11 @@ export function poiMatchesTagFilter(p: Poi, enabledTags: ReadonlySet<string>): b
 }
 
 /** When `includeRemotePois` is false, hide POIs tagged unreachable by the
- *  enricher (`isReachable === false`). Missing field means reachable. */
+ *  enricher (`isReachable === false`), except POIs rescued by a nearby
+ *  trail-side public transport stop. Missing field means reachable. */
 export function poiPassesReachabilityFilter(p: Poi, includeRemotePois: boolean): boolean {
 	if (includeRemotePois) return true;
+	if (p.isReachableViaPublicTransport === true) return true;
 	return p.isReachable !== false;
 }
 
