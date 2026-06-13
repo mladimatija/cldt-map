@@ -204,6 +204,20 @@ Map and POI share links can be shortened to `/s/{code}` so they fit SMS and chat
 
 **Local development:** `npm run dev` does not configure Netlify Blobs, so shortening returns `503` and the client copies the long URL. Use [`netlify dev`](https://docs.netlify.com/api-and-deploy-docs/cli/local-development/) to exercise the shortener against a local Blobs store.
 
+**Netlify-built-in deploy URLs (`URL`, `DEPLOY_URL`, `DEPLOY_PRIME_URL`):** The share API validates submitted URLs against an allowlist of hostnames. Besides the incoming `Host` / `X-Forwarded-Host` headers, it also reads three [read-only Netlify variables](https://docs.netlify.com/build/configure-builds/environment-variables/#deploy-urls-and-metadata). You do **not** add these in Site settings or `.env.local`; Netlify sets them per deploy.
+
+| Variable           | Set by Netlify                                         | Typical value by context                                                                                                                                    |
+| ------------------ | ------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `URL`              | Always (build; also available to Functions at runtime) | Production site URL (`https://map.cldt.hr` or your Netlify subdomain)                                                                                       |
+| `DEPLOY_PRIME_URL` | Build (and `netlify dev`)                              | **Production:** same as `URL`. **Deploy Preview:** `https://deploy-preview-N--site.netlify.app`. **Branch deploy:** `https://branch-name--site.netlify.app` |
+| `DEPLOY_URL`       | Build (and `netlify dev`)                              | Unique URL for this deploy: `https://{deploy-id}--site.netlify.app` (all contexts)                                                                          |
+
+On Netlify, no manual configuration is required for `map.cldt.hr` - the allowlist always includes `siteMetadata.url` (the canonical production domain), so shortening works even when Netlify's `URL` still points at `*.netlify.app` and request headers omit the custom host. At API runtime, `URL` is the reliable built-in; `DEPLOY_*` may be unset in serverless Functions (they are always present at build time). Request headers cover deploy-preview and branch hosts in practice.
+
+Optional: set `SHARE_EXTRA_ALLOWED_HOSTS` in Netlify Site settings (comma-separated hostnames) if you serve the app on additional aliases (e.g. `www.map.cldt.hr`).
+
+Locally, plain `npm run dev` leaves all three unset; localhost is still allowed via request headers. To mirror Netlify values locally, run [`netlify dev`](https://docs.netlify.com/api-and-deploy-docs/cli/local-development/) (CLI injects the same read-only vars). Do not copy production URLs into `.env.local` unless you are debugging a specific host-matching edge case.
+
 **Security:** Only same-origin URLs whose query string contains recognised share params are accepted (no open redirects). Codes are random, not sequential.
 
 ---

@@ -36,7 +36,7 @@ function addAllowedShareHost(hosts: Set<string>, value: string | null | undefine
 	const first = value.split(',')[0]?.trim();
 	if (!first) return;
 	try {
-		const host = (first.includes('://') ? new URL(first).host : first).toLowerCase();
+		const host = (first.includes('://') ? new URL(first).hostname : first.split(':')[0]).toLowerCase();
 		if (host) hosts.add(host);
 	} catch {
 		// ignore malformed host values
@@ -48,10 +48,18 @@ export function collectShareAllowedHosts(request: NextRequest): Set<string> {
 	const hosts = new Set<string>();
 	addAllowedShareHost(hosts, request.headers.get('x-forwarded-host'));
 	addAllowedShareHost(hosts, request.headers.get('host'));
-	addAllowedShareHost(hosts, request.nextUrl.host);
+	addAllowedShareHost(hosts, request.nextUrl.hostname);
+	// Client share URLs always use siteMetadata.url (map.cldt.hr), not window.location on prod.
+	addAllowedShareHost(hosts, siteMetadata.url);
 	addAllowedShareHost(hosts, process.env.URL);
 	addAllowedShareHost(hosts, process.env.DEPLOY_PRIME_URL);
 	addAllowedShareHost(hosts, process.env.DEPLOY_URL);
+	const extraHosts = process.env.SHARE_EXTRA_ALLOWED_HOSTS;
+	if (extraHosts) {
+		for (const part of extraHosts.split(',')) {
+			addAllowedShareHost(hosts, part.trim());
+		}
+	}
 	return hosts;
 }
 
@@ -90,7 +98,7 @@ export function normalizeShareTarget(inputUrl: string, allowedHosts: ReadonlySet
 
 	if (parsed.protocol !== 'https:' && parsed.protocol !== 'http:') return null;
 	if (parsed.username || parsed.password) return null;
-	if (!allowedHosts.has(parsed.host.toLowerCase())) return null;
+	if (!allowedHosts.has(parsed.hostname.toLowerCase())) return null;
 	if (!isAllowedSharePathname(parsed.pathname)) return null;
 	if (parsed.hash) return null;
 	if (parsed.search.length > SHARE_TARGET_MAX_LEN) return null;
