@@ -46,7 +46,6 @@ export function MapControlsSharePanel({
 			cancelled = true;
 		};
 		// Resolve once per panel mount; parent snapshots longUrl when the panel opens.
-		// eslint-disable-next-line react-hooks/exhaustive-deps -- stable snapshot URL
 	}, [useShortLinks]);
 
 	return (

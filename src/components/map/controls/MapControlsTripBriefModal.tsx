@@ -21,7 +21,9 @@ import { exportTripBriefPdf } from '@/lib/trip-brief-pdf';
 import { exportTripBriefDocx } from '@/lib/trip-brief-docx';
 import { exportTripBriefHtml } from '@/lib/trip-brief-html';
 import { usePopoverFocusTrap, usePackAdjustedPaceKmh } from '@/hooks';
-import { computeStagePackScenarios, formatVolume, formatWeight } from '@/lib/pack-weight';
+import { computeStagePackScenarios, formatVolume, formatWeight, kgToDisplay, weightUnitLabel } from '@/lib/pack-weight';
+import { estimatedFoodDaysFromPack, type StageResupplyCadence } from '@/lib/resupply-cadence';
+import { poiDisplayName } from '@/lib/pois';
 import { missingGearTerms } from '@/lib/pack-csv';
 import { renderElevationThumbnail } from '@/lib/elevation-thumbnail';
 import { Locale } from '@/i18n/routing';
@@ -71,6 +73,7 @@ export function MapControlsTripBriefModal({
 	const walkingPaceKmh = usePackAdjustedPaceKmh();
 	const packBaseWeightKg = useMapStore((s: MapStoreState) => s.packBaseWeightKg);
 	const waterConsumptionLph = useMapStore((s: MapStoreState) => s.waterConsumptionLph);
+	const foodConsumptionKgPerDay = useMapStore((s: MapStoreState) => s.foodConsumptionKgPerDay);
 	const packGearList = useMapStore((s: MapStoreState) => s.packGearList);
 	const gradeAdjustedEta = useMapStore((s: MapStoreState) => s.gradeAdjustedEta);
 	const units = useMapStore((s: MapStoreState) => s.units);
@@ -120,6 +123,45 @@ export function MapControlsTripBriefModal({
 		if (!stagePlan) {
 			throw new Error('Stage plan required');
 		}
+
+		const poiName = (id: string): string => {
+			const poi = poisFile?.pois.find((p) => p.id === id);
+			return poi ? poiDisplayName(poi, locale) : id;
+		};
+
+		const buildResupplyCadenceLabels = (
+			cadence: StageResupplyCadence,
+		): { entering?: string; carry?: string; foodPack?: string } => {
+			const out: { entering?: string; carry?: string; foodPack?: string } = {};
+			if (cadence.status !== 'yes' && cadence.kmSinceGrocery !== null && cadence.stagesSinceGrocery > 0) {
+				out.entering = t('resupplyEntering', {
+					stages: cadence.stagesSinceGrocery,
+					distance: makeDistanceLabelFn(units, distancePrecision)(cadence.kmSinceGrocery),
+				});
+			}
+			if (
+				(cadence.status === 'no' || cadence.status === 'partial') &&
+				cadence.kmToNextGrocery !== null &&
+				cadence.nextGrocery
+			) {
+				out.carry = t('resupplyCarry', {
+					distance: makeDistanceLabelFn(units, distancePrecision)(cadence.kmToNextGrocery),
+					town: poiName(cadence.nextGrocery.id),
+				});
+			}
+			const consumableKg = packGearList?.consumableKg ?? 0;
+			if (consumableKg > 0 && foodConsumptionKgPerDay > 0) {
+				const foodDays = estimatedFoodDaysFromPack(consumableKg, foodConsumptionKgPerDay);
+				if (foodDays !== null) {
+					out.foodPack = t('resupplyFoodPack', {
+						days: foodDays,
+						rate: `${Math.round(kgToDisplay(foodConsumptionKgPerDay, units) * 10) / 10} ${weightUnitLabel(units)}/day`,
+					});
+				}
+			}
+			return out;
+		};
+
 		return assembleTripBrief({
 			stagePlan,
 			poisFile,
@@ -181,6 +223,20 @@ export function MapControlsTripBriefModal({
 					};
 				},
 			}),
+			poiName,
+			resupplyCadenceLabels: (cadence) => buildResupplyCadenceLabels(cadence),
+			resupplySummaryLabel: ({ maxFoodGapKm, nextTown, nextDistanceKm }) => {
+				const gapLine = t('resupplySummaryGap', {
+					distance: makeDistanceLabelFn(units, distancePrecision)(maxFoodGapKm),
+				});
+				if (nextTown && nextDistanceKm !== undefined) {
+					return `${gapLine} ${t('resupplySummaryNext', {
+						town: nextTown,
+						distance: makeDistanceLabelFn(units, distancePrecision)(nextDistanceKm),
+					})}`;
+				}
+				return gapLine;
+			},
 		});
 	}, [
 		stagePlan,
@@ -205,6 +261,7 @@ export function MapControlsTripBriefModal({
 		t,
 		packBaseWeightKg,
 		waterConsumptionLph,
+		foodConsumptionKgPerDay,
 	]);
 
 	const resetModalState = useCallback((): void => {
@@ -386,6 +443,13 @@ export function MapControlsTripBriefModal({
 								<span className="mb-1 block text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400">
 									{dayHeader(day, documentStrings, preparedBrief.meta.units)}
 								</span>
+								{[day.resupplyEnteringLabel, day.resupplyCarryLabel, day.foodPackLabel]
+									.filter((line): line is string => !!line)
+									.map((line) => (
+										<p className="mb-1 text-[10px] text-amber-700 dark:text-amber-400" key={line}>
+											{line}
+										</p>
+									))}
 								<textarea
 									className={NARRATIVE_TEXTAREA}
 									disabled={generating}

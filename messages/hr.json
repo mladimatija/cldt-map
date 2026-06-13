@@ -236,6 +236,7 @@
 		"packWeightTitle": "Težina ruksaka",
 		"packBaseWeightLabel": "Osnovna težina (bez vode)",
 		"waterConsumptionLabel": "Potrošnja vode",
+		"foodConsumptionLabel": "Potrošnja hrane",
 		"packWeightHint": "Uključuje preporuke nošenja vode po etapi. Ostavite osnovnu težinu praznom za isključivanje.",
 		"packEtaAdjustLabel": "Prilagodi procjene vremena težini ruksaka",
 		"packEtaAdjustHint": "Usporava procjene za oko 1% po kilogramu osnovne težine iznad {reference}.",
@@ -693,7 +694,13 @@
 		"stagePackTooltipBase": "Osnovni ruksak {base}",
 		"stagePackTooltipLoaded": "Osnovni ruksak {base}, maks. opterećenje {loaded} (ponesite do {volume} vode)",
 		"stageResupplyYes": "Opskrba namirnicama dostupna u ovoj etapi",
-		"stageResupplyNo": "Nema opskrbe namirnicama u ovoj etapi - ponesite hranu"
+		"stageResupplyPartial": "Samo pekara u ovoj etapi - nema punu opskrbu namirnicama",
+		"stageResupplyNo": "Nema opskrbe namirnicama u ovoj etapi - ponesite hranu",
+		"tripFoodGap": "Najduži odsječak bez namirnica: {distance}",
+		"tripNextGrocery": "Sljedeća opskrba namirnicama: {town} ({distance})",
+		"stageFoodEntering": "Ulazite s {stages} etapa / {distance} od zadnje opskrbe namirnicama",
+		"stageFoodCarry": "Ponesite hranu {distance} do {town}",
+		"stageFoodPackDays": "Potrošni materijal u ruksaku: ~{days} dana pri {rate}"
 	},
 	"tripBrief": {
 		"defaultTitle": "CLDT plan putovanja",
@@ -739,7 +746,8 @@
 				"emergency": "Hitne službe",
 				"generated": "Generirano u CLDT karti",
 				"pack": "Ruksak",
-				"resupply": "opskrba"
+				"resupply": "opskrba",
+				"resupplyCadence": "Opskrba hranom"
 			},
 			"daysHeading": "Po danima",
 			"moreLabel": "još mjesta",
@@ -769,6 +777,11 @@
 		"packSummary": "{base} + voda",
 		"packBaseLine": "Osnovni ruksak: {weight}",
 		"packLoadedLine": "Maks. opterećenje: {weight} (ponesite do {volume} vode duž najduže suhe dionice)",
+		"resupplySummaryGap": "Najduži odsječak bez namirnica: {distance}.",
+		"resupplySummaryNext": "Sljedeća opskrba namirnicama: {town} ({distance}).",
+		"resupplyEntering": "Od zadnje opskrbe namirnicama: {stages} etapa, {distance}",
+		"resupplyCarry": "Ponesite hranu {distance} do {town}",
+		"resupplyFoodPack": "Potrošni materijal u ruksaku: ~{days} dana pri {rate}",
 		"waterCarry": "Voda: ponesite do {volume} za najduži dio bez izvora (ukupna težina ruksaka {total})",
 		"gearHeading": "Popis opreme ({name})",
 		"gearMissing": "Preporučena oprema nije pronađena u vašem popisu: {terms}. Provjerite prije polaska."

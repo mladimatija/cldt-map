@@ -12,7 +12,7 @@
 		"prebuild": "node scripts/stamp-sw-version.mjs && node scripts/split-pois.mjs && npm run format",
 		"build": "next build",
 		"start": "next start",
-		"lint": "eslinxt .",
+		"lint": "eslint .",
 		"lint:fix": "eslint . --fix",
 		"format": "prettier --write .",
 		"format:check": "prettier --check .",

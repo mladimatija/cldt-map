@@ -191,6 +191,8 @@ export function createMapStoreStub(): MapStoreState {
 		setPackBaseWeightKg: noop,
 		waterConsumptionLph: 0.6,
 		setWaterConsumptionLph: noop,
+		foodConsumptionKgPerDay: 0.6,
+		setFoodConsumptionKgPerDay: noop,
 		packEtaAdjust: false,
 		setPackEtaAdjust: noop,
 		packGearList: null,
