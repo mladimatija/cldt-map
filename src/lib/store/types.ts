@@ -322,6 +322,9 @@ export interface MapStoreState {
 	/** Drinking rate in L/h used for water carry suggestions. Persisted. */
 	waterConsumptionLph: number;
 	setWaterConsumptionLph: (lph: number) => void;
+	/** Food consumption rate in kg/day for resupply cadence estimates. Persisted. */
+	foodConsumptionKgPerDay: number;
+	setFoodConsumptionKgPerDay: (kgPerDay: number) => void;
 	/** Apply the pack-weight pace penalty to ETAs. Persisted. */
 	packEtaAdjust: boolean;
 	setPackEtaAdjust: (enabled: boolean) => void;

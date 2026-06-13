@@ -39,6 +39,7 @@ import { loadPois } from '@/lib/pois';
 import { prefetchPoiAssets, prefetchPoisAlongSlice } from '@/lib/poi-prefetch';
 import { addInterval, removeInterval, type CompletionInterval } from '../completion';
 import { DEFAULT_WATER_CONSUMPTION_LPH } from '../pack-weight';
+import { DEFAULT_FOOD_CONSUMPTION_KG_PER_DAY } from '../resupply-cadence';
 import {
 	filterActiveEntries,
 	isSeasonalStatusDefaultEnabled,
@@ -651,6 +652,10 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					setWaterConsumptionLph: (lph: number): void => {
 						set({ waterConsumptionLph: lph });
 					},
+					foodConsumptionKgPerDay: DEFAULT_FOOD_CONSUMPTION_KG_PER_DAY,
+					setFoodConsumptionKgPerDay: (kgPerDay: number): void => {
+						set({ foodConsumptionKgPerDay: kgPerDay });
+					},
 					packEtaAdjust: false,
 					setPackEtaAdjust: (enabled: boolean): void => {
 						set({ packEtaAdjust: enabled });
@@ -985,6 +990,7 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					walkingPaceKmh: state.walkingPaceKmh,
 					packBaseWeightKg: state.packBaseWeightKg,
 					waterConsumptionLph: state.waterConsumptionLph,
+					foodConsumptionKgPerDay: state.foodConsumptionKgPerDay,
 					packEtaAdjust: state.packEtaAdjust,
 					packGearList: state.packGearList,
 					pushAlertsEnabled: state.pushAlertsEnabled,

@@ -112,6 +112,8 @@ export function MapControlsSettingsPanel({
 	const setPackBaseWeightKg = useMapStore((state: MapStoreState) => state.setPackBaseWeightKg);
 	const waterConsumptionLph = useMapStore((state: MapStoreState) => state.waterConsumptionLph);
 	const setWaterConsumptionLph = useMapStore((state: MapStoreState) => state.setWaterConsumptionLph);
+	const foodConsumptionKgPerDay = useMapStore((state: MapStoreState) => state.foodConsumptionKgPerDay);
+	const setFoodConsumptionKgPerDay = useMapStore((state: MapStoreState) => state.setFoodConsumptionKgPerDay);
 	const packEtaAdjust = useMapStore((state: MapStoreState) => state.packEtaAdjust);
 	const setPackEtaAdjust = useMapStore((state: MapStoreState) => state.setPackEtaAdjust);
 	const packGearList = useMapStore((state: MapStoreState) => state.packGearList);
@@ -622,6 +624,23 @@ export function MapControlsSettingsPanel({
 									}}
 								/>
 								<span className="w-5">{volumeUnitLabel(units)}/h</span>
+							</span>
+						</label>
+						<label className="flex items-center justify-between gap-2 text-xs text-gray-600 dark:text-gray-400">
+							{t('foodConsumptionLabel')}
+							<span className="flex shrink-0 items-center gap-1">
+								<input
+									className={cn(MAP_CONTROL_INPUT, 'w-20 text-right')}
+									min={0.1}
+									step={0.1}
+									type="number"
+									value={Math.round(kgToDisplay(foodConsumptionKgPerDay, units) * 100) / 100}
+									onChange={(e) => {
+										const v = Number(e.target.value);
+										if (Number.isFinite(v) && v > 0) setFoodConsumptionKgPerDay(displayToKg(v, units));
+									}}
+								/>
+								<span className="w-8">{weightUnitLabel(units)}/day</span>
 							</span>
 						</label>
 						<p className="m-0 text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('packWeightHint')}</p>

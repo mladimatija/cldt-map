@@ -236,6 +236,7 @@
 		"packWeightTitle": "Rucksackgewicht",
 		"packBaseWeightLabel": "Basisgewicht (ohne Wasser)",
 		"waterConsumptionLabel": "Wasserverbrauch",
+		"foodConsumptionLabel": "Nahrungsmittelverbrauch",
 		"packWeightHint": "Aktiviert Wassertransport-Empfehlungen pro Etappe. Basisgewicht leer lassen, um dies auszuschalten.",
 		"packEtaAdjustLabel": "Zeitschätzungen ans Rucksackgewicht anpassen",
 		"packEtaAdjustHint": "Verlangsamt Schätzungen um etwa 1% pro Kilogramm Basisgewicht über {reference}.",
@@ -693,7 +694,13 @@
 		"stagePackTooltipBase": "Basisgewicht {base}",
 		"stagePackTooltipLoaded": "Basisgewicht {base}, max. Gewicht {loaded} (bis zu {volume} Wasser mitnehmen)",
 		"stageResupplyYes": "Lebensmittelversorgung in dieser Etappe verfügbar",
-		"stageResupplyNo": "Keine Lebensmittelversorgung in dieser Etappe - Essen mitnehmen"
+		"stageResupplyPartial": "Nur Bäckerei in dieser Etappe - keine volle Lebensmittelversorgung",
+		"stageResupplyNo": "Keine Lebensmittelversorgung in dieser Etappe - Essen mitnehmen",
+		"tripFoodGap": "Längste Strecke ohne Lebensmittel: {distance}",
+		"tripNextGrocery": "Nächste Lebensmittelversorgung: {town} ({distance})",
+		"stageFoodEntering": "Start mit {stages} Etappen / {distance} seit letzter Lebensmittelversorgung",
+		"stageFoodCarry": "Essen {distance} bis {town} mitnehmen",
+		"stageFoodPackDays": "Verbrauchsgüter im Rucksack: ~{days} Tage bei {rate}"
 	},
 	"tripBrief": {
 		"defaultTitle": "CLDT Reiseplan",
@@ -739,7 +746,8 @@
 				"emergency": "Notfallkontakte",
 				"generated": "Erstellt mit CLDT Map am",
 				"pack": "Rucksack",
-				"resupply": "Versorgung"
+				"resupply": "Versorgung",
+				"resupplyCadence": "Lebensmittelversorgung"
 			},
 			"daysHeading": "Tag für Tag",
 			"moreLabel": "weitere Orte",
@@ -769,6 +777,11 @@
 		"packSummary": "{base} + Wasser",
 		"packBaseLine": "Basisgewicht: {weight}",
 		"packLoadedLine": "Max. Gewicht: {weight} (bis zu {volume} Wasser über die längste Trockenstrecke mitnehmen)",
+		"resupplySummaryGap": "Längste Strecke ohne Lebensmittel: {distance}.",
+		"resupplySummaryNext": "Nächste Lebensmittelversorgung: {town} ({distance}).",
+		"resupplyEntering": "Seit letzter Lebensmittelversorgung: {stages} Etappen, {distance}",
+		"resupplyCarry": "Essen {distance} bis {town} mitnehmen",
+		"resupplyFoodPack": "Verbrauchsgüter im Rucksack: ~{days} Tage bei {rate}",
 		"waterCarry": "Wasser: bis zu {volume} für den längsten Abschnitt ohne Quelle mitnehmen (Gesamtgewicht {total})",
 		"gearHeading": "Ausrüstungsliste ({name})",
 		"gearMissing": "Empfohlene Ausrüstung nicht in Ihrer Packliste gefunden: {terms}. Vor Abreise prüfen."

@@ -17,16 +17,25 @@ import { Button } from '@/components/ui/Button';
 import { Radio } from '@/components/ui/Radio';
 import { Checkbox } from '@/components/ui/Checkbox';
 import { MapControlsTripBriefModal } from './MapControlsTripBriefModal';
-import { cn, formatElevation, kmToMiles, milesToKm } from '@/lib/utils';
+import { cn, formatDistance, formatElevation, kmToMiles, milesToKm } from '@/lib/utils';
 import { MAP_CONTROL_POPOVER, MAP_CONTROL_INPUT } from './map-controls-constants';
 import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
 import { usePopoverFocusTrap, usePackAdjustedPaceKmh } from '@/hooks';
+import {
+	collectResupplyTownPoints,
+	computePlanResupplyCadence,
+	estimatedFoodDaysFromPack,
+	type StageResupplyCadence,
+	type StageResupplyStatus,
+} from '@/lib/resupply-cadence';
 import {
 	CARRY_WARN_L,
 	computeStagePackScenarios,
 	formatPackWeightRange,
 	formatVolume,
 	formatWeight,
+	kgToDisplay,
+	weightUnitLabel,
 } from '@/lib/pack-weight';
 import {
 	splitByDistance,
@@ -65,6 +74,8 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 	const walkingPaceKmh = usePackAdjustedPaceKmh();
 	const packBaseWeightKg = useMapStore((s: MapStoreState) => s.packBaseWeightKg);
 	const waterConsumptionLph = useMapStore((s: MapStoreState) => s.waterConsumptionLph);
+	const foodConsumptionKgPerDay = useMapStore((s: MapStoreState) => s.foodConsumptionKgPerDay);
+	const packGearList = useMapStore((s: MapStoreState) => s.packGearList);
 	const gradeAdjustedEta = useMapStore((s: MapStoreState) => s.gradeAdjustedEta);
 	const units = useMapStore((s: MapStoreState) => s.units);
 	const poisFile = useMapStore((s: MapStoreState) => s.poisFile);
@@ -367,22 +378,87 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 		return stagePlan.stages.map((s) => longestDryStretchKm(s.startKm, s.endKm, waterSourceKms));
 	}, [stagePlan, waterSourceKms]);
 
-	/** Per-stage resupply availability from the towns' enrichment data:
-	 *  'yes' when a town in the stage has a grocery, 'no' when the stage has
-	 *  checked towns but none with groceries, null when there is nothing to
-	 *  say (no resupply data yet, or no checked towns in the stage). */
-	const resupplyByStage = useMemo((): ('yes' | 'no' | null)[] => {
-		if (!stagePlan || !poisFile?.pois?.length) return [];
-		const towns = poisFile.pois.filter((p) => (p.type === 'town' || p.type === 'settlement') && p.resupply);
-		if (towns.length === 0) return stagePlan.stages.map(() => null);
-		return stagePlan.stages.map((stage) => {
-			const lo = Math.min(stage.startKm, stage.endKm);
-			const hi = Math.max(stage.startKm, stage.endKm);
-			const inStage = towns.filter((t) => t.trailKm >= lo && t.trailKm <= hi);
-			if (inStage.length === 0) return null;
-			return inStage.some((t) => t.resupply?.places.some((place) => place.kind === 'grocery')) ? 'yes' : 'no';
-		});
-	}, [stagePlan, poisFile]);
+	/** Full-plan food resupply cadence from enrichment data (ignores POI layer visibility). */
+	const planResupplyCadence = useMemo(() => {
+		if (!stagePlan || !poisFile?.pois?.length) return null;
+		const resupplyPoints = collectResupplyTownPoints(poisFile.pois);
+		if (resupplyPoints.length === 0) return null;
+		return computePlanResupplyCadence(stagePlan.stages, poisFile.pois, resupplyPoints, walkingPaceKmh, maxHoursPerDay);
+	}, [stagePlan, poisFile, walkingPaceKmh, maxHoursPerDay]);
+
+	const poiById = useMemo((): Map<string, Poi> => {
+		const map = new Map<string, Poi>();
+		for (const poi of poisFile?.pois ?? []) map.set(poi.id, poi);
+		return map;
+	}, [poisFile]);
+
+	const resupplyTownName = useCallback(
+		(id: string | undefined): string | undefined => {
+			if (!id) return undefined;
+			const poi = poiById.get(id);
+			return poi ? poiDisplayName(poi, locale) : undefined;
+		},
+		[poiById, locale],
+	);
+
+	const resupplyStatusLabel = useCallback(
+		(status: StageResupplyStatus): string | undefined => {
+			if (status === 'yes') return t('stageResupplyYes');
+			if (status === 'partial') return t('stageResupplyPartial');
+			if (status === 'no') return t('stageResupplyNo');
+			return undefined;
+		},
+		[t],
+	);
+
+	const stageResupplyDetailLines = useCallback(
+		(cadence: StageResupplyCadence | undefined): string[] => {
+			if (!cadence) return [];
+			const lines: string[] = [];
+			if (cadence.status !== 'yes' && cadence.kmSinceGrocery !== null && cadence.stagesSinceGrocery > 0) {
+				lines.push(
+					t('stageFoodEntering', {
+						stages: cadence.stagesSinceGrocery,
+						distance: formatDistance(cadence.kmSinceGrocery, units, distancePrecision),
+					}),
+				);
+			}
+			if (
+				(cadence.status === 'no' || cadence.status === 'partial') &&
+				cadence.kmToNextGrocery !== null &&
+				cadence.nextGrocery
+			) {
+				const town = resupplyTownName(cadence.nextGrocery.id);
+				if (town) {
+					lines.push(
+						t('stageFoodCarry', {
+							distance: formatDistance(cadence.kmToNextGrocery, units, distancePrecision),
+							town,
+						}),
+					);
+				}
+			}
+			const consumableKg = packGearList?.consumableKg ?? 0;
+			if (consumableKg > 0 && foodConsumptionKgPerDay > 0) {
+				const foodDays = estimatedFoodDaysFromPack(consumableKg, foodConsumptionKgPerDay);
+				if (foodDays !== null) {
+					lines.push(
+						t('stageFoodPackDays', {
+							days: foodDays,
+							rate: `${Math.round(kgToDisplay(foodConsumptionKgPerDay, units) * 10) / 10} ${weightUnitLabel(units)}/day`,
+						}),
+					);
+				}
+			}
+			return lines;
+		},
+		[t, units, distancePrecision, resupplyTownName, packGearList, foodConsumptionKgPerDay],
+	);
+
+	const tripNextGroceryTown = useMemo((): string | null => {
+		if (!planResupplyCadence?.firstGrocery || planResupplyCadence.kmToFirstGrocery === null) return null;
+		return resupplyTownName(planResupplyCadence.firstGrocery.id) ?? null;
+	}, [planResupplyCadence, resupplyTownName]);
 
 	/** Per-stage base vs loaded pack scenarios across the longest dry stretch. */
 	const packScenariosByStage = useMemo(() => {
@@ -620,11 +696,32 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 
 				{!stagePlan && <p className="mb-0 text-xs text-gray-500 dark:text-gray-400">{t('noStages')}</p>}
 
+				{stagePlan && planResupplyCadence && (
+					<div className="flex flex-col gap-0.5 rounded border border-gray-100 px-2 py-1.5 text-[11px] text-gray-600 dark:border-[var(--border-color)] dark:text-gray-400">
+						<p className="m-0">
+							<span aria-hidden>🛒</span>{' '}
+							{t('tripFoodGap', {
+								distance: formatDistance(planResupplyCadence.maxFoodGapKm, units, distancePrecision),
+							})}
+						</p>
+						{tripNextGroceryTown && planResupplyCadence.kmToFirstGrocery !== null && (
+							<p className="m-0">
+								{t('tripNextGrocery', {
+									town: tripNextGroceryTown,
+									distance: formatDistance(planResupplyCadence.kmToFirstGrocery, units, distancePrecision),
+								})}
+							</p>
+						)}
+					</div>
+				)}
+
 				{stagePlan && (
 					<div className="flex min-h-0 flex-1 flex-col divide-y divide-gray-100 overflow-y-auto rounded border border-gray-100 dark:divide-[var(--border-color)] dark:border-[var(--border-color)]">
 						{stagePlan.stages.map((stage, i) => {
 							const stats = stageStats[i];
 							const poiCount = poisByStage[i]?.length ?? 0;
+							const stageCadence = planResupplyCadence?.stages[i];
+							const resupplyStatus = stageCadence?.status ?? null;
 							return (
 								<button
 									className={cn(
@@ -662,7 +759,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 									{(poiCount > 0 ||
 										(waterGapByStage[i] !== undefined && waterGapByStage[i] >= WATER_GAP_WARN_KM) ||
 										packScenariosByStage[i] !== undefined ||
-										(resupplyByStage[i] !== null && resupplyByStage[i] !== undefined) ||
+										resupplyStatus !== null ||
 										stageForecasts[i]) && (
 										<span className="flex w-full flex-wrap items-center gap-x-1.5 gap-y-0.5 pl-5">
 											{poiCount > 0 && (
@@ -732,19 +829,22 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 													)}
 												</span>
 											)}
-											{resupplyByStage[i] !== null && resupplyByStage[i] !== undefined && (
+											{resupplyStatus !== null && resupplyStatusLabel(resupplyStatus) && (
 												<span
-													aria-label={resupplyByStage[i] === 'yes' ? t('stageResupplyYes') : t('stageResupplyNo')}
+													aria-label={resupplyStatusLabel(resupplyStatus)}
 													className={cn(
 														'shrink-0 rounded-full px-1.5 py-0 text-[10px] font-medium',
-														resupplyByStage[i] === 'yes'
+														resupplyStatus === 'yes'
 															? 'bg-gray-500/10 text-gray-600 dark:text-gray-300'
-															: 'bg-amber-500/15 text-amber-700 dark:text-amber-400',
+															: resupplyStatus === 'partial'
+																? 'bg-amber-500/15 text-amber-700 dark:text-amber-400'
+																: 'bg-amber-500/15 text-amber-700 dark:text-amber-400',
 													)}
-													title={resupplyByStage[i] === 'yes' ? t('stageResupplyYes') : t('stageResupplyNo')}
+													title={resupplyStatusLabel(resupplyStatus)}
 												>
 													<span aria-hidden>🛒</span>
-													{resupplyByStage[i] === 'no' && <span aria-hidden>✕</span>}
+													{resupplyStatus === 'partial' && <span aria-hidden>~</span>}
+													{resupplyStatus === 'no' && <span aria-hidden>✕</span>}
 												</span>
 											)}
 											{stageForecasts[i] && (
@@ -817,6 +917,11 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 								)}
 							</div>
 						)}
+						{stageResupplyDetailLines(planResupplyCadence?.stages[activeStageIndex]).map((line) => (
+							<p className="m-0 text-[10px] leading-snug text-amber-700 dark:text-amber-400" key={line}>
+								<span aria-hidden>🛒</span> {line}
+							</p>
+						))}
 						{activeStagePois.map((poi) => {
 							const name = poiDisplayName(poi, locale);
 							const typeLabel = tPois(`type.${poi.type}`, { default: poi.type });

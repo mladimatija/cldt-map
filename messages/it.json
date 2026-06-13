@@ -236,6 +236,7 @@
 		"packWeightTitle": "Peso dello zaino",
 		"packBaseWeightLabel": "Peso base (senza acqua)",
 		"waterConsumptionLabel": "Consumo di acqua",
+		"foodConsumptionLabel": "Consumo di cibo",
 		"packWeightHint": "Attiva i suggerimenti sull’acqua da portare per tappa. Lascia vuoto il peso base per disattivare.",
 		"packEtaAdjustLabel": "Adatta le stime dei tempi al peso dello zaino",
 		"packEtaAdjustHint": "Rallenta le stime di circa l’1% per ogni chilogrammo di peso base oltre {reference}.",
@@ -693,7 +694,13 @@
 		"stagePackTooltipBase": "Zaino base {base}",
 		"stagePackTooltipLoaded": "Zaino base {base}, carico max {loaded} (porta fino a {volume} di acqua)",
 		"stageResupplyYes": "Rifornimento alimentari disponibile in questa tappa",
-		"stageResupplyNo": "Nessun rifornimento alimentari in questa tappa - porta il cibo"
+		"stageResupplyPartial": "Solo panificio in questa tappa - nessun rifornimento alimentari completo",
+		"stageResupplyNo": "Nessun rifornimento alimentari in questa tappa - porta il cibo",
+		"tripFoodGap": "Tratto più lungo senza alimentari: {distance}",
+		"tripNextGrocery": "Prossimo rifornimento alimentari: {town} ({distance})",
+		"stageFoodEntering": "Entri con {stages} tappe / {distance} dall'ultimo rifornimento alimentari",
+		"stageFoodCarry": "Porta cibo per {distance} fino a {town}",
+		"stageFoodPackDays": "Consumabili nello zaino: ~{days} giorni a {rate}"
 	},
 	"tripBrief": {
 		"defaultTitle": "Piano di viaggio CLDT",
@@ -739,7 +746,8 @@
 				"emergency": "Contatti di emergenza",
 				"generated": "Generato da CLDT Map il",
 				"pack": "Zaino",
-				"resupply": "rifornimento"
+				"resupply": "rifornimento",
+				"resupplyCadence": "Rifornimento alimentare"
 			},
 			"daysHeading": "Giorno per giorno",
 			"moreLabel": "altri luoghi",
@@ -769,6 +777,11 @@
 		"packSummary": "{base} + acqua",
 		"packBaseLine": "Zaino base: {weight}",
 		"packLoadedLine": "Carico max: {weight} (porta fino a {volume} di acqua lungo il tratto più lungo senza acqua)",
+		"resupplySummaryGap": "Tratto più lungo senza alimentari: {distance}.",
+		"resupplySummaryNext": "Prossimo rifornimento alimentari: {town} ({distance}).",
+		"resupplyEntering": "Dall'ultimo rifornimento alimentari: {stages} tappe, {distance}",
+		"resupplyCarry": "Porta cibo per {distance} fino a {town}",
+		"resupplyFoodPack": "Consumabili nello zaino: ~{days} giorni a {rate}",
 		"waterCarry": "Acqua: porta fino a {volume} per il tratto più lungo senza fonti (peso totale dello zaino {total})",
 		"gearHeading": "Lista attrezzatura ({name})",
 		"gearMissing": "Attrezzatura consigliata non trovata nella tua lista: {terms}. Verifica prima della partenza."

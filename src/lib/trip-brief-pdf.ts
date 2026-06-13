@@ -263,6 +263,7 @@ function renderCover(pdf: JsPDF, brief: TripBrief, logoDataUrl: string | null): 
 		[meta.strings.labels.eta, formatEta(overview.totalDurationSec)],
 		[meta.strings.labels.pace, `${meta.walkingPaceKmh.toFixed(1)} km/h`],
 		...(meta.packSummary ? [[meta.strings.labels.pack, meta.packSummary] as [string, string]] : []),
+		...(meta.resupplySummary ? [[meta.strings.labels.resupplyCadence, meta.resupplySummary] as [string, string]] : []),
 	];
 	let y = HEADER_H + 26;
 	for (const [k, v] of grid) {
@@ -390,6 +391,18 @@ function renderDay(
 		}
 		pdf.setTextColor(...MUTED_TEXT_RGB);
 	}
+
+	for (const label of [day.resupplyEnteringLabel, day.resupplyCarryLabel, day.foodPackLabel].filter(
+		(line): line is string => !!line,
+	)) {
+		pdf.setFont('NotoSans', 'normal');
+		pdf.setTextColor(180, 83, 9);
+		pdf.setFontSize(10);
+		const wrapped = pdf.splitTextToSize(label, PAGE_W - MARGIN_X * 2) as string[];
+		pdf.text(wrapped, MARGIN_X, yCursor);
+		yCursor += wrapped.length * 4 + 2;
+	}
+	pdf.setTextColor(...MUTED_TEXT_RGB);
 
 	// Seasonal alerts (if any)
 	if (day.seasonalAlerts.length > 0) {
