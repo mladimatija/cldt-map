@@ -151,6 +151,12 @@ export type UISlice = UIState & UIActions;
 
 export type StoreState = LocationSlice & TrailSlice & UISlice;
 
+export interface ShareCopyToast {
+	status: 'success' | 'error';
+	short: boolean;
+	nonce: number;
+}
+
 export interface MapStoreState {
 	selectedTrail: string | null;
 	setSelectedTrail: (id: string | null) => void;
@@ -341,6 +347,10 @@ export interface MapStoreState {
 	/** Copy compact `/s/{code}` links when sharing the map or a POI. Persisted. */
 	shareShortLinks: boolean;
 	setShareShortLinks: (enabled: boolean) => void;
+	/** Ephemeral toast for share-link copy feedback (session-only). */
+	shareCopyToast: ShareCopyToast | null;
+	showShareCopyToast: (feedback: { status: 'success' | 'error'; short: boolean }) => void;
+	clearShareCopyToast: () => void;
 
 	/** Personal map annotations (long-press to add). Persisted. */
 	userWaypoints: UserWaypoint[];

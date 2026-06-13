@@ -10,6 +10,13 @@ const sessionShortUrlCache = new Map<string, ShortenShareUrlResult>();
 /** In-flight POST dedup so panel open + copy do not race two creates for the same URL. */
 const sessionShortUrlInFlight = new Map<string, Promise<ShortenShareUrlResult>>();
 
+function cacheShortUrl(longUrl: string, result: ShortenShareUrlResult): ShortenShareUrlResult {
+	if (result.short) {
+		sessionShortUrlCache.set(longUrl, result);
+	}
+	return result;
+}
+
 /** Ask the server to store a long share URL and return a compact `/s/{code}` link. */
 export async function shortenShareUrl(longUrl: string): Promise<ShortenShareUrlResult> {
 	const cached = sessionShortUrlCache.get(longUrl);
@@ -26,23 +33,15 @@ export async function shortenShareUrl(longUrl: string): Promise<ShortenShareUrlR
 				body: JSON.stringify({ url: longUrl }),
 			});
 			if (!res.ok) {
-				const result = { url: longUrl, short: false as const };
-				sessionShortUrlCache.set(longUrl, result);
-				return result;
+				return { url: longUrl, short: false as const };
 			}
 			const data = (await res.json()) as { shortUrl?: string };
 			if (typeof data.shortUrl === 'string' && data.shortUrl.length > 0) {
-				const result = { url: data.shortUrl, short: true as const };
-				sessionShortUrlCache.set(longUrl, result);
-				return result;
+				return cacheShortUrl(longUrl, { url: data.shortUrl, short: true as const });
 			}
-			const fallback = { url: longUrl, short: false as const };
-			sessionShortUrlCache.set(longUrl, fallback);
-			return fallback;
+			return { url: longUrl, short: false as const };
 		} catch {
-			const fallback = { url: longUrl, short: false as const };
-			sessionShortUrlCache.set(longUrl, fallback);
-			return fallback;
+			return { url: longUrl, short: false as const };
 		} finally {
 			sessionShortUrlInFlight.delete(longUrl);
 		}

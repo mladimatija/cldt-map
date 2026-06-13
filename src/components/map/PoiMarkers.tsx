@@ -14,7 +14,7 @@ import {
 	openCoordinatesInMaps,
 } from '@/lib/utils';
 import { usePathname, useRouter } from '@/i18n/navigation';
-import { resolveShareUrlForCopy } from '@/lib/share-shortener-client';
+import { wirePopupShareButton } from '@/lib/share-link-copy';
 import { fetchWikipediaSummary, truncateExtract } from '@/lib/wikipedia';
 import {
 	CLUSTER_CELL_PX,
@@ -306,11 +306,7 @@ export function PoiMarkers(): null {
 					}
 					wireGalleryButtons(marker, poi, openLightbox);
 					wireOpenInMapsButton(marker, poi);
-					wireShareButton(marker, poi, {
-						shareCopied: popupLabels.shareCopied,
-						shareCopiedShort: popupLabels.shareCopiedShort,
-						shareFailed: popupLabels.shareFailed,
-					});
+					wireShareButton(marker, poi, popupLabels.shareLink);
 					wireStarButton(marker, poi, {
 						starAddLabel: poiLabels.starAddLabel,
 						starRemoveLabel: poiLabels.starRemoveLabel,
@@ -575,49 +571,15 @@ function wireStarButton(marker: L.Marker, poi: Poi, labels: { starAddLabel: stri
 	});
 }
 
-/**
- * Wires the share button inside an open POI popup. Copies a deep-link to
- * the clipboard and flashes a temporary "Copied" label on the button. Falls
- * back to a manual prompt when the clipboard API isn't available (e.g.
- * non-https contexts or older browsers).
- */
-function wireShareButton(
-	marker: L.Marker,
-	poi: Poi,
-	labels: { shareCopied: string; shareCopiedShort: string; shareFailed: string },
-): void {
+/** Wires the share button inside an open POI popup (see share-link-copy). */
+function wireShareButton(marker: L.Marker, poi: Poi, shareLinkLabel: string): void {
 	const popup = marker.getPopup();
 	if (!popup) return;
 	const el = popup.getElement();
 	if (!el) return;
 	const btn = el.querySelector<HTMLButtonElement>(`[data-poi-share="${cssEscape(poi.id)}"]`);
 	if (!btn) return;
-	// Guard against re-wiring on multiple popupopens for the same DOM node.
-	if (btn.dataset.wired === '1') return;
-	btn.dataset.wired = '1';
-	const originalLabel = btn.textContent ?? '';
-	btn.addEventListener('click', async (e) => {
-		e.preventDefault();
-		const longUrl = buildPoiShareUrl(poi.id);
-		const { url, short } = await resolveShareUrlForCopy(longUrl, {
-			useShortLinks: useMapStore.getState().shareShortLinks,
-			online: navigator.onLine,
-		});
-		let ok = false;
-		try {
-			if (typeof navigator !== 'undefined' && navigator.clipboard?.writeText) {
-				await navigator.clipboard.writeText(url);
-				ok = true;
-			}
-		} catch {
-			ok = false;
-		}
-		btn.textContent = ok ? (short ? labels.shareCopiedShort : labels.shareCopied) : labels.shareFailed;
-		// Reset the label after a short interval so the button stays usable.
-		window.setTimeout(() => {
-			btn.textContent = originalLabel;
-		}, 1800);
-	});
+	wirePopupShareButton(btn, () => buildPoiShareUrl(poi.id), shareLinkLabel);
 }
 
 /**
