@@ -26,7 +26,9 @@ export async function shortenShareUrl(longUrl: string): Promise<ShortenShareUrlR
 				body: JSON.stringify({ url: longUrl }),
 			});
 			if (!res.ok) {
-				return { url: longUrl, short: false };
+				const result = { url: longUrl, short: false as const };
+				sessionShortUrlCache.set(longUrl, result);
+				return result;
 			}
 			const data = (await res.json()) as { shortUrl?: string };
 			if (typeof data.shortUrl === 'string' && data.shortUrl.length > 0) {
@@ -34,9 +36,13 @@ export async function shortenShareUrl(longUrl: string): Promise<ShortenShareUrlR
 				sessionShortUrlCache.set(longUrl, result);
 				return result;
 			}
-			return { url: longUrl, short: false };
+			const fallback = { url: longUrl, short: false as const };
+			sessionShortUrlCache.set(longUrl, fallback);
+			return fallback;
 		} catch {
-			return { url: longUrl, short: false };
+			const fallback = { url: longUrl, short: false as const };
+			sessionShortUrlCache.set(longUrl, fallback);
+			return fallback;
 		} finally {
 			sessionShortUrlInFlight.delete(longUrl);
 		}

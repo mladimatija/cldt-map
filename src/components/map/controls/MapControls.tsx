@@ -450,6 +450,16 @@ const MapControls: React.FC<MapControlsProps> = ({
 	const copyToastTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 	const tileBoundaryErrorTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 	const shareShortLinks = useMapStore((state: MapStoreState) => state.shareShortLinks);
+	const [sharePanelUrlSnapshot, setSharePanelUrlSnapshot] = useState<string | null>(null);
+
+	const handleShareButton = (): void => {
+		if (sharePanel.isOpen) {
+			sharePanel.close();
+		} else {
+			setSharePanelUrlSnapshot(getShareProgressUrl() ?? getShareViewUrl());
+			sharePanel.open();
+		}
+	};
 
 	const copyResolvedShareLink = (finalUrl: string, short: boolean): void => {
 		void writeShareLinkToClipboard(finalUrl, short, true);
@@ -938,19 +948,18 @@ const MapControls: React.FC<MapControlsProps> = ({
 						ariaLabel={canShare ? (sharePanel.isOpen ? t('shareHide') : t('shareShow')) : t('shareUnavailable')}
 						content={canShare ? (sharePanel.isOpen ? t('shareHide') : t('shareShow')) : t('shareUnavailable')}
 						disabled={!canShare}
-						onClick={canShare ? sharePanel.toggle : undefined}
+						onClick={canShare ? handleShareButton : undefined}
 					>
 						<IoShareSocialOutline aria-hidden className="h-5 w-5" />
 					</MapControlsButton>
-					{sharePanel.isOpen && canShare && (
+					{sharePanel.isOpen && canShare && sharePanelUrlSnapshot ? (
 						<MapControlsSharePanel
-							key={getShareProgressUrl() ?? getShareViewUrl()}
-							longUrl={getShareProgressUrl() ?? getShareViewUrl()}
+							longUrl={sharePanelUrlSnapshot}
 							useShortLinks={shareShortLinks}
 							onClose={closePanel}
 							onCopy={copyResolvedShareLink}
 						/>
-					)}
+					) : null}
 					{showCopyToast && (
 						<div
 							aria-live="polite"

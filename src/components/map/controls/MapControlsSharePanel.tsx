@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/Button';
@@ -26,13 +26,14 @@ export function MapControlsSharePanel({
 }: MapControlsSharePanelProps): React.ReactElement {
 	const t = useTranslations('mapControls');
 	const popoverRef = usePopoverFocusTrap(true);
+	const snapshotUrlRef = useRef(longUrl);
 	const [displayUrl, setDisplayUrl] = useState<string | null>(null);
 	const [isShort, setIsShort] = useState(false);
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
 		let cancelled = false;
-		void resolveShareUrlForCopy(longUrl, {
+		void resolveShareUrlForCopy(snapshotUrlRef.current, {
 			useShortLinks,
 			online: typeof navigator !== 'undefined' ? navigator.onLine : false,
 		}).then(({ url, short }) => {
@@ -44,7 +45,9 @@ export function MapControlsSharePanel({
 		return () => {
 			cancelled = true;
 		};
-	}, [longUrl, useShortLinks]);
+		// Resolve once per panel mount; parent snapshots longUrl when the panel opens.
+		// eslint-disable-next-line react-hooks/exhaustive-deps -- stable snapshot URL
+	}, [useShortLinks]);
 
 	return (
 		<div
