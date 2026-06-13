@@ -36,7 +36,7 @@
 			"ruler": "Distance ruler to measure segments between two points",
 			"layers": "Multiple map layers (standard, topo, satellite, terrain, cycling, Croatia Topo)",
 			"location": "Optional location tracking to see your position on the trail",
-			"share": "Share links with your current view or progress on the trail",
+			"share": "Share links with your current view or progress on the trail; the share button opens a QR code panel for scanning from another phone, plus copy link",
 			"units": "Metric and imperial units",
 			"darkMode": "Dark mode and battery saver options",
 			"offlineMaps": "Offline maps - pre-cache the trail corridor for use without a signal",
@@ -195,8 +195,14 @@
 		"preferencesShow": "Show preferences",
 		"preferencesHide": "Hide preferences",
 		"shareMap": "Share map",
+		"shareShow": "Share map (QR code)",
+		"shareHide": "Close share panel",
 		"shareUnavailable": "Share unavailable (enable location or select a point on the trail)",
 		"shareTitle": "Share this map",
+		"shareQrHint": "Scan with another phone to open this map view.",
+		"shareQrLabel": "QR code for the share link",
+		"shareQrShortNote": "Short link shown (90-day expiry).",
+		"shareQrLongFallback": "Full link is encoded in the QR code. Short links need an internet connection.",
 		"copyLink": "Copy link",
 		"cancel": "Cancel",
 		"borderOfCroatia": "Border of Croatia",
@@ -1041,7 +1047,8 @@
 		"basics": {
 			"layers": "The layers button (top right) switches base maps, overlays like radar and severe weather, trail colouring styles, and POI categories.",
 			"trail": "Tap the trail line, POI markers, or seasonal warning chips for details; popups link onward to photos, Wikipedia, and sharing.",
-			"settings": "The gear holds units, direction (SOBO/NOBO), walking pace, dark mode, and per-feature toggles."
+			"settings": "The gear holds units, direction (SOBO/NOBO), walking pace, dark mode, and per-feature toggles.",
+			"share": "The share button opens a panel with a QR code for your current map link (scan from another phone) and a copy link button. Needs GPS or a pinned trail point. Short links apply when online and enabled in Settings."
 		},
 		"chartHeading": "Elevation chart",
 		"gesturesHeading": "Hidden gestures",

@@ -5,25 +5,45 @@ export interface ShortenShareUrlResult {
 	short: boolean;
 }
 
+/** Successful short links for this tab, keyed by the long URL passed to the API. */
+const sessionShortUrlCache = new Map<string, ShortenShareUrlResult>();
+/** In-flight POST dedup so panel open + copy do not race two creates for the same URL. */
+const sessionShortUrlInFlight = new Map<string, Promise<ShortenShareUrlResult>>();
+
 /** Ask the server to store a long share URL and return a compact `/s/{code}` link. */
 export async function shortenShareUrl(longUrl: string): Promise<ShortenShareUrlResult> {
-	try {
-		const res = await fetch('/api/share', {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ url: longUrl }),
-		});
-		if (!res.ok) {
+	const cached = sessionShortUrlCache.get(longUrl);
+	if (cached) return cached;
+
+	const pending = sessionShortUrlInFlight.get(longUrl);
+	if (pending) return pending;
+
+	const promise = (async (): Promise<ShortenShareUrlResult> => {
+		try {
+			const res = await fetch('/api/share', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ url: longUrl }),
+			});
+			if (!res.ok) {
+				return { url: longUrl, short: false };
+			}
+			const data = (await res.json()) as { shortUrl?: string };
+			if (typeof data.shortUrl === 'string' && data.shortUrl.length > 0) {
+				const result = { url: data.shortUrl, short: true as const };
+				sessionShortUrlCache.set(longUrl, result);
+				return result;
+			}
 			return { url: longUrl, short: false };
+		} catch {
+			return { url: longUrl, short: false };
+		} finally {
+			sessionShortUrlInFlight.delete(longUrl);
 		}
-		const data = (await res.json()) as { shortUrl?: string };
-		if (typeof data.shortUrl === 'string' && data.shortUrl.length > 0) {
-			return { url: data.shortUrl, short: true };
-		}
-		return { url: longUrl, short: false };
-	} catch {
-		return { url: longUrl, short: false };
-	}
+	})();
+
+	sessionShortUrlInFlight.set(longUrl, promise);
+	return promise;
 }
 
 /** Resolve a share URL according to user preference and connectivity. */
