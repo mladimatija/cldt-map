@@ -17,6 +17,7 @@ import { useTrailOsmTagsFetch } from '@/hooks/useTrailOsmTagsFetch';
 import { usePoisFetch } from '@/hooks/usePoisFetch';
 import { usePanelListeners } from '@/hooks';
 import { useWakeLock } from '@/hooks/useWakeLock';
+import { ShareCopyToast } from '@/components/map/ShareCopyToast';
 
 function MapTrailLoadingFallback(): React.ReactElement {
 	const t = useTranslations('mapWrapper');
@@ -187,6 +188,7 @@ export default function MapContent(): React.ReactElement {
 		<>
 			<OfflineIndicator />
 			<StaleCacheNotification />
+			<ShareCopyToast />
 			<GpxImportDropzone />
 			<DistanceRemainingOverlay />
 			<ShareUrlHandler />

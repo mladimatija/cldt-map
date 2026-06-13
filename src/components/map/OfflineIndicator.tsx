@@ -15,11 +15,11 @@ export function OfflineIndicator(): React.ReactElement | null {
 	return (
 		<div
 			aria-live="polite"
-			className="z-controls absolute top-20 left-1/2 flex -translate-x-1/2 items-center gap-1.5 rounded-full bg-gray-800/90 px-3 py-1 text-xs font-medium text-white shadow dark:bg-[var(--bg-primary)]/90"
+			className="map-tooltip map-tooltip--banner map-tooltip--compact animate-slide-in-from-top motion-reduce:animate-none flex items-center justify-center gap-1.5"
 			role="status"
 		>
 			<IoCloudOfflineOutline aria-hidden className="h-3.5 w-3.5 shrink-0" />
-			<span>{t('offline')}</span>
+			<span className="font-medium">{t('offline')}</span>
 		</div>
 	);
 }

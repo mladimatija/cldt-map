@@ -676,6 +676,19 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					setShareShortLinks: (enabled: boolean): void => {
 						set({ shareShortLinks: enabled });
 					},
+					shareCopyToast: null,
+					showShareCopyToast: (feedback): void => {
+						set((s) => ({
+							shareCopyToast: {
+								status: feedback.status,
+								short: feedback.short,
+								nonce: (s.shareCopyToast?.nonce ?? 0) + 1,
+							},
+						}));
+					},
+					clearShareCopyToast: (): void => {
+						set({ shareCopyToast: null });
+					},
 
 					userWaypoints: [],
 					addUserWaypoint: (wp): void => {

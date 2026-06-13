@@ -8,7 +8,7 @@ import { usePathname, useRouter } from '@/i18n/navigation';
 import { useMapStore, useStore, type MapStoreState } from '@/lib/store';
 import { newId, nextWaypointName, type UserWaypoint } from '@/lib/user-waypoints';
 import { buildWaypointShareUrl, clearShareUrlParams, formatDistance, getInitialShareUrlParams } from '@/lib/utils';
-import { resolveShareUrlForCopy } from '@/lib/share-shortener-client';
+import { wirePopupShareButton } from '@/lib/share-link-copy';
 import { formatIsoDate } from '@/lib/date-format';
 
 const WAYPOINT_PANE = 'userWaypointPane';
@@ -128,12 +128,7 @@ export function UserWaypointMarkers(): null {
 			// wrapper CSS, so the look is identical to every other map popup.
 			marker.bindPopup(() => buildWaypointPopup(wp), { className: 'poi-popup', maxWidth: 300 });
 			marker.on('popupopen', () => {
-				wireWaypointShareButton(marker, wp, {
-					shareCopied: tPois('shareCopied'),
-					shareCopiedShort: tPois('shareCopiedShort'),
-					shareFailed: tPois('shareFailed'),
-					shareLink: tPois('shareLink'),
-				});
+				wireWaypointShareButton(marker, wp, tPois('shareLink'));
 			});
 			marker.addTo(map);
 			markers.set(wp.id, marker);
@@ -229,41 +224,14 @@ export function UserWaypointMarkers(): null {
 	return null;
 }
 
-function wireWaypointShareButton(
-	marker: L.Marker,
-	wp: UserWaypoint,
-	labels: { shareLink: string; shareCopied: string; shareCopiedShort: string; shareFailed: string },
-): void {
+function wireWaypointShareButton(marker: L.Marker, wp: UserWaypoint, shareLinkLabel: string): void {
 	const popup = marker.getPopup();
 	if (!popup) return;
 	const el = popup.getElement();
 	if (!el) return;
 	const btn = el.querySelector<HTMLButtonElement>(`[data-waypoint-share="${cssEscape(wp.id)}"]`);
 	if (!btn) return;
-	if (btn.dataset.wired === '1') return;
-	btn.dataset.wired = '1';
-	const originalLabel = btn.textContent ?? labels.shareLink;
-	btn.addEventListener('click', async (e) => {
-		e.preventDefault();
-		const longUrl = buildWaypointShareUrl(wp.id);
-		const { url, short } = await resolveShareUrlForCopy(longUrl, {
-			useShortLinks: useMapStore.getState().shareShortLinks,
-			online: navigator.onLine,
-		});
-		let ok = false;
-		try {
-			if (typeof navigator !== 'undefined' && navigator.clipboard?.writeText) {
-				await navigator.clipboard.writeText(url);
-				ok = true;
-			}
-		} catch {
-			ok = false;
-		}
-		btn.textContent = ok ? (short ? labels.shareCopiedShort : labels.shareCopied) : labels.shareFailed;
-		window.setTimeout(() => {
-			btn.textContent = originalLabel;
-		}, 1800);
-	});
+	wirePopupShareButton(btn, () => buildWaypointShareUrl(wp.id), shareLinkLabel);
 }
 
 function cssEscape(value: string): string {
