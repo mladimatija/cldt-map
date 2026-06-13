@@ -24,7 +24,6 @@ import {
 	getShareBaseUrl,
 	isWithinMapBoundary,
 } from '@/lib/utils';
-import { resolveShareUrlForCopy } from '@/lib/share-shortener-client';
 import type * as GeoJSON from 'geojson';
 import {
 	IoArrowDownOutline,
@@ -48,6 +47,7 @@ import { MapControlsSettingsPanel } from './MapControlsSettingsPanel';
 import { MapControlsColorAdjust } from './MapControlsColorAdjust';
 import { MapControlsTestLink } from './MapControlsTestLink';
 import { MapControlsExportPanel } from './MapControlsExportPanel';
+import { MapControlsSharePanel } from './MapControlsSharePanel';
 import { MapControlsStagePlannerPanel } from './MapControlsStagePlannerPanel';
 import { MapControlsProgressPanel } from './MapControlsProgressPanel';
 import { MapControlsHelpPanel } from './MapControlsHelpPanel';
@@ -157,6 +157,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 	const testLinkRef = useRef<HTMLDivElement>(null);
 	const topRightControlsRef = useRef<HTMLDivElement>(null);
 	const exportPanelRef = useRef<HTMLDivElement>(null);
+	const shareContainerRef = useRef<HTMLDivElement>(null);
 	const exportContainerRef = useRef<HTMLDivElement>(null);
 	const stagePlannerRef = useRef<HTMLDivElement>(null);
 	const progressRef = useRef<HTMLDivElement>(null);
@@ -172,6 +173,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 	const colorAdjustPanel = usePanel('colorAdjust', colorAdjustContainerRef);
 	const settingsPanel = usePanel('settings', settingsContainerRef);
 	const exportPanel = usePanel('export', exportContainerRef);
+	const sharePanel = usePanel('share', shareContainerRef);
 	const stagePlannerPanel = usePanel('stagePlanner', stagePlannerRef);
 	const progressPanel = usePanel('progress', progressRef);
 	const helpPanel = usePanel('help', helpRef);
@@ -449,11 +451,11 @@ const MapControls: React.FC<MapControlsProps> = ({
 	const tileBoundaryErrorTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 	const shareShortLinks = useMapStore((state: MapStoreState) => state.shareShortLinks);
 
-	const copyToClipboard = async (url: string, withText = false): Promise<void> => {
-		const { url: finalUrl, short } = await resolveShareUrlForCopy(url, {
-			useShortLinks: shareShortLinks,
-			online: typeof navigator !== 'undefined' ? navigator.onLine : false,
-		});
+	const copyResolvedShareLink = (finalUrl: string, short: boolean): void => {
+		void writeShareLinkToClipboard(finalUrl, short, true);
+	};
+
+	const writeShareLinkToClipboard = async (finalUrl: string, short: boolean, withText: boolean): Promise<void> => {
 		const text = withText ? `${t('shareText')}\n${finalUrl}` : finalUrl;
 		try {
 			await navigator.clipboard.writeText(text);
@@ -930,17 +932,25 @@ const MapControls: React.FC<MapControlsProps> = ({
 					{helpPanel.isOpen && <MapControlsHelpPanel />}
 				</div>
 
-				<div className="relative inline-block w-10 shrink-0">
+				<div className="relative inline-block w-10 shrink-0" ref={shareContainerRef}>
 					<MapControlsButton
-						ariaLabel={canShare ? t('shareMap') : t('shareUnavailable')}
-						content={canShare ? t('shareMap') : t('shareUnavailable')}
+						active={sharePanel.isOpen}
+						ariaLabel={canShare ? (sharePanel.isOpen ? t('shareHide') : t('shareShow')) : t('shareUnavailable')}
+						content={canShare ? (sharePanel.isOpen ? t('shareHide') : t('shareShow')) : t('shareUnavailable')}
 						disabled={!canShare}
-						onClick={
-							canShare ? () => void copyToClipboard(getShareProgressUrl() ?? getShareViewUrl(), true) : undefined
-						}
+						onClick={canShare ? sharePanel.toggle : undefined}
 					>
 						<IoShareSocialOutline aria-hidden className="h-5 w-5" />
 					</MapControlsButton>
+					{sharePanel.isOpen && canShare && (
+						<MapControlsSharePanel
+							key={getShareProgressUrl() ?? getShareViewUrl()}
+							longUrl={getShareProgressUrl() ?? getShareViewUrl()}
+							useShortLinks={shareShortLinks}
+							onClose={closePanel}
+							onCopy={copyResolvedShareLink}
+						/>
+					)}
 					{showCopyToast && (
 						<div
 							aria-live="polite"

@@ -51,6 +51,7 @@ export function MapControlsHelpPanel(): React.ReactElement {
 			{section(t('basicsHeading'), [
 				['layers', t('basics.layers')],
 				['trail', t('basics.trail')],
+				['share', t('basics.share')],
 				['settings', t('basics.settings')],
 			])}
 
