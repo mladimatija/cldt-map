@@ -40,6 +40,7 @@ import { prefetchPoiAssets, prefetchPoisAlongSlice } from '@/lib/poi-prefetch';
 import { addInterval, removeInterval, type CompletionInterval } from '../completion';
 import { DEFAULT_WATER_CONSUMPTION_LPH } from '../pack-weight';
 import { DEFAULT_FOOD_CONSUMPTION_KG_PER_DAY } from '../resupply-cadence';
+import { normalizeWaypointCategory, type WaypointCategoryId } from '../waypoint-categories';
 import {
 	filterActiveEntries,
 	isSeasonalStatusDefaultEnabled,
@@ -692,12 +693,22 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 
 					userWaypoints: [],
 					addUserWaypoint: (wp): void => {
-						set((s) => ({ userWaypoints: [...s.userWaypoints, wp] }));
+						const category = normalizeWaypointCategory(wp.category);
+						set((s) => ({
+							userWaypoints: [...s.userWaypoints, { ...wp, category }],
+							lastWaypointCategory: category,
+						}));
 					},
 					updateUserWaypoint: (id, patch): void => {
-						set((s) => ({
-							userWaypoints: s.userWaypoints.map((w) => (w.id === id ? { ...w, ...patch } : w)),
-						}));
+						set((s) => {
+							const nextCategory = patch.category !== undefined ? normalizeWaypointCategory(patch.category) : undefined;
+							return {
+								userWaypoints: s.userWaypoints.map((w) =>
+									w.id === id ? { ...w, ...patch, ...(nextCategory !== undefined && { category: nextCategory }) } : w,
+								),
+								...(nextCategory !== undefined && { lastWaypointCategory: nextCategory }),
+							};
+						});
 					},
 					removeUserWaypoint: (id): void => {
 						set((s) => ({ userWaypoints: s.userWaypoints.filter((w) => w.id !== id) }));
@@ -708,6 +719,23 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					},
 					clearPendingOpenWaypoint: (): void => {
 						set({ pendingOpenWaypointId: null });
+					},
+					lastWaypointCategory: 'generic',
+					setLastWaypointCategory: (category): void => {
+						set({ lastWaypointCategory: normalizeWaypointCategory(category) });
+					},
+					hiddenWaypointCategories: new Set(),
+					toggleWaypointCategoryOnMap: (category): void => {
+						const id = normalizeWaypointCategory(category);
+						set((s) => {
+							const next = new Set(s.hiddenWaypointCategories);
+							if (next.has(id)) next.delete(id);
+							else next.add(id);
+							return { hiddenWaypointCategories: next };
+						});
+					},
+					setHiddenWaypointCategories: (hidden): void => {
+						set({ hiddenWaypointCategories: hidden });
 					},
 
 					journalEntries: [],
@@ -1011,6 +1039,8 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					shareShortLinks: state.shareShortLinks,
 					includeRemotePois: state.includeRemotePois,
 					userWaypoints: state.userWaypoints,
+					lastWaypointCategory: state.lastWaypointCategory,
+					hiddenWaypointCategories: [...state.hiddenWaypointCategories],
 					journalEntries: state.journalEntries,
 					gradeAdjustedEta: state.gradeAdjustedEta,
 					sunsetProjection: state.sunsetProjection,
@@ -1051,6 +1081,17 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					if (rehydratedTags) merged.enabledPoiTags = rehydratedTags;
 					const rehydratedStarred = rehydrateSet((persistedState as { starredPoiIds?: unknown })?.starredPoiIds);
 					if (rehydratedStarred) merged.starredPoiIds = rehydratedStarred;
+					const rehydratedHiddenWp = rehydrateSet(
+						(persistedState as { hiddenWaypointCategories?: unknown })?.hiddenWaypointCategories,
+					);
+					if (rehydratedHiddenWp) {
+						merged.hiddenWaypointCategories = rehydratedHiddenWp as Set<WaypointCategoryId>;
+					}
+					if (typeof (persistedState as { lastWaypointCategory?: unknown })?.lastWaypointCategory === 'string') {
+						merged.lastWaypointCategory = normalizeWaypointCategory(
+							(persistedState as { lastWaypointCategory: string }).lastWaypointCategory,
+						);
+					}
 					if (!isAheadHorizonKm(merged.aheadHorizonKm)) merged.aheadHorizonKm = 50;
 					return merged;
 				},

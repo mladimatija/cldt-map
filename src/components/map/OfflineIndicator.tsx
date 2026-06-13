@@ -15,7 +15,7 @@ export function OfflineIndicator(): React.ReactElement | null {
 	return (
 		<div
 			aria-live="polite"
-			className="map-tooltip map-tooltip--banner map-tooltip--compact animate-slide-in-from-top motion-reduce:animate-none flex items-center justify-center gap-1.5"
+			className="map-tooltip map-tooltip--banner map-tooltip--compact animate-slide-in-from-top flex items-center justify-center gap-1.5 motion-reduce:animate-none"
 			role="status"
 		>
 			<IoCloudOfflineOutline aria-hidden className="h-3.5 w-3.5 shrink-0" />

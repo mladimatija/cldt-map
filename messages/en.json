@@ -841,6 +841,7 @@
 		"shareCopiedShort": "Short link copied",
 		"shareFailed": "Could not copy",
 		"openInMaps": "Open in Maps",
+		"addAsWaypoint": "Add as waypoint",
 		"listTitle": "Places along the trail",
 		"listAriaLabel": "Open list of places",
 		"listCount": "{count, plural, =0 {No places visible} =1 {# place} other {# places}}",
@@ -1094,11 +1095,27 @@
 	"waypoints": {
 		"defaultName": "Waypoint",
 		"nameLabel": "Waypoint name",
+		"categoryLabel": "Type",
+		"category": {
+			"generic": "Waypoint",
+			"camp": "Camp / sleep",
+			"water": "Water",
+			"resupply": "Resupply",
+			"viewpoint": "Viewpoint",
+			"transport": "Transport / meet",
+			"hazard": "Hazard / note"
+		},
 		"noteLabel": "Note",
 		"notePlaceholder": "Add a note (water cache, campsite...)",
 		"atKm": "at {distance}",
 		"offTrail": "off trail",
 		"save": "Save",
-		"delete": "Delete"
+		"delete": "Delete",
+		"filterHeading": "Filter list",
+		"filterPlaceholder": "Choose categories",
+		"filterEmpty": "No waypoints match this filter.",
+		"mapLayersHeading": "Show on map",
+		"mapLayersPlaceholder": "Choose categories",
+		"hiddenOnMap": "hidden on map"
 	}
 }

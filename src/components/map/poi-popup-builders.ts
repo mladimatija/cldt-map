@@ -37,6 +37,7 @@ export interface PopupBuildLabels {
 	shareCopiedShort: string;
 	shareFailed: string;
 	openInMaps: string;
+	addAsWaypoint: string;
 	publicTransportEscape: string;
 	starAddLabel: string;
 	starRemoveLabel: string;
@@ -263,18 +264,32 @@ export function buildMetaRowsHtml(
 	return lines.join('');
 }
 
-/** Builds the action row: star, "Open in Maps", and "Share link" buttons.
- *  Each button is wired imperatively in PoiMarkers after the popup opens
- *  because the popup HTML is parsed into a detached subtree before mount.
- *  The caller reads `starredPoiIds` from the store at popup-open time and
- *  passes `isStarred` directly so this function stays a pure string factory. */
-export function buildActionsHtml(poi: Poi, labels: PopupBuildLabels, isStarred: boolean): string {
+/** Builds the title row with star toggle left of the POI name. */
+export function buildTitleRowHtml(
+	poi: Poi,
+	displayName: string,
+	typeLabel: string,
+	labels: PopupBuildLabels,
+	isStarred: boolean,
+): string {
 	const starAria = isStarred ? labels.starRemoveLabel : labels.starAddLabel;
 	return (
-		`<div class="poi-popup__actions">` +
+		`<div class="poi-popup__title-row">` +
 		`<button type="button" class="poi-popup__star" data-poi-star="${escapeHtml(poi.id)}" aria-pressed="${isStarred ? 'true' : 'false'}" aria-label="${escapeHtml(starAria)}" title="${escapeHtml(starAria)}">${isStarred ? '★' : '☆'}</button>` +
+		`<h3 class="poi-popup__title">${escapeHtml(displayName)} <span class="poi-popup__type">(${escapeHtml(typeLabel)})</span></h3>` +
+		`</div>`
+	);
+}
+
+/** Builds the action rows: Open in Maps + Share on the first line, Add as
+ *  waypoint centred on the second. Buttons are wired imperatively in
+ *  PoiMarkers after the popup opens. */
+export function buildActionsHtml(poi: Poi, labels: PopupBuildLabels): string {
+	return (
+		`<div class="poi-popup__actions poi-popup__actions--poi">` +
 		`<button type="button" class="poi-popup__open-maps" data-poi-open-maps="${escapeHtml(poi.id)}">${escapeHtml(labels.openInMaps)}</button>` +
 		`<button type="button" class="poi-popup__share" data-poi-share="${escapeHtml(poi.id)}">${escapeHtml(labels.shareLink)}</button>` +
+		`<button type="button" class="poi-popup__share poi-popup__add-waypoint" data-poi-add-waypoint="${escapeHtml(poi.id)}">${escapeHtml(labels.addAsWaypoint)}</button>` +
 		`</div>`
 	);
 }
@@ -307,9 +322,9 @@ export function buildPopupHtml(poi: Poi, displayName: string, typeLabel: string,
 	// content-wrapper chrome, made the popup look nested-card-in-card.
 	return (
 		buildGalleryHtml(poi, displayName, labels) +
-		`<h3 class="poi-popup__title">${escapeHtml(displayName)} <span class="poi-popup__type">(${escapeHtml(typeLabel)})</span></h3>` +
+		buildTitleRowHtml(poi, displayName, typeLabel, labels, isStarred) +
 		buildMetaRowsHtml(poi, args, trailDistanceLabel, onTrail, offTrailLabel) +
-		buildActionsHtml(poi, labels, isStarred)
+		buildActionsHtml(poi, labels)
 	);
 }
 

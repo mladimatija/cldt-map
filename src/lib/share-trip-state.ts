@@ -6,6 +6,7 @@ import { useMapStore } from '@/lib/store';
 import type { StagePlan } from '@/lib/store/types';
 import { SHARE_TARGET_MAX_LEN, SHARE_TRIP_PARAM_KEY } from '@/lib/share-url-constants';
 import { newId, type JournalEntry, type UserWaypoint } from '@/lib/user-waypoints';
+import { normalizeWaypointCategory } from '@/lib/waypoint-categories';
 
 const POI_ID_RE = /^[A-Za-z0-9._-]{1,128}$/;
 const ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
@@ -28,7 +29,7 @@ export interface ShareTripStatePayload {
 		b: 'd' | 'e';
 		sd?: string;
 	};
-	wp?: { i?: string; la: number; ln: number; n: string; no?: string; tk?: number | null }[];
+	wp?: { i?: string; la: number; ln: number; n: string; no?: string; tk?: number | null; c?: string }[];
 	j?: { d: string; t: string; s?: number; e?: number }[];
 	done?: [number, number][];
 	stars?: string[];
@@ -81,6 +82,7 @@ function encodeWaypoint(wp: UserWaypoint): NonNullable<ShareTripStatePayload['wp
 		n: trimText(wp.name, MAX_WAYPOINT_NAME),
 		...(wp.note && { no: trimText(wp.note, MAX_WAYPOINT_NOTE) }),
 		...(wp.trailKm !== null && { tk: roundKm(wp.trailKm) }),
+		...(wp.category && wp.category !== 'generic' && { c: wp.category }),
 	};
 }
 
@@ -242,6 +244,7 @@ function parseWaypoints(raw: unknown): UserWaypoint[] {
 		if (typeof wp.la !== 'number' || typeof wp.ln !== 'number' || typeof wp.n !== 'string') continue;
 		if (!Number.isFinite(wp.la) || !Number.isFinite(wp.ln)) continue;
 		const id = typeof wp.i === 'string' && POI_ID_RE.test(wp.i) && !result.some((w) => w.id === wp.i) ? wp.i : newId();
+		const category = normalizeWaypointCategory(typeof wp.c === 'string' ? wp.c : undefined);
 		result.push({
 			id,
 			lat: wp.la,
@@ -249,6 +252,7 @@ function parseWaypoints(raw: unknown): UserWaypoint[] {
 			name: trimText(wp.n, MAX_WAYPOINT_NAME),
 			note: wp.no ? trimText(wp.no, MAX_WAYPOINT_NOTE) : '',
 			trailKm: wp.tk !== undefined && wp.tk !== null && Number.isFinite(wp.tk) ? roundKm(wp.tk) : null,
+			category,
 			createdAt: now,
 		});
 	}

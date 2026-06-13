@@ -12,6 +12,7 @@ import React, { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { useMapStore, useStore } from '@/lib/store';
 import { newId, todayIsoDate } from '@/lib/user-waypoints';
+import type { WaypointCategoryId } from '@/lib/waypoint-categories';
 import { parsePackCsv } from '@/lib/pack-csv';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
@@ -43,8 +44,10 @@ function seedWaypoints(noteLabel: string): number {
 	const curKm = (main.closestPoint?.distanceFromStart ?? FALLBACK_KM * 1000) / 1000;
 	const totalKm = points[points.length - 1].distanceFromStart / 1000;
 	const offsets = [2, 7.5, 18];
+	const categories: WaypointCategoryId[] = ['water', 'camp', 'resupply'];
 	let created = 0;
-	for (const off of offsets) {
+	for (let i = 0; i < offsets.length; i++) {
+		const off = offsets[i];
 		const km = Math.min(totalKm - 1, curKm + off);
 		const idx = points.findIndex((p) => p.distanceFromStart / 1000 >= km);
 		if (idx === -1) continue;
@@ -55,6 +58,7 @@ function seedWaypoints(noteLabel: string): number {
 			lng: pt.lng,
 			name: `Test waypoint +${off} km`,
 			note: noteLabel,
+			category: categories[i] ?? 'generic',
 			createdAt: new Date().toISOString(),
 			trailKm: km,
 		});
