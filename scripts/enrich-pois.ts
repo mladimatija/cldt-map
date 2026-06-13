@@ -9,8 +9,10 @@
 //   2. Croatia boundary filter: drop anything outside the country polygon.
 //   3. Wikidata SPARQL: supplements towns / settlements with population, URL,
 //      image, Wikipedia link.
-//   4. Reachability filter: checks road/path access; tags isReachable and
-//      nearestHighwayM on each POI; drops non-notable unreachable settlements.
+//   4. Reachability filter: checks road/path access; tags isReachable,
+//      nearestHighwayM, and optional PT escape fields on each POI; drops
+//      non-notable unreachable settlements unless a trail-side bus/train
+//      stop is near enough.
 //   5. HPS curated JSON (scripts/hps-huts.json): supplements hut POIs with
 //      phone, capacity, season, curated notes.
 //   6. Wikimedia Commons: fetches gallery images per POI from Wikidata P18 /

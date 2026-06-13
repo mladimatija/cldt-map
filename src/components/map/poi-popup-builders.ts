@@ -37,6 +37,7 @@ export interface PopupBuildLabels {
 	shareCopiedShort: string;
 	shareFailed: string;
 	openInMaps: string;
+	publicTransportEscape: string;
 	starAddLabel: string;
 	starRemoveLabel: string;
 	sourceOsm: string;
@@ -131,6 +132,12 @@ export function buildMetaRowsHtml(
 	} else {
 		lines.push(
 			`<p class="poi-popup__row poi-popup__row--muted"><span class="poi-popup__label">${escapeHtml(labels.offTrailLabel)}</span> ${escapeHtml(offTrailLabel ?? '')}</p>`,
+		);
+	}
+	if (poi.isReachableViaPublicTransport === true && poi.isReachable === false && poi.nearestPublicTransportM) {
+		const ptDistance = formatDistance(poi.nearestPublicTransportM / 1000, units, 0);
+		lines.push(
+			`<p class="poi-popup__row poi-popup__row--muted">${escapeHtml(labels.publicTransportEscape.replace('{distance}', ptDistance))}</p>`,
 		);
 	}
 	// Water reliability badge: a coloured chip directly under the position

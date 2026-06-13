@@ -9,6 +9,9 @@
 //   2. `isReachable` - is the POI's nearest road in the same connected
 //      component of the highway graph as the trail polyline? Catches the
 //      "0.5 km haversine but another side of an unbridged river" failure mode.
+//   3. Public transport escape - for towns / settlements / viewpoints, a
+//      trail-side bus or train stop within a type-specific radius can rescue
+//      a POI that fails the walking reachability check.
 //
 // Combined with per-type distance caps and a notability override (Wikipedia /
 // Wikidata / population / elevation), the filter drops POIs that are
@@ -64,6 +67,11 @@ export interface ReachabilityPoi {
 	source?: 'osm' | 'wikidata' | 'hps' | 'curated';
 	nearestHighwayM?: number;
 	isReachable?: boolean;
+	/** Straight-line distance (metres) to the nearest trail-side PT stop. */
+	nearestPublicTransportM?: number;
+	/** True when a trail-side bus/train stop is near enough to count as an
+	 *  escape route even though walking reachability failed. */
+	isReachableViaPublicTransport?: boolean;
 }
 
 /** Per-type tier rule. Each POI type pulls its rule out of `TIER_RULES`
@@ -79,8 +87,11 @@ interface TierRule {
 	 *  is meaningless. */
 	requirePathWithinM?: number;
 	/** POI's nearest highway must be in the trail-reachable connected
-	 *  component, OR the POI is notable. */
+	 *  component, OR the POI is notable, OR a trail-side PT stop is near enough. */
 	requireReachable?: boolean;
+	/** When true, a nearby trail-side bus/train stop can rescue a failed
+	 *  walking reachability check (town / settlement / viewpoint only). */
+	allowPublicTransportEscape?: boolean;
 	/** Settlement-only: minimum population. Notability rescues. */
 	requirePopulation?: number;
 	/** Peak-only: POI must have a non-empty name. Notability rescues. */
@@ -100,12 +111,14 @@ export const TIER_RULES: Record<string, TierRule> = {
 		maxOffTrailKm: 3,
 		requireRoadWithinM: 100,
 		requireReachable: true,
+		allowPublicTransportEscape: true,
 		notabilityOverride: true,
 	},
 	settlement: {
 		maxOffTrailKm: 1.5,
 		requireRoadWithinM: 50,
 		requireReachable: true,
+		allowPublicTransportEscape: true,
 		requirePopulation: 100,
 		notabilityOverride: true,
 	},
@@ -119,6 +132,7 @@ export const TIER_RULES: Record<string, TierRule> = {
 		maxOffTrailKm: 2,
 		requireRoadWithinM: 100,
 		requireReachable: true,
+		allowPublicTransportEscape: true,
 		notabilityOverride: true,
 	},
 	hut: {
@@ -148,6 +162,16 @@ export const TIER_RULES: Record<string, TierRule> = {
 		maxOffTrailKm: 1,
 		notabilityOverride: false,
 	},
+};
+
+/** A PT stop must sit within this many metres of a trail-reachable highway node. */
+export const PT_TRAIL_SIDE_SNAP_M = 150;
+
+/** Max straight-line distance from POI to a trail-side PT stop to count as escape. */
+export const PT_POI_ESCAPE_MAX_M: Partial<Record<string, number>> = {
+	town: 1500,
+	settlement: 800,
+	viewpoint: 1000,
 };
 
 // ---- Notability ------------------------------------------------------------
@@ -444,6 +468,151 @@ export class HighwayNodeIndex {
 	}
 }
 
+// ---- Public transport ------------------------------------------------------
+
+interface OverpassNodeElement {
+	type: 'node';
+	id: number;
+	lat: number;
+	lon: number;
+	tags?: Record<string, string>;
+}
+
+export interface PublicTransportStop {
+	lat: number;
+	lng: number;
+	kind: 'bus' | 'train';
+}
+
+const PT_CHUNKS = 12;
+
+function classifyPublicTransportKind(tags: Record<string, string> | undefined): 'bus' | 'train' | null {
+	if (!tags) return null;
+	if (tags.highway === 'bus_stop' || tags.amenity === 'bus_station') return 'bus';
+	if (tags.railway === 'halt' || tags.railway === 'station') return 'train';
+	return null;
+}
+
+/** Fetches bus and train stop nodes along the trail corridor. Non-fatal on
+ *  failure: callers skip PT escape rescue when this returns `failed: true`. */
+export async function fetchPublicTransportAlongCorridor(
+	corridorPoly: LatLng[],
+	radiusM: number,
+	opts: HighwayFetchOptions,
+): Promise<{ stops: PublicTransportStop[]; failed: boolean }> {
+	const byId = new Map<number, PublicTransportStop>();
+	let failed = false;
+	const chunkSize = Math.ceil(corridorPoly.length / PT_CHUNKS);
+
+	for (let c = 0; c < PT_CHUNKS; c++) {
+		const start = Math.max(0, c * chunkSize - 1);
+		const slice = corridorPoly.slice(start, (c + 1) * chunkSize);
+		if (slice.length < 2) continue;
+
+		const result = await fetchPolylineWithBisection<OverpassNodeElement>({
+			slice,
+			label: `pt-${c + 1}of${PT_CHUNKS}`,
+			onBisect: (label, message) => console.warn(`     ${label}: ${message}.`),
+			run: async (runSlice, label) => {
+				const polyStr = runSlice.map((p) => `${p.lat.toFixed(5)},${p.lng.toFixed(5)}`).join(',');
+				const query =
+					`[out:json][timeout:${OVERPASS_TIMEOUT_S}];` +
+					`(` +
+					`node["highway"="bus_stop"](around:${radiusM},${polyStr});` +
+					`node["amenity"="bus_station"](around:${radiusM},${polyStr});` +
+					`node["railway"~"^(halt|station)$"](around:${radiusM},${polyStr});` +
+					`);` +
+					`out body;`;
+				const cacheFile = overpassCacheFile(opts.cache, label, query);
+				const cached = await readOverpassJsonCache<OverpassNodeElement[]>(cacheFile, opts.cache);
+				if (cached) {
+					console.log(`     ${label}: cache hit (${cached.length} PT nodes).`);
+					return cached;
+				}
+				const data = await fetchOverpassJson<{ elements: OverpassNodeElement[]; remark?: string }>({
+					url: opts.overpassUrl,
+					fallbackUrls: opts.fallbackUrls,
+					body: `data=${encodeURIComponent(query)}`,
+					userAgent: opts.userAgent,
+					fetchTimeoutMs: FETCH_TIMEOUT_MS,
+					onRetry: ({ message }) => console.warn(`     ${label}: Overpass ${message}.`),
+				});
+				const elements = (data.elements ?? []).filter((e): e is OverpassNodeElement => e.type === 'node');
+				await writeOverpassJsonCache(cacheFile, elements, opts.cache);
+				console.log(`     ${label}: ${elements.length} PT nodes.`);
+				return elements;
+			},
+		});
+		if (result.failed) failed = true;
+		for (const node of result.elements) {
+			const kind = classifyPublicTransportKind(node.tags);
+			if (!kind) continue;
+			byId.set(node.id, { lat: node.lat, lng: node.lon, kind });
+		}
+	}
+
+	return { stops: [...byId.values()], failed };
+}
+
+/** Keeps PT stops that sit on the trail-reachable highway network. */
+export function findTrailSidePublicTransportStops(
+	stops: PublicTransportStop[],
+	index: HighwayNodeIndex,
+	reachable: Set<string>,
+	snapM = PT_TRAIL_SIDE_SNAP_M,
+): PublicTransportStop[] {
+	const trailSide: PublicTransportStop[] = [];
+	for (const stop of stops) {
+		const nearest = index.nearest({ lat: stop.lat, lng: stop.lng }, false);
+		if (!nearest || nearest.distM > snapM) continue;
+		if (!reachable.has(nearest.id)) continue;
+		trailSide.push(stop);
+	}
+	return trailSide;
+}
+
+/** Grid index over trail-side PT stops for nearest-neighbour lookup. */
+export class PublicTransportIndex {
+	private cells = new Map<string, PublicTransportStop[]>();
+	private cellLatDeg: number;
+	private cellLngDeg: number;
+
+	constructor(stops: PublicTransportStop[], searchRadiusM: number) {
+		const latRad = stops.length > 0 ? (stops[0].lat * Math.PI) / 180 : 0;
+		this.cellLatDeg = searchRadiusM / 111_000;
+		this.cellLngDeg = searchRadiusM / (111_000 * Math.cos(latRad));
+		for (const stop of stops) {
+			const key = this.cellKey(stop.lat, stop.lng);
+			const bucket = this.cells.get(key) ?? [];
+			bucket.push(stop);
+			this.cells.set(key, bucket);
+		}
+	}
+
+	private cellKey(lat: number, lng: number): string {
+		return `${Math.floor(lat / this.cellLatDeg)}:${Math.floor(lng / this.cellLngDeg)}`;
+	}
+
+	nearest(point: LatLng): { stop: PublicTransportStop; distM: number } | null {
+		const cellLat = Math.floor(point.lat / this.cellLatDeg);
+		const cellLng = Math.floor(point.lng / this.cellLngDeg);
+		let best: { stop: PublicTransportStop; distM: number } | null = null;
+		for (let dLat = -1; dLat <= 1; dLat++) {
+			for (let dLng = -1; dLng <= 1; dLng++) {
+				const bucket = this.cells.get(`${cellLat + dLat}:${cellLng + dLng}`);
+				if (!bucket) continue;
+				for (const stop of bucket) {
+					const d = haversineM(point, stop);
+					if (best === null || d < best.distM) {
+						best = { stop, distM: d };
+					}
+				}
+			}
+		}
+		return best;
+	}
+}
+
 // ---- Tier check ------------------------------------------------------------
 
 export interface TierDrop {
@@ -459,6 +628,7 @@ export function checkTier(
 	nearestHighwayM: number,
 	nearestPathM: number,
 	isReachable: boolean,
+	ptEscapeValid = false,
 ): TierDrop | null {
 	// Distance cap is the one rule notability cannot override.
 	if (poi.distanceFromTrailKm > rule.maxOffTrailKm) return { reason: 'distance' };
@@ -487,9 +657,10 @@ export function checkTier(
 		return { reason: 'path' };
 	}
 
-	// Reachability via connected component - notability rescues.
+	// Reachability via connected component - notability or PT escape rescues.
 	if (rule.requireReachable && !isReachable && !notable) {
-		return { reason: 'reachable' };
+		const ptRescue = rule.allowPublicTransportEscape === true && ptEscapeValid;
+		if (!ptRescue) return { reason: 'reachable' };
 	}
 
 	return null;
@@ -594,6 +765,7 @@ export async function applyReachabilityFilter<T extends ReachabilityPoi>(
 	// multi-million-node partial graph they are minutes of wasted work).
 	let reachable = new Set<string>();
 	let index: HighwayNodeIndex | null = null;
+	let ptIndex: PublicTransportIndex | null = null;
 	if (graphNeeded && !graphUnusable) {
 		console.log('-> Flood-fill from trail polyline...');
 		reachable = floodFillFromTrail(graph, trailPts);
@@ -601,6 +773,22 @@ export async function applyReachabilityFilter<T extends ReachabilityPoi>(
 
 		console.log('-> Building spatial index...');
 		index = new HighwayNodeIndex(graph.nodes, graph.hasPath);
+
+		console.log('-> Fetching public transport stops for escape-route signals...');
+		const ptRes = await fetchPublicTransportAlongCorridor(corridorPoly, radiusM, opts);
+		if (ptRes.failed) {
+			console.warn('     PT fetch had failures - skipping public-transport escape rescue.');
+		} else {
+			const trailSide = findTrailSidePublicTransportStops(ptRes.stops, index, reachable);
+			console.log(`     ${trailSide.length} trail-side PT stops (of ${ptRes.stops.length} total).`);
+			const maxSearchM = Math.max(
+				0,
+				...Object.values(PT_POI_ESCAPE_MAX_M).filter((v): v is number => typeof v === 'number'),
+			);
+			if (trailSide.length > 0 && maxSearchM > 0) {
+				ptIndex = new PublicTransportIndex(trailSide, maxSearchM);
+			}
+		}
 	}
 
 	console.log('-> Applying tier rules...');
@@ -639,7 +827,15 @@ export async function applyReachabilityFilter<T extends ReachabilityPoi>(
 		const nearestPathM = nearestPath?.distM ?? Infinity;
 		const isReachable = nearest ? reachable.has(nearest.id) : false;
 
-		const drop = checkTier(poi, rule, nearestHighwayM, nearestPathM, isReachable);
+		const ptMaxM = PT_POI_ESCAPE_MAX_M[poi.type];
+		const ptNearest = ptIndex?.nearest({ lat: poi.lat, lng: poi.lng }) ?? null;
+		const ptEscapeValid =
+			rule.allowPublicTransportEscape === true &&
+			ptMaxM !== undefined &&
+			ptNearest !== null &&
+			ptNearest.distM <= ptMaxM;
+
+		const drop = checkTier(poi, rule, nearestHighwayM, nearestPathM, isReachable, ptEscapeValid);
 		if (drop) {
 			tally.drops[drop.reason]++;
 			stats.set(poi.type, tally);
@@ -652,6 +848,10 @@ export async function applyReachabilityFilter<T extends ReachabilityPoi>(
 		if (index) {
 			poi.nearestHighwayM = Number.isFinite(nearestHighwayM) ? Math.round(nearestHighwayM) : undefined;
 			poi.isReachable = isReachable;
+		}
+		if (ptEscapeValid && ptNearest) {
+			poi.nearestPublicTransportM = Math.round(ptNearest.distM);
+			poi.isReachableViaPublicTransport = true;
 		}
 		tally.kept++;
 		stats.set(poi.type, tally);

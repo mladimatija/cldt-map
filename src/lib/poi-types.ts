@@ -156,6 +156,10 @@ export interface Poi {
 	 *  classic "0.5 km haversine but other side of an unbridged river"
 	 *  failure mode). Absent on POIs that predate Pass 6. */
 	isReachable?: boolean;
+	/** Straight-line distance (metres) to the nearest trail-side bus/train stop. */
+	nearestPublicTransportM?: number;
+	/** True when a trail-side PT stop rescues a failed walking reachability check. */
+	isReachableViaPublicTransport?: boolean;
 	/** Water-source intelligence (type "water" only). Derived at enrichment
 	 *  time from OSM tags; absent on rows that predate the
 	 *  water-intelligence pass. */

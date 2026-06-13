@@ -250,7 +250,7 @@
 		"shareShortLinksLabel": "Koristi kratke poveznice za dijeljenje",
 		"shareShortLinksHint": "Kopira kratku poveznicu koja otvara isti prikaz karte. Za stvaranje poveznice potrebna je internetska veza.",
 		"includeRemotePoisLabel": "Uključi udaljene POI-je",
-		"includeRemotePoisHint": "Prikazuje mjesta koja skup podataka označava kao teško dostupna sa staze (npr. preko rijeke ili na slijepoj cesti). Prema zadanim postavkama isključeno."
+		"includeRemotePoisHint": "Prikazuje mjesta označena kao teško dostupna pješice bez obližnje autobusne ili željezničke stanice sa strane staze. Prema zadanim postavkama isključeno."
 	},
 	"baseMapSelector": {
 		"standard": "Standardna",
@@ -876,6 +876,7 @@
 		"trailKmLabel": "km {km}",
 		"trailPositionLabel": "Pozicija na stazi:",
 		"offTrailLabel": "Od staze:",
+		"publicTransportEscape": "Autobusna/postaja {distance} (sa strane staze)",
 		"elevationLabel": "Nadmorska visina:",
 		"phoneLabel": "Telefon:",
 		"capacityLabel": "Kapacitet:",

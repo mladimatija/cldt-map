@@ -250,7 +250,7 @@
 		"shareShortLinksLabel": "Use short share links",
 		"shareShortLinksHint": "Copies a compact link that opens the same map view. Requires an internet connection to create.",
 		"includeRemotePoisLabel": "Include remote POIs",
-		"includeRemotePoisHint": "Shows places the dataset marks as hard to reach from the trail (e.g. across a river or on a dead-end road). Off by default."
+		"includeRemotePoisHint": "Shows places the dataset marks as hard to reach on foot with no nearby trail-side bus or train stop. Off by default."
 	},
 	"baseMapSelector": {
 		"standard": "Standard",
@@ -876,6 +876,7 @@
 		"trailKmLabel": "km {km}",
 		"trailPositionLabel": "Position on the trail:",
 		"offTrailLabel": "Off trail:",
+		"publicTransportEscape": "Public transport stop {distance} away (trail side)",
 		"elevationLabel": "Elevation:",
 		"phoneLabel": "Phone:",
 		"capacityLabel": "Capacity:",

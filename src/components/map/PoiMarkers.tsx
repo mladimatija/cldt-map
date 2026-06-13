@@ -157,6 +157,7 @@ export function PoiMarkers(): null {
 			shareCopiedShort: t('shareCopiedShort'),
 			shareFailed: t('shareFailed'),
 			openInMaps: t('openInMaps'),
+			publicTransportEscape: t('publicTransportEscape'),
 			starAddLabel: t('starAdd', { name: '' }).replace(/\s+/g, ' ').trim(),
 			starRemoveLabel: t('starRemove', { name: '' }).replace(/\s+/g, ' ').trim(),
 			sourceOsm: t('sourceOsm'),
