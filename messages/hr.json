@@ -841,6 +841,7 @@
 		"shareCopiedShort": "Kratka poveznica kopirana",
 		"shareFailed": "Kopiranje nije uspjelo",
 		"openInMaps": "Otvori u Kartama",
+		"addAsWaypoint": "Dodaj kao točku",
 		"listTitle": "Mjesta uz stazu",
 		"listAriaLabel": "Otvori popis mjesta",
 		"listCount": "{count, plural, =0 {Nema vidljivih mjesta} =1 {# mjesto} few {# mjesta} other {# mjesta}}",
@@ -1094,11 +1095,27 @@
 	"waypoints": {
 		"defaultName": "Točka",
 		"nameLabel": "Naziv točke",
+		"categoryLabel": "Vrsta",
+		"category": {
+			"generic": "Točka",
+			"camp": "Kamp / noćenje",
+			"water": "Voda",
+			"resupply": "Opskrba",
+			"viewpoint": "Vidikovac",
+			"transport": "Prijevoz / susret",
+			"hazard": "Opasnost / napomena"
+		},
 		"noteLabel": "Bilješka",
 		"notePlaceholder": "Dodajte bilješku (zaliha vode, kamp...)",
 		"atKm": "na {distance}",
 		"offTrail": "izvan staze",
 		"save": "Spremi",
-		"delete": "Obriši"
+		"delete": "Obriši",
+		"filterHeading": "Filtriraj popis",
+		"filterPlaceholder": "Odaberi kategorije",
+		"filterEmpty": "Nema točaka za ovaj filter.",
+		"mapLayersHeading": "Prikaži na karti",
+		"mapLayersPlaceholder": "Odaberi kategorije",
+		"hiddenOnMap": "skriveno na karti"
 	}
 }

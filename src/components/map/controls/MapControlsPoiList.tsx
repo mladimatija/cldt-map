@@ -5,7 +5,7 @@ import { createPortal } from 'react-dom';
 import { useMap } from 'react-leaflet';
 import { useLocale, useTranslations } from 'next-intl';
 import { IoLocationOutline } from 'react-icons/io5';
-import Select, { type GroupBase, type MultiValue } from 'react-select';
+import { type GroupBase, type MultiValue } from 'react-select';
 import { useMapStore, useStore, type MapStoreState, type StoreState, TrailDirection, UnitSystem } from '@/lib/store';
 import {
 	collectPoiTags,
@@ -38,6 +38,7 @@ import { buildGpxWaypointXml, downloadGpxFile, type GpxWaypoint } from '@/lib/gp
 import { Button } from '@/components/ui/Button';
 import { Checkbox } from '@/components/ui/Checkbox';
 import { MAP_CONTROL_INPUT, MAP_CONTROL_POPOVER } from './map-controls-constants';
+import { MapControlMultiSelect, MapControlSelectColorDotLabel, MapControlSingleSelect } from './MapControlSelect';
 import { MapControlsButton } from './MapControlsButton';
 import { MapControlsPoiDisclaimerModal } from './MapControlsPoiDisclaimerModal';
 import { DistanceUnit } from '@/lib/types';
@@ -52,52 +53,6 @@ function formatJumpLabel(distance: number, unit: DistanceUnit): string {
 	const rounded = Math.round(distance * 10) / 10;
 	return `${rounded.toFixed(rounded % 1 === 0 ? 0 : 1)} ${unit}`;
 }
-
-/** Shared Tailwind classNames for the react-select instances in this panel.
- *  Tracking both the multi-select (POI types) and single-select (sort) on the
- *  same vocabulary so the dropdowns visually match. */
-const poiSelectClassNames = {
-	// No z-index on the container: a stacking context here would trap the open
-	// menu inside it, letting a later sibling (e.g. the sort Select) paint over
-	// the menu. The menu's own z-controls-popover (110) below sits in the popover
-	// stacking context and wins against sibling controls and the sticky bucket header.
-	container: () => 'relative w-full text-xs leading-snug',
-	// Layout (flex, items-center, justify-between) is repeated here on purpose:
-	// react-select's base flex CSS is injected via Emotion at runtime, which
-	// silently drops out in the Next.js App Router production build. Restating
-	// the layout in Tailwind makes the control render correctly without
-	// depending on Emotion's runtime style injection.
-	control: ({ isFocused }: { isFocused: boolean }) =>
-		cn(
-			'flex min-h-[44px] flex-wrap items-center justify-between cursor-pointer rounded-md border bg-[var(--map-tooltip-bg)] px-2 py-0.5 text-xs leading-snug text-gray-800 outline-none dark:bg-[var(--bg-secondary)] dark:text-white',
-			isFocused ? 'border-cldt-green ring-1 ring-cldt-green' : 'border-gray-200 dark:border-white',
-		),
-	placeholder: () => 'text-xs text-gray-400',
-	input: () => 'text-xs text-gray-800 dark:text-white',
-	singleValue: () => 'text-xs text-gray-800 dark:text-white',
-	valueContainer: () => 'flex flex-wrap items-center gap-1 flex-1',
-	multiValue: () =>
-		'flex items-center gap-1 rounded bg-cldt-blue/15 dark:bg-cldt-blue/25 text-[11px] px-1.5 py-0.5 leading-none',
-	multiValueLabel: () => 'text-cldt-blue dark:text-cldt-blue text-[11px]',
-	multiValueRemove: () => 'cursor-pointer hover:text-red-500 ml-0.5 text-[11px]',
-	indicatorsContainer: () => 'flex items-center self-stretch shrink-0',
-	indicatorSeparator: () => 'hidden',
-	dropdownIndicator: () => 'flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-white px-1',
-	clearIndicator: () => 'flex items-center text-gray-400 hover:text-red-500 px-1 cursor-pointer',
-	menu: () =>
-		'absolute z-controls-popover mt-1 w-full rounded-md border border-gray-200 bg-[var(--map-tooltip-bg)] shadow-md text-xs leading-snug dark:border-[var(--border-color)] dark:bg-[var(--bg-secondary)]',
-	menuList: () => 'py-1 max-h-60 overflow-y-auto',
-	group: () => '',
-	groupHeading: () =>
-		'px-2 pt-1 pb-0.5 text-[10px] font-semibold tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]',
-	option: ({ isFocused, isSelected }: { isFocused: boolean; isSelected: boolean }) =>
-		cn(
-			'cursor-pointer px-2 py-1 text-xs leading-snug text-gray-800 dark:text-[var(--text-primary)]',
-			isFocused && 'bg-cldt-blue/10 dark:bg-cldt-blue/20',
-			isSelected && 'text-cldt-blue font-medium dark:text-cldt-blue',
-		),
-	noOptionsMessage: () => 'p-2 text-xs italic text-gray-500',
-};
 
 interface PoiListRowProps {
 	poi: Poi;
@@ -858,14 +813,8 @@ export function MapControlsPoiList({
 				</button>
 			)}
 
-			<Select<{ value: string; label: string }, true>
-				hideSelectedOptions
-				isMulti
-				unstyled
+			<MapControlMultiSelect<{ value: string; label: string }>
 				aria-label={t('typeFilterPlaceholder')}
-				classNamePrefix="poi-type-select"
-				classNames={poiSelectClassNames}
-				closeMenuOnSelect={false}
 				formatOptionLabel={(option, meta) =>
 					meta.context === 'menu' && typeCounts ? (
 						<span>
@@ -882,12 +831,6 @@ export function MapControlsPoiList({
 				noOptionsMessage={() => t('typeFilterNoMatches')}
 				options={typeOptions}
 				placeholder={t('typeFilterPlaceholder')}
-				styles={{
-					menu: (base) => ({
-						...base,
-						zIndex: 'calc(var(--z-map-overlay) + 1)',
-					}),
-				}}
 				value={selectedTypeOptions}
 				onChange={(val: MultiValue<{ value: string; label: string }>) =>
 					setEnabledPoiTypes(new Set(val.map((o) => o.value)))
@@ -896,20 +839,10 @@ export function MapControlsPoiList({
 
 			<div className="flex items-center gap-2">
 				<div className="flex-1">
-					<Select<{ value: SortMode; label: string }, false>
-						unstyled
+					<MapControlSingleSelect<{ value: SortMode; label: string }>
 						aria-label={t('sortLabel')}
-						classNamePrefix="poi-sort-select"
-						classNames={poiSelectClassNames}
-						isSearchable={false}
 						options={sortOptions}
 						placeholder={t('sortLabel')}
-						styles={{
-							menu: (base) => ({
-								...base,
-								zIndex: 'calc(var(--z-map-overlay) + 1)',
-							}),
-						}}
 						value={selectedSortOption}
 						onChange={(val) => {
 							if (val) setSort(val.value);
@@ -919,33 +852,14 @@ export function MapControlsPoiList({
 			</div>
 
 			{showWaterReliabilityFilter && (
-				<Select<{ value: WaterReliability; label: string }, true>
-					hideSelectedOptions
-					isMulti
-					unstyled
+				<MapControlMultiSelect<{ value: WaterReliability; label: string }>
 					aria-label={t('waterReliabilityFilterHeading')}
-					classNamePrefix="poi-water-reliability-select"
-					classNames={poiSelectClassNames}
-					closeMenuOnSelect={false}
 					formatOptionLabel={(option) => (
-						<span className="inline-flex items-center gap-1.5">
-							<span
-								aria-hidden
-								className="inline-block size-1.5 shrink-0 rounded-full"
-								style={{ background: WATER_COLOR[option.value] }}
-							/>
-							{option.label}
-						</span>
+						<MapControlSelectColorDotLabel color={WATER_COLOR[option.value]} label={option.label} />
 					)}
 					isSearchable={false}
 					options={waterReliabilityOptions}
 					placeholder={t('waterReliabilityFilterPlaceholder')}
-					styles={{
-						menu: (base) => ({
-							...base,
-							zIndex: 'calc(var(--z-map-overlay) + 1)',
-						}),
-					}}
 					value={selectedWaterReliabilityOptions}
 					onChange={(val: MultiValue<{ value: WaterReliability; label: string }>) =>
 						setEnabledWaterReliability(new Set((val ?? []).map((o) => o.value)))

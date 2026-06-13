@@ -166,6 +166,17 @@
    rather than utility classes baked into the HTML string, so the look
    stays consistent without depending on Tailwind picking up classes from
    detached popup DOM. */
+.poi-popup__title-row {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	margin: 0 0 4px;
+}
+.poi-popup__title-row .poi-popup__title {
+	margin: 0;
+	flex: 1;
+	min-width: 0;
+}
 .poi-popup__title {
 	margin: 0 0 4px;
 	font-size: 14px;
@@ -310,20 +321,36 @@
 	display: inline-block;
 }
 
-/* Action row at the bottom of the POI popup. Two buttons:
-   - LEFT: "Open in Maps" - solid-fill blue, primary action because most
-     users tapping a POI want to navigate to it.
-   - RIGHT: "Share link" - outlined pill, secondary. Copies an in-app deep
-     link to the clipboard.
-   `gap` separates the two; `space-between` would justify them to the edges,
-   but `flex-end` + `gap` keeps them grouped on the right which reads as a
-   tighter action pair. */
+/* Action buttons: equal gap in all directions (POI popup uses a 2-column grid). */
 .poi-popup__actions {
+	--poi-popup-action-gap: 6px;
 	display: flex;
+	flex-wrap: wrap;
 	justify-content: center;
-	align-items: center;
-	gap: 6px;
+	gap: var(--poi-popup-action-gap);
 	margin-top: 6px;
+}
+.poi-popup__actions--poi {
+	display: grid;
+	grid-template-columns: auto auto;
+}
+.poi-popup__add-waypoint {
+	grid-column: 1 / -1;
+	justify-self: center;
+}
+.poi-popup__star {
+	background: transparent;
+	border: 0;
+	padding: 0;
+	flex-shrink: 0;
+	font-size: 16px;
+	line-height: 1;
+	color: var(--poi-star-inactive);
+	cursor: pointer;
+	transition: color 100ms ease-out;
+}
+.poi-popup__star.poi-popup__star--active {
+	color: var(--poi-star-active);
 }
 .poi-popup__open-maps,
 .poi-popup__share {
@@ -336,20 +363,6 @@
 		filter 100ms ease-out,
 		background-color 100ms ease-out,
 		border-color 100ms ease-out;
-}
-.poi-popup__star {
-	background: transparent;
-	border: 0;
-	padding: 0;
-	margin-right: auto;
-	font-size: 22px;
-	line-height: 1;
-	color: var(--poi-star-inactive);
-	cursor: pointer;
-	transition: color 100ms ease-out;
-}
-.poi-popup__star.poi-popup__star--active {
-	color: var(--poi-star-active);
 }
 .poi-popup__star:hover {
 	color: var(--poi-star-active);
@@ -392,6 +405,65 @@
 	border-color: var(--cldt-blue, #0369a1);
 	outline: 2px solid var(--cldt-green);
 	outline-offset: 2px;
+}
+
+.waypoint-category-chips__heading {
+	margin: 6px 0 4px;
+}
+
+.waypoint-category-chips {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px;
+	margin-bottom: 6px;
+}
+
+.waypoint-category-chip {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	border: 1px solid var(--cldt-blue-border-alpha, #80d3df);
+	border-radius: 999px;
+	background: transparent;
+	color: var(--cldt-blue, #0369a1);
+	font-size: 11px;
+	font-weight: 500;
+	line-height: 1.2;
+	padding: 3px 8px 3px 6px;
+	cursor: pointer;
+	transition:
+		background-color 100ms ease-out,
+		border-color 100ms ease-out;
+}
+
+.waypoint-category-chip:hover {
+	background: var(--cldt-blue-surface, #ebf8fb);
+	border-color: var(--cldt-blue, #0369a1);
+}
+
+.waypoint-category-chip:focus-visible {
+	outline: 2px solid var(--cldt-green);
+	outline-offset: 2px;
+}
+
+.waypoint-category-chip--active {
+	background: var(--cldt-blue-surface, #ebf8fb);
+	border-color: var(--cldt-blue, #0369a1);
+	box-shadow: inset 0 0 0 1px var(--cldt-blue, #0369a1);
+}
+
+.waypoint-category-chip__dot {
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	flex-shrink: 0;
+}
+
+.waypoint-category-chip__label {
+	max-width: 7rem;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 /* Gallery thumbnail button: strip default browser button styling so the
@@ -1168,16 +1240,13 @@
    styles and the SVG `fill: currentColor` rule both fail to apply, so the
    live-region announcement leaks into the visible layout and the chevron
    renders as solid black instead of inheriting our text-gray-400. The
-   selectors below restate those rules, scoped to the POI panel's two Select
-   instances via the prefixed classes we already set (poi-type-select__*,
-   poi-sort-select__*) so they survive Emotion failing. */
-.poi-type-select__indicator svg,
-.poi-sort-select__indicator svg {
+   selectors below restate those rules, scoped to MapControlSelect via the
+   shared map-control-select__* prefix so they survive Emotion failing. */
+.map-control-select__indicator svg {
 	fill: currentColor;
 	stroke: currentColor;
 }
-div:has(> .poi-type-select__control) > span[class*='a11yText'],
-div:has(> .poi-sort-select__control) > span[class*='a11yText'] {
+div:has(> .map-control-select__control) > span[class*='a11yText'] {
 	position: absolute !important;
 	width: 1px !important;
 	height: 1px !important;
@@ -1188,11 +1257,10 @@ div:has(> .poi-sort-select__control) > span[class*='a11yText'] {
 	white-space: nowrap !important;
 	border: 0 !important;
 }
-/* DummyInput is what react-select renders for non-searchable selects (sort).
+/* DummyInput is what react-select renders for non-searchable selects.
    It must remain focusable but invisible; without Emotion these styles
    would not apply and it renders as a default focused input. */
-.poi-type-select__control input[class*='dummyInput'],
-.poi-sort-select__control input[class*='dummyInput'] {
+.map-control-select__control input[class*='dummyInput'] {
 	background: 0;
 	border: 0;
 	caret-color: transparent;

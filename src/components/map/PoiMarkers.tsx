@@ -15,6 +15,8 @@ import {
 } from '@/lib/utils';
 import { usePathname, useRouter } from '@/i18n/navigation';
 import { wirePopupShareButton } from '@/lib/share-link-copy';
+import { newId } from '@/lib/user-waypoints';
+import { poiTypeToSuggestedWaypointCategory } from '@/lib/waypoint-categories';
 import { fetchWikipediaSummary, truncateExtract } from '@/lib/wikipedia';
 import {
 	CLUSTER_CELL_PX,
@@ -157,7 +159,8 @@ export function PoiMarkers(): null {
 			shareCopiedShort: t('shareCopiedShort'),
 			shareFailed: t('shareFailed'),
 			openInMaps: t('openInMaps'),
-			publicTransportEscape: t('publicTransportEscape'),
+			addAsWaypoint: t('addAsWaypoint'),
+			publicTransportEscape: t.raw('publicTransportEscape'),
 			starAddLabel: t('starAdd', { name: '' }).replace(/\s+/g, ' ').trim(),
 			starRemoveLabel: t('starRemove', { name: '' }).replace(/\s+/g, ' ').trim(),
 			sourceOsm: t('sourceOsm'),
@@ -306,6 +309,7 @@ export function PoiMarkers(): null {
 					}
 					wireGalleryButtons(marker, poi, openLightbox);
 					wireOpenInMapsButton(marker, poi);
+					wireAddAsWaypointButton(marker, poi, poiDisplayName(poi, locale));
 					wireShareButton(marker, poi, popupLabels.shareLink);
 					wireStarButton(marker, poi, {
 						starAddLabel: poiLabels.starAddLabel,
@@ -580,6 +584,35 @@ function wireShareButton(marker: L.Marker, poi: Poi, shareLinkLabel: string): vo
 	const btn = el.querySelector<HTMLButtonElement>(`[data-poi-share="${cssEscape(poi.id)}"]`);
 	if (!btn) return;
 	wirePopupShareButton(btn, () => buildPoiShareUrl(poi.id), shareLinkLabel);
+}
+
+function wireAddAsWaypointButton(marker: L.Marker, poi: Poi, displayName: string): void {
+	const popup = marker.getPopup();
+	if (!popup) return;
+	const el = popup.getElement();
+	if (!el) return;
+	const btn = el.querySelector<HTMLButtonElement>(`[data-poi-add-waypoint="${cssEscape(poi.id)}"]`);
+	if (!btn) return;
+	if (btn.dataset.wired === '1') return;
+	btn.dataset.wired = '1';
+	btn.addEventListener('click', (e) => {
+		e.preventDefault();
+		const state = useMapStore.getState();
+		const category = poiTypeToSuggestedWaypointCategory(poi.type);
+		const id = newId();
+		state.addUserWaypoint({
+			id,
+			lat: poi.lat,
+			lng: poi.lng,
+			name: displayName,
+			note: '',
+			category,
+			createdAt: new Date().toISOString(),
+			trailKm: poi.trailKm,
+		});
+		state.requestOpenWaypoint(id);
+		marker.closePopup();
+	});
 }
 
 /**

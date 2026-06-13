@@ -8,6 +8,7 @@ import type { TrailOsmTagsFile } from '../trail-osm-tags';
 import type { MineAreasFile } from '../mine-areas';
 import type { CompletionInterval } from '../completion';
 import type { JournalEntry, UserWaypoint } from '../user-waypoints';
+import type { WaypointCategoryId } from '../waypoint-categories';
 import type { PackList } from '../pack-csv';
 import type { PoiImage, PoisFile } from '../pois';
 import { RulerRange } from '@/lib/distance-utils';
@@ -355,13 +356,19 @@ export interface MapStoreState {
 	/** Personal map annotations (long-press to add). Persisted. */
 	userWaypoints: UserWaypoint[];
 	addUserWaypoint: (wp: UserWaypoint) => void;
-	updateUserWaypoint: (id: string, patch: Partial<Pick<UserWaypoint, 'name' | 'note'>>) => void;
+	updateUserWaypoint: (id: string, patch: Partial<Pick<UserWaypoint, 'name' | 'note' | 'category'>>) => void;
 	removeUserWaypoint: (id: string) => void;
 	/** Waypoint id whose popup should open (set by the progress panel list);
 	 *  consumed and cleared by the marker layer. Session-only. */
 	pendingOpenWaypointId: string | null;
 	requestOpenWaypoint: (id: string) => void;
 	clearPendingOpenWaypoint: () => void;
+	/** Default category for newly dropped waypoints. Persisted. */
+	lastWaypointCategory: WaypointCategoryId;
+	setLastWaypointCategory: (category: WaypointCategoryId) => void;
+	hiddenWaypointCategories: Set<WaypointCategoryId>;
+	toggleWaypointCategoryOnMap: (category: WaypointCategoryId) => void;
+	setHiddenWaypointCategories: (hidden: Set<WaypointCategoryId>) => void;
 
 	/** Dated trip journal entries, optionally attached to a km range. Persisted. */
 	journalEntries: JournalEntry[];

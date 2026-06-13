@@ -841,6 +841,7 @@
 		"shareCopiedShort": "Kurzlink kopiert",
 		"shareFailed": "Kopieren fehlgeschlagen",
 		"openInMaps": "In Karten öffnen",
+		"addAsWaypoint": "Als Wegpunkt hinzufügen",
 		"listTitle": "Orte entlang des Wegs",
 		"listAriaLabel": "Ortsliste öffnen",
 		"listCount": "{count, plural, =0 {Keine Orte sichtbar} =1 {# Ort} other {# Orte}}",
@@ -1094,11 +1095,27 @@
 	"waypoints": {
 		"defaultName": "Wegpunkt",
 		"nameLabel": "Wegpunktname",
+		"categoryLabel": "Typ",
+		"category": {
+			"generic": "Wegpunkt",
+			"camp": "Camp / Übernachtung",
+			"water": "Wasser",
+			"resupply": "Versorgung",
+			"viewpoint": "Aussicht",
+			"transport": "Transport / Treffpunkt",
+			"hazard": "Gefahr / Hinweis"
+		},
 		"noteLabel": "Notiz",
 		"notePlaceholder": "Notiz hinzufügen (Wasserdepot, Lagerplatz...)",
 		"atKm": "bei {distance}",
 		"offTrail": "abseits des Weges",
 		"save": "Speichern",
-		"delete": "Löschen"
+		"delete": "Löschen",
+		"filterHeading": "Liste filtern",
+		"filterPlaceholder": "Kategorien wählen",
+		"filterEmpty": "Keine Wegpunkte für diesen Filter.",
+		"mapLayersHeading": "Auf der Karte",
+		"mapLayersPlaceholder": "Kategorien wählen",
+		"hiddenOnMap": "auf Karte ausgeblendet"
 	}
 }

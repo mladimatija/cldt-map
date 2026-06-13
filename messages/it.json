@@ -841,6 +841,7 @@
 		"shareCopiedShort": "Link breve copiato",
 		"shareFailed": "Copia non riuscita",
 		"openInMaps": "Apri in Mappe",
+		"addAsWaypoint": "Aggiungi come punto",
 		"listTitle": "Luoghi lungo il sentiero",
 		"listAriaLabel": "Apri elenco luoghi",
 		"listCount": "{count, plural, =0 {Nessun luogo visibile} =1 {# luogo} other {# luoghi}}",
@@ -1094,11 +1095,27 @@
 	"waypoints": {
 		"defaultName": "Punto",
 		"nameLabel": "Nome del punto",
+		"categoryLabel": "Tipo",
+		"category": {
+			"generic": "Punto",
+			"camp": "Campo / pernottamento",
+			"water": "Acqua",
+			"resupply": "Rifornimento",
+			"viewpoint": "Belvedere",
+			"transport": "Trasporto / incontro",
+			"hazard": "Pericolo / nota"
+		},
 		"noteLabel": "Nota",
 		"notePlaceholder": "Aggiungi una nota (scorta d’acqua, campeggio...)",
 		"atKm": "al {distance}",
 		"offTrail": "fuori dal sentiero",
 		"save": "Salva",
-		"delete": "Elimina"
+		"delete": "Elimina",
+		"filterHeading": "Filtra elenco",
+		"filterPlaceholder": "Scegli categorie",
+		"filterEmpty": "Nessun punto corrisponde a questo filtro.",
+		"mapLayersHeading": "Mostra sulla mappa",
+		"mapLayersPlaceholder": "Scegli categorie",
+		"hiddenOnMap": "nascosto sulla mappa"
 	}
 }

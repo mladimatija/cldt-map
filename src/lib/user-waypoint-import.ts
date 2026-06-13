@@ -3,6 +3,7 @@
  * exported by journalToMarkdown). Pure functions - no store access.
  */
 import { nextWaypointName, type JournalEntry, type UserWaypoint } from './user-waypoints';
+import { gpxTextToWaypointCategory, normalizeWaypointCategory } from './waypoint-categories';
 
 export const MAX_WAYPOINT_GPX_BYTES = 2 * 1024 * 1024;
 export const MAX_JOURNAL_MD_BYTES = 512 * 1024;
@@ -18,6 +19,7 @@ export interface ParsedGpxWaypoint {
 	lng: number;
 	name: string;
 	note: string;
+	category: ReturnType<typeof normalizeWaypointCategory>;
 }
 
 export interface ParsedJournalEntry {
@@ -52,6 +54,8 @@ export function parseGpxWaypoints(xml: string): ParsedGpxWaypoint[] {
 		const name = wpt.getElementsByTagName('name')[0]?.textContent?.trim() || '';
 		const desc = wpt.getElementsByTagName('desc')[0]?.textContent?.trim() || '';
 		const cmt = wpt.getElementsByTagName('cmt')[0]?.textContent?.trim() || '';
+		const type = wpt.getElementsByTagName('type')[0]?.textContent?.trim() || '';
+		const sym = wpt.getElementsByTagName('sym')[0]?.textContent?.trim() || '';
 		const note = desc || cmt;
 
 		result.push({
@@ -59,6 +63,7 @@ export function parseGpxWaypoints(xml: string): ParsedGpxWaypoint[] {
 			lng,
 			name: name || `Waypoint ${result.length + 1}`,
 			note,
+			category: gpxTextToWaypointCategory(type, sym),
 		});
 
 		if (result.length >= MAX_WAYPOINTS_PER_IMPORT) break;
@@ -148,6 +153,7 @@ export function gpxWaypointsToUserWaypoints(
 			lng: w.lng,
 			name: nextWaypointName([...existing, ...batch], w.name),
 			note: w.note,
+			category: w.category,
 			createdAt: now,
 			trailKm: options.snapTrailKm(w.lat, w.lng),
 		});
