@@ -49,7 +49,7 @@
 			"sunsetPosition": "Posizione tramonto/alba - mostra dove ti troverai sul sentiero al tramonto e all'alba in base al tuo ritmo attuale; indicatori attivabili sulla linea",
 			"stagePlanner": "Pianificatore tappe multi-giorno - suddividi qualsiasi tratto del sentiero in tappe giornaliere per distanza o tempo, visualizza statistiche di dislivello ed ETA per tappa, esporta le singole tappe come file GPX o tutte le tappe come PDF tappe in mappa",
 			"gpxImport": "Importazione tracce GPX - trascina (o seleziona) un file GPX registrato per sovrapporre la tua escursione alla mappa ufficiale; statistiche su distanza, passo, tempo totale, tempo in movimento, deviazione massima e copertura del percorso",
-			"emergency": "Pannello di emergenza 112 - tieni premuto il pulsante SOS rosso (in basso a destra) per aprire un pannello offline-first con coordinate GPS, Plus Code, tratta e km del percorso, direzione e distanza al più vicino accesso stradale e alla stazione di soccorso alpino HGSS; copia ogni campo negli appunti e passa al dialer (Chiama 112) o alle mappe (Apri nelle mappe); funziona completamente offline una volta in cache",
+			"emergency": "Pannello di emergenza 112 - tieni premuto il pulsante SOS rosso (in basso a destra) per aprire un pannello offline-first con coordinate GPS, Plus Code, tratta e km del percorso, direzione e distanza al più vicino accesso stradale e alla stazione di soccorso alpino HGSS; online viene cercato un indirizzo leggibile da copiare; copia ogni campo negli appunti e passa al dialer (Chiama 112) o alle mappe (Apri nelle mappe); funziona completamente offline una volta in cache",
 			"trailStyle": "Stile del percorso - scegli nel pannello dei livelli come colorare la polilinea: Predefinito (un solo colore), Tratte (zone A/B/C con marker di confine e statistiche per tratta), Pendenza (colorazione a cinque bande in stile Strava, toni caldi per le salite e freddi per le discese nella direzione di marcia attiva; legenda del colore nel pannello; ricalcolata al cambio di direzione SOBO/NOBO), Fondo o Difficoltà (SAC)",
 			"surfaceAndSac": "Colorazione per fondo e difficoltà - colora la polilinea del sentiero (e il riempimento del grafico altimetrico) in base al tipo di fondo OSM (asfaltato / non asfaltato / ghiaia / terra / roccia) o alla scala escursionistica SAC (T1 escursionismo fino a T6 escursionismo alpino difficile). I dati vengono arricchiti mensilmente da una GitHub Action a partire da OpenStreetMap; le opzioni Fondo e Difficoltà restano disabilitate finché il set di dati non viene caricato al primo rendering. Consapevole della direzione: il set è indicizzato per km SOBO e il renderer lo specchia al volo per NOBO",
 			"distanceMarkers": "Indicatori di distanza - piccole etichette km/mi lungo il sentiero a intervalli di 100 / 50 / 25 / 10 / 5 / 1 unità. Visualizzazione progressiva in base al livello di zoom: 100 km sempre visibili a qualsiasi zoom, intervalli più fini compaiono man mano che ingrandisci (etichette da 1 km solo da zoom 13+). Attivabile dalle Impostazioni; le etichette seguono il sistema di unità attivo e la direzione corrente (SOBO/NOBO)",
@@ -68,7 +68,7 @@
 		"dataAttribution": "Dati e attribuzioni",
 		"dataAttributionDesc": "I dati del sentiero sono forniti dall'organizzazione Udruga Long Distance Trail Hrvatska (LDTH). Le tessere mappa provengono da OpenStreetMap, OpenTopoMap, OpenHikingMap (openmaps.fr), Waymarked Trails, CyclOSM e altri provider. Le mappe topografiche croate provengono dall'Amministrazione Geodetica Statale (DGU). I dati meteo provengono da DHMZ (Servizio Meteorologico Croato) e Open-Meteo. Le tessere radar sono fornite da RainViewer. Stato stagionale del sentiero, avvisi di pericolo e dati delle stazioni di soccorso alpino provengono da HGSS (Servizio croato di soccorso in montagna), HPS (Federazione croata di alpinismo) e dalle autorità dei parchi nazionali (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) e Parco naturale Velebit. I dati visualizzati su questo sito potrebbero non riflettere le condizioni più recenti. In caso di dubbio, verificare sempre le fonti ufficiali.",
 		"privacy": "Privacy",
-		"privacyDesc": "La tua posizione viene utilizzata solo quando la abiliti e concedi il permesso. Non viene mai inviata a nessun server - tutto funziona nel tuo browser. Non è necessario un account o un accesso.",
+		"privacyDesc": "La tua posizione viene utilizzata solo quando la abiliti e concedi il permesso. Navigazione mappa e progresso GPS restano nel browser. Funzioni online opzionali (abbreviazione link di condivisione, narrativa AI del trip brief, ricerca indirizzo SOS) possono inviare coordinate o dati del piano al nostro server o a terze parti. Non è necessario un account o un accesso.",
 		"links": "Link",
 		"officialWebsite": "Sito ufficiale {companyName}",
 		"sourceCode": "Codice sorgente su GitHub",
@@ -941,6 +941,8 @@
 		"holdToOpen": "Tieni premuto per aprire il pannello di emergenza",
 		"close": "Chiudi pannello di emergenza",
 		"position": "Posizione",
+		"address": "Indirizzo",
+		"addressLoading": "Ricerca indirizzo...",
 		"plusCode": "Plus Code",
 		"section": "Tratta",
 		"kmFromStart": "{km} km dall'inizio",
@@ -956,7 +958,8 @@
 		"copyAriaLabel": {
 			"coords": "Copia coordinate",
 			"plusCode": "Copia Plus Code",
-			"section": "Copia tratta e km"
+			"section": "Copia tratta e km",
+			"address": "Copia indirizzo"
 		},
 		"callStation": "Chiama {name}",
 		"openStationPage": "Apri pagina per {name}",
@@ -1053,7 +1056,7 @@
 		"chartHeading": "Profilo altimetrico",
 		"gesturesHeading": "Gesti nascosti",
 		"gestures": {
-			"sos": "Tieni premuto il pulsante rosso SOS per il pannello di emergenza offline: coordinate, Plus Code, accesso stradale più vicino, soccorso HGSS e 112 con un tocco.",
+			"sos": "Tieni premuto il pulsante rosso SOS per il pannello di emergenza offline: coordinate, Plus Code, accesso stradale più vicino, soccorso HGSS, 112 con un tocco e indirizzo quando sei online.",
 			"gpxDrop": "Trascina un file .gpx registrato sulla mappa per sovrapporre la tua escursione e confrontarla con il sentiero ufficiale.",
 			"poiList": "Nella lista dei luoghi digita un numero (\"100 km\") per saltarci; le frecce navigano, S seleziona le righe per l'export GPX.",
 			"waypoint": "Tieni premuto (o clic destro) in un punto qualsiasi della mappa per un punto personale con nota."

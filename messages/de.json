@@ -49,7 +49,7 @@
 			"sunsetPosition": "Sonnenuntergang/Sonnenaufgang-Position - zeigt, wo du bei Sonnenuntergang und Sonnenaufgang auf dem Weg sein wirst; umschaltbare Markierungen auf der Strecke",
 			"stagePlanner": "Mehrtages-Etappenplaner - teile beliebige Streckenabschnitte nach Distanz oder Zeit in Tagesetappen auf, zeige Höhen- und ETA-Statistiken je Etappe an, exportiere einzelne Etappen als GPX-Dateien oder alle Etappen als Etappenkarten-PDF",
 			"gpxImport": "GPX-Track-Import - ziehe eine aufgezeichnete GPX-Datei auf die Karte (oder wähle sie aus) und vergleiche deine Route mit dem offiziellen Weg; Statistiken zu Distanz, Tempo, Gesamtzeit, Gehzeit, max. Abweichung und Streckenabdeckung",
-			"emergency": "Notfallpanel 112 - langes Drücken des roten SOS-Buttons (unten rechts) öffnet ein offline-first Panel mit deinen GPS-Koordinaten, Plus Code, Etappe und Kilometer auf dem Weg sowie Richtung und Entfernung zur nächsten Straßenanbindung und HGSS-Bergrettungsstation; jedes Feld in die Zwischenablage kopieren und an die Telefon-App (112 anrufen) oder Karten-App (In Karten öffnen) übergeben; vollständig offline, sobald die Daten im Cache sind",
+			"emergency": "Notfallpanel 112 - langes Drücken des roten SOS-Buttons (unten rechts) öffnet ein offline-first Panel mit deinen GPS-Koordinaten, Plus Code, Etappe und Kilometer auf dem Weg sowie Richtung und Entfernung zur nächsten Straßenanbindung und HGSS-Bergrettungsstation; online wird eine lesbare Adresse nachgeschlagen und kann kopiert werden; jedes Feld in die Zwischenablage kopieren und an die Telefon-App (112 anrufen) oder Karten-App (In Karten öffnen) übergeben; vollständig offline, sobald die Daten im Cache sind",
 			"trailStyle": "Wegstil - wähle im Ebenen-Panel, wie die Route eingefärbt wird: Standard (eine Farbe), Abschnitte (Zonen A/B/C mit Grenzmarkern und Statistik pro Abschnitt), Steigung (Gradienten-Färbung in fünf Stufen, warme Töne für Anstiege und kühle für Abstiege in der aktuellen Gehrichtung; Farblegende im Panel; wird beim Wechsel der SOBO/NOBO-Richtung neu berechnet), Untergrund oder Schwierigkeit (SAC)",
 			"surfaceAndSac": "Untergrund- und Schwierigkeitsfärbung - färbt die Trail-Linie (und die Flächenfüllung des Höhenprofils) nach OSM-Untergrundtyp (befestigt / unbefestigt / Schotter / Erde / Fels) oder nach SAC-Wanderskala (T1 Wandern bis T6 schwieriges Alpinwandern). Die Daten werden monatlich von einer GitHub-Action aus OpenStreetMap angereichert; die Optionen Untergrund und Schwierigkeit bleiben deaktiviert, bis der Datensatz beim ersten Rendern geladen ist. Richtungsbewusst: der Datensatz ist nach SOBO km indiziert und der Renderer spiegelt ihn live nach NOBO",
 			"distanceMarkers": "Distanzmarkierungen - kleine km/mi-Beschriftungen entlang des Trails im Abstand von 100 / 50 / 25 / 10 / 5 / 1 Einheiten. Progressive Anzeige je nach Zoomstufe: 100 km sind bei jedem Zoom sichtbar, feinere Abstände erscheinen beim Hineinzoomen (1-km-Beschriftungen erst ab Zoom 13+). In den Einstellungen umschaltbar; Beschriftungen folgen dem aktiven Einheitensystem und der aktuellen Richtung (SOBO/NOBO)",
@@ -68,7 +68,7 @@
 		"dataAttribution": "Daten & Urheberrecht",
 		"dataAttributionDesc": "Trail-Daten werden von der Udruga Long Distance Trail Hrvatska (LDTH) bereitgestellt. Kartenkacheln kommen von OpenStreetMap, OpenTopoMap, OpenHikingMap (openmaps.fr), Waymarked Trails, CyclOSM und anderen Anbietern. Kroatische topografische Karten stammen vom Staatlichen Geodätischen Amt (DGU). Wetterdaten kommen von DHMZ (Kroatischer Wetterdienst) und Open-Meteo. Radarkacheln werden von RainViewer bereitgestellt. Daten zum saisonalen Wegzustand, Gefahrenwarnungen sowie Standorte der Bergwacht-Stationen stammen von HGSS (Kroatische Bergrettung), HPS (Kroatischer Bergsteigerverband) und den Verwaltungen der Nationalparks (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) sowie Naturpark Velebit. Die auf dieser Seite angezeigten Daten entsprechen möglicherweise nicht dem aktuellen Stand. Im Zweifelsfall bitte immer die offiziellen Quellen prüfen.",
 		"privacy": "Datenschutz",
-		"privacyDesc": "Dein Standort wird nur verwendet, wenn du ihn aktivierst und die Berechtigung erteilst. Er wird niemals an einen Server gesendet - alles läuft in deinem Browser. Es ist kein Konto oder Login erforderlich.",
+		"privacyDesc": "Dein Standort wird nur verwendet, wenn du ihn aktivierst und die Berechtigung erteilst. Kernfunktionen wie Kartenansicht und GPS-Fortschritt bleiben im Browser. Optionale Online-Funktionen (Link-Kürzung, KI-Reisebericht, SOS-Adresssuche) können Koordinaten oder Plandaten an unseren Server oder Dritte senden. Es ist kein Konto oder Login erforderlich.",
 		"links": "Links",
 		"officialWebsite": "Offizielle {companyName}-Website",
 		"sourceCode": "Quellcode auf GitHub",
@@ -941,6 +941,8 @@
 		"holdToOpen": "Halten, um Notfallpanel zu öffnen",
 		"close": "Notfallpanel schließen",
 		"position": "Position",
+		"address": "Adresse",
+		"addressLoading": "Adresse wird gesucht...",
 		"plusCode": "Plus Code",
 		"section": "Etappe",
 		"kmFromStart": "{km} km ab Start",
@@ -956,7 +958,8 @@
 		"copyAriaLabel": {
 			"coords": "Koordinaten kopieren",
 			"plusCode": "Plus Code kopieren",
-			"section": "Etappe und km kopieren"
+			"section": "Etappe und km kopieren",
+			"address": "Adresse kopieren"
 		},
 		"callStation": "{name} anrufen",
 		"openStationPage": "Seite für {name} öffnen",
@@ -1053,7 +1056,7 @@
 		"chartHeading": "Höhenprofil",
 		"gesturesHeading": "Versteckte Gesten",
 		"gestures": {
-			"sos": "Halte den roten SOS-Button gedrückt für das Offline-Notfallpanel: Koordinaten, Plus Code, nächste Straßenanbindung, HGSS-Bergrettung und 112 mit einem Tipp.",
+			"sos": "Halte den roten SOS-Button gedrückt für das Offline-Notfallpanel: Koordinaten, Plus Code, nächste Straßenanbindung, HGSS-Bergrettung, 112 mit einem Tipp und online eine Adresszeile.",
 			"gpxDrop": "Ziehe eine aufgezeichnete .gpx-Datei irgendwo auf die Karte, um deine Wanderung zu überlagern und mit dem offiziellen Trail zu vergleichen.",
 			"poiList": "In der Ortsliste eine Zahl tippen (\"100 km\") springt dorthin; Pfeiltasten navigieren, S wählt Zeilen für den GPX-Export.",
 			"waypoint": "Lange drücken (oder Rechtsklick) irgendwo auf der Karte für einen persönlichen Wegpunkt mit Notiz."

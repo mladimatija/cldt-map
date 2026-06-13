@@ -49,7 +49,7 @@
 			"sunsetPosition": "Sunset/sunrise position - projects where you will be on the trail at sunset and sunrise based on your current pace; toggleable markers on the polyline",
 			"stagePlanner": "Multi-day stage planner - split any trail range into daily stages by distance or time, view per-stage elevation and ETA stats, export individual stages as GPX files, or export all stages as a strip-map PDF",
 			"gpxImport": "GPX track import - drag and drop (or pick) a recorded GPX file to overlay your actual hike on the map; compare your track against the official trail with stats on distance, pace, elapsed time, max deviation, and % of trail covered",
-			"emergency": "Emergency 112 panel - long-press the red SOS button (bottom-right) for an offline-first panel showing your GPS coordinates, Plus Code, trail section and km, and the bearing and distance to the nearest road access and HGSS mountain rescue station; copy any field to the clipboard and hand off to your phone dialer (Call 112) or maps app (Open in maps); fully offline once cached",
+			"emergency": "Emergency 112 panel - long-press the red SOS button (bottom-right) for an offline-first panel showing your GPS coordinates, Plus Code, trail section and km, and the bearing and distance to the nearest road access and HGSS mountain rescue station; when online, a readable address line is looked up and can be copied; copy any field to the clipboard and hand off to your phone dialer (Call 112) or maps app (Open in maps); fully offline once cached",
 			"trailStyle": "Trail style - choose how the route polyline is coloured from the layers panel: Default (single colour), Sections (A/B/C zones with boundary markers and per-section stats), Grade (Strava-style gradient tinting with five bands; warm for ascents and cool for descents in the active travel direction; colour-ramp legend in the panel; recomputed when the SOBO/NOBO direction is toggled), Surface, or Difficulty (SAC)",
 			"surfaceAndSac": "Surface and difficulty colouring - tint the trail polyline (and the elevation chart's area fill) by OSM surface type (paved / unpaved / gravel / ground / rock) or by SAC hiking scale (T1 hiking through T6 difficult alpine hiking). The data is enriched monthly from OpenStreetMap by a GitHub Action; surface and SAC options stay disabled until the dataset finishes loading on first paint. Direction-aware: the dataset is keyed to SOBO km and the renderer mirrors to NOBO on the fly",
 			"distanceMarkers": "Distance markers - small km / mi labels along the trail at 100 / 50 / 25 / 10 / 5 / 1 unit intervals. Progressive disclosure by zoom level: 100 km always visible at any zoom, finer intervals reveal as you zoom in (1 km labels only at zoom 13+). Toggleable from Settings; labels follow the active unit system and current direction (SOBO/NOBO)",
@@ -68,7 +68,7 @@
 		"dataAttribution": "Data & attribution",
 		"dataAttributionDesc": "Trail data is provided by the Udruga Long Distance Trail Hrvatska (LDTH) organization. Map tiles come from OpenStreetMap, OpenTopoMap, OpenHikingMap (openmaps.fr), CyclOSM, Waymarked Trails, and other providers. Croatian topographic maps are from the State Geodetic Administration (DGU). Weather data comes from DHMZ (Croatian Met Service) and Open-Meteo. Radar tiles are provided by RainViewer. Seasonal trail status, hazard warnings, and mountain rescue station data are sourced from HGSS (Croatian Mountain Rescue Service), HPS (Croatian Mountaineering Federation), and the national park authorities (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) together with Park prirode Velebit. Data displayed on this site may not reflect the latest conditions. When in doubt, always verify with the official sources.",
 		"privacy": "Privacy",
-		"privacyDesc": "Your location is used only when you enable it and grant permission. It is never sent to any server - everything runs in your browser. No account or login is required.",
+		"privacyDesc": "Your location is used only when you enable it and grant permission. Core map browsing and GPS progress stay in your browser. Optional online features (share link shortening, trip brief AI, SOS address lookup) may send coordinates or plan data to our server or third parties. No account or login is required.",
 		"links": "Links",
 		"officialWebsite": "Official {companyName} website",
 		"sourceCode": "Source code on GitHub",
@@ -941,6 +941,8 @@
 		"holdToOpen": "Hold to open emergency panel",
 		"close": "Close emergency panel",
 		"position": "Position",
+		"address": "Address",
+		"addressLoading": "Looking up address...",
 		"plusCode": "Plus Code",
 		"section": "Section",
 		"kmFromStart": "{km} km from start",
@@ -956,7 +958,8 @@
 		"copyAriaLabel": {
 			"coords": "Copy coordinates",
 			"plusCode": "Copy Plus Code",
-			"section": "Copy section and km"
+			"section": "Copy section and km",
+			"address": "Copy address"
 		},
 		"callStation": "Call {name}",
 		"openStationPage": "Open page for {name}",
@@ -1053,7 +1056,7 @@
 		"chartHeading": "Elevation chart",
 		"gesturesHeading": "Hidden gestures",
 		"gestures": {
-			"sos": "Long-press the red SOS button for the offline emergency panel: coordinates, Plus Code, nearest road access, HGSS rescue, and one-tap 112.",
+			"sos": "Long-press the red SOS button for the offline emergency panel: coordinates, Plus Code, nearest road access, HGSS rescue, one-tap 112, and an online address line when available.",
 			"gpxDrop": "Drag and drop a recorded .gpx file anywhere onto the map to overlay your hike and compare it with the official trail.",
 			"poiList": "In the places list, type a number (\"100 km\") to jump there; arrow keys navigate, S selects rows for GPX export.",
 			"waypoint": "Long-press (or right-click) anywhere on the map to drop a personal waypoint with a note."
