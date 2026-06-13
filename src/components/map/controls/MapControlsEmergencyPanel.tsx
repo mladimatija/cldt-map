@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useCallback, useEffect, useMemo, useRef, useState, type RefObject } from 'react';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { OpenLocationCode } from 'open-location-code';
 import { IoCallOutline, IoCopyOutline, IoOpenOutline, IoWarningOutline } from 'react-icons/io5';
 import { MAP_CONTROL_POPOVER } from './map-controls-constants';
@@ -15,6 +15,7 @@ import {
 	type HgssStation,
 	type RoadAccessEntry,
 } from '@/lib/emergency-data';
+import { fetchReverseGeocodeAddress } from '@/lib/reverse-geocode-client';
 import { isSafeUrl } from '@/lib/utils';
 
 const FOCUSABLE_SELECTOR = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
@@ -37,7 +38,7 @@ interface NearestHgss {
 	bearingDeg: number;
 }
 
-type CopyField = 'coords' | 'plusCode' | 'section';
+type CopyField = 'coords' | 'plusCode' | 'section' | 'address';
 
 async function copyTextToClipboard(text: string): Promise<boolean> {
 	try {
@@ -112,6 +113,7 @@ export function MapControlsEmergencyPanel({
 }: MapControlsEmergencyPanelProps): React.ReactElement {
 	const t = useTranslations('emergency');
 	const tTrail = useTranslations('trailRoute');
+	const locale = useLocale();
 
 	const userLocation = useMapStore((s: MapStoreState) => s.userLocation);
 	const permissionStatus = useMapStore((s: MapStoreState) => s.permissionStatus);
@@ -124,6 +126,7 @@ export function MapControlsEmergencyPanel({
 	const [hgssStations, setHgssStations] = useState<HgssStation[] | null>(null);
 	const [copiedField, setCopiedField] = useState<CopyField | null>(null);
 	const copyResetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+	const [addressLookup, setAddressLookup] = useState<{ key: string; line: string | null } | null>(null);
 
 	// Lazy-load emergency data on first open
 	useEffect(() => {
@@ -261,6 +264,29 @@ export function MapControlsEmergencyPanel({
 	}, [sectionInfo, t, tTrail]);
 
 	const hasPosition = displayPosition.source !== null;
+
+	const addressLookupKey = useMemo(() => {
+		if (!hasPosition || (typeof navigator !== 'undefined' && !navigator.onLine)) return '';
+		return `${displayPosition.lat.toFixed(4)},${displayPosition.lng.toFixed(4)},${locale}`;
+	}, [hasPosition, displayPosition.lat, displayPosition.lng, locale]);
+
+	useEffect(() => {
+		if (!addressLookupKey) return;
+		let cancelled = false;
+		const lat = Number(addressLookupKey.split(',')[0]);
+		const lng = Number(addressLookupKey.split(',')[1]);
+		void fetchReverseGeocodeAddress(lat, lng, locale).then((line) => {
+			if (cancelled) return;
+			setAddressLookup({ key: addressLookupKey, line });
+		});
+		return () => {
+			cancelled = true;
+		};
+	}, [addressLookupKey, locale]);
+
+	const addressLine = addressLookup?.key === addressLookupKey && addressLookup.line ? addressLookup.line : null;
+	const addressLoading = Boolean(addressLookupKey && addressLookup?.key !== addressLookupKey);
+
 	const mapsHref = useMemo(() => {
 		if (!hasPosition) return undefined;
 		const lat = displayPosition.lat.toFixed(6);
@@ -316,6 +342,24 @@ export function MapControlsEmergencyPanel({
 								onCopied={handleCopied}
 							/>
 						</div>
+						{addressLoading ? (
+							<p className="text-gray-500 italic dark:text-[var(--text-secondary)]">{t('addressLoading')}</p>
+						) : null}
+						{addressLine ? (
+							<div className="flex items-start justify-between gap-2">
+								<span>
+									<span className="text-gray-500 dark:text-[var(--text-secondary)]">{t('address')}: </span>
+									{addressLine}
+								</span>
+								<CopyButton
+									ariaLabel={t('copyAriaLabel.address')}
+									copiedField={copiedField}
+									field="address"
+									value={addressLine}
+									onCopied={handleCopied}
+								/>
+							</div>
+						) : null}
 						{plusCode && (
 							<div className="flex items-center justify-between gap-2">
 								<span className="font-mono text-base">

@@ -70,7 +70,7 @@ Interactive web map for the **Croatian Long Distance Trail (CLDT)** – a 2,200+
 - **Dark mode & battery saver** – UI preferences and reduced location updates; optional keep-screen-on while tracking (screen wake lock, battery saver wins)
 - **4 languages** – English (en), Croatian (hr), German (de), Italian (it)
 - **Offline maps** - Pre-cache the full trail corridor for offline use; per-provider caching, staleness detection, auto-sync on reconnect, predictive corridor pre-cache on Wi-Fi when on-trail, and storage quota handling
-- **Emergency 112 panel** - Long-press the red SOS button (bottom-right) for an offline-first emergency panel with current GPS coordinates, Plus Code, trail section/km, bearing and distance to the nearest road access and HGSS mountain rescue station, copy-to-clipboard for each field, and one-tap "Call 112" / "Open in maps" handoff. Works fully offline using bundled datasets (`public/data/road-access.json` from build-time OSM intersections, `public/data/hgss-stations.json` hand-curated)
+- **Emergency 112 panel** - Long-press the red SOS button (bottom-right) for an offline-first emergency panel with current GPS coordinates, Plus Code, trail section/km, bearing and distance to the nearest road access and HGSS mountain rescue station, copy-to-clipboard for each field, and one-tap "Call 112" / "Open in maps" handoff. When online, an address line is looked up via the server (Nominatim proxy) and can be copied; offline or on lookup failure the panel still works from bundled datasets (`public/data/road-access.json` from build-time OSM intersections, `public/data/hgss-stations.json` hand-curated)
 - **Privacy-first** - Location stays in your browser; no account required
 
 ---
