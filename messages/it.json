@@ -446,6 +446,9 @@
 	"pwa": {
 		"installTitle": "Installa CLDT Map",
 		"installDescription": "Aggiungi alla schermata iniziale per un accesso rapido e un'esperienza simile a un'app.",
+		"installTitleOffline": "Installa per l'uso offline",
+		"installDescriptionOffline": "Le tessere del sentiero sono salvate. Installa l'app sulla schermata iniziale per aprire la mappa offline senza una scheda del browser.",
+		"installDescriptionOfflineIos": "Le tessere del sentiero sono salvate. Tocca Condividi, poi Aggiungi a Home per aprire la mappa offline.",
 		"install": "Installa",
 		"dismiss": "Non ora"
 	},
@@ -500,9 +503,8 @@
 		"clearPoiAssets": "Cancella contenuti POI",
 		"confirmClear": "Sei sicuro?",
 		"confirmYes": "Sì",
-		"confirmNo": "No"
-	},
-	"gpxDownload": {
+		"confirmNo": "No",
+		"downloadComplete": "Mappe offline pronte",
 		"modalTitle": "Scarica GPX CLDT",
 		"disclaimerIntro": "Benvenuto nella sezione di download GPX del Sentiero a Lunga Percorrenza Croato! Qui puoi scaricare la traccia GPS ed esplorarla sulla mappa interattiva. Si prega di notare quanto segue:",
 		"disclaimerItem1": "Il sentiero è attualmente in costruzione.",

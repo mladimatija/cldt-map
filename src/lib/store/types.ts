@@ -306,6 +306,7 @@ export interface MapStoreState {
 	startTileDownload: (
 		points: { lat: number; lng: number; distanceFromStart: number }[],
 		providerName: string,
+		opts?: { source?: 'manual' | 'autoSync' },
 	) => Promise<void>;
 	cancelTileDownload: () => void;
 	clearTileCacheForProvider: (providerKey?: string) => Promise<void>;
@@ -318,6 +319,12 @@ export interface MapStoreState {
 	showStaleCacheNotification: boolean;
 	setStaleCacheNotification: (show: boolean) => void;
 	initStaleCacheCheck: () => Promise<void>;
+
+	/** Set after the first successful manual offline download to show contextual PWA copy. */
+	pwaInstallTrigger: 'offlineDownload' | null;
+	clearPwaInstallTrigger: () => void;
+	tileDownloadCompleteToast: boolean;
+	clearTileDownloadCompleteToast: () => void;
 
 	walkingPaceKmh: number;
 	setWalkingPaceKmh: (pace: number) => void;

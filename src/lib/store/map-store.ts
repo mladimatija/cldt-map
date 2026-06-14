@@ -10,6 +10,7 @@ import {
 	TRAIL_OFF_TRAIL_THRESHOLD_M,
 } from '../config';
 import { getRandomLocationInBoundary, toLocationError } from '../utils';
+import { canShowOfflineInstallNudge, canShowPwaInstallPrompt, isStandalone } from '../pwa-install';
 import { LocationService } from '../services/location-service';
 import type { ImportedTrack, MapStoreState, StagePlan, StoreState, TrailDirection, UnitSystem } from './types';
 import {
@@ -333,7 +334,7 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					// from a previous session would be misleading.
 					poiPrefetchSkipped: null,
 
-					startTileDownload: async (points, providerName) => {
+					startTileDownload: async (points, providerName, opts) => {
 						if (typeof window === 'undefined') return;
 						if (!isProviderCacheable(providerName)) {
 							set({ tileCacheError: 'not_cacheable' });
@@ -370,7 +371,19 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 								providerKey,
 							};
 							await saveTileCacheMeta(providerKey, meta);
-							set({ tileCacheMeta: meta, tileCacheDownloading: false });
+							const isManualDownload = opts?.source !== 'autoSync';
+							const offlineNudgeEligible =
+								isManualDownload &&
+								result.done > 0 &&
+								!isStandalone() &&
+								canShowPwaInstallPrompt() &&
+								canShowOfflineInstallNudge();
+							set({
+								tileCacheMeta: meta,
+								tileCacheDownloading: false,
+								...(isManualDownload && result.done > 0 ? { tileDownloadCompleteToast: true } : {}),
+								...(offlineNudgeEligible ? { pwaInstallTrigger: 'offlineDownload' as const } : {}),
+							});
 							// Fire-and-forget POI asset prefetch on the full dataset.
 							// The user explicitly opted into offline mode by triggering
 							// the corridor download, so we mirror that intent for
@@ -513,6 +526,15 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 							// Storage unavailable or corrupted - leave flag false
 							set({ showStaleCacheNotification: false });
 						}
+					},
+
+					pwaInstallTrigger: null,
+					clearPwaInstallTrigger: (): void => {
+						set({ pwaInstallTrigger: null });
+					},
+					tileDownloadCompleteToast: false,
+					clearTileDownloadCompleteToast: (): void => {
+						set({ tileDownloadCompleteToast: false });
 					},
 
 					processTrailData: (
