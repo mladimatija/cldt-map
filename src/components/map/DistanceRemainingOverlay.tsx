@@ -1,10 +1,10 @@
 'use client';
 
 /** Fixed-position HUD chip showing traveled distance, distance remaining, elevation gain/loss, ETA, and "up next" data-book rows. */
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useStore, useMapStore, type StoreState, type MapStoreState } from '@/lib/store';
-import { usePackAdjustedPaceKmh } from '@/hooks';
+import { useBlockMapPropagation, usePackAdjustedPaceKmh } from '@/hooks';
 import { TRAIL_OFF_TRAIL_THRESHOLD_M } from '@/lib/config';
 import {
 	computeDistanceRemaining,
@@ -15,19 +15,51 @@ import {
 } from '@/lib/distance-utils';
 import { totalCompletedKm } from '@/lib/completion';
 import { loadPois, poiDisplayName, poiPassesReachabilityFilter, type Poi } from '@/lib/pois';
-import { poisInAheadCorridor, resolveTrailAnchor } from '@/lib/poi-ahead-corridor';
+import {
+	AHEAD_HORIZON_OPTIONS,
+	formatAheadHorizon,
+	isAheadHorizonKm,
+	isPoiInAheadCorridor,
+	poiAheadKm,
+	poisInAheadCorridor,
+	resolveTrailAnchor,
+	type AheadHorizonKm,
+} from '@/lib/poi-ahead-corridor';
+import { MapControlSingleSelect } from '@/components/map/controls/MapControlSelect';
+import {
+	mapControlSelectInlineHorizonClassNames,
+	mapControlSelectInlineHorizonStyles,
+} from '@/components/map/controls/map-control-select-styles';
 import { isUsableWaterSource, WATER_COLOR } from '@/lib/water-intelligence';
 import { formatVolume, waterCarryLiters } from '@/lib/pack-weight';
 import { formatDistance, formatElevation } from '@/lib/utils';
 
-/** Categories shown in the up-next data-book strip, in render order. */
-type UpNextKey = 'water' | 'shelter' | 'town';
+/** Nearest POI rows shown before the "More ahead" collapse. */
+const UP_NEXT_VISIBLE_COUNT = 5;
+
+/** Categories shown in the up-next data-book strip. Core rows are always
+ *  candidates; optional rows need a Settings toggle. Display order is by
+ *  distance ahead, not category grouping. */
+type UpNextKey = 'water' | 'shelter' | 'town' | 'food' | 'atm' | 'viewpoint';
+
+const CORE_UP_NEXT_KEYS = ['water', 'shelter', 'town'] as const satisfies readonly UpNextKey[];
+const OPTIONAL_UP_NEXT_KEYS = ['food', 'atm', 'viewpoint'] as const satisfies readonly UpNextKey[];
 
 /** POI types the up-next strip needs. Loaded directly (module-cached per
  *  type) rather than read from the store's poisFile, which only carries the
  *  currently enabled marker layers - the data-book view should answer
  *  "how far to the next water?" even with the water layer toggled off. */
-const UP_NEXT_TYPES: ReadonlySet<string> = new Set(['water', 'shelter', 'hut', 'town', 'settlement']);
+const UP_NEXT_TYPES: ReadonlySet<string> = new Set([
+	'water',
+	'shelter',
+	'hut',
+	'town',
+	'settlement',
+	'restaurant',
+	'cafe',
+	'atm',
+	'viewpoint',
+]);
 
 /** Marker dot colour per row; mirrors the map markers without importing the
  *  Leaflet-coupled icon builder. Water tints by reliability class. */
@@ -36,8 +68,46 @@ function upNextDotColor(key: UpNextKey, poi: Poi): string {
 	return `var(--poi-color-${poi.type})`;
 }
 
+/** Nearest POI ahead within the forward corridor (same anchor and horizon as the POI list). */
+function nearestPoiAheadInCorridor(
+	arr: Poi[],
+	anchorSoboKm: number,
+	horizonKm: number,
+	direction: MapStoreState['direction'],
+): Poi | null {
+	if (direction === 'NOBO') {
+		for (let i = arr.length - 1; i >= 0; i--) {
+			if (isPoiInAheadCorridor(arr[i].trailKm, anchorSoboKm, horizonKm, direction)) return arr[i];
+		}
+		return null;
+	}
+	for (const p of arr) {
+		if (isPoiInAheadCorridor(p.trailKm, anchorSoboKm, horizonKm, direction)) return p;
+	}
+	return null;
+}
+
+/** Marker types for Up Next rows currently visible in the HUD (primary rows always;
+ *  overflow rows only when the "More ahead" block is expanded). */
+function upNextDisplayedPoiTypes(
+	primaryRows: ReadonlyArray<{ poi: Poi }>,
+	moreRows: ReadonlyArray<{ poi: Poi }>,
+	moreExpanded: boolean,
+): Set<string> {
+	const types = new Set<string>();
+	for (const { poi } of primaryRows) types.add(poi.type);
+	if (moreExpanded) {
+		for (const { poi } of moreRows) types.add(poi.type);
+	}
+	return types;
+}
+
 export function DistanceRemainingOverlay(): React.ReactElement | null {
+	const overlayRef = useRef<HTMLDivElement>(null);
+	useBlockMapPropagation(overlayRef);
+
 	const t = useTranslations('distanceOverlay');
+	const tPois = useTranslations('pois');
 
 	function etaAriaLabel(seconds: number): string {
 		const totalMinutes = Math.round(seconds / 60);
@@ -57,6 +127,11 @@ export function DistanceRemainingOverlay(): React.ReactElement | null {
 	const gradeAdjustedEta = useMapStore((state: MapStoreState) => state.gradeAdjustedEta);
 	const distancePrecision = useMapStore((state: MapStoreState) => state.distancePrecision);
 	const showUpNext = useMapStore((state: MapStoreState) => state.showUpNext);
+	const upNextShowFood = useMapStore((state: MapStoreState) => state.upNextShowFood);
+	const upNextShowAtm = useMapStore((state: MapStoreState) => state.upNextShowAtm);
+	const upNextShowViewpoint = useMapStore((state: MapStoreState) => state.upNextShowViewpoint);
+	const upNextMoreExpanded = useMapStore((state: MapStoreState) => state.upNextMoreExpanded);
+	const setUpNextMoreExpanded = useMapStore((state: MapStoreState) => state.setUpNextMoreExpanded);
 	const packBaseWeightKg = useMapStore((state: MapStoreState) => state.packBaseWeightKg);
 	const waterConsumptionLph = useMapStore((state: MapStoreState) => state.waterConsumptionLph);
 	const enabledPoiTypes = useMapStore((state: MapStoreState) => state.enabledPoiTypes);
@@ -64,7 +139,9 @@ export function DistanceRemainingOverlay(): React.ReactElement | null {
 	const includeRemotePois = useMapStore((state: MapStoreState) => state.includeRemotePois);
 	const poisFile = useMapStore((state: MapStoreState) => state.poisFile);
 	const aheadHorizonKm = useMapStore((state: MapStoreState) => state.aheadHorizonKm);
+	const setAheadHorizonKm = useMapStore((state: MapStoreState) => state.setAheadHorizonKm);
 	const requestPoiListAhead = useMapStore((state: MapStoreState) => state.requestPoiListAhead);
+	const setEnabledPoiTypes = useMapStore((state: MapStoreState) => state.setEnabledPoiTypes);
 	const togglePoiType = useMapStore((state: MapStoreState) => state.togglePoiType);
 	const requestOpenPoi = useMapStore((state: MapStoreState) => state.requestOpenPoi);
 	const locale = useLocale();
@@ -90,36 +167,59 @@ export function DistanceRemainingOverlay(): React.ReactElement | null {
 			water: reachable.filter((p) => p.type === 'water' && isUsableWaterSource(p.water)).sort(byKm),
 			shelter: reachable.filter((p) => p.type === 'shelter' || p.type === 'hut').sort(byKm),
 			town: reachable.filter((p) => p.type === 'town' || p.type === 'settlement').sort(byKm),
+			food: reachable.filter((p) => p.type === 'restaurant' || p.type === 'cafe').sort(byKm),
+			atm: reachable.filter((p) => p.type === 'atm').sort(byKm),
+			viewpoint: reachable.filter((p) => p.type === 'viewpoint').sort(byKm),
 		};
 	}, [upNextPois, includeRemotePois]);
-
-	// Nearest POI ahead in the direction of travel for each category.
-	// trailKm is measured SOBO from the northern trailhead, matching
-	// closestPoint.distanceFromStart, so "ahead" is larger km when walking
-	// SOBO and smaller km when walking NOBO.
-	const upNextRows = useMemo(() => {
-		if (!showUpNext || closestPoint === null) return [];
-		const curKm = closestPoint.distanceFromStart / 1000;
-		const ahead = (arr: Poi[]): Poi | null => {
-			if (direction === 'NOBO') {
-				for (let i = arr.length - 1; i >= 0; i--) if (arr[i].trailKm < curKm) return arr[i];
-				return null;
-			}
-			for (const p of arr) if (p.trailKm > curKm) return p;
-			return null;
-		};
-		const rows: { key: UpNextKey; poi: Poi; km: number }[] = [];
-		for (const key of ['water', 'shelter', 'town'] as const) {
-			const poi = ahead(upNextIndex[key]);
-			if (poi) rows.push({ key, poi, km: Math.abs(poi.trailKm - curKm) });
-		}
-		return rows;
-	}, [showUpNext, closestPoint, direction, upNextIndex]);
 
 	const trailAnchor = useMemo(
 		() => resolveTrailAnchor(closestPoint, rulerRange, TRAIL_OFF_TRAIL_THRESHOLD_M),
 		[closestPoint, rulerRange],
 	);
+
+	// Nearest POI ahead in the direction of travel for each enabled category,
+	// sorted by distance and split into the visible strip vs "More ahead".
+	const { primaryUpNextRows, moreUpNextRows } = useMemo(() => {
+		const empty = {
+			primaryUpNextRows: [] as { key: UpNextKey; poi: Poi; km: number }[],
+			moreUpNextRows: [] as { key: UpNextKey; poi: Poi; km: number }[],
+		};
+		if (!showUpNext || trailAnchor === null) return empty;
+		const anchorSoboKm = trailAnchor.soboKm;
+		const buildRow = (key: UpNextKey): { key: UpNextKey; poi: Poi; km: number } | null => {
+			const poi = nearestPoiAheadInCorridor(upNextIndex[key], anchorSoboKm, aheadHorizonKm, direction);
+			if (!poi) return null;
+			const km = poiAheadKm(poi.trailKm, anchorSoboKm, direction);
+			if (km === null) return null;
+			return { key, poi, km };
+		};
+		const enabledKeys: UpNextKey[] = [
+			...CORE_UP_NEXT_KEYS,
+			...OPTIONAL_UP_NEXT_KEYS.filter((key) => {
+				if (key === 'food') return upNextShowFood;
+				if (key === 'atm') return upNextShowAtm;
+				return upNextShowViewpoint;
+			}),
+		];
+		const sortedRows = enabledKeys
+			.map(buildRow)
+			.filter((row): row is NonNullable<typeof row> => row !== null)
+			.sort((a, b) => a.km - b.km);
+		return {
+			primaryUpNextRows: sortedRows.slice(0, UP_NEXT_VISIBLE_COUNT),
+			moreUpNextRows: sortedRows.slice(UP_NEXT_VISIBLE_COUNT),
+		};
+	}, [
+		showUpNext,
+		trailAnchor,
+		aheadHorizonKm,
+		direction,
+		upNextIndex,
+		upNextShowFood,
+		upNextShowAtm,
+		upNextShowViewpoint,
+	]);
 
 	const aheadCorridorCount = useMemo((): number => {
 		if (!trailAnchor || !poisFile?.pois?.length) return 0;
@@ -141,10 +241,64 @@ export function DistanceRemainingOverlay(): React.ReactElement | null {
 		requestOpenPoi(poi.id);
 	};
 
+	/** Open the ahead-sorted POI list and enable filters for types shown in Up Next. */
+	const handleSeeAllAhead = (): void => {
+		const displayedTypes = upNextDisplayedPoiTypes(primaryUpNextRows, moreUpNextRows, upNextMoreExpanded);
+		let needsUpdate = false;
+		const merged = new Set(enabledPoiTypes);
+		for (const type of displayedTypes) {
+			if (!merged.has(type)) {
+				merged.add(type);
+				needsUpdate = true;
+			}
+		}
+		if (needsUpdate) setEnabledPoiTypes(merged);
+		requestPoiListAhead();
+	};
+
 	const upNextAriaLabel: Record<UpNextKey, string> = {
 		water: t('upNextWater'),
 		shelter: t('upNextShelter'),
 		town: t('upNextTown'),
+		food: t('upNextFood'),
+		atm: t('upNextAtm'),
+		viewpoint: t('upNextViewpoint'),
+	};
+
+	const renderUpNextRow = ({ key, poi, km }: { key: UpNextKey; poi: Poi; km: number }): React.ReactElement => {
+		const carryL =
+			key === 'water' && packBaseWeightKg !== null ? waterCarryLiters(km, walkingPaceKmh, waterConsumptionLph) : 0;
+		const carryStr = carryL > 0 ? formatVolume(carryL, units) : null;
+		const displayName = poiDisplayName(poi, locale);
+		const typeLabel = tPois(`type.${poi.type}`, { default: poi.type });
+		const poiTooltip = `${displayName} · ${typeLabel}`;
+		return (
+			<button
+				aria-label={`${upNextAriaLabel[key]}: ${poiTooltip}, ${formatDistance(km, units, distancePrecision)}${carryStr ? `, ${carryStr}` : ''}`}
+				className="flex w-full cursor-pointer items-center justify-between gap-3 rounded text-left hover:bg-gray-100 dark:hover:bg-[var(--bg-primary)]"
+				key={key}
+				title={poiTooltip}
+				type="button"
+				onClick={() => handleUpNextClick(poi)}
+			>
+				<span className="flex min-w-0 items-center gap-1.5 text-gray-500 dark:text-[var(--text-secondary)]">
+					<span
+						aria-hidden="true"
+						className="size-2 shrink-0 rounded-full"
+						style={{ backgroundColor: upNextDotColor(key, poi) }}
+					/>
+					<span className="max-w-[9rem] truncate">{displayName}</span>
+				</span>
+				<span className="shrink-0">
+					{formatDistance(km, units, distancePrecision)}
+					{carryStr && (
+						<span aria-hidden="true" className="ml-1 text-[10px] text-gray-400 dark:text-[var(--text-secondary)]">
+							≈{carryStr}
+						</span>
+					)}
+				</span>
+			</button>
+		);
 	};
 
 	// Without useMemo, computeDistanceRemaining returns a new object literal on every render,
@@ -183,11 +337,50 @@ export function DistanceRemainingOverlay(): React.ReactElement | null {
 		};
 	}, [distanceInfo, enhancedTrailPoints, fromIndex, direction, gradeAdjustedEta, walkingPaceKmh]);
 
+	const aheadHorizonOptions = useMemo(
+		() =>
+			AHEAD_HORIZON_OPTIONS.map((km) => ({
+				value: km,
+				label: formatAheadHorizon(km, units, distancePrecision),
+			})),
+		[units, distancePrecision],
+	);
+	const selectedAheadHorizonOption = useMemo(
+		() => aheadHorizonOptions.find((o) => o.value === aheadHorizonKm) ?? aheadHorizonOptions[1],
+		[aheadHorizonOptions, aheadHorizonKm],
+	);
+
+	/** Leaflet blocks pointer down before it reaches React's root listener, so react-select
+	 *  never sees control clicks inside useBlockMapPropagation overlays. Toggle the menu
+	 *  natively and portal it to document.body so option clicks stay interactive. */
+	const horizonSelectWrapRef = useRef<HTMLSpanElement>(null);
+	const [horizonMenuOpen, setHorizonMenuOpen] = useState(false);
+	useEffect(() => {
+		const wrap = horizonSelectWrapRef.current;
+		if (!wrap) return;
+		const onControlPointerDown = (e: MouseEvent | TouchEvent): void => {
+			if (!(e.target as Element).closest('.map-control-select__control')) return;
+			e.stopPropagation();
+			setHorizonMenuOpen((open) => !open);
+		};
+		wrap.addEventListener('mousedown', onControlPointerDown);
+		wrap.addEventListener('touchstart', onControlPointerDown, { passive: true });
+		return () => {
+			wrap.removeEventListener('mousedown', onControlPointerDown);
+			wrap.removeEventListener('touchstart', onControlPointerDown);
+		};
+	}, []);
+
 	if (distanceInfo === null) return null;
+
+	const anyOptionalUpNextEnabled = upNextShowFood || upNextShowAtm || upNextShowViewpoint;
+	const hasUpNextContent =
+		showUpNext && (primaryUpNextRows.length > 0 || moreUpNextRows.length > 0 || anyOptionalUpNextEnabled);
 
 	return (
 		<div
 			className="z-controls absolute top-2 right-14 flex min-w-[10rem] flex-col gap-0.5 rounded-lg bg-white/90 px-3 py-2 text-xs font-medium text-gray-800 shadow dark:bg-[var(--bg-secondary)]/90 dark:text-[var(--text-primary)]"
+			ref={overlayRef}
 			role="status"
 		>
 			<div className="flex justify-between gap-4">
@@ -258,54 +451,52 @@ export function DistanceRemainingOverlay(): React.ReactElement | null {
 					</div>
 				)}
 			</div>
-			{upNextRows.length > 0 && (
+			{hasUpNextContent && (
 				<div className="mt-1 border-t border-gray-200 pt-1 dark:border-[var(--border-color)]">
-					<p className="m-0 text-[10px] font-medium tracking-wide text-gray-400 uppercase dark:text-[var(--text-secondary)]">
-						{t('upNext')}
-					</p>
-					{upNextRows.map(({ key, poi, km }) => {
-						// Water-to-carry hint: liters to reach the next source at the
-						// (pack-adjusted) pace; only when the pack feature is on.
-						const carryL =
-							key === 'water' && packBaseWeightKg !== null
-								? waterCarryLiters(km, walkingPaceKmh, waterConsumptionLph)
-								: 0;
-						const carryStr = carryL > 0 ? formatVolume(carryL, units) : null;
-						return (
+					<div className="m-0 text-[10px] font-medium tracking-wide text-gray-400 dark:text-[var(--text-secondary)]">
+						<span className="uppercase">{t('upNext')}</span>{' '}
+						<span className="inline-flex normal-case" ref={horizonSelectWrapRef}>
+							<MapControlSingleSelect<{ value: AheadHorizonKm; label: string }>
+								aria-label={t('upNextHorizonAriaLabel', {
+									distance: formatAheadHorizon(aheadHorizonKm, units, distancePrecision),
+								})}
+								classNames={mapControlSelectInlineHorizonClassNames}
+								menuIsOpen={horizonMenuOpen}
+								menuPortalTarget={typeof document === 'undefined' ? null : document.body}
+								options={aheadHorizonOptions}
+								styles={mapControlSelectInlineHorizonStyles}
+								value={selectedAheadHorizonOption}
+								onChange={(option) => {
+									if (option && isAheadHorizonKm(option.value)) {
+										setAheadHorizonKm(option.value);
+										setHorizonMenuOpen(false);
+									}
+								}}
+								onMenuClose={() => setHorizonMenuOpen(false)}
+								onMenuOpen={() => setHorizonMenuOpen(true)}
+							/>
+						</span>
+					</div>
+					{primaryUpNextRows.map(renderUpNextRow)}
+					{moreUpNextRows.length > 0 && (
+						<div className="mt-0.5">
 							<button
-								aria-label={`${upNextAriaLabel[key]}: ${poiDisplayName(poi, locale)}, ${formatDistance(km, units, distancePrecision)}${carryStr ? `, ${carryStr}` : ''}`}
-								className="flex w-full cursor-pointer items-center justify-between gap-3 rounded text-left hover:bg-gray-100 dark:hover:bg-[var(--bg-primary)]"
-								key={key}
+								aria-expanded={upNextMoreExpanded}
+								className="text-cldt-blue flex w-full cursor-pointer items-center gap-1 rounded text-left text-[10px] hover:underline focus-visible:underline focus-visible:outline-none dark:text-[var(--text-primary)]"
 								type="button"
-								onClick={() => handleUpNextClick(poi)}
+								onClick={() => setUpNextMoreExpanded(!upNextMoreExpanded)}
 							>
-								<span className="flex min-w-0 items-center gap-1.5 text-gray-500 dark:text-[var(--text-secondary)]">
-									<span
-										aria-hidden="true"
-										className="size-2 shrink-0 rounded-full"
-										style={{ backgroundColor: upNextDotColor(key, poi) }}
-									/>
-									<span className="max-w-[9rem] truncate">{poiDisplayName(poi, locale)}</span>
-								</span>
-								<span className="shrink-0">
-									{formatDistance(km, units, distancePrecision)}
-									{carryStr && (
-										<span
-											aria-hidden="true"
-											className="ml-1 text-[10px] text-gray-400 dark:text-[var(--text-secondary)]"
-										>
-											≈{carryStr}
-										</span>
-									)}
-								</span>
+								<span aria-hidden="true">{upNextMoreExpanded ? '▾' : '▸'}</span>
+								{t('upNextMoreAhead')}
 							</button>
-						);
-					})}
+							{upNextMoreExpanded && moreUpNextRows.map(renderUpNextRow)}
+						</div>
+					)}
 					{aheadCorridorCount > 0 && (
 						<button
 							className="text-cldt-blue mt-1 w-full cursor-pointer rounded text-left text-[10px] hover:underline focus-visible:underline focus-visible:outline-none dark:text-[var(--text-primary)]"
 							type="button"
-							onClick={() => requestPoiListAhead()}
+							onClick={handleSeeAllAhead}
 						>
 							{t('upNextSeeAll', { count: aheadCorridorCount })}
 						</button>

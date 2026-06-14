@@ -108,6 +108,12 @@ export function MapControlsSettingsPanel({
 	const setSunsetProjection = useMapStore((state: MapStoreState) => state.setSunsetProjection);
 	const showUpNext = useMapStore((state: MapStoreState) => state.showUpNext);
 	const setShowUpNext = useMapStore((state: MapStoreState) => state.setShowUpNext);
+	const upNextShowFood = useMapStore((state: MapStoreState) => state.upNextShowFood);
+	const setUpNextShowFood = useMapStore((state: MapStoreState) => state.setUpNextShowFood);
+	const upNextShowAtm = useMapStore((state: MapStoreState) => state.upNextShowAtm);
+	const setUpNextShowAtm = useMapStore((state: MapStoreState) => state.setUpNextShowAtm);
+	const upNextShowViewpoint = useMapStore((state: MapStoreState) => state.upNextShowViewpoint);
+	const setUpNextShowViewpoint = useMapStore((state: MapStoreState) => state.setUpNextShowViewpoint);
 	const packBaseWeightKg = useMapStore((state: MapStoreState) => state.packBaseWeightKg);
 	const setPackBaseWeightKg = useMapStore((state: MapStoreState) => state.setPackBaseWeightKg);
 	const waterConsumptionLph = useMapStore((state: MapStoreState) => state.waterConsumptionLph);
@@ -570,6 +576,35 @@ export function MapControlsSettingsPanel({
 							<span className="text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('showUpNextHint')}</span>
 						</div>
 					</label>
+
+					{showUpNext && (
+						<div className="ml-6 flex flex-col gap-2">
+							<label className="flex cursor-pointer items-center gap-2">
+								<Checkbox checked={upNextShowFood} onCheckedChange={(checked) => setUpNextShowFood(checked)} />
+								<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]" title={t('upNextShowFoodHint')}>
+									{t('upNextShowFoodLabel')}
+								</span>
+							</label>
+							<label className="flex cursor-pointer items-center gap-2">
+								<Checkbox checked={upNextShowAtm} onCheckedChange={(checked) => setUpNextShowAtm(checked)} />
+								<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]" title={t('upNextShowAtmHint')}>
+									{t('upNextShowAtmLabel')}
+								</span>
+							</label>
+							<label className="flex cursor-pointer items-center gap-2">
+								<Checkbox
+									checked={upNextShowViewpoint}
+									onCheckedChange={(checked) => setUpNextShowViewpoint(checked)}
+								/>
+								<span
+									className="text-sm text-gray-700 dark:text-[var(--text-primary)]"
+									title={t('upNextShowViewpointHint')}
+								>
+									{t('upNextShowViewpointLabel')}
+								</span>
+							</label>
+						</div>
+					)}
 
 					<div className="flex flex-col gap-1.5">
 						<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">{t('packWeightTitle')}</span>

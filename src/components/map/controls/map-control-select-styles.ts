@@ -52,6 +52,84 @@ export const mapControlSelectMenuStyles = {
 	}),
 };
 
+/** Inline text-style single-select for the Up Next horizon distance (10px header). */
+export const mapControlSelectInlineHorizonClassNames = {
+	...mapControlSelectClassNames,
+	container: () => 'relative inline-block w-auto align-baseline',
+	control: ({ isFocused }: { isFocused: boolean }) =>
+		cn(
+			'inline-flex min-h-0 cursor-pointer items-center rounded-none border-0 border-b border-dotted border-gray-400/70 bg-transparent p-0 text-[10px] font-medium leading-none text-gray-400 outline-none dark:border-[var(--text-secondary)]/70 dark:text-[var(--text-secondary)]',
+			isFocused && 'border-cldt-green text-cldt-blue dark:border-cldt-green dark:text-cldt-blue',
+		),
+	placeholder: () => 'm-0 text-[10px] leading-none text-gray-400',
+	input: () => 'text-[10px] text-inherit',
+	singleValue: () => 'm-0 p-0 text-[10px] font-medium tabular-nums text-inherit',
+	valueContainer: () => 'm-0 flex items-center p-0',
+	indicatorsContainer: () => 'flex shrink-0 items-center self-center pl-0.5',
+	indicatorSeparator: () => 'hidden',
+	dropdownIndicator: () =>
+		'flex items-center p-0 leading-none text-gray-400 dark:text-[var(--text-secondary)] [&>svg]:size-[10px]',
+	menu: () =>
+		'absolute z-controls-popover mt-0.5 min-w-[4.5rem] rounded border border-gray-200 bg-[var(--map-tooltip-bg)] text-[10px] leading-snug shadow-md dark:border-[var(--border-color)] dark:bg-[var(--bg-secondary)]',
+	menuList: () => 'max-h-40 overflow-y-auto py-0.5',
+	option: ({ isFocused, isSelected }: { isFocused: boolean; isSelected: boolean }) =>
+		cn(
+			'cursor-pointer px-2 py-0.5 text-[10px] leading-snug tabular-nums text-gray-800 dark:text-[var(--text-primary)]',
+			isFocused && 'bg-cldt-blue/10 dark:bg-cldt-blue/20',
+			isSelected && 'font-medium text-cldt-blue dark:text-cldt-blue',
+		),
+};
+
+export const mapControlSelectInlineHorizonStyles = {
+	control: (base: Record<string, unknown>) => ({
+		...base,
+		minHeight: 'auto',
+		height: 'auto',
+		boxShadow: 'none',
+	}),
+	valueContainer: (base: Record<string, unknown>) => ({
+		...base,
+		padding: 0,
+	}),
+	input: (base: Record<string, unknown>) => ({
+		...base,
+		gridArea: 'unset',
+		position: 'absolute' as const,
+		width: 1,
+		height: 1,
+		margin: 0,
+		opacity: 0,
+	}),
+	indicatorsContainer: (base: Record<string, unknown>) => ({
+		...base,
+		padding: 0,
+		alignSelf: 'center',
+	}),
+	dropdownIndicator: (base: Record<string, unknown>) => ({
+		...base,
+		padding: 0,
+		paddingLeft: 2,
+		lineHeight: 'inherit',
+	}),
+	singleValue: (base: Record<string, unknown>) => ({
+		...base,
+		margin: 0,
+		position: 'static' as const,
+		transform: 'none',
+		maxWidth: 'none',
+	}),
+	menu: (base: Record<string, unknown>) => ({
+		...base,
+		width: 'max-content',
+		minWidth: '4.5rem',
+		zIndex: 'calc(var(--z-map-overlay) + 1)',
+	}),
+	menuPortal: (base: Record<string, unknown>) => ({
+		...base,
+		zIndex: 'calc(var(--z-map-overlay) + 1)',
+	}),
+};
+
 /** Single-row chip scroll: overrides react-select Emotion baseline (flex-wrap, overflow). */
 export const mapControlSelectChipScrollStyles = {
 	container: (base: Record<string, unknown>) => ({

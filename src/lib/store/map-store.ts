@@ -65,6 +65,22 @@ let tilePrecacheAbortController: AbortController | null = null;
 let lastPredictiveCheckAt = 0;
 const PREDICTIVE_GPS_DEBOUNCE_MS = 30_000;
 
+/** Optional Up Next row toggles: expand "More ahead" when enabling any; collapse when all off. */
+function patchOptionalUpNextToggles(
+	state: Pick<MapStoreState, 'upNextShowFood' | 'upNextShowAtm' | 'upNextShowViewpoint' | 'upNextMoreExpanded'>,
+	patch: Partial<Pick<MapStoreState, 'upNextShowFood' | 'upNextShowAtm' | 'upNextShowViewpoint'>>,
+): Pick<MapStoreState, 'upNextShowFood' | 'upNextShowAtm' | 'upNextShowViewpoint' | 'upNextMoreExpanded'> {
+	const upNextShowFood = patch.upNextShowFood ?? state.upNextShowFood;
+	const upNextShowAtm = patch.upNextShowAtm ?? state.upNextShowAtm;
+	const upNextShowViewpoint = patch.upNextShowViewpoint ?? state.upNextShowViewpoint;
+	const enabling = patch.upNextShowFood === true || patch.upNextShowAtm === true || patch.upNextShowViewpoint === true;
+	const anyOn = upNextShowFood || upNextShowAtm || upNextShowViewpoint;
+	let upNextMoreExpanded = state.upNextMoreExpanded;
+	if (enabling) upNextMoreExpanded = true;
+	else if (!anyOn) upNextMoreExpanded = false;
+	return { upNextShowFood, upNextShowAtm, upNextShowViewpoint, upNextMoreExpanded };
+}
+
 /**
  * Creates the persisted map store. Receives getMainStore so it does not import the main store at module init (avoids circular deps).
  */
@@ -887,11 +903,28 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					setShowUpNext: (show: boolean): void => {
 						set({ showUpNext: show });
 					},
+					upNextShowFood: false,
+					setUpNextShowFood: (show: boolean): void => {
+						set((state) => patchOptionalUpNextToggles(state, { upNextShowFood: show }));
+					},
+					upNextShowAtm: false,
+					setUpNextShowAtm: (show: boolean): void => {
+						set((state) => patchOptionalUpNextToggles(state, { upNextShowAtm: show }));
+					},
+					upNextShowViewpoint: false,
+					setUpNextShowViewpoint: (show: boolean): void => {
+						set((state) => patchOptionalUpNextToggles(state, { upNextShowViewpoint: show }));
+					},
+					upNextMoreExpanded: false,
+					setUpNextMoreExpanded: (expanded: boolean): void => {
+						set({ upNextMoreExpanded: expanded });
+					},
 
 					aheadHorizonKm: 50,
 					setAheadHorizonKm: (km: number): void => {
-						if (!isAheadHorizonKm(km)) return;
-						set({ aheadHorizonKm: km });
+						const normalized = typeof km === 'number' ? km : Number(km);
+						if (!isAheadHorizonKm(normalized)) return;
+						set({ aheadHorizonKm: normalized });
 					},
 					pendingPoiListSort: null,
 					requestPoiListAhead: (): void => {
@@ -1184,6 +1217,10 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 						severeWeatherLayer: state.severeWeatherLayer,
 						mineAreasEnabled: state.mineAreasEnabled,
 						showUpNext: state.showUpNext,
+						upNextShowFood: state.upNextShowFood,
+						upNextShowAtm: state.upNextShowAtm,
+						upNextShowViewpoint: state.upNextShowViewpoint,
+						upNextMoreExpanded: state.upNextMoreExpanded,
 						aheadHorizonKm: state.aheadHorizonKm,
 						completedIntervals: demoSnapshot ? demoSnapshot.completedIntervals : state.completedIntervals,
 						progressTrackIds: state.progressTrackIds,
@@ -1274,6 +1311,7 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 							(persistedState as { lastWaypointCategory: string }).lastWaypointCategory,
 						);
 					}
+					if (typeof merged.aheadHorizonKm === 'string') merged.aheadHorizonKm = Number(merged.aheadHorizonKm);
 					if (!isAheadHorizonKm(merged.aheadHorizonKm)) merged.aheadHorizonKm = 50;
 					return merged;
 				},
