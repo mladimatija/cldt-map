@@ -507,6 +507,14 @@
 			"label": "Pre-cache predittivo",
 			"hint": "Carica i tile in anticipo quando il Wi-Fi è disponibile."
 		},
+		"highDetailAhead": {
+			"label": "Alto dettaglio avanti (zoom 15)",
+			"hint": "Scarica tessere zoom 15 per i prossimi {km} km nella direzione di viaggio. Richiede prima un download offline di base.",
+			"storageWarning": "~{count} tessere zoom 15 per i prossimi {km} km. Usa spazio aggiuntivo.",
+			"download": "Scarica alto dettaglio avanti"
+		},
+		"zoomRange": "Zoom {min}-{max}",
+		"zoomRangeWithHighDetail": "Zoom {min}-{max} (include alto dettaglio avanti)",
 		"estimatedTiles": "~{count} tessere da scaricare",
 		"today": "oggi",
 		"yesterday": "ieri",

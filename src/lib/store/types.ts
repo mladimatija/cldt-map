@@ -323,6 +323,8 @@ export interface MapStoreState {
 	tileCacheMeta: TileCacheMeta | null;
 	autoSync: boolean;
 	predictivePrecache: boolean;
+	/** User preference: show the optional zoom-15 ahead pack controls. Persisted. */
+	offlineHighDetailAheadEnabled: boolean;
 	/** Incremented each time the background POI asset prefetch completes so
 	 *  components can react without setTimeout. */
 	poiPrefetchVersion: number;
@@ -342,6 +344,8 @@ export interface MapStoreState {
 	loadTileCacheMeta: (providerKey: string) => Promise<void>;
 	setAutoSync: (enabled: boolean) => void;
 	setPredictivePrecache: (enabled: boolean) => void;
+	setOfflineHighDetailAheadEnabled: (enabled: boolean) => void;
+	startHighDetailAheadDownload: () => Promise<void>;
 	maybeRunPredictivePrecache: (opts?: { source: 'online' | 'gps' | 'network' | 'battery' }) => Promise<void>;
 	handleQuotaExceeded: () => void;
 

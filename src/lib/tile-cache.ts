@@ -26,6 +26,9 @@ import type { EnhancedTrailPoint, TrailDirection } from '@/lib/store/types';
 export const TILE_CACHE_TTL_MS = tileCacheTtlDays * 24 * 60 * 60 * 1000;
 export const PRECACHE_ZOOM_MIN = 8;
 export const PRECACHE_ZOOM_MAX = 14;
+export const PRECACHE_ZOOM_MAX_HIGH = 15;
+/** Look-ahead distance (km) for the optional high-detail ahead pack. */
+export const HIGH_DETAIL_AHEAD_KM = 50;
 const SEGMENT_DISTANCE_M = 50_000; // 50 km between segment boundaries
 const CORRIDOR_PADDING_DEG = 0.02; // ~2 km buffer around each segment
 const PRECACHE_BATCH_SIZE = 8; // concurrent fetches
@@ -39,6 +42,8 @@ export interface TileCacheMeta {
 	zoomMin: number;
 	zoomMax: number;
 	providerKey: string;
+	/** Set when zoom-15 ahead tiles were downloaded on top of the baseline corridor. */
+	hasHighDetailAhead?: boolean;
 }
 
 export interface PrecacheResult {
@@ -244,10 +249,95 @@ export async function precacheTiles(
 	return { done: total, total, cancelled: false };
 }
 
-// ── Predictive pre-cache ──────────────────────────────────────────────────────
+/** Minimal trail-point shape used in ahead slices and predictive precache.
+ *  Subset of EnhancedTrailPoint; structurally compatible with the
+ *  `CorridorSlicePoint` accepted by poi-prefetch helpers. */
+export type PredictivePrecacheSlicePoint = Pick<EnhancedTrailPoint, 'lat' | 'lng' | 'distanceFromStart'>;
+
+// ── Ahead slice ───────────────────────────────────────────────────────────────
 
 /** Default look-ahead distance (km) for the predictive runner. */
 const PRECACHE_AHEAD_KM = 20;
+
+export interface AheadTrailSliceArgs {
+	points: Pick<EnhancedTrailPoint, 'lat' | 'lng' | 'distanceFromStart'>[];
+	fromIdx: number;
+	direction: TrailDirection;
+	kmAhead?: number;
+}
+
+export interface ResolveAheadSliceStartArgs {
+	points: Pick<EnhancedTrailPoint, 'lat' | 'lng' | 'distanceFromStart'>[];
+	direction: TrailDirection;
+	userLocation: { lat: number; lng: number } | null;
+	closestPoint: { distance: number; distanceFromStart: number } | null;
+	offTrailThresholdM: number;
+}
+
+/**
+ * Picks the trail index where the ahead slice begins. Uses the on-trail GPS
+ * position when available; otherwise the trail start in the current direction
+ * (index 0 for SOBO, last point for NOBO).
+ */
+export function resolveAheadSliceStartIndex({
+	points,
+	direction,
+	userLocation,
+	closestPoint,
+	offTrailThresholdM,
+}: ResolveAheadSliceStartArgs): number {
+	if (!points.length) return 0;
+	if (
+		userLocation &&
+		closestPoint &&
+		closestPoint.distance <= offTrailThresholdM
+	) {
+		return findNearestPointIndex(points, closestPoint.distanceFromStart);
+	}
+	return direction === 'SOBO' ? 0 : points.length - 1;
+}
+
+/** Builds the trail-point slice covering the next `kmAhead` km from `fromIdx`. */
+export function buildAheadTrailSlice({
+	points,
+	fromIdx,
+	direction,
+	kmAhead,
+}: AheadTrailSliceArgs): PredictivePrecacheSlicePoint[] {
+	if (!points.length || fromIdx < 0 || fromIdx >= points.length) return [];
+
+	const aheadM = (kmAhead ?? PRECACHE_AHEAD_KM) * 1000;
+	const baseDist = points[fromIdx].distanceFromStart;
+	if (direction === 'SOBO') {
+		const targetIdx = findNearestPointIndex(points, baseDist + aheadM);
+		return points.slice(fromIdx, targetIdx + 1);
+	}
+	const targetIdx = findNearestPointIndex(points, baseDist - aheadM);
+	return points.slice(targetIdx, fromIdx + 1).reverse();
+}
+
+/** Tile URLs for the high-detail ahead pack (zoom 15 only, narrow corridor). */
+export function generateAheadHighDetailTileUrls(
+	slice: PredictivePrecacheSlicePoint[],
+	urlTemplate: string,
+): string[] {
+	return generateTrailTileUrls(slice, urlTemplate, PRECACHE_ZOOM_MAX_HIGH, PRECACHE_ZOOM_MAX_HIGH);
+}
+
+/** Resolves the ahead slice for the optional high-detail pack (default 50 km). */
+export function buildHighDetailAheadSlice(
+	args: ResolveAheadSliceStartArgs & { kmAhead?: number },
+): PredictivePrecacheSlicePoint[] {
+	const fromIdx = resolveAheadSliceStartIndex(args);
+	return buildAheadTrailSlice({
+		points: args.points,
+		fromIdx,
+		direction: args.direction,
+		kmAhead: args.kmAhead ?? HIGH_DETAIL_AHEAD_KM,
+	});
+}
+
+// ── Predictive pre-cache ──────────────────────────────────────────────────────
 /** Throttle bucket size - kept equal to PRECACHE_AHEAD_KM so each forward window maps to exactly one bucket. */
 const PREDICTIVE_BUCKET_KM = PRECACHE_AHEAD_KM;
 
@@ -311,12 +401,6 @@ export interface PredictivePrecacheArgs {
  * surfaced - runs silently. Idempotent within a 20 km bucket per direction
  * (call `resetPredictivePrecacheBuckets()` on direction change).
  */
-/** Minimal trail-point shape used in / returned from predictive precache.
- *  Subset of EnhancedTrailPoint; structurally compatible with the
- *  `CorridorSlicePoint` accepted by poi-prefetch helpers, so the store can
- *  pass the returned slice straight through. */
-export type PredictivePrecacheSlicePoint = Pick<EnhancedTrailPoint, 'lat' | 'lng' | 'distanceFromStart'>;
-
 export interface PredictivePrecacheRunResult {
 	/** The tile precache outcome, or null when the run was cancelled mid-flight. */
 	result: PrecacheResult | null;
@@ -347,16 +431,7 @@ export async function runPredictivePrecache({
 	if (visitedPrecacheBuckets.has(bucketKey)) return null;
 	visitedPrecacheBuckets.add(bucketKey);
 
-	const aheadM = kmAhead * 1000;
-	const baseDist = points[fromIdx].distanceFromStart;
-	let slice: typeof points;
-	if (direction === 'SOBO') {
-		const targetIdx = findNearestPointIndex(points, baseDist + aheadM);
-		slice = points.slice(fromIdx, targetIdx + 1);
-	} else {
-		const targetIdx = findNearestPointIndex(points, baseDist - aheadM);
-		slice = points.slice(targetIdx, fromIdx + 1).reverse();
-	}
+	const slice = buildAheadTrailSlice({ points, fromIdx, direction, kmAhead });
 	if (slice.length < 2) return null;
 
 	const urls = generateTrailTileUrls(slice, urlTemplate, PRECACHE_ZOOM_MIN, PRECACHE_ZOOM_MAX);
