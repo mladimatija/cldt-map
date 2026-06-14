@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { enforceRateLimit } from '@/lib/api-defense';
 import {
 	isShareShortenerConfigured,
 	resolvePublicOrigin,
@@ -19,6 +20,11 @@ export async function GET(request: NextRequest, context: RouteContext): Promise<
 	if (!SHARE_CODE_PATTERN.test(code)) {
 		return redirectToHome(request);
 	}
+
+	// Per-IP cap on the public redirect to blunt enumeration of random codes
+	// (each miss still hits Netlify Blobs). The create endpoint is limited too.
+	const limited = enforceRateLimit(request, { name: 'share-redirect', windowMs: 60_000, max: 60 });
+	if (limited) return limited;
 
 	if (!isShareShortenerConfigured()) {
 		return redirectToHome(request);

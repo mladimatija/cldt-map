@@ -25,7 +25,3 @@ export const DARK_PANEL = 'dark:border-[var(--border-color)] dark:bg-[var(--bg-s
 export const DARK_TEXT = 'dark:text-[var(--text-primary)]';
 /** Dark muted/secondary text (descriptions, hints, labels). */
 export const DARK_TEXT_MUTED = 'dark:text-[var(--text-secondary)]';
-/** Dark hover/active surface (progress bar track, list row hover). */
-export const DARK_BG_HOVER = 'dark:bg-[var(--bg-hover)]';
-/** Dark list row hover background. */
-export const DARK_HOVER_BG = 'dark:hover:bg-[var(--bg-hover)]';

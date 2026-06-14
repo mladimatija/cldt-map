@@ -15,6 +15,7 @@ import { formatElevation } from '@/lib/utils';
 import type { TripBrief } from '@/lib/trip-brief';
 import type { EnhancedTrailPoint } from '@/lib/store/types';
 import { dataUrlToBytes } from './elevation-thumbnail';
+import { downloadBlob } from './gpx-export';
 import {
 	emergencyLines,
 	dayHeader,
@@ -363,20 +364,9 @@ export async function exportTripBriefDocx(args: TripBriefDocxArgs): Promise<void
 	});
 
 	const blob = await Packer.toBlob(doc);
-	downloadBlob(blob, `cldt-trip-brief-${todayIsoDate()}.docx`);
+	downloadBlob(blob, `cldt-trip-brief-${todayIsoDate()}.docx`, blob.type);
 }
 
 // ── Localisation ────────────────────────────────────────────────────────────
 // Shared labels (LBL), EMERGENCY_BODY, dayHeader, directionDisplay,
 // formatKmRound, todayIsoDate are imported from trip-brief-i18n.
-
-function downloadBlob(blob: Blob, filename: string): void {
-	const url = URL.createObjectURL(blob);
-	const a = document.createElement('a');
-	a.href = url;
-	a.download = filename;
-	document.body.appendChild(a);
-	a.click();
-	document.body.removeChild(a);
-	URL.revokeObjectURL(url);
-}

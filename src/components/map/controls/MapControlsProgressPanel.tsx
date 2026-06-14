@@ -23,7 +23,6 @@ import {
 	totalCompletedKm,
 	IMPORT_MAX_OFF_TRAIL_M,
 	additionalKmFromIntervals,
-	totalIntervalKm,
 } from '@/lib/completion';
 import { buildGpxWaypointXml, downloadGpxFile, type GpxWaypoint } from '@/lib/gpx-export';
 import { newId } from '@/lib/user-waypoints';
@@ -178,11 +177,18 @@ export function MapControlsProgressPanel(): React.ReactElement | null {
 	}, [completedIntervals, rulerKms]);
 
 	const [addableById, setAddableById] = useState<Record<string, boolean>>({});
+	// Build the trail spatial grid once per trail-points change and reuse it for
+	// every coverage lookup (effect below + the render-time preview), instead of
+	// rebuilding the full grid inside each trackOnTrailKms call.
+	const coverageGrid = useMemo(
+		() => (enhancedTrailPoints.length > 0 ? buildSpatialGrid(enhancedTrailPoints) : null),
+		[enhancedTrailPoints],
+	);
 	const coverageRunRef = useRef(0);
 	useEffect(() => {
 		const runId = ++coverageRunRef.current;
 		if (importedTracks.length === 0 || enhancedTrailPoints.length === 0) return;
-		const grid = buildSpatialGrid(enhancedTrailPoints);
+		const grid = coverageGrid ?? buildSpatialGrid(enhancedTrailPoints);
 		let i = 0;
 		const tick = (): void => {
 			if (runId !== coverageRunRef.current || i >= importedTracks.length) return;
@@ -196,11 +202,13 @@ export function MapControlsProgressPanel(): React.ReactElement | null {
 		};
 		const start = setTimeout(tick, 0);
 		return () => clearTimeout(start);
-	}, [importedTracks, enhancedTrailPoints]);
+	}, [importedTracks, enhancedTrailPoints, coverageGrid]);
 
 	const trackIntervals = (track: (typeof importedTracks)[number]): { startKm: number; endKm: number }[] => {
 		if (enhancedTrailPoints.length === 0) return [];
-		return intervalsFromKms(trackOnTrailKms(track, enhancedTrailPoints, IMPORT_MAX_OFF_TRAIL_M));
+		return intervalsFromKms(
+			trackOnTrailKms(track, enhancedTrailPoints, IMPORT_MAX_OFF_TRAIL_M, coverageGrid ?? undefined),
+		);
 	};
 
 	const handleRemoveTrack = (trackId: string): void => {
@@ -419,7 +427,7 @@ export function MapControlsProgressPanel(): React.ReactElement | null {
 							importedTracks.map((track) => {
 								const isPreviewing = progressPreviewTrackId === track.id;
 								const previewIntervals = isPreviewing ? trackIntervals(track) : [];
-								const previewOnTrailKm = totalIntervalKm(previewIntervals);
+								const previewOnTrailKm = totalCompletedKm(previewIntervals);
 								const previewNewKm = additionalKmFromIntervals(completedIntervals, previewIntervals);
 								return (
 									<div className="flex flex-col gap-1.5" key={track.id}>

@@ -165,7 +165,11 @@ export async function createShortShareLink(target: string): Promise<{ code: stri
 		const existing = await store.get(code);
 		if (existing) continue;
 		await store.setJSON(code, record);
-		// Blobs reads are eventually consistent; redirect uses readShareLinkWithRetry instead.
+		// Blobs reads are eventually consistent. Absorb the read-after-write lag
+		// HERE, on the create path (the legitimate writer), so the public
+		// /s/{code} redirect can resolve with a single read and never has to run
+		// a multi-second retry loop for arbitrary attacker-supplied codes.
+		await readShareLinkWithRetry(code);
 		return { code, record };
 	}
 
@@ -173,12 +177,18 @@ export async function createShortShareLink(target: string): Promise<{ code: stri
 }
 
 export async function resolveShortShareLink(code: string): Promise<ShareLinkRecord | 'missing' | 'expired'> {
-	const result = await readShareLinkWithRetry(code);
+	// Single strong read - no retry/backoff loop. The retry that used to live
+	// here was an unauthenticated DoS/cost-amplification primitive: any
+	// pattern-valid but missing code pinned the serverless invocation open for
+	// ~7.7s of sleep. Read-after-write consistency is handled on the create side.
+	const result = await readShareLinkRecord(code);
 	if (result === 'missing' || result === 'expired') return result;
 
+	// Best-effort hit counter: never block (or fail) the redirect on the write,
+	// and don't turn each public GET into a synchronous Blobs write.
 	const store = getShareLinksStore();
 	result.hits = (result.hits ?? 0) + 1;
-	await store.setJSON(code, result);
+	void store.setJSON(code, result).catch(() => {});
 	return result;
 }
 

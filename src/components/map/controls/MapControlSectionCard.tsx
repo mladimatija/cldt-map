@@ -7,9 +7,6 @@ import { cn } from '@/lib/utils';
 export const MAP_CONTROL_SECTION_HEADING =
 	'm-0 text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-[var(--text-secondary)]';
 
-/** @deprecated Use MAP_CONTROL_SECTION_HEADING */
-export const PROGRESS_SECTION_HEADING = MAP_CONTROL_SECTION_HEADING;
-
 interface MapControlSectionCardProps {
 	title: string;
 	children: React.ReactNode;
@@ -82,6 +79,3 @@ export function MapControlSectionCard({
 		</section>
 	);
 }
-
-/** @deprecated Use MapControlSectionCard */
-export const ProgressSectionCard = MapControlSectionCard;

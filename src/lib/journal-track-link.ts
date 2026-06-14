@@ -7,7 +7,7 @@ import { IMPORT_MAX_OFF_TRAIL_M } from './completion';
 import { findNearestPointIndex } from './distance-utils';
 import { forEachResampledPoint, trackBounds } from './imported-tracks';
 import { buildSpatialGrid, type SpatialGrid } from './spatial-grid';
-import type { ImportedTrack } from './store/types';
+import type { ImportedTrack, JournalPreview } from './store/types';
 import type { JournalEntry, JournalTrackLink } from './user-waypoints';
 
 export type ResolveTrackLinkResult =
@@ -192,4 +192,40 @@ export function buildJournalTrackAttachment(
 		return { trackLink: valid };
 	}
 	return { trackLink: valid, startKm: range.startKm, endKm: range.endKm };
+}
+
+/**
+ * Builds the map-overlay preview for a journal entry's current attach state, or
+ * null when there is nothing to show. Shared by the journal compose form and the
+ * entry editor so the two cannot drift. Pass the CURRENT `attachRuler` value
+ * (not a stale closure) so toggling the ruler attachment off clears the preview.
+ */
+export function buildJournalPreview(
+	state: { trackLink: JournalTrackLink | null; startKm?: number; endKm?: number },
+	attachRuler: boolean,
+	rulerKms: { lo: number; hi: number } | null | undefined,
+	importedTracks: ImportedTrack[],
+	entryId: string | null,
+): JournalPreview | null {
+	let trailStartKm = state.startKm;
+	let trailEndKm = state.endKm;
+	if (attachRuler && rulerKms && !state.trackLink) {
+		trailStartKm = rulerKms.lo;
+		trailEndKm = rulerKms.hi;
+	}
+	if (trailStartKm === undefined || trailEndKm === undefined) return null;
+	const track = state.trackLink ? importedTracks.find((tr) => tr.id === state.trackLink!.trackId) : null;
+	return {
+		entryId,
+		trailStartKm,
+		trailEndKm,
+		...(state.trackLink && track
+			? {
+					trackId: state.trackLink.trackId,
+					startIdx: state.trackLink.startIdx,
+					endIdx: state.trackLink.endIdx,
+					trackColor: track.color,
+				}
+			: {}),
+	};
 }

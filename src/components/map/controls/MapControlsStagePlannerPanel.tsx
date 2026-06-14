@@ -37,9 +37,9 @@ import {
 import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
 import { usePopoverFocusTrap, usePackAdjustedPaceKmh } from '@/hooks';
 import {
+	buildResupplyCadenceLabels,
 	collectResupplyTownPoints,
 	computePlanResupplyCadence,
-	estimatedFoodDaysFromPack,
 	type StageResupplyCadence,
 	type StageResupplyStatus,
 } from '@/lib/resupply-cadence';
@@ -409,8 +409,8 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 		if (!stagePlan || !poisFile?.pois?.length) return null;
 		const resupplyPoints = collectResupplyTownPoints(poisFile.pois);
 		if (resupplyPoints.length === 0) return null;
-		return computePlanResupplyCadence(stagePlan.stages, poisFile.pois, resupplyPoints, walkingPaceKmh, maxHoursPerDay);
-	}, [stagePlan, poisFile, walkingPaceKmh, maxHoursPerDay]);
+		return computePlanResupplyCadence(stagePlan.stages, poisFile.pois, resupplyPoints);
+	}, [stagePlan, poisFile]);
 
 	const poiById = useMemo((): Map<string, Poi> => {
 		const map = new Map<string, Poi>();
@@ -440,43 +440,17 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 	const stageResupplyDetailLines = useCallback(
 		(cadence: StageResupplyCadence | undefined): string[] => {
 			if (!cadence) return [];
-			const lines: string[] = [];
-			if (cadence.status !== 'yes' && cadence.kmSinceGrocery !== null && cadence.stagesSinceGrocery > 0) {
-				lines.push(
-					t('stageFoodEntering', {
-						stages: cadence.stagesSinceGrocery,
-						distance: formatDistance(cadence.kmSinceGrocery, units, distancePrecision),
-					}),
-				);
-			}
-			if (
-				(cadence.status === 'no' || cadence.status === 'partial') &&
-				cadence.kmToNextGrocery !== null &&
-				cadence.nextGrocery
-			) {
-				const town = resupplyTownName(cadence.nextGrocery.id);
-				if (town) {
-					lines.push(
-						t('stageFoodCarry', {
-							distance: formatDistance(cadence.kmToNextGrocery, units, distancePrecision),
-							town,
-						}),
-					);
-				}
-			}
-			const consumableKg = packGearList?.consumableKg ?? 0;
-			if (consumableKg > 0 && foodConsumptionKgPerDay > 0) {
-				const foodDays = estimatedFoodDaysFromPack(consumableKg, foodConsumptionKgPerDay);
-				if (foodDays !== null) {
-					lines.push(
-						t('stageFoodPackDays', {
-							days: foodDays,
-							rate: `${Math.round(kgToDisplay(foodConsumptionKgPerDay, units) * 10) / 10} ${weightUnitLabel(units)}/day`,
-						}),
-					);
-				}
-			}
-			return lines;
+			const labels = buildResupplyCadenceLabels(cadence, {
+				formatKm: (km) => formatDistance(km, units, distancePrecision),
+				resolveTownName: resupplyTownName,
+				consumableKg: packGearList?.consumableKg ?? 0,
+				foodConsumptionKgPerDay,
+				rateLabel: `${Math.round(kgToDisplay(foodConsumptionKgPerDay, units) * 10) / 10} ${weightUnitLabel(units)}/day`,
+				entering: (v) => t('stageFoodEntering', v),
+				carry: (v) => t('stageFoodCarry', v),
+				foodPack: (v) => t('stageFoodPackDays', v),
+			});
+			return [labels.entering, labels.carry, labels.foodPack].filter((l): l is string => !!l);
 		},
 		[t, units, distancePrecision, resupplyTownName, packGearList, foodConsumptionKgPerDay],
 	);

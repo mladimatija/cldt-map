@@ -1,7 +1,6 @@
 {
 	"common": {
 		"about": "O projektu",
-		"returnToMap": "Natrag na kartu",
 		"backToMap": "Natrag na kartu",
 		"close": "Zatvori",
 		"loading": "Učitavanje...",
@@ -297,7 +296,6 @@
 		"openHikingMapDescription": "OpenHikingMap: topografski stil s planinarskim detaljima"
 	},
 	"test": {
-		"backToMap": "Natrag na kartu",
 		"title": "Test Store",
 		"description": "Testirajte perzistenciju postavki karte u localStorage. Koristite kontrole ispod za provjeru da se postavke zadržavaju između osvježavanja stranice."
 	},

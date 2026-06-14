@@ -8,6 +8,13 @@ import { loadPois, resetPoisCache } from '@/lib/pois';
  *  a cache reset and re-fetch. Matches the seasonal-status throttle pattern. */
 const STALE_THRESHOLD_MS = 5 * 60 * 1000;
 
+/** POI types the stage planner and trip brief safety stats depend on (water
+ *  dry-stretch + town/settlement resupply cadence). These are always loaded so
+ *  those stats stay complete regardless of which marker layers the user hides;
+ *  markers still filter by enabledPoiTypes, so loaded-but-disabled types are not
+ *  drawn. Mirrors the up-next strip loading UP_NEXT_TYPES independently. */
+const STAT_REQUIRED_POI_TYPES = ['town', 'settlement', 'water'] as const;
+
 /** Tracks when the last POI fetch completed so the visibility-change handler
  *  can skip the reset when the tab was only briefly hidden. */
 let lastFetchedAt = 0;
@@ -37,7 +44,8 @@ export function usePoisFetch(): void {
 		const fetchData = async (): Promise<void> => {
 			try {
 				const types = new Set(enabledKey.split(',').filter((t) => t.length > 0));
-				const file = await loadPois(types.size > 0 ? types : undefined);
+				for (const t of STAT_REQUIRED_POI_TYPES) types.add(t);
+				const file = await loadPois(types);
 				lastFetchedAt = Date.now();
 				setPoisFile(file);
 			} catch {

@@ -9,6 +9,7 @@
  */
 
 import type { UnitSystem } from './types';
+import { downloadBlob } from './gpx-export';
 import { normalizeWaypointCategory, type WaypointCategoryId } from './waypoint-categories';
 
 export interface UserWaypoint {
@@ -110,17 +111,7 @@ export function journalToMarkdown(
 	return parts.join('\n');
 }
 
-/** Browser download of a small text file; mirrors downloadGpxFile but for
- *  arbitrary text content (journal markdown export). */
+/** Browser download of a small text file (journal markdown / CSV export). */
 export function downloadTextFile(content: string, filename: string, mime = 'text/markdown'): void {
-	const blob = new Blob([content], { type: `${mime};charset=utf-8` });
-	const url = URL.createObjectURL(blob);
-	const a = document.createElement('a');
-	a.href = url;
-	a.download = filename;
-	document.body.appendChild(a);
-	a.click();
-	document.body.removeChild(a);
-	// Safari needs the URL alive until the click is processed.
-	setTimeout(() => URL.revokeObjectURL(url), 1000);
+	downloadBlob(content, filename, `${mime};charset=utf-8`);
 }
