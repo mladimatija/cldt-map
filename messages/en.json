@@ -507,6 +507,14 @@
 			"label": "Predictive pre-cache",
 			"hint": "Cache tiles ahead while on Wi-Fi."
 		},
+		"highDetailAhead": {
+			"label": "High detail ahead (zoom 15)",
+			"hint": "Download zoom-15 tiles for the next {km} km along your travel direction. Requires a baseline offline download first.",
+			"storageWarning": "~{count} zoom-15 tiles for the next {km} km. Uses extra storage.",
+			"download": "Download high detail ahead"
+		},
+		"zoomRange": "Zoom {min}-{max}",
+		"zoomRangeWithHighDetail": "Zoom {min}-{max} (includes high detail ahead)",
 		"estimatedTiles": "~{count} tiles to download",
 		"today": "today",
 		"yesterday": "yesterday",

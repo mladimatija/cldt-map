@@ -15,11 +15,14 @@ import {
 	getTileUrlTemplate,
 	getProviderCacheKey,
 	getProviderTileCount,
+	buildHighDetailAheadSlice,
+	generateAheadHighDetailTileUrls,
 	PRECACHE_ZOOM_MIN,
 	PRECACHE_ZOOM_MAX,
+	HIGH_DETAIL_AHEAD_KM,
 } from '@/lib/tile-cache';
 import { clearPoiAssetCache, getPoiAssetCount } from '@/lib/poi-prefetch';
-import { tileCacheTtlDays } from '@/lib/config';
+import { tileCacheTtlDays, TRAIL_OFF_TRAIL_THRESHOLD_M } from '@/lib/config';
 import { Button } from '@/components/ui/Button';
 import { Checkbox } from '@/components/ui/Checkbox';
 import SmartTooltip from '@/components/ui/SmartTooltip';
@@ -52,6 +55,9 @@ export function MapControlsTileCachePanel(): React.ReactElement {
 	const tileCacheMeta = useMapStore((s: MapStoreState) => s.tileCacheMeta);
 	const autoSync = useMapStore((s: MapStoreState) => s.autoSync);
 	const predictivePrecache = useMapStore((s: MapStoreState) => s.predictivePrecache);
+	const offlineHighDetailAheadEnabled = useMapStore((s: MapStoreState) => s.offlineHighDetailAheadEnabled);
+	const direction = useMapStore((s: MapStoreState) => s.direction);
+	const userLocation = useMapStore((s: MapStoreState) => s.userLocation);
 	const poiPrefetchVersion = useMapStore((s: MapStoreState) => s.poiPrefetchVersion);
 	const poiPrefetchSkipped = useMapStore((s: MapStoreState) => s.poiPrefetchSkipped);
 	const gpxLoaded = useMapStore((s: MapStoreState) => s.gpxLoaded);
@@ -61,7 +67,10 @@ export function MapControlsTileCachePanel(): React.ReactElement {
 	const loadTileCacheMeta = useMapStore((s: MapStoreState) => s.loadTileCacheMeta);
 	const setAutoSync = useMapStore((s: MapStoreState) => s.setAutoSync);
 	const setPredictivePrecache = useMapStore((s: MapStoreState) => s.setPredictivePrecache);
+	const setOfflineHighDetailAheadEnabled = useMapStore((s: MapStoreState) => s.setOfflineHighDetailAheadEnabled);
+	const startHighDetailAheadDownload = useMapStore((s: MapStoreState) => s.startHighDetailAheadDownload);
 	const enhancedTrailPoints = useStore((s: StoreState) => s.enhancedTrailPoints);
+	const closestPoint = useStore((s: StoreState) => s.closestPoint);
 
 	// Live tile count local state
 	const [liveCount, setLiveCount] = useState<number | null>(null);
@@ -133,10 +142,39 @@ export function MapControlsTileCachePanel(): React.ReactElement {
 		return generateTrailTileUrls(enhancedTrailPoints, template, PRECACHE_ZOOM_MIN, PRECACHE_ZOOM_MAX).length;
 	}, [gpxLoaded, enhancedTrailPoints, cacheable, baseMapProvider]);
 
+	const estimatedAheadHighDetailTiles = useMemo(() => {
+		if (!gpxLoaded || !enhancedTrailPoints?.length || !cacheable) return 0;
+		const template = getTileUrlTemplate(baseMapProvider);
+		if (!template) return 0;
+		const slice = buildHighDetailAheadSlice({
+			points: enhancedTrailPoints,
+			direction,
+			userLocation,
+			closestPoint,
+			offTrailThresholdM: TRAIL_OFF_TRAIL_THRESHOLD_M,
+		});
+		if (slice.length < 2) return 0;
+		return generateAheadHighDetailTileUrls(slice, template).length;
+	}, [gpxLoaded, enhancedTrailPoints, cacheable, baseMapProvider, direction, userLocation, closestPoint]);
+
 	const handleDownload = (): void => {
 		if (!enhancedTrailPoints?.length) return;
 		void startTileDownload(enhancedTrailPoints, baseMapProvider);
 	};
+
+	const handleHighDetailAheadDownload = (): void => {
+		void startHighDetailAheadDownload();
+	};
+
+	const zoomRangeLabel =
+		tileCacheMeta?.hasHighDetailAhead === true
+			? t('zoomRangeWithHighDetail', {
+					min: tileCacheMeta.zoomMin,
+					max: tileCacheMeta.zoomMax,
+				})
+			: tileCacheMeta
+				? t('zoomRange', { min: tileCacheMeta.zoomMin, max: tileCacheMeta.zoomMax })
+				: null;
 
 	const handleRedownload = async (): Promise<void> => {
 		await clearTileCacheForProvider(getProviderCacheKey(baseMapProvider));
@@ -234,6 +272,9 @@ export function MapControlsTileCachePanel(): React.ReactElement {
 											)}
 										</span>
 									</div>
+									{zoomRangeLabel && (
+										<p className="text-xs text-gray-500 dark:text-[var(--text-secondary)]">{zoomRangeLabel}</p>
+									)}
 									{stale && (
 										<div className="flex items-center gap-1 text-xs text-amber-600 dark:text-amber-400">
 											<IoWarningOutline aria-hidden className="h-3.5 w-3.5 shrink-0" />
@@ -381,6 +422,55 @@ export function MapControlsTileCachePanel(): React.ReactElement {
 									</SmartTooltip>
 								</span>
 							</label>
+
+							{/* High detail ahead (zoom 15) toggle + download */}
+							<label
+								className={`flex items-center gap-2 ${hasCache ? 'cursor-pointer' : 'pointer-events-none cursor-not-allowed opacity-50'}`}
+							>
+								<Checkbox
+									checked={offlineHighDetailAheadEnabled}
+									disabled={!hasCache}
+									onCheckedChange={(checked) => setOfflineHighDetailAheadEnabled(checked)}
+								/>
+								<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">
+									{t('highDetailAhead.label')}
+								</span>
+								<span
+									className="inline-flex"
+									onClick={(e) => e.stopPropagation()}
+									onMouseDown={(e) => e.stopPropagation()}
+								>
+									<SmartTooltip content={t('highDetailAhead.hint', { km: HIGH_DETAIL_AHEAD_KM })} position="top">
+										<IoHelpCircleOutline
+											aria-hidden
+											className="ml-0.5 h-3.5 w-3.5 shrink-0 cursor-help text-gray-400 hover:text-gray-600 dark:text-[var(--text-primary)]"
+										/>
+									</SmartTooltip>
+								</span>
+							</label>
+							{offlineHighDetailAheadEnabled && hasCache && estimatedAheadHighDetailTiles > 0 && (
+								<div className="space-y-1">
+									<div className="flex items-start gap-1 text-xs text-amber-600 dark:text-amber-400">
+										<IoWarningOutline aria-hidden className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+										<span>
+											{t('highDetailAhead.storageWarning', {
+												count: estimatedAheadHighDetailTiles.toLocaleString(),
+												km: HIGH_DETAIL_AHEAD_KM,
+											})}
+										</span>
+									</div>
+									<Button
+										className="min-h-[44px] w-full justify-start text-xs"
+										disabled={tileCacheDownloading}
+										size="sm"
+										variant="mapControlOutline"
+										onClick={handleHighDetailAheadDownload}
+									>
+										<IoCloudDownloadOutline aria-hidden className="mr-1.5 h-3.5 w-3.5 shrink-0" />
+										{t('highDetailAhead.download')}
+									</Button>
+								</div>
+							)}
 						</>
 					)}
 				</div>

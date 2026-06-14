@@ -507,6 +507,14 @@
 			"label": "Vorausschauendes Pre-Caching",
 			"hint": "Tiles im Voraus laden, wenn WLAN verfügbar ist."
 		},
+		"highDetailAhead": {
+			"label": "Hohe Detailstufe voraus (Zoom 15)",
+			"hint": "Lädt Zoom-15-Kacheln für die nächsten {km} km in Ihrer Reiserichtung. Erfordert zuerst einen Basis-Offline-Download.",
+			"storageWarning": "~{count} Zoom-15-Kacheln für die nächsten {km} km. Verbraucht zusätzlichen Speicher.",
+			"download": "Hohe Detailstufe voraus laden"
+		},
+		"zoomRange": "Zoom {min}-{max}",
+		"zoomRangeWithHighDetail": "Zoom {min}-{max} (inkl. hohe Detailstufe voraus)",
 		"estimatedTiles": "~{count} Kacheln zum Herunterladen",
 		"today": "heute",
 		"yesterday": "gestern",

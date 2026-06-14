@@ -507,6 +507,14 @@
 			"label": "Prediktivno pred-učitavanje",
 			"hint": "Učitaj pločice unaprijed dok je dostupan Wi-Fi."
 		},
+		"highDetailAhead": {
+			"label": "Visoka razlučivost unaprijed (zoom 15)",
+			"hint": "Preuzmi pločice zoom 15 za sljedećih {km} km u smjeru kretanja. Potrebno je prethodno preuzimanje osnovne offline karte.",
+			"storageWarning": "~{count} pločica zoom 15 za sljedećih {km} km. Troši dodatni prostor.",
+			"download": "Preuzmi visoku razlučivost unaprijed"
+		},
+		"zoomRange": "Zoom {min}-{max}",
+		"zoomRangeWithHighDetail": "Zoom {min}-{max} (uključuje visoku razlučivost unaprijed)",
 		"estimatedTiles": "~{count} pločica za preuzimanje",
 		"today": "danas",
 		"yesterday": "jučer",

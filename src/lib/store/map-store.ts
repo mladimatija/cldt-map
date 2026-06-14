@@ -35,8 +35,11 @@ import {
 	runPredictivePrecache,
 	abortPredictivePrecache,
 	resetPredictivePrecacheBuckets,
+	buildHighDetailAheadSlice,
+	generateAheadHighDetailTileUrls,
 	PRECACHE_ZOOM_MIN,
 	PRECACHE_ZOOM_MAX,
+	PRECACHE_ZOOM_MAX_HIGH,
 	type TileCacheMeta,
 	type NavigatorWithConnection,
 	type NavigatorWithBattery,
@@ -367,6 +370,7 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					tileCacheMeta: null,
 					autoSync: config.autoSync,
 					predictivePrecache: config.predictivePrecache,
+					offlineHighDetailAheadEnabled: false,
 					poiPrefetchVersion: 0,
 					// Session-scoped on purpose (not in partialize): a stale skip count
 					// from a previous session would be misleading.
@@ -401,12 +405,14 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 						);
 						tilePrecacheAbortController = null;
 						if (!result.cancelled) {
+							const existingMeta = get().tileCacheMeta;
 							const meta: TileCacheMeta = {
 								cachedAt: Date.now(),
 								tileCount: result.done,
 								zoomMin: PRECACHE_ZOOM_MIN,
-								zoomMax: PRECACHE_ZOOM_MAX,
+								zoomMax: existingMeta?.hasHighDetailAhead ? PRECACHE_ZOOM_MAX_HIGH : PRECACHE_ZOOM_MAX,
 								providerKey,
+								...(existingMeta?.hasHighDetailAhead ? { hasHighDetailAhead: true } : {}),
 							};
 							await saveTileCacheMeta(providerKey, meta);
 							const isManualDownload = opts?.source !== 'autoSync';
@@ -455,6 +461,78 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					setPredictivePrecache: (enabled: boolean) => {
 						set({ predictivePrecache: enabled });
 						if (!enabled) abortPredictivePrecache();
+					},
+
+					setOfflineHighDetailAheadEnabled: (enabled: boolean) => {
+						set({ offlineHighDetailAheadEnabled: enabled });
+					},
+
+					startHighDetailAheadDownload: async () => {
+						if (typeof window === 'undefined') return;
+						const state = get();
+						if (!state.tileCacheMeta) return;
+						const providerName = state.baseMapProvider;
+						if (!isProviderCacheable(providerName)) {
+							set({ tileCacheError: 'not_cacheable' });
+							return;
+						}
+						const urlTemplate = getTileUrlTemplate(providerName);
+						if (!urlTemplate) {
+							set({ tileCacheError: 'no_template' });
+							return;
+						}
+						const main = getMainStore();
+						const points = main.enhancedTrailPoints ?? [];
+						if (points.length < 2) return;
+
+						const storage = await estimateStorage();
+						if (!storage.available) {
+							set({ tileCacheError: 'quota_exceeded' });
+							return;
+						}
+
+						const slice = buildHighDetailAheadSlice({
+							points,
+							direction: state.direction,
+							userLocation: state.userLocation,
+							closestPoint: main.closestPoint,
+							offTrailThresholdM: TRAIL_OFF_TRAIL_THRESHOLD_M,
+						});
+						if (slice.length < 2) return;
+
+						const urls = generateAheadHighDetailTileUrls(slice, urlTemplate);
+						if (!urls.length) return;
+
+						const providerKey = getProviderCacheKey(providerName);
+						tilePrecacheAbortController?.abort();
+						const controller = new AbortController();
+						tilePrecacheAbortController = controller;
+						set({ tileCacheDownloading: true, tileCacheDone: 0, tileCacheTotal: urls.length, tileCacheError: null });
+						const result = await precacheTiles(
+							urls,
+							(done, total) => set({ tileCacheDone: done, tileCacheTotal: total }),
+							controller.signal,
+						);
+						tilePrecacheAbortController = null;
+						if (!result.cancelled) {
+							const existingMeta = state.tileCacheMeta;
+							const meta: TileCacheMeta = {
+								cachedAt: existingMeta?.cachedAt ?? Date.now(),
+								tileCount: (existingMeta?.tileCount ?? 0) + result.done,
+								zoomMin: existingMeta?.zoomMin ?? PRECACHE_ZOOM_MIN,
+								zoomMax: PRECACHE_ZOOM_MAX_HIGH,
+								providerKey,
+								hasHighDetailAhead: true,
+							};
+							await saveTileCacheMeta(providerKey, meta);
+							set({
+								tileCacheMeta: meta,
+								tileCacheDownloading: false,
+								...(result.done > 0 ? { tileDownloadCompleteToast: true } : {}),
+							});
+						} else {
+							set({ tileCacheDownloading: false });
+						}
 					},
 
 					/** Single entry point for SW `TILE_QUOTA_EXCEEDED` - sets the error flag and aborts the predictive run. */
@@ -1214,6 +1292,7 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 						baseMapProvider: state.baseMapProvider,
 						autoSync: state.autoSync,
 						predictivePrecache: state.predictivePrecache,
+						offlineHighDetailAheadEnabled: state.offlineHighDetailAheadEnabled,
 						walkingPaceKmh: state.walkingPaceKmh,
 						packBaseWeightKg: state.packBaseWeightKg,
 						waterConsumptionLph: state.waterConsumptionLph,
