@@ -445,8 +445,8 @@ export interface MapStoreState {
 	requestPoiListAhead: () => void;
 	clearPendingPoiListSort: () => void;
 
-	// ── Dev walk simulator (test page; session-only, never persisted) ───
-	/** Mirrored UI state of the dev walk simulator; null when not active. */
+	// ── Walk simulator (session-only, never persisted) ─────────────────
+	/** Mirrored UI state of the walk simulator; null when not active. */
 	walkSim: {
 		running: boolean;
 		posKm: number;
@@ -456,6 +456,15 @@ export interface MapStoreState {
 		totalKm: number;
 	} | null;
 	setWalkSim: (state: MapStoreState['walkSim']) => void;
+
+	// ── End-user demo mode (/demo; session-only, never persisted) ───────
+	demoModeActive: boolean;
+	demoPersistSnapshot: {
+		userWaypoints: UserWaypoint[];
+		journalEntries: JournalEntry[];
+		completedIntervals: CompletionInterval[];
+	} | null;
+	enterDemoMode: (snapshot: NonNullable<MapStoreState['demoPersistSnapshot']>) => void;
 
 	// ── Mine-suspected areas (MSP) ──────────────────────────────────────
 	/** Layer toggle; persisted, defaults ON (safety layer, opt-out). */

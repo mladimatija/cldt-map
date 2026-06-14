@@ -1124,6 +1124,26 @@
 	color: inherit;
 }
 
+/* Demo hike banner */
+.map-tooltip--demo {
+	color: var(--cldt-blue-text) !important;
+	border-left-color: var(--cldt-green) !important;
+}
+
+.map-tooltip--demo span.font-medium {
+	color: var(--cldt-blue-text);
+}
+
+.dark .map-tooltip--demo {
+	color: var(--cldt-blue) !important;
+	background-color: var(--cldt-blue-surface) !important;
+	border-left-color: var(--cldt-green) !important;
+}
+
+.dark .map-tooltip--demo span.font-medium {
+	color: var(--cldt-blue);
+}
+
 /* ─── Print / PDF layout ──────────────────────────────────────────────────── */
 @media print {
 	@page {

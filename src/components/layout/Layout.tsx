@@ -14,12 +14,21 @@ const PwaInstallPrompt = dynamic(() => import('@/components/common/PwaInstallPro
 interface LayoutProps {
 	children: React.ReactNode;
 	className?: string;
+	/** Overlay header on the main surface (default). Set false on content pages with BackToMapBar. */
+	overlayHeader?: boolean;
+	/** When false, the CLDT logo header is omitted (e.g. Test page). */
+	showHeader?: boolean;
 }
 
-export function Layout({ children, className }: LayoutProps): React.ReactElement {
+export function Layout({
+	children,
+	className,
+	overlayHeader = true,
+	showHeader = true,
+}: LayoutProps): React.ReactElement {
 	return (
 		<div className="flex h-screen flex-col overflow-hidden">
-			<Header />
+			{showHeader ? <Header overlay={overlayHeader} /> : null}
 			<main className={cn('min-h-0 flex-1 overflow-y-auto', className)}>{children}</main>
 			<Footer />
 			<PwaInstallPrompt />

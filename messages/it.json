@@ -37,7 +37,7 @@
 			"distanceEtaOverlay": "Overlay distanza ed ETA - HUD in tempo reale con distanza percorsa e rimanente, dislivello rimanente ed ETA alla fine del sentiero o al segmento attivo del righello",
 			"layers": "Più livelli mappa (standard, topo, escursionismo, satellite, terreno, ciclismo, Croazia Topo, scuro), più overlay opzionale Waymarked Trails con relazioni OSM (interruttore in Impostazioni, solo online)",
 			"location": "Tracciamento opzionale della posizione per vedere dove ti trovi sul sentiero",
-			"share": "I link condividono l'intera vista mappa - posizione, direzione, unità, livelli, intervallo righello, piano tappe, waypoint e diario. Il pulsante condividi apre un pannello QR e copia link; link brevi compatti (/s/{code}) se online e attivati in Impostazioni",
+			"share": "I link condividono l'intera vista mappa - posizione, direzione, unità, livelli, intervallo righello, piano tappe, waypoint e diario. Il pulsante condividi apre un pannello QR e copia link; link brevi compatti (/s/'{'code'}') se online e attivati in Impostazioni",
 			"units": "Unità metriche e imperiali",
 			"darkMode": "Modalità scura e opzioni risparmio energetico",
 			"offlineMaps": "Mappe offline - pre-scarica il corridoio del sentiero per l'uso senza segnale",
@@ -79,7 +79,10 @@
 		"createdBy": "Creato da",
 		"visitAuthor": "Visita il sito di {authorName}",
 		"officialApp": "App ufficiale del CLDT",
-		"officialAppDesc": "L’app mobile ufficiale del CLDT è <link>FarOut</link>, pubblicata in collaborazione con l’associazione del sentiero. {title} è un progetto indipendente e va usato solo per scopi di ricerca ed educativi - verifica sempre le informazioni critiche (acqua, pericoli, chiusure) con le fonti ufficiali prima di farvi affidamento sul campo."
+		"officialAppDesc": "L’app mobile ufficiale del CLDT è <link>FarOut</link>, pubblicata in collaborazione con l’associazione del sentiero. {title} è un progetto indipendente e va usato solo per scopi di ricerca ed educativi - verifica sempre le informazioni critiche (acqua, pericoli, chiusure) con le fonti ufficiali prima di farvi affidamento sul campo.",
+		"demoCalloutTitle": "Prova l'escursione demo",
+		"demoCalloutDesc": "Cammina sul sentiero a circa 4 km/h con waypoint di esempio, una voce di diario e tracciamento del progresso - senza GPS.",
+		"demoCalloutLink": "Prova escursione demo"
 	},
 	"home": {
 		"srTitle": "Mappa {companyName}"
@@ -465,6 +468,13 @@
 	},
 	"offlineIndicator": {
 		"offline": "Offline - utilizzo delle tessere in cache"
+	},
+	"demo": {
+		"srTitle": "Escursione demo su {title}",
+		"bannerLabel": "Escursione demo",
+		"pause": "Pausa",
+		"resume": "Riprendi",
+		"exit": "Esci dalla demo"
 	},
 	"staleCacheNotification": {
 		"title": "Cache mappe offline non aggiornata",
@@ -1096,7 +1106,10 @@
 			"offRouteAlert": "Attiva l'avviso fuori percorso in Impostazioni (disattivato di default) per banner e vibrazione quando ti allontani più di ~200 m dal sentiero, con distanza e direzione di ritorno. Si arma solo dopo che il GPS conferma che sei sul sentiero; resta muto a casa o in auto e si disarma quando lasci l'area del sentiero.",
 			"pushAlerts": "Attiva le notifiche di avviso nelle impostazioni per ricevere un push quando viene pubblicato un nuovo avviso stagionale."
 		},
-		"officialAppNote": "FarOut è l’app ufficiale del CLDT. Questa mappa è un progetto indipendente solo per scopi di ricerca ed educativi - verifica le informazioni critiche con le fonti ufficiali."
+		"officialAppNote": "FarOut è l’app ufficiale del CLDT. Questa mappa è un progetto indipendente solo per scopi di ricerca ed educativi - verifica le informazioni critiche con le fonti ufficiali.",
+		"demoHeading": "Escursione demo",
+		"demoDesc": "Prova un'escursione simulata a metà sentiero con waypoint e progresso di esempio - senza GPS.",
+		"demoLink": "Prova escursione demo"
 	},
 	"waypoints": {
 		"defaultName": "Punto",

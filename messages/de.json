@@ -37,7 +37,7 @@
 			"distanceEtaOverlay": "Entfernungs- und ETA-Overlay - Live-HUD mit zurückgelegter und verbleibender Distanz, verbleibendem Höhengewinn/-verlust und ETA bis Trailende oder aktivem Linealabschnitt",
 			"layers": "Mehrere Kartenebenen (Standard, Topo, Wandern, Satellit, Gelände, Radfahren, Kroatien Topo, Dunkel), plus optionales Waymarked-Trails-Overlay mit OSM-Wanderrouten (Einstellungen, nur online)",
 			"location": "Optionale Standortverfolgung zur Anzeige der Position auf dem Trail",
-			"share": "Links tragen deine vollständige Kartenansicht - Position, Richtung, Einheiten, Ebenen, Linealbereich, Etappenplan, Wegpunkte und Tagebuch. Der Teilen-Button öffnet ein QR-Panel und Link kopieren; kompakte Kurzlinks (/s/{code}) wenn online und in Einstellungen aktiviert",
+			"share": "Links tragen deine vollständige Kartenansicht - Position, Richtung, Einheiten, Ebenen, Linealbereich, Etappenplan, Wegpunkte und Tagebuch. Der Teilen-Button öffnet ein QR-Panel und Link kopieren; kompakte Kurzlinks (/s/'{'code'}') wenn online und in Einstellungen aktiviert",
 			"units": "Metrische und imperiale Einheiten",
 			"darkMode": "Dunkelmodus und Energiespar-Optionen",
 			"offlineMaps": "Offline-Karten - Trail-Korridor für die Nutzung ohne Netzempfang vorladen",
@@ -79,7 +79,10 @@
 		"createdBy": "Erstellt von",
 		"visitAuthor": "{authorName}'s Website besuchen",
 		"officialApp": "Offizielle CLDT-App",
-		"officialAppDesc": "Die offizielle mobile App des CLDT ist <link>FarOut</link>, veröffentlicht in Zusammenarbeit mit dem Trail-Verein. {title} ist ein unabhängiges Projekt und sollte nur zu Forschungs- und Bildungszwecken verwendet werden - prüfen Sie kritische Informationen (Wasser, Gefahren, Sperrungen) immer anhand offizieller Quellen, bevor Sie sich im Gelände darauf verlassen."
+		"officialAppDesc": "Die offizielle mobile App des CLDT ist <link>FarOut</link>, veröffentlicht in Zusammenarbeit mit dem Trail-Verein. {title} ist ein unabhängiges Projekt und sollte nur zu Forschungs- und Bildungszwecken verwendet werden - prüfen Sie kritische Informationen (Wasser, Gefahren, Sperrungen) immer anhand offizieller Quellen, bevor Sie sich im Gelände darauf verlassen.",
+		"demoCalloutTitle": "Demo-Wanderung ausprobieren",
+		"demoCalloutDesc": "Wandern Sie den Trail mit etwa 4 km/h mit Beispiel-Wegpunkten, einem Tagebucheintrag und Fortschrittsverfolgung - ohne GPS.",
+		"demoCalloutLink": "Demo-Wanderung ausprobieren"
 	},
 	"home": {
 		"srTitle": "{companyName} Karte"
@@ -465,6 +468,13 @@
 	},
 	"offlineIndicator": {
 		"offline": "Offline - gespeicherte Kacheln werden verwendet"
+	},
+	"demo": {
+		"srTitle": "Demo-Wanderung auf {title}",
+		"bannerLabel": "Demo-Wanderung",
+		"pause": "Pause",
+		"resume": "Fortsetzen",
+		"exit": "Demo beenden"
 	},
 	"staleCacheNotification": {
 		"title": "Offline-Kartencache veraltet",
@@ -1098,7 +1108,10 @@
 			"offRouteAlert": "Aktiviere den Routenabweichungs-Alarm in den Einstellungen (standardmäßig aus) für Banner und Vibration, wenn du mehr als ~200 m vom Trail abkommst, mit Distanz und Richtung zurück. Schärft sich erst, wenn GPS bestätigt, dass du auf dem Trail bist; bleibt zu Hause oder in der Fahrt stumm und entschärft sich, wenn du das Trail-Gebiet verlässt.",
 			"pushAlerts": "Warnungs-Benachrichtigungen in den Einstellungen aktivieren, um bei neuen saisonalen Warnungen eine Push-Nachricht zu erhalten."
 		},
-		"officialAppNote": "FarOut ist die offizielle CLDT-App. Diese Karte ist ein unabhängiges Projekt nur für Forschungs- und Bildungszwecke - prüfen Sie kritische Informationen anhand offizieller Quellen."
+		"officialAppNote": "FarOut ist die offizielle CLDT-App. Diese Karte ist ein unabhängiges Projekt nur für Forschungs- und Bildungszwecke - prüfen Sie kritische Informationen anhand offizieller Quellen.",
+		"demoHeading": "Demo-Wanderung",
+		"demoDesc": "Probieren Sie eine simulierte Wanderung auf halber Strecke mit Beispiel-Wegpunkten und Fortschritt - ohne GPS.",
+		"demoLink": "Demo-Wanderung ausprobieren"
 	},
 	"waypoints": {
 		"defaultName": "Wegpunkt",

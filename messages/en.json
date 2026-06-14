@@ -37,7 +37,7 @@
 			"distanceEtaOverlay": "Distance & ETA overlay - live HUD chip with distance traveled and remaining, elevation gain/loss remaining, and ETA to trail end or the active ruler section",
 			"layers": "Multiple map layers (standard, topo, hiking, satellite, terrain, cycling, Croatia Topo, dark), plus an optional Waymarked Trails overlay of OSM hiking routes (Settings toggle, online only)",
 			"location": "Optional location tracking to see your position on the trail",
-			"share": "Share links carry your full map view - position, direction, units, layers, ruler range, stage plan, waypoints, and journal. The share button opens a QR code panel and copy link; compact short links (/s/{code}) apply when online and enabled in Settings",
+			"share": "Share links carry your full map view - position, direction, units, layers, ruler range, stage plan, waypoints, and journal. The share button opens a QR code panel and copy link; compact short links (/s/'{'code'}') apply when online and enabled in Settings",
 			"units": "Metric and imperial units",
 			"darkMode": "Dark mode and battery saver options",
 			"offlineMaps": "Offline maps - pre-cache the trail corridor for use without a signal",
@@ -79,7 +79,10 @@
 		"createdBy": "Created by",
 		"visitAuthor": "Visit {authorName}'s website",
 		"officialApp": "Official CLDT app",
-		"officialAppDesc": "The official mobile app of the CLDT is <link>FarOut</link>, published in cooperation with the trail association. {title} is an independent project and should be used for research and educational purposes only - always cross-check critical information (water, hazards, closures) with official sources before relying on it in the field."
+		"officialAppDesc": "The official mobile app of the CLDT is <link>FarOut</link>, published in cooperation with the trail association. {title} is an independent project and should be used for research and educational purposes only - always cross-check critical information (water, hazards, closures) with official sources before relying on it in the field.",
+		"demoCalloutTitle": "Try the demo hike",
+		"demoCalloutDesc": "Walk the trail at about 4 km/h with sample waypoints, a journal entry, and progress tracking - no GPS needed.",
+		"demoCalloutLink": "Try demo hike"
 	},
 	"home": {
 		"srTitle": "{companyName} Map"
@@ -465,6 +468,13 @@
 	},
 	"offlineIndicator": {
 		"offline": "Offline - using cached tiles"
+	},
+	"demo": {
+		"srTitle": "Demo hike on {title}",
+		"bannerLabel": "Demo hike",
+		"pause": "Pause",
+		"resume": "Resume",
+		"exit": "Exit demo"
 	},
 	"staleCacheNotification": {
 		"title": "Offline map cache outdated",
@@ -1098,7 +1108,10 @@
 			"offRouteAlert": "Enable the off-route alert in Settings (off by default) for a banner and vibration when you drift more than ~200 m from the trail, with distance and bearing back. Arms only after GPS confirms you are on the trail; stays silent at home or while driving, and disarms when you leave the trail area.",
 			"pushAlerts": "Enable trail warning notifications in Settings to get a push message when a new seasonal warning is published."
 		},
-		"officialAppNote": "FarOut is the official CLDT app. This map is an independent project for research and educational purposes only - verify critical information with official sources."
+		"officialAppNote": "FarOut is the official CLDT app. This map is an independent project for research and educational purposes only - verify critical information with official sources.",
+		"demoHeading": "Demo hike",
+		"demoDesc": "Try a simulated mid-trail hike with sample waypoints and progress - no GPS needed.",
+		"demoLink": "Try demo hike"
 	},
 	"waypoints": {
 		"defaultName": "Waypoint",

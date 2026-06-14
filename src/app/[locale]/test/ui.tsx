@@ -1,13 +1,15 @@
 'use client';
 
 import React from 'react';
-import { Link } from '@/i18n/navigation';
 import { TestWalkSimulator } from '@/components/TestWalkSimulator';
 import { TestBannerInjectors } from '@/components/TestBannerInjectors';
 import { TestResetUtilities } from '@/components/TestResetUtilities';
 import { TestDataSeeders } from '@/components/TestDataSeeders';
 import { OffRouteAlertSimulator } from '@/components/OffRouteAlertSimulator';
 import { Layout } from '@/components/layout/Layout';
+import { BackToMapBar } from '@/components/layout/BackToMapBar';
+import { CONTENT_PAGE_CONTAINER } from '@/components/layout/content-page';
+import { cn } from '@/lib/utils';
 import { useTranslations } from 'next-intl';
 
 /** Dev-only store playground. Reached only in development: the server page
@@ -16,14 +18,9 @@ export function TestClient(): React.ReactElement {
 	const t = useTranslations('test');
 
 	return (
-		<Layout>
-			<div className="container mx-auto max-w-2xl px-4 py-8">
-				<div className="mb-6">
-					<Link className="text-cldt-blue font-medium outline-none hover:underline focus-visible:underline" href="/">
-						&larr; {t('backToMap')}
-					</Link>
-				</div>
-
+		<Layout overlayHeader={false} showHeader={false}>
+			<BackToMapBar />
+			<div className={cn(CONTENT_PAGE_CONTAINER, 'py-8')}>
 				<h1 className="mb-2">{t('title')}</h1>
 				<p className="mb-6 text-gray-600">{t('description')}</p>
 
