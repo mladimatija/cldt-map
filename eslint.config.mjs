@@ -14,7 +14,15 @@ const compat = new FlatCompat({
 
 const eslintConfig = [
 	{
-		ignores: ['**/.next/**', '**/.netlify/**', '**/node_modules/**', '**/dist/**', '**/build/**', '**/.turbo/**', '**/coverage/**'],
+		ignores: [
+			'**/.next/**',
+			'**/.netlify/**',
+			'**/node_modules/**',
+			'**/dist/**',
+			'**/build/**',
+			'**/.turbo/**',
+			'**/coverage/**',
+		],
 	},
 	...nextCoreWebVitals,
 	...nextTypescript,

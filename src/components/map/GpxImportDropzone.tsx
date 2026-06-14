@@ -117,7 +117,7 @@ export default function GpxImportDropzone(): React.ReactElement {
 					aria-hidden
 					className="pointer-events-none fixed inset-0 z-[9999] flex items-center justify-center border-4 border-dashed border-[var(--cldt-green)] bg-white/30 backdrop-blur-sm dark:bg-black/30"
 				>
-					<span className="rounded-lg bg-white/90 px-6 py-3 text-lg font-semibold text-gray-800 shadow dark:bg-gray-900/90 dark:text-white">
+					<span className="rounded-lg bg-white/90 px-6 py-3 text-lg font-semibold text-gray-800 shadow dark:bg-[var(--bg-primary)]/90 dark:text-white">
 						{t('dropToImport')}
 					</span>
 				</div>

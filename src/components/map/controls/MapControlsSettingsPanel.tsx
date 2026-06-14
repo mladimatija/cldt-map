@@ -588,7 +588,7 @@ export function MapControlsSettingsPanel({
 
 					<div className="flex flex-col gap-1.5">
 						<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">{t('packWeightTitle')}</span>
-						<label className="flex items-center justify-between gap-2 text-xs text-gray-600 dark:text-gray-400">
+						<label className="flex items-center justify-between gap-2 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
 							{t('packBaseWeightLabel')}
 							<span className="flex shrink-0 items-center gap-1">
 								<input
@@ -609,7 +609,7 @@ export function MapControlsSettingsPanel({
 								<span className="w-5">{weightUnitLabel(units)}</span>
 							</span>
 						</label>
-						<label className="flex items-center justify-between gap-2 text-xs text-gray-600 dark:text-gray-400">
+						<label className="flex items-center justify-between gap-2 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
 							{t('waterConsumptionLabel')}
 							<span className="flex shrink-0 items-center gap-1">
 								<input
@@ -626,7 +626,7 @@ export function MapControlsSettingsPanel({
 								<span className="w-5">{volumeUnitLabel(units)}/h</span>
 							</span>
 						</label>
-						<label className="flex items-center justify-between gap-2 text-xs text-gray-600 dark:text-gray-400">
+						<label className="flex items-center justify-between gap-2 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
 							{t('foodConsumptionLabel')}
 							<span className="flex shrink-0 items-center gap-1">
 								<input
@@ -656,7 +656,7 @@ export function MapControlsSettingsPanel({
 							}}
 						/>
 						{packGearList ? (
-							<div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
+							<div className="flex items-center gap-2 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
 								<span className="min-w-0 flex-1 truncate">
 									{t('packCsvSummary', {
 										name: packGearList.sourceName,

@@ -369,20 +369,23 @@ export function MapControlsProgressPanel(): React.ReactElement {
 
 			<div className="grid min-h-0 w-full min-w-0 flex-1 grid-rows-[minmax(0,1fr)_auto_minmax(0,1fr)]">
 				<div className="-mr-1 flex min-h-0 min-w-0 flex-col gap-3 overflow-y-auto pr-1">
-					<div className="text-xs text-gray-700 dark:text-gray-300">
+					<div className="text-xs text-gray-700 dark:text-[var(--text-primary)]">
 						<p className="m-0 text-base font-semibold text-gray-900 dark:text-white">
 							{t('completedLine', { done: fmt(doneKm), total: fmt(totalKm), pct: pct.toFixed(1) })}
 						</p>
-						<p className="m-0 text-gray-500 dark:text-gray-400">
+						<p className="m-0 text-gray-500 dark:text-[var(--text-secondary)]">
 							{t('remainingLine', { distance: fmt(Math.max(0, totalKm - doneKm)) })}
 						</p>
-						<div aria-hidden className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
+						<div
+							aria-hidden
+							className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-[var(--bg-hover)]"
+						>
 							<div className="bg-cldt-green h-full rounded-full" style={{ width: `${pct}%` }} />
 						</div>
 					</div>
 
 					<div className="flex flex-col gap-1">
-						<p className="m-0 text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400">
+						<p className="m-0 text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
 							{t('sectionsHeading')}
 						</p>
 						{sections.map((s) => {
@@ -393,7 +396,7 @@ export function MapControlsProgressPanel(): React.ReactElement {
 									<span className="w-5 shrink-0 font-semibold" style={{ color: s.color }}>
 										{s.shortName}
 									</span>
-									<span className="min-w-0 flex-1 truncate text-gray-600 dark:text-gray-300">
+									<span className="min-w-0 flex-1 truncate text-gray-600 dark:text-[var(--text-primary)]">
 										{tRoute(s.nameKey)} · {sectionPct.toFixed(0)}%
 									</span>
 									<Button
@@ -410,12 +413,12 @@ export function MapControlsProgressPanel(): React.ReactElement {
 					</div>
 
 					<div className="flex flex-col gap-1.5">
-						<p className="m-0 text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400">
+						<p className="m-0 text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
 							{t('rulerHeading')}
 						</p>
 						{rulerKms ? (
 							<div className="flex min-w-0 items-center gap-2 text-xs">
-								<span className="min-w-0 flex-1 truncate text-gray-600 dark:text-gray-300">
+								<span className="min-w-0 flex-1 truncate text-gray-600 dark:text-[var(--text-primary)]">
 									{fmt(rulerKms.lo)} - {fmt(rulerKms.hi)}
 								</span>
 								<Button
@@ -436,12 +439,12 @@ export function MapControlsProgressPanel(): React.ReactElement {
 								</Button>
 							</div>
 						) : (
-							<p className="m-0 text-xs text-gray-500 dark:text-gray-400">{t('noRuler')}</p>
+							<p className="m-0 text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('noRuler')}</p>
 						)}
 					</div>
 
 					<div className="flex flex-col gap-1.5">
-						<p className="m-0 text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400">
+						<p className="m-0 text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
 							{t('tracksHeading')}
 						</p>
 						{importedTracks.length > 0 ? (
@@ -455,7 +458,7 @@ export function MapControlsProgressPanel(): React.ReactElement {
 										<div className="flex min-w-0 items-center gap-2 text-xs">
 											<span aria-hidden className="h-2 w-2 shrink-0 rounded-full" style={{ background: track.color }} />
 											<button
-												className="hover:text-cldt-blue focus-visible:ring-cldt-green min-w-0 flex-1 cursor-pointer truncate rounded border-0 bg-transparent p-0 text-left text-gray-600 outline-none focus-visible:ring-2 focus-visible:ring-offset-1 dark:text-gray-300"
+												className="hover:text-cldt-blue focus-visible:ring-cldt-green min-w-0 flex-1 cursor-pointer truncate rounded border-0 bg-transparent p-0 text-left text-gray-600 outline-none focus-visible:ring-2 focus-visible:ring-offset-1 dark:text-[var(--text-primary)]"
 												title={track.name}
 												type="button"
 												onClick={() => fitToTrack(track)}
@@ -511,7 +514,7 @@ export function MapControlsProgressPanel(): React.ReactElement {
 												>
 													{t('previewPrompt')}
 												</p>
-												<p className="m-0 mt-1 text-gray-600 dark:text-gray-300">
+												<p className="m-0 mt-1 text-gray-600 dark:text-[var(--text-primary)]">
 													{t('previewSummary', {
 														count: previewIntervals.length,
 														distance: fmt(previewOnTrailKm),
@@ -521,11 +524,11 @@ export function MapControlsProgressPanel(): React.ReactElement {
 													)}
 												</p>
 												{previewNewKm < previewOnTrailKm - 0.05 && (
-													<p className="m-0 mt-0.5 text-gray-500 dark:text-gray-400">
+													<p className="m-0 mt-0.5 text-gray-500 dark:text-[var(--text-secondary)]">
 														{t('previewNewKm', { distance: fmt(previewNewKm) })}
 													</p>
 												)}
-												<ul className="m-0 mt-1.5 max-h-24 list-none space-y-0.5 overflow-y-auto p-0 text-gray-600 dark:text-gray-300">
+												<ul className="m-0 mt-1.5 max-h-24 list-none space-y-0.5 overflow-y-auto p-0 text-gray-600 dark:text-[var(--text-primary)]">
 													{previewIntervals.map((iv) => (
 														<li key={`${iv.startKm}-${iv.endKm}`}>
 															{t('previewRange', { start: fmt(iv.startKm), end: fmt(iv.endKm) })}
@@ -549,18 +552,18 @@ export function MapControlsProgressPanel(): React.ReactElement {
 								);
 							})
 						) : (
-							<p className="m-0 text-xs text-gray-500 dark:text-gray-400">{t('noTracks')}</p>
+							<p className="m-0 text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('noTracks')}</p>
 						)}
 					</div>
 				</div>
 
 				<div className="z-controls-popover relative flex min-w-0 shrink-0 flex-col gap-2 py-0.5">
-					<p className="m-0 text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400">
+					<p className="m-0 text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
 						{t('waypointsHeading')}
 					</p>
 					{userWaypoints.length === 0 ? (
 						<>
-							<p className="m-0 text-xs text-gray-500 dark:text-gray-400">{t('noWaypoints')}</p>
+							<p className="m-0 text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('noWaypoints')}</p>
 							<Button
 								size="sm"
 								variant="mapControlOutlineSecondary"
@@ -572,7 +575,9 @@ export function MapControlsProgressPanel(): React.ReactElement {
 					) : (
 						<>
 							<div className="flex flex-col gap-1">
-								<p className="m-0 text-[10px] text-gray-500 dark:text-gray-400">{tWaypoints('filterHeading')}</p>
+								<p className="m-0 text-[10px] text-gray-500 dark:text-[var(--text-secondary)]">
+									{tWaypoints('filterHeading')}
+								</p>
 								<div className="relative w-full min-w-0">
 									<MapControlMultiSelect<WaypointCategoryOption>
 										aria-label={tWaypoints('filterHeading')}
@@ -594,7 +599,9 @@ export function MapControlsProgressPanel(): React.ReactElement {
 								</div>
 							</div>
 							<div className="flex flex-col gap-1">
-								<p className="m-0 text-[10px] text-gray-500 dark:text-gray-400">{tWaypoints('mapLayersHeading')}</p>
+								<p className="m-0 text-[10px] text-gray-500 dark:text-[var(--text-secondary)]">
+									{tWaypoints('mapLayersHeading')}
+								</p>
 								<div className="relative w-full min-w-0">
 									<MapControlMultiSelect<WaypointCategoryOption>
 										aria-label={tWaypoints('mapLayersHeading')}
@@ -633,7 +640,7 @@ export function MapControlsProgressPanel(): React.ReactElement {
 							{waypointListFilter.size > 0 ? (
 								<p
 									className={cn(
-										'm-0 text-xs text-gray-500 dark:text-gray-400',
+										'm-0 text-xs text-gray-500 dark:text-[var(--text-secondary)]',
 										filteredWaypoints.length > 0 && 'invisible',
 									)}
 								>
@@ -654,17 +661,23 @@ export function MapControlsProgressPanel(): React.ReactElement {
 											style={{ backgroundColor: waypointCategoryPinColor(category) }}
 										/>
 										<button
-											className="hover:text-cldt-blue min-w-0 flex-1 cursor-pointer truncate text-left text-gray-600 dark:text-gray-300"
+											className="hover:text-cldt-blue min-w-0 flex-1 cursor-pointer truncate text-left text-gray-600 dark:text-[var(--text-primary)]"
 											type="button"
 											onClick={() => requestOpenWaypoint(wp.id)}
 										>
-											<span className="font-medium text-gray-700 dark:text-gray-200">{wp.name}</span>
-											<span className="text-gray-400 dark:text-gray-500"> · {tWaypoints(`category.${category}`)}</span>
+											<span className="font-medium text-gray-700 dark:text-[var(--text-primary)]">{wp.name}</span>
+											<span className="text-gray-400 dark:text-[var(--text-secondary)]">
+												{' '}
+												· {tWaypoints(`category.${category}`)}
+											</span>
 											{wp.trailKm !== null && (
-												<span className="text-gray-400 dark:text-gray-500"> · {fmt(wp.trailKm)}</span>
+												<span className="text-gray-400 dark:text-[var(--text-secondary)]"> · {fmt(wp.trailKm)}</span>
 											)}
 											{hiddenOnMap ? (
-												<span className="text-gray-400 dark:text-gray-500"> · {tWaypoints('hiddenOnMap')}</span>
+												<span className="text-gray-400 dark:text-[var(--text-secondary)]">
+													{' '}
+													· {tWaypoints('hiddenOnMap')}
+												</span>
 											) : null}
 										</button>
 										<Button className="shrink-0" size="sm" variant="base" onClick={() => removeUserWaypoint(wp.id)}>
@@ -701,22 +714,22 @@ export function MapControlsProgressPanel(): React.ReactElement {
 					{waypointImportError && <p className="text-cldt-red m-0 text-xs">{waypointImportError}</p>}
 
 					<div className="flex flex-col gap-1.5">
-						<p className="m-0 text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400">
+						<p className="m-0 text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
 							{t('journalHeading')}
 						</p>
 						{journalSorted.map((e) => (
 							<div className="flex min-w-0 items-start gap-2" key={e.id}>
 								<div className="min-w-0 flex-1">
-									<p className="m-0 text-xs font-medium text-gray-700 dark:text-gray-200">
+									<p className="m-0 text-xs font-medium text-gray-700 dark:text-[var(--text-primary)]">
 										{e.date}
 										{e.startKm !== undefined && e.endKm !== undefined && (
-											<span className="font-normal text-gray-400 dark:text-gray-500">
+											<span className="font-normal text-gray-400 dark:text-[var(--text-secondary)]">
 												{' '}
 												· {fmt(e.startKm)} - {fmt(e.endKm)}
 											</span>
 										)}
 									</p>
-									<p className="m-0 line-clamp-2 text-xs break-words whitespace-pre-line text-gray-600 dark:text-gray-300">
+									<p className="m-0 line-clamp-2 text-xs break-words whitespace-pre-line text-gray-600 dark:text-[var(--text-primary)]">
 										{e.text}
 									</p>
 								</div>
@@ -726,10 +739,10 @@ export function MapControlsProgressPanel(): React.ReactElement {
 							</div>
 						))}
 						{journalSorted.length === 0 && (
-							<p className="m-0 text-xs text-gray-500 dark:text-gray-400">{t('noEntries')}</p>
+							<p className="m-0 text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('noEntries')}</p>
 						)}
 						<div className="flex flex-col gap-1 rounded border border-gray-100 p-1.5 dark:border-[var(--border-color)]">
-							<label className="flex flex-col gap-0.5 text-xs text-gray-600 dark:text-gray-400">
+							<label className="flex flex-col gap-0.5 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
 								{t('entryDateLabel')}
 								<input
 									className={cn(MAP_CONTROL_INPUT, 'w-full')}
@@ -749,7 +762,7 @@ export function MapControlsProgressPanel(): React.ReactElement {
 								/>
 								<button
 									aria-label={t('focusEditor')}
-									className="hover:text-cldt-blue focus-visible:ring-cldt-green absolute top-1 right-1 flex h-7 w-7 cursor-pointer items-center justify-center rounded border-0 bg-transparent text-gray-500 outline-none focus-visible:ring-2 dark:text-gray-400"
+									className="hover:text-cldt-blue focus-visible:ring-cldt-green absolute top-1 right-1 flex h-7 w-7 cursor-pointer items-center justify-center rounded border-0 bg-transparent text-gray-500 outline-none focus-visible:ring-2 dark:text-[var(--text-secondary)]"
 									title={t('focusEditor')}
 									type="button"
 									onClick={() => setFocusEditorOpen(true)}
@@ -758,7 +771,7 @@ export function MapControlsProgressPanel(): React.ReactElement {
 								</button>
 							</div>
 							{rulerKms && (
-								<label className="flex cursor-pointer items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
+								<label className="flex cursor-pointer items-center gap-2 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
 									<Checkbox checked={attachRuler} onCheckedChange={(checked) => setAttachRuler(checked)} />
 									{t('attachRuler', { range: `${fmt(rulerKms.lo)} - ${fmt(rulerKms.hi)}` })}
 								</label>
@@ -795,11 +808,11 @@ export function MapControlsProgressPanel(): React.ReactElement {
 						{journalImportError && <p className="text-cldt-red m-0 text-xs">{journalImportError}</p>}
 					</div>
 
-					<label className="flex cursor-pointer items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
+					<label className="flex cursor-pointer items-center gap-2 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
 						<Checkbox checked={completionAutoTrack} onCheckedChange={(checked) => setCompletionAutoTrack(checked)} />
 						{t('autoTrack')}
 					</label>
-					<label className="flex cursor-pointer items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
+					<label className="flex cursor-pointer items-center gap-2 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
 						<Checkbox
 							checked={showCompletionOverlay}
 							onCheckedChange={(checked) => setShowCompletionOverlay(checked)}
@@ -817,7 +830,9 @@ export function MapControlsProgressPanel(): React.ReactElement {
 						</Button>
 					) : (
 						<div className="flex min-w-0 items-center gap-2">
-							<span className="min-w-0 flex-1 text-xs text-gray-700 dark:text-gray-300">{t('confirmClear')}</span>
+							<span className="min-w-0 flex-1 text-xs text-gray-700 dark:text-[var(--text-primary)]">
+								{t('confirmClear')}
+							</span>
 							<Button
 								size="sm"
 								variant="mapControlOutline"
@@ -860,7 +875,7 @@ export function MapControlsProgressPanel(): React.ReactElement {
 						>
 							{t('journalHeading')}
 						</h3>
-						<label className="flex flex-col gap-0.5 text-xs text-gray-600 dark:text-gray-400">
+						<label className="flex flex-col gap-0.5 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
 							{t('entryDateLabel')}
 							<input
 								className={cn(MAP_CONTROL_INPUT, 'w-full')}
@@ -879,7 +894,7 @@ export function MapControlsProgressPanel(): React.ReactElement {
 							onChange={(e) => setEntryText(e.target.value)}
 						/>
 						{rulerKms && (
-							<label className="flex cursor-pointer items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
+							<label className="flex cursor-pointer items-center gap-2 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
 								<Checkbox checked={attachRuler} onCheckedChange={(checked) => setAttachRuler(checked)} />
 								{t('attachRuler', { range: `${fmt(rulerKms.lo)} - ${fmt(rulerKms.hi)}` })}
 							</label>

@@ -260,7 +260,7 @@ export function DistanceRemainingOverlay(): React.ReactElement | null {
 			</div>
 			{upNextRows.length > 0 && (
 				<div className="mt-1 border-t border-gray-200 pt-1 dark:border-[var(--border-color)]">
-					<p className="m-0 text-[10px] font-medium tracking-wide text-gray-400 uppercase dark:text-gray-500">
+					<p className="m-0 text-[10px] font-medium tracking-wide text-gray-400 uppercase dark:text-[var(--text-secondary)]">
 						{t('upNext')}
 					</p>
 					{upNextRows.map(({ key, poi, km }) => {
@@ -290,7 +290,10 @@ export function DistanceRemainingOverlay(): React.ReactElement | null {
 								<span className="shrink-0">
 									{formatDistance(km, units, distancePrecision)}
 									{carryStr && (
-										<span aria-hidden="true" className="ml-1 text-[10px] text-gray-400 dark:text-gray-500">
+										<span
+											aria-hidden="true"
+											className="ml-1 text-[10px] text-gray-400 dark:text-[var(--text-secondary)]"
+										>
 											≈{carryStr}
 										</span>
 									)}

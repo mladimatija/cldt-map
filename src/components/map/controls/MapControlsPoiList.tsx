@@ -153,7 +153,7 @@ const PoiListRow = React.memo(function PoiListRow({
 					'focus-visible:outline-cldt-green ml-1 flex min-h-[44px] min-w-[44px] shrink-0 items-center justify-center rounded text-lg transition-colors focus-visible:outline-2',
 					isStarred
 						? 'text-amber-400'
-						: 'text-gray-300 hover:text-amber-400 dark:text-gray-600 dark:hover:text-amber-400',
+						: 'text-gray-300 hover:text-amber-400 dark:text-[var(--poi-star-inactive)] dark:hover:text-amber-400',
 				)}
 				title={isStarred ? tStarRemove : tStarAdd}
 				type="button"
@@ -819,7 +819,9 @@ export function MapControlsPoiList({
 					meta.context === 'menu' && typeCounts ? (
 						<span>
 							{option.label}{' '}
-							<span className="text-gray-400 tabular-nums dark:text-gray-500">({typeCounts[option.value] ?? 0})</span>
+							<span className="text-gray-400 tabular-nums dark:text-[var(--text-secondary)]">
+								({typeCounts[option.value] ?? 0})
+							</span>
 						</span>
 					) : (
 						option.label
@@ -875,7 +877,7 @@ export function MapControlsPoiList({
 
 			{sort === 'ahead' && (
 				<div className="flex flex-wrap items-center gap-1">
-					<span className="text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400">
+					<span className="text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
 						{t('aheadHorizonLabel')}
 					</span>
 					{AHEAD_HORIZON_OPTIONS.map((km) => (
@@ -911,7 +913,7 @@ export function MapControlsPoiList({
 					    so the user understands why it has no effect. */}
 			<label
 				className={cn(
-					'flex items-center gap-2 text-[10px] tracking-wide text-gray-500 uppercase dark:text-gray-400',
+					'flex items-center gap-2 text-[10px] tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]',
 					sort !== 'trail' && 'opacity-40',
 				)}
 				title={groupByDecadeLabel}
@@ -922,7 +924,7 @@ export function MapControlsPoiList({
 
 			{allTags.length > 0 && (
 				<div className="flex flex-col gap-1">
-					<div className="flex items-center justify-between text-[10px] tracking-wide text-gray-500 uppercase dark:text-gray-400">
+					<div className="flex items-center justify-between text-[10px] tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
 						<span>{t('tagFilterHeading')}</span>
 						{enabledPoiTags.size > 0 && (
 							<button
@@ -984,7 +986,7 @@ export function MapControlsPoiList({
 							if (item.type === 'header') {
 								return (
 									<div
-										className="sticky top-0 z-10 mt-1 bg-[var(--map-tooltip-bg)] px-1 py-1 text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:bg-[var(--bg-primary)] dark:text-gray-400"
+										className="sticky top-0 z-10 mt-1 bg-[var(--map-tooltip-bg)] px-1 py-1 text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:bg-[var(--bg-primary)] dark:text-[var(--text-secondary)]"
 										key={item.key}
 									>
 										{item.label} · {t('groupCount', { count: item.count })}

@@ -26,7 +26,9 @@ export function MapControlsHelpPanel(): React.ReactElement {
 
 	const section = (heading: string, items: [string, React.ReactNode][]): React.ReactElement => (
 		<div key={heading}>
-			<p className="m-0 text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400">{heading}</p>
+			<p className="m-0 text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
+				{heading}
+			</p>
 			<ul className="mt-1 space-y-1 text-xs leading-snug text-gray-600 dark:text-[var(--text-secondary)]">
 				{items.map(([key, item]) => (
 					<li key={key}>{item}</li>
@@ -85,7 +87,7 @@ export function MapControlsHelpPanel(): React.ReactElement {
 				['pushAlerts', t('offline.pushAlerts')],
 			])}
 
-			<p className="m-0 border-t border-gray-200 pt-2 text-[11px] leading-snug text-gray-500 dark:border-[var(--border-color)] dark:text-gray-400">
+			<p className="m-0 border-t border-gray-200 pt-2 text-[11px] leading-snug text-gray-500 dark:border-[var(--border-color)] dark:text-[var(--text-secondary)]">
 				{t('officialAppNote')}
 			</p>
 		</div>
