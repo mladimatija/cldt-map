@@ -234,8 +234,8 @@ async function handleGenericGetRequest(request) {
         return caches.match(request);
     }
 }
-// ── Web push (seasonal alert notifications) ─────────────────────────────────
-// Payload is JSON {title, body, url} sent by netlify/functions/push-seasonal-check.
+// ── Web push (trail alert notifications) ────────────────────────────────────
+// Payload is JSON {title, body, url} sent by push-seasonal-check / push-notices-check.
 
 self.addEventListener('push', (event) => {
     let data = {title: 'CLDT Map', body: '', url: '/'};
