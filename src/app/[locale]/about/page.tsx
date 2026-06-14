@@ -55,6 +55,7 @@ export default function AboutPage(): React.ReactNode {
 						<li className="mb-2">{t('mapFeaturesList.trail')}</li>
 						<li className="mb-2">{t('mapFeaturesList.elevation')}</li>
 						<li className="mb-2">{t('mapFeaturesList.ruler')}</li>
+						<li className="mb-2">{t('mapFeaturesList.distanceEtaOverlay')}</li>
 						<li className="mb-2">{t('mapFeaturesList.gpxExport')}</li>
 						<li className="mb-2">{t('mapFeaturesList.printExport')}</li>
 						<li className="mb-2">{t('mapFeaturesList.layers')}</li>
@@ -66,6 +67,8 @@ export default function AboutPage(): React.ReactNode {
 						<li className="mb-2">{t('mapFeaturesList.weather')}</li>
 						<li className="mb-2">{t('mapFeaturesList.trailNotices')}</li>
 						<li className="mb-2">{t('mapFeaturesList.seasonalStatus')}</li>
+						<li className="mb-2">{t('mapFeaturesList.mineAreas')}</li>
+						<li className="mb-2">{t('mapFeaturesList.severeWeather')}</li>
 						<li className="mb-2">{t('mapFeaturesList.radar')}</li>
 						<li className="mb-2">{t('mapFeaturesList.sunsetPosition')}</li>
 						<li className="mb-2">{t('mapFeaturesList.stagePlanner')}</li>

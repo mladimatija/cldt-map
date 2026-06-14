@@ -34,9 +34,10 @@
 			"trail": "Click the route or elevation chart to see distance and elevation at any point",
 			"elevation": "Elevation profile chart; hover to preview on the map, click to pin a point",
 			"ruler": "Distance ruler to measure segments between two points",
-			"layers": "Multiple map layers (standard, topo, satellite, terrain, cycling, Croatia Topo)",
+			"distanceEtaOverlay": "Distance & ETA overlay - live HUD chip with distance traveled and remaining, elevation gain/loss remaining, and ETA to trail end or the active ruler section",
+			"layers": "Multiple map layers (standard, topo, hiking, satellite, terrain, cycling, Croatia Topo, dark), plus an optional Waymarked Trails overlay of OSM hiking routes (Settings toggle, online only)",
 			"location": "Optional location tracking to see your position on the trail",
-			"share": "Share links with your current view or progress on the trail; the share button opens a QR code panel for scanning from another phone, plus copy link",
+			"share": "Share links carry your full map view - position, direction, units, layers, ruler range, stage plan, waypoints, and journal. The share button opens a QR code panel and copy link; compact short links (/s/{code}) apply when online and enabled in Settings",
 			"units": "Metric and imperial units",
 			"darkMode": "Dark mode and battery saver options",
 			"offlineMaps": "Offline maps - pre-cache the trail corridor for use without a signal",
@@ -45,6 +46,8 @@
 			"weather": "Current weather at your trail location - temperature, wind, precipitation probability, sunrise/sunset; 12-hour hourly forecast with precipitation bars and best-window hint (DHMZ + Open-Meteo)",
 			"trailNotices": "Regional trail condition notices - dismissible banners with alerts for current conditions on the trail",
 			"seasonalStatus": "Seasonal trail status - curated map layer of warnings, closures, and seasonal conditions sourced from DHMZ, HGSS, HPS, and Croatian national parks; severity-colored chip markers along the trail at the centre of each affected range; hover or click a chip to highlight the affected stretch and open a detail popout with severity, recommended gear, and a link to the original notice; data refreshed by running `npm run update-seasonal`",
+			"mineAreas": "Mine-suspected areas - official MUP/HCR polygons near the trail with warning chips and GPS-triggered banners (non-dismissible inside a polygon, dismissible within 500 m); on by default, fully offline once cached; informational only - always obey on-site signage",
+			"severeWeather": "Severe weather alerts - Meteoalarm CAP warnings for Croatia as color-coded map polygons with GPS-triggered banners; non-dismissible for red/severe warnings; data refreshed every 15 minutes",
 			"radar": "Precipitation radar overlay - animated RainViewer radar with past and nowcast frames, play/pause controls, and colour legend",
 			"sunsetPosition": "Sunset/sunrise position - projects where you will be on the trail at sunset and sunrise based on your current pace; toggleable markers on the polyline",
 			"stagePlanner": "Multi-day stage planner - split any trail range into daily stages by distance or time, view per-stage elevation and ETA stats, export individual stages as GPX files, or export all stages as a strip-map PDF",
@@ -1088,6 +1091,7 @@
 		"offline": {
 			"precache": "The cache panel pre-downloads the whole trail corridor (tiles, places, photos) for use without signal; it re-syncs on Wi-Fi.",
 			"gps": "GPS, the emergency panel, and your progress keep working fully offline once the corridor is cached.",
+			"offRouteAlert": "Enable the off-route alert in Settings (off by default) for a banner and vibration when you drift more than ~200 m from the trail, with distance and bearing back. Arms only after GPS confirms you are on the trail; stays silent at home or while driving, and disarms when you leave the trail area.",
 			"pushAlerts": "Enable trail warning notifications in Settings to get a push message when a new seasonal warning is published."
 		},
 		"officialAppNote": "FarOut is the official CLDT app. This map is an independent project for research and educational purposes only - verify critical information with official sources."
