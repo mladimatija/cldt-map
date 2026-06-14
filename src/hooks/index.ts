@@ -14,6 +14,7 @@ import { usePoiListRows } from './usePoiListRows';
 import { useRuler } from './useRuler';
 import { usePackAdjustedPaceKmh, packAdjustedPaceKmhFromState } from './usePackAdjustedPace';
 import { useActiveStarredPoiIds } from './useActiveStarredPoiIds';
+import { useAnimatedNumber } from './useAnimatedNumber';
 
 export {
 	useSiteMetadata,
@@ -30,6 +31,7 @@ export {
 	usePackAdjustedPaceKmh,
 	packAdjustedPaceKmhFromState,
 	useActiveStarredPoiIds,
+	useAnimatedNumber,
 };
 export type { UseRulerResult } from './useRuler';
 export type {

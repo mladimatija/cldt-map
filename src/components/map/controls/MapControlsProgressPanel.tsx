@@ -5,6 +5,16 @@ import { createPortal } from 'react-dom';
 import { useMap } from 'react-leaflet';
 import L from 'leaflet';
 import { useTranslations } from 'next-intl';
+import {
+	IoAddOutline,
+	IoCheckmarkOutline,
+	IoCloseOutline,
+	IoCloudUploadOutline,
+	IoDownloadOutline,
+	IoMapOutline,
+	IoRemoveOutline,
+	IoTrashOutline,
+} from 'react-icons/io5';
 import { type MultiValue } from 'react-select';
 import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
 import {
@@ -16,7 +26,7 @@ import {
 	totalIntervalKm,
 } from '@/lib/completion';
 import { buildGpxWaypointXml, downloadGpxFile, type GpxWaypoint } from '@/lib/gpx-export';
-import { downloadTextFile, journalToMarkdown, newId, todayIsoDate, type JournalEntry } from '@/lib/user-waypoints';
+import { newId } from '@/lib/user-waypoints';
 import {
 	normalizeWaypointCategory,
 	waypointCategoryDef,
@@ -26,22 +36,19 @@ import {
 	type WaypointCategoryId,
 } from '@/lib/waypoint-categories';
 import { cn, formatDistance } from '@/lib/utils';
-import {
-	parseGpxWaypoints,
-	parseJournalMarkdown,
-	gpxWaypointsToUserWaypoints,
-	parsedJournalToEntries,
-} from '@/lib/user-waypoint-import';
+import { parseGpxWaypoints, gpxWaypointsToUserWaypoints } from '@/lib/user-waypoint-import';
 import { TRAIL_SECTIONS } from '@/lib/trail-sections';
 import { buildSpatialGrid } from '@/lib/spatial-grid';
 import { computeTrackStats, trackBounds, trackOnTrailKms } from '@/lib/imported-tracks';
 import SmartTooltip from '@/components/ui/SmartTooltip';
-import { IoExpandOutline } from 'react-icons/io5';
 import { Button } from '@/components/ui/Button';
 import { Checkbox } from '@/components/ui/Checkbox';
-import { MAP_CONTROL_INPUT, MAP_CONTROL_POPOVER } from './map-controls-constants';
+import { MAP_CONTROL_POPOVER } from './map-controls-constants';
 import { MapControlMultiSelect, MapControlSelectColorDotLabel } from './MapControlSelect';
+import { JournalSection } from './JournalSection';
+import { ProgressSectionCard } from './ProgressSectionCard';
 import { usePopoverFocusTrap } from '@/hooks';
+import { useAnimatedNumber } from '@/hooks/useAnimatedNumber';
 
 type WaypointCategoryOption = { value: WaypointCategoryId; label: string };
 
@@ -51,7 +58,7 @@ type WaypointCategoryOption = { value: WaypointCategoryId; label: string };
  * of an imported GPX track's on-trail coverage, and the auto-track / overlay
  * toggles. All mutations go through the persisted interval set in the store.
  */
-export function MapControlsProgressPanel(): React.ReactElement {
+export function MapControlsProgressPanel(): React.ReactElement | null {
 	const t = useTranslations('progress');
 	const tWaypoints = useTranslations('waypoints');
 	const tRoute = useTranslations('trailRoute');
@@ -73,6 +80,11 @@ export function MapControlsProgressPanel(): React.ReactElement {
 	const removeProgressTrackId = useMapStore((s: MapStoreState) => s.removeProgressTrackId);
 	const progressPreviewTrackId = useMapStore((s: MapStoreState) => s.progressPreviewTrackId);
 	const setProgressPreview = useMapStore((s: MapStoreState) => s.setProgressPreview);
+	const progressPanelWaypointsOpen = useMapStore((s: MapStoreState) => s.progressPanelWaypointsOpen);
+	const setProgressPanelWaypointsOpen = useMapStore((s: MapStoreState) => s.setProgressPanelWaypointsOpen);
+	const progressPanelJournalOpen = useMapStore((s: MapStoreState) => s.progressPanelJournalOpen);
+	const setProgressPanelJournalOpen = useMapStore((s: MapStoreState) => s.setProgressPanelJournalOpen);
+	const openSettingsToImports = useMapStore((s: MapStoreState) => s.openSettingsToImports);
 
 	const userWaypoints = useMapStore((s: MapStoreState) => s.userWaypoints);
 	const hiddenWaypointCategories = useMapStore((s: MapStoreState) => s.hiddenWaypointCategories);
@@ -80,9 +92,6 @@ export function MapControlsProgressPanel(): React.ReactElement {
 	const addUserWaypoint = useMapStore((s: MapStoreState) => s.addUserWaypoint);
 	const removeUserWaypoint = useMapStore((s: MapStoreState) => s.removeUserWaypoint);
 	const requestOpenWaypoint = useMapStore((s: MapStoreState) => s.requestOpenWaypoint);
-	const journalEntries = useMapStore((s: MapStoreState) => s.journalEntries);
-	const addJournalEntry = useMapStore((s: MapStoreState) => s.addJournalEntry);
-	const removeJournalEntry = useMapStore((s: MapStoreState) => s.removeJournalEntry);
 
 	const enhancedTrailPoints = useStore((s: StoreState) => s.enhancedTrailPoints);
 	const totalKm = useStore((s: StoreState) => s.trailMetadata.totalDistance);
@@ -96,18 +105,9 @@ export function MapControlsProgressPanel(): React.ReactElement {
 	};
 	const [confirmClear, setConfirmClear] = useState(false);
 	const [previewCoveragePercent, setPreviewCoveragePercent] = useState<number | null>(null);
-	const [entryDate, setEntryDate] = useState(todayIsoDate);
-	const [entryText, setEntryText] = useState('');
-	const [attachRuler, setAttachRuler] = useState(false);
-	/** Distraction-free overlay editor for the journal entry draft. Shares
-	 *  the same draft state as the inline form, so expanding mid-sentence
-	 *  keeps the text, and saving from either place is equivalent. */
-	const [focusEditorOpen, setFocusEditorOpen] = useState(false);
 	const [waypointImportError, setWaypointImportError] = useState<string | null>(null);
 	const [waypointListFilter, setWaypointListFilter] = useState<Set<WaypointCategoryId>>(new Set());
-	const [journalImportError, setJournalImportError] = useState<string | null>(null);
 	const waypointImportInputRef = useRef<HTMLInputElement>(null);
-	const journalImportInputRef = useRef<HTMLInputElement>(null);
 
 	const SNAP_MAX_M = 2000;
 
@@ -116,6 +116,11 @@ export function MapControlsProgressPanel(): React.ReactElement {
 		[completedIntervals, totalKm],
 	);
 	const pct = totalKm > 0 ? Math.min(100, (doneKm / totalKm) * 100) : 0;
+	const remainingKm = Math.max(0, totalKm - doneKm);
+
+	const animatedDoneKm = useAnimatedNumber(doneKm);
+	const animatedRemainingKm = useAnimatedNumber(remainingKm);
+	const animatedPct = useAnimatedNumber(pct);
 
 	const fmt = (km: number): string => formatDistance(km, units, distancePrecision);
 
@@ -139,7 +144,6 @@ export function MapControlsProgressPanel(): React.ReactElement {
 	);
 
 	const selectedWaypointMapLayers = useMemo((): WaypointCategoryOption[] => {
-		// Empty hidden set = all categories visible on the map; show placeholder, not every chip.
 		if (hiddenWaypointCategories.size === 0) return [];
 		return waypointCategoryOptions.filter((o) => !hiddenWaypointCategories.has(o.value));
 	}, [waypointCategoryOptions, hiddenWaypointCategories]);
@@ -162,11 +166,13 @@ export function MapControlsProgressPanel(): React.ReactElement {
 		return { lo: Math.min(a, b), hi: Math.max(a, b) };
 	}, [rulerRange]);
 
-	/** Per-track on-trail coverage (%), computed post-paint one track per
-	 *  tick against a shared grid. computeTrackStats memoises by content
-	 *  hash, so this is a cache walk after the imports panel has run once.
-	 *  Used to disable "Add to progress" for tracks that never touch the
-	 *  trail (nothing to add). */
+	const rulerMarked = useMemo((): boolean => {
+		if (!rulerKms) return false;
+		const span = rulerKms.hi - rulerKms.lo;
+		if (span <= 0) return false;
+		return completedKmInRange(completedIntervals, rulerKms.lo, rulerKms.hi) >= span * 0.999;
+	}, [completedIntervals, rulerKms]);
+
 	const [addableById, setAddableById] = useState<Record<string, boolean>>({});
 	const coverageRunRef = useRef(0);
 	useEffect(() => {
@@ -177,9 +183,6 @@ export function MapControlsProgressPanel(): React.ReactElement {
 		const tick = (): void => {
 			if (runId !== coverageRunRef.current || i >= importedTracks.length) return;
 			const track = importedTracks[i];
-			// Warm the shared stats cache and gate the button on the SAME
-			// computation the toggle performs - a track is addable iff its
-			// resampled on-trail kms form at least one interval.
 			computeTrackStats(track, enhancedTrailPoints, grid);
 			const addable =
 				intervalsFromKms(trackOnTrailKms(track, enhancedTrailPoints, IMPORT_MAX_OFF_TRAIL_M, grid)).length > 0;
@@ -191,20 +194,11 @@ export function MapControlsProgressPanel(): React.ReactElement {
 		return () => clearTimeout(start);
 	}, [importedTracks, enhancedTrailPoints]);
 
-	/** The track's on-trail stretch as completed intervals. The spatial grid
-	 *  is built per click - a one-off O(trail) cost is fine for an explicit
-	 *  user action. */
 	const trackIntervals = (track: (typeof importedTracks)[number]): { startKm: number; endKm: number }[] => {
 		if (enhancedTrailPoints.length === 0) return [];
-		// Resampled, not raw vertices: import simplification leaves straight
-		// on-trail stretches nearly vertex-free, which used to yield zero
-		// intervals for perfectly valid day hikes.
 		return intervalsFromKms(trackOnTrailKms(track, enhancedTrailPoints, IMPORT_MAX_OFF_TRAIL_M));
 	};
 
-	/** Toggle: the first click folds the track's on-trail stretch into progress,
-	 *   the second click unmarks that same stretch. Unmarking removes shared km if
-	 *  two tracks overlap - completion is a plain interval set, not refcounted. */
 	const handleRemoveTrack = (trackId: string): void => {
 		const track = importedTracks.find((tr) => tr.id === trackId);
 		if (!track) return;
@@ -264,32 +258,6 @@ export function MapControlsProgressPanel(): React.ReactElement {
 		downloadGpxFile(buildGpxWaypointXml(waypoints, t('waypointsHeading')), 'cldt-my-waypoints.gpx');
 	};
 
-	const handleAddEntry = (): void => {
-		const text = entryText.trim();
-		if (!text) return;
-		const entry: JournalEntry = {
-			id: newId(),
-			date: entryDate || todayIsoDate(),
-			text,
-			createdAt: new Date().toISOString(),
-			...(attachRuler && rulerKms ? { startKm: rulerKms.lo, endKm: rulerKms.hi } : {}),
-		};
-		addJournalEntry(entry);
-		setEntryText('');
-		setAttachRuler(false);
-	};
-
-	const handleExportJournal = (): void => {
-		if (journalEntries.length === 0) return;
-		const md = journalToMarkdown(
-			journalEntries,
-			{ title: t('journalHeading'), rangeLine: (range) => t('journalRangeLine', { range }) },
-			(km, u) => formatDistance(km, u, distancePrecision),
-			units,
-		);
-		downloadTextFile(md, 'cldt-journal.md');
-	};
-
 	const snapTrailKm = (lat: number, lng: number): number | null => {
 		const snapped = useStore.getState().findTrailPointByCoordinates(lat, lng, SNAP_MAX_M);
 		return snapped ? snapped.distanceFromStart / 1000 : null;
@@ -308,17 +276,6 @@ export function MapControlsProgressPanel(): React.ReactElement {
 		}
 	};
 
-	const mapJournalImportError = (code: string): string => {
-		switch (code) {
-			case 'FILE_TOO_LARGE':
-				return t('importJournalTooLarge');
-			case 'NO_ENTRIES':
-				return t('importJournalError');
-			default:
-				return t('importJournalError');
-		}
-	};
-
 	const handleImportWaypointsFile = async (file: File): Promise<void> => {
 		setWaypointImportError(null);
 		try {
@@ -334,119 +291,126 @@ export function MapControlsProgressPanel(): React.ReactElement {
 		}
 	};
 
-	const handleImportJournalFile = async (file: File): Promise<void> => {
-		setJournalImportError(null);
-		try {
-			const parsed = parseJournalMarkdown(await file.text());
-			for (const entry of parsedJournalToEntries(parsed, newId)) {
-				addJournalEntry(entry);
-			}
-		} catch (err) {
-			const code = err instanceof Error ? err.message : '';
-			setJournalImportError(mapJournalImportError(code));
-		}
-	};
-
-	const journalSorted = useMemo(
-		() => [...journalEntries].sort((a, b) => b.date.localeCompare(a.date) || b.createdAt.localeCompare(a.createdAt)),
-		[journalEntries],
-	);
-
 	const popoverContent = (
 		<div
 			aria-labelledby="progress-panel-title"
 			aria-modal="true"
-			className={`z-controls-popover fixed top-2 right-16 flex max-h-[calc(100dvh-4rem)] w-80 min-w-0 flex-col gap-3 overflow-x-hidden ${MAP_CONTROL_POPOVER}`}
+			className={cn(
+				'z-controls-popover fixed top-2 right-16 flex max-h-[calc(100dvh-4rem)] w-[min(100vw-5rem,28rem)] max-w-md min-w-80 flex-col gap-2 overflow-hidden',
+				MAP_CONTROL_POPOVER,
+			)}
 			ref={popoverRef}
 			role="dialog"
 			onContextMenu={(e) => e.preventDefault()}
 			onMouseDown={(e) => e.stopPropagation()}
 			onTouchStart={(e) => e.stopPropagation()}
 		>
-			<h3 className="text-sm font-medium text-gray-700 dark:text-[var(--text-primary)]" id="progress-panel-title">
+			<h3
+				className="shrink-0 text-sm font-medium text-gray-700 dark:text-[var(--text-primary)]"
+				id="progress-panel-title"
+			>
 				{t('title')}
 			</h3>
 
-			<div className="grid min-h-0 w-full min-w-0 flex-1 grid-rows-[minmax(0,1fr)_auto_minmax(0,1fr)]">
-				<div className="-mr-1 flex min-h-0 min-w-0 flex-col gap-3 overflow-y-auto pr-1">
+			<div className="-mr-1 min-h-0 flex-1 overflow-y-auto pr-1">
+				<div className="sticky top-0 z-[1] -mx-1 mb-2 border-b border-gray-200 bg-white px-1 pb-2 dark:border-[var(--border-color)] dark:bg-[var(--bg-secondary)]">
 					<div className="text-xs text-gray-700 dark:text-[var(--text-primary)]">
 						<p className="m-0 text-base font-semibold text-gray-900 dark:text-white">
-							{t('completedLine', { done: fmt(doneKm), total: fmt(totalKm), pct: pct.toFixed(1) })}
+							{t.rich('completedLine', {
+								done: (chunks) => <span className="tabular-nums">{chunks}</span>,
+								total: (chunks) => <span className="tabular-nums">{chunks}</span>,
+								pct: (chunks) => (
+									<span className="text-cldt-green tabular-nums transition-colors duration-150 motion-reduce:transition-none">
+										{chunks}
+									</span>
+								),
+								doneKm: fmt(animatedDoneKm),
+								totalKm: fmt(totalKm),
+								pctValue: animatedPct.toFixed(1),
+							})}
 						</p>
 						<p className="m-0 text-gray-500 dark:text-[var(--text-secondary)]">
-							{t('remainingLine', { distance: fmt(Math.max(0, totalKm - doneKm)) })}
+							{t.rich('remainingLine', {
+								distance: (chunks) => <span className="tabular-nums">{chunks}</span>,
+								remainingKm: fmt(animatedRemainingKm),
+							})}
 						</p>
 						<div
 							aria-hidden
 							className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-[var(--bg-hover)]"
 						>
-							<div className="bg-cldt-green h-full rounded-full" style={{ width: `${pct}%` }} />
+							<div
+								className="bg-cldt-green h-full rounded-full transition-[width] duration-150 ease-out motion-reduce:transition-none"
+								style={{ width: `${pct}%` }}
+							/>
 						</div>
 					</div>
-
-					<div className="flex flex-col gap-1">
-						<p className="m-0 text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
-							{t('sectionsHeading')}
-						</p>
-						{sections.map((s) => {
-							const sectionPct = s.lengthKm > 0 ? (s.doneKm / s.lengthKm) * 100 : 0;
-							const complete = sectionPct >= 99.9;
-							return (
-								<div className="flex min-w-0 items-center gap-2 text-xs" key={s.shortName}>
-									<span className="w-5 shrink-0 font-semibold" style={{ color: s.color }}>
-										{s.shortName}
-									</span>
-									<span className="min-w-0 flex-1 truncate text-gray-600 dark:text-[var(--text-primary)]">
-										{tRoute(s.nameKey)} · {sectionPct.toFixed(0)}%
-									</span>
-									<Button
-										className="shrink-0"
-										size="sm"
-										variant="base"
-										onClick={() => (complete ? unmarkCompleted(s.startKm, s.endKm) : markCompleted(s.startKm, s.endKm))}
-									>
-										{complete ? t('unmarkSection') : t('markSection')}
-									</Button>
-								</div>
-							);
-						})}
+					<div className="mt-2 flex flex-col gap-1.5">
+						<label className="flex cursor-pointer items-center gap-2 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
+							<Checkbox checked={completionAutoTrack} onCheckedChange={(checked) => setCompletionAutoTrack(checked)} />
+							{t('autoTrack')}
+						</label>
+						<label className="flex cursor-pointer items-center gap-2 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
+							<Checkbox
+								checked={showCompletionOverlay}
+								onCheckedChange={(checked) => setShowCompletionOverlay(checked)}
+							/>
+							{t('showOverlay')}
+						</label>
 					</div>
+				</div>
 
-					<div className="flex flex-col gap-1.5">
-						<p className="m-0 text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
-							{t('rulerHeading')}
-						</p>
+				<div className="flex flex-col gap-3">
+					<ProgressSectionCard title={t('yourProgressHeading')}>
+						<div className="flex flex-col gap-1">
+							<p className="m-0 text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
+								{t('sectionsHeading')}
+							</p>
+							{sections.map((s) => {
+								const sectionPct = s.lengthKm > 0 ? (s.doneKm / s.lengthKm) * 100 : 0;
+								const complete = sectionPct >= 99.9;
+								return (
+									<label className="flex min-w-0 cursor-pointer items-center gap-2 text-xs" key={s.shortName}>
+										<Checkbox
+											aria-label={complete ? t('unmarkSection') : t('markSection')}
+											checked={complete}
+											onCheckedChange={(checked) =>
+												checked ? markCompleted(s.startKm, s.endKm) : unmarkCompleted(s.startKm, s.endKm)
+											}
+										/>
+										<span className="w-5 shrink-0 font-semibold" style={{ color: s.color }}>
+											{s.shortName}
+										</span>
+										<span className="min-w-0 flex-1 truncate text-gray-600 dark:text-[var(--text-primary)]">
+											{tRoute(s.nameKey)} · {sectionPct.toFixed(0)}%
+										</span>
+									</label>
+								);
+							})}
+						</div>
+
 						{rulerKms ? (
-							<div className="flex min-w-0 items-center gap-2 text-xs">
-								<span className="min-w-0 flex-1 truncate text-gray-600 dark:text-[var(--text-primary)]">
-									{fmt(rulerKms.lo)} - {fmt(rulerKms.hi)}
-								</span>
-								<Button
-									className="shrink-0"
-									size="sm"
-									variant="base"
-									onClick={() => markCompleted(rulerKms.lo, rulerKms.hi)}
-								>
-									{t('markRange')}
-								</Button>
-								<Button
-									className="shrink-0"
-									size="sm"
-									variant="base"
-									onClick={() => unmarkCompleted(rulerKms.lo, rulerKms.hi)}
-								>
-									{t('unmarkRange')}
-								</Button>
+							<div className="border-t border-gray-200 pt-2 dark:border-[var(--border-color)]">
+								<p className="m-0 text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
+									{t('rulerHeading')}
+								</p>
+								<label className="mt-1 flex min-w-0 cursor-pointer items-center gap-2 text-xs">
+									<Checkbox
+										aria-label={rulerMarked ? t('unmarkRange') : t('markRange')}
+										checked={rulerMarked}
+										onCheckedChange={(checked) =>
+											checked ? markCompleted(rulerKms.lo, rulerKms.hi) : unmarkCompleted(rulerKms.lo, rulerKms.hi)
+										}
+									/>
+									<span className="min-w-0 flex-1 truncate text-gray-600 dark:text-[var(--text-primary)]">
+										{fmt(rulerKms.lo)} - {fmt(rulerKms.hi)}
+									</span>
+								</label>
 							</div>
-						) : (
-							<p className="m-0 text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('noRuler')}</p>
-						)}
-					</div>
+						) : null}
+					</ProgressSectionCard>
 
-					<div className="flex flex-col gap-1.5">
-						<p className="m-0 text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
-							{t('tracksHeading')}
-						</p>
+					<ProgressSectionCard title={t('fromGpxHeading')}>
 						{importedTracks.length > 0 ? (
 							importedTracks.map((track) => {
 								const isPreviewing = progressPreviewTrackId === track.id;
@@ -468,37 +432,50 @@ export function MapControlsProgressPanel(): React.ReactElement {
 											{addableById[track.id] === false && !progressTrackIds.includes(track.id) ? (
 												<SmartTooltip content={t('trackNoCoverage')} position="top">
 													<span className="inline-flex shrink-0">
-														<Button disabled size="sm" variant="base">
-															{t('addTrack')}
+														<Button
+															disabled
+															aria-label={t('addTrack')}
+															className="h-8 w-8 shrink-0 px-0"
+															size="sm"
+															title={t('addTrack')}
+															variant="base"
+														>
+															<IoAddOutline aria-hidden className="h-3.5 w-3.5" />
 														</Button>
 													</span>
 												</SmartTooltip>
 											) : progressTrackIds.includes(track.id) ? (
 												<Button
-													className="shrink-0"
+													aria-label={t('removeTrack')}
+													className="h-8 w-8 shrink-0 px-0"
 													size="sm"
+													title={t('removeTrack')}
 													variant="base"
 													onClick={() => handleRemoveTrack(track.id)}
 												>
-													{t('removeTrack')}
+													<IoRemoveOutline aria-hidden className="h-3.5 w-3.5" />
 												</Button>
 											) : isPreviewing ? (
 												<Button
-													className="shrink-0"
+													aria-label={t('previewCancel')}
+													className="h-8 w-8 shrink-0 px-0"
 													size="sm"
+													title={t('previewCancel')}
 													variant="mapControlOutlineSecondary"
 													onClick={clearPreview}
 												>
-													{t('previewCancel')}
+													<IoCloseOutline aria-hidden className="h-3.5 w-3.5" />
 												</Button>
 											) : (
 												<Button
-													className="shrink-0"
+													aria-label={t('addTrack')}
+													className="h-8 w-8 shrink-0 px-0"
 													size="sm"
+													title={t('addTrack')}
 													variant="base"
 													onClick={() => handleStartPreview(track.id)}
 												>
-													{t('addTrack')}
+													<IoAddOutline aria-hidden className="h-3.5 w-3.5" />
 												</Button>
 											)}
 										</div>
@@ -536,14 +513,35 @@ export function MapControlsProgressPanel(): React.ReactElement {
 													))}
 												</ul>
 												<div className="mt-2 flex flex-wrap items-center gap-2">
-													<Button size="sm" variant="mapControlOutline" onClick={() => handleConfirmAddTrack(track.id)}>
-														{t('previewConfirm')}
+													<Button
+														aria-label={t('previewConfirm')}
+														className="h-8 w-8 shrink-0 px-0"
+														size="sm"
+														title={t('previewConfirm')}
+														variant="mapControlOutline"
+														onClick={() => handleConfirmAddTrack(track.id)}
+													>
+														<IoCheckmarkOutline aria-hidden className="h-3.5 w-3.5" />
 													</Button>
-													<Button size="sm" variant="mapControlOutlineSecondary" onClick={clearPreview}>
-														{t('previewCancel')}
+													<Button
+														aria-label={t('previewCancel')}
+														className="h-8 w-8 shrink-0 px-0"
+														size="sm"
+														title={t('previewCancel')}
+														variant="mapControlOutlineSecondary"
+														onClick={clearPreview}
+													>
+														<IoCloseOutline aria-hidden className="h-3.5 w-3.5" />
 													</Button>
-													<Button size="sm" variant="mapControlOutlineSecondary" onClick={() => fitToTrack(track)}>
-														{t('previewShowOnMap')}
+													<Button
+														aria-label={t('previewShowOnMap')}
+														className="h-8 w-8 shrink-0 px-0"
+														size="sm"
+														title={t('previewShowOnMap')}
+														variant="mapControlOutlineSecondary"
+														onClick={() => fitToTrack(track)}
+													>
+														<IoMapOutline aria-hidden className="h-3.5 w-3.5" />
 													</Button>
 												</div>
 											</div>
@@ -554,370 +552,238 @@ export function MapControlsProgressPanel(): React.ReactElement {
 						) : (
 							<p className="m-0 text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('noTracks')}</p>
 						)}
-					</div>
-				</div>
+						<button
+							className="text-cldt-blue focus-visible:ring-cldt-green mt-1 cursor-pointer rounded border-0 bg-transparent p-0 text-left text-xs underline outline-none focus-visible:ring-2 focus-visible:ring-offset-1"
+							type="button"
+							onClick={openSettingsToImports}
+						>
+							{t('manageTracksInSettings')}
+						</button>
+					</ProgressSectionCard>
 
-				<div className="z-controls-popover relative flex min-w-0 shrink-0 flex-col gap-2 py-0.5">
-					<p className="m-0 text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
-						{t('waypointsHeading')}
-					</p>
-					{userWaypoints.length === 0 ? (
-						<>
-							<p className="m-0 text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('noWaypoints')}</p>
-							<Button
-								size="sm"
-								variant="mapControlOutlineSecondary"
-								onClick={() => waypointImportInputRef.current?.click()}
-							>
-								{t('importWaypoints')}
-							</Button>
-						</>
-					) : (
-						<>
-							<div className="flex flex-col gap-1">
-								<p className="m-0 text-[10px] text-gray-500 dark:text-[var(--text-secondary)]">
-									{tWaypoints('filterHeading')}
-								</p>
-								<div className="relative w-full min-w-0">
-									<MapControlMultiSelect<WaypointCategoryOption>
-										aria-label={tWaypoints('filterHeading')}
-										chipLayout="scroll"
-										formatOptionLabel={(option) => (
-											<MapControlSelectColorDotLabel
-												color={waypointCategoryPinColor(option.value)}
-												label={option.label}
-											/>
-										)}
-										isSearchable={false}
-										options={waypointCategoryOptions}
-										placeholder={tWaypoints('filterPlaceholder')}
-										value={selectedWaypointFilter}
-										onChange={(val: MultiValue<WaypointCategoryOption>) => {
-											setWaypointListFilter(new Set(val.map((o) => o.value)));
-										}}
-									/>
-								</div>
-							</div>
-							<div className="flex flex-col gap-1">
-								<p className="m-0 text-[10px] text-gray-500 dark:text-[var(--text-secondary)]">
-									{tWaypoints('mapLayersHeading')}
-								</p>
-								<div className="relative w-full min-w-0">
-									<MapControlMultiSelect<WaypointCategoryOption>
-										aria-label={tWaypoints('mapLayersHeading')}
-										chipLayout="scroll"
-										formatOptionLabel={(option) => (
-											<MapControlSelectColorDotLabel
-												color={waypointCategoryPinColor(option.value)}
-												label={option.label}
-											/>
-										)}
-										isSearchable={false}
-										options={waypointCategoryOptions}
-										placeholder={tWaypoints('mapLayersPlaceholder')}
-										value={selectedWaypointMapLayers}
-										onChange={(val: MultiValue<WaypointCategoryOption>) => {
-											if (val.length === 0) {
-												setHiddenWaypointCategories(new Set());
-												return;
-											}
-											const visible = new Set(val.map((o) => o.value));
-											const hidden = new Set(
-												WAYPOINT_CATEGORIES.filter((cat) => !visible.has(cat.id)).map((cat) => cat.id),
-											);
-											setHiddenWaypointCategories(hidden);
-										}}
-									/>
-								</div>
-							</div>
-						</>
-					)}
-				</div>
-
-				<div className="mt-2 -mr-1 flex min-h-0 min-w-0 flex-col gap-3 overflow-y-auto pr-1">
-					{userWaypoints.length > 0 ? (
-						<div className="flex flex-col gap-1.5">
-							{waypointListFilter.size > 0 ? (
-								<p
-									className={cn(
-										'm-0 text-xs text-gray-500 dark:text-[var(--text-secondary)]',
-										filteredWaypoints.length > 0 && 'invisible',
-									)}
-								>
-									{tWaypoints('filterEmpty')}
-								</p>
-							) : null}
-							{filteredWaypoints.map((wp) => {
-								const category = normalizeWaypointCategory(wp.category);
-								const hiddenOnMap = !isWaypointCategoryVisible(category, hiddenWaypointCategories);
-								return (
-									<div
-										className={cn('flex min-w-0 items-center gap-2 text-xs', hiddenOnMap && 'opacity-60')}
-										key={wp.id}
-									>
-										<span
-											aria-hidden
-											className="h-2 w-2 shrink-0 rounded-full"
-											style={{ backgroundColor: waypointCategoryPinColor(category) }}
-										/>
-										<button
-											className="hover:text-cldt-blue min-w-0 flex-1 cursor-pointer truncate text-left text-gray-600 dark:text-[var(--text-primary)]"
-											type="button"
-											onClick={() => requestOpenWaypoint(wp.id)}
-										>
-											<span className="font-medium text-gray-700 dark:text-[var(--text-primary)]">{wp.name}</span>
-											<span className="text-gray-400 dark:text-[var(--text-secondary)]">
-												{' '}
-												· {tWaypoints(`category.${category}`)}
-											</span>
-											{wp.trailKm !== null && (
-												<span className="text-gray-400 dark:text-[var(--text-secondary)]"> · {fmt(wp.trailKm)}</span>
-											)}
-											{hiddenOnMap ? (
-												<span className="text-gray-400 dark:text-[var(--text-secondary)]">
-													{' '}
-													· {tWaypoints('hiddenOnMap')}
-												</span>
-											) : null}
-										</button>
-										<Button className="shrink-0" size="sm" variant="base" onClick={() => removeUserWaypoint(wp.id)}>
-											{t('waypointDelete')}
-										</Button>
-									</div>
-								);
-							})}
-							<div className="flex flex-wrap gap-2">
-								<Button size="sm" variant="mapControlOutlineSecondary" onClick={handleExportWaypoints}>
-									{t('exportWaypoints')}
-								</Button>
+					<ProgressSectionCard
+						collapsible
+						collapseLabel={t('collapseSection')}
+						expandLabel={t('expandSection')}
+						open={progressPanelWaypointsOpen}
+						title={t('waypointsHeading')}
+						onOpenChange={setProgressPanelWaypointsOpen}
+					>
+						{userWaypoints.length === 0 ? (
+							<>
+								<p className="m-0 text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('noWaypoints')}</p>
 								<Button
+									aria-label={t('importWaypoints')}
+									className="h-8 w-8 shrink-0 px-0"
 									size="sm"
+									title={t('importWaypoints')}
 									variant="mapControlOutlineSecondary"
 									onClick={() => waypointImportInputRef.current?.click()}
 								>
-									{t('importWaypoints')}
+									<IoCloudUploadOutline aria-hidden className="h-3.5 w-3.5" />
 								</Button>
-							</div>
-						</div>
-					) : null}
-					<input
-						accept=".gpx,application/gpx+xml"
-						className="hidden"
-						ref={waypointImportInputRef}
-						type="file"
-						onChange={(e) => {
-							const file = e.target.files?.[0];
-							if (file) void handleImportWaypointsFile(file);
-							e.target.value = '';
-						}}
-					/>
-					{waypointImportError && <p className="text-cldt-red m-0 text-xs">{waypointImportError}</p>}
-
-					<div className="flex flex-col gap-1.5">
-						<p className="m-0 text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
-							{t('journalHeading')}
-						</p>
-						{journalSorted.map((e) => (
-							<div className="flex min-w-0 items-start gap-2" key={e.id}>
-								<div className="min-w-0 flex-1">
-									<p className="m-0 text-xs font-medium text-gray-700 dark:text-[var(--text-primary)]">
-										{e.date}
-										{e.startKm !== undefined && e.endKm !== undefined && (
-											<span className="font-normal text-gray-400 dark:text-[var(--text-secondary)]">
-												{' '}
-												· {fmt(e.startKm)} - {fmt(e.endKm)}
-											</span>
-										)}
+							</>
+						) : (
+							<>
+								<div className="flex flex-col gap-1">
+									<p className="m-0 text-[10px] text-gray-500 dark:text-[var(--text-secondary)]">
+										{tWaypoints('filterHeading')}
 									</p>
-									<p className="m-0 line-clamp-2 text-xs break-words whitespace-pre-line text-gray-600 dark:text-[var(--text-primary)]">
-										{e.text}
-									</p>
+									<div className="relative w-full min-w-0">
+										<MapControlMultiSelect<WaypointCategoryOption>
+											aria-label={tWaypoints('filterHeading')}
+											chipLayout="scroll"
+											formatOptionLabel={(option) => (
+												<MapControlSelectColorDotLabel
+													color={waypointCategoryPinColor(option.value)}
+													label={option.label}
+												/>
+											)}
+											isSearchable={false}
+											options={waypointCategoryOptions}
+											placeholder={tWaypoints('filterPlaceholder')}
+											value={selectedWaypointFilter}
+											onChange={(val: MultiValue<WaypointCategoryOption>) => {
+												setWaypointListFilter(new Set(val.map((o) => o.value)));
+											}}
+										/>
+									</div>
 								</div>
-								<Button className="shrink-0" size="sm" variant="base" onClick={() => removeJournalEntry(e.id)}>
-									{t('waypointDelete')}
-								</Button>
-							</div>
-						))}
-						{journalSorted.length === 0 && (
-							<p className="m-0 text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('noEntries')}</p>
+								<div className="flex flex-col gap-1">
+									<p className="m-0 text-[10px] text-gray-500 dark:text-[var(--text-secondary)]">
+										{tWaypoints('mapLayersHeading')}
+									</p>
+									<div className="relative w-full min-w-0">
+										<MapControlMultiSelect<WaypointCategoryOption>
+											aria-label={tWaypoints('mapLayersHeading')}
+											chipLayout="scroll"
+											formatOptionLabel={(option) => (
+												<MapControlSelectColorDotLabel
+													color={waypointCategoryPinColor(option.value)}
+													label={option.label}
+												/>
+											)}
+											isSearchable={false}
+											options={waypointCategoryOptions}
+											placeholder={tWaypoints('mapLayersPlaceholder')}
+											value={selectedWaypointMapLayers}
+											onChange={(val: MultiValue<WaypointCategoryOption>) => {
+												if (val.length === 0) {
+													setHiddenWaypointCategories(new Set());
+													return;
+												}
+												const visible = new Set(val.map((o) => o.value));
+												const hidden = new Set(
+													WAYPOINT_CATEGORIES.filter((cat) => !visible.has(cat.id)).map((cat) => cat.id),
+												);
+												setHiddenWaypointCategories(hidden);
+											}}
+										/>
+									</div>
+								</div>
+								<div className="border-t border-gray-200 pt-2 dark:border-[var(--border-color)]">
+									{waypointListFilter.size > 0 && filteredWaypoints.length === 0 ? (
+										<p className="m-0 text-xs text-gray-500 dark:text-[var(--text-secondary)]">
+											{tWaypoints('filterEmpty')}
+										</p>
+									) : null}
+									<div className="flex flex-col gap-1.5">
+										{filteredWaypoints.map((wp) => {
+											const category = normalizeWaypointCategory(wp.category);
+											const hiddenOnMap = !isWaypointCategoryVisible(category, hiddenWaypointCategories);
+											return (
+												<div
+													className={cn('flex min-w-0 items-center gap-2 text-xs', hiddenOnMap && 'opacity-60')}
+													key={wp.id}
+												>
+													<span
+														aria-hidden
+														className="h-2 w-2 shrink-0 rounded-full"
+														style={{ backgroundColor: waypointCategoryPinColor(category) }}
+													/>
+													<button
+														className="hover:text-cldt-blue min-w-0 flex-1 cursor-pointer truncate text-left text-gray-600 dark:text-[var(--text-primary)]"
+														type="button"
+														onClick={() => requestOpenWaypoint(wp.id)}
+													>
+														<span className="font-medium text-gray-700 dark:text-[var(--text-primary)]">{wp.name}</span>
+														<span className="text-gray-400 dark:text-[var(--text-secondary)]">
+															{' '}
+															· {tWaypoints(`category.${category}`)}
+														</span>
+														{wp.trailKm !== null && (
+															<span className="text-gray-400 dark:text-[var(--text-secondary)]">
+																{' '}
+																· {fmt(wp.trailKm)}
+															</span>
+														)}
+														{hiddenOnMap ? (
+															<span className="text-gray-400 dark:text-[var(--text-secondary)]">
+																{' '}
+																· {tWaypoints('hiddenOnMap')}
+															</span>
+														) : null}
+													</button>
+													<Button
+														aria-label={t('waypointDelete')}
+														className="h-8 w-8 shrink-0 px-0"
+														size="sm"
+														title={t('waypointDelete')}
+														variant="base"
+														onClick={() => removeUserWaypoint(wp.id)}
+													>
+														<IoTrashOutline aria-hidden className="h-3.5 w-3.5" />
+													</Button>
+												</div>
+											);
+										})}
+									</div>
+									<div className="mt-2 flex flex-wrap gap-2">
+										<Button
+											aria-label={t('exportWaypoints')}
+											className="h-8 w-8 shrink-0 px-0"
+											size="sm"
+											title={t('exportWaypoints')}
+											variant="mapControlOutlineSecondary"
+											onClick={handleExportWaypoints}
+										>
+											<IoDownloadOutline aria-hidden className="h-3.5 w-3.5" />
+										</Button>
+										<Button
+											aria-label={t('importWaypoints')}
+											className="h-8 w-8 shrink-0 px-0"
+											size="sm"
+											title={t('importWaypoints')}
+											variant="mapControlOutlineSecondary"
+											onClick={() => waypointImportInputRef.current?.click()}
+										>
+											<IoCloudUploadOutline aria-hidden className="h-3.5 w-3.5" />
+										</Button>
+									</div>
+								</div>
+							</>
 						)}
-						<div className="flex flex-col gap-1 rounded border border-gray-100 p-1.5 dark:border-[var(--border-color)]">
-							<label className="flex flex-col gap-0.5 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
-								{t('entryDateLabel')}
-								<input
-									className={cn(MAP_CONTROL_INPUT, 'w-full')}
-									type="date"
-									value={entryDate}
-									onChange={(e) => setEntryDate(e.target.value)}
-								/>
-							</label>
-							<div className="relative">
-								<textarea
-									aria-label={t('entryTextLabel')}
-									className={cn(MAP_CONTROL_INPUT, 'w-full resize-y pr-8')}
-									placeholder={t('entryPlaceholder')}
-									rows={4}
-									value={entryText}
-									onChange={(e) => setEntryText(e.target.value)}
-								/>
-								<button
-									aria-label={t('focusEditor')}
-									className="hover:text-cldt-blue focus-visible:ring-cldt-green absolute top-1 right-1 flex h-7 w-7 cursor-pointer items-center justify-center rounded border-0 bg-transparent text-gray-500 outline-none focus-visible:ring-2 dark:text-[var(--text-secondary)]"
-									title={t('focusEditor')}
-									type="button"
-									onClick={() => setFocusEditorOpen(true)}
-								>
-									<IoExpandOutline aria-hidden className="h-4.5 w-4.5" />
-								</button>
-							</div>
-							{rulerKms && (
-								<label className="flex cursor-pointer items-center gap-2 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
-									<Checkbox checked={attachRuler} onCheckedChange={(checked) => setAttachRuler(checked)} />
-									{t('attachRuler', { range: `${fmt(rulerKms.lo)} - ${fmt(rulerKms.hi)}` })}
-								</label>
-							)}
-							<div className="flex justify-end gap-2">
-								<Button
-									size="sm"
-									variant="mapControlOutlineSecondary"
-									onClick={() => journalImportInputRef.current?.click()}
-								>
-									{t('importJournal')}
-								</Button>
-								{journalEntries.length > 0 && (
-									<Button size="sm" variant="mapControlOutlineSecondary" onClick={handleExportJournal}>
-										{t('exportJournal')}
-									</Button>
-								)}
-								<Button disabled={entryText.trim().length === 0} size="sm" variant="base" onClick={handleAddEntry}>
-									{t('addEntry')}
-								</Button>
-							</div>
-						</div>
 						<input
-							accept=".md,text/markdown"
+							accept=".gpx,application/gpx+xml"
 							className="hidden"
-							ref={journalImportInputRef}
+							ref={waypointImportInputRef}
 							type="file"
 							onChange={(e) => {
 								const file = e.target.files?.[0];
-								if (file) void handleImportJournalFile(file);
+								if (file) void handleImportWaypointsFile(file);
 								e.target.value = '';
 							}}
 						/>
-						{journalImportError && <p className="text-cldt-red m-0 text-xs">{journalImportError}</p>}
-					</div>
+						{waypointImportError && <p className="text-cldt-red m-0 text-xs">{waypointImportError}</p>}
+					</ProgressSectionCard>
 
-					<label className="flex cursor-pointer items-center gap-2 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
-						<Checkbox checked={completionAutoTrack} onCheckedChange={(checked) => setCompletionAutoTrack(checked)} />
-						{t('autoTrack')}
-					</label>
-					<label className="flex cursor-pointer items-center gap-2 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
-						<Checkbox
-							checked={showCompletionOverlay}
-							onCheckedChange={(checked) => setShowCompletionOverlay(checked)}
-						/>
-						{t('showOverlay')}
-					</label>
+					<ProgressSectionCard
+						collapsible
+						collapseLabel={t('collapseSection')}
+						expandLabel={t('expandSection')}
+						open={progressPanelJournalOpen}
+						title={t('journalHeading')}
+						onOpenChange={setProgressPanelJournalOpen}
+					>
+						<JournalSection embedded />
+					</ProgressSectionCard>
 
-					{!confirmClear ? (
-						<Button
-							disabled={completedIntervals.length === 0}
-							variant="mapControlOutlineSecondary"
-							onClick={() => setConfirmClear(true)}
-						>
-							{t('clear')}
-						</Button>
-					) : (
-						<div className="flex min-w-0 items-center gap-2">
-							<span className="min-w-0 flex-1 text-xs text-gray-700 dark:text-[var(--text-primary)]">
-								{t('confirmClear')}
-							</span>
+					<div className="border-t border-gray-200 pt-3 dark:border-[var(--border-color)]">
+						{!confirmClear ? (
 							<Button
+								className="w-full"
+								disabled={completedIntervals.length === 0}
 								size="sm"
-								variant="mapControlOutline"
-								onClick={() => {
-									clearCompletion();
-									setConfirmClear(false);
-								}}
+								variant="mapControlOutlineSecondary"
+								onClick={() => setConfirmClear(true)}
 							>
-								{t('confirmYes')}
+								{t('clear')}
 							</Button>
-							<Button size="sm" variant="mapControlOutlineSecondary" onClick={() => setConfirmClear(false)}>
-								{t('confirmNo')}
-							</Button>
-						</div>
-					)}
+						) : (
+							<div className="flex min-w-0 items-center gap-2">
+								<span className="min-w-0 flex-1 text-xs text-gray-700 dark:text-[var(--text-primary)]">
+									{t('confirmClear')}
+								</span>
+								<Button
+									size="sm"
+									variant="mapControlOutline"
+									onClick={() => {
+										clearCompletion();
+										setConfirmClear(false);
+									}}
+								>
+									{t('confirmYes')}
+								</Button>
+								<Button size="sm" variant="mapControlOutlineSecondary" onClick={() => setConfirmClear(false)}>
+									{t('confirmNo')}
+								</Button>
+							</div>
+						)}
+					</div>
 				</div>
 			</div>
 		</div>
 	);
 
-	return (
-		<>
-			{typeof document !== 'undefined' && createPortal(popoverContent, document.body)}
-
-			{focusEditorOpen && (
-				<div
-					aria-labelledby="journal-focus-title"
-					aria-modal="true"
-					className="z-modal fixed inset-0 flex items-center justify-center bg-[var(--modal-backdrop-bg)] p-4"
-					role="dialog"
-					onClick={() => setFocusEditorOpen(false)}
-				>
-					<div
-						className="flex w-full max-w-lg flex-col gap-2 rounded bg-[var(--map-tooltip-bg)] p-4 shadow-xl dark:bg-[var(--bg-primary)]"
-						onClick={(e) => e.stopPropagation()}
-					>
-						<h3
-							className="m-0 text-sm font-medium text-gray-700 dark:text-[var(--text-primary)]"
-							id="journal-focus-title"
-						>
-							{t('journalHeading')}
-						</h3>
-						<label className="flex flex-col gap-0.5 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
-							{t('entryDateLabel')}
-							<input
-								className={cn(MAP_CONTROL_INPUT, 'w-full')}
-								type="date"
-								value={entryDate}
-								onChange={(e) => setEntryDate(e.target.value)}
-							/>
-						</label>
-						{/* autoFocus is intentional: opening a dedicated writing overlay IS the focus request. */}
-						<textarea
-							autoFocus
-							aria-label={t('entryTextLabel')}
-							className={cn(MAP_CONTROL_INPUT, 'min-h-[40dvh] w-full resize-y text-base')}
-							placeholder={t('entryPlaceholder')}
-							value={entryText}
-							onChange={(e) => setEntryText(e.target.value)}
-						/>
-						{rulerKms && (
-							<label className="flex cursor-pointer items-center gap-2 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
-								<Checkbox checked={attachRuler} onCheckedChange={(checked) => setAttachRuler(checked)} />
-								{t('attachRuler', { range: `${fmt(rulerKms.lo)} - ${fmt(rulerKms.hi)}` })}
-							</label>
-						)}
-						<div className="flex justify-end gap-2">
-							<Button size="sm" variant="mapControlOutlineSecondary" onClick={() => setFocusEditorOpen(false)}>
-								{t('focusEditorClose')}
-							</Button>
-							<Button
-								disabled={entryText.trim().length === 0}
-								size="sm"
-								variant="base"
-								onClick={() => {
-									handleAddEntry();
-									setFocusEditorOpen(false);
-								}}
-							>
-								{t('addEntry')}
-							</Button>
-						</div>
-					</div>
-				</div>
-			)}
-		</>
-	);
+	return typeof document !== 'undefined' ? createPortal(popoverContent, document.body) : null;
 }

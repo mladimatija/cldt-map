@@ -79,6 +79,7 @@ export function MapControlsHelpPanel(): React.ReactElement {
 				['planner', t('planning.planner')],
 				['tripBrief', t('planning.tripBrief')],
 				['progress', t('planning.progress')],
+				['journal', t('planning.journal')],
 				['packWeight', t('planning.packWeight')],
 				['resupply', t('planning.resupply')],
 			])}

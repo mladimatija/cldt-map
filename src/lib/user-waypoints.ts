@@ -26,6 +26,16 @@ export interface UserWaypoint {
 	trailKm: number | null;
 }
 
+export interface JournalTrackLink {
+	/** FNV-1a hex id === ImportedTrack.id */
+	trackId: string;
+	/** Inclusive indices into ImportedTrack.points */
+	startIdx: number;
+	endIdx: number;
+	/** Snapshot of track.name at link time; shown when track is missing */
+	trackName: string;
+}
+
 export interface JournalEntry {
 	id: string;
 	/** Calendar date (YYYY-MM-DD) the entry is about - editable, distinct
@@ -35,6 +45,8 @@ export interface JournalEntry {
 	/** Optional km range the entry covers (SOBO-keyed, lo <= hi). */
 	startKm?: number;
 	endKm?: number;
+	/** Optional link to a slice of an imported GPX track. */
+	trackLink?: JournalTrackLink;
 	createdAt: string;
 }
 
@@ -67,6 +79,8 @@ export interface JournalExportLabels {
 	title: string;
 	/** Template for an attached range line; receives the formatted range. */
 	rangeLine: (range: string) => string;
+	/** Template for a linked track line; receives the track name. */
+	trackLine?: (name: string) => string;
 }
 
 /** Plain-markdown journal export, newest entry last (chronological read).
@@ -85,6 +99,11 @@ export function journalToMarkdown(
 		if (e.startKm !== undefined && e.endKm !== undefined) {
 			parts.push(`<!-- cldt-journal-range:${e.startKm},${e.endKm} -->`);
 			parts.push(labels.rangeLine(`${formatKm(e.startKm, units)} - ${formatKm(e.endKm, units)}`));
+		}
+		if (e.trackLink) {
+			const { trackId, startIdx, endIdx, trackName } = e.trackLink;
+			parts.push(`<!-- cldt-journal-track:${trackId}:${startIdx},${endIdx} -->`);
+			if (labels.trackLine) parts.push(labels.trackLine(trackName));
 		}
 		parts.push('', e.text.trim(), '');
 	}

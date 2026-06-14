@@ -170,7 +170,7 @@ export function MapControlsImportsPanel(): React.ReactElement {
 	};
 
 	return (
-		<div className="mt-1 border-t border-gray-200 pt-2 dark:border-[var(--border-color)]">
+		<div className="mt-1 border-t border-gray-200 pt-2 dark:border-[var(--border-color)]" id="settings-imports-section">
 			<div className="mb-1.5 flex items-center gap-1.5">
 				<IoDownloadOutline aria-hidden className="h-4 w-4 shrink-0 text-gray-500 dark:text-[var(--text-secondary)]" />
 				<span className="flex-1 text-xs font-medium text-gray-600 dark:text-[var(--text-primary)]">{t('title')}</span>

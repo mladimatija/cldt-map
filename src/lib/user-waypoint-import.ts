@@ -2,7 +2,7 @@
  * Import parsers for personal waypoints (GPX `<wpt>`) and trip journal (Markdown
  * exported by journalToMarkdown). Pure functions - no store access.
  */
-import { nextWaypointName, type JournalEntry, type UserWaypoint } from './user-waypoints';
+import { nextWaypointName, type JournalEntry, type JournalTrackLink, type UserWaypoint } from './user-waypoints';
 import { gpxTextToWaypointCategory, normalizeWaypointCategory } from './waypoint-categories';
 
 export const MAX_WAYPOINT_GPX_BYTES = 2 * 1024 * 1024;
@@ -12,6 +12,7 @@ export const MAX_JOURNAL_ENTRIES_PER_IMPORT = 100;
 
 const ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 const CLDT_JOURNAL_RANGE_RE = /<!--\s*cldt-journal-range:([\d.]+),([\d.]+)\s*-->/;
+const CLDT_JOURNAL_TRACK_RE = /<!--\s*cldt-journal-track:([a-f0-9]+):(\d+),(\d+)\s*-->/i;
 const DATE_HEADING_RE = /^##\s+(\d{4}-\d{2}-\d{2})\s*$/m;
 
 export interface ParsedGpxWaypoint {
@@ -27,6 +28,7 @@ export interface ParsedJournalEntry {
 	text: string;
 	startKm?: number;
 	endKm?: number;
+	trackLink?: JournalTrackLink;
 }
 
 function assertSafeXml(xml: string, maxBytes: number): void {
@@ -76,7 +78,10 @@ export function parseGpxWaypoints(xml: string): ParsedGpxWaypoint[] {
 function stripRangeMetadataLines(body: string): string {
 	return body
 		.split('\n')
-		.filter((line) => !CLDT_JOURNAL_RANGE_RE.test(line.trim()))
+		.filter((line) => {
+			const trimmed = line.trim();
+			return !CLDT_JOURNAL_RANGE_RE.test(trimmed) && !CLDT_JOURNAL_TRACK_RE.test(trimmed);
+		})
 		.join('\n')
 		.trim();
 }
@@ -101,6 +106,7 @@ export function parseJournalMarkdown(md: string): ParsedJournalEntry[] {
 
 		let startKm: number | undefined;
 		let endKm: number | undefined;
+		let trackLink: JournalTrackLink | undefined;
 		const rangeMatch = body.match(CLDT_JOURNAL_RANGE_RE);
 		if (rangeMatch) {
 			const lo = parseFloat(rangeMatch[1]);
@@ -110,12 +116,28 @@ export function parseJournalMarkdown(md: string): ParsedJournalEntry[] {
 				endKm = hi;
 			}
 		}
+		const trackMatch = body.match(CLDT_JOURNAL_TRACK_RE);
+		if (trackMatch) {
+			const trackId = trackMatch[1];
+			const startIdx = parseInt(trackMatch[2], 10);
+			const endIdx = parseInt(trackMatch[3], 10);
+			if (trackId && Number.isFinite(startIdx) && Number.isFinite(endIdx) && endIdx >= startIdx) {
+				trackLink = { trackId, startIdx, endIdx, trackName: '' };
+			}
+		}
 
 		body = stripRangeMetadataLines(body);
-		// Drop a single leading range summary line (Stretch: ...) when present.
+		// Drop a single leading range or track summary line when present.
 		const lines = body.split('\n');
-		if (lines.length > 1 && /^[^:]+:\s*.+\s-\s*.+/.test(lines[0].trim())) {
-			body = lines.slice(1).join('\n').trim();
+		if (lines.length > 1) {
+			const first = lines[0].trim();
+			if (/^[^:]+:\s*.+\s-\s*.+/.test(first) || /^Track:\s*.+/i.test(first)) {
+				if (trackLink && /^Track:\s*(.+)/i.test(first)) {
+					const nameMatch = first.match(/^Track:\s*(.+)/i);
+					if (nameMatch) trackLink = { ...trackLink, trackName: nameMatch[1].trim() };
+				}
+				body = lines.slice(1).join('\n').trim();
+			}
 		}
 
 		const text = body.trim();
@@ -125,6 +147,7 @@ export function parseJournalMarkdown(md: string): ParsedJournalEntry[] {
 			date,
 			text,
 			...(startKm !== undefined && endKm !== undefined ? { startKm, endKm } : {}),
+			...(trackLink ? { trackLink } : {}),
 		});
 
 		if (entries.length >= MAX_JOURNAL_ENTRIES_PER_IMPORT) break;
@@ -174,5 +197,6 @@ export function parsedJournalToEntries(
 		text: entry.text,
 		createdAt,
 		...(entry.startKm !== undefined && entry.endKm !== undefined ? { startKm: entry.startKm, endKm: entry.endKm } : {}),
+		...(entry.trackLink ? { trackLink: entry.trackLink } : {}),
 	}));
 }

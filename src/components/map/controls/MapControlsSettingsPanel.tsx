@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useState, type RefObject } from 'react';
+import React, { useEffect, useRef, useState, type RefObject } from 'react';
 import { useTranslations } from 'next-intl';
 import { usePopoverFocusTrap } from '@/hooks';
 import SmartTooltip from '@/components/ui/SmartTooltip';
@@ -70,6 +70,15 @@ export function MapControlsSettingsPanel({
 	const tMineAreas = useTranslations('mineAreas');
 	const tSeasonal = useTranslations('seasonalStatus');
 	const popoverRef = usePopoverFocusTrap(isExpanded);
+	const settingsScrollTarget = useMapStore((state: MapStoreState) => state.settingsScrollTarget);
+	const clearSettingsScrollTarget = useMapStore((state: MapStoreState) => state.clearSettingsScrollTarget);
+
+	useEffect(() => {
+		if (!isExpanded || settingsScrollTarget !== 'imports') return;
+		const el = document.getElementById('settings-imports-section');
+		el?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+		clearSettingsScrollTarget();
+	}, [isExpanded, settingsScrollTarget, clearSettingsScrollTarget]);
 
 	const darkMode = useMapStore((state: MapStoreState) => state.darkMode);
 	const setDarkMode = useMapStore((state: MapStoreState) => state.setDarkMode);

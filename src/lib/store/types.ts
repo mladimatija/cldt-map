@@ -413,8 +413,17 @@ export interface MapStoreState {
 	/** Dated trip journal entries, optionally attached to a km range. Persisted. */
 	journalEntries: JournalEntry[];
 	addJournalEntry: (entry: JournalEntry) => void;
-	updateJournalEntry: (id: string, patch: Partial<Pick<JournalEntry, 'date' | 'text' | 'startKm' | 'endKm'>>) => void;
+	updateJournalEntry: (
+		id: string,
+		patch: Partial<Pick<JournalEntry, 'date' | 'text' | 'startKm' | 'endKm' | 'trackLink'>>,
+	) => void;
 	removeJournalEntry: (id: string) => void;
+	/** Which journal list row is highlighted on the map. Session-only. */
+	journalHighlightEntryId: string | null;
+	setJournalHighlightEntryId: (id: string | null) => void;
+	/** Ephemeral journal segment preview on the map. Session-only. */
+	journalPreview: JournalPreview | null;
+	setJournalPreview: (preview: JournalPreview | null) => void;
 
 	gradeAdjustedEta: boolean;
 	setGradeAdjustedEta: (enabled: boolean) => void;
@@ -461,6 +470,16 @@ export interface MapStoreState {
 	/** Draw completed stretches as a green overlay on the trail; persisted. */
 	showCompletionOverlay: boolean;
 	setShowCompletionOverlay: (show: boolean) => void;
+	/** Progress panel: My waypoints section expanded. Persisted. */
+	progressPanelWaypointsOpen: boolean;
+	setProgressPanelWaypointsOpen: (open: boolean) => void;
+	/** Progress panel: Trip journal section expanded. Persisted. */
+	progressPanelJournalOpen: boolean;
+	setProgressPanelJournalOpen: (open: boolean) => void;
+	/** Session-only: scroll target when opening settings from progress panel. */
+	settingsScrollTarget: 'imports' | null;
+	openSettingsToImports: () => void;
+	clearSettingsScrollTarget: () => void;
 	/** Ephemeral preview of km intervals before confirming a GPX add-to-progress. */
 	progressPreviewTrackId: string | null;
 	progressPreviewIntervals: CompletionInterval[];
@@ -616,6 +635,17 @@ export interface StagePlan {
 	/** Trip start date (yyyy-mm-dd). Optional; enables per-stage weather
 	 *  forecasts for stages within the 16-day Open-Meteo horizon. */
 	startDate?: string;
+}
+
+export interface JournalPreview {
+	/** null when previewing a draft add-form entry */
+	entryId: string | null;
+	trailStartKm: number;
+	trailEndKm: number;
+	trackId?: string;
+	startIdx?: number;
+	endIdx?: number;
+	trackColor?: string;
 }
 
 export interface ImportedTrack {
