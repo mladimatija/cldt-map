@@ -22,7 +22,7 @@ import { exportTripBriefDocx } from '@/lib/trip-brief-docx';
 import { exportTripBriefHtml } from '@/lib/trip-brief-html';
 import { useActiveStarredPoiIds, usePackAdjustedPaceKmh } from '@/hooks';
 import { computeStagePackScenarios, formatVolume, formatWeight, kgToDisplay, weightUnitLabel } from '@/lib/pack-weight';
-import { estimatedFoodDaysFromPack, type StageResupplyCadence } from '@/lib/resupply-cadence';
+import { buildResupplyCadenceLabels, type StageResupplyCadence } from '@/lib/resupply-cadence';
 import { poiDisplayName } from '@/lib/pois';
 import { missingGearTerms } from '@/lib/pack-csv';
 import { renderElevationThumbnail } from '@/lib/elevation-thumbnail';
@@ -51,8 +51,9 @@ const NARRATIVE_TEXTAREA = cn(
  * /api/narrative for guide-style day paragraphs (best-effort: templated
  * text remains the fallback, and exports never fail because of it).
  *
- * Selection state is persisted only inside the modal; closing without
- * generating drops it.
+ * Export-option selections (format, POI scope, AI-narrative toggle) are
+ * remembered across close/reopen while the modal stays mounted; the prepared
+ * brief and its edit buffers are dropped on close (see resetModalState).
  */
 export function MapControlsTripBriefModal({
 	open,
@@ -129,39 +130,6 @@ export function MapControlsTripBriefModal({
 			return poi ? poiDisplayName(poi, locale) : id;
 		};
 
-		const buildResupplyCadenceLabels = (
-			cadence: StageResupplyCadence,
-		): { entering?: string; carry?: string; foodPack?: string } => {
-			const out: { entering?: string; carry?: string; foodPack?: string } = {};
-			if (cadence.status !== 'yes' && cadence.kmSinceGrocery !== null && cadence.stagesSinceGrocery > 0) {
-				out.entering = t('resupplyEntering', {
-					stages: cadence.stagesSinceGrocery,
-					distance: makeDistanceLabelFn(units, distancePrecision)(cadence.kmSinceGrocery),
-				});
-			}
-			if (
-				(cadence.status === 'no' || cadence.status === 'partial') &&
-				cadence.kmToNextGrocery !== null &&
-				cadence.nextGrocery
-			) {
-				out.carry = t('resupplyCarry', {
-					distance: makeDistanceLabelFn(units, distancePrecision)(cadence.kmToNextGrocery),
-					town: poiName(cadence.nextGrocery.id),
-				});
-			}
-			const consumableKg = packGearList?.consumableKg ?? 0;
-			if (consumableKg > 0 && foodConsumptionKgPerDay > 0) {
-				const foodDays = estimatedFoodDaysFromPack(consumableKg, foodConsumptionKgPerDay);
-				if (foodDays !== null) {
-					out.foodPack = t('resupplyFoodPack', {
-						days: foodDays,
-						rate: `${Math.round(kgToDisplay(foodConsumptionKgPerDay, units) * 10) / 10} ${weightUnitLabel(units)}/day`,
-					});
-				}
-			}
-			return out;
-		};
-
 		return assembleTripBrief({
 			stagePlan,
 			poisFile,
@@ -224,7 +192,17 @@ export function MapControlsTripBriefModal({
 				},
 			}),
 			poiName,
-			resupplyCadenceLabels: (cadence) => buildResupplyCadenceLabels(cadence),
+			resupplyCadenceLabels: (cadence: StageResupplyCadence) =>
+				buildResupplyCadenceLabels(cadence, {
+					formatKm: makeDistanceLabelFn(units, distancePrecision),
+					resolveTownName: poiName,
+					consumableKg: packGearList?.consumableKg ?? 0,
+					foodConsumptionKgPerDay,
+					rateLabel: `${Math.round(kgToDisplay(foodConsumptionKgPerDay, units) * 10) / 10} ${weightUnitLabel(units)}/day`,
+					entering: (v) => t('resupplyEntering', v),
+					carry: (v) => t('resupplyCarry', v),
+					foodPack: (v) => t('resupplyFoodPack', v),
+				}),
 			resupplySummaryLabel: ({ maxFoodGapKm, nextTown, nextDistanceKm }) => {
 				const gapLine = t('resupplySummaryGap', {
 					distance: makeDistanceLabelFn(units, distancePrecision)(maxFoodGapKm),

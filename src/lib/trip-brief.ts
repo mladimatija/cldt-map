@@ -10,7 +10,7 @@
  * the user's changes before PDF/DOCX/HTML generation.
  */
 
-import { computeStageStats, DEFAULT_MAX_HOURS_PER_DAY } from '@/lib/stage-planner';
+import { computeStageStats } from '@/lib/stage-planner';
 import { isUsableWaterSource, longestDryStretchKm } from '@/lib/water-intelligence';
 import {
 	collectResupplyTownPoints,
@@ -233,13 +233,7 @@ export function assembleTripBrief(args: TripBriefAssemblyArgs): TripBrief {
 		poisFile?.pois?.length && resupplyCadenceLabels ? collectResupplyTownPoints(poisFile.pois) : [];
 	const planResupplyCadence =
 		resupplyPoints.length > 0 && stagePlan.stages.length > 0
-			? computePlanResupplyCadence(
-					stagePlan.stages,
-					poisFile?.pois ?? [],
-					resupplyPoints,
-					walkingPaceKmh,
-					DEFAULT_MAX_HOURS_PER_DAY,
-				)
+			? computePlanResupplyCadence(stagePlan.stages, poisFile?.pois ?? [], resupplyPoints)
 			: null;
 
 	const resupplySummary =

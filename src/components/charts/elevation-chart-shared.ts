@@ -16,7 +16,7 @@ import { type TrailDirection } from '@/lib/types';
 import { GRADE_BAND_ASCENT_COLORS, GRADE_BAND_DESCENT_COLORS } from '@/components/map/trail-route-constants';
 import { TRAIL_SECTIONS } from '@/lib/trail-sections';
 
-export const SURFACE_BUCKETS: readonly SurfaceBucket[] = ['paved', 'unpaved', 'gravel', 'ground', 'rock', 'unknown'];
+export { SURFACE_BUCKETS } from '@/lib/trail-osm-tags';
 export const SAC_BUCKETS: readonly SacBucket[] = [
 	'hiking',
 	'mountain_hiking',
@@ -85,7 +85,7 @@ export function resolveGradeAtTrailKm(
 	enhancedTrailPoints: readonly EnhancedTrailPoint[],
 ): GradeAtTrailKm | null {
 	if (!enhancedTrailPoints.length) return null;
-	const ep = enhancedTrailPoints[findNearestPointIndex([...enhancedTrailPoints], km * 1000)];
+	const ep = enhancedTrailPoints[findNearestPointIndex(enhancedTrailPoints, km * 1000)];
 	if (!ep) return null;
 	const sign = ep.gradePct < 0 ? 'desc' : 'asc';
 	return {

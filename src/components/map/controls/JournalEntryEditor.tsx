@@ -11,6 +11,7 @@ import { MAP_CONTROL_INPUT } from './map-controls-constants';
 import { MapControlModalShell } from './MapControlModalShell';
 import { MapControlSectionCard } from './MapControlSectionCard';
 import { JournalTrackAttachControls, type JournalAttachState } from './JournalTrackAttachControls';
+import { buildJournalPreview } from '@/lib/journal-track-link';
 
 interface JournalEntryEditorProps {
 	entry: JournalEntry;
@@ -55,30 +56,7 @@ export function JournalEntryEditor({
 
 	const pushPreview = useCallback(
 		(state: JournalAttachState): void => {
-			let trailStartKm = state.startKm;
-			let trailEndKm = state.endKm;
-			if (attachRuler && rulerKms && !state.trackLink) {
-				trailStartKm = rulerKms.lo;
-				trailEndKm = rulerKms.hi;
-			}
-			if (trailStartKm === undefined || trailEndKm === undefined) {
-				setJournalPreview(null);
-				return;
-			}
-			const track = state.trackLink ? importedTracks.find((tr) => tr.id === state.trackLink!.trackId) : null;
-			setJournalPreview({
-				entryId: entry.id,
-				trailStartKm,
-				trailEndKm,
-				...(state.trackLink && track
-					? {
-							trackId: state.trackLink.trackId,
-							startIdx: state.trackLink.startIdx,
-							endIdx: state.trackLink.endIdx,
-							trackColor: track.color,
-						}
-					: {}),
-			});
+			setJournalPreview(buildJournalPreview(state, attachRuler, rulerKms, importedTracks, entry.id));
 		},
 		[attachRuler, entry.id, importedTracks, rulerKms, setJournalPreview],
 	);
@@ -200,14 +178,16 @@ export function JournalEntryEditor({
 					value={attachState}
 					onAttachRulerChange={(checked) => {
 						setAttachRuler(checked);
+						// Pass `checked` (the new value) into the builder rather than going through
+						// pushPreview, whose closure still holds the pre-toggle attachRuler this render.
 						if (!checked && !attachState.trackLink) {
 							const next = { trackLink: null };
 							setAttachState(next);
-							pushPreview(next);
+							setJournalPreview(buildJournalPreview(next, checked, rulerKms, importedTracks, entry.id));
 						} else if (checked && rulerKms && !attachState.trackLink) {
 							const next = { ...attachState, startKm: rulerKms.lo, endKm: rulerKms.hi };
 							setAttachState(next);
-							pushPreview(next);
+							setJournalPreview(buildJournalPreview(next, checked, rulerKms, importedTracks, entry.id));
 						}
 					}}
 					onChange={setAttachState}

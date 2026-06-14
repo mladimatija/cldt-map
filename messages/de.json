@@ -1,7 +1,6 @@
 {
 	"common": {
 		"about": "Über",
-		"returnToMap": "Zurück zur Karte",
 		"backToMap": "Zurück zur Karte",
 		"close": "Schließen",
 		"loading": "Wird geladen...",
@@ -297,7 +296,6 @@
 		"openHikingMapDescription": "OpenHikingMap: Topo-Stil mit wanderspezifischen Details"
 	},
 	"test": {
-		"backToMap": "Zurück zur Karte",
 		"title": "Store-Test",
 		"description": "Teste die Persistenz von Karteneinstellungen im localStorage. Verwende die folgenden Steuerungen, um zu überprüfen, ob die Einstellungen nach dem Seitenneuladen erhalten bleiben."
 	},

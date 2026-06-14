@@ -60,8 +60,13 @@ function safeFilenameBase(name: string): string {
 }
 
 function csvEscape(value: string): string {
-	if (/[",\n\r]/.test(value)) return `"${value.replace(/"/g, '""')}"`;
-	return value;
+	// Neutralize CSV/formula injection (CWE-1236): a cell beginning with one of
+	// = + - @ tab/CR is treated as a formula by Excel/LibreOffice/Sheets. The
+	// track and POI name columns derive from attacker-controlled GPX <name>
+	// elements, so prefix any such value with a single quote before quoting.
+	const guarded = /^[=+\-@\t\r]/.test(value) ? `'${value}` : value;
+	if (/[",\n\r]/.test(guarded)) return `"${guarded.replace(/"/g, '""')}"`;
+	return guarded;
 }
 
 function csvRow(cells: string[]): string {

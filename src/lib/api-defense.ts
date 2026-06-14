@@ -1,5 +1,7 @@
 /**
- * Server-only defenses shared by the /api/proxy, /api/dhmz-weather, and /api/meteoalarm routes.
+ * Server-only defenses shared by the app's server routes (the /api/* proxy and
+ * data routes, the /api/narrative and /api/reverse-geocode services, and the
+ * /api/share + /s/{code} share-link endpoints).
  *
  * - enforceRateLimit: in-memory sliding-window per IP. Works in dev and single-instance
  *   deployments. For multi-instance serverless deployments, prefer edge-layer rate limiting

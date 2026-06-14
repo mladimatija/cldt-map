@@ -9,7 +9,7 @@ export function isStandalone(): boolean {
 	if (typeof window === 'undefined') return false;
 
 	const isDisplayModeStandalone = window.matchMedia('(display-mode: standalone)').matches;
-	const isIosStandalone = (window.navigator as Navigator & { standalone?: boolean }).standalone!;
+	const isIosStandalone = (window.navigator as Navigator & { standalone?: boolean }).standalone === true;
 
 	return isDisplayModeStandalone || isIosStandalone;
 }

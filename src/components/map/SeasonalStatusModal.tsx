@@ -31,7 +31,7 @@ export function SeasonalStatusModal(): React.ReactElement | null {
 			cardStyle={{ '--seasonal-accent': accent } as React.CSSProperties}
 			closeLabel={closeLabel}
 			title={t(`severity.${entry.severity}`)}
-			titleClassName="mb-1.5 pr-6 text-xs font-semibold tracking-wide uppercase"
+			titleClassName="mb-1.5 text-xs font-semibold tracking-wide uppercase"
 			titleId="seasonal-status-modal-title"
 			titleStyle={{ color: accent }}
 			onClose={close}

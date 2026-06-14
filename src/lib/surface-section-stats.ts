@@ -1,8 +1,5 @@
 import { TRAIL_SECTIONS } from '@/lib/trail-sections';
-import { bucketSurface, type SurfaceBucket, type TrailOsmTagRun } from '@/lib/trail-osm-tags';
-
-/** Display order for surface mix rows in section tooltips. */
-export const SURFACE_BUCKETS: SurfaceBucket[] = ['paved', 'unpaved', 'gravel', 'ground', 'rock', 'unknown'];
+import { bucketSurface, SURFACE_BUCKETS, type SurfaceBucket, type TrailOsmTagRun } from '@/lib/trail-osm-tags';
 
 export interface SurfaceMixEntry {
 	bucket: SurfaceBucket;

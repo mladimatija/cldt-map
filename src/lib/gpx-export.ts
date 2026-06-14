@@ -115,9 +115,13 @@ ${wpts}
 </gpx>`;
 }
 
-/** Triggers a browser file download for the given GPX content. */
-export function downloadGpxFile(gpxContent: string, filename: string): void {
-	const blob = new Blob([gpxContent], { type: 'application/gpx+xml' });
+/**
+ * Triggers a browser file download for arbitrary content. Revokes the object
+ * URL on a short delay because Safari needs it alive until the click is
+ * processed. Shared by every file-export path (GPX, journal markdown, CSV).
+ */
+export function downloadBlob(content: BlobPart, filename: string, mime: string): void {
+	const blob = new Blob([content], { type: mime });
 	const url = URL.createObjectURL(blob);
 	const a = document.createElement('a');
 	a.href = url;
@@ -125,7 +129,12 @@ export function downloadGpxFile(gpxContent: string, filename: string): void {
 	document.body.appendChild(a);
 	a.click();
 	document.body.removeChild(a);
-	URL.revokeObjectURL(url);
+	setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+/** Triggers a browser file download for the given GPX content. */
+export function downloadGpxFile(gpxContent: string, filename: string): void {
+	downloadBlob(gpxContent, filename, 'application/gpx+xml');
 }
 
 const GPX_MIME = 'application/gpx+xml';

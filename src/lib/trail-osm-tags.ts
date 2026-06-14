@@ -37,6 +37,9 @@ export interface TrailOsmTagsFile {
  */
 export type SurfaceBucket = 'paved' | 'unpaved' | 'gravel' | 'ground' | 'rock' | 'unknown';
 
+/** Canonical display order for surface-mix rows (elevation chart + section tooltips). */
+export const SURFACE_BUCKETS: readonly SurfaceBucket[] = ['paved', 'unpaved', 'gravel', 'ground', 'rock', 'unknown'];
+
 /**
  * Maps an OSM surface=* value to a coarse bucket. Returns 'unknown' for
  * untagged or unrecognized surfaces so the renderer can color them

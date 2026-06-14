@@ -141,7 +141,7 @@ export function computeEta(distanceM: number, paceKmh: number, opts?: ComputeEta
  * distanceFromStart is nearest to targetM. Uses binary search - O(log n).
  * Returns 0 when the array is empty.
  */
-export function findNearestPointIndex(points: { distanceFromStart: number }[], targetM: number): number {
+export function findNearestPointIndex(points: ReadonlyArray<{ distanceFromStart: number }>, targetM: number): number {
 	if (points.length === 0) return 0;
 	if (points.length === 1) return 0;
 

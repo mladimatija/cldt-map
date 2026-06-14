@@ -1,7 +1,6 @@
 {
 	"common": {
 		"about": "About",
-		"returnToMap": "Return to Map",
 		"backToMap": "Back to Map",
 		"close": "Close",
 		"loading": "Loading...",
@@ -297,7 +296,6 @@
 		"openHikingMapDescription": "OpenHikingMap: topo style with hiking-specific details"
 	},
 	"test": {
-		"backToMap": "Back to Map",
 		"title": "Test Store",
 		"description": "Test the persistence of map settings in localStorage. Use the controls below to verify settings persist between page refreshes."
 	},

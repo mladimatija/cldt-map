@@ -966,7 +966,9 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 						set((state) => ({
 							importedTracks: state.importedTracks.map((t) => (t.id === id ? { ...t, ...patch } : t)),
 						}));
-						void persistImportedTrackPatch(id, patch);
+						// Best-effort persistence: the in-memory update already succeeded, so a
+						// storage write failure (quota exceeded, private-mode storage) is non-fatal.
+						void persistImportedTrackPatch(id, patch).catch(() => {});
 					},
 
 					loadImportedTracksFromStorage: async (): Promise<void> => {

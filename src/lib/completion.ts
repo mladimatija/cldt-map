@@ -84,11 +84,6 @@ export function totalCompletedKm(intervals: CompletionInterval[]): number {
 	return intervals.reduce((sum, iv) => sum + (iv.endKm - iv.startKm), 0);
 }
 
-/** Total km covered by a set of intervals (alias for preview summaries). */
-export function totalIntervalKm(intervals: CompletionInterval[]): number {
-	return totalCompletedKm(intervals);
-}
-
 /** Km that would be newly completed after folding `toAdd` into `existing`. */
 export function additionalKmFromIntervals(existing: CompletionInterval[], toAdd: CompletionInterval[]): number {
 	let merged = existing;

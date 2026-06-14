@@ -1,7 +1,6 @@
 {
 	"common": {
 		"about": "Info",
-		"returnToMap": "Torna alla mappa",
 		"backToMap": "Torna alla mappa",
 		"close": "Chiudi",
 		"loading": "Caricamento...",
@@ -297,7 +296,6 @@
 		"openHikingMapDescription": "OpenHikingMap: stile topografico con dettagli escursionistici"
 	},
 	"test": {
-		"backToMap": "Torna alla mappa",
 		"title": "Test Store",
 		"description": "Testa la persistenza delle impostazioni mappa in localStorage. Usa i controlli sottostanti per verificare che le impostazioni persistano tra i ricaricamenti della pagina."
 	},

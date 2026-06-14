@@ -33,8 +33,6 @@ export interface StageResupplyCadence {
 	nextGrocery: ResupplyTownPoint | null;
 	/** Distance from this stage's end to the next grocery town (km). */
 	kmToNextGrocery: number | null;
-	stagesUntilNextGrocery: number | null;
-	walkingDaysToNextGrocery: number | null;
 }
 
 export interface PlanResupplyCadence {
@@ -105,39 +103,79 @@ function nextGroceryAfter(km: number, points: ResupplyTownPoint[]): ResupplyTown
 	return points.find((p) => !p.partial && p.trailKm > km) ?? null;
 }
 
-function countStagesUntilGrocery(
-	stages: { startKm: number; endKm: number }[],
-	fromIndex: number,
-	towns: Poi[],
-): number | null {
-	for (let j = fromIndex + 1; j < stages.length; j++) {
-		const status = stageResupplyStatus(stages[j].startKm, stages[j].endKm, towns);
-		if (status === 'yes') return j - fromIndex;
-	}
-	const afterEnd = stages[fromIndex]?.endKm ?? 0;
-	const next = nextGroceryAfter(afterEnd, collectResupplyTownPoints(towns));
-	if (next) return stages.length - fromIndex;
-	return null;
-}
-
-/** Walking days from km at the given pace and hours per hiking day. */
-export function walkingDaysFromKm(km: number, paceKmh: number, hoursPerDay: number): number | null {
-	if (!(km > 0) || !(paceKmh > 0) || !(hoursPerDay > 0)) return null;
-	const days = km / paceKmh / hoursPerDay;
-	return Math.round(days * 10) / 10;
-}
-
 export function estimatedFoodDaysFromPack(consumableKg: number, kgPerDay: number): number | null {
 	if (!(consumableKg > 0) || !(kgPerDay > 0)) return null;
 	return Math.round((consumableKg / kgPerDay) * 10) / 10;
+}
+
+export interface ResupplyCadenceLabels {
+	/** Stages + distance since the last grocery, when entering this stage carrying food. */
+	entering?: string;
+	/** Distance + town to carry to for the next grocery resupply. */
+	carry?: string;
+	/** Estimated food-days the current pack load covers. */
+	foodPack?: string;
+}
+
+/** Callbacks that render each cadence line and resolve display strings. The
+ *  branch logic is shared; only the i18n key names, distance formatting, and
+ *  town-name resolution differ between the stage planner and the trip brief. */
+export interface ResupplyCadenceLabelRenderers {
+	formatKm: (km: number) => string;
+	/** Resolve a town/settlement id to a display name; falsy result skips the carry line. */
+	resolveTownName: (id: string) => string | null | undefined;
+	/** Consumable food weight currently in the pack (kg); <= 0 skips the food-pack line. */
+	consumableKg: number;
+	/** Daily food consumption (kg/day); <= 0 skips the food-pack line. */
+	foodConsumptionKgPerDay: number;
+	/** Pre-formatted daily consumption rate (e.g. "0.6 kg/day"). */
+	rateLabel: string;
+	entering: (vars: { stages: number; distance: string }) => string;
+	carry: (vars: { distance: string; town: string }) => string;
+	foodPack: (vars: { days: number; rate: string }) => string;
+}
+
+/** Builds the (up to) three resupply-cadence detail lines for a single stage.
+ *  Shared by the stage planner panel and the trip-brief assembler so the branch
+ *  conditions stay in one place. */
+export function buildResupplyCadenceLabels(
+	cadence: StageResupplyCadence,
+	r: ResupplyCadenceLabelRenderers,
+): ResupplyCadenceLabels {
+	const out: ResupplyCadenceLabels = {};
+
+	if (cadence.status !== 'yes' && cadence.kmSinceGrocery !== null && cadence.stagesSinceGrocery > 0) {
+		out.entering = r.entering({
+			stages: cadence.stagesSinceGrocery,
+			distance: r.formatKm(cadence.kmSinceGrocery),
+		});
+	}
+
+	if (
+		(cadence.status === 'no' || cadence.status === 'partial') &&
+		cadence.kmToNextGrocery !== null &&
+		cadence.nextGrocery
+	) {
+		const town = r.resolveTownName(cadence.nextGrocery.id);
+		if (town) {
+			out.carry = r.carry({ distance: r.formatKm(cadence.kmToNextGrocery), town });
+		}
+	}
+
+	if (r.consumableKg > 0 && r.foodConsumptionKgPerDay > 0) {
+		const foodDays = estimatedFoodDaysFromPack(r.consumableKg, r.foodConsumptionKgPerDay);
+		if (foodDays !== null) {
+			out.foodPack = r.foodPack({ days: foodDays, rate: r.rateLabel });
+		}
+	}
+
+	return out;
 }
 
 export function computePlanResupplyCadence(
 	stages: { startKm: number; endKm: number }[],
 	towns: Poi[],
 	resupplyPoints: ResupplyTownPoint[],
-	paceKmh: number,
-	hoursPerDay: number,
 ): PlanResupplyCadence | null {
 	if (stages.length === 0) return null;
 
@@ -151,13 +189,19 @@ export function computePlanResupplyCadence(
 	const firstGrocery = resupplyPoints.find((p) => !p.partial && p.trailKm >= planStart) ?? null;
 	const kmToFirstGrocery = firstGrocery ? Math.max(0, firstGrocery.trailKm - planStart) : null;
 
+	// Resolve each stage's resupply status once (each call filters the full town
+	// list), then derive the cross-stage counters from this length-N array. This
+	// keeps the per-plan cost O(N * P) instead of the O(N^2 * P) that recomputing
+	// stageResupplyStatus inside the backward stagesSinceGrocery scan produced.
+	const statuses = stages.map((stage) => stageResupplyStatus(stage.startKm, stage.endKm, towns));
+
 	let maxStagesWithoutGrocery = 0;
 	let runWithout = 0;
 
 	const stageCadences: StageResupplyCadence[] = stages.map((stage, i) => {
 		const lo = Math.min(stage.startKm, stage.endKm);
 		const hi = Math.max(stage.startKm, stage.endKm);
-		const status = stageResupplyStatus(stage.startKm, stage.endKm, towns);
+		const status = statuses[i];
 		const foodGapKm = groceryKms.length > 0 ? longestDryStretchKm(lo, hi, groceryKms) : hi - lo;
 
 		if (status === 'yes') {
@@ -170,9 +214,8 @@ export function computePlanResupplyCadence(
 		let stagesSinceGrocery = 0;
 		if (status !== 'yes') {
 			for (let j = i; j >= 0; j--) {
-				const prevStatus = stageResupplyStatus(stages[j].startKm, stages[j].endKm, towns);
 				if (j < i) stagesSinceGrocery++;
-				if (prevStatus === 'yes') break;
+				if (statuses[j] === 'yes') break;
 			}
 		}
 
@@ -181,9 +224,6 @@ export function computePlanResupplyCadence(
 
 		const nextGrocery = nextGroceryAfter(hi, resupplyPoints);
 		const kmToNextGrocery = nextGrocery ? nextGrocery.trailKm - hi : null;
-		const stagesUntilNextGrocery = status === 'yes' ? 0 : countStagesUntilGrocery(stages, i, towns);
-		const walkingDaysToNextGrocery =
-			kmToNextGrocery !== null ? walkingDaysFromKm(kmToNextGrocery, paceKmh, hoursPerDay) : null;
 
 		return {
 			status,
@@ -192,8 +232,6 @@ export function computePlanResupplyCadence(
 			kmSinceGrocery,
 			nextGrocery,
 			kmToNextGrocery,
-			stagesUntilNextGrocery,
-			walkingDaysToNextGrocery,
 		};
 	});
 

@@ -15,7 +15,12 @@ import {
 import { useTranslations } from 'next-intl';
 import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
 import { exportJournalBundle, exportJournalEntryGpx } from '@/lib/journal-gpx-export';
-import { displayTrailKm, journalEntryBoundsForFit, resolveTrackLink } from '@/lib/journal-track-link';
+import {
+	buildJournalPreview,
+	displayTrailKm,
+	journalEntryBoundsForFit,
+	resolveTrackLink,
+} from '@/lib/journal-track-link';
 import { downloadTextFile, journalToMarkdown, newId, todayIsoDate, type JournalEntry } from '@/lib/user-waypoints';
 import { parseJournalMarkdown, parsedJournalToEntries } from '@/lib/user-waypoint-import';
 import { cn, formatDistance } from '@/lib/utils';
@@ -96,30 +101,7 @@ export function JournalSection({ embedded = false }: JournalSectionProps): React
 	};
 
 	const pushPreview = (state: JournalAttachState, entryId: string | null): void => {
-		let trailStartKm = state.startKm;
-		let trailEndKm = state.endKm;
-		if (attachRuler && rulerKms && !state.trackLink) {
-			trailStartKm = rulerKms.lo;
-			trailEndKm = rulerKms.hi;
-		}
-		if (trailStartKm === undefined || trailEndKm === undefined) {
-			setJournalPreview(null);
-			return;
-		}
-		const track = state.trackLink ? importedTracks.find((tr) => tr.id === state.trackLink!.trackId) : null;
-		setJournalPreview({
-			entryId,
-			trailStartKm,
-			trailEndKm,
-			...(state.trackLink && track
-				? {
-						trackId: state.trackLink.trackId,
-						startIdx: state.trackLink.startIdx,
-						endIdx: state.trackLink.endIdx,
-						trackColor: track.color,
-					}
-				: {}),
-		});
+		setJournalPreview(buildJournalPreview(state, attachRuler, rulerKms, importedTracks, entryId));
 	};
 
 	const handleAttachChange = (next: JournalAttachState): void => {
