@@ -60,13 +60,14 @@ Interactive web map for the **Croatian Long Distance Trail (CLDT)** - a 2,200+ k
 - **Sunset/sunrise markers** - Projects where you will be on the trail at sunset and sunrise based on your current pace and direction; toggleable amber/yellow disc markers on the polyline
 - **Multi-day stage planner** - Split any trail range into daily stages by distance (km or miles per day) or fixed stage count; optional ETA-balanced splitting and max-hours cap; per-stage stats (distance, elevation gain/loss, ETA); sticky trip summary with food-resupply gaps; accordion stage rows with chips (POI count, water dry stretch, pack weight, grocery resupply, daily weather when a trip start date is set); collapsed rows show up to three chips plus a `+N` overflow badge; expanded row reveals inline detail and a selectable "Places in stage N" list; active stage highlighted on the map; export toolbar with GPX and FIT/Garmin per active stage, all-stages POI GPX, strip-map PDF, iCal (needs start date), and Trip brief
 - **Trip brief export** - One-click printable brief (PDF for printing, DOCX for editing) generated from your stage plan: cover with overview stats and trip-level summary, per-day pages with map snapshot, elevation profile thumbnail, day narrative, places along the way (name + type + trail km + Wikipedia extract for the popular ones), seasonal-status alerts that intersect the day's km range, and an emergency back page with 112 + HGSS guidance. Localized to en / hr / de / it. Optional AI-written day narratives (guide-style paragraphs generated from the plan's own facts via Claude, online only, plan outline sent to the API); templated narratives remain the default and the automatic fallback
-- **Points of Interest** - Curated dataset of places along or near the trail (towns, settlements, peaks, viewpoints, huts, shelters, food, ATMs, water sources - drinking water taps and springs within 1 km of the route), assembled monthly by a five-pass pipeline: OSM Overpass per type, Croatia boundary filter (point-in-polygon against the bundled MultiPolygon, drops cross-border leaks), Wikidata SPARQL for cities/villages/peaks/huts/viewpoints, Wikimedia Commons MediaWiki API for photo galleries with attribution and license, and Wikipedia REST for short article extracts baked into the dataset. Per-type filter toggles in the Places list panel; tag-chip filter in the list panel; optional include-remote-POIs toggle in the list panel (walking-unreachable with no nearby trail-side bus/train stop - off by default; Pass 6 reachability also rescues some places via public transport escape signals). Popups carry a multi-image photo gallery (tap any thumbnail for a fullscreen lightbox with keyboard navigation and per-image attribution), a Wikipedia summary that opens instantly (baked at enrichment time, no live REST call needed for the popular places), a star in the title row for the active favourites list, a provenance footer ("Source: Wikidata + OpenStreetMap - verified 2026-05-31"), and a "Copy link to this place" deep-link for sharing. The enricher is failure-resilient: a transient Overpass timeout on one POI type carries forward the prior good rows for that type, and the script refuses to write a fresh dataset that's smaller than 60% of the committed one
+- **Points of Interest** - Curated dataset of places along or near the trail (towns, settlements, peaks, viewpoints, huts, shelters, food, ATMs, water sources - drinking water taps and springs within 1 km of the route), assembled monthly by a multi-pass pipeline: OSM Overpass per type, Croatia boundary filter (point-in-polygon against the bundled MultiPolygon, drops cross-border leaks), Wikidata SPARQL for cities/villages/peaks/huts/viewpoints, Wikimedia Commons MediaWiki API for photo galleries with attribution and license, and Wikipedia REST for short article extracts baked into the dataset. Per-type filter toggles in the Places list panel; tag-chip filter in the list panel; optional include-remote-POIs toggle in the list panel (walking-unreachable with no nearby trail-side bus/train stop - off by default; Pass 6 reachability also rescues some places via public transport escape signals). Popups carry a multi-image photo gallery (tap any thumbnail for a fullscreen lightbox with keyboard navigation and per-image attribution), a Wikipedia summary that opens instantly (baked at enrichment time, no live REST call needed for the popular places), a star in the title row for the active favourites list, a provenance footer ("Source: Wikidata + OpenStreetMap - verified 2026-05-31"), and a "Copy link to this place" deep-link for sharing. The enricher is failure-resilient: a transient Overpass timeout on one POI type carries forward the prior good rows for that type, and the script refuses to write a fresh dataset that's smaller than 60% of the committed one
 - **POI list & search** - Dedicated list panel (same width as Progress, Settings, Stage planner, and Share panels) with collapsible section cards for Filters, Sort, Tags, Stars, and Export (open state persisted); sortable by trail km, name, distance from trail, or "Near me" (auto-promoted when GPS is locked); optional grouping by 50 km trail decade with sticky headers ("km 0-50 · 8 places"); keyboard navigation with ArrowUp/Down + Enter, S to toggle selection; search popover with diacritic-folding name match ("cakovec" matches "Čakovec"), proximity ranking when GPS is locked, and jump-to-km when you type a number ("100 km" or "60 mi"); save current type+tag filters as named presets (apply, rename, delete); star places from the list or popup into multiple named lists with an active-list switcher (trip brief "selected only" and share URLs use the active list; opening a share link replaces all lists with the imported stars); per-row selection lets you export hand-picked POIs as a GPX waypoint file for offline use in OSMAnd / Locus / Gaia; the stage planner has its own one-click "POIs as GPX (all stages)" export covering every place along a multi-day plan
 - **Water source intelligence** - Every water POI carries a reliability class derived from OSM ground-truth tags: Reliable (built drinking-water tap, or a spring explicitly confirmed potable), Seasonal (seasonal/intermittent flow - may be dry), Unverified (untagged spring - treat before drinking), or Not drinkable. The class colors the map marker (blue / amber / slate / red) and shows as a badge in the POI popup (with the mapper's last check date when recorded) and in list rows. The multi-day stage planner computes each stage's longest stretch without a usable source and flags it with an amber chip past 15 km and a red one past 25 km. Unnamed taps and springs are kept with generic names (most OSM water is unnamed), so coverage reflects the corridor's real water; the pipeline supports partial refreshes via `POI_TYPES=water npm run enrich-pois`
 - **Offline POI assets** - Pre-cached corridor downloads also fetch POI thumbnails and Wikipedia summaries (via a dedicated `cldt-pois-v1` Cache Storage bucket) so popups stay rich offline; the cache management panel shows how many assets are cached and offers a one-click clear
 - **GPX track import** - Drag-and-drop (or file-picker) import of recorded GPX files, multiple at once; overlays your actual hike as a colored polyline on the trail map; hover any point to see its distance from the official trail; comparison stats panel shows total distance, elapsed time, moving time, average pace, max deviation from the official route, and the share of the track that runs within 25 m of the official route; multiple imports shown in distinct colors; imports persist across sessions (IndexedDB); remove individual tracks from the map and storage; expand a track to see which POIs you passed within 500 m (sorted in walking order with the closest pass distance and cumulative track km). Files up to 50 MB are accepted; points are simplified on import (5 m Douglas-Peucker) and tracks render through a shared canvas renderer, so multi-day recordings stay fast. Each track has a color picker and a show/hide eye toggle - hidden tracks keep their data and stats without rendering cost
 - **Section completion tracking** - Track which parts of the trail you have hiked. Progress is stored as km intervals (persisted locally) and can be marked three ways: automatically from GPS while hiking on-trail (consecutive accurate fixes within 150 m of the route; teleports and bad fixes never count), manually from the current ruler selection or whole A/B/C sections, or by importing an uploaded GPX track's on-trail coverage with one click. Completed stretches draw as a green overlay on top of any trail style; the progress panel (checkmark button) is wider with grouped cards (Your progress, From GPX, waypoints, journal), a sticky animated summary, and collapsible waypoint/journal sections; it shows total km / % done with a per-section breakdown, plus toggles for auto-record and the overlay and a confirm-guarded clear; a "Hiked" line with your personal total also appears in the location tooltip and the distance HUD once progress exists
 - **In-app help** - A ? button in the control rail opens six collapsible topic sections (map basics, elevation chart, hidden gestures, planning tools, offline behaviour, demo hike); basics and demo open by default and section open state persists across sessions. Covers elevation chart interactions, hidden gestures like the SOS long-press and GPX drag-and-drop, the merged share/export panel, and the Tools panel. The SOS button additionally hints "hold to open" when short-tapped, and the imports panel advertises drag-and-drop in its empty state
+- **Demo hike** - A `/demo` route opens the full map with a simulated mid-trail GPS track and sample progress data, so you can try live tracking, the up-next strip, completion overlay, and other GPS-driven features without being on the trail; a banner offers pause / resume / exit. Linked from the in-app help
 - **Dark mode & battery saver** - UI preferences and reduced location updates; optional keep-screen-on while tracking (screen wake lock, battery saver wins)
 - **4 languages** - English (en), Croatian (hr), German (de), Italian (it)
 - **Offline maps** - Pre-cache the full trail corridor for offline use; per-provider caching, staleness detection, auto-sync on reconnect, predictive corridor pre-cache on Wi-Fi when on-trail, optional zoom-15 high-detail ahead pack for the next 50 km (explicit download), and storage quota handling
@@ -87,6 +88,8 @@ Interactive web map for the **Croatian Long Distance Trail (CLDT)** - a 2,200+ k
 | i18n      | next-intl                                               |
 | Charts    | Recharts                                                |
 | Data      | localforage (GPX + tile cache + imported tracks), fetch |
+| Exports   | jsPDF (PDF), docx (DOCX), react-qr-code (share QR)      |
+| Backend   | Netlify Functions + Blobs, web-push (VAPID)             |
 
 ---
 
@@ -138,7 +141,7 @@ Optional overrides (see `src/lib/config.ts`, `src/lib/gpx-cache.ts`):
 - `NEXT_PUBLIC_DEFAULT_SAC_COLOURED` - color trail polyline by SAC hiking-difficulty scale on load (default `false`; requires the same OSM tag dataset)
 - `NEXT_PUBLIC_DEFAULT_DISTANCE_MARKERS` - show zoom-aware distance markers along the trail (default `false`). Levels 100/50/25/10/5/1 reveal progressively as you zoom in; labeled in km or mi depending on `NEXT_PUBLIC_DEFAULT_UNITS`
 - `NEXT_PUBLIC_DEFAULT_POIS_ENABLED` - show the POI map layer on load (default `true`)
-- `NEXT_PUBLIC_DEFAULT_POI_TYPES` - comma-separated list of POI types enabled by default. Default `town,settlement,peak,viewpoint,hut,shelter,restaurant,cafe,food,atm`. Unknown types are silently ignored, so the same env value keeps working as new types are added
+- `NEXT_PUBLIC_DEFAULT_POI_TYPES` - comma-separated list of POI types enabled by default. When unset, defaults to `town,hut,shelter,food,water`. Known types: `town,settlement,peak,viewpoint,hut,shelter,restaurant,cafe,food,atm,water`. Unknown types are silently ignored, so the same env value keeps working as new types are added
 - `NEXT_PUBLIC_DEFAULT_WALKING_PACE_KMH` - walking pace in km/h used for passage-time estimates (default `4`)
 - `NEXT_PUBLIC_DEFAULT_GRADE_ADJUSTED_ETA` - apply Tobler-style grade adjustment to ETA (default `true`)
 - `NEXT_PUBLIC_DEFAULT_SUNSET_PROJECTION` - show sunset projection along the trail on load (default `false`)
@@ -147,14 +150,14 @@ Optional overrides (see `src/lib/config.ts`, `src/lib/gpx-cache.ts`):
 - `NEXT_PUBLIC_DEFAULT_SEASONAL_STATUS_ENABLED` - show seasonal-status overlay on load. When unset, defaults to on during the winter window (Nov 1-May 31) and off otherwise; setting to `true` or `false` overrides the auto-default
 - `NEXT_PUBLIC_DEFAULT_AUTO_SYNC` - auto-sync tile cache in the background by default (default `false`)
 - `NEXT_PUBLIC_DEFAULT_PREDICTIVE_PRECACHE` - predictively pre-cache tiles near the user position by default (default `false`)
-- `NEXT_PUBLIC_DEFAULT_LOCALE` - `en` or `hr`
+- `NEXT_PUBLIC_DEFAULT_LOCALE` - `en`, `hr`, `de`, or `it`
 - `NEXT_PUBLIC_DEFAULT_MAP_CENTER` - `lat,lng` (e.g. `44.4268,16.438`)
 - `NEXT_PUBLIC_DEFAULT_MAP_ZOOM` - initial zoom level
 - `NEXT_PUBLIC_TILE_CACHE_TTL_DAYS` - days after which offline tile cache is considered stale (default `30`)
 - `NEXT_PUBLIC_NOTICES_URL` - URL for remote trail-condition notices JSON; falls back to bundled `/notices.json` on network error
 - `NEXT_PUBLIC_SEASONAL_STATUS_URL` - URL for remote seasonal trail status JSON; falls back to bundled `/seasonal-status.json` on network error
 - `NEXT_PUBLIC_TRAIL_OSM_TAGS_URL` - URL for remote OSM tag dataset JSON; falls back to bundled `/trail-osm-tags.json` on network error
-- `NEXT_PUBLIC_POIS_URL` - URL for remote POI dataset JSON; falls back to bundled `/pois.json` on network error. The bundled file currently runs ~1.5 MB uncompressed (~7,700 rows after Phase 4-5 enrichment) and gzips to ~250 KB; Next.js serves static assets gzipped by default, and `next.config.ts` sets `Cache-Control: public, max-age=86400` on the route so returning visitors do not re-download it. The runtime loader rejects payloads above 20,000 rows with a `console.warn` to surface enricher mistakes that would otherwise silently kill the feature.
+- `NEXT_PUBLIC_POIS_URL` - URL for a remote whole-file POI dataset JSON. When set, the loader fetches that single file (with the bundled `/pois.json` as the network-error fallback). When unset (the default), the loader fetches **per-type split files** `/data/pois/<type>.json` on demand - only the currently enabled types - and reads `/data/pois/manifest.json` for per-type counts, falling back to the whole `/pois.json` if the split is unavailable. The split files are derived from `public/pois.json` by `scripts/split-pois.mjs` (npm prebuild). The bundled whole file runs ~1.6 MB uncompressed and gzips to ~250 KB; Next.js serves static assets gzipped, and `next.config.ts` sets `Cache-Control: public, max-age=86400` so returning visitors do not re-download it. The runtime loader rejects payloads above 20,000 rows with a `console.warn` to surface enricher mistakes that would otherwise silently kill the feature.
 
 Script-only:
 
@@ -277,55 +280,51 @@ Dead subscriptions (HTTP 404/410 from the push service) are pruned automatically
 ```
 src/
 ├── app/              # Next.js app router
-│   ├── [locale]/     # Localized routes (en, hr)
+│   ├── [locale]/     # Localized routes (en, hr, de, it)
 │   │   ├── page.tsx  # Map (home)
 │   │   ├── about/    # About page
+│   │   ├── demo/     # Auto-started demo hike (simulated GPS)
 │   │   └── test/     # Store test page
-│   ├── api/          # API routes (GPX proxy, share shortener, weather, narrative)
+│   ├── api/          # API routes (proxy, dhmz-weather, meteoalarm, narrative, reverse-geocode, share)
 │   ├── s/[code]/     # Short share link redirects (/s/{code} → stored map URL)
 │   └── styles/       # CSS (base, theme, map, components)
 ├── components/
-│   ├── map/          # Map, BaseMapSelector, TrailRoute, MapMarkers, controls
-│   ├── layout/       # Header, Footer, Layout
-│   ├── ui/           # Button, Card, Tooltip, etc.
-│   ├── common/       # ErrorBoundary, ServiceWorkerProvider, ThemeProvider
-│   ├── charts/       # ElevationChart
+│   ├── map/          # Map, TrailRoute, MapMarkers, POI/mine/seasonal/imported-track layers, banners, controls
+│   ├── layout/       # Header, Footer, Layout, BackToMapBar
+│   ├── ui/           # Button, Checkbox, Radio, ExternalLink, etc.
+│   ├── common/       # ErrorBoundary, ServiceWorkerProvider, PwaInstallPrompt
+│   ├── charts/       # ElevationChart, ChartTooltipSync
+│   ├── demo/         # DemoSessionController (simulated-GPS demo hike)
 │   └── providers/    # ClientIntlProvider
-├── hooks/            # useMapService, useBlockMapPropagation, useSiteMetadata, usePanelManager, usePoisFetch, usePoiListRows
-├── lib/
-│   ├── store/            # Zustand slices, map-store, stub, types
+├── hooks/            # selected: usePoisFetch, usePoiListRows, useRuler, useElevationChartRulerDrag, useStageForecasts, usePackAdjustedPace, useCompletionAutoTrack, useCompassHeading, useWakeLock, useMineAreasFetch, usePanelManager (see src/hooks for all)
+├── lib/                  # selected modules; see src/lib for the full set (~74 files)
+│   ├── store/            # Zustand slices, map-store, trail-slice, stub, types
 │   ├── services/         # LocationService, MapService, base-map-provider
 │   ├── config.ts         # App defaults (env overrides)
-│   ├── date-format.ts    # ISO date and "generated at" formatting helpers shared by exports
+│   ├── api-defense.ts    # Per-IP rate limiting + upstream size caps for the server routes
 │   ├── distance-utils.ts # ETA, grade-adjusted pace, nearest-point search, ruler formatting
-│   ├── export-utils.ts   # PNG/PDF export: CORS detection, bounds fitting, strip-map PDF generation
-│   ├── gpx-cache.ts      # GPX fetch + localforage cache
-│   ├── gpx-export.ts     # GPX XML builder and segment extractor for file downloads
-│   ├── gpx-parser.ts     # Shared GPX XML parser; returns all tracks with timestamps and elevation
-│   ├── imported-tracks.ts # Imported track storage (localforage), deduplication, and comparison stats
-│   ├── map-events.ts     # Custom DOM event helpers (ruler-from-chart bridge)
-│   ├── map.ts            # Trail metadata calculation (distance, elevation)
-│   ├── metadata.ts       # Site metadata and Open Graph config
-│   ├── notices.ts        # Trail condition notice loader and types
-│   ├── poi-prefetch.ts   # Cache Storage prefetch of POI thumbnails + Wikipedia summaries; corridor-slice POI selection (used by predictive precache via the store)
-│   ├── poi-proximity.ts  # POI-to-track proximity helpers (haversine, nearest-pass detection)
-│   ├── poi-types.ts      # Shared POI domain types and type-group definitions
-│   ├── pois.ts           # POI dataset loader (with size cap), name-search, tag/type predicates, display-name helpers
-│   ├── ruler-from-chart.ts # Custom event types for chart→ruler integration
-│   ├── stage-planner.ts  # Stage splitting (by distance / ETA) and per-stage stats
-│   ├── tile-cache.ts     # Tile pre-caching, corridor generation, metadata, storage utils (POI prefetch is orchestrated by the store, not by this module)
-│   ├── trail-sections.ts # Trail section colour and label definitions
-│   ├── trip-brief.ts     # Trip-brief assembly from a stage plan (overview, per-day, POI selection, alerts)
-│   ├── trip-brief-i18n.ts # Shared localisation table for PDF + DOCX trip-brief generators
-│   ├── trip-brief-pdf.ts # PDF trip-brief generator (jspdf, lazy-imported)
-│   ├── trip-brief-docx.ts # DOCX trip-brief generator (docx, lazy-imported)
-│   ├── types.ts          # Shared TypeScript types (UnitSystem, etc.)
-│   ├── share-url-constants.ts   # Share query param keys (encode, parse, shortener validation)
-│   ├── share-shortener-server.ts # Blobs storage, validation, TTL (server-only)
-│   ├── share-shortener-client.ts # Client fetch with long-URL fallback
-│   ├── weather.ts        # Weather fetch, icon mapping, unit converters
-│   ├── wikipedia.ts      # Wikipedia REST summary fetch with per-session in-memory cache
+│   ├── spatial-grid.ts   # Uniform-grid nearest-point lookups (GPS fixes, track coverage)
+│   ├── trail-compute.ts / trail-compute-client.ts # Trail enhancement, offloaded to a Web Worker
+│   ├── gpx-parser.ts / gpx-cache.ts / gpx-export.ts # GPX parse, fetch+cache, build/download (shared downloadBlob)
+│   ├── imported-tracks.ts / import-coverage-report.ts # Imported-track storage + coverage CSV/PDF report
+│   ├── pois.ts / poi-types.ts / poi-prefetch.ts / poi-proximity.ts / poi-ahead-corridor.ts / poi-popup-builders.ts # POI dataset (per-type split loader), prefetch, proximity, corridor
+│   ├── water-intelligence.ts # Water-source reliability classification
+│   ├── user-waypoints.ts / user-waypoint-import.ts / waypoint-categories.ts # Custom waypoints + journal model, import
+│   ├── journal-track-link.ts / journal-gpx-export.ts # Journal-to-track links + journal GPX/bundle export
+│   ├── completion.ts     # Section completion intervals
+│   ├── stage-planner.ts / pack-weight.ts / pack-csv.ts / resupply-cadence.ts # Stage planning, pack weight, resupply cadence
+│   ├── stage-ical-export.ts / fit-export.ts # iCalendar + Garmin FIT course export
+│   ├── trip-brief.ts / trip-brief-{pdf,docx,html,ai,i18n}.ts / elevation-thumbnail.ts # Trip-brief assembly, exports, AI narratives
+│   ├── surface-section-stats.ts / trail-osm-tags.ts # Surface/SAC mix per section, OSM tag dataset
+│   ├── off-route-alert.ts # Off-route state machine + thresholds
+│   ├── mine-areas.ts     # Mine-suspected polygon model + proximity
+│   ├── reverse-geocode-server.ts / reverse-geocode-client.ts # SOS reverse geocoding (Nominatim proxy)
+│   ├── share-url-constants.ts / share-trip-state.ts / share-shortener-{server,client}.ts / share-link-copy.ts # Share URL encode, trip-state, shortener
+│   ├── push-alerts.ts / pwa-install.ts # Web-push subscription + PWA install guardrails
+│   ├── tile-cache.ts     # Tile pre-caching, corridor generation, metadata, storage utils
+│   ├── notices.ts / metadata.ts / map.ts / map-events.ts / ruler-from-chart.ts / date-format.ts / export-utils.ts / trail-sections.ts / weather.ts / wikipedia.ts / types.ts
 │   └── utils.ts          # Formatting, URL parsing, boundary check, unit conversion, share URL builders
+├── workers/          # trail-compute.worker.ts (off-main-thread trail enhancement)
 ├── i18n/             # next-intl routing and request config
 ├── types/            # TypeScript definitions
 └── messages/         # en.json, hr.json, de.json, it.json translations
