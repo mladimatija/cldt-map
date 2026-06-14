@@ -1,5 +1,5 @@
 {
-	"lastUpdated": "2026-06-11",
+	"lastUpdated": "2026-06-14",
 	"pois": [
 		{
 			"id": "town-ilok-470922368",
@@ -13,7 +13,28 @@
 			"population": 3842,
 			"url": "https://www.ilok.hr/",
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 14,
+			"isReachable": true,
+			"nearestPublicTransportM": 913,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14",
+			"resupply": {
+				"updated": "2026-06-14",
+				"places": [
+					{ "kind": "grocery", "name": "Ivana" },
+					{ "kind": "grocery", "name": "Konzum" },
+					{ "kind": "grocery", "name": "Plus Market" },
+					{ "kind": "bakery", "name": "Klas" },
+					{ "kind": "bakery", "name": "Laura" },
+					{ "kind": "pharmacy", "name": "Ljekarna" },
+					{ "kind": "atm", "name": "PBZ" },
+					{ "kind": "atm", "openingHours": "24/7" },
+					{ "kind": "post", "name": "32236 Ilok", "openingHours": "Mo-Fr 09:00-17:30" },
+					{ "kind": "bus" },
+					{ "kind": "bus" },
+					{ "kind": "fuel" }
+				]
+			}
 		},
 		{
 			"id": "town-vukovar-343592046",
@@ -29,6 +50,10 @@
 			"source": "wikidata",
 			"image": "http://commons.wikimedia.org/wiki/Special:FilePath/Franjo%20Tu%C4%91man%20Square%2C%20Vukovar.JPG",
 			"wikipedia": "https://hr.wikipedia.org/wiki/Vukovar",
+			"nearestHighwayM": 0,
+			"isReachable": true,
+			"nearestPublicTransportM": 98,
+			"isReachableViaPublicTransport": true,
 			"images": [
 				{
 					"url": "https://upload.wikimedia.org/wikipedia/commons/9/94/Franjo_Tu%C4%91man_Square%2C_Vukovar.JPG",
@@ -61,7 +86,24 @@
 			],
 			"summary_hr": "Vukovar je grad u Hrvatskoj, smješten na istoku Slavonije uz Dunav. Najveća je hrvatska riječna luka na Dunavu u Srijemu. Vukovar je upravno, obrazovno, gospodarsko i kulturno središte Vukovarsko-srijemske županije, a nakon Vinkovaca i drugi najveći grad te županije po broju stanovnika.",
 			"summary_en": "Vukovar is a city in Croatia, in the eastern regions of Syrmia and Slavonia. It contains Croatia's largest river port, located at the confluence of the Vuka and the Danube. Vukovar is the seat of Vukovar-Syrmia County and the second-largest city in the county after Vinkovci.",
-			"lastVerified": "2026-06-07"
+			"lastVerified": "2026-06-14",
+			"resupply": {
+				"updated": "2026-06-14",
+				"places": [
+					{ "kind": "grocery", "name": "GRAHOVAC d.o.o." },
+					{ "kind": "grocery", "name": "EuroSpin" },
+					{ "kind": "grocery", "name": "AB" },
+					{ "kind": "grocery", "name": "Boso" },
+					{ "kind": "bakery", "name": "Mlinar" },
+					{ "kind": "bakery" },
+					{ "kind": "bakery", "name": "Pekarnica Luka" },
+					{ "kind": "bakery", "name": "Dora" },
+					{ "kind": "bakery" },
+					{ "kind": "bakery", "name": "Pekara Dora", "openingHours": "07:00-21:00" },
+					{ "kind": "bakery" },
+					{ "kind": "pharmacy", "name": "Joukhadar" }
+				]
+			}
 		},
 		{
 			"id": "town-osijek-253924853",
@@ -77,6 +119,10 @@
 			"source": "wikidata",
 			"image": "http://commons.wikimedia.org/wiki/Special:FilePath/Osijek%20panorama%20Gornji%20grad.jpg",
 			"wikipedia": "https://hr.wikipedia.org/wiki/Osijek",
+			"nearestHighwayM": 1,
+			"isReachable": true,
+			"nearestPublicTransportM": 77,
+			"isReachableViaPublicTransport": true,
 			"images": [
 				{
 					"url": "https://upload.wikimedia.org/wikipedia/commons/9/90/Osijek_panorama_Gornji_grad.jpg",
@@ -109,7 +155,24 @@
 			],
 			"summary_hr": "Osijek je grad u istočnoj Hrvatskoj. Smješten je u ravnici na desnoj obali rijeke Drave između 16. i 24. kilometra od ušća u Dunav.",
 			"summary_en": "Osijek is the largest city and the economic and cultural hub of the eastern Croatian region of Slavonia, as well as the administrative seat of Osijek-Baranja County. It is the fourth-largest city in Croatia, with a population of 96,313 recorded in the 2021 census.",
-			"lastVerified": "2026-06-07"
+			"lastVerified": "2026-06-14",
+			"resupply": {
+				"updated": "2026-06-14",
+				"places": [
+					{ "kind": "grocery", "name": "Vindija" },
+					{ "kind": "grocery", "name": "Konzum", "openingHours": "Mo-Sa 07:00-21:00; Su 08:00-20:00" },
+					{ "kind": "grocery", "name": "Lore d.o.o.", "openingHours": "Mo-Sa 07:30-21:00; Su 08:00-21:00" },
+					{ "kind": "grocery" },
+					{ "kind": "grocery", "name": "NTL" },
+					{ "kind": "grocery", "name": "Konzum" },
+					{ "kind": "grocery", "name": "Lore d.o.o." },
+					{ "kind": "grocery", "name": "Konzum" },
+					{ "kind": "grocery", "name": "Studenac" },
+					{ "kind": "grocery", "name": "BOSO" },
+					{ "kind": "grocery", "name": "Studenac" },
+					{ "kind": "grocery", "name": "Studenac" }
+				]
+			}
 		},
 		{
 			"id": "town-beli-manastir-419259175",
@@ -123,7 +186,32 @@
 			"population": 6327,
 			"url": "https://www.beli-manastir.hr/",
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 31,
+			"isReachable": true,
+			"nearestPublicTransportM": 470,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14",
+			"resupply": {
+				"updated": "2026-06-14",
+				"places": [
+					{ "kind": "grocery", "name": "Konikom" },
+					{ "kind": "grocery", "name": "Biljemerkant" },
+					{ "kind": "grocery", "name": "Lidl", "openingHours": "Mo-Sa 08:00-21:00" },
+					{ "kind": "grocery", "name": "Konzum", "openingHours": "Mo-Sa 07:00-21:00; Su 08:00-13:00" },
+					{ "kind": "grocery", "name": "Biljemerkant" },
+					{ "kind": "grocery", "name": "NTL - Narodni trgovački lanac" },
+					{ "kind": "grocery", "name": "Studenac", "openingHours": "Tu-Sa 07:00-21:00" },
+					{ "kind": "bakery" },
+					{ "kind": "bakery", "name": "Pekarna Nova Europa" },
+					{ "kind": "bakery", "name": "Pekarna Baranja" },
+					{ "kind": "bakery", "name": "Pekarna i Pizzeria \"Nova Europa\"" },
+					{
+						"kind": "pharmacy",
+						"name": "Ljekarna Tripolski Beli Manastir",
+						"openingHours": "Mo-Fr 07:00-21:00; Sa 08:00-15:00; Su 08:00-12:00"
+					}
+				]
+			}
 		},
 		{
 			"id": "town-belisce-311142607",
@@ -137,7 +225,32 @@
 			"population": 5354,
 			"url": "https://belisce.hr/",
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 47,
+			"isReachable": true,
+			"nearestPublicTransportM": 526,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14",
+			"resupply": {
+				"updated": "2026-06-14",
+				"places": [
+					{ "kind": "grocery", "name": "Trgovački obrt Žužić", "openingHours": "Mo-Sa 06:40-20:00, Su 08:00-12:00" },
+					{ "kind": "grocery", "name": "Konzum", "openingHours": "Mo-Sa 07:00-20:00; Su 08:00-13:00" },
+					{ "kind": "grocery", "name": "NTL" },
+					{ "kind": "bakery" },
+					{ "kind": "bakery", "name": "Slavonija" },
+					{ "kind": "pharmacy", "name": "Ljekarne Popović" },
+					{ "kind": "pharmacy", "name": "Ljekarne Popović" },
+					{
+						"kind": "pharmacy",
+						"name": "Ljekarna Ranogajec",
+						"openingHours": "Mo-Th 08:00-15:30; Fr 08:00-14:00; Sa 08:00-12:00"
+					},
+					{ "kind": "atm", "name": "Hrvatska poštanska banka" },
+					{ "kind": "atm" },
+					{ "kind": "atm", "name": "Privredna banka Zagreb" },
+					{ "kind": "atm", "name": "Slatinska banka" }
+				]
+			}
 		},
 		{
 			"id": "town-valpovo-311142091",
@@ -151,7 +264,28 @@
 			"population": 6332,
 			"url": "https://valpovo.hr/",
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 29,
+			"isReachable": true,
+			"nearestPublicTransportM": 671,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14",
+			"resupply": {
+				"updated": "2026-06-14",
+				"places": [
+					{ "kind": "grocery", "name": "Konzum" },
+					{ "kind": "grocery", "name": "Biljemerkant" },
+					{ "kind": "grocery", "name": "Lidl", "openingHours": "Mo-Sa 08:00-21:00" },
+					{ "kind": "grocery", "name": "Vinkoprom", "openingHours": "Mo-Fr 07:00-20:00; Sa 07:00-19:00" },
+					{ "kind": "grocery", "name": "Plodine", "openingHours": "Mo-Su 07:00-21:00" },
+					{ "kind": "bakery", "name": "Mlinar" },
+					{ "kind": "bakery", "name": "Čičak" },
+					{ "kind": "bakery", "name": "Val-Pek", "openingHours": "Mo-Sa 06:00-20:00, Su 08:00-12:00" },
+					{ "kind": "pharmacy", "name": "Ljekarna Valpovo", "openingHours": "Mo-Fr 07:00-20:00, Sa 08:00-13:00" },
+					{ "kind": "pharmacy", "name": "dm" },
+					{ "kind": "pharmacy", "name": "Ljekarna Kalenić" },
+					{ "kind": "atm", "name": "Raiffeisen" }
+				]
+			}
 		},
 		{
 			"id": "town-nasice-321587549",
@@ -165,7 +299,28 @@
 			"population": 7307,
 			"url": "https://nasice.hr/",
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 5,
+			"isReachable": true,
+			"nearestPublicTransportM": 556,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14",
+			"resupply": {
+				"updated": "2026-06-14",
+				"places": [
+					{ "kind": "grocery", "name": "Čimen" },
+					{ "kind": "grocery", "name": "Perutnina Ptuj" },
+					{ "kind": "grocery", "name": "Konzum", "openingHours": "Mo-Sa 07:00-21:00; Su 08:00-13:00" },
+					{ "kind": "grocery", "name": "Plodine", "openingHours": "Mo-Su 07:00-21:00" },
+					{ "kind": "grocery", "name": "Lidl", "openingHours": "Mo-Sa 08:00-21:00; Su 08:00-14:00" },
+					{ "kind": "grocery", "name": "Spar" },
+					{ "kind": "bakery", "name": "Pekara Urbarija" },
+					{ "kind": "bakery", "name": "Pekara Victoria" },
+					{ "kind": "pharmacy", "name": "Ljekarna Benić - Zorić" },
+					{ "kind": "pharmacy", "name": "Ljekarna Sokač-Osmak" },
+					{ "kind": "atm", "name": "HYPO Alpe Adria banka" },
+					{ "kind": "atm", "name": "Raiffeisen banka" }
+				]
+			}
 		},
 		{
 			"id": "town-koprivnica-418152207",
@@ -179,7 +334,28 @@
 			"population": 22262,
 			"url": "https://koprivnica.hr/",
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 9,
+			"isReachable": true,
+			"nearestPublicTransportM": 319,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14",
+			"resupply": {
+				"updated": "2026-06-14",
+				"places": [
+					{ "kind": "grocery", "name": "NTL minimarket", "openingHours": "Mo-Sa 06:00-20:00" },
+					{ "kind": "grocery", "name": "Ofertissima" },
+					{ "kind": "grocery", "name": "Konzum" },
+					{ "kind": "grocery", "name": "ROBIN" },
+					{ "kind": "grocery", "name": "Stridon" },
+					{ "kind": "grocery", "name": "ROBIN", "openingHours": "Mo-Sa 06:00-21:00" },
+					{ "kind": "grocery" },
+					{ "kind": "grocery", "name": "Lidl", "openingHours": "Mo-Sa 08:00-21:00" },
+					{ "kind": "grocery", "name": "Spar" },
+					{ "kind": "grocery", "name": "Kaufland" },
+					{ "kind": "grocery", "name": "EuroSpin" },
+					{ "kind": "grocery", "name": "Konzum" }
+				]
+			}
 		},
 		{
 			"id": "town-ludbreg-1394661865",
@@ -193,7 +369,28 @@
 			"population": 3464,
 			"url": "https://ludbreg.hr/",
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 11,
+			"isReachable": true,
+			"nearestPublicTransportM": 453,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14",
+			"resupply": {
+				"updated": "2026-06-14",
+				"places": [
+					{ "kind": "grocery", "name": "Kitro", "openingHours": "Mo-Sa 07:00-20:00; Su,PH 07:00-12:00" },
+					{ "kind": "grocery", "name": "METSS", "openingHours": "Mo-Sa 07:00-19:00;Su,PH 07:00-11:00" },
+					{ "kind": "grocery", "name": "METSS", "openingHours": "Mo-Sa 07:00-19:00;Su,PH off" },
+					{ "kind": "grocery", "name": "Konzum", "openingHours": "Mo-Sa 07:00-20:00; Su 07:00-13:00" },
+					{ "kind": "grocery", "name": "EuroSpin" },
+					{ "kind": "grocery", "name": "Spar", "openingHours": "Mo-Sa 07:00-21:00; Su,PH 07:00-15:00" },
+					{ "kind": "grocery", "name": "Plodine", "openingHours": "Mo-Su 07:00-21:00" },
+					{ "kind": "grocery", "name": "Lidl", "openingHours": "Mo-Sa 08:00-21:00" },
+					{ "kind": "bakery", "name": "Pekara Štef" },
+					{ "kind": "bakery", "name": "Pekarna Centar" },
+					{ "kind": "pharmacy", "name": "Ljekarna Vesna Tršinski" },
+					{ "kind": "pharmacy" }
+				]
+			}
 		},
 		{
 			"id": "town-prelog-457271122",
@@ -207,7 +404,28 @@
 			"population": 4042,
 			"url": "https://www.prelog.hr/",
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 7,
+			"isReachable": true,
+			"nearestPublicTransportM": 106,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14",
+			"resupply": {
+				"updated": "2026-06-14",
+				"places": [
+					{ "kind": "grocery" },
+					{ "kind": "grocery", "name": "METSS", "openingHours": "Mo-Fr 07:00-14:00; Sa 07:00-12:00" },
+					{ "kind": "grocery", "name": "METSS", "openingHours": "Mo-Sa 07:00-20:00; Su 07:00-14:00" },
+					{ "kind": "grocery", "name": "METSS", "openingHours": "Mo-Sa 06:30-20:00; Su 07:00-11:00" },
+					{ "kind": "grocery", "name": "KTC", "openingHours": "Mo-Sa 07:00-21:00; PH,Su off" },
+					{ "kind": "grocery", "name": "Konzum", "openingHours": "Mo-Sa 07:00-20:00; Su 07:00-12:00" },
+					{ "kind": "grocery", "name": "Lidl" },
+					{ "kind": "grocery", "name": "Konzum" },
+					{ "kind": "grocery", "name": "METSS", "openingHours": "Mo-Sa 07:00-20:00; Su 07:00-11:00" },
+					{ "kind": "grocery", "name": "Plodine", "openingHours": "Mo-Su 07:00-21:00" },
+					{ "kind": "pharmacy", "name": "Bipa", "openingHours": "Mo-Sa 08:00-21:00; Su off" },
+					{ "kind": "pharmacy", "name": "Bipa" }
+				]
+			}
 		},
 		{
 			"id": "town-mursko-sredisce-1207922933",
@@ -221,7 +439,28 @@
 			"population": 3321,
 			"url": "https://mursko-sredisce.hr/",
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 13,
+			"isReachable": true,
+			"nearestPublicTransportM": 125,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14",
+			"resupply": {
+				"updated": "2026-06-14",
+				"places": [
+					{ "kind": "grocery", "name": "Trgovina Krk", "openingHours": "Mo-Sa 07:00-19:00; Su off" },
+					{ "kind": "grocery", "name": "KTC", "openingHours": "Mo-Sa 07:00-21:00; Su 07:00-14:00" },
+					{ "kind": "grocery", "name": "Market", "openingHours": "Mo-Sa 07:00-19:30; Su 07:00-12:00" },
+					{ "kind": "grocery", "name": "Perutnina Ptuj" },
+					{ "kind": "grocery", "name": "Konzum", "openingHours": "Mo-Sa 07:00-21:00; Su 08:00-13:00" },
+					{ "kind": "grocery", "name": "NTL", "openingHours": "Mo-Sa 07:00-20:00; Su 07:00-12:00" },
+					{ "kind": "bakery", "name": "Pekara Čakovec", "openingHours": "Mo-Fr 07:00-14:00; Sa 07:00-12:00" },
+					{ "kind": "bakery", "name": "Panis", "openingHours": "Mo-Fr 06:00-18:00" },
+					{ "kind": "pharmacy", "name": "Ljekarna Mursko Središče", "openingHours": "Mo-Fr 07:00-20:00" },
+					{ "kind": "pharmacy", "name": "Poljoprivredna Ljekarna" },
+					{ "kind": "pharmacy", "name": "Ljekarna VašeZdravlje", "openingHours": "Mo-Fr 07:00-20:00; Sa 08:00-13:00" },
+					{ "kind": "atm", "name": "Privredna banka Zagreb", "openingHours": "Mo,We,Fr 08:00-15:00; Tu,Th 12:00-19:00" }
+				]
+			}
 		},
 		{
 			"id": "town-varazdin-343645893",
@@ -235,7 +474,28 @@
 			"population": 36187,
 			"url": "https://www.varazdin.hr/",
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 7,
+			"isReachable": true,
+			"nearestPublicTransportM": 346,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14",
+			"resupply": {
+				"updated": "2026-06-14",
+				"places": [
+					{ "kind": "grocery", "name": "Konzum" },
+					{ "kind": "grocery", "name": "KITRO" },
+					{ "kind": "grocery", "name": "INTERLAND ribički dućan" },
+					{ "kind": "grocery", "name": "NTL", "openingHours": "Mo-Sa 06:00-22:00; Su 07:00-20:00; PH 07:00-20:00" },
+					{ "kind": "grocery", "name": "Branka" },
+					{ "kind": "grocery" },
+					{ "kind": "grocery", "name": "Konzum" },
+					{ "kind": "grocery", "name": "Vindija - Trgovina" },
+					{ "kind": "grocery", "name": "Spar", "openingHours": "Mo-Sa 07:00-21:00; Su 08:00-14:00" },
+					{ "kind": "grocery", "name": "Konzum", "openingHours": "Mo-Sa 07:00-20:00; Su off" },
+					{ "kind": "grocery", "name": "Konzum", "openingHours": "Mo-Sa 07:00-21:00; Su 08:00-15:00" },
+					{ "kind": "grocery", "name": "Konzum", "openingHours": "Mo-Sa 07:00-21:00; Su,PH 07:00-14:00" }
+				]
+			}
 		},
 		{
 			"id": "town-krapina-5456488299",
@@ -249,7 +509,28 @@
 			"population": 4201,
 			"url": "https://www.krapina.hr/",
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 4,
+			"isReachable": true,
+			"nearestPublicTransportM": 382,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14",
+			"resupply": {
+				"updated": "2026-06-14",
+				"places": [
+					{ "kind": "grocery", "name": "NTL" },
+					{ "kind": "grocery", "name": "Konzum" },
+					{ "kind": "grocery", "name": "Konzum" },
+					{ "kind": "grocery", "name": "Trgostil" },
+					{ "kind": "grocery", "name": "Strahinjčica" },
+					{ "kind": "grocery", "name": "Lidl", "openingHours": "Mo-Sa 08:00-21:00" },
+					{ "kind": "grocery", "name": "NTL" },
+					{ "kind": "bakery", "name": "Mlinar" },
+					{ "kind": "pharmacy", "name": "Bipa", "openingHours": "Mo-Sa 08:00-21:00, Su Closed" },
+					{ "kind": "pharmacy", "name": "dm" },
+					{ "kind": "atm", "name": "Zagrebačka banka" },
+					{ "kind": "atm", "name": "Samoborska banka" }
+				]
+			}
 		},
 		{
 			"id": "town-lepoglava-556766636",
@@ -263,7 +544,28 @@
 			"population": 3400,
 			"url": "https://www.lepoglava.hr/",
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 14,
+			"isReachable": true,
+			"nearestPublicTransportM": 507,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14",
+			"resupply": {
+				"updated": "2026-06-14",
+				"places": [
+					{ "kind": "grocery", "name": "Konzum" },
+					{ "kind": "grocery", "name": "Plodine", "openingHours": "Mo-Su 07:00-21:00" },
+					{ "kind": "grocery", "name": "Plodine" },
+					{ "kind": "bakery", "name": "Pekara \"Klasje\"" },
+					{ "kind": "pharmacy", "name": "Ljekarna" },
+					{ "kind": "atm", "name": "\"Zagrebačka banka\" - podružnica Lepoglava" },
+					{ "kind": "post", "name": "42250 Lepoglava", "openingHours": "Mo-Fr 07:00-19:00, Sa 07:00-13:00" },
+					{ "kind": "bus", "name": "Autobusna stanica" },
+					{ "kind": "bus" },
+					{ "kind": "bus" },
+					{ "kind": "bus" },
+					{ "kind": "fuel", "name": "INA Lepoglava", "openingHours": "Mo-Su 06:00-22:00" }
+				]
+			}
 		},
 		{
 			"id": "town-samobor-2027048676",
@@ -277,7 +579,28 @@
 			"population": 16911,
 			"url": "https://www.samobor.hr/",
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 9,
+			"isReachable": true,
+			"nearestPublicTransportM": 129,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14",
+			"resupply": {
+				"updated": "2026-06-14",
+				"places": [
+					{ "kind": "grocery", "name": "Tommy", "openingHours": "Mo-Sa 07:00-21:00; Su 07:00-14:00" },
+					{ "kind": "grocery", "name": "Prehrana", "openingHours": "Mo-Sa 06:30-20:00; Su 07:00-12:00" },
+					{ "kind": "grocery", "name": "Prehrana", "openingHours": "Mo-Sa 06:00-13:00; Sa 07:00-12:00" },
+					{ "kind": "grocery", "name": "Konzum", "openingHours": "Mo-Sa 08:00-21:00; Su 08:00-14:00" },
+					{ "kind": "grocery", "name": "Fipi Koka" },
+					{ "kind": "grocery", "name": "Prehrana" },
+					{ "kind": "grocery", "name": "Samoborček" },
+					{ "kind": "grocery", "name": "Vindija" },
+					{ "kind": "grocery", "name": "Trgostil P-76" },
+					{ "kind": "grocery", "name": "Trgostil" },
+					{ "kind": "grocery", "name": "Strahinjčica" },
+					{ "kind": "grocery", "name": "Konzum" }
+				]
+			}
 		},
 		{
 			"id": "town-vrbovsko-467096090",
@@ -291,7 +614,19 @@
 			"population": 1257,
 			"url": "https://www.vrbovsko.hr/",
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 4,
+			"isReachable": true,
+			"nearestPublicTransportM": 159,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14",
+			"resupply": {
+				"updated": "2026-06-14",
+				"places": [
+					{ "kind": "grocery", "name": "Konzum" },
+					{ "kind": "bus" },
+					{ "kind": "fuel", "name": "INA Vrbovsko", "openingHours": "Mo-Sa 07:00-19:00; Su 07:00-13:00" }
+				]
+			}
 		},
 		{
 			"id": "town-delnice-556713829",
@@ -305,7 +640,28 @@
 			"population": 3861,
 			"url": "https://delnice.hr/",
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 7,
+			"isReachable": true,
+			"nearestPublicTransportM": 722,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14",
+			"resupply": {
+				"updated": "2026-06-14",
+				"places": [
+					{ "kind": "grocery", "name": "Trgovine Valentin" },
+					{ "kind": "grocery", "name": "Trgovine Valentin" },
+					{ "kind": "grocery", "name": "Pivac" },
+					{ "kind": "grocery", "name": "Valentin" },
+					{ "kind": "grocery", "name": "Lidl" },
+					{ "kind": "grocery", "name": "Konzum" },
+					{ "kind": "bakery", "name": "Mivit pekara" },
+					{ "kind": "bakery", "name": "Arena", "openingHours": "Mo-Sa 05:00-21:00; Su 06:00-14:00" },
+					{ "kind": "bakery", "name": "Fortuna", "openingHours": "Mo-Fr 06:00-19:00; Sa 06:00-18:00; Su 07:00-12:00" },
+					{ "kind": "pharmacy" },
+					{ "kind": "atm" },
+					{ "kind": "atm" }
+				]
+			}
 		},
 		{
 			"id": "town-buzet-255611715",
@@ -319,7 +675,28 @@
 			"population": 2339,
 			"url": "https://www.buzet.hr/",
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 28,
+			"isReachable": true,
+			"nearestPublicTransportM": 560,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14",
+			"resupply": {
+				"updated": "2026-06-14",
+				"places": [
+					{ "kind": "grocery", "name": "Lidl" },
+					{ "kind": "grocery", "name": "Majstorija" },
+					{ "kind": "grocery", "name": "Konzum", "openingHours": "Mo-Sa 07:00-20:00" },
+					{ "kind": "grocery", "name": "Tartufi \"Zigante\"" },
+					{ "kind": "grocery", "name": "Studenac", "openingHours": "Tu-Su 07:00-20:00" },
+					{ "kind": "grocery", "name": "Market Ošo" },
+					{ "kind": "grocery", "name": "Irma" },
+					{ "kind": "bakery", "name": "Arena" },
+					{ "kind": "pharmacy", "name": "dm" },
+					{ "kind": "pharmacy", "name": "dm", "openingHours": "Mo-Fr 08:00-20:00; Sa 08:00-14:00" },
+					{ "kind": "pharmacy" },
+					{ "kind": "atm", "name": "IKB" }
+				]
+			}
 		},
 		{
 			"id": "town-buje-2389876354",
@@ -333,7 +710,28 @@
 			"population": 2087,
 			"url": "https://buje.hr/",
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 5,
+			"isReachable": true,
+			"nearestPublicTransportM": 228,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14",
+			"resupply": {
+				"updated": "2026-06-14",
+				"places": [
+					{ "kind": "grocery", "name": "Konzum" },
+					{ "kind": "grocery", "name": "Konzum" },
+					{ "kind": "grocery", "name": "Spar", "openingHours": "Mo-Sa 07:00-21:00; Su 08:00-21:00" },
+					{ "kind": "grocery", "name": "Plodine", "openingHours": "Mo-Su 07:00-22:00" },
+					{ "kind": "bakery", "openingHours": "Mo-Sa 06:00-21:00; Su 07:00-14:00" },
+					{ "kind": "bakery", "name": "Mlinar", "openingHours": "Mo-Fr 06:30-20:00; Sa 07:00-15:00; Su 07:00-13:00" },
+					{ "kind": "pharmacy" },
+					{ "kind": "atm", "name": "IKB Umag" },
+					{ "kind": "atm" },
+					{ "kind": "atm", "name": "Erste Bank" },
+					{ "kind": "post", "name": "52460 Buje", "openingHours": "Mo-Fr 08:00-18:00, Sa 08:00-12:00" },
+					{ "kind": "bus", "name": "Buje" }
+				]
+			}
 		},
 		{
 			"id": "town-umag-1569820706",
@@ -347,7 +745,28 @@
 			"population": 6751,
 			"url": "https://umag.hr/",
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 21,
+			"isReachable": true,
+			"nearestPublicTransportM": 558,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14",
+			"resupply": {
+				"updated": "2026-06-14",
+				"places": [
+					{ "kind": "grocery", "name": "Butiga" },
+					{ "kind": "grocery", "name": "Konzum" },
+					{ "kind": "grocery", "name": "Konzum", "openingHours": "Mo-Sa 07:00-21:00" },
+					{ "kind": "grocery" },
+					{ "kind": "grocery", "name": "Stanić" },
+					{ "kind": "grocery", "name": "Konzum", "openingHours": "Mo-Sa 07:00-21:00; Su 07:00-21:00" },
+					{ "kind": "grocery" },
+					{ "kind": "grocery", "name": "Plodine", "openingHours": "Mo-Su 07:00-22:00" },
+					{ "kind": "grocery", "name": "Kaufland", "openingHours": "Mo-Sa 07:00-22:00;Su 08:00-21:00" },
+					{ "kind": "grocery", "name": "Spar" },
+					{ "kind": "grocery", "name": "Lidl" },
+					{ "kind": "grocery", "name": "Shell" }
+				]
+			}
 		},
 		{
 			"id": "town-pazin-1837883660",
@@ -361,7 +780,28 @@
 			"population": 3981,
 			"url": "https://www.pazin.hr/",
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 3,
+			"isReachable": true,
+			"nearestPublicTransportM": 764,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14",
+			"resupply": {
+				"updated": "2026-06-14",
+				"places": [
+					{ "kind": "grocery", "name": "Diona" },
+					{ "kind": "grocery", "name": "Diona" },
+					{ "kind": "grocery", "name": "Konzum" },
+					{ "kind": "grocery" },
+					{ "kind": "grocery", "name": "Market" },
+					{ "kind": "grocery", "name": "Studenac", "openingHours": "07:00-14:00" },
+					{ "kind": "grocery", "name": "Diona" },
+					{ "kind": "grocery", "name": "Lidl" },
+					{ "kind": "grocery", "name": "Market Stari Pazin" },
+					{ "kind": "grocery", "name": "EuroSpin" },
+					{ "kind": "bakery", "name": "Arena" },
+					{ "kind": "bakery", "name": "Brionka" }
+				]
+			}
 		},
 		{
 			"id": "town-labin-290854348",
@@ -375,7 +815,28 @@
 			"population": 5806,
 			"url": "http://www.labin.hr/",
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 8,
+			"isReachable": true,
+			"nearestPublicTransportM": 410,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14",
+			"resupply": {
+				"updated": "2026-06-14",
+				"places": [
+					{ "kind": "grocery", "name": "Jedinstvo" },
+					{ "kind": "grocery", "name": "Diskont" },
+					{ "kind": "grocery", "name": "Spar" },
+					{ "kind": "grocery", "name": "Jedinstvo", "openingHours": "Mo-Fr 06:30-13:00;Sa 07:00-13:00" },
+					{ "kind": "grocery", "name": "Studenac market", "openingHours": "Mo-Su 07:00-22:00" },
+					{ "kind": "grocery", "name": "Studenac market" },
+					{ "kind": "grocery" },
+					{ "kind": "grocery", "name": "Jedinstvo mini market" },
+					{ "kind": "grocery", "name": "Lidl" },
+					{ "kind": "grocery", "name": "Opskrbni centar" },
+					{ "kind": "grocery", "name": "Diskont Jedinstvo" },
+					{ "kind": "grocery", "name": "Plodine", "openingHours": "Mo 09:00-22:00; Tu-Su 07:00-22:00" }
+				]
+			}
 		},
 		{
 			"id": "town-opatija-60706665",
@@ -389,7 +850,28 @@
 			"population": 5701,
 			"url": "https://opatija.hr/",
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 4,
+			"isReachable": true,
+			"nearestPublicTransportM": 271,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14",
+			"resupply": {
+				"updated": "2026-06-14",
+				"places": [
+					{ "kind": "grocery", "name": "Konzum", "openingHours": "07:00-22:00" },
+					{ "kind": "grocery", "name": "Konzum", "openingHours": "Mo-Su 08:00-22:00 \"seasonal only\"" },
+					{ "kind": "grocery", "name": "Tommy", "openingHours": "Mo-Su 07:00-21:00" },
+					{ "kind": "grocery", "name": "Studenac", "openingHours": "08:00-22:00" },
+					{ "kind": "grocery", "name": "Spar", "openingHours": "Mo-Su 07:00-21:00" },
+					{ "kind": "bakery", "name": "Mlinar", "openingHours": "Mo-Su 06:30-22:00" },
+					{ "kind": "pharmacy", "name": "Vaše zdravlje" },
+					{ "kind": "pharmacy", "name": "Bipa", "openingHours": "08:00-21:00" },
+					{ "kind": "pharmacy", "name": "Primapharme", "openingHours": "Mo-Fr 07:00-20:00; Sa 08:00-13:00; Su off" },
+					{ "kind": "pharmacy", "name": "Adiva", "openingHours": "Mo-Fr 07:00-21:00;Sa 08:00-18:00;Su 08:00-12:00" },
+					{ "kind": "atm", "name": "Erste" },
+					{ "kind": "atm", "name": "PBZ" }
+				]
+			}
 		},
 		{
 			"id": "town-kastav-1575626358",
@@ -403,7 +885,28 @@
 			"population": 10202,
 			"url": "https://kastav.hr/",
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 10,
+			"isReachable": true,
+			"nearestPublicTransportM": 235,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14",
+			"resupply": {
+				"updated": "2026-06-14",
+				"places": [
+					{ "kind": "grocery", "name": "Stanić" },
+					{ "kind": "grocery", "name": "Vindija", "openingHours": "Mo-Fr 07:00-20:00; Sa 07:00-18:00; Su,PH off" },
+					{ "kind": "grocery", "name": "Butiga Kastav" },
+					{ "kind": "grocery", "name": "Konzum" },
+					{ "kind": "grocery", "name": "Spar", "openingHours": "Mo-Sa 07:00-21:00; Su 08:00-14:00" },
+					{ "kind": "grocery" },
+					{ "kind": "grocery", "name": "Plodine", "openingHours": "Mo-Su 07:00-22:00" },
+					{ "kind": "bakery", "name": "Pekarna Marinići" },
+					{ "kind": "bakery" },
+					{ "kind": "pharmacy", "name": "BIPA" },
+					{ "kind": "pharmacy", "name": "Ljekarna Kastav", "openingHours": "Mo-Fr 07:00-20:00; Sa 07:30-15:00" },
+					{ "kind": "atm" }
+				]
+			}
 		},
 		{
 			"id": "town-trilj-1556178404",
@@ -417,7 +920,28 @@
 			"population": 1906,
 			"url": "https://trilj.hr/",
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 35,
+			"isReachable": true,
+			"nearestPublicTransportM": 193,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14",
+			"resupply": {
+				"updated": "2026-06-14",
+				"places": [
+					{ "kind": "grocery", "name": "Studenac" },
+					{ "kind": "grocery", "name": "Studenac" },
+					{ "kind": "grocery", "name": "Tommy" },
+					{ "kind": "grocery" },
+					{ "kind": "bakery", "name": "Šaribok" },
+					{ "kind": "bakery", "name": "Klas" },
+					{ "kind": "pharmacy" },
+					{ "kind": "pharmacy", "name": "Ljekarna Trilj" },
+					{ "kind": "atm", "name": "OTP banka" },
+					{ "kind": "atm", "name": "Zagrebačka banka" },
+					{ "kind": "atm", "name": "Hrvatska poštanska banka", "openingHours": "Mo-Fr 07:30-14:30; Tu,Th 07:30-17:00" },
+					{ "kind": "atm", "name": "PBZ" }
+				]
+			}
 		},
 		{
 			"id": "town-omis-1587453814",
@@ -431,7 +955,28 @@
 			"population": 5985,
 			"url": "http://www.omis.hr/Default.aspx",
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 6,
+			"isReachable": true,
+			"nearestPublicTransportM": 215,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14",
+			"resupply": {
+				"updated": "2026-06-14",
+				"places": [
+					{ "kind": "grocery", "name": "Studenac" },
+					{ "kind": "grocery", "name": "Pivac" },
+					{ "kind": "grocery", "name": "Tommy", "openingHours": "Mo-We 07:00-21:00" },
+					{ "kind": "grocery", "name": "Studenac" },
+					{ "kind": "grocery", "name": "Studenac" },
+					{ "kind": "grocery", "name": "Studenac" },
+					{ "kind": "grocery" },
+					{ "kind": "grocery", "name": "Konzum", "openingHours": "Mo-Sa 07:00-21:00; Su 08:00-20:00" },
+					{ "kind": "grocery", "name": "Velma doo", "openingHours": "Mo-Sa 06:30-20:00; Su 07:00-12:00" },
+					{ "kind": "grocery", "name": "Nova" },
+					{ "kind": "grocery", "name": "Tommy", "openingHours": "Mo-Sa 07:00-21:00; Su 07:00-20:00" },
+					{ "kind": "grocery", "name": "Studenac Market" }
+				]
+			}
 		},
 		{
 			"id": "town-makarska-73395399",
@@ -445,7 +990,32 @@
 			"population": 12809,
 			"url": "https://makarska.hr/",
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 9,
+			"isReachable": true,
+			"nearestPublicTransportM": 96,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14",
+			"resupply": {
+				"updated": "2026-06-14",
+				"places": [
+					{ "kind": "grocery", "name": "Tommy", "openingHours": "Mo-Sa 07:00-21:00; Su 07:00-20:00" },
+					{ "kind": "grocery", "name": "Konzum", "openingHours": "Mo-Sa 07:00-21:00" },
+					{ "kind": "grocery", "name": "Konzum", "openingHours": "Mo-Sa 07:00-20:00; Su 07:00-12:00" },
+					{ "kind": "grocery", "name": "Studenac", "openingHours": "Mo-Su 07:00-22:00" },
+					{ "kind": "grocery" },
+					{ "kind": "grocery", "name": "Tommy" },
+					{ "kind": "grocery", "name": "Studenac" },
+					{
+						"kind": "grocery",
+						"name": "Ribola Ultra",
+						"openingHours": "Mo-Sa 06:30-21:00; Su 10:00-13:00, 21:00-22:00"
+					},
+					{ "kind": "grocery", "name": "Pivac" },
+					{ "kind": "grocery", "name": "Šimić" },
+					{ "kind": "grocery", "name": "Ribola" },
+					{ "kind": "grocery", "name": "Konzum", "openingHours": "Mo-Sa 07:00-21:00; Su 07:00-20:00" }
+				]
+			}
 		},
 		{
 			"id": "town-ploce-2352460170",
@@ -459,7 +1029,28 @@
 			"population": 4711,
 			"url": "https://ploce.hr/",
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 13,
+			"isReachable": true,
+			"nearestPublicTransportM": 480,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14",
+			"resupply": {
+				"updated": "2026-06-14",
+				"places": [
+					{ "kind": "grocery", "name": "Plus" },
+					{ "kind": "grocery", "name": "Studenac" },
+					{ "kind": "grocery", "name": "Ribola" },
+					{ "kind": "grocery", "name": "Lidl", "openingHours": "Mo-Sa 07:00-22:00, Su 07:00-21:00" },
+					{ "kind": "grocery", "name": "Tommy", "openingHours": "Mo-Sa 06:30-21:00" },
+					{ "kind": "grocery", "name": "Plodine", "openingHours": "Mo-Su 07:00-22:00" },
+					{ "kind": "bakery", "name": "Mario" },
+					{ "kind": "bakery", "name": "Anela" },
+					{ "kind": "bakery", "name": "Adria" },
+					{ "kind": "bakery", "name": "Ploće", "openingHours": "Mo-Fr 05:30-15:00; Sa-Su,PH 05:30-13:00" },
+					{ "kind": "pharmacy" },
+					{ "kind": "pharmacy", "name": "Müller", "openingHours": "Mo-Sa 08:00-21:00; Su 08:00-15:00" }
+				]
+			}
 		},
 		{
 			"id": "town-dubrovnik-1583747666",
@@ -473,7 +1064,28 @@
 			"population": 26922,
 			"url": "https://www.dubrovnik.hr/",
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 9,
+			"isReachable": true,
+			"nearestPublicTransportM": 56,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14",
+			"resupply": {
+				"updated": "2026-06-14",
+				"places": [
+					{ "kind": "grocery", "name": "Studenac" },
+					{ "kind": "grocery", "name": "Studenac" },
+					{ "kind": "grocery", "name": "Maxi Market Semafori" },
+					{ "kind": "grocery", "name": "Studenac" },
+					{ "kind": "grocery", "name": "Studenac", "openingHours": "Mo-Fr 07:00-21:00; Sa-Su 07:00-19:00" },
+					{ "kind": "grocery", "name": "Kolak", "openingHours": "Mo-Sa 00:00-24:00" },
+					{ "kind": "grocery", "name": "Studenac" },
+					{ "kind": "grocery", "name": "Studenac" },
+					{ "kind": "grocery", "name": "Studenac" },
+					{ "kind": "grocery", "name": "Studenac", "openingHours": "Mo-Sa 07:00-22:00" },
+					{ "kind": "grocery", "name": "Tommy", "openingHours": "Mo-Sa 07:00-21:00" },
+					{ "kind": "grocery", "name": "Plus Market" }
+				]
+			}
 		}
 	]
 }

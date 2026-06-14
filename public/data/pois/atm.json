@@ -1,5 +1,5 @@
 {
-	"lastUpdated": "2026-06-11",
+	"lastUpdated": "2026-06-14",
 	"pois": [
 		{
 			"id": "atm-pbz-8356196501",
@@ -11,19 +11,9 @@
 			"trailKm": 0.9,
 			"distanceFromTrailKm": 0.04,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
-		},
-		{
-			"id": "atm-adiko-banka-2926509575",
-			"type": "atm",
-			"name_en": "Adiko banka",
-			"name_hr": "Adiko banka",
-			"lat": 45.35066,
-			"lng": 19.00289,
-			"trailKm": 56.3,
-			"distanceFromTrailKm": 0.13,
-			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 16,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-pbz-4041107259",
@@ -35,7 +25,9 @@
 			"trailKm": 56.3,
 			"distanceFromTrailKm": 0.1,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 19,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-zagrebacka-banka-10898893067",
@@ -47,7 +39,9 @@
 			"trailKm": 56.3,
 			"distanceFromTrailKm": 0.29,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 10,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-zagrebacka-banka-294809475",
@@ -61,7 +55,9 @@
 			"phone": "+385 32 451068",
 			"url": "https://www.zaba.hr/",
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 12,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-hrvatska-postanska-banka-721725958",
@@ -73,7 +69,9 @@
 			"trailKm": 56.4,
 			"distanceFromTrailKm": 0.03,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 22,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-banco-popolare-364496917",
@@ -85,7 +83,9 @@
 			"trailKm": 56.5,
 			"distanceFromTrailKm": 0.1,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 9,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-erste-bank-401697673",
@@ -97,7 +97,9 @@
 			"trailKm": 56.5,
 			"distanceFromTrailKm": 0.07,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 22,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-pbz-bankomat-668640471",
@@ -109,7 +111,9 @@
 			"trailKm": 96.8,
 			"distanceFromTrailKm": 1.62,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 21,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-privredna-banka-zagreb-784135787",
@@ -121,7 +125,9 @@
 			"trailKm": 101.2,
 			"distanceFromTrailKm": 0.46,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 5,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-hpb-358444375",
@@ -133,7 +139,9 @@
 			"trailKm": 101.4,
 			"distanceFromTrailKm": 0.59,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 9,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-addiko-bank-358444376",
@@ -145,7 +153,9 @@
 			"trailKm": 101.4,
 			"distanceFromTrailKm": 0.54,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 18,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-otp-1317289144",
@@ -157,7 +167,9 @@
 			"trailKm": 101.4,
 			"distanceFromTrailKm": 0.57,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 4,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-erste-1325227224",
@@ -169,7 +181,9 @@
 			"trailKm": 101.4,
 			"distanceFromTrailKm": 0.41,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 16,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-hypo-1319870370",
@@ -181,7 +195,9 @@
 			"trailKm": 101.8,
 			"distanceFromTrailKm": 0.13,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 8,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-erste-1091360801",
@@ -193,7 +209,9 @@
 			"trailKm": 102,
 			"distanceFromTrailKm": 1.54,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 17,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-zaba-1091361348",
@@ -205,7 +223,9 @@
 			"trailKm": 102,
 			"distanceFromTrailKm": 1.55,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 20,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-otp-1091361816",
@@ -217,7 +237,9 @@
 			"trailKm": 102,
 			"distanceFromTrailKm": 1.55,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 22,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-pbz-1496377142",
@@ -229,7 +251,9 @@
 			"trailKm": 102.2,
 			"distanceFromTrailKm": 0.32,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 7,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-hypo-alpe-adria-bank-287625298",
@@ -241,7 +265,9 @@
 			"trailKm": 102.8,
 			"distanceFromTrailKm": 1.7,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 7,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-privredna-banka-zagreb-287625299",
@@ -253,7 +279,9 @@
 			"trailKm": 102.8,
 			"distanceFromTrailKm": 1.6,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 8,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-zagrebacka-banka-356919117",
@@ -265,7 +293,9 @@
 			"trailKm": 102.8,
 			"distanceFromTrailKm": 1.7,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 18,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-otp-bank-356919119",
@@ -277,7 +307,9 @@
 			"trailKm": 102.8,
 			"distanceFromTrailKm": 1.74,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 8,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-banka-kovanica-356919120",
@@ -289,7 +321,9 @@
 			"trailKm": 102.8,
 			"distanceFromTrailKm": 1.71,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 17,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-kreditna-banka-356919121",
@@ -301,7 +335,9 @@
 			"trailKm": 102.8,
 			"distanceFromTrailKm": 1.72,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 17,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-raiffaisen-356919123",
@@ -313,7 +349,9 @@
 			"trailKm": 102.8,
 			"distanceFromTrailKm": 1.73,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 15,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-banco-popolare-528993666",
@@ -325,7 +363,9 @@
 			"trailKm": 102.8,
 			"distanceFromTrailKm": 1.49,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 8,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-intesa-sanpaolo-587652122",
@@ -337,7 +377,9 @@
 			"trailKm": 102.8,
 			"distanceFromTrailKm": 1.32,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 21,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-kent-bank-602045230",
@@ -349,7 +391,9 @@
 			"trailKm": 102.8,
 			"distanceFromTrailKm": 1.43,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 21,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-erste-bank-609081110",
@@ -361,7 +405,9 @@
 			"trailKm": 102.8,
 			"distanceFromTrailKm": 1.6,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 7,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-erste-bank-609081302",
@@ -373,7 +419,9 @@
 			"trailKm": 102.8,
 			"distanceFromTrailKm": 1.6,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 7,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-addiko-bank-808136289",
@@ -387,7 +435,9 @@
 			"phone": "(072)101 102",
 			"url": "https://www.addiko.hr/",
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 7,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-zagrebacka-banka-809690255",
@@ -399,7 +449,9 @@
 			"trailKm": 102.8,
 			"distanceFromTrailKm": 1.84,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 11,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-raiffeisen-bank-820608207",
@@ -411,7 +463,9 @@
 			"trailKm": 102.8,
 			"distanceFromTrailKm": 1.59,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 17,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-zagrebacka-banka-833076555",
@@ -423,7 +477,9 @@
 			"trailKm": 102.8,
 			"distanceFromTrailKm": 1.92,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 11,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-otp-banka-836348345",
@@ -435,7 +491,9 @@
 			"trailKm": 102.8,
 			"distanceFromTrailKm": 1.39,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 19,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-hrvatska-postanska-banka-894106796",
@@ -447,7 +505,9 @@
 			"trailKm": 102.8,
 			"distanceFromTrailKm": 1.88,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 15,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-croatia-banka-894111957",
@@ -459,7 +519,9 @@
 			"trailKm": 102.8,
 			"distanceFromTrailKm": 1.6,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 10,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-partner-banka-897345564",
@@ -471,7 +533,9 @@
 			"trailKm": 102.8,
 			"distanceFromTrailKm": 1.86,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 5,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-hrvatska-postanska-banka-906798386",
@@ -483,7 +547,9 @@
 			"trailKm": 102.8,
 			"distanceFromTrailKm": 1.14,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 7,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-hpb-906799723",
@@ -495,7 +561,9 @@
 			"trailKm": 102.8,
 			"distanceFromTrailKm": 1.15,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 4,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-pbz-907257658",
@@ -507,7 +575,9 @@
 			"trailKm": 102.8,
 			"distanceFromTrailKm": 1.59,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 10,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-centar-banka-943640526",
@@ -519,7 +589,9 @@
 			"trailKm": 102.8,
 			"distanceFromTrailKm": 1.93,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 21,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-erste-963420649",
@@ -531,7 +603,9 @@
 			"trailKm": 102.8,
 			"distanceFromTrailKm": 1.77,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 19,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-slatinska-banka-1195323084",
@@ -543,7 +617,9 @@
 			"trailKm": 102.8,
 			"distanceFromTrailKm": 1.9,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 15,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-sberbank-2606144592",
@@ -555,7 +631,9 @@
 			"trailKm": 102.8,
 			"distanceFromTrailKm": 1.91,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 23,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-hrvatska-postanska-banka-2606196374",
@@ -567,7 +645,9 @@
 			"trailKm": 102.8,
 			"distanceFromTrailKm": 1.7,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 11,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-podravska-banka-2606196378",
@@ -579,7 +659,9 @@
 			"trailKm": 102.8,
 			"distanceFromTrailKm": 1.71,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 5,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-zagrebacka-banka-2916988781",
@@ -591,7 +673,9 @@
 			"trailKm": 102.8,
 			"distanceFromTrailKm": 1.32,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 25,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-hypo-2917087367",
@@ -603,7 +687,9 @@
 			"trailKm": 102.8,
 			"distanceFromTrailKm": 1.86,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 5,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-hypo-alpe-adria-bank-10164144499",
@@ -615,7 +701,9 @@
 			"trailKm": 102.8,
 			"distanceFromTrailKm": 1.65,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 18,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-intesa-sanpaolo-75487593",
@@ -627,7 +715,9 @@
 			"trailKm": 102.8,
 			"distanceFromTrailKm": 1.47,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 20,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-raiffeisen-bank-76047734",
@@ -639,7 +729,9 @@
 			"trailKm": 102.8,
 			"distanceFromTrailKm": 1.79,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 17,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-erste-bank-76047745",
@@ -651,19 +743,9 @@
 			"trailKm": 102.8,
 			"distanceFromTrailKm": 1.84,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
-		},
-		{
-			"id": "atm-privredna-banka-zagreb-1344344395",
-			"type": "atm",
-			"name_en": "Privredna banka Zagreb",
-			"name_hr": "Privredna banka Zagreb",
-			"lat": 45.76894,
-			"lng": 18.59845,
-			"trailKm": 170.8,
-			"distanceFromTrailKm": 1.44,
-			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 10,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-hypogroup-alpe-adria-1344344438",
@@ -675,7 +757,9 @@
 			"trailKm": 170.8,
 			"distanceFromTrailKm": 1.53,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 14,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-hrvatska-postanska-banka-7124155445",
@@ -687,7 +771,9 @@
 			"trailKm": 170.8,
 			"distanceFromTrailKm": 1.56,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 16,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-hrvatska-postanska-banka-880502955",
@@ -700,7 +786,9 @@
 			"distanceFromTrailKm": 0.38,
 			"phone": "072 303 304",
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 10,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-privredna-banka-zagreb-880503043",
@@ -713,7 +801,9 @@
 			"distanceFromTrailKm": 0.38,
 			"phone": "031/4 31604",
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 5,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-slatinska-banka-1139389060",
@@ -725,7 +815,9 @@
 			"trailKm": 193.8,
 			"distanceFromTrailKm": 0.25,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 13,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-privredna-banka-zagreb-97977663",
@@ -737,7 +829,9 @@
 			"trailKm": 197.1,
 			"distanceFromTrailKm": 0.05,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 9,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-hypo-banka-686572923",
@@ -749,7 +843,9 @@
 			"trailKm": 197.4,
 			"distanceFromTrailKm": 0.12,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 4,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-raiffeisen-686563073",
@@ -761,7 +857,9 @@
 			"trailKm": 197.5,
 			"distanceFromTrailKm": 0.3,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 21,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-pbz-686572918",
@@ -773,7 +871,9 @@
 			"trailKm": 197.5,
 			"distanceFromTrailKm": 0.18,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 8,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-otp-banka-686572919",
@@ -785,7 +885,9 @@
 			"trailKm": 197.5,
 			"distanceFromTrailKm": 0.15,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 5,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-zaba-686572920",
@@ -797,7 +899,9 @@
 			"trailKm": 197.5,
 			"distanceFromTrailKm": 0.17,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 11,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-hrvatska-postanska-banka-1135774176",
@@ -809,19 +913,9 @@
 			"trailKm": 197.5,
 			"distanceFromTrailKm": 0.11,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
-		},
-		{
-			"id": "atm-slatinska-banka-97977714",
-			"type": "atm",
-			"name_en": "Slatinska banka",
-			"name_hr": "Slatinska banka",
-			"lat": 45.65885,
-			"lng": 18.41744,
-			"trailKm": 197.5,
-			"distanceFromTrailKm": 0.07,
-			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 11,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-pbz-884259726",
@@ -833,7 +927,9 @@
 			"trailKm": 197.9,
 			"distanceFromTrailKm": 1.6,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 13,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-hrvatska-postanska-banka-539441660",
@@ -845,7 +941,9 @@
 			"trailKm": 240.4,
 			"distanceFromTrailKm": 0.03,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 10,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-otp-banka-539441663",
@@ -857,7 +955,9 @@
 			"trailKm": 240.4,
 			"distanceFromTrailKm": 0.06,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 16,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-otp-banka-602242059",
@@ -869,7 +969,9 @@
 			"trailKm": 240.4,
 			"distanceFromTrailKm": 0.07,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 29,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-hrvatska-postanska-banka-757037698",
@@ -881,7 +983,9 @@
 			"trailKm": 240.4,
 			"distanceFromTrailKm": 0.04,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 20,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-hypo-alpe-adria-banka-539423296",
@@ -893,7 +997,9 @@
 			"trailKm": 240.6,
 			"distanceFromTrailKm": 0.03,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 6,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-raiffeisen-banka-539441638",
@@ -905,7 +1011,9 @@
 			"trailKm": 240.6,
 			"distanceFromTrailKm": 0.04,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 18,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-hypo-alpe-adria-539441640",
@@ -917,7 +1025,9 @@
 			"trailKm": 240.6,
 			"distanceFromTrailKm": 0.04,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 10,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-privredna-banka-zagreb-555080320",
@@ -929,7 +1039,9 @@
 			"trailKm": 240.6,
 			"distanceFromTrailKm": 0.1,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 19,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-privredna-banka-zagreb-555080324",
@@ -941,7 +1053,9 @@
 			"trailKm": 240.6,
 			"distanceFromTrailKm": 0.09,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 7,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-raiffeisen-bank-10268805616",
@@ -953,7 +1067,9 @@
 			"trailKm": 519.8,
 			"distanceFromTrailKm": 0.21,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 14,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-zagrebacka-banka-5961602870",
@@ -965,7 +1081,9 @@
 			"trailKm": 520.1,
 			"distanceFromTrailKm": 0.09,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 1,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-raiffeisenbank-5961602877",
@@ -977,7 +1095,9 @@
 			"trailKm": 520.1,
 			"distanceFromTrailKm": 0.09,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 12,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-zagrebacka-banka-683100147",
@@ -989,7 +1109,9 @@
 			"trailKm": 520.1,
 			"distanceFromTrailKm": 0.13,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 11,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-privredna-banka-zagreb-5961602879",
@@ -1001,7 +1123,9 @@
 			"trailKm": 520.2,
 			"distanceFromTrailKm": 0.09,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 12,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-podravska-banka-10264825896",
@@ -1013,7 +1137,9 @@
 			"trailKm": 520.5,
 			"distanceFromTrailKm": 0.03,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 12,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-privredna-banka-zagreb-4718875827",
@@ -1025,7 +1151,9 @@
 			"trailKm": 579.2,
 			"distanceFromTrailKm": 0.1,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 4,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-hpb-13513308866",
@@ -1037,7 +1165,9 @@
 			"trailKm": 579.2,
 			"distanceFromTrailKm": 0.07,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 11,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-pbz-13513308867",
@@ -1049,7 +1179,9 @@
 			"trailKm": 579.2,
 			"distanceFromTrailKm": 0.11,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 5,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-pbz-2145124604",
@@ -1062,7 +1194,9 @@
 			"distanceFromTrailKm": 0.18,
 			"url": "https://www.pbz.hr/",
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 15,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-banka-kovanica-13564801903",
@@ -1074,7 +1208,9 @@
 			"trailKm": 627.3,
 			"distanceFromTrailKm": 1.99,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 8,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-raiffeisen-bank-13617034581",
@@ -1087,7 +1223,9 @@
 			"distanceFromTrailKm": 1.86,
 			"url": "https://rba.hr/",
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 25,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-hrvatska-banka-za-obnovu-i-razvitak-13651580446",
@@ -1100,7 +1238,9 @@
 			"distanceFromTrailKm": 1.87,
 			"url": "https://www.hbor.hr/",
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 26,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-zagrebacka-banka-483678118",
@@ -1112,7 +1252,9 @@
 			"trailKm": 627.6,
 			"distanceFromTrailKm": 1,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 14,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-privredna-banka-zagreb-1712544706",
@@ -1124,7 +1266,9 @@
 			"trailKm": 627.7,
 			"distanceFromTrailKm": 1.65,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 19,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-kentbank-13233284772",
@@ -1136,7 +1280,9 @@
 			"trailKm": 627.7,
 			"distanceFromTrailKm": 1.79,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 12,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-otp-banka-13233284773",
@@ -1148,7 +1294,9 @@
 			"trailKm": 627.7,
 			"distanceFromTrailKm": 1.81,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 6,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-privredna-banka-zagreb-483678116",
@@ -1160,7 +1308,9 @@
 			"trailKm": 627.9,
 			"distanceFromTrailKm": 1.99,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 10,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-zagrebacka-banka-4128477385",
@@ -1172,7 +1322,9 @@
 			"trailKm": 645.3,
 			"distanceFromTrailKm": 0.19,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 7,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-samoborska-banka-805248405",
@@ -1184,7 +1336,9 @@
 			"trailKm": 714.1,
 			"distanceFromTrailKm": 1.99,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 9,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-zagrebacka-banka-podruznica-lepoglava-1291449549",
@@ -1196,7 +1350,9 @@
 			"trailKm": 736,
 			"distanceFromTrailKm": 1.72,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 27,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-raifeisen-2291168900",
@@ -1208,7 +1364,9 @@
 			"trailKm": 769.2,
 			"distanceFromTrailKm": 0.03,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 13,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-hpb-2291168903",
@@ -1220,7 +1378,9 @@
 			"trailKm": 769.2,
 			"distanceFromTrailKm": 0.02,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 9,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-zaba-2291168901",
@@ -1232,7 +1392,9 @@
 			"trailKm": 769.3,
 			"distanceFromTrailKm": 0.01,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 7,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-pbz-2291168902",
@@ -1244,7 +1406,9 @@
 			"trailKm": 769.3,
 			"distanceFromTrailKm": 0.03,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 18,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-zagrebacka-banka-9289706250",
@@ -1256,7 +1420,9 @@
 			"trailKm": 810.7,
 			"distanceFromTrailKm": 1.99,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 14,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-rba-2977264180",
@@ -1268,7 +1434,9 @@
 			"trailKm": 813.6,
 			"distanceFromTrailKm": 0.02,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 13,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-rba-3025596919",
@@ -1280,7 +1448,9 @@
 			"trailKm": 815.7,
 			"distanceFromTrailKm": 1.97,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 10,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-hrvatska-postanska-banka-3234868620",
@@ -1292,7 +1462,9 @@
 			"trailKm": 815.7,
 			"distanceFromTrailKm": 1.92,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 21,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-hrvatska-postanska-banka-3234868621",
@@ -1304,7 +1476,9 @@
 			"trailKm": 815.7,
 			"distanceFromTrailKm": 1.91,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 25,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-raiffeisen-bank-10237713274",
@@ -1316,7 +1490,9 @@
 			"trailKm": 815.7,
 			"distanceFromTrailKm": 1.97,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 9,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-erste-4283758889",
@@ -1328,7 +1504,9 @@
 			"trailKm": 827.6,
 			"distanceFromTrailKm": 0.15,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 12,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-zagrebacka-banka-4283759089",
@@ -1340,7 +1518,9 @@
 			"trailKm": 827.6,
 			"distanceFromTrailKm": 0.14,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 13,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-pbz-4283759090",
@@ -1352,19 +1532,9 @@
 			"trailKm": 827.6,
 			"distanceFromTrailKm": 0.16,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
-		},
-		{
-			"id": "atm-zagrebacka-banka-4040917053",
-			"type": "atm",
-			"name_en": "Zagrebačka banka",
-			"name_hr": "Zagrebačka banka",
-			"lat": 45.80133,
-			"lng": 15.72655,
-			"trailKm": 827.9,
-			"distanceFromTrailKm": 0.85,
-			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 12,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-samoborska-banka-7007871140",
@@ -1377,7 +1547,9 @@
 			"distanceFromTrailKm": 0.74,
 			"url": "https://www.sabank.hr/",
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 7,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-samoborska-banka-7026992856",
@@ -1390,7 +1562,9 @@
 			"distanceFromTrailKm": 0.36,
 			"phone": "+385-1-5999-255",
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 12,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-raiffeisen-bank-297782846",
@@ -1402,7 +1576,9 @@
 			"trailKm": 828.5,
 			"distanceFromTrailKm": 0.12,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 13,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-privredna-banka-zagreb-1931360276",
@@ -1414,7 +1590,9 @@
 			"trailKm": 828.7,
 			"distanceFromTrailKm": 0.04,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 7,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-pbz-2997900026",
@@ -1426,7 +1604,9 @@
 			"trailKm": 828.8,
 			"distanceFromTrailKm": 0.02,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 3,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-erste-bank-3022109223",
@@ -1438,7 +1618,9 @@
 			"trailKm": 828.8,
 			"distanceFromTrailKm": 0.04,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 9,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-samoborska-banka-296031639",
@@ -1450,7 +1632,9 @@
 			"trailKm": 828.8,
 			"distanceFromTrailKm": 0.02,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 15,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-hrvatska-postanska-banka-678489484",
@@ -1462,7 +1646,9 @@
 			"trailKm": 828.8,
 			"distanceFromTrailKm": 0.11,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 13,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-zagrebacka-banka-2997900008",
@@ -1474,7 +1660,9 @@
 			"trailKm": 828.9,
 			"distanceFromTrailKm": 0.03,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 0,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-otp-banka-3011123796",
@@ -1486,7 +1674,9 @@
 			"trailKm": 828.9,
 			"distanceFromTrailKm": 0.01,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 5,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-zagrebacka-banka-3022110237",
@@ -1498,7 +1688,9 @@
 			"trailKm": 828.9,
 			"distanceFromTrailKm": 0.03,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 8,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-addiko-bank-3023409899",
@@ -1510,7 +1702,9 @@
 			"trailKm": 829,
 			"distanceFromTrailKm": 0.03,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 2,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-addiko-bank-298309840",
@@ -1522,7 +1716,9 @@
 			"trailKm": 829,
 			"distanceFromTrailKm": 0.04,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 9,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-ikb-3507037233",
@@ -1534,7 +1730,9 @@
 			"trailKm": 1167.4,
 			"distanceFromTrailKm": 0.9,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 17,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-erste-bank-3507045042",
@@ -1546,7 +1744,9 @@
 			"trailKm": 1167.4,
 			"distanceFromTrailKm": 0.89,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 15,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-ikb-umag-3087362808",
@@ -1558,7 +1758,9 @@
 			"trailKm": 1199.1,
 			"distanceFromTrailKm": 0.93,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 13,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-erste-bank-229353589",
@@ -1570,19 +1772,9 @@
 			"trailKm": 1199.1,
 			"distanceFromTrailKm": 0.93,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
-		},
-		{
-			"id": "atm-istarska-kreditna-banka-484026305",
-			"type": "atm",
-			"name_en": "Istarska Kreditna Banka",
-			"name_hr": "Istarska Kreditna Banka",
-			"lat": 45.48389,
-			"lng": 13.50081,
-			"trailKm": 1221.5,
-			"distanceFromTrailKm": 0.37,
-			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 14,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-erste-1098507319",
@@ -1594,7 +1786,9 @@
 			"trailKm": 1228,
 			"distanceFromTrailKm": 0.17,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 11,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-privredna-banka-zagreb-2461683024",
@@ -1606,7 +1800,9 @@
 			"trailKm": 1228.1,
 			"distanceFromTrailKm": 0.15,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 24,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-atm-hrvatska-postanska-banka-4395263290",
@@ -1618,7 +1814,9 @@
 			"trailKm": 1228.3,
 			"distanceFromTrailKm": 0.51,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 20,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-erste-bank-6363727677",
@@ -1630,7 +1828,9 @@
 			"trailKm": 1228.3,
 			"distanceFromTrailKm": 0.43,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 9,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-raiffeisen-bank-9060197727",
@@ -1642,19 +1842,9 @@
 			"trailKm": 1228.3,
 			"distanceFromTrailKm": 0.56,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
-		},
-		{
-			"id": "atm-istarska-kreditna-banka-umag-238319343",
-			"type": "atm",
-			"name_en": "Istarska kreditna banka Umag",
-			"name_hr": "Istarska kreditna banka Umag",
-			"lat": 45.43382,
-			"lng": 13.5235,
-			"trailKm": 1228.4,
-			"distanceFromTrailKm": 0.3,
-			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 11,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-i-k-b-677764502",
@@ -1666,7 +1856,9 @@
 			"trailKm": 1243.4,
 			"distanceFromTrailKm": 1.01,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 8,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-istarska-kreditna-banka-7619152426",
@@ -1678,7 +1870,9 @@
 			"trailKm": 1274.7,
 			"distanceFromTrailKm": 0.13,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 9,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-erste-1406288881",
@@ -1690,7 +1884,9 @@
 			"trailKm": 1298.4,
 			"distanceFromTrailKm": 0.51,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 16,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-otp-banka-1808636052",
@@ -1702,7 +1898,9 @@
 			"trailKm": 1298.4,
 			"distanceFromTrailKm": 0.53,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 8,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-privredna-banka-zagreb-4318518894",
@@ -1714,7 +1912,9 @@
 			"trailKm": 1298.4,
 			"distanceFromTrailKm": 0.54,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 8,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-otp-banka-2162462365",
@@ -1726,7 +1926,9 @@
 			"trailKm": 1337.7,
 			"distanceFromTrailKm": 1.57,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 9,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-zagrebacka-banka-1877835062",
@@ -1738,7 +1940,9 @@
 			"trailKm": 1375.9,
 			"distanceFromTrailKm": 1.78,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 10,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-erste-bank-6221164076",
@@ -1750,7 +1954,9 @@
 			"trailKm": 1375.9,
 			"distanceFromTrailKm": 1.51,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 8,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-otp-bank-6739895458",
@@ -1762,7 +1968,9 @@
 			"trailKm": 1375.9,
 			"distanceFromTrailKm": 1.58,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 17,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-istarska-kreditna-banka-6772919286",
@@ -1774,7 +1982,9 @@
 			"trailKm": 1375.9,
 			"distanceFromTrailKm": 1.5,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 15,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-pbz-8933439426",
@@ -1786,7 +1996,9 @@
 			"trailKm": 1375.9,
 			"distanceFromTrailKm": 1.87,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 7,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-erste-bank-7850800266",
@@ -1798,7 +2010,9 @@
 			"trailKm": 1376.7,
 			"distanceFromTrailKm": 0.94,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 2,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-erste-bank-5624597358",
@@ -1810,7 +2024,9 @@
 			"trailKm": 1430.3,
 			"distanceFromTrailKm": 0.01,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 5,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-otp-5628420190",
@@ -1822,7 +2038,9 @@
 			"trailKm": 1430.3,
 			"distanceFromTrailKm": 0.65,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 10,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-rba-2593891493",
@@ -1834,7 +2052,9 @@
 			"trailKm": 1430.5,
 			"distanceFromTrailKm": 0.02,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 5,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-fina-10817054518",
@@ -1846,7 +2066,9 @@
 			"trailKm": 1433.3,
 			"distanceFromTrailKm": 1.88,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 16,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-zagrebacka-banka-12704062469",
@@ -1860,7 +2082,9 @@
 			"phone": "+38551353940",
 			"url": "https://www.zaba.hr/",
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 14,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-istarska-10926714873",
@@ -1872,7 +2096,9 @@
 			"trailKm": 1437,
 			"distanceFromTrailKm": 1.28,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 21,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-erste-1202270081",
@@ -1884,7 +2110,9 @@
 			"trailKm": 1437,
 			"distanceFromTrailKm": 0.87,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 20,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-pbz-1158909469",
@@ -1896,7 +2124,9 @@
 			"trailKm": 1445.3,
 			"distanceFromTrailKm": 0.64,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 18,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-pbz-3700905758",
@@ -1908,7 +2138,9 @@
 			"trailKm": 1479,
 			"distanceFromTrailKm": 0.03,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 9,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-erste-bank-6652939860",
@@ -1920,7 +2152,9 @@
 			"trailKm": 1479,
 			"distanceFromTrailKm": 0.01,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 9,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-otp-banka-2609288798",
@@ -1932,7 +2166,9 @@
 			"trailKm": 1887.2,
 			"distanceFromTrailKm": 0.06,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 14,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-pbz-2613326469",
@@ -1944,7 +2180,9 @@
 			"trailKm": 1887.2,
 			"distanceFromTrailKm": 0.07,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 17,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-zagrebacka-banka-2609288811",
@@ -1956,7 +2194,9 @@
 			"trailKm": 1887.3,
 			"distanceFromTrailKm": 0.06,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 16,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-hrvatska-postanska-banka-2613326468",
@@ -1968,7 +2208,9 @@
 			"trailKm": 1887.3,
 			"distanceFromTrailKm": 0.03,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 19,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-raiffeisen-rba-2787151338",
@@ -1980,7 +2222,9 @@
 			"trailKm": 1887.5,
 			"distanceFromTrailKm": 0.21,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 22,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-otp-banka-1587439385",
@@ -1992,7 +2236,9 @@
 			"trailKm": 1921.4,
 			"distanceFromTrailKm": 0.38,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 12,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-zagrebacka-banka-1587439470",
@@ -2004,7 +2250,9 @@
 			"trailKm": 1921.4,
 			"distanceFromTrailKm": 0.28,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 18,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-pbz-1636709055",
@@ -2016,7 +2264,9 @@
 			"trailKm": 1921.4,
 			"distanceFromTrailKm": 0.18,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 10,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-otp-banka-2505576776",
@@ -2028,7 +2278,9 @@
 			"trailKm": 1921.4,
 			"distanceFromTrailKm": 0.34,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 12,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-zaba-934929088",
@@ -2040,7 +2292,9 @@
 			"trailKm": 1921.5,
 			"distanceFromTrailKm": 0.04,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 10,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-erste-bank-934930905",
@@ -2052,7 +2306,9 @@
 			"trailKm": 1921.5,
 			"distanceFromTrailKm": 0.2,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 10,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-pbz-1636731233",
@@ -2064,7 +2320,9 @@
 			"trailKm": 1921.5,
 			"distanceFromTrailKm": 0.06,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 7,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-hrvatska-postanska-banka-10074477982",
@@ -2076,7 +2334,9 @@
 			"trailKm": 1921.5,
 			"distanceFromTrailKm": 0.08,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 15,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-euronet-10074477984",
@@ -2088,7 +2348,9 @@
 			"trailKm": 1921.5,
 			"distanceFromTrailKm": 0.21,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 6,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-euronet-10074477985",
@@ -2100,7 +2362,9 @@
 			"trailKm": 1921.5,
 			"distanceFromTrailKm": 0.2,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 1,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-euronet-10074477986",
@@ -2112,7 +2376,9 @@
 			"trailKm": 1921.6,
 			"distanceFromTrailKm": 0.26,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 3,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-zagrebacka-banka-5130296952",
@@ -2124,7 +2390,9 @@
 			"trailKm": 1979.1,
 			"distanceFromTrailKm": 1.01,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 7,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-pbz-269030273",
@@ -2136,7 +2404,9 @@
 			"trailKm": 1979.3,
 			"distanceFromTrailKm": 1.01,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 16,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-erste-bank-9393053674",
@@ -2148,7 +2418,9 @@
 			"trailKm": 1979.3,
 			"distanceFromTrailKm": 0.99,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 6,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-euronet-9393053620",
@@ -2160,7 +2432,9 @@
 			"trailKm": 1979.6,
 			"distanceFromTrailKm": 0.95,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 7,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-otp-banka-9393048166",
@@ -2172,7 +2446,9 @@
 			"trailKm": 1979.7,
 			"distanceFromTrailKm": 0.93,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 6,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-euronet-9458865062",
@@ -2184,7 +2460,9 @@
 			"trailKm": 1979.7,
 			"distanceFromTrailKm": 0.89,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 5,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-euronet-9588132541",
@@ -2196,7 +2474,9 @@
 			"trailKm": 1982.9,
 			"distanceFromTrailKm": 0.46,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 4,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-zaba-2016157034",
@@ -2208,7 +2488,9 @@
 			"trailKm": 2000.7,
 			"distanceFromTrailKm": 0.02,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 14,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-bankomat-hotel-labineca-2958896136",
@@ -2221,7 +2503,9 @@
 			"distanceFromTrailKm": 0.39,
 			"url": "https://www.pbz.hr/",
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 22,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-otpbanka-4327833462",
@@ -2233,7 +2517,9 @@
 			"trailKm": 2013.5,
 			"distanceFromTrailKm": 0.73,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 11,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-otp-banka-2352496368",
@@ -2245,7 +2531,9 @@
 			"trailKm": 2029,
 			"distanceFromTrailKm": 0.06,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 20,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-kozmo-2345953045",
@@ -2257,7 +2545,9 @@
 			"trailKm": 2029.4,
 			"distanceFromTrailKm": 0.08,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 11,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-hrvatska-postanska-banka-3279478849",
@@ -2269,7 +2559,9 @@
 			"trailKm": 2029.4,
 			"distanceFromTrailKm": 0.15,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 17,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-otp-bank-2435328544",
@@ -2281,7 +2573,9 @@
 			"trailKm": 2094,
 			"distanceFromTrailKm": 0.05,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 8,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-otp-1906735489",
@@ -2293,7 +2587,9 @@
 			"trailKm": 2142.4,
 			"distanceFromTrailKm": 0.74,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 14,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-euronet-4942730579",
@@ -2305,7 +2601,9 @@
 			"trailKm": 2143.4,
 			"distanceFromTrailKm": 0.13,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 17,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-euronet-6875003585",
@@ -2317,7 +2615,9 @@
 			"trailKm": 2156,
 			"distanceFromTrailKm": 1,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 22,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-hrvatska-postanska-banka-3279452184",
@@ -2329,7 +2629,9 @@
 			"trailKm": 2156.1,
 			"distanceFromTrailKm": 1.08,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 19,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-bitcoin-atm-shitcoins-club-11543733228",
@@ -2343,7 +2645,9 @@
 			"phone": "+385 99 603 3886",
 			"url": "https://shitcoins.club/lokalizacija-bankomata/bitcoin-bankomat-dubrovnik-tomislava%20-7",
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 23,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-cash-machine-5922368161",
@@ -2355,7 +2659,9 @@
 			"trailKm": 2156.2,
 			"distanceFromTrailKm": 1.39,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 8,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-pbz-2860319396",
@@ -2367,7 +2673,9 @@
 			"trailKm": 2157.3,
 			"distanceFromTrailKm": 0.67,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 14,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-hypo-1685756994",
@@ -2379,7 +2687,9 @@
 			"trailKm": 2157.8,
 			"distanceFromTrailKm": 0.68,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 15,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-hypo-2343812798",
@@ -2391,7 +2701,9 @@
 			"trailKm": 2157.8,
 			"distanceFromTrailKm": 0.68,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 14,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-otp-bank-3948672226",
@@ -2403,7 +2715,9 @@
 			"trailKm": 2157.8,
 			"distanceFromTrailKm": 0.68,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 11,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-pbz-4210646290",
@@ -2415,7 +2729,9 @@
 			"trailKm": 2157.9,
 			"distanceFromTrailKm": 1.04,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 13,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-zagrebacka-banka-4210662795",
@@ -2428,7 +2744,9 @@
 			"distanceFromTrailKm": 1.11,
 			"url": "https://www.zaba.hr/",
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 20,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-pbz-5357182339",
@@ -2440,7 +2758,9 @@
 			"trailKm": 2157.9,
 			"distanceFromTrailKm": 1.67,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 11,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-raiffeisen-bank-1685754382",
@@ -2452,7 +2772,9 @@
 			"trailKm": 2158.1,
 			"distanceFromTrailKm": 1.1,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 26,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-otp-bank-1685754842",
@@ -2464,7 +2786,9 @@
 			"trailKm": 2158.1,
 			"distanceFromTrailKm": 1.07,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 13,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-otp-banka-2860319395",
@@ -2476,7 +2800,9 @@
 			"trailKm": 2158.1,
 			"distanceFromTrailKm": 1.03,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 7,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-hrvatska-postanska-banka-3235395361",
@@ -2488,7 +2814,9 @@
 			"trailKm": 2158.1,
 			"distanceFromTrailKm": 1,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 10,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-hrvatska-postanska-banka-3279452183",
@@ -2500,7 +2828,9 @@
 			"trailKm": 2158.1,
 			"distanceFromTrailKm": 1,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 11,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-addiko-bank-4210579898",
@@ -2512,7 +2842,9 @@
 			"trailKm": 2158.1,
 			"distanceFromTrailKm": 1.12,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 17,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-kent-bank-4210797696",
@@ -2524,7 +2856,9 @@
 			"trailKm": 2158.1,
 			"distanceFromTrailKm": 1.09,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 13,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-otp-banka-4210829289",
@@ -2536,7 +2870,9 @@
 			"trailKm": 2158.1,
 			"distanceFromTrailKm": 1.08,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 26,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-sberbank-5009843531",
@@ -2548,7 +2884,9 @@
 			"trailKm": 2158.1,
 			"distanceFromTrailKm": 1.02,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 26,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-agram-banka-5297700791",
@@ -2560,7 +2898,9 @@
 			"trailKm": 2158.1,
 			"distanceFromTrailKm": 1.15,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 20,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-erste-bank-6219286437",
@@ -2572,7 +2912,9 @@
 			"trailKm": 2158.1,
 			"distanceFromTrailKm": 1.04,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 20,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-otp-banka-2505166335",
@@ -2584,7 +2926,9 @@
 			"trailKm": 2158.3,
 			"distanceFromTrailKm": 1.78,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 14,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-hrvatska-postanska-banka-3279478773",
@@ -2596,7 +2940,9 @@
 			"trailKm": 2158.3,
 			"distanceFromTrailKm": 1.89,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 24,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-hrvatska-postanska-banka-6350536480",
@@ -2608,7 +2954,9 @@
 			"trailKm": 2159.9,
 			"distanceFromTrailKm": 0.84,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 5,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-otp-banka-8874386618",
@@ -2620,7 +2968,9 @@
 			"trailKm": 2159.9,
 			"distanceFromTrailKm": 0.79,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 7,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-pbz-8883839018",
@@ -2632,7 +2982,9 @@
 			"trailKm": 2159.9,
 			"distanceFromTrailKm": 0.8,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 8,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-otp-821790771",
@@ -2644,7 +2996,9 @@
 			"trailKm": 2160.2,
 			"distanceFromTrailKm": 0.91,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 6,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-hrvatska-postanska-banka-1790616735",
@@ -2656,7 +3010,9 @@
 			"trailKm": 2160.2,
 			"distanceFromTrailKm": 0.91,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 4,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-hrvatska-postanska-banka-3279452180",
@@ -2668,7 +3024,9 @@
 			"trailKm": 2160.2,
 			"distanceFromTrailKm": 0.88,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 8,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-hrvatska-postanska-banka-3279452181",
@@ -2680,7 +3038,9 @@
 			"trailKm": 2160.2,
 			"distanceFromTrailKm": 0.89,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 12,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-zagrebacka-banka-4783075471",
@@ -2692,7 +3052,9 @@
 			"trailKm": 2160.2,
 			"distanceFromTrailKm": 0.84,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 6,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-euronet-5009835489",
@@ -2704,7 +3066,9 @@
 			"trailKm": 2160.2,
 			"distanceFromTrailKm": 0.87,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 5,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-otp-banka-6350714728",
@@ -2716,7 +3080,9 @@
 			"trailKm": 2160.2,
 			"distanceFromTrailKm": 0.93,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 9,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-pbz-3042753266",
@@ -2728,7 +3094,9 @@
 			"trailKm": 2160.3,
 			"distanceFromTrailKm": 0.82,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 10,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-otp-bank-3042753285",
@@ -2740,7 +3108,9 @@
 			"trailKm": 2160.3,
 			"distanceFromTrailKm": 0.83,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 7,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-euronet-4783075485",
@@ -2752,7 +3122,9 @@
 			"trailKm": 2160.3,
 			"distanceFromTrailKm": 0.85,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 7,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-hrvatska-postanska-banka-680211960",
@@ -2764,7 +3136,9 @@
 			"trailKm": 2172.1,
 			"distanceFromTrailKm": 1.27,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 15,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-atm-6651598839",
@@ -2776,7 +3150,9 @@
 			"trailKm": 2173.5,
 			"distanceFromTrailKm": 0.5,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 8,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-privredna-banka-zagreb-1583714176",
@@ -2788,7 +3164,9 @@
 			"trailKm": 2181.7,
 			"distanceFromTrailKm": 0.02,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 14,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-hrvatska-postanska-banka-3235380641",
@@ -2800,7 +3178,9 @@
 			"trailKm": 2181.8,
 			"distanceFromTrailKm": 0.02,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 9,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-hrvatska-postanska-banka-3279424178",
@@ -2812,7 +3192,9 @@
 			"trailKm": 2181.8,
 			"distanceFromTrailKm": 0.02,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 12,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-optbanka-239483142",
@@ -2824,7 +3206,9 @@
 			"trailKm": 2181.8,
 			"distanceFromTrailKm": 0.01,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 8,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-hrvatska-postanska-banka-3279454688",
@@ -2836,7 +3220,9 @@
 			"trailKm": 2186.6,
 			"distanceFromTrailKm": 0.93,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 22,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-raiffeisen-bank-11591946763",
@@ -2848,7 +3234,9 @@
 			"trailKm": 2186.6,
 			"distanceFromTrailKm": 0.91,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 7,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-pbz-otp-banka-zagrebacka-11591946764",
@@ -2860,7 +3248,9 @@
 			"trailKm": 2186.6,
 			"distanceFromTrailKm": 0.94,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 22,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-otp-banka-11591946765",
@@ -2872,7 +3262,9 @@
 			"trailKm": 2186.6,
 			"distanceFromTrailKm": 0.95,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 28,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-erste-bank-11591946766",
@@ -2884,7 +3276,9 @@
 			"trailKm": 2186.6,
 			"distanceFromTrailKm": 0.94,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 19,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-hpb-bank-11591946767",
@@ -2896,7 +3290,9 @@
 			"trailKm": 2186.6,
 			"distanceFromTrailKm": 0.94,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 17,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-hrvatska-postanska-banka-2306469272",
@@ -2908,7 +3304,9 @@
 			"trailKm": 2198.6,
 			"distanceFromTrailKm": 1.83,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 28,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "atm-hrvatska-postanska-banka-3235369549",
@@ -2920,7 +3318,9 @@
 			"trailKm": 2198.7,
 			"distanceFromTrailKm": 1.83,
 			"source": "osm",
-			"lastVerified": "2026-06-03"
+			"nearestHighwayM": 30,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		}
 	]
 }
