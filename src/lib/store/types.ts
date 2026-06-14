@@ -8,6 +8,7 @@ import type { TrailOsmTagsFile } from '../trail-osm-tags';
 import type { MineAreasFile } from '../mine-areas';
 import type { CompletionInterval } from '../completion';
 import type { JournalEntry, UserWaypoint } from '../user-waypoints';
+import type { WaypointCategoryId } from '../waypoint-categories';
 import type { PackList } from '../pack-csv';
 import type { PoiImage, PoisFile } from '../pois';
 import { RulerRange } from '@/lib/distance-utils';
@@ -150,6 +151,41 @@ export interface UIActions {
 export type UISlice = UIState & UIActions;
 
 export type StoreState = LocationSlice & TrailSlice & UISlice;
+
+export interface ShareCopyToast {
+	status: 'success' | 'error';
+	short: boolean;
+	nonce: number;
+}
+
+/** Saved type + tag filter combination in the POI list panel. */
+export interface PoiFilterPreset {
+	id: string;
+	name: string;
+	enabledPoiTypes: string[];
+	enabledPoiTags: string[];
+}
+
+/** Named list of starred POI ids (trip brief "Selected only", share export). */
+export interface StarredPoiCollection {
+	id: string;
+	name: string;
+	poiIds: string[];
+}
+
+export const DEFAULT_STARRED_COLLECTION_NAME = 'Starred';
+
+export function isDefaultStarredCollectionName(name: string): boolean {
+	return name === DEFAULT_STARRED_COLLECTION_NAME;
+}
+
+export function getActiveStarredPoiIds(
+	state: Pick<MapStoreState, 'starredPoiCollections' | 'activeStarredCollectionId'>,
+): ReadonlySet<string> {
+	const active = state.starredPoiCollections.find((c) => c.id === state.activeStarredCollectionId);
+	if (!active) return new Set<string>();
+	return new Set(active.poiIds);
+}
 
 export interface MapStoreState {
 	selectedTrail: string | null;
@@ -299,6 +335,7 @@ export interface MapStoreState {
 	startTileDownload: (
 		points: { lat: number; lng: number; distanceFromStart: number }[],
 		providerName: string,
+		opts?: { source?: 'manual' | 'autoSync' },
 	) => Promise<void>;
 	cancelTileDownload: () => void;
 	clearTileCacheForProvider: (providerKey?: string) => Promise<void>;
@@ -312,6 +349,12 @@ export interface MapStoreState {
 	setStaleCacheNotification: (show: boolean) => void;
 	initStaleCacheCheck: () => Promise<void>;
 
+	/** Set after the first successful manual offline download to show contextual PWA copy. */
+	pwaInstallTrigger: 'offlineDownload' | null;
+	clearPwaInstallTrigger: () => void;
+	tileDownloadCompleteToast: boolean;
+	clearTileDownloadCompleteToast: () => void;
+
 	walkingPaceKmh: number;
 	setWalkingPaceKmh: (pace: number) => void;
 
@@ -322,6 +365,9 @@ export interface MapStoreState {
 	/** Drinking rate in L/h used for water carry suggestions. Persisted. */
 	waterConsumptionLph: number;
 	setWaterConsumptionLph: (lph: number) => void;
+	/** Food consumption rate in kg/day for resupply cadence estimates. Persisted. */
+	foodConsumptionKgPerDay: number;
+	setFoodConsumptionKgPerDay: (kgPerDay: number) => void;
 	/** Apply the pack-weight pace penalty to ETAs. Persisted. */
 	packEtaAdjust: boolean;
 	setPackEtaAdjust: (enabled: boolean) => void;
@@ -338,17 +384,27 @@ export interface MapStoreState {
 	/** Copy compact `/s/{code}` links when sharing the map or a POI. Persisted. */
 	shareShortLinks: boolean;
 	setShareShortLinks: (enabled: boolean) => void;
+	/** Ephemeral toast for share-link copy feedback (session-only). */
+	shareCopyToast: ShareCopyToast | null;
+	showShareCopyToast: (feedback: { status: 'success' | 'error'; short: boolean }) => void;
+	clearShareCopyToast: () => void;
 
 	/** Personal map annotations (long-press to add). Persisted. */
 	userWaypoints: UserWaypoint[];
 	addUserWaypoint: (wp: UserWaypoint) => void;
-	updateUserWaypoint: (id: string, patch: Partial<Pick<UserWaypoint, 'name' | 'note'>>) => void;
+	updateUserWaypoint: (id: string, patch: Partial<Pick<UserWaypoint, 'name' | 'note' | 'category'>>) => void;
 	removeUserWaypoint: (id: string) => void;
 	/** Waypoint id whose popup should open (set by the progress panel list);
 	 *  consumed and cleared by the marker layer. Session-only. */
 	pendingOpenWaypointId: string | null;
 	requestOpenWaypoint: (id: string) => void;
 	clearPendingOpenWaypoint: () => void;
+	/** Default category for newly dropped waypoints. Persisted. */
+	lastWaypointCategory: WaypointCategoryId;
+	setLastWaypointCategory: (category: WaypointCategoryId) => void;
+	hiddenWaypointCategories: Set<WaypointCategoryId>;
+	toggleWaypointCategoryOnMap: (category: WaypointCategoryId) => void;
+	setHiddenWaypointCategories: (hidden: Set<WaypointCategoryId>) => void;
 
 	/** Dated trip journal entries, optionally attached to a km range. Persisted. */
 	journalEntries: JournalEntry[];
@@ -408,6 +464,21 @@ export interface MapStoreState {
 
 	showUpNext: boolean;
 	setShowUpNext: (show: boolean) => void;
+	/** Optional Up Next row: nearest restaurant or cafe ahead. Default off. */
+	upNextShowFood: boolean;
+	setUpNextShowFood: (show: boolean) => void;
+	/** Optional Up Next row: nearest ATM ahead. Default off. */
+	upNextShowAtm: boolean;
+	setUpNextShowAtm: (show: boolean) => void;
+	/** Optional Up Next row: nearest viewpoint ahead. Default off. */
+	upNextShowViewpoint: boolean;
+	setUpNextShowViewpoint: (show: boolean) => void;
+	/** Optional Up Next row: nearest town with a pharmacy ahead. Default off. */
+	upNextShowPharmacy: boolean;
+	setUpNextShowPharmacy: (show: boolean) => void;
+	/** Expanded state of the optional "More ahead" block in the distance panel. */
+	upNextMoreExpanded: boolean;
+	setUpNextMoreExpanded: (expanded: boolean) => void;
 
 	/** Forward corridor length (km) for "along next N km" POI browsing; persisted. */
 	aheadHorizonKm: number;
@@ -418,8 +489,8 @@ export interface MapStoreState {
 	requestPoiListAhead: () => void;
 	clearPendingPoiListSort: () => void;
 
-	// ── Dev walk simulator (test page; session-only, never persisted) ───
-	/** Mirrored UI state of the dev walk simulator; null when not active. */
+	// ── Walk simulator (session-only, never persisted) ─────────────────
+	/** Mirrored UI state of the walk simulator; null when not active. */
 	walkSim: {
 		running: boolean;
 		posKm: number;
@@ -429,6 +500,15 @@ export interface MapStoreState {
 		totalKm: number;
 	} | null;
 	setWalkSim: (state: MapStoreState['walkSim']) => void;
+
+	// ── End-user demo mode (/demo; session-only, never persisted) ───────
+	demoModeActive: boolean;
+	demoPersistSnapshot: {
+		userWaypoints: UserWaypoint[];
+		journalEntries: JournalEntry[];
+		completedIntervals: CompletionInterval[];
+	} | null;
+	enterDemoMode: (snapshot: NonNullable<MapStoreState['demoPersistSnapshot']>) => void;
 
 	// ── Mine-suspected areas (MSP) ──────────────────────────────────────
 	/** Layer toggle; persisted, defaults ON (safety layer, opt-out). */
@@ -477,12 +557,23 @@ export interface MapStoreState {
 	 *  `poiFiltersUserModified` - used by the disclaimer handlers, not by
 	 *  user-facing controls. */
 	resetPoiFiltersToDefaults: () => void;
-	/** POI ids the user has explicitly starred for trip-brief "Selected only" scope.
-	 *  Persisted in the store so the selection survives panel close/reopen and
-	 *  is still present when the trip-brief modal is opened. */
-	starredPoiIds: ReadonlySet<string>;
+	/** Named saved type + tag filter combinations. */
+	poiFilterPresets: PoiFilterPreset[];
+	savePoiFilterPreset: (name: string) => string | null;
+	applyPoiFilterPreset: (id: string) => void;
+	deletePoiFilterPreset: (id: string) => void;
+	renamePoiFilterPreset: (id: string, name: string) => void;
+	/** Named starred POI lists; stars apply to the active collection. */
+	starredPoiCollections: StarredPoiCollection[];
+	activeStarredCollectionId: string | null;
+	setActiveStarredCollectionId: (id: string) => void;
+	createStarredPoiCollection: (name: string) => string | null;
+	renameStarredPoiCollection: (id: string, name: string) => void;
+	deleteStarredPoiCollection: (id: string) => void;
 	toggleStarredPoi: (id: string) => void;
 	clearStarredPois: () => void;
+	/** Replace all starred collections with one default list (share URL import). */
+	importStarredPoisFromShare: (poiIds: string[]) => void;
 	/** POI id the renderer should fly to and open the popup for on the next
 	 *  effect tick. Set by panels that want to surface a POI on the map
 	 *  (e.g. the stage planner places list); cleared by PoiMarkers after

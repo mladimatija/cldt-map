@@ -38,7 +38,7 @@ export function MapControlsExportPanel({
 			<h3 className="text-sm font-medium text-gray-700 dark:text-[var(--text-primary)]" id="export-panel-title">
 				{t('title')}
 			</h3>
-			<p className="m-0 text-xs text-gray-500 dark:text-gray-400">{t('hint')}</p>
+			<p className="m-0 text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('hint')}</p>
 			<div className="flex flex-col gap-2">
 				<Button variant="mapControlOutline" onClick={onPrint}>
 					{t('printButton')}

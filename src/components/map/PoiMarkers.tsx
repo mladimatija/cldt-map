@@ -5,6 +5,7 @@ import { useMap } from 'react-leaflet';
 import L from 'leaflet';
 import { useLocale, useTranslations } from 'next-intl';
 import { useMapStore, type MapStoreState } from '@/lib/store';
+import { getActiveStarredPoiIds } from '@/lib/store/types';
 import { isKnownType, poiDisplayName, poiMatchesTagFilter, poiPassesReachabilityFilter, type Poi } from '@/lib/pois';
 import {
 	buildPoiShareUrl,
@@ -14,7 +15,9 @@ import {
 	openCoordinatesInMaps,
 } from '@/lib/utils';
 import { usePathname, useRouter } from '@/i18n/navigation';
-import { resolveShareUrlForCopy } from '@/lib/share-shortener-client';
+import { wirePopupShareButton } from '@/lib/share-link-copy';
+import { newId } from '@/lib/user-waypoints';
+import { poiTypeToSuggestedWaypointCategory } from '@/lib/waypoint-categories';
 import { fetchWikipediaSummary, truncateExtract } from '@/lib/wikipedia';
 import {
 	CLUSTER_CELL_PX,
@@ -142,6 +145,12 @@ export function PoiMarkers(): null {
 	}, [map]);
 
 	useEffect(() => {
+		// Force marker rebuild when visiblePois changes. The moveend dirty-check
+		// compares viewport candidate ids only; toggling reachability (or other
+		// filters) can change the superset without changing in-view ids, which
+		// previously cleared markers in cleanup then skipped re-adding them.
+		prevCandidateIdsRef.current = '';
+
 		const popupLabels: PopupBuildLabels = {
 			distanceLabel: t('trailPositionLabel'),
 			offTrailLabel: t('offTrailLabel'),
@@ -157,7 +166,8 @@ export function PoiMarkers(): null {
 			shareCopiedShort: t('shareCopiedShort'),
 			shareFailed: t('shareFailed'),
 			openInMaps: t('openInMaps'),
-			publicTransportEscape: t('publicTransportEscape'),
+			addAsWaypoint: t('addAsWaypoint'),
+			publicTransportEscape: t.raw('publicTransportEscape'),
 			starAddLabel: t('starAdd', { name: '' }).replace(/\s+/g, ' ').trim(),
 			starRemoveLabel: t('starRemove', { name: '' }).replace(/\s+/g, ' ').trim(),
 			sourceOsm: t('sourceOsm'),
@@ -279,7 +289,7 @@ export function PoiMarkers(): null {
 							// Called via .getState() (not a selector hook) because this
 							// factory runs lazily at popup-open time, outside the React
 							// render path, so subscription-based hooks are not available.
-							isStarred: useMapStore.getState().starredPoiIds.has(poi.id),
+							isStarred: getActiveStarredPoiIds(useMapStore.getState()).has(poi.id),
 						}),
 					{
 						closeButton: true,
@@ -306,11 +316,8 @@ export function PoiMarkers(): null {
 					}
 					wireGalleryButtons(marker, poi, openLightbox);
 					wireOpenInMapsButton(marker, poi);
-					wireShareButton(marker, poi, {
-						shareCopied: popupLabels.shareCopied,
-						shareCopiedShort: popupLabels.shareCopiedShort,
-						shareFailed: popupLabels.shareFailed,
-					});
+					wireAddAsWaypointButton(marker, poi, poiDisplayName(poi, locale));
+					wireShareButton(marker, poi, popupLabels.shareLink);
 					wireStarButton(marker, poi, {
 						starAddLabel: poiLabels.starAddLabel,
 						starRemoveLabel: poiLabels.starRemoveLabel,
@@ -557,8 +564,6 @@ function wireStarButton(marker: L.Marker, poi: Poi, labels: { starAddLabel: stri
 	if (!el) return;
 	const btn = el.querySelector<HTMLButtonElement>(`[data-poi-star="${cssEscape(poi.id)}"]`);
 	if (!btn) return;
-	if (btn.dataset.wired === '1') return;
-	btn.dataset.wired = '1';
 	const sync = (starred: boolean): void => {
 		btn.textContent = starred ? '★' : '☆';
 		btn.setAttribute('aria-pressed', starred ? 'true' : 'false');
@@ -567,56 +572,68 @@ function wireStarButton(marker: L.Marker, poi: Poi, labels: { starAddLabel: stri
 		btn.setAttribute('title', aria);
 		btn.classList.toggle('poi-popup__star--active', starred);
 	};
-	sync(useMapStore.getState().starredPoiIds.has(poi.id));
-	btn.addEventListener('click', (e) => {
-		e.preventDefault();
-		useMapStore.getState().toggleStarredPoi(poi.id);
-		sync(useMapStore.getState().starredPoiIds.has(poi.id));
+	const updateFromStore = (): void => {
+		sync(getActiveStarredPoiIds(useMapStore.getState()).has(poi.id));
+	};
+	if (btn.dataset.wired !== '1') {
+		btn.dataset.wired = '1';
+		btn.addEventListener('click', (e) => {
+			e.preventDefault();
+			useMapStore.getState().toggleStarredPoi(poi.id);
+			updateFromStore();
+		});
+	}
+	updateFromStore();
+	const unsub = useMapStore.subscribe((state, prev) => {
+		if (
+			state.starredPoiCollections === prev.starredPoiCollections &&
+			state.activeStarredCollectionId === prev.activeStarredCollectionId
+		) {
+			return;
+		}
+		if (!popup.isOpen()) return;
+		updateFromStore();
 	});
+	marker.once('popupclose', unsub);
 }
 
-/**
- * Wires the share button inside an open POI popup. Copies a deep-link to
- * the clipboard and flashes a temporary "Copied" label on the button. Falls
- * back to a manual prompt when the clipboard API isn't available (e.g.
- * non-https contexts or older browsers).
- */
-function wireShareButton(
-	marker: L.Marker,
-	poi: Poi,
-	labels: { shareCopied: string; shareCopiedShort: string; shareFailed: string },
-): void {
+/** Wires the share button inside an open POI popup (see share-link-copy). */
+function wireShareButton(marker: L.Marker, poi: Poi, shareLinkLabel: string): void {
 	const popup = marker.getPopup();
 	if (!popup) return;
 	const el = popup.getElement();
 	if (!el) return;
 	const btn = el.querySelector<HTMLButtonElement>(`[data-poi-share="${cssEscape(poi.id)}"]`);
 	if (!btn) return;
-	// Guard against re-wiring on multiple popupopens for the same DOM node.
+	wirePopupShareButton(btn, () => buildPoiShareUrl(poi.id), shareLinkLabel);
+}
+
+function wireAddAsWaypointButton(marker: L.Marker, poi: Poi, displayName: string): void {
+	const popup = marker.getPopup();
+	if (!popup) return;
+	const el = popup.getElement();
+	if (!el) return;
+	const btn = el.querySelector<HTMLButtonElement>(`[data-poi-add-waypoint="${cssEscape(poi.id)}"]`);
+	if (!btn) return;
 	if (btn.dataset.wired === '1') return;
 	btn.dataset.wired = '1';
-	const originalLabel = btn.textContent ?? '';
-	btn.addEventListener('click', async (e) => {
+	btn.addEventListener('click', (e) => {
 		e.preventDefault();
-		const longUrl = buildPoiShareUrl(poi.id);
-		const { url, short } = await resolveShareUrlForCopy(longUrl, {
-			useShortLinks: useMapStore.getState().shareShortLinks,
-			online: navigator.onLine,
+		const state = useMapStore.getState();
+		const category = poiTypeToSuggestedWaypointCategory(poi.type);
+		const id = newId();
+		state.addUserWaypoint({
+			id,
+			lat: poi.lat,
+			lng: poi.lng,
+			name: displayName,
+			note: '',
+			category,
+			createdAt: new Date().toISOString(),
+			trailKm: poi.trailKm,
 		});
-		let ok = false;
-		try {
-			if (typeof navigator !== 'undefined' && navigator.clipboard?.writeText) {
-				await navigator.clipboard.writeText(url);
-				ok = true;
-			}
-		} catch {
-			ok = false;
-		}
-		btn.textContent = ok ? (short ? labels.shareCopiedShort : labels.shareCopied) : labels.shareFailed;
-		// Reset the label after a short interval so the button stays usable.
-		window.setTimeout(() => {
-			btn.textContent = originalLabel;
-		}, 1800);
+		state.requestOpenWaypoint(id);
+		marker.closePopup();
 	});
 }
 

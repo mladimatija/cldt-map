@@ -9,6 +9,7 @@
  */
 
 import type { UnitSystem } from './types';
+import { normalizeWaypointCategory, type WaypointCategoryId } from './waypoint-categories';
 
 export interface UserWaypoint {
 	id: string;
@@ -16,6 +17,8 @@ export interface UserWaypoint {
 	lng: number;
 	name: string;
 	note: string;
+	/** Preset category controlling pin color and GPX export type/sym. */
+	category?: WaypointCategoryId;
 	/** ISO timestamp of creation. */
 	createdAt: string;
 	/** Snapped trail position in km from the SOBO start; null when the
@@ -33,6 +36,10 @@ export interface JournalEntry {
 	startKm?: number;
 	endKm?: number;
 	createdAt: string;
+}
+
+export function normalizeUserWaypoint(wp: UserWaypoint): UserWaypoint {
+	return { ...wp, category: normalizeWaypointCategory(wp.category) };
 }
 
 export function newId(): string {

@@ -10,8 +10,13 @@
  * the user's changes before PDF/DOCX/HTML generation.
  */
 
-import { computeStageStats } from '@/lib/stage-planner';
+import { computeStageStats, DEFAULT_MAX_HOURS_PER_DAY } from '@/lib/stage-planner';
 import { isUsableWaterSource, longestDryStretchKm } from '@/lib/water-intelligence';
+import {
+	collectResupplyTownPoints,
+	computePlanResupplyCadence,
+	type StageResupplyCadence,
+} from '@/lib/resupply-cadence';
 import { formatEta } from '@/lib/distance-utils';
 import { formatDistance } from '@/lib/utils';
 import {
@@ -50,6 +55,8 @@ export interface TripBriefMeta {
 	/** Localized pack summary for the cover table ("10.2 kg + water"),
 	 *  resolved by the caller. Absent when the pack-weight feature is off. */
 	packSummary?: string;
+	/** Localized food resupply cadence summary for the cover table. */
+	resupplySummary?: string;
 	/** Fully resolved gear checklist page content (imported pack list);
 	 *  absent when no CSV was imported. */
 	gearChecklist?: {
@@ -101,6 +108,12 @@ export interface TripBriefDay {
 	packBaseLabel?: string;
 	/** Localized max-load line when the stage needs extra water carry. */
 	packLoadedLabel?: string;
+	/** Localized line when entering the stage without a recent grocery resupply. */
+	resupplyEnteringLabel?: string;
+	/** Localized carry-through line when grocery resupply is missing or partial. */
+	resupplyCarryLabel?: string;
+	/** Localized pack consumables vs hiking days estimate. */
+	foodPackLabel?: string;
 	/** PNG data URL of the day's elevation profile, attached by the modal
 	 *  after assembly (canvas is a browser API; the assembler stays pure). */
 	elevationThumb?: string;
@@ -163,6 +176,23 @@ export interface TripBriefAssemblyArgs {
 	packScenarioLabels?: (dryStretchKm: number) => { base: string; loaded?: string } | undefined;
 	/** Fully resolved gear checklist content; passed through to the meta. */
 	gearChecklist?: TripBriefMeta['gearChecklist'];
+	/** Resolve a resupply town POI id to a display name. */
+	poiName?: (id: string) => string;
+	/** Build localized resupply cadence strings (cover + per-day). */
+	resupplyCadenceLabels?: (
+		cadence: StageResupplyCadence,
+		stageIndex: number,
+	) => {
+		entering?: string;
+		carry?: string;
+		foodPack?: string;
+	};
+	/** Build the cover resupply summary from plan-level cadence. */
+	resupplySummaryLabel?: (args: {
+		maxFoodGapKm: number;
+		nextTown?: string;
+		nextDistanceKm?: number;
+	}) => string | undefined;
 }
 
 /**
@@ -195,7 +225,34 @@ export function assembleTripBrief(args: TripBriefAssemblyArgs): TripBrief {
 		packSummary,
 		packScenarioLabels,
 		gearChecklist,
+		resupplyCadenceLabels,
+		resupplySummaryLabel,
 	} = args;
+
+	const resupplyPoints =
+		poisFile?.pois?.length && resupplyCadenceLabels ? collectResupplyTownPoints(poisFile.pois) : [];
+	const planResupplyCadence =
+		resupplyPoints.length > 0 && stagePlan.stages.length > 0
+			? computePlanResupplyCadence(
+					stagePlan.stages,
+					poisFile?.pois ?? [],
+					resupplyPoints,
+					walkingPaceKmh,
+					DEFAULT_MAX_HOURS_PER_DAY,
+				)
+			: null;
+
+	const resupplySummary =
+		planResupplyCadence && resupplySummaryLabel
+			? resupplySummaryLabel({
+					maxFoodGapKm: planResupplyCadence.maxFoodGapKm,
+					...(planResupplyCadence.firstGrocery &&
+						planResupplyCadence.kmToFirstGrocery !== null && {
+							nextTown: args.poiName?.(planResupplyCadence.firstGrocery.id),
+							nextDistanceKm: planResupplyCadence.kmToFirstGrocery,
+						}),
+				})
+			: undefined;
 
 	const totalKm =
 		stagePlan.stages.length > 0 ? stagePlan.stages[stagePlan.stages.length - 1].endKm - stagePlan.stages[0].startKm : 0;
@@ -259,6 +316,9 @@ export function assembleTripBrief(args: TripBriefAssemblyArgs): TripBrief {
 				? packScenarioLabels(longestDryStretchKm(stage.startKm, stage.endKm, waterSourceKms))
 				: undefined;
 
+		const stageCadence = planResupplyCadence?.stages[i];
+		const resupplyLabels = stageCadence && resupplyCadenceLabels ? resupplyCadenceLabels(stageCadence, i) : undefined;
+
 		return {
 			index: i,
 			stageId: `stage-${i}`,
@@ -283,6 +343,9 @@ export function assembleTripBrief(args: TripBriefAssemblyArgs): TripBrief {
 			seasonalAlerts: stageAlerts,
 			...(packLabels?.base && { packBaseLabel: packLabels.base }),
 			...(packLabels?.loaded && { packLoadedLabel: packLabels.loaded }),
+			...(resupplyLabels?.entering && { resupplyEnteringLabel: resupplyLabels.entering }),
+			...(resupplyLabels?.carry && { resupplyCarryLabel: resupplyLabels.carry }),
+			...(resupplyLabels?.foodPack && { foodPackLabel: resupplyLabels.foodPack }),
 		};
 	});
 
@@ -313,6 +376,7 @@ export function assembleTripBrief(args: TripBriefAssemblyArgs): TripBrief {
 			strings,
 			...(startDate && { startDate }),
 			...(packSummary && { packSummary }),
+			...(resupplySummary && { resupplySummary }),
 			...(gearChecklist && { gearChecklist }),
 		},
 		overview,

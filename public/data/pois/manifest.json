@@ -1,16 +1,16 @@
 {
-	"lastUpdated": "2026-06-11",
+	"lastUpdated": "2026-06-14",
 	"counts": {
 		"town": 29,
-		"settlement": 1853,
-		"peak": 5506,
-		"viewpoint": 171,
+		"settlement": 345,
+		"peak": 1370,
+		"viewpoint": 117,
 		"hut": 174,
 		"shelter": 78,
-		"restaurant": 893,
-		"cafe": 644,
+		"restaurant": 892,
+		"cafe": 645,
 		"food": 0,
-		"atm": 242,
+		"atm": 236,
 		"water": 279
 	}
 }

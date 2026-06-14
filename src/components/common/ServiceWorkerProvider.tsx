@@ -132,7 +132,7 @@ export function ServiceWorkerProvider({ children }: ServiceWorkerProviderProps):
 			void loadTileCacheMeta(providerKey).then(() => {
 				const meta = useMapStore.getState().tileCacheMeta;
 				if (!meta || isCacheStale(meta)) {
-					void startTileDownload(enhancedTrailPoints, baseMapProvider);
+					void startTileDownload(enhancedTrailPoints, baseMapProvider, { source: 'autoSync' });
 				}
 			});
 		};

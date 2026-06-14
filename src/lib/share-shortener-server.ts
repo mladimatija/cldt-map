@@ -13,7 +13,7 @@ export const SHARE_LINKS_BLOB_STORE = 'share-links';
 export const SHARE_LINK_TTL_MS = 90 * 86_400_000;
 export const SHARE_CODE_PATTERN = /^[A-Za-z0-9_-]{7}$/;
 /** Backoff after a Blobs write before treating a code as missing (eventual consistency). */
-export const SHARE_LINK_READ_RETRY_DELAYS_MS = [100, 200, 300, 500, 1000] as const;
+export const SHARE_LINK_READ_RETRY_DELAYS_MS = [200, 500, 1000, 2000, 4000] as const;
 
 export interface ShareLinkRecord {
 	/** Pathname + search only, e.g. `/?progress=42.50&dir=SOBO`. */
@@ -36,7 +36,7 @@ function addAllowedShareHost(hosts: Set<string>, value: string | null | undefine
 	const first = value.split(',')[0]?.trim();
 	if (!first) return;
 	try {
-		const host = (first.includes('://') ? new URL(first).host : first).toLowerCase();
+		const host = (first.includes('://') ? new URL(first).hostname : first.split(':')[0]).toLowerCase();
 		if (host) hosts.add(host);
 	} catch {
 		// ignore malformed host values
@@ -48,10 +48,18 @@ export function collectShareAllowedHosts(request: NextRequest): Set<string> {
 	const hosts = new Set<string>();
 	addAllowedShareHost(hosts, request.headers.get('x-forwarded-host'));
 	addAllowedShareHost(hosts, request.headers.get('host'));
-	addAllowedShareHost(hosts, request.nextUrl.host);
+	addAllowedShareHost(hosts, request.nextUrl.hostname);
+	// Client share URLs always use siteMetadata.url (map.cldt.hr), not window.location on prod.
+	addAllowedShareHost(hosts, siteMetadata.url);
 	addAllowedShareHost(hosts, process.env.URL);
 	addAllowedShareHost(hosts, process.env.DEPLOY_PRIME_URL);
 	addAllowedShareHost(hosts, process.env.DEPLOY_URL);
+	const extraHosts = process.env.SHARE_EXTRA_ALLOWED_HOSTS;
+	if (extraHosts) {
+		for (const part of extraHosts.split(',')) {
+			addAllowedShareHost(hosts, part.trim());
+		}
+	}
 	return hosts;
 }
 
@@ -90,7 +98,7 @@ export function normalizeShareTarget(inputUrl: string, allowedHosts: ReadonlySet
 
 	if (parsed.protocol !== 'https:' && parsed.protocol !== 'http:') return null;
 	if (parsed.username || parsed.password) return null;
-	if (!allowedHosts.has(parsed.host.toLowerCase())) return null;
+	if (!allowedHosts.has(parsed.hostname.toLowerCase())) return null;
 	if (!isAllowedSharePathname(parsed.pathname)) return null;
 	if (parsed.hash) return null;
 	if (parsed.search.length > SHARE_TARGET_MAX_LEN) return null;
@@ -123,7 +131,12 @@ async function readShareLinkRecord(code: string): Promise<ShareLinkRecord | 'mis
 	if (!SHARE_CODE_PATTERN.test(code)) return 'missing';
 
 	const store = getShareLinksStore();
-	const record = (await store.get(code, { type: 'json' })) as ShareLinkRecord | null;
+	let record: ShareLinkRecord | null;
+	try {
+		record = (await store.get(code, { type: 'json', consistency: 'strong' })) as ShareLinkRecord | null;
+	} catch {
+		record = (await store.get(code, { type: 'json' })) as ShareLinkRecord | null;
+	}
 	if (!record || typeof record.target !== 'string') return 'missing';
 	if (isShareLinkExpired(record)) return 'expired';
 	return record;
@@ -143,12 +156,6 @@ async function readShareLinkWithRetry(code: string): Promise<ShareLinkRecord | '
 	return 'missing';
 }
 
-/** True when a freshly written code is readable (not missing or expired). */
-export async function waitForShareLinkReadable(code: string): Promise<boolean> {
-	const result = await readShareLinkWithRetry(code);
-	return result !== 'missing' && result !== 'expired';
-}
-
 export async function createShortShareLink(target: string): Promise<{ code: string; record: ShareLinkRecord } | null> {
 	const store = getShareLinksStore();
 	const record = createShareLinkRecord(target);
@@ -158,14 +165,7 @@ export async function createShortShareLink(target: string): Promise<{ code: stri
 		const existing = await store.get(code);
 		if (existing) continue;
 		await store.setJSON(code, record);
-		if (!(await waitForShareLinkReadable(code))) {
-			try {
-				await store.delete(code);
-			} catch {
-				// ignore cleanup failure; next redirect will still fall back to home
-			}
-			continue;
-		}
+		// Blobs reads are eventually consistent; redirect uses readShareLinkWithRetry instead.
 		return { code, record };
 	}
 

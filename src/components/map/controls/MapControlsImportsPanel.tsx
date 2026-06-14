@@ -321,10 +321,10 @@ export function MapControlsImportsPanel(): React.ReactElement {
 											}
 											return (
 												<>
-													<p className="mb-1 text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400">
+													<p className="mb-1 text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
 														{t('poisCountHit', { count: hits.length })}
 													</p>
-													<p className="mb-1.5 text-[10px] leading-snug text-gray-500 dark:text-gray-400">
+													<p className="mb-1.5 text-[10px] leading-snug text-gray-500 dark:text-[var(--text-secondary)]">
 														{t('reportPoisLegend')}
 													</p>
 													{hits.map((hit) => {
@@ -342,7 +342,7 @@ export function MapControlsImportsPanel(): React.ReactElement {
 																onClick={() => handlePoiHitClick(hit.poi)}
 															>
 																<span className="truncate font-medium">{name}</span>
-																<span className="ml-auto shrink-0 text-[10px] text-gray-500 dark:text-gray-400">
+																<span className="ml-auto shrink-0 text-[10px] text-gray-500 dark:text-[var(--text-secondary)]">
 																	{typeLabel} · {summaryLine}
 																</span>
 															</button>

@@ -2,7 +2,10 @@
 
 import React, { AnchorHTMLAttributes } from 'react';
 
-const EXTERNAL_LINK_CLASS = 'text-cldt-blue font-medium outline-none hover:underline focus-visible:underline';
+/** Shared styling for in-app and external text links. */
+export const INLINE_LINK_CLASS = 'text-cldt-blue font-medium outline-none hover:underline focus-visible:underline';
+
+const EXTERNAL_LINK_CLASS = INLINE_LINK_CLASS;
 
 const EXTERNAL_LINK_REL = 'noopener noreferrer';
 

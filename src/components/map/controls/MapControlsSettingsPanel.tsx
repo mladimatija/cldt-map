@@ -108,10 +108,20 @@ export function MapControlsSettingsPanel({
 	const setSunsetProjection = useMapStore((state: MapStoreState) => state.setSunsetProjection);
 	const showUpNext = useMapStore((state: MapStoreState) => state.showUpNext);
 	const setShowUpNext = useMapStore((state: MapStoreState) => state.setShowUpNext);
+	const upNextShowFood = useMapStore((state: MapStoreState) => state.upNextShowFood);
+	const setUpNextShowFood = useMapStore((state: MapStoreState) => state.setUpNextShowFood);
+	const upNextShowAtm = useMapStore((state: MapStoreState) => state.upNextShowAtm);
+	const setUpNextShowAtm = useMapStore((state: MapStoreState) => state.setUpNextShowAtm);
+	const upNextShowViewpoint = useMapStore((state: MapStoreState) => state.upNextShowViewpoint);
+	const setUpNextShowViewpoint = useMapStore((state: MapStoreState) => state.setUpNextShowViewpoint);
+	const upNextShowPharmacy = useMapStore((state: MapStoreState) => state.upNextShowPharmacy);
+	const setUpNextShowPharmacy = useMapStore((state: MapStoreState) => state.setUpNextShowPharmacy);
 	const packBaseWeightKg = useMapStore((state: MapStoreState) => state.packBaseWeightKg);
 	const setPackBaseWeightKg = useMapStore((state: MapStoreState) => state.setPackBaseWeightKg);
 	const waterConsumptionLph = useMapStore((state: MapStoreState) => state.waterConsumptionLph);
 	const setWaterConsumptionLph = useMapStore((state: MapStoreState) => state.setWaterConsumptionLph);
+	const foodConsumptionKgPerDay = useMapStore((state: MapStoreState) => state.foodConsumptionKgPerDay);
+	const setFoodConsumptionKgPerDay = useMapStore((state: MapStoreState) => state.setFoodConsumptionKgPerDay);
 	const packEtaAdjust = useMapStore((state: MapStoreState) => state.packEtaAdjust);
 	const setPackEtaAdjust = useMapStore((state: MapStoreState) => state.setPackEtaAdjust);
 	const packGearList = useMapStore((state: MapStoreState) => state.packGearList);
@@ -130,9 +140,6 @@ export function MapControlsSettingsPanel({
 	const setWaymarkedTrailsOverlay = useMapStore((state: MapStoreState) => state.setWaymarkedTrailsOverlay);
 	const shareShortLinks = useMapStore((state: MapStoreState) => state.shareShortLinks);
 	const setShareShortLinks = useMapStore((state: MapStoreState) => state.setShareShortLinks);
-	const includeRemotePois = useMapStore((state: MapStoreState) => state.includeRemotePois);
-	const setIncludeRemotePois = useMapStore((state: MapStoreState) => state.setIncludeRemotePois);
-
 	/** Permission prompt must run inside this click handler; failures (denied,
 	 *  unsupported, deploy without VAPID keys) revert the toggle silently. */
 	const handlePushAlertsToggle = async (checked: boolean): Promise<void> => {
@@ -482,18 +489,6 @@ export function MapControlsSettingsPanel({
 					)}
 
 					<label className="flex cursor-pointer items-start gap-2">
-						<Checkbox checked={includeRemotePois} onCheckedChange={(checked) => setIncludeRemotePois(checked)} />
-						<div className="flex flex-col">
-							<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">
-								{t('includeRemotePoisLabel')}
-							</span>
-							<span className="text-xs text-gray-500 dark:text-[var(--text-secondary)]">
-								{t('includeRemotePoisHint')}
-							</span>
-						</div>
-					</label>
-
-					<label className="flex cursor-pointer items-start gap-2">
 						<Checkbox checked={shareShortLinks} onCheckedChange={(checked) => setShareShortLinks(checked)} />
 						<div className="flex flex-col">
 							<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">{t('shareShortLinksLabel')}</span>
@@ -584,9 +579,47 @@ export function MapControlsSettingsPanel({
 						</div>
 					</label>
 
+					{showUpNext && (
+						<div className="ml-6 flex flex-col gap-2">
+							<label className="flex cursor-pointer items-center gap-2">
+								<Checkbox checked={upNextShowFood} onCheckedChange={(checked) => setUpNextShowFood(checked)} />
+								<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]" title={t('upNextShowFoodHint')}>
+									{t('upNextShowFoodLabel')}
+								</span>
+							</label>
+							<label className="flex cursor-pointer items-center gap-2">
+								<Checkbox checked={upNextShowAtm} onCheckedChange={(checked) => setUpNextShowAtm(checked)} />
+								<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]" title={t('upNextShowAtmHint')}>
+									{t('upNextShowAtmLabel')}
+								</span>
+							</label>
+							<label className="flex cursor-pointer items-center gap-2">
+								<Checkbox
+									checked={upNextShowViewpoint}
+									onCheckedChange={(checked) => setUpNextShowViewpoint(checked)}
+								/>
+								<span
+									className="text-sm text-gray-700 dark:text-[var(--text-primary)]"
+									title={t('upNextShowViewpointHint')}
+								>
+									{t('upNextShowViewpointLabel')}
+								</span>
+							</label>
+							<label className="flex cursor-pointer items-center gap-2">
+								<Checkbox checked={upNextShowPharmacy} onCheckedChange={(checked) => setUpNextShowPharmacy(checked)} />
+								<span
+									className="text-sm text-gray-700 dark:text-[var(--text-primary)]"
+									title={t('upNextShowPharmacyHint')}
+								>
+									{t('upNextShowPharmacyLabel')}
+								</span>
+							</label>
+						</div>
+					)}
+
 					<div className="flex flex-col gap-1.5">
 						<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">{t('packWeightTitle')}</span>
-						<label className="flex items-center justify-between gap-2 text-xs text-gray-600 dark:text-gray-400">
+						<label className="flex items-center justify-between gap-2 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
 							{t('packBaseWeightLabel')}
 							<span className="flex shrink-0 items-center gap-1">
 								<input
@@ -607,7 +640,7 @@ export function MapControlsSettingsPanel({
 								<span className="w-5">{weightUnitLabel(units)}</span>
 							</span>
 						</label>
-						<label className="flex items-center justify-between gap-2 text-xs text-gray-600 dark:text-gray-400">
+						<label className="flex items-center justify-between gap-2 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
 							{t('waterConsumptionLabel')}
 							<span className="flex shrink-0 items-center gap-1">
 								<input
@@ -624,6 +657,23 @@ export function MapControlsSettingsPanel({
 								<span className="w-5">{volumeUnitLabel(units)}/h</span>
 							</span>
 						</label>
+						<label className="flex items-center justify-between gap-2 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
+							{t('foodConsumptionLabel')}
+							<span className="flex shrink-0 items-center gap-1">
+								<input
+									className={cn(MAP_CONTROL_INPUT, 'w-20 text-right')}
+									min={0.1}
+									step={0.1}
+									type="number"
+									value={Math.round(kgToDisplay(foodConsumptionKgPerDay, units) * 100) / 100}
+									onChange={(e) => {
+										const v = Number(e.target.value);
+										if (Number.isFinite(v) && v > 0) setFoodConsumptionKgPerDay(displayToKg(v, units));
+									}}
+								/>
+								<span className="w-8">{weightUnitLabel(units)}/day</span>
+							</span>
+						</label>
 						<p className="m-0 text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('packWeightHint')}</p>
 						<input
 							accept=".csv,text/csv"
@@ -637,7 +687,7 @@ export function MapControlsSettingsPanel({
 							}}
 						/>
 						{packGearList ? (
-							<div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
+							<div className="flex items-center gap-2 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
 								<span className="min-w-0 flex-1 truncate">
 									{t('packCsvSummary', {
 										name: packGearList.sourceName,

@@ -34,9 +34,10 @@
 			"trail": "Kliknite rutu ili grafikon nadmorske visine za prikaz udaljenosti i nadmorske visine u bilo kojoj točki",
 			"elevation": "Grafikon profila nadmorske visine; prelazak mišem za pregled na karti, klik za prikvačivanje točke",
 			"ruler": "Ravnalo za mjerenje udaljenosti između dvije točke",
-			"layers": "Više slojeva karte (standardna, topo, satelit, teren, bicikl, Hrvatska Topo)",
+			"distanceEtaOverlay": "Preklop udaljenosti i ETA - živi HUD s pređenom i preostalom udaljenošću, preostalim usponom/spustom i ETA do kraja staze ili aktivnog odsječka ravnala",
+			"layers": "Više slojeva karte (standardna, topo, planinarska, satelit, teren, bicikl, Hrvatska Topo, tamna), plus opcionalni Waymarked Trails sloj OSM planinarskih ruta (prekidač u Postavkama, samo online)",
 			"location": "Opcionalno praćenje lokacije za prikaz vaše pozicije na stazi",
-			"share": "Dijeljenje linkova s trenutnim prikazom ili napretkom na stazi; gumb dijeljenja otvara QR kod za skeniranje s drugog telefona i kopiranje poveznice",
+			"share": "Poveznice dijele cijeli prikaz karte - poziciju, smjer, jedinice, slojeve, raspon ravnala, plan etapa, waypointe i dnevnik. Gumb dijeljenja otvara QR ploču i kopiranje poveznice; kratke poveznice (/s/'{'code'}') kad ste online i uključene u Postavkama",
 			"units": "Metričke i imperijalne jedinice",
 			"darkMode": "Tamni način rada i opcije za uštedu baterije",
 			"offlineMaps": "Offline karte - preuzmite koridor staze za korištenje bez signala",
@@ -45,6 +46,8 @@
 			"weather": "Trenutno vrijeme na vašoj lokaciji na stazi - temperatura, vjetar, vjerojatnost padalina, izlazak/zalazak sunca; 12-satna prognoza s prikazom padalina i preporukom najboljeg prozora (DHMZ + Open-Meteo)",
 			"trailNotices": "Regionalne obavijesti o stanju na stazi - odbacive obavijesti s upozorenjima za trenutne uvjete na stazi",
 			"seasonalStatus": "Sezonsko stanje puta - sloj karte s upozorenjima, zatvaranjima i sezonskim uvjetima prikupljenim s DHMZ-a, HGSS-a, HPS-a i nacionalnih parkova; markeri po boji ozbiljnosti smješteni u sredinu svakog zahvaćenog raspona; prijeđite kursorom ili kliknite na marker za isticanje dionice i otvaranje detaljnog prozora s razinom, preporučenom opremom i poveznicom na izvornu obavijest; podaci se osvježavaju pokretanjem naredbe `npm run update-seasonal`",
+			"mineAreas": "Područja s mogućim minama - službeni MUP/HCR poligoni uz stazu s upozoravajućim markerima i GPS trakama (ne može se odbaciti unutar poligona, može se unutar 500 m); uključeno zadano, potpuno offline nakon predmemoriranja; samo informativno - uvijek poštuj oznake na terenu",
+			"severeWeather": "Upozorenja na ozbiljno vrijeme - Meteoalarm CAP upozorenja za Hrvatsku kao poligoni na karti s GPS trakama; crvena/upozorenja visoke razine ne mogu se odbaciti; podaci se osvježavaju svakih 15 minuta",
 			"radar": "Preklopni sloj radara padalina - animirani RainViewer radar s prošlim i prognoziranim kadrovima, kontrole reproduciranja i legenda boja",
 			"sunsetPosition": "Pozicija zalaska/izlaska sunca - prikazuje gdje ćete biti na stazi u trenutku zalaska i izlaska sunca prema trenutnom tempu; markeri na poliliniji",
 			"stagePlanner": "Planer višednevnih etapa - podijelite bilo koji dio staze na dnevne etape prema udaljenosti ili vremenu, pregledajte statistike nadmorske visine i ETA po etapi, izvezite pojedine etape kao GPX datoteke ili sve etape kao PDF karte etapa",
@@ -53,17 +56,17 @@
 			"trailStyle": "Stil staze - odaberi kako će ruta biti obojana u ploči slojeva: Zadano (jedna boja), Dionice (zone A/B/C s graničnim oznakama i statistikom po dionici), Nagib (gradijentno bojanje u pet pojaseva, topli tonovi za uspone i hladni za silazne dijelove u trenutnom smjeru hodanja; legenda u ploči; ponovno se izračunava pri promjeni smjera SOBO/NOBO), Podloga ili Težina (SAC)",
 			"surfaceAndSac": "Bojanje po podlozi i težini - oboji liniju staze (i pozadinu grafa nadmorske visine) prema OSM tipu podloge (asfalt / neasfaltirano / šljunak / tlo / stijena) ili SAC ljestvici planinarenja (T1 planinarenje do T6 teško alpinističko). Podatke jednom mjesečno osvježava GitHub Action iz OpenStreetMapa; opcije Podloga i Težina ostaju onemogućene dok se skup ne učita pri prvom prikazu. Smjer-svjestan: skup je vezan uz SOBO km, a renderer ih u hodu zrcali na NOBO",
 			"distanceMarkers": "Oznake kilometara - male oznake km / mi duž staze na intervalima 100 / 50 / 25 / 10 / 5 / 1. Progresivni prikaz prema razini zumiranja: 100 km uvijek vidljivo na bilo kojem zumu, finiji intervali pojavljuju se dok zumirate (oznake od 1 km tek na zumu 13+). Uključivo iz Postavki; oznake slijede aktivni sustav jedinica i trenutni smjer (SOBO/NOBO)",
-			"pois": "Točke interesa, popis i pretraga - oko 7.700 mjesta uz stazu (gradovi, naselja, vrhovi, vidikovci, planinarski domovi, skloništa, prehrana i bankomati) unutar granica Hrvatske. Filtri po tipu i oznakama u Postavkama i bočnoj ploči. Markeri se grupiraju na razini države, a razdvajaju kako zumiraš. Skočni prozori prikazuju galeriju slika s Wikimedia Commonsa (s autorstvom i licencom; pritisni bilo koju sličicu za fullscreen lightbox s tipkovničkom navigacijom), sažetak s Wikipedije koji se pojavljuje odmah (pripremljen za poznata mjesta, lijeno učitan za ostala), podnožje s izvorom podataka i datumom posljednje provjere, te gumb 'Kopiraj poveznicu'. Popis se sortira po kilometraži, imenu, udaljenosti od staze ili 'Blizu mene'; opcionalno grupiranje po 50 km dijeli dugi popis u poglavlja sa zalijepljenim zaglavljima; potpuna tipkovnička navigacija. Planer etapa pokazuje koliko mjesta upada u svaku dnevnu etapu, nabraja ih u redoslijedu hoda i može izvesti sve POI-jeve cijelog plana u jednu GPX datoteku. Uvezeni GPX tragovi mogu prikazati POI-jeve kraj kojih si prošao unutar 500 m, redoslijedom hoda. Pretraži po imenu (s dijakritičkim znakovima) ili po kilometraži. Predmemorirana preuzimanja koridora skidaju POI sličice i sažetke s Wikipedije za potpune skočne prozore i offline. Skup podataka osvježava se mjesečno iz OpenStreetMapa, Wikidata, Wikimedia Commonsa i HPS direktorija; obogaćivanje je otporno na pogreške pa pojedinačni problem kod jednog izvora ne može tiho degradirati skup",
+			"pois": "Točke interesa, popis i pretraga - oko 7.700 mjesta uz stazu (gradovi, naselja, vrhovi, vidikovci, planinarski domovi, skloništa, prehrana i bankomati) unutar granica Hrvatske. Filtri po tipu u ploči slojeva; filtri po oznakama, spremljeni preseti filtera, više imenovanih lista označenih mjesta i prekidač za udaljene POI-jeve u bočnoj ploči popisa. Markeri se grupiraju na razini države, a razdvajaju kako zumiraš. Skočni prozori prikazuju galeriju slika s Wikimedia Commonsa (s autorstvom i licencom; pritisni bilo koju sličicu za fullscreen lightbox s tipkovničkom navigacijom), sažetak s Wikipedije koji se pojavljuje odmah (pripremljen za poznata mjesta, lijeno učitan za ostala), podnožje s izvorom podataka i datumom posljednje provjere, te gumb 'Kopiraj poveznicu'. Popis se sortira po kilometraži, imenu, udaljenosti od staze ili 'Blizu mene'; opcionalno grupiranje po 50 km dijeli dugi popis u poglavlja sa zalijepljenim zaglavljima; potpuna tipkovnička navigacija. Planer etapa pokazuje koliko mjesta upada u svaku dnevnu etapu, nabraja ih u redoslijedu hoda i može izvesti sve POI-jeve cijelog plana u jednu GPX datoteku. Uvezeni GPX tragovi mogu prikazati POI-jeve kraj kojih si prošao unutar 500 m, redoslijedom hoda. Pretraži po imenu (s dijakritičkim znakovima) ili po kilometraži. Predmemorirana preuzimanja koridora skidaju POI sličice i sažetke s Wikipedije za potpune skočne prozore i offline. Skup podataka osvježava se mjesečno iz OpenStreetMapa, Wikidata, Wikimedia Commonsa i HPS direktorija; obogaćivanje je otporno na pogreške pa pojedinačni problem kod jednog izvora ne može tiho degradirati skup",
 			"tripBrief": "Izvoz vodiča za putovanje - PDF (za ispis) ili DOCX (za uređivanje) generiran iz tvojeg višednevnog plana etapa. Svaka stranica jednog dana ima sliku karte, kratki opis, mjesta uz put (ime, tip, kilometraža, fotografije, sažetak s Wikipedije) i sva sezonska upozorenja koja zahvaćaju taj dan. Stražnja stranica okuplja smjernice za hitne situacije: poziv 112, format zahtjeva za HGSS i osnovnu opremu. Lokalizirano na en / hr / de / it. Opcionalna AI naracija dana (generirana iz činjenica samog plana, samo online, s napomenom o točnosti); predložak ostaje zadan i automatska zamjena",
 			"offRouteAlert": "Upozorenje o skretanju s rute - opcionalno upozorenje (zadano isključeno) kad se udaljiš više od 200 m od staze: traka s udaljenošću i smjerom natrag, uz vibraciju. Aktivira se tek kad te GPS smjesti na stazu, pa šuti drugdje u Hrvatskoj, i samo se deaktivira kad stvarno odeš (autobus, taksi, kraj dana)",
 			"waterIntelligence": "Pametne informacije o vodi - svako mjesto s vodom nosi klasu pouzdanosti iz OSM oznaka: pouzdana slavina, sezonska (moguće presušena), neprovjereni izvor (pročistiti prije pića) ili nije za piće. Klasa boji marker, prikazuje se kao oznaka u prozorima i popisima, a planer etapa označava dane čija najdulja dionica bez upotrebljive vode prelazi 15 / 25 km",
 			"completionTracking": "Praćenje prijeđenih dionica - označi što si prehodao: automatski iz GPS-a dok si na stazi, ručno iz odabira ravnalom ili cijelih dionica A/B/C, ili uvozom snimljene GPX rute. Prijeđene dionice crtaju se zeleno preko bilo kojeg stila staze; ploča napretka i oblačić lokacije prikazuju ukupni i napredak po dionicama",
 			"helpPanel": "Pomoć u aplikaciji - gumb ? otvara tematski organiziran pregled: osnove karte, profil visine, skrivene geste (dugi pritisak SOS-a, povlačenje GPX datoteke), alati za planiranje i offline ponašanje",
-			"upNext": "Prikaz \"Slijedi\" - najbliži izvor vode, sklonište i grad ispred vas, s udaljenostima, izravno u panelu udaljenosti",
+			"upNext": "Prikaz \"Slijedi\" - najbliži izvor vode, sklonište i grad ispred vas, s udaljenostima, izravno u panelu udaljenosti. Opcionalni redovi za hranu, bankomat, vidikovac i ljekarnu u Postavkama.",
 			"packWeight": "Težina ruksaka i nošenje vode - preporuke \"ponesite do X L\" po etapi iz vaše osnovne težine i potrošnje, metrički ili imperijalno",
 			"waypointsJournal": "Vlastite točke i dnevnik puta - dugi pritisak na kartu za osobne oznake s bilješkama, dnevnik s datumima, izvoz u GPX/Markdown; sve ostaje na vašem uređaju",
 			"resupply": "Vodiči za opskrbu - trgovine, ljekarne, bankomati, pošta i autobus iz OpenStreetMapa u prozorima gradova, s oznakama opskrbe po etapi u planeru",
-			"pushAlerts": "Obavijesti o upozorenjima - neobavezne push obavijesti preglednika kad se objavi novo sezonsko upozorenje, čak i kad je aplikacija zatvorena; bez računa"
+			"pushAlerts": "Obavijesti o upozorenjima - neobavezne push obavijesti preglednika kad se objavi novo sezonsko upozorenje ili obavijest o stanju staze, čak i kad je aplikacija zatvorena; bez računa"
 		},
 		"dataAttribution": "Podaci i atribucija",
 		"dataAttributionDesc": "Podatke o stazi pruža organizacija Udruga Long Distance Trail Hrvatska (LDTH). Karte dolaze od OpenStreetMap, OpenTopoMap, OpenHikingMap (openmaps.fr), Waymarked Trails, CyclOSM i drugih pružatelja. Hrvatske topografske karte su od Državne geodetske uprave (DGU). Meteorološki podaci dolaze od DHMZ-a (Državni hidrometeorološki zavod) i Open-Meteo. Radarske pločice osigurava RainViewer. Podaci o sezonskom stanju puta, upozorenja o opasnostima i podaci o stanicama gorske službe spašavanja preuzeti su od HGSS-a (Hrvatska gorska služba spašavanja), HPS-a (Hrvatski planinarski savez) te uprava nacionalnih parkova (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) i Parka prirode Velebit. Podaci prikazani na ovoj stranici možda ne odražavaju najnovije stanje. U slučaju sumnje, uvijek provjerite službene izvore.",
@@ -76,7 +79,10 @@
 		"createdBy": "Autor",
 		"visitAuthor": "Posjetite web stranicu {authorName}",
 		"officialApp": "Službena CLDT aplikacija",
-		"officialAppDesc": "Službena mobilna aplikacija CLDT-a je <link>FarOut</link>, objavljena u suradnji s udrugom. {title} je neovisan projekt i namijenjen je isključivo istraživačkim i edukativnim svrhama - ključne informacije (voda, opasnosti, zatvaranja) uvijek provjerite u službenim izvorima prije oslanjanja na terenu."
+		"officialAppDesc": "Službena mobilna aplikacija CLDT-a je <link>FarOut</link>, objavljena u suradnji s udrugom. {title} je neovisan projekt i namijenjen je isključivo istraživačkim i edukativnim svrhama - ključne informacije (voda, opasnosti, zatvaranja) uvijek provjerite u službenim izvorima prije oslanjanja na terenu.",
+		"demoCalloutTitle": "Isprobaj demo hodnju",
+		"demoCalloutDesc": "Hodajte stazom brzinom od oko 4 km/h uz uzorke točaka, dnevnički zapis i praćenje napretka - bez GPS-a.",
+		"demoCalloutLink": "Isprobaj demo hodnju"
 	},
 	"home": {
 		"srTitle": "Karta {companyName}"
@@ -232,10 +238,19 @@
 		"helpShow": "Prikaži pomoć",
 		"helpHide": "Sakrij pomoć",
 		"showUpNextLabel": "Prikaz \"Slijedi\" u panelu udaljenosti",
-		"showUpNextHint": "Prikazuje sljedeći izvor vode, sklonište i grad ispred vas u smjeru kretanja. Dodirnite redak za otvaranje na karti.",
+		"showUpNextHint": "Prikazuje sljedeći izvor vode, sklonište i grad ispred vas u smjeru kretanja. Uključite opcionalne retke ispod za hranu, bankomat, vidikovac ili ljekarnu. Dodirnite redak za otvaranje na karti.",
+		"upNextShowFoodLabel": "Hrana u prikazu Slijedi",
+		"upNextShowFoodHint": "Najbliži restoran ili kafić ispred, u sklopivom odjeljku Više ispred.",
+		"upNextShowAtmLabel": "Bankomat u prikazu Slijedi",
+		"upNextShowAtmHint": "Najbliži bankomat ispred, u sklopivom odjeljku Više ispred.",
+		"upNextShowViewpointLabel": "Vidikovac u prikazu Slijedi",
+		"upNextShowViewpointHint": "Najbliži vidikovac ispred, u sklopivom odjeljku Više ispred.",
+		"upNextShowPharmacyLabel": "Ljekarna u prikazu Slijedi",
+		"upNextShowPharmacyHint": "Najbliži grad s ljekarnom ispred, u sklopivom odjeljku Više ispred.",
 		"packWeightTitle": "Težina ruksaka",
 		"packBaseWeightLabel": "Osnovna težina (bez vode)",
 		"waterConsumptionLabel": "Potrošnja vode",
+		"foodConsumptionLabel": "Potrošnja hrane",
 		"packWeightHint": "Uključuje preporuke nošenja vode po etapi. Ostavite osnovnu težinu praznom za isključivanje.",
 		"packEtaAdjustLabel": "Prilagodi procjene vremena težini ruksaka",
 		"packEtaAdjustHint": "Usporava procjene za oko 1% po kilogramu osnovne težine iznad {reference}.",
@@ -243,14 +258,12 @@
 		"packCsvSummary": "{name}: {count} stavki, osnovno {base}",
 		"packCsvClear": "Ukloni",
 		"packCsvError": "CSV nije moguće pročitati. Izvezite ga iz LighterPacka ili Packstacka i pokušajte ponovno.",
-		"pushAlertsLabel": "Obavijesti o novim upozorenjima",
-		"pushAlertsHint": "Obavijest preglednika kad se objavi novo sezonsko upozorenje za stazu. Radi i dok je aplikacija zatvorena; bez računa.",
+		"pushAlertsLabel": "Obavijesti o upozorenjima staze",
+		"pushAlertsHint": "Obavijest preglednika kad se objavi novo sezonsko upozorenje ili obavijest o stanju staze. Radi i dok je aplikacija zatvorena; bez računa.",
 		"waymarkedLabel": "Sloj markiranih planinarskih ruta",
 		"waymarkedHint": "Iscrtava OSM planinarske rute (Waymarked Trails) preko osnovne karte. Samo online.",
 		"shareShortLinksLabel": "Koristi kratke poveznice za dijeljenje",
-		"shareShortLinksHint": "Kopira kratku poveznicu koja otvara isti prikaz karte. Za stvaranje poveznice potrebna je internetska veza.",
-		"includeRemotePoisLabel": "Uključi udaljene POI-je",
-		"includeRemotePoisHint": "Prikazuje mjesta označena kao teško dostupna pješice bez obližnje autobusne ili željezničke stanice sa strane staze. Prema zadanim postavkama isključeno."
+		"shareShortLinksHint": "Kopira kratku poveznicu koja otvara isti prikaz karte. Za stvaranje poveznice potrebna je internetska veza."
 	},
 	"baseMapSelector": {
 		"standard": "Standardna",
@@ -442,6 +455,9 @@
 	"pwa": {
 		"installTitle": "Instaliraj CLDT kartu",
 		"installDescription": "Dodaj na početni zaslon za brzi pristup i iskustvo poput aplikacije.",
+		"installTitleOffline": "Instaliraj za offline korištenje",
+		"installDescriptionOffline": "Pločice staze su spremljene. Instaliraj aplikaciju na početni zaslon kako bi kartu otvarao offline bez kartice preglednika.",
+		"installDescriptionOfflineIos": "Pločice staze su spremljene. Dodirni Dijeli, zatim Dodaj na početni zaslon kako bi kartu otvarao offline.",
 		"install": "Instaliraj",
 		"dismiss": "Ne sada"
 	},
@@ -458,6 +474,13 @@
 	},
 	"offlineIndicator": {
 		"offline": "Izvan mreže - koristim predmemoriju"
+	},
+	"demo": {
+		"srTitle": "Demo hodnja na {title}",
+		"bannerLabel": "Demo hodnja",
+		"pause": "Pauza",
+		"resume": "Nastavi",
+		"exit": "Izađi iz dema"
 	},
 	"staleCacheNotification": {
 		"title": "Predmemorija offline karte zastarjela",
@@ -496,7 +519,8 @@
 		"clearPoiAssets": "Obriši POI sadržaje",
 		"confirmClear": "Jeste li sigurni?",
 		"confirmYes": "Da",
-		"confirmNo": "Ne"
+		"confirmNo": "Ne",
+		"downloadComplete": "Offline karte spremne"
 	},
 	"gpxDownload": {
 		"modalTitle": "Preuzmi CLDT GPX",
@@ -589,7 +613,13 @@
 		"upNextWater": "Sljedeći izvor vode",
 		"upNextShelter": "Sljedeće sklonište ili dom",
 		"upNextTown": "Sljedeći grad ili naselje",
-		"upNextSeeAll": "Prikaži svih {count} mjesta ispred"
+		"upNextFood": "Sljedeće mjesto za hranu",
+		"upNextAtm": "Sljedeći bankomat",
+		"upNextViewpoint": "Sljedeći vidikovac",
+		"upNextPharmacy": "Sljedeća ljekarna",
+		"upNextMoreAhead": "Više ispred",
+		"upNextSeeAll": "Prikaži svih {count} mjesta ispred",
+		"upNextHorizonAriaLabel": "Udaljenost ispred, {distance}"
 	},
 	"imports": {
 		"title": "Uvezene rute",
@@ -693,7 +723,13 @@
 		"stagePackTooltipBase": "Osnovni ruksak {base}",
 		"stagePackTooltipLoaded": "Osnovni ruksak {base}, maks. opterećenje {loaded} (ponesite do {volume} vode)",
 		"stageResupplyYes": "Opskrba namirnicama dostupna u ovoj etapi",
-		"stageResupplyNo": "Nema opskrbe namirnicama u ovoj etapi - ponesite hranu"
+		"stageResupplyPartial": "Samo pekara u ovoj etapi - nema punu opskrbu namirnicama",
+		"stageResupplyNo": "Nema opskrbe namirnicama u ovoj etapi - ponesite hranu",
+		"tripFoodGap": "Najduži odsječak bez namirnica: {distance}",
+		"tripNextGrocery": "Sljedeća opskrba namirnicama: {town} ({distance})",
+		"stageFoodEntering": "Ulazite s {stages} etapa / {distance} od zadnje opskrbe namirnicama",
+		"stageFoodCarry": "Ponesite hranu {distance} do {town}",
+		"stageFoodPackDays": "Potrošni materijal u ruksaku: ~{days} dana pri {rate}"
 	},
 	"tripBrief": {
 		"defaultTitle": "CLDT plan putovanja",
@@ -739,7 +775,8 @@
 				"emergency": "Hitne službe",
 				"generated": "Generirano u CLDT karti",
 				"pack": "Ruksak",
-				"resupply": "opskrba"
+				"resupply": "opskrba",
+				"resupplyCadence": "Opskrba hranom"
 			},
 			"daysHeading": "Po danima",
 			"moreLabel": "još mjesta",
@@ -769,6 +806,11 @@
 		"packSummary": "{base} + voda",
 		"packBaseLine": "Osnovni ruksak: {weight}",
 		"packLoadedLine": "Maks. opterećenje: {weight} (ponesite do {volume} vode duž najduže suhe dionice)",
+		"resupplySummaryGap": "Najduži odsječak bez namirnica: {distance}.",
+		"resupplySummaryNext": "Sljedeća opskrba namirnicama: {town} ({distance}).",
+		"resupplyEntering": "Od zadnje opskrbe namirnicama: {stages} etapa, {distance}",
+		"resupplyCarry": "Ponesite hranu {distance} do {town}",
+		"resupplyFoodPack": "Potrošni materijal u ruksaku: ~{days} dana pri {rate}",
 		"waterCarry": "Voda: ponesite do {volume} za najduži dio bez izvora (ukupna težina ruksaka {total})",
 		"gearHeading": "Popis opreme ({name})",
 		"gearMissing": "Preporučena oprema nije pronađena u vašem popisu: {terms}. Provjerite prije polaska."
@@ -828,6 +870,7 @@
 		"shareCopiedShort": "Kratka poveznica kopirana",
 		"shareFailed": "Kopiranje nije uspjelo",
 		"openInMaps": "Otvori u Kartama",
+		"addAsWaypoint": "Dodaj kao točku",
 		"listTitle": "Mjesta uz stazu",
 		"listAriaLabel": "Otvori popis mjesta",
 		"listCount": "{count, plural, =0 {Nema vidljivih mjesta} =1 {# mjesto} few {# mjesta} other {# mjesta}}",
@@ -850,6 +893,8 @@
 		"waterReliabilityFilterHeading": "Filtriraj vodu po pouzdanosti",
 		"waterReliabilityFilterPlaceholder": "Sve klase pouzdanosti vode",
 		"waterReliabilityFilterHint": "Bez odabira uključene su sve vodene točke.",
+		"includeRemotePoisLabel": "Uključi udaljene POI-je",
+		"includeRemotePoisHint": "Prikazuje mjesta označena kao teško dostupna pješice bez obližnje autobusne ili željezničke stanice sa strane staze. Prema zadanim postavkama isključeno.",
 		"groupByDecade": "Grupiraj po {distance} {unit}",
 		"groupCount": "{count, plural, =1 {# mjesto} few {# mjesta} other {# mjesta}}",
 		"exportSelect": "Dodaj {name} u GPX izvoz",
@@ -860,6 +905,23 @@
 		"starRemove": "Ukloni oznaku s {name}",
 		"starredCount": "{count, plural, =0 {Nema označenih} =1 {# označeno} few {# označena} other {# označenih}}",
 		"clearStarred": "Ukloni omiljene",
+		"filterPresetsHeading": "Spremljeni filteri",
+		"filterPresetsSave": "Spremi trenutno",
+		"filterPresetsApply": "Primijeni spremljeni filter",
+		"filterPresetsNamePlaceholder": "Naziv preseta",
+		"filterPresetsConfirm": "Spremi",
+		"filterPresetsCancel": "Odustani",
+		"filterPresetsDelete": "Izbriši preset filtera {name}",
+		"filterPresetsRename": "Preimenuj preset filtera {name}",
+		"starCollectionHeading": "Lista omiljenih",
+		"starCollectionDefaultName": "Omiljeno",
+		"starCollectionNew": "Nova lista",
+		"starCollectionSelect": "Aktivna lista omiljenih",
+		"starCollectionNamePlaceholder": "Naziv liste (npr. opskrba)",
+		"starCollectionConfirm": "Stvori",
+		"starCollectionCancel": "Odustani",
+		"starCollectionRename": "Preimenuj listu omiljenih {name}",
+		"starCollectionDelete": "Izbriši listu omiljenih {name}",
 		"sourceOsm": "Izvor: OpenStreetMap",
 		"sourceWikidata": "Izvor: Wikidata + OpenStreetMap",
 		"sourceHps": "Izvor: HPS direktorij domova",
@@ -1059,7 +1121,7 @@
 		"gestures": {
 			"sos": "Dugo pritisni crveni SOS gumb za offline ploču za hitne slučajeve: koordinate, Plus kod, najbliži prilaz cestom, HGSS, poziv 112 jednim dodirom i adresa kad si online.",
 			"gpxDrop": "Povuci i ispusti snimljenu .gpx datoteku bilo gdje na kartu da preklopiš svoju rutu i usporediš je sa službenom stazom.",
-			"poiList": "U popisu mjesta upiši broj (\"100 km\") za skok na tu točku; strelice za navigaciju, S označava retke za GPX izvoz.",
+			"poiList": "U popisu mjesta upiši broj (\"100 km\") za skok; strelice navigiraju, S označava retke za GPX. Spremi presete filtera i označi mjesta u imenovane liste (\"samo odabrano\" u vodiču koristi aktivnu listu).",
 			"waypoint": "Dugo pritisnite (ili desni klik) bilo gdje na karti za osobnu točku s bilješkom."
 		},
 		"planningHeading": "Alati za planiranje",
@@ -1074,18 +1136,38 @@
 		"offline": {
 			"precache": "Ploča predmemorije unaprijed preuzima cijeli koridor staze (pločice, mjesta, fotografije) za korištenje bez signala; sinkronizira se na Wi-Fi mreži.",
 			"gps": "GPS, ploča za hitne slučajeve i tvoj napredak rade potpuno offline čim je koridor spremljen.",
-			"pushAlerts": "Uključite obavijesti o upozorenjima u postavkama za push poruku kad se objavi novo sezonsko upozorenje."
+			"offRouteAlert": "Uključi upozorenje o skretanju u Postavkama (zadano isključeno) za traku i vibraciju kad skreneš više od ~200 m s rute, s udaljenošću i smjerom natrag. Aktivira se tek kad GPS potvrdi da si na ruti; šuti kod kuće ili u vožnji i deaktivira se kad napustiš područje staze.",
+			"pushAlerts": "Uključite obavijesti o upozorenjima u postavkama za push poruku kad se objavi novo sezonsko upozorenje ili obavijest o stanju staze."
 		},
-		"officialAppNote": "FarOut je službena CLDT aplikacija. Ova karta je neovisan projekt isključivo za istraživačke i edukativne svrhe - ključne informacije provjerite u službenim izvorima."
+		"officialAppNote": "FarOut je službena CLDT aplikacija. Ova karta je neovisan projekt isključivo za istraživačke i edukativne svrhe - ključne informacije provjerite u službenim izvorima.",
+		"demoHeading": "Demo hodnja",
+		"demoDesc": "Isprobajte simuliranu hodnju sredinom staze s uzorcima točaka i napretka - bez GPS-a.",
+		"demoLink": "Isprobaj demo hodnju"
 	},
 	"waypoints": {
 		"defaultName": "Točka",
 		"nameLabel": "Naziv točke",
+		"categoryLabel": "Vrsta",
+		"category": {
+			"generic": "Točka",
+			"camp": "Kamp / noćenje",
+			"water": "Voda",
+			"resupply": "Opskrba",
+			"viewpoint": "Vidikovac",
+			"transport": "Prijevoz / susret",
+			"hazard": "Opasnost / napomena"
+		},
 		"noteLabel": "Bilješka",
 		"notePlaceholder": "Dodajte bilješku (zaliha vode, kamp...)",
 		"atKm": "na {distance}",
 		"offTrail": "izvan staze",
 		"save": "Spremi",
-		"delete": "Obriši"
+		"delete": "Obriši",
+		"filterHeading": "Filtriraj popis",
+		"filterPlaceholder": "Odaberi kategorije",
+		"filterEmpty": "Nema točaka za ovaj filter.",
+		"mapLayersHeading": "Prikaži na karti",
+		"mapLayersPlaceholder": "Odaberi kategorije",
+		"hiddenOnMap": "skriveno na karti"
 	}
 }

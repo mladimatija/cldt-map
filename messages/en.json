@@ -34,9 +34,10 @@
 			"trail": "Click the route or elevation chart to see distance and elevation at any point",
 			"elevation": "Elevation profile chart; hover to preview on the map, click to pin a point",
 			"ruler": "Distance ruler to measure segments between two points",
-			"layers": "Multiple map layers (standard, topo, satellite, terrain, cycling, Croatia Topo)",
+			"distanceEtaOverlay": "Distance & ETA overlay - live HUD chip with distance traveled and remaining, elevation gain/loss remaining, and ETA to trail end or the active ruler section",
+			"layers": "Multiple map layers (standard, topo, hiking, satellite, terrain, cycling, Croatia Topo, dark), plus an optional Waymarked Trails overlay of OSM hiking routes (Settings toggle, online only)",
 			"location": "Optional location tracking to see your position on the trail",
-			"share": "Share links with your current view or progress on the trail; the share button opens a QR code panel for scanning from another phone, plus copy link",
+			"share": "Share links carry your full map view - position, direction, units, layers, ruler range, stage plan, waypoints, and journal. The share button opens a QR code panel and copy link; compact short links (/s/'{'code'}') apply when online and enabled in Settings",
 			"units": "Metric and imperial units",
 			"darkMode": "Dark mode and battery saver options",
 			"offlineMaps": "Offline maps - pre-cache the trail corridor for use without a signal",
@@ -45,6 +46,8 @@
 			"weather": "Current weather at your trail location - temperature, wind, precipitation probability, sunrise/sunset; 12-hour hourly forecast with precipitation bars and best-window hint (DHMZ + Open-Meteo)",
 			"trailNotices": "Regional trail condition notices - dismissible banners with alerts for current conditions on the trail",
 			"seasonalStatus": "Seasonal trail status - curated map layer of warnings, closures, and seasonal conditions sourced from DHMZ, HGSS, HPS, and Croatian national parks; severity-colored chip markers along the trail at the centre of each affected range; hover or click a chip to highlight the affected stretch and open a detail popout with severity, recommended gear, and a link to the original notice; data refreshed by running `npm run update-seasonal`",
+			"mineAreas": "Mine-suspected areas - official MUP/HCR polygons near the trail with warning chips and GPS-triggered banners (non-dismissible inside a polygon, dismissible within 500 m); on by default, fully offline once cached; informational only - always obey on-site signage",
+			"severeWeather": "Severe weather alerts - Meteoalarm CAP warnings for Croatia as color-coded map polygons with GPS-triggered banners; non-dismissible for red/severe warnings; data refreshed every 15 minutes",
 			"radar": "Precipitation radar overlay - animated RainViewer radar with past and nowcast frames, play/pause controls, and colour legend",
 			"sunsetPosition": "Sunset/sunrise position - projects where you will be on the trail at sunset and sunrise based on your current pace; toggleable markers on the polyline",
 			"stagePlanner": "Multi-day stage planner - split any trail range into daily stages by distance or time, view per-stage elevation and ETA stats, export individual stages as GPX files, or export all stages as a strip-map PDF",
@@ -53,17 +56,17 @@
 			"trailStyle": "Trail style - choose how the route polyline is coloured from the layers panel: Default (single colour), Sections (A/B/C zones with boundary markers and per-section stats), Grade (Strava-style gradient tinting with five bands; warm for ascents and cool for descents in the active travel direction; colour-ramp legend in the panel; recomputed when the SOBO/NOBO direction is toggled), Surface, or Difficulty (SAC)",
 			"surfaceAndSac": "Surface and difficulty colouring - tint the trail polyline (and the elevation chart's area fill) by OSM surface type (paved / unpaved / gravel / ground / rock) or by SAC hiking scale (T1 hiking through T6 difficult alpine hiking). The data is enriched monthly from OpenStreetMap by a GitHub Action; surface and SAC options stay disabled until the dataset finishes loading on first paint. Direction-aware: the dataset is keyed to SOBO km and the renderer mirrors to NOBO on the fly",
 			"distanceMarkers": "Distance markers - small km / mi labels along the trail at 100 / 50 / 25 / 10 / 5 / 1 unit intervals. Progressive disclosure by zoom level: 100 km always visible at any zoom, finer intervals reveal as you zoom in (1 km labels only at zoom 13+). Toggleable from Settings; labels follow the active unit system and current direction (SOBO/NOBO)",
-			"pois": "Points of interest, list and search - around 7,700 places along the trail (towns, settlements, peaks, viewpoints, mountain huts, shelters, food, and ATMs) inside the Croatian border. Per-type and per-tag filters from Settings and the list panel. Markers cluster at country zoom and split out as you zoom in. Popups carry a multi-image photo gallery (Wikimedia Commons, with per-image attribution and licence; tap any thumbnail for a fullscreen lightbox with keyboard navigation), a Wikipedia summary that appears immediately (baked at enrichment time for the popular places, lazy-fetched for the rest), a provenance footer that tells you where the data came from and when it was last verified, and a Copy link button that deep-links straight to the place. The list panel sorts by trail km, name, off-trail distance, or Near me when GPS is locked; an optional 50 km decade grouping turns the long list into chapters with sticky headers; full keyboard navigation. The multi-day stage planner shows how many places fall inside each daily stage, lists them in walking order, and can export every POI across the whole plan as a single GPX waypoint file. Imported GPX tracks can list the POIs you passed within 500 m, sorted in walking order. Search by name (diacritic-folded) or by km to jump to a point. Pre-cached corridor downloads also pull POI thumbnails and Wikipedia summaries so popups stay rich offline. Dataset is refreshed monthly from OpenStreetMap, Wikidata, Wikimedia Commons, and the HPS hut directory; the enricher is failure-resilient so a single bad day at one upstream service can never silently degrade the dataset",
+			"pois": "Points of interest, list and search - around 7,700 places along the trail (towns, settlements, peaks, viewpoints, mountain huts, shelters, food, and ATMs) inside the Croatian border. Per-type filters in the layers panel; per-tag filters, saved named filter presets, multiple named starred lists, and an include-remote-POIs toggle in the list panel. Markers cluster at country zoom and split out as you zoom in. Popups carry a multi-image photo gallery (Wikimedia Commons, with per-image attribution and licence; tap any thumbnail for a fullscreen lightbox with keyboard navigation), a Wikipedia summary that appears immediately (baked at enrichment time for the popular places, lazy-fetched for the rest), a provenance footer that tells you where the data came from and when it was last verified, and a Copy link button that deep-links straight to the place. The list panel sorts by trail km, name, off-trail distance, or Near me when GPS is locked; an optional 50 km decade grouping turns the long list into chapters with sticky headers; full keyboard navigation. The multi-day stage planner shows how many places fall inside each daily stage, lists them in walking order, and can export every POI across the whole plan as a single GPX waypoint file. Imported GPX tracks can list the POIs you passed within 500 m, sorted in walking order. Search by name (diacritic-folded) or by km to jump to a point. Pre-cached corridor downloads also pull POI thumbnails and Wikipedia summaries so popups stay rich offline. Dataset is refreshed monthly from OpenStreetMap, Wikidata, Wikimedia Commons, and the HPS hut directory; the enricher is failure-resilient so a single bad day at one upstream service can never silently degrade the dataset",
 			"tripBrief": "Trip brief export - one-click printable brief (PDF for print, DOCX for editing) generated from your multi-day stage plan. Each day gets its own page with a map snapshot, a templated narrative, places along the way (name, type, trail km, photos, Wikipedia summary), and any seasonal-status alerts that intersect the day's range. The back page bundles emergency guidance: 112 dial, HGSS request format, and field essentials. Localised to en / hr / de / it. Optional AI-written day narratives (generated from the plan's own facts, online only, with an accuracy disclaimer); templated text remains the default and the automatic fallback",
 			"offRouteAlert": "Off-route alert - optional warning (off by default) when you drift more than 200 m from the trail: a banner with your distance and compass bearing back, plus vibration. Arms itself only after GPS places you on the trail, so it stays silent elsewhere in Croatia, and auto-disarms when you genuinely leave (bus, taxi, end of day)",
 			"waterIntelligence": "Water source intelligence - every water place carries a reliability class from OSM ground-truth tags: reliable tap, seasonal (may be dry), unverified spring (treat before drinking), or not drinkable. The class colours the marker, shows as a badge in popups and lists, and the stage planner flags days whose longest stretch without usable water exceeds 15 / 25 km",
 			"completionTracking": "Section completion tracking - mark which stretches you have hiked: automatically from GPS while on-trail, manually from the ruler selection or whole A/B/C sections, or by importing a recorded GPX track. Completed stretches draw green over any trail style; the progress panel and the location tooltip show total and per-section progress",
 			"helpPanel": "In-app help - the ? button opens a topic-grouped reference covering map basics, the elevation chart, hidden gestures (SOS long-press, GPX drag-and-drop), planning tools, and offline behaviour",
-			"upNext": "Up next data-book view - the nearest water source, shelter, and town ahead of you, with distances, right in the distance panel",
+			"upNext": "Up next data-book view - the nearest water source, shelter, and town ahead of you, with distances, right in the distance panel. Optional food, ATM, viewpoint, and pharmacy rows in Settings.",
 			"packWeight": "Pack weight & water carry - per-stage \"carry up to X L\" suggestions from your base weight and drinking rate, in metric or imperial",
 			"waypointsJournal": "Custom waypoints & trip journal - long-press the map for personal markers with notes, keep a dated journal, export as GPX/Markdown; all stored on your device",
 			"resupply": "Town resupply guides - shops, pharmacies, ATMs, post and bus info from OpenStreetMap in town popups, with per-stage resupply chips in the planner",
-			"pushAlerts": "Trail warning notifications - optional browser push when a new seasonal warning is published, even with the app closed; no account needed"
+			"pushAlerts": "Trail alert notifications - optional browser push when a new seasonal warning or trail condition notice is published, even with the app closed; no account needed"
 		},
 		"dataAttribution": "Data & attribution",
 		"dataAttributionDesc": "Trail data is provided by the Udruga Long Distance Trail Hrvatska (LDTH) organization. Map tiles come from OpenStreetMap, OpenTopoMap, OpenHikingMap (openmaps.fr), CyclOSM, Waymarked Trails, and other providers. Croatian topographic maps are from the State Geodetic Administration (DGU). Weather data comes from DHMZ (Croatian Met Service) and Open-Meteo. Radar tiles are provided by RainViewer. Seasonal trail status, hazard warnings, and mountain rescue station data are sourced from HGSS (Croatian Mountain Rescue Service), HPS (Croatian Mountaineering Federation), and the national park authorities (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) together with Park prirode Velebit. Data displayed on this site may not reflect the latest conditions. When in doubt, always verify with the official sources.",
@@ -76,7 +79,10 @@
 		"createdBy": "Created by",
 		"visitAuthor": "Visit {authorName}'s website",
 		"officialApp": "Official CLDT app",
-		"officialAppDesc": "The official mobile app of the CLDT is <link>FarOut</link>, published in cooperation with the trail association. {title} is an independent project and should be used for research and educational purposes only - always cross-check critical information (water, hazards, closures) with official sources before relying on it in the field."
+		"officialAppDesc": "The official mobile app of the CLDT is <link>FarOut</link>, published in cooperation with the trail association. {title} is an independent project and should be used for research and educational purposes only - always cross-check critical information (water, hazards, closures) with official sources before relying on it in the field.",
+		"demoCalloutTitle": "Try the demo hike",
+		"demoCalloutDesc": "Walk the trail at about 4 km/h with sample waypoints, a journal entry, and progress tracking - no GPS needed.",
+		"demoCalloutLink": "Try demo hike"
 	},
 	"home": {
 		"srTitle": "{companyName} Map"
@@ -232,10 +238,19 @@
 		"helpShow": "Show help",
 		"helpHide": "Hide help",
 		"showUpNextLabel": "Up next in distance panel",
-		"showUpNextHint": "Shows the next water source, shelter, and town ahead in your direction of travel. Tap a row to open it on the map.",
+		"showUpNextHint": "Shows the next water source, shelter, and town ahead in your direction of travel. Enable optional rows below for food, ATM, viewpoint, or pharmacy. Tap a row to open it on the map.",
+		"upNextShowFoodLabel": "Food stop in up next",
+		"upNextShowFoodHint": "Nearest restaurant or cafe ahead, in the collapsible More ahead section.",
+		"upNextShowAtmLabel": "ATM in up next",
+		"upNextShowAtmHint": "Nearest ATM ahead, in the collapsible More ahead section.",
+		"upNextShowViewpointLabel": "Viewpoint in up next",
+		"upNextShowViewpointHint": "Nearest viewpoint ahead, in the collapsible More ahead section.",
+		"upNextShowPharmacyLabel": "Pharmacy stop in up next",
+		"upNextShowPharmacyHint": "Nearest town with a pharmacy ahead, in the collapsible More ahead section.",
 		"packWeightTitle": "Pack weight",
 		"packBaseWeightLabel": "Base weight (without water)",
 		"waterConsumptionLabel": "Water consumption",
+		"foodConsumptionLabel": "Food consumption",
 		"packWeightHint": "Enables water carry suggestions per stage. Leave base weight empty to turn this off.",
 		"packEtaAdjustLabel": "Adjust ETAs for pack weight",
 		"packEtaAdjustHint": "Slows estimates by about 1% per kg of base weight above {reference}.",
@@ -243,14 +258,12 @@
 		"packCsvSummary": "{name}: {count} items, base {base}",
 		"packCsvClear": "Clear",
 		"packCsvError": "Could not read that CSV. Export it from LighterPack or Packstack and try again.",
-		"pushAlertsLabel": "Notify about new trail warnings",
-		"pushAlertsHint": "Browser notification when a new seasonal warning is published for the trail. Works while the app is closed; no account needed.",
+		"pushAlertsLabel": "Notify about trail alerts",
+		"pushAlertsHint": "Browser notification when a new seasonal warning or trail condition notice is published. Works while the app is closed; no account needed.",
 		"waymarkedLabel": "Marked hiking routes overlay",
 		"waymarkedHint": "Draws OSM hiking route relations (Waymarked Trails) over the base map. Online only.",
 		"shareShortLinksLabel": "Use short share links",
-		"shareShortLinksHint": "Copies a compact link that opens the same map view. Requires an internet connection to create.",
-		"includeRemotePoisLabel": "Include remote POIs",
-		"includeRemotePoisHint": "Shows places the dataset marks as hard to reach on foot with no nearby trail-side bus or train stop. Off by default."
+		"shareShortLinksHint": "Copies a compact link that opens the same map view. Requires an internet connection to create."
 	},
 	"baseMapSelector": {
 		"standard": "Standard",
@@ -442,6 +455,9 @@
 	"pwa": {
 		"installTitle": "Install CLDT Map",
 		"installDescription": "Add to home screen for quick access and an app-like experience.",
+		"installTitleOffline": "Install for offline use",
+		"installDescriptionOffline": "Your trail tiles are saved. Install the app on your home screen to open the map offline without a browser tab.",
+		"installDescriptionOfflineIos": "Your trail tiles are saved. Tap Share, then Add to Home Screen to open the map offline.",
 		"install": "Install",
 		"dismiss": "Not now"
 	},
@@ -458,6 +474,13 @@
 	},
 	"offlineIndicator": {
 		"offline": "Offline - using cached tiles"
+	},
+	"demo": {
+		"srTitle": "Demo hike on {title}",
+		"bannerLabel": "Demo hike",
+		"pause": "Pause",
+		"resume": "Resume",
+		"exit": "Exit demo"
 	},
 	"staleCacheNotification": {
 		"title": "Offline map cache outdated",
@@ -496,7 +519,8 @@
 		"clearPoiAssets": "Clear POI assets",
 		"confirmClear": "Are you sure?",
 		"confirmYes": "Yes",
-		"confirmNo": "No"
+		"confirmNo": "No",
+		"downloadComplete": "Offline maps ready"
 	},
 	"gpxDownload": {
 		"modalTitle": "Download CLDT GPX",
@@ -589,7 +613,13 @@
 		"upNextWater": "Next water source",
 		"upNextShelter": "Next shelter or hut",
 		"upNextTown": "Next town or settlement",
-		"upNextSeeAll": "See all {count} places ahead"
+		"upNextFood": "Next food stop",
+		"upNextAtm": "Next ATM",
+		"upNextViewpoint": "Next viewpoint",
+		"upNextPharmacy": "Next pharmacy stop",
+		"upNextMoreAhead": "More ahead",
+		"upNextSeeAll": "See all {count} places ahead",
+		"upNextHorizonAriaLabel": "Distance ahead, {distance}"
 	},
 	"imports": {
 		"title": "Imported tracks",
@@ -693,7 +723,13 @@
 		"stagePackTooltipBase": "Base pack {base}",
 		"stagePackTooltipLoaded": "Base pack {base}, max load {loaded} (carry up to {volume} water)",
 		"stageResupplyYes": "Grocery resupply available in this stage",
-		"stageResupplyNo": "No grocery resupply in this stage - carry food through"
+		"stageResupplyPartial": "Bakery only in this stage - no full grocery resupply",
+		"stageResupplyNo": "No grocery resupply in this stage - carry food through",
+		"tripFoodGap": "Longest stretch without grocery: {distance}",
+		"tripNextGrocery": "Next grocery resupply: {town} ({distance})",
+		"stageFoodEntering": "Entering with {stages} stages / {distance} since last grocery",
+		"stageFoodCarry": "Carry food {distance} to {town}",
+		"stageFoodPackDays": "Consumables in pack: ~{days} days at {rate}"
 	},
 	"tripBrief": {
 		"defaultTitle": "CLDT Trip Plan",
@@ -739,7 +775,8 @@
 				"emergency": "Emergency contacts",
 				"generated": "Generated by CLDT Map at",
 				"pack": "Pack",
-				"resupply": "resupply"
+				"resupply": "resupply",
+				"resupplyCadence": "Food resupply"
 			},
 			"daysHeading": "Day-by-day",
 			"moreLabel": "more places",
@@ -769,6 +806,11 @@
 		"packSummary": "{base} + water",
 		"packBaseLine": "Base pack: {weight}",
 		"packLoadedLine": "Max load: {weight} (carry up to {volume} water across the longest dry stretch)",
+		"resupplySummaryGap": "Longest stretch without grocery: {distance}.",
+		"resupplySummaryNext": "Next grocery resupply: {town} ({distance}).",
+		"resupplyEntering": "Since last grocery: {stages} stages, {distance}",
+		"resupplyCarry": "Carry food {distance} to {town}",
+		"resupplyFoodPack": "Consumables in pack: ~{days} days at {rate}",
 		"waterCarry": "Water: carry up to {volume} across the longest dry stretch ({total} total pack weight)",
 		"gearHeading": "Gear checklist ({name})",
 		"gearMissing": "Recommended gear not found in your pack list: {terms}. Double-check before departure."
@@ -828,6 +870,7 @@
 		"shareCopiedShort": "Short link copied",
 		"shareFailed": "Could not copy",
 		"openInMaps": "Open in Maps",
+		"addAsWaypoint": "Add as waypoint",
 		"listTitle": "Places along the trail",
 		"listAriaLabel": "Open list of places",
 		"listCount": "{count, plural, =0 {No places visible} =1 {# place} other {# places}}",
@@ -850,6 +893,8 @@
 		"waterReliabilityFilterHeading": "Filter water by reliability",
 		"waterReliabilityFilterPlaceholder": "All water reliability classes",
 		"waterReliabilityFilterHint": "No selection means all water sources are included.",
+		"includeRemotePoisLabel": "Include remote POIs",
+		"includeRemotePoisHint": "Shows places the dataset marks as hard to reach on foot with no nearby trail-side bus or train stop. Off by default.",
 		"groupByDecade": "Group by {distance} {unit}",
 		"groupCount": "{count, plural, =1 {# place} other {# places}}",
 		"exportSelect": "Add {name} to GPX export",
@@ -860,6 +905,23 @@
 		"starRemove": "Unstar {name}",
 		"starredCount": "{count, plural, =0 {No starred places} =1 {# starred} other {# starred}}",
 		"clearStarred": "Clear favourites",
+		"filterPresetsHeading": "Saved filters",
+		"filterPresetsSave": "Save current",
+		"filterPresetsApply": "Apply saved filter",
+		"filterPresetsNamePlaceholder": "Preset name",
+		"filterPresetsConfirm": "Save",
+		"filterPresetsCancel": "Cancel",
+		"filterPresetsDelete": "Delete filter preset {name}",
+		"filterPresetsRename": "Rename filter preset {name}",
+		"starCollectionHeading": "Starred list",
+		"starCollectionDefaultName": "Starred",
+		"starCollectionNew": "New list",
+		"starCollectionSelect": "Active starred list",
+		"starCollectionNamePlaceholder": "List name (e.g. resupply)",
+		"starCollectionConfirm": "Create",
+		"starCollectionCancel": "Cancel",
+		"starCollectionRename": "Rename starred list {name}",
+		"starCollectionDelete": "Delete starred list {name}",
 		"sourceOsm": "Source: OpenStreetMap",
 		"sourceWikidata": "Source: Wikidata + OpenStreetMap",
 		"sourceHps": "Source: HPS hut directory",
@@ -1059,7 +1121,7 @@
 		"gestures": {
 			"sos": "Long-press the red SOS button for the offline emergency panel: coordinates, Plus Code, nearest road access, HGSS rescue, one-tap 112, and an online address line when available.",
 			"gpxDrop": "Drag and drop a recorded .gpx file anywhere onto the map to overlay your hike and compare it with the official trail.",
-			"poiList": "In the places list, type a number (\"100 km\") to jump there; arrow keys navigate, S selects rows for GPX export.",
+			"poiList": "In the places list, type a number (\"100 km\") to jump there; arrow keys navigate, S selects rows for GPX export. Save filter presets and star places into named lists (trip brief \"selected only\" uses the active list).",
 			"waypoint": "Long-press (or right-click) anywhere on the map to drop a personal waypoint with a note."
 		},
 		"planningHeading": "Planning tools",
@@ -1074,18 +1136,38 @@
 		"offline": {
 			"precache": "The cache panel pre-downloads the whole trail corridor (tiles, places, photos) for use without signal; it re-syncs on Wi-Fi.",
 			"gps": "GPS, the emergency panel, and your progress keep working fully offline once the corridor is cached.",
-			"pushAlerts": "Enable trail warning notifications in Settings to get a push message when a new seasonal warning is published."
+			"offRouteAlert": "Enable the off-route alert in Settings (off by default) for a banner and vibration when you drift more than ~200 m from the trail, with distance and bearing back. Arms only after GPS confirms you are on the trail; stays silent at home or while driving, and disarms when you leave the trail area.",
+			"pushAlerts": "Enable trail alert notifications in Settings to get a push when a new seasonal warning or trail condition notice is published."
 		},
-		"officialAppNote": "FarOut is the official CLDT app. This map is an independent project for research and educational purposes only - verify critical information with official sources."
+		"officialAppNote": "FarOut is the official CLDT app. This map is an independent project for research and educational purposes only - verify critical information with official sources.",
+		"demoHeading": "Demo hike",
+		"demoDesc": "Try a simulated mid-trail hike with sample waypoints and progress - no GPS needed.",
+		"demoLink": "Try demo hike"
 	},
 	"waypoints": {
 		"defaultName": "Waypoint",
 		"nameLabel": "Waypoint name",
+		"categoryLabel": "Type",
+		"category": {
+			"generic": "Waypoint",
+			"camp": "Camp / sleep",
+			"water": "Water",
+			"resupply": "Resupply",
+			"viewpoint": "Viewpoint",
+			"transport": "Transport / meet",
+			"hazard": "Hazard / note"
+		},
 		"noteLabel": "Note",
 		"notePlaceholder": "Add a note (water cache, campsite...)",
 		"atKm": "at {distance}",
 		"offTrail": "off trail",
 		"save": "Save",
-		"delete": "Delete"
+		"delete": "Delete",
+		"filterHeading": "Filter list",
+		"filterPlaceholder": "Choose categories",
+		"filterEmpty": "No waypoints match this filter.",
+		"mapLayersHeading": "Show on map",
+		"mapLayersPlaceholder": "Choose categories",
+		"hiddenOnMap": "hidden on map"
 	}
 }

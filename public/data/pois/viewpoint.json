@@ -1,5 +1,5 @@
 {
-	"lastUpdated": "2026-06-11",
+	"lastUpdated": "2026-06-14",
 	"pois": [
 		{
 			"id": "viewpoint-vukovo-8810849908",
@@ -11,31 +11,9 @@
 			"trailKm": 3.5,
 			"distanceFromTrailKm": 0.94,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
-		},
-		{
-			"id": "viewpoint-stakleni-vidikovac-570343386",
-			"type": "viewpoint",
-			"name_en": "Stakleni vidikovac",
-			"name_hr": "Stakleni vidikovac",
-			"lat": 45.56581,
-			"lng": 18.66992,
-			"trailKm": 102.8,
-			"distanceFromTrailKm": 2.44,
-			"source": "osm",
-			"lastVerified": "2026-06-07"
-		},
-		{
-			"id": "viewpoint-vidikovac-trojnas-11517401942",
-			"type": "viewpoint",
-			"name_en": "Vidikovac „Trojnaš“",
-			"name_hr": "Vidikovac „Trojnaš“",
-			"lat": 45.82656,
-			"lng": 18.80524,
-			"trailKm": 148,
-			"distanceFromTrailKm": 2.84,
-			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 24,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-vidikovac-vina-belje-6362824343",
@@ -47,19 +25,9 @@
 			"trailKm": 161,
 			"distanceFromTrailKm": 1.5,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
-		},
-		{
-			"id": "viewpoint-rogin-kamen-8571461465",
-			"type": "viewpoint",
-			"name_en": "Rogin Kamen",
-			"name_hr": "Rogin Kamen",
-			"lat": 45.4543,
-			"lng": 17.82862,
-			"trailKm": 270.4,
-			"distanceFromTrailKm": 2.02,
-			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 8,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-cesljakovacki-vis-925752895",
@@ -72,19 +40,9 @@
 			"distanceFromTrailKm": 0.08,
 			"elevationM": 825,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
-		},
-		{
-			"id": "viewpoint-juzna-terasa-9352108900",
-			"type": "viewpoint",
-			"name_en": "Južna terasa",
-			"name_hr": "Južna terasa",
-			"lat": 45.47488,
-			"lng": 17.6287,
-			"trailKm": 290.7,
-			"distanceFromTrailKm": 4.99,
-			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 0,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-vidikovac-1036084562",
@@ -96,7 +54,9 @@
 			"trailKm": 362.6,
 			"distanceFromTrailKm": 0.53,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 29,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-podrevec-1478291606",
@@ -109,7 +69,9 @@
 			"distanceFromTrailKm": 0.27,
 			"elevationM": 544,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 0,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-obelisk-726812052",
@@ -121,7 +83,9 @@
 			"trailKm": 485.7,
 			"distanceFromTrailKm": 0.16,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 0,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-1-zub-727326920",
@@ -134,7 +98,11 @@
 			"distanceFromTrailKm": 0.09,
 			"elevationM": 522,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 0,
+			"isReachable": true,
+			"nearestPublicTransportM": 664,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-3th-tooth-7551824985",
@@ -146,7 +114,11 @@
 			"trailKm": 487,
 			"distanceFromTrailKm": 0.13,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 7,
+			"isReachable": true,
+			"nearestPublicTransportM": 679,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-4th-tooth-7551825085",
@@ -158,7 +130,11 @@
 			"trailKm": 487,
 			"distanceFromTrailKm": 0.14,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 3,
+			"isReachable": true,
+			"nearestPublicTransportM": 682,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-5th-tooth-7551825086",
@@ -170,7 +146,11 @@
 			"trailKm": 487.4,
 			"distanceFromTrailKm": 0.12,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 6,
+			"isReachable": true,
+			"nearestPublicTransportM": 708,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-6th-tooth-7551825185",
@@ -182,7 +162,11 @@
 			"trailKm": 487.4,
 			"distanceFromTrailKm": 0.04,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 4,
+			"isReachable": true,
+			"nearestPublicTransportM": 758,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-vidikovac-odasiljac-837948865",
@@ -194,7 +178,11 @@
 			"trailKm": 487.5,
 			"distanceFromTrailKm": 0.03,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 17,
+			"isReachable": true,
+			"nearestPublicTransportM": 738,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-sedmi-zub-7551825186",
@@ -207,31 +195,11 @@
 			"distanceFromTrailKm": 0.01,
 			"elevationM": 638,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
-		},
-		{
-			"id": "viewpoint-krizni-kamen-8251239898",
-			"type": "viewpoint",
-			"name_en": "Križni kamen",
-			"name_hr": "Križni kamen",
-			"lat": 46.12056,
-			"lng": 16.40221,
-			"trailKm": 489.6,
-			"distanceFromTrailKm": 2.67,
-			"source": "osm",
-			"lastVerified": "2026-06-07"
-		},
-		{
-			"id": "viewpoint-vidikovac-svetog-vinka-5002201607",
-			"type": "viewpoint",
-			"name_en": "Vidikovac svetog Vinka",
-			"name_hr": "Vidikovac svetog Vinka",
-			"lat": 46.23487,
-			"lng": 16.64017,
-			"trailKm": 519.5,
-			"distanceFromTrailKm": 2.09,
-			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 4,
+			"isReachable": true,
+			"nearestPublicTransportM": 839,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-madjerkin-breg-3881578870",
@@ -244,7 +212,9 @@
 			"distanceFromTrailKm": 1.84,
 			"elevationM": 341,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 4,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-goricko-sviralo-8807174653",
@@ -258,20 +228,9 @@
 			"url": "https://vidikovac.eu/",
 			"image": "https://i.imgur.com/8N9sZuy.jpg",
 			"source": "osm",
-			"lastVerified": "2026-06-07"
-		},
-		{
-			"id": "viewpoint-vukanovec-1365201753",
-			"type": "viewpoint",
-			"name_en": "Vukanovec",
-			"name_hr": "Vukanovec",
-			"lat": 46.45906,
-			"lng": 16.34013,
-			"trailKm": 602.5,
-			"distanceFromTrailKm": 3.34,
-			"elevationM": 331,
-			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 17,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-tri-zaklji-8620885468",
@@ -283,7 +242,9 @@
 			"trailKm": 663.7,
 			"distanceFromTrailKm": 0.47,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 5,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-glazareva-pecina-3840492657",
@@ -296,7 +257,11 @@
 			"distanceFromTrailKm": 1.97,
 			"elevationM": 548,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 13,
+			"isReachable": true,
+			"nearestPublicTransportM": 612,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-vidikovac-glazareva-pecina-10794993888",
@@ -308,7 +273,11 @@
 			"trailKm": 666.1,
 			"distanceFromTrailKm": 1.97,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 9,
+			"isReachable": true,
+			"nearestPublicTransportM": 616,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-filicev-dom-10574820757",
@@ -321,7 +290,9 @@
 			"distanceFromTrailKm": 0.06,
 			"elevationM": 644,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 5,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-piramida-ravna-gora-1251652673",
@@ -334,7 +305,9 @@
 			"distanceFromTrailKm": 0.03,
 			"elevationM": 694,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 4,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-vidikovac-paragliding-take-off-1251720347",
@@ -346,7 +319,9 @@
 			"trailKm": 718.7,
 			"distanceFromTrailKm": 0,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 1,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-dedek-i-babica-11853767169",
@@ -358,19 +333,9 @@
 			"trailKm": 719.3,
 			"distanceFromTrailKm": 0.93,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
-		},
-		{
-			"id": "viewpoint-bijela-pec-9332492132",
-			"type": "viewpoint",
-			"name_en": "Bijela peć",
-			"name_hr": "Bijela peć",
-			"lat": 46.1675,
-			"lng": 16.04068,
-			"trailKm": 734,
-			"distanceFromTrailKm": 2.2,
-			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 0,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-generalski-stol-6516179917",
@@ -382,7 +347,9 @@
 			"trailKm": 736.1,
 			"distanceFromTrailKm": 0.26,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 3,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-crna-pec-2793797268",
@@ -394,7 +361,9 @@
 			"trailKm": 739.7,
 			"distanceFromTrailKm": 0.55,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 0,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-stricevo-1386029853",
@@ -406,7 +375,9 @@
 			"trailKm": 744.7,
 			"distanceFromTrailKm": 0.05,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 1,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-vidikovac-sova-2339610414",
@@ -418,7 +389,9 @@
 			"trailKm": 746.8,
 			"distanceFromTrailKm": 1.33,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 58,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-vidikovac-velka-pec-705951445",
@@ -430,19 +403,9 @@
 			"trailKm": 780.4,
 			"distanceFromTrailKm": 0.7,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
-		},
-		{
-			"id": "viewpoint-panjevina-3676766893",
-			"type": "viewpoint",
-			"name_en": "Panjevina",
-			"name_hr": "Panjevina",
-			"lat": 45.91652,
-			"lng": 15.92106,
-			"trailKm": 793.8,
-			"distanceFromTrailKm": 2.69,
-			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 0,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-vidikovac-graficar-4994460221",
@@ -454,7 +417,11 @@
 			"trailKm": 795.1,
 			"distanceFromTrailKm": 0.15,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 19,
+			"isReachable": true,
+			"nearestPublicTransportM": 84,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-vidikovac-1495010050",
@@ -466,7 +433,11 @@
 			"trailKm": 829.8,
 			"distanceFromTrailKm": 0.4,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 4,
+			"isReachable": true,
+			"nearestPublicTransportM": 364,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-drazicin-kamen-3812835311",
@@ -478,7 +449,11 @@
 			"trailKm": 837.2,
 			"distanceFromTrailKm": 0.36,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 9,
+			"isReachable": true,
+			"nearestPublicTransportM": 800,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-ostrc-701627282",
@@ -490,81 +465,11 @@
 			"trailKm": 837.4,
 			"distanceFromTrailKm": 0.17,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
-		},
-		{
-			"id": "viewpoint-zub-5611495999",
-			"type": "viewpoint",
-			"name_en": "Zub",
-			"name_hr": "Zub",
-			"lat": 45.74098,
-			"lng": 15.6848,
-			"trailKm": 838.6,
-			"distanceFromTrailKm": 3.68,
-			"source": "osm",
-			"lastVerified": "2026-06-07"
-		},
-		{
-			"id": "viewpoint-piramida-na-plesivici-1258664797",
-			"type": "viewpoint",
-			"name_en": "Piramida na Plešivici",
-			"name_hr": "Piramida na Plešivici",
-			"lat": 45.73721,
-			"lng": 15.6682,
-			"trailKm": 838.9,
-			"distanceFromTrailKm": 2.82,
-			"source": "osm",
-			"lastVerified": "2026-06-07"
-		},
-		{
-			"id": "viewpoint-673-5-3419701223",
-			"type": "viewpoint",
-			"name_en": "673,5",
-			"name_hr": "673,5",
-			"lat": 45.73461,
-			"lng": 15.65045,
-			"trailKm": 840.6,
-			"distanceFromTrailKm": 2.08,
-			"source": "osm",
-			"lastVerified": "2026-06-07"
-		},
-		{
-			"id": "viewpoint-tuscak-gradina-1230232550",
-			"type": "viewpoint",
-			"name_en": "Tušćak Gradina",
-			"name_hr": "Tušćak Gradina",
-			"lat": 45.82356,
-			"lng": 15.56258,
-			"trailKm": 850.8,
-			"distanceFromTrailKm": 4.29,
-			"elevationM": 585,
-			"source": "osm",
-			"lastVerified": "2026-06-07"
-		},
-		{
-			"id": "viewpoint-vidikovac-sv-kriz-4618892548",
-			"type": "viewpoint",
-			"name_en": "Vidikovac Sv. Križ",
-			"name_hr": "Vidikovac Sv. Križ",
-			"lat": 45.66792,
-			"lng": 15.44113,
-			"trailKm": 899.5,
-			"distanceFromTrailKm": 2.28,
-			"elevationM": 468,
-			"source": "osm",
-			"lastVerified": "2026-06-07"
-		},
-		{
-			"id": "viewpoint-kavranca-3804053298",
-			"type": "viewpoint",
-			"name_en": "Kavranca",
-			"name_hr": "Kavranca",
-			"lat": 45.50497,
-			"lng": 14.92197,
-			"trailKm": 996.7,
-			"distanceFromTrailKm": 2.36,
-			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 0,
+			"isReachable": true,
+			"nearestPublicTransportM": 770,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-medveja-stena-10731229920",
@@ -577,19 +482,9 @@
 			"distanceFromTrailKm": 1.6,
 			"elevationM": 550,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
-		},
-		{
-			"id": "viewpoint-razgledna-piramida-3977880876",
-			"type": "viewpoint",
-			"name_en": "Razgledna piramida",
-			"name_hr": "Razgledna piramida",
-			"lat": 45.38666,
-			"lng": 14.95173,
-			"trailKm": 1008.1,
-			"distanceFromTrailKm": 3.81,
-			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 3,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-vidikovac-3777324963",
@@ -601,7 +496,9 @@
 			"trailKm": 1009.6,
 			"distanceFromTrailKm": 0.12,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 2,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-vidikovac-peric-3777332078",
@@ -613,7 +510,11 @@
 			"trailKm": 1010.8,
 			"distanceFromTrailKm": 0.58,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 0,
+			"isReachable": true,
+			"nearestPublicTransportM": 559,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-kavranova-stijena-4629363290",
@@ -625,19 +526,11 @@
 			"trailKm": 1010.9,
 			"distanceFromTrailKm": 0.06,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
-		},
-		{
-			"id": "viewpoint-vidikovac-7649404640",
-			"type": "viewpoint",
-			"name_en": "Vidikovac",
-			"name_hr": "Vidikovac",
-			"lat": 45.38091,
-			"lng": 14.81961,
-			"trailKm": 1032.4,
-			"distanceFromTrailKm": 4.39,
-			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 1,
+			"isReachable": true,
+			"nearestPublicTransportM": 693,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-treska-8867484417",
@@ -650,7 +543,9 @@
 			"distanceFromTrailKm": 1.97,
 			"elevationM": 1234,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 6,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-ilovnjak-8118363217",
@@ -662,7 +557,9 @@
 			"trailKm": 1083.8,
 			"distanceFromTrailKm": 1.2,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 5,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-grles-6924216661",
@@ -674,7 +571,9 @@
 			"trailKm": 1084.6,
 			"distanceFromTrailKm": 1.35,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 6,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-sljeme-6923994864",
@@ -686,31 +585,9 @@
 			"trailKm": 1084.8,
 			"distanceFromTrailKm": 1.72,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
-		},
-		{
-			"id": "viewpoint-vidikovac-prema-lupoglavu-3400661594",
-			"type": "viewpoint",
-			"name_en": "Vidikovac prema Lupoglavu",
-			"name_hr": "Vidikovac prema Lupoglavu",
-			"lat": 45.35931,
-			"lng": 14.11242,
-			"trailKm": 1136.9,
-			"distanceFromTrailKm": 4.38,
-			"source": "osm",
-			"lastVerified": "2026-06-07"
-		},
-		{
-			"id": "viewpoint-vidikovac-na-stazi-lupogliano-mahrenfels-13386461758",
-			"type": "viewpoint",
-			"name_en": "Vidikovac na stazi  Lupogliano - Mahrenfels",
-			"name_hr": "Vidikovac na stazi  Lupogliano - Mahrenfels",
-			"lat": 45.36057,
-			"lng": 14.11968,
-			"trailKm": 1136.9,
-			"distanceFromTrailKm": 3.82,
-			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 28,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-gora-10970425180",
@@ -722,31 +599,9 @@
 			"trailKm": 1138.2,
 			"distanceFromTrailKm": 0.02,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
-		},
-		{
-			"id": "viewpoint-vidikovac-prema-rocu-3392720693",
-			"type": "viewpoint",
-			"name_en": "Vidikovac prema Roču",
-			"name_hr": "Vidikovac prema Roču",
-			"lat": 45.39669,
-			"lng": 14.0698,
-			"trailKm": 1145.7,
-			"distanceFromTrailKm": 4.61,
-			"source": "osm",
-			"lastVerified": "2026-06-07"
-		},
-		{
-			"id": "viewpoint-razgled-9252761886",
-			"type": "viewpoint",
-			"name_en": "Razgled",
-			"name_hr": "Razgled",
-			"lat": 45.49451,
-			"lng": 14.04358,
-			"trailKm": 1155.6,
-			"distanceFromTrailKm": 4.35,
-			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 0,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-ipp-kt6-greben-1781313094",
@@ -758,7 +613,11 @@
 			"trailKm": 1175.7,
 			"distanceFromTrailKm": 0,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 0,
+			"isReachable": true,
+			"nearestPublicTransportM": 717,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-belvedere-oprtalj-2624401538",
@@ -770,7 +629,9 @@
 			"trailKm": 1182.5,
 			"distanceFromTrailKm": 0.68,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 19,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-sveti-juraj-vrh-brda-2622164880",
@@ -782,7 +643,9 @@
 			"trailKm": 1188.8,
 			"distanceFromTrailKm": 0.11,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 4,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-nigrignano-2619951321",
@@ -794,7 +657,9 @@
 			"trailKm": 1249.6,
 			"distanceFromTrailKm": 1.32,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 0,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-belvedere-kriz-2657357965",
@@ -806,19 +671,11 @@
 			"trailKm": 1263,
 			"distanceFromTrailKm": 0.72,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
-		},
-		{
-			"id": "viewpoint-kamenica-alpe-4569064391",
-			"type": "viewpoint",
-			"name_en": "Kamenica (Alpe)",
-			"name_hr": "Kamenica (Alpe)",
-			"lat": 45.26605,
-			"lng": 13.84548,
-			"trailKm": 1270.4,
-			"distanceFromTrailKm": 5.46,
-			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 5,
+			"isReachable": true,
+			"nearestPublicTransportM": 675,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-panorama-motovun-3220010335",
@@ -830,7 +687,11 @@
 			"trailKm": 1274.2,
 			"distanceFromTrailKm": 0.82,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 12,
+			"isReachable": true,
+			"nearestPublicTransportM": 758,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-zamask-10593511974",
@@ -842,31 +703,9 @@
 			"trailKm": 1280.4,
 			"distanceFromTrailKm": 0.02,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
-		},
-		{
-			"id": "viewpoint-veli-slap-5421990709",
-			"type": "viewpoint",
-			"name_en": "Veli slap",
-			"name_hr": "Veli slap",
-			"lat": 45.29128,
-			"lng": 13.96219,
-			"trailKm": 1289.2,
-			"distanceFromTrailKm": 2.79,
-			"source": "osm",
-			"lastVerified": "2026-06-07"
-		},
-		{
-			"id": "viewpoint-pogled-prema-podbermu-3406927696",
-			"type": "viewpoint",
-			"name_en": "Pogled prema Podbermu",
-			"name_hr": "Pogled prema Podbermu",
-			"lat": 45.25284,
-			"lng": 13.8975,
-			"trailKm": 1293.1,
-			"distanceFromTrailKm": 3.04,
-			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 20,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-vidikovac-2628885521",
@@ -878,7 +717,9 @@
 			"trailKm": 1293.5,
 			"distanceFromTrailKm": 0.87,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 0,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-pogled-prema-jezeru-butoniga-2670447682",
@@ -890,7 +731,9 @@
 			"trailKm": 1294.1,
 			"distanceFromTrailKm": 0.16,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 1,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-pogled-prema-jezeru-butoniga-3978318558",
@@ -902,7 +745,9 @@
 			"trailKm": 1295.3,
 			"distanceFromTrailKm": 1.23,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 0,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-pogled-prema-pazinu-2670447681",
@@ -914,7 +759,9 @@
 			"trailKm": 1296.2,
 			"distanceFromTrailKm": 0.02,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 15,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-pogled-prema-pazinu-2679501242",
@@ -926,7 +773,9 @@
 			"trailKm": 1297.1,
 			"distanceFromTrailKm": 0.43,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 0,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-vidikovac-prema-pazinu-2628892172",
@@ -938,7 +787,9 @@
 			"trailKm": 1297.9,
 			"distanceFromTrailKm": 1.69,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 0,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-pazin-cave-847298455",
@@ -950,7 +801,11 @@
 			"trailKm": 1298.4,
 			"distanceFromTrailKm": 0.94,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 0,
+			"isReachable": true,
+			"nearestPublicTransportM": 668,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-pazin-cave-847298517",
@@ -962,7 +817,11 @@
 			"trailKm": 1298.4,
 			"distanceFromTrailKm": 0.91,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 1,
+			"isReachable": true,
+			"nearestPublicTransportM": 706,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-pazinski-krov-2628941165",
@@ -974,7 +833,11 @@
 			"trailKm": 1298.4,
 			"distanceFromTrailKm": 0.31,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 0,
+			"isReachable": true,
+			"nearestPublicTransportM": 949,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-pogled-na-pazinsku-jamu-3208198926",
@@ -986,7 +849,11 @@
 			"trailKm": 1298.4,
 			"distanceFromTrailKm": 0.97,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 1,
+			"isReachable": true,
+			"nearestPublicTransportM": 721,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-vidikovac-pazinski-ponor-3407008293",
@@ -998,7 +865,11 @@
 			"trailKm": 1298.4,
 			"distanceFromTrailKm": 1.04,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 9,
+			"isReachable": true,
+			"nearestPublicTransportM": 572,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-vidikovac-pogled-prema-gradu-3415817893",
@@ -1010,7 +881,11 @@
 			"trailKm": 1298.4,
 			"distanceFromTrailKm": 1.11,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 15,
+			"isReachable": true,
+			"nearestPublicTransportM": 510,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-pogled-na-pazinsku-jamu-3415899696",
@@ -1022,7 +897,11 @@
 			"trailKm": 1298.4,
 			"distanceFromTrailKm": 0.82,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 16,
+			"isReachable": true,
+			"nearestPublicTransportM": 787,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-pogled-na-pazinsku-jamu-3415899996",
@@ -1034,7 +913,11 @@
 			"trailKm": 1298.4,
 			"distanceFromTrailKm": 0.83,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 8,
+			"isReachable": true,
+			"nearestPublicTransportM": 790,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-pogled-na-pazinsku-jamu-4840591396",
@@ -1046,7 +929,11 @@
 			"trailKm": 1298.4,
 			"distanceFromTrailKm": 0.98,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 3,
+			"isReachable": true,
+			"nearestPublicTransportM": 752,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-pogled-na-pazinsku-jamu-4840591397",
@@ -1058,7 +945,11 @@
 			"trailKm": 1298.4,
 			"distanceFromTrailKm": 0.88,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 3,
+			"isReachable": true,
+			"nearestPublicTransportM": 787,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-pogled-prema-pazinu-2650083070",
@@ -1070,31 +961,9 @@
 			"trailKm": 1300.7,
 			"distanceFromTrailKm": 1.07,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
-		},
-		{
-			"id": "viewpoint-vidikovac-franje-ferdinanda-3306255953",
-			"type": "viewpoint",
-			"name_en": "Vidikovac Franje Ferdinanda",
-			"name_hr": "Vidikovac Franje Ferdinanda",
-			"lat": 45.20325,
-			"lng": 14.03995,
-			"trailKm": 1317.5,
-			"distanceFromTrailKm": 2.69,
-			"source": "osm",
-			"lastVerified": "2026-06-07"
-		},
-		{
-			"id": "viewpoint-vidikovac-sv-jelene-3306272377",
-			"type": "viewpoint",
-			"name_en": "Vidikovac Sv. Jelene",
-			"name_hr": "Vidikovac Sv. Jelene",
-			"lat": 45.20353,
-			"lng": 14.04148,
-			"trailKm": 1317.5,
-			"distanceFromTrailKm": 2.57,
-			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 0,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-vidikovac-jelensko-6320348246",
@@ -1106,7 +975,9 @@
 			"trailKm": 1335.8,
 			"distanceFromTrailKm": 0.77,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 13,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-panorama-torneg-3002557732",
@@ -1119,7 +990,9 @@
 			"distanceFromTrailKm": 1.71,
 			"elevationM": 345,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 5,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-vlidikovac-fortica-2509132895",
@@ -1131,7 +1004,11 @@
 			"trailKm": 1374.7,
 			"distanceFromTrailKm": 1.12,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 1,
+			"isReachable": true,
+			"nearestPublicTransportM": 237,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-kuk-9921392620",
@@ -1143,7 +1020,9 @@
 			"trailKm": 1384.8,
 			"distanceFromTrailKm": 0.21,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 13,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-sea-view-255601380",
@@ -1155,7 +1034,11 @@
 			"trailKm": 1388.8,
 			"distanceFromTrailKm": 1.97,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 8,
+			"isReachable": true,
+			"nearestPublicTransportM": 523,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-grbac-3208092407",
@@ -1167,7 +1050,9 @@
 			"trailKm": 1391.2,
 			"distanceFromTrailKm": 0.75,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 6,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-bukovo-10801239993",
@@ -1179,19 +1064,9 @@
 			"trailKm": 1391.8,
 			"distanceFromTrailKm": 0.01,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
-		},
-		{
-			"id": "viewpoint-sea-view-3670456232",
-			"type": "viewpoint",
-			"name_en": "Sea view",
-			"name_hr": "Sea view",
-			"lat": 45.18227,
-			"lng": 14.24063,
-			"trailKm": 1395.2,
-			"distanceFromTrailKm": 2.79,
-			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 17,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-sea-view-3715467205",
@@ -1203,19 +1078,11 @@
 			"trailKm": 1397.7,
 			"distanceFromTrailKm": 1.57,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
-		},
-		{
-			"id": "viewpoint-sipicin-3840505246",
-			"type": "viewpoint",
-			"name_en": "Šipičin",
-			"name_hr": "Šipičin",
-			"lat": 45.27817,
-			"lng": 14.25129,
-			"trailKm": 1408,
-			"distanceFromTrailKm": 3.76,
-			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 7,
+			"isReachable": true,
+			"nearestPublicTransportM": 469,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-suhi-vrh-2615276068",
@@ -1227,7 +1094,9 @@
 			"trailKm": 1408.1,
 			"distanceFromTrailKm": 0.62,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 0,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-plascenica-3682576925",
@@ -1239,7 +1108,9 @@
 			"trailKm": 1408.6,
 			"distanceFromTrailKm": 0.6,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 1,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-kula-na-ucki-222398442",
@@ -1252,44 +1123,9 @@
 			"distanceFromTrailKm": 0.01,
 			"elevationM": 1401,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
-		},
-		{
-			"id": "viewpoint-luzinski-breg-1666228283",
-			"type": "viewpoint",
-			"name_en": "Lužinski breg",
-			"name_hr": "Lužinski breg",
-			"lat": 45.29272,
-			"lng": 14.24717,
-			"trailKm": 1412,
-			"distanceFromTrailKm": 2.93,
-			"elevationM": 626,
-			"source": "osm",
-			"lastVerified": "2026-06-07"
-		},
-		{
-			"id": "viewpoint-prema-ucki-3070033373",
-			"type": "viewpoint",
-			"name_en": "Prema Učki",
-			"name_hr": "Prema Učki",
-			"lat": 45.29573,
-			"lng": 14.2363,
-			"trailKm": 1412,
-			"distanceFromTrailKm": 2.02,
-			"source": "osm",
-			"lastVerified": "2026-06-07"
-		},
-		{
-			"id": "viewpoint-360-4386738239",
-			"type": "viewpoint",
-			"name_en": "360°",
-			"name_hr": "360°",
-			"lat": 45.29278,
-			"lng": 14.24732,
-			"trailKm": 1412,
-			"distanceFromTrailKm": 2.93,
-			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 4,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-strazica-viewpoint-5158419273",
@@ -1301,7 +1137,9 @@
 			"trailKm": 1412.9,
 			"distanceFromTrailKm": 0.86,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 0,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-upper-viewpoint-4366354557",
@@ -1314,7 +1152,9 @@
 			"distanceFromTrailKm": 1.39,
 			"url": "https://boris-sasho.com/land-art-trail-land-art-staza/",
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 0,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-lower-viewpoint-4421919399",
@@ -1327,7 +1167,9 @@
 			"distanceFromTrailKm": 1.19,
 			"url": "https://boris-sasho.com/land-art-trail-land-art-staza/",
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 0,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-little-viewpoint-4421919401",
@@ -1340,7 +1182,9 @@
 			"distanceFromTrailKm": 1.4,
 			"url": "https://boris-sasho.com/land-art-trail-land-art-staza/",
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 0,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-gavranov-greben-5140281606",
@@ -1352,7 +1196,9 @@
 			"trailKm": 1413.3,
 			"distanceFromTrailKm": 1.68,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 1,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-vidikovac-4093297072",
@@ -1364,19 +1210,9 @@
 			"trailKm": 1417.8,
 			"distanceFromTrailKm": 0.01,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
-		},
-		{
-			"id": "viewpoint-risnjak-7218389040",
-			"type": "viewpoint",
-			"name_en": "Risnjak",
-			"name_hr": "Risnjak",
-			"lat": 45.36175,
-			"lng": 14.26681,
-			"trailKm": 1423.8,
-			"distanceFromTrailKm": 0.29,
-			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 1,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-majkovac-7218390589",
@@ -1388,7 +1224,9 @@
 			"trailKm": 1424.5,
 			"distanceFromTrailKm": 0.01,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 5,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-veprinac-801440794",
@@ -1400,7 +1238,11 @@
 			"trailKm": 1424.9,
 			"distanceFromTrailKm": 1.77,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 5,
+			"isReachable": true,
+			"nearestPublicTransportM": 305,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-vidikovac-2620994305",
@@ -1413,7 +1255,9 @@
 			"distanceFromTrailKm": 0.2,
 			"elevationM": 706,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 1,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-mala-fortica-1107647018",
@@ -1425,7 +1269,11 @@
 			"trailKm": 1428.4,
 			"distanceFromTrailKm": 1.64,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 2,
+			"isReachable": true,
+			"nearestPublicTransportM": 364,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-lonceva-griza-8636605794",
@@ -1439,20 +1287,11 @@
 			"elevationM": 488,
 			"image": "https://www.novilist.hr/wp-content/uploads/2021/06/Vidikovac-Lon%C4%8Deva-gri%C5%BEa.jpg",
 			"source": "osm",
-			"lastVerified": "2026-06-07"
-		},
-		{
-			"id": "viewpoint-mlicni-vrh-11841940478",
-			"type": "viewpoint",
-			"name_en": "Mlični vrh",
-			"name_hr": "Mlični vrh",
-			"lat": 45.39688,
-			"lng": 14.58345,
-			"trailKm": 1459.9,
-			"distanceFromTrailKm": 0.7,
-			"elevationM": 1223,
-			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 22,
+			"isReachable": true,
+			"nearestPublicTransportM": 425,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-vela-plis-8087134276",
@@ -1465,67 +1304,9 @@
 			"distanceFromTrailKm": 0.38,
 			"elevationM": 1141,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
-		},
-		{
-			"id": "viewpoint-vidikovac-lokvarsko-jezero-2429510962",
-			"type": "viewpoint",
-			"name_en": "Vidikovac Lokvarsko Jezero",
-			"name_hr": "Vidikovac Lokvarsko Jezero",
-			"lat": 45.3573,
-			"lng": 14.72115,
-			"trailKm": 1481.6,
-			"distanceFromTrailKm": 4.93,
-			"source": "osm",
-			"lastVerified": "2026-06-07"
-		},
-		{
-			"id": "viewpoint-vidikovac-hrvatskih-branitelja-4045689303",
-			"type": "viewpoint",
-			"name_en": "Vidikovac hrvatskih branitelja",
-			"name_hr": "Vidikovac hrvatskih branitelja",
-			"lat": 45.35824,
-			"lng": 14.76009,
-			"trailKm": 1481.9,
-			"distanceFromTrailKm": 5.56,
-			"source": "osm",
-			"lastVerified": "2026-06-07"
-		},
-		{
-			"id": "viewpoint-strilez-7704203608",
-			"type": "viewpoint",
-			"name_en": "Strilež",
-			"name_hr": "Strilež",
-			"lat": 45.24462,
-			"lng": 14.81657,
-			"trailKm": 1490.1,
-			"distanceFromTrailKm": 4.29,
-			"source": "osm",
-			"lastVerified": "2026-06-07"
-		},
-		{
-			"id": "viewpoint-ricicko-bilo-7407391886",
-			"type": "viewpoint",
-			"name_en": "Ričičko Bilo",
-			"name_hr": "Ričičko Bilo",
-			"lat": 45.16305,
-			"lng": 14.90757,
-			"trailKm": 1528.3,
-			"distanceFromTrailKm": 2.21,
-			"source": "osm",
-			"lastVerified": "2026-06-07"
-		},
-		{
-			"id": "viewpoint-vidikovac-sviba-2397096727",
-			"type": "viewpoint",
-			"name_en": "Vidikovac Sviba",
-			"name_hr": "Vidikovac Sviba",
-			"lat": 45.11782,
-			"lng": 14.892,
-			"trailKm": 1534.5,
-			"distanceFromTrailKm": 3.64,
-			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 0,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-vidikovac-petuova-11240019428",
@@ -1537,7 +1318,9 @@
 			"trailKm": 1555.5,
 			"distanceFromTrailKm": 0.12,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 4,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-vratnik-panoramic-view-9920120850",
@@ -1549,7 +1332,9 @@
 			"trailKm": 1555.8,
 			"distanceFromTrailKm": 0.03,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 3,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-vidikovac-liskovac-9088571487",
@@ -1561,7 +1346,9 @@
 			"trailKm": 1562.2,
 			"distanceFromTrailKm": 1.42,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 1,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-vucjak-1202406987",
@@ -1574,7 +1361,9 @@
 			"distanceFromTrailKm": 0.14,
 			"elevationM": 1645,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 2,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-sunset-view-9000853773",
@@ -1586,19 +1375,9 @@
 			"trailKm": 1578.6,
 			"distanceFromTrailKm": 0.29,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
-		},
-		{
-			"id": "viewpoint-belveder-2688985164",
-			"type": "viewpoint",
-			"name_en": "Belveder",
-			"name_hr": "Belveder",
-			"lat": 44.70137,
-			"lng": 14.8954,
-			"trailKm": 1594.8,
-			"distanceFromTrailKm": 5.97,
-			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 4,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-cross-6596848286",
@@ -1610,79 +1389,9 @@
 			"trailKm": 1623,
 			"distanceFromTrailKm": 1.25,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
-		},
-		{
-			"id": "viewpoint-prdezina-5643296122",
-			"type": "viewpoint",
-			"name_en": "Prdežina",
-			"name_hr": "Prdežina",
-			"lat": 44.33685,
-			"lng": 15.46919,
-			"trailKm": 1663.7,
-			"distanceFromTrailKm": 3.03,
-			"source": "osm",
-			"lastVerified": "2026-06-07"
-		},
-		{
-			"id": "viewpoint-beautiful-view-of-paklenica-7727081586",
-			"type": "viewpoint",
-			"name_en": "Beautiful view of Paklenica",
-			"name_hr": "Beautiful view of Paklenica",
-			"lat": 44.32581,
-			"lng": 15.48414,
-			"trailKm": 1673,
-			"distanceFromTrailKm": 4.42,
-			"source": "osm",
-			"lastVerified": "2026-06-07"
-		},
-		{
-			"id": "viewpoint-vidikovac-parizevacka-glavica-4118364590",
-			"type": "viewpoint",
-			"name_en": "Vidikovac Pariževačka glavica",
-			"name_hr": "Vidikovac Pariževačka glavica",
-			"lat": 44.22256,
-			"lng": 15.61364,
-			"trailKm": 1692.8,
-			"distanceFromTrailKm": 5.2,
-			"source": "osm",
-			"lastVerified": "2026-06-07"
-		},
-		{
-			"id": "viewpoint-odmoriste-marune-432663568",
-			"type": "viewpoint",
-			"name_en": "Odmorište Marune",
-			"name_hr": "Odmorište Marune",
-			"lat": 44.24949,
-			"lng": 15.63703,
-			"trailKm": 1692.9,
-			"distanceFromTrailKm": 1.72,
-			"source": "osm",
-			"lastVerified": "2026-06-07"
-		},
-		{
-			"id": "viewpoint-talijanka-10301003940",
-			"type": "viewpoint",
-			"name_en": "Talijanka",
-			"name_hr": "Talijanka",
-			"lat": 44.19745,
-			"lng": 15.68459,
-			"trailKm": 1699.5,
-			"distanceFromTrailKm": 5.65,
-			"source": "osm",
-			"lastVerified": "2026-06-07"
-		},
-		{
-			"id": "viewpoint-vidikovac-krnjeza-6034362346",
-			"type": "viewpoint",
-			"name_en": "Vidikovac Krnjeza",
-			"name_hr": "Vidikovac Krnjeza",
-			"lat": 44.20334,
-			"lng": 15.85392,
-			"trailKm": 1725.6,
-			"distanceFromTrailKm": 4.29,
-			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 44,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-izvor-cetine-5721917366",
@@ -1694,7 +1403,9 @@
 			"trailKm": 1812.9,
 			"distanceFromTrailKm": 0.02,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 6,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-gucnica-179237978",
@@ -1706,7 +1417,9 @@
 			"trailKm": 1872.2,
 			"distanceFromTrailKm": 1.07,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 11,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-bila-glavica-3560996130",
@@ -1718,7 +1431,11 @@
 			"trailKm": 1886.4,
 			"distanceFromTrailKm": 0.69,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 15,
+			"isReachable": true,
+			"nearestPublicTransportM": 724,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-vidilica-1206520394",
@@ -1730,7 +1447,9 @@
 			"trailKm": 1918.1,
 			"distanceFromTrailKm": 0.01,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 7,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-mirabella-fort-839773043",
@@ -1742,19 +1461,11 @@
 			"trailKm": 1921.6,
 			"distanceFromTrailKm": 0.11,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
-		},
-		{
-			"id": "viewpoint-peovo-1216316800",
-			"type": "viewpoint",
-			"name_en": "Peovo",
-			"name_hr": "Peovo",
-			"lat": 43.4473,
-			"lng": 16.73856,
-			"trailKm": 1925.5,
-			"distanceFromTrailKm": 2.19,
-			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 1,
+			"isReachable": true,
+			"nearestPublicTransportM": 271,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-visucgrad-1212185823",
@@ -1766,7 +1477,9 @@
 			"trailKm": 1926.3,
 			"distanceFromTrailKm": 1.34,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 0,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-gospina-kapelica-1202821524",
@@ -1778,7 +1491,9 @@
 			"trailKm": 1931.4,
 			"distanceFromTrailKm": 0.01,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 6,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-satarice-1214802504",
@@ -1791,7 +1506,9 @@
 			"distanceFromTrailKm": 0,
 			"elevationM": 642,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 0,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-vidikovac-kuzmanici-5903357645",
@@ -1803,7 +1520,9 @@
 			"trailKm": 1938.8,
 			"distanceFromTrailKm": 0.01,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 10,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-biokovo-eye-5590981455",
@@ -1816,6 +1535,8 @@
 			"distanceFromTrailKm": 1,
 			"source": "wikidata",
 			"image": "http://commons.wikimedia.org/wiki/Special:FilePath/8.%20SKYWALK%20%28BIOKOVO%29.jpg",
+			"nearestHighwayM": 5,
+			"isReachable": true,
 			"images": [
 				{
 					"url": "https://upload.wikimedia.org/wikipedia/commons/3/3a/8._SKYWALK_%28BIOKOVO%29.jpg",
@@ -1846,7 +1567,7 @@
 					"sourceUrl": "https://commons.wikimedia.org/wiki/File:3._SKYWALK_(BIOKOVO).jpg"
 				}
 			],
-			"lastVerified": "2026-06-07"
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-mandlova-ploca-1224132448",
@@ -1858,43 +1579,9 @@
 			"trailKm": 1951.2,
 			"distanceFromTrailKm": 1.32,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
-		},
-		{
-			"id": "viewpoint-ercegova-gradina-9385373317",
-			"type": "viewpoint",
-			"name_en": "Ercegova Gradina",
-			"name_hr": "Ercegova Gradina",
-			"lat": 43.33237,
-			"lng": 17.0189,
-			"trailKm": 1958.4,
-			"distanceFromTrailKm": 1.09,
-			"source": "osm",
-			"lastVerified": "2026-06-07"
-		},
-		{
-			"id": "viewpoint-amazing-view-on-nugal-beach-12917478801",
-			"type": "viewpoint",
-			"name_en": "Amazing view on Nugal Beach",
-			"name_hr": "Amazing view on Nugal Beach",
-			"lat": 43.27893,
-			"lng": 17.03503,
-			"trailKm": 1964.4,
-			"distanceFromTrailKm": 3.07,
-			"source": "osm",
-			"lastVerified": "2026-06-07"
-		},
-		{
-			"id": "viewpoint-sv-tomas-1439708645",
-			"type": "viewpoint",
-			"name_en": "sv. Tomáš",
-			"name_hr": "sv. Tomáš",
-			"lat": 43.26952,
-			"lng": 17.07119,
-			"trailKm": 1968.6,
-			"distanceFromTrailKm": 2.08,
-			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 0,
+			"isReachable": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-skywalk-7734300242",
@@ -1907,6 +1594,8 @@
 			"distanceFromTrailKm": 0.01,
 			"source": "wikidata",
 			"image": "http://commons.wikimedia.org/wiki/Special:FilePath/8.%20SKYWALK%20%28BIOKOVO%29.jpg",
+			"nearestHighwayM": 1,
+			"isReachable": true,
 			"images": [
 				{
 					"url": "https://upload.wikimedia.org/wikipedia/commons/3/3a/8._SKYWALK_%28BIOKOVO%29.jpg",
@@ -1937,7 +1626,7 @@
 					"sourceUrl": "https://commons.wikimedia.org/wiki/File:3._SKYWALK_(BIOKOVO).jpg"
 				}
 			],
-			"lastVerified": "2026-06-07"
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-gora-kline-12337185847",
@@ -1949,7 +1638,11 @@
 			"trailKm": 1982.2,
 			"distanceFromTrailKm": 0.48,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 26,
+			"isReachable": true,
+			"nearestPublicTransportM": 975,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-vidikovac-podmarace-4443494122",
@@ -1961,31 +1654,11 @@
 			"trailKm": 1991.6,
 			"distanceFromTrailKm": 0.18,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
-		},
-		{
-			"id": "viewpoint-gojmera-6956097585",
-			"type": "viewpoint",
-			"name_en": "Gojmera",
-			"name_hr": "Gojmera",
-			"lat": 43.12779,
-			"lng": 17.16332,
-			"trailKm": 1992.7,
-			"distanceFromTrailKm": 5.67,
-			"source": "osm",
-			"lastVerified": "2026-06-07"
-		},
-		{
-			"id": "viewpoint-bile-travine-6956097685",
-			"type": "viewpoint",
-			"name_en": "Bile Travine",
-			"name_hr": "Bile Travine",
-			"lat": 43.12675,
-			"lng": 17.15962,
-			"trailKm": 1992.7,
-			"distanceFromTrailKm": 5.86,
-			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 0,
+			"isReachable": true,
+			"nearestPublicTransportM": 346,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-kremenik-5687460023",
@@ -1997,7 +1670,11 @@
 			"trailKm": 2000.4,
 			"distanceFromTrailKm": 0.46,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 4,
+			"isReachable": true,
+			"nearestPublicTransportM": 285,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-sunset-view-6806058285",
@@ -2009,31 +1686,11 @@
 			"trailKm": 2004,
 			"distanceFromTrailKm": 0.01,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
-		},
-		{
-			"id": "viewpoint-makarska-riviera-1638316053",
-			"type": "viewpoint",
-			"name_en": "Makarska Riviera",
-			"name_hr": "Makarska Riviera",
-			"lat": 43.08438,
-			"lng": 17.35922,
-			"trailKm": 2016.9,
-			"distanceFromTrailKm": 2.57,
-			"source": "osm",
-			"lastVerified": "2026-06-07"
-		},
-		{
-			"id": "viewpoint-makarska-riviera-1374487473",
-			"type": "viewpoint",
-			"name_en": "Makarska Riviera",
-			"name_hr": "Makarska Riviera",
-			"lat": 43.08204,
-			"lng": 17.36619,
-			"trailKm": 2022.2,
-			"distanceFromTrailKm": 2.22,
-			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 1,
+			"isReachable": true,
+			"nearestPublicTransportM": 434,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-grgic-winery-4976357523",
@@ -2045,7 +1702,11 @@
 			"trailKm": 2063,
 			"distanceFromTrailKm": 1.32,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 2,
+			"isReachable": true,
+			"nearestPublicTransportM": 571,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-polozaj-lastva-8544221024",
@@ -2058,7 +1719,11 @@
 			"distanceFromTrailKm": 0.42,
 			"elevationM": 110,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 2,
+			"isReachable": true,
+			"nearestPublicTransportM": 390,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-nice-view-9179813517",
@@ -2070,7 +1735,11 @@
 			"trailKm": 2149.5,
 			"distanceFromTrailKm": 0.25,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 25,
+			"isReachable": true,
+			"nearestPublicTransportM": 362,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-coral-beach-4883384796",
@@ -2082,7 +1751,11 @@
 			"trailKm": 2155.5,
 			"distanceFromTrailKm": 1.42,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 6,
+			"isReachable": true,
+			"nearestPublicTransportM": 390,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-sunset-view-12877795904",
@@ -2094,7 +1767,11 @@
 			"trailKm": 2155.5,
 			"distanceFromTrailKm": 1.55,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 3,
+			"isReachable": true,
+			"nearestPublicTransportM": 304,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-sunset-view-1447452992",
@@ -2106,7 +1783,11 @@
 			"trailKm": 2156.1,
 			"distanceFromTrailKm": 1.94,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 0,
+			"isReachable": true,
+			"nearestPublicTransportM": 356,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-old-town-and-lokrum-viewpoint-4443270890",
@@ -2118,19 +1799,11 @@
 			"trailKm": 2160.2,
 			"distanceFromTrailKm": 0.57,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
-		},
-		{
-			"id": "viewpoint-fort-royal-4112568999",
-			"type": "viewpoint",
-			"name_en": "Fort Royal",
-			"name_hr": "Utvrda Royal",
-			"lat": 42.63012,
-			"lng": 18.1162,
-			"trailKm": 2161.1,
-			"distanceFromTrailKm": 1.64,
-			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 5,
+			"isReachable": true,
+			"nearestPublicTransportM": 148,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14"
 		},
 		{
 			"id": "viewpoint-beach-4403723492",
@@ -2142,7 +1815,11 @@
 			"trailKm": 2178.5,
 			"distanceFromTrailKm": 0.48,
 			"source": "osm",
-			"lastVerified": "2026-06-07"
+			"nearestHighwayM": 28,
+			"isReachable": true,
+			"nearestPublicTransportM": 865,
+			"isReachableViaPublicTransport": true,
+			"lastVerified": "2026-06-14"
 		}
 	]
 }

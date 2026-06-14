@@ -34,9 +34,10 @@
 			"trail": "Clicca sul percorso o sul profilo altimetrico per vedere distanza e altitudine in qualsiasi punto",
 			"elevation": "Grafico del profilo altimetrico; passa il mouse per visualizzare il punto sulla mappa, clicca per fissarlo",
 			"ruler": "Righello per misurare segmenti tra due punti",
-			"layers": "Più livelli mappa (standard, topo, satellite, terreno, ciclismo, Croazia Topo)",
+			"distanceEtaOverlay": "Overlay distanza ed ETA - HUD in tempo reale con distanza percorsa e rimanente, dislivello rimanente ed ETA alla fine del sentiero o al segmento attivo del righello",
+			"layers": "Più livelli mappa (standard, topo, escursionismo, satellite, terreno, ciclismo, Croazia Topo, scuro), più overlay opzionale Waymarked Trails con relazioni OSM (interruttore in Impostazioni, solo online)",
 			"location": "Tracciamento opzionale della posizione per vedere dove ti trovi sul sentiero",
-			"share": "Link di condivisione con la visualizzazione attuale o i progressi sul sentiero; il pulsante condividi apre un codice QR da scansionare con un altro telefono e copia link",
+			"share": "I link condividono l'intera vista mappa - posizione, direzione, unità, livelli, intervallo righello, piano tappe, waypoint e diario. Il pulsante condividi apre un pannello QR e copia link; link brevi compatti (/s/'{'code'}') se online e attivati in Impostazioni",
 			"units": "Unità metriche e imperiali",
 			"darkMode": "Modalità scura e opzioni risparmio energetico",
 			"offlineMaps": "Mappe offline - pre-scarica il corridoio del sentiero per l'uso senza segnale",
@@ -45,6 +46,8 @@
 			"weather": "Meteo attuale nella tua posizione sul sentiero - temperatura, vento, probabilità precipitazioni, alba/tramonto; previsione oraria 12 ore con barre precipitazioni e suggerimento finestra migliore (DHMZ + Open-Meteo)",
 			"trailNotices": "Avvisi regionali sulle condizioni del sentiero - banner eliminabili con avvisi sulle condizioni attuali sul percorso",
 			"seasonalStatus": "Stato stagionale del sentiero - livello mappa curato con avvisi, chiusure e condizioni stagionali da DHMZ, HGSS, HPS e parchi nazionali croati; marcatori colorati per gravità al centro di ogni tratto interessato; passa il cursore o clicca un marcatore per evidenziare il tratto e aprire un riquadro con gravità, attrezzatura consigliata e link all'avviso originale; i dati si aggiornano con `npm run update-seasonal`",
+			"mineAreas": "Aree con sospetta presenza di mine - poligoni ufficiali MUP/HCR vicino al sentiero con marcatori di avviso e banner GPS (non eliminabile dentro il poligono, eliminabile entro 500 m); attivo di default, completamente offline dopo la cache; solo informativo - rispetta sempre la segnaletica sul posto",
+			"severeWeather": "Allerte meteo gravi - avvisi Meteoalarm CAP per la Croazia come poligoni colorati sulla mappa con banner GPS; rosso/grave non eliminabile; dati aggiornati ogni 15 minuti",
 			"radar": "Overlay radar precipitazioni - radar RainViewer animato con frame passati e previsionali, controlli play/pausa e legenda colori",
 			"sunsetPosition": "Posizione tramonto/alba - mostra dove ti troverai sul sentiero al tramonto e all'alba in base al tuo ritmo attuale; indicatori attivabili sulla linea",
 			"stagePlanner": "Pianificatore tappe multi-giorno - suddividi qualsiasi tratto del sentiero in tappe giornaliere per distanza o tempo, visualizza statistiche di dislivello ed ETA per tappa, esporta le singole tappe come file GPX o tutte le tappe come PDF tappe in mappa",
@@ -53,17 +56,17 @@
 			"trailStyle": "Stile del percorso - scegli nel pannello dei livelli come colorare la polilinea: Predefinito (un solo colore), Tratte (zone A/B/C con marker di confine e statistiche per tratta), Pendenza (colorazione a cinque bande in stile Strava, toni caldi per le salite e freddi per le discese nella direzione di marcia attiva; legenda del colore nel pannello; ricalcolata al cambio di direzione SOBO/NOBO), Fondo o Difficoltà (SAC)",
 			"surfaceAndSac": "Colorazione per fondo e difficoltà - colora la polilinea del sentiero (e il riempimento del grafico altimetrico) in base al tipo di fondo OSM (asfaltato / non asfaltato / ghiaia / terra / roccia) o alla scala escursionistica SAC (T1 escursionismo fino a T6 escursionismo alpino difficile). I dati vengono arricchiti mensilmente da una GitHub Action a partire da OpenStreetMap; le opzioni Fondo e Difficoltà restano disabilitate finché il set di dati non viene caricato al primo rendering. Consapevole della direzione: il set è indicizzato per km SOBO e il renderer lo specchia al volo per NOBO",
 			"distanceMarkers": "Indicatori di distanza - piccole etichette km/mi lungo il sentiero a intervalli di 100 / 50 / 25 / 10 / 5 / 1 unità. Visualizzazione progressiva in base al livello di zoom: 100 km sempre visibili a qualsiasi zoom, intervalli più fini compaiono man mano che ingrandisci (etichette da 1 km solo da zoom 13+). Attivabile dalle Impostazioni; le etichette seguono il sistema di unità attivo e la direzione corrente (SOBO/NOBO)",
-			"pois": "Punti d'interesse, elenco e ricerca - circa 7.700 luoghi lungo il sentiero (città, località, cime, punti panoramici, rifugi alpini, bivacchi, ristoro e bancomat) all'interno del confine croato. Filtri per tipo e per tag nelle Impostazioni e nel pannello elenco. I marker si raggruppano allo zoom nazionale e si dividono mentre ingrandisci. I popup mostrano una galleria di foto da Wikimedia Commons (con attribuzione e licenza; tocca una miniatura per aprire un lightbox a schermo intero con navigazione da tastiera), un breve estratto da Wikipedia che appare subito (preparato in fase di arricchimento per i luoghi notabili, caricato pigramente per gli altri), un'indicazione della fonte con la data dell'ultima verifica, oltre a un pulsante 'Copia link'. L'elenco si ordina per km del sentiero, nome, distanza dal sentiero o 'Vicino a me'; un raggruppamento opzionale ogni 50 km divide l'elenco lungo in capitoli con intestazioni adesive; navigazione completa da tastiera. Il pianificatore di tappe mostra quanti luoghi rientrano in ogni tappa, li elenca nell'ordine di marcia e può esportare tutti i POI dell'intero piano in un unico file GPX. Le tracce GPX importate possono elencare i POI superati entro 500 m, nell'ordine di marcia. Cerca per nome (con piegatura dei diacritici) o per km. I download del corridoio pre-memorizzato scaricano anche le miniature dei POI e i riassunti di Wikipedia per popup completi anche offline. Il dataset viene aggiornato mensilmente da OpenStreetMap, Wikidata, Wikimedia Commons e dalla directory dei rifugi HPS; l'arricchimento è resistente ai guasti così un singolo problema con un servizio a monte non può degradare silenziosamente il dataset",
+			"pois": "Punti d'interesse, elenco e ricerca - circa 7.700 luoghi lungo il sentiero (città, località, cime, punti panoramici, rifugi alpini, bivacchi, ristoro e bancomat) all'interno del confine croato. Filtri per tipo nel pannello livelli; filtri per tag, preset di filtro salvati, più elenchi nominati di preferiti e un interruttore per i POI remoti nel pannello elenco. I marker si raggruppano allo zoom nazionale e si dividono mentre ingrandisci. I popup mostrano una galleria di foto da Wikimedia Commons (con attribuzione e licenza; tocca una miniatura per aprire un lightbox a schermo intero con navigazione da tastiera), un breve estratto da Wikipedia che appare subito (preparato in fase di arricchimento per i luoghi notabili, caricato pigramente per gli altri), un'indicazione della fonte con la data dell'ultima verifica, oltre a un pulsante 'Copia link'. L'elenco si ordina per km del sentiero, nome, distanza dal sentiero o 'Vicino a me'; un raggruppamento opzionale ogni 50 km divide l'elenco lungo in capitoli con intestazioni adesive; navigazione completa da tastiera. Il pianificatore di tappe mostra quanti luoghi rientrano in ogni tappa, li elenca nell'ordine di marcia e può esportare tutti i POI dell'intero piano in un unico file GPX. Le tracce GPX importate possono elencare i POI superati entro 500 m, nell'ordine di marcia. Cerca per nome (con piegatura dei diacritici) o per km. I download del corridoio pre-memorizzato scaricano anche le miniature dei POI e i riassunti di Wikipedia per popup completi anche offline. Il dataset viene aggiornato mensilmente da OpenStreetMap, Wikidata, Wikimedia Commons e dalla directory dei rifugi HPS; l'arricchimento è resistente ai guasti così un singolo problema con un servizio a monte non può degradare silenziosamente il dataset",
 			"tripBrief": "Esportazione brief di viaggio - PDF stampabile o DOCX modificabile generato dal tuo piano tappe multi-giorno. Ogni giorno ha la sua pagina con un'immagine della mappa, un breve testo, i luoghi lungo il percorso (nome, tipo, km del sentiero, foto, estratto da Wikipedia) e gli eventuali avvisi stagionali che intersecano la giornata. La pagina finale raccoglie le indicazioni di emergenza: 112, formato di richiesta HGSS, attrezzatura essenziale. Localizzato in en / hr / de / it. Narrazioni giornaliere IA opzionali (generate dai fatti del piano, solo online, con avvertenza di accuratezza); il testo basato su modelli resta predefinito e fallback automatico",
 			"offRouteAlert": "Avviso fuori percorso - avviso opzionale (disattivato di default) quando ti allontani più di 200 m dal sentiero: banner con distanza e direzione di ritorno, più vibrazione. Si arma solo dopo che il GPS ti colloca sul sentiero, quindi resta muto altrove in Croazia, e si disarma da solo quando te ne vai davvero (bus, taxi, fine giornata)",
 			"waterIntelligence": "Intelligenza sulle fonti d'acqua - ogni fonte porta una classe di affidabilità dai tag OSM: fontanella affidabile, stagionale (può essere secca), sorgente non verificata (trattare prima di bere) o non potabile. La classe colora il marker, appare come badge nei popup e nelle liste, e il pianificatore segnala i giorni il cui tratto più lungo senza acqua utilizzabile supera 15 / 25 km",
 			"completionTracking": "Tracciamento dei tratti completati - segna ciò che hai percorso: automaticamente dal GPS sul sentiero, manualmente dalla selezione del righello o da intere sezioni A/B/C, oppure importando una traccia GPX registrata. I tratti completati si disegnano in verde sopra qualsiasi stile; il pannello progresso e il tooltip posizione mostrano il progresso totale e per sezione",
 			"helpPanel": "Aiuto in-app - il pulsante ? apre un riferimento per argomenti: nozioni di base della mappa, profilo altimetrico, gesti nascosti (pressione lunga SOS, trascinamento GPX), strumenti di pianificazione e comportamento offline",
-			"upNext": "Vista \"A seguire\" - la fonte d’acqua, il rifugio e la città più vicini davanti a te, con le distanze, direttamente nel pannello distanze",
+			"upNext": "Vista \"A seguire\" - la fonte d'acqua, il rifugio e la città più vicini davanti a te, con le distanze, direttamente nel pannello distanze. Righe opzionali per cibo, bancomat, belvedere e farmacia nelle Impostazioni.",
 			"packWeight": "Peso dello zaino e acqua da portare - suggerimenti \"porta fino a X L\" per tappa dal peso base e dal consumo, in unità metriche o imperiali",
 			"waypointsJournal": "Punti personali e diario di viaggio - tieni premuto sulla mappa per segnaposti con note, diario datato, esportazione GPX/Markdown; tutto resta sul tuo dispositivo",
 			"resupply": "Guide al rifornimento - negozi, farmacie, bancomat, posta e autobus da OpenStreetMap nei popup delle città, con indicatori di rifornimento per tappa nel planner",
-			"pushAlerts": "Notifiche di avviso - push opzionali del browser quando viene pubblicato un nuovo avviso stagionale, anche ad app chiusa; nessun account"
+			"pushAlerts": "Notifiche di avviso - push opzionali del browser quando viene pubblicato un nuovo avviso stagionale o una notifica sulle condizioni del sentiero, anche ad app chiusa; nessun account"
 		},
 		"dataAttribution": "Dati e attribuzioni",
 		"dataAttributionDesc": "I dati del sentiero sono forniti dall'organizzazione Udruga Long Distance Trail Hrvatska (LDTH). Le tessere mappa provengono da OpenStreetMap, OpenTopoMap, OpenHikingMap (openmaps.fr), Waymarked Trails, CyclOSM e altri provider. Le mappe topografiche croate provengono dall'Amministrazione Geodetica Statale (DGU). I dati meteo provengono da DHMZ (Servizio Meteorologico Croato) e Open-Meteo. Le tessere radar sono fornite da RainViewer. Stato stagionale del sentiero, avvisi di pericolo e dati delle stazioni di soccorso alpino provengono da HGSS (Servizio croato di soccorso in montagna), HPS (Federazione croata di alpinismo) e dalle autorità dei parchi nazionali (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) e Parco naturale Velebit. I dati visualizzati su questo sito potrebbero non riflettere le condizioni più recenti. In caso di dubbio, verificare sempre le fonti ufficiali.",
@@ -76,7 +79,10 @@
 		"createdBy": "Creato da",
 		"visitAuthor": "Visita il sito di {authorName}",
 		"officialApp": "App ufficiale del CLDT",
-		"officialAppDesc": "L’app mobile ufficiale del CLDT è <link>FarOut</link>, pubblicata in collaborazione con l’associazione del sentiero. {title} è un progetto indipendente e va usato solo per scopi di ricerca ed educativi - verifica sempre le informazioni critiche (acqua, pericoli, chiusure) con le fonti ufficiali prima di farvi affidamento sul campo."
+		"officialAppDesc": "L’app mobile ufficiale del CLDT è <link>FarOut</link>, pubblicata in collaborazione con l’associazione del sentiero. {title} è un progetto indipendente e va usato solo per scopi di ricerca ed educativi - verifica sempre le informazioni critiche (acqua, pericoli, chiusure) con le fonti ufficiali prima di farvi affidamento sul campo.",
+		"demoCalloutTitle": "Prova l'escursione demo",
+		"demoCalloutDesc": "Cammina sul sentiero a circa 4 km/h con waypoint di esempio, una voce di diario e tracciamento del progresso - senza GPS.",
+		"demoCalloutLink": "Prova escursione demo"
 	},
 	"home": {
 		"srTitle": "Mappa {companyName}"
@@ -232,10 +238,19 @@
 		"helpShow": "Mostra aiuto",
 		"helpHide": "Nascondi aiuto",
 		"showUpNextLabel": "\"A seguire\" nel pannello distanze",
-		"showUpNextHint": "Mostra la prossima fonte d’acqua, il prossimo rifugio e la prossima città nella tua direzione di marcia. Tocca una riga per aprirla sulla mappa.",
+		"showUpNextHint": "Mostra la prossima fonte d'acqua, il prossimo rifugio e la prossima città nella tua direzione di marcia. Attiva le righe opzionali sotto per cibo, bancomat, belvedere o farmacia. Tocca una riga per aprirla sulla mappa.",
+		"upNextShowFoodLabel": "Cibo in A seguire",
+		"upNextShowFoodHint": "Ristorante o bar più vicino avanti, nella sezione espandibile Altro avanti.",
+		"upNextShowAtmLabel": "Bancomat in A seguire",
+		"upNextShowAtmHint": "Bancomat più vicino avanti, nella sezione espandibile Altro avanti.",
+		"upNextShowViewpointLabel": "Belvedere in A seguire",
+		"upNextShowViewpointHint": "Belvedere più vicino avanti, nella sezione espandibile Altro avanti.",
+		"upNextShowPharmacyLabel": "Farmacia in A seguire",
+		"upNextShowPharmacyHint": "Città più vicina con farmacia avanti, nella sezione espandibile Altro avanti.",
 		"packWeightTitle": "Peso dello zaino",
 		"packBaseWeightLabel": "Peso base (senza acqua)",
 		"waterConsumptionLabel": "Consumo di acqua",
+		"foodConsumptionLabel": "Consumo di cibo",
 		"packWeightHint": "Attiva i suggerimenti sull’acqua da portare per tappa. Lascia vuoto il peso base per disattivare.",
 		"packEtaAdjustLabel": "Adatta le stime dei tempi al peso dello zaino",
 		"packEtaAdjustHint": "Rallenta le stime di circa l’1% per ogni chilogrammo di peso base oltre {reference}.",
@@ -244,13 +259,11 @@
 		"packCsvClear": "Rimuovi",
 		"packCsvError": "Impossibile leggere il CSV. Esportalo da LighterPack o Packstack e riprova.",
 		"pushAlertsLabel": "Notifica nuovi avvisi del sentiero",
-		"pushAlertsHint": "Notifica del browser quando viene pubblicato un nuovo avviso stagionale per il sentiero. Funziona anche ad app chiusa; nessun account.",
+		"pushAlertsHint": "Notifica del browser quando viene pubblicato un nuovo avviso stagionale o una notifica sulle condizioni del sentiero. Funziona anche ad app chiusa; nessun account.",
 		"waymarkedLabel": "Overlay sentieri segnalati",
 		"waymarkedHint": "Disegna le rotte escursionistiche OSM (Waymarked Trails) sopra la mappa di base. Solo online.",
 		"shareShortLinksLabel": "Usa link brevi per la condivisione",
-		"shareShortLinksHint": "Copia un link compatto che apre la stessa vista mappa. Serve una connessione internet per crearlo.",
-		"includeRemotePoisLabel": "Includi POI remoti",
-		"includeRemotePoisHint": "Mostra i luoghi segnati come difficili da raggiungere a piedi senza una fermata bus o stazione ferroviaria vicina sul lato del sentiero. Disattivato per impostazione predefinita."
+		"shareShortLinksHint": "Copia un link compatto che apre la stessa vista mappa. Serve una connessione internet per crearlo."
 	},
 	"baseMapSelector": {
 		"standard": "Standard",
@@ -442,6 +455,9 @@
 	"pwa": {
 		"installTitle": "Installa CLDT Map",
 		"installDescription": "Aggiungi alla schermata iniziale per un accesso rapido e un'esperienza simile a un'app.",
+		"installTitleOffline": "Installa per l'uso offline",
+		"installDescriptionOffline": "Le tessere del sentiero sono salvate. Installa l'app sulla schermata iniziale per aprire la mappa offline senza una scheda del browser.",
+		"installDescriptionOfflineIos": "Le tessere del sentiero sono salvate. Tocca Condividi, poi Aggiungi a Home per aprire la mappa offline.",
 		"install": "Installa",
 		"dismiss": "Non ora"
 	},
@@ -458,6 +474,13 @@
 	},
 	"offlineIndicator": {
 		"offline": "Offline - utilizzo delle tessere in cache"
+	},
+	"demo": {
+		"srTitle": "Escursione demo su {title}",
+		"bannerLabel": "Escursione demo",
+		"pause": "Pausa",
+		"resume": "Riprendi",
+		"exit": "Esci dalla demo"
 	},
 	"staleCacheNotification": {
 		"title": "Cache mappe offline non aggiornata",
@@ -496,7 +519,8 @@
 		"clearPoiAssets": "Cancella contenuti POI",
 		"confirmClear": "Sei sicuro?",
 		"confirmYes": "Sì",
-		"confirmNo": "No"
+		"confirmNo": "No",
+		"downloadComplete": "Mappe offline pronte"
 	},
 	"gpxDownload": {
 		"modalTitle": "Scarica GPX CLDT",
@@ -589,7 +613,13 @@
 		"upNextWater": "Prossima fonte d’acqua",
 		"upNextShelter": "Prossimo rifugio o bivacco",
 		"upNextTown": "Prossima città o paese",
-		"upNextSeeAll": "Vedi tutti i {count} luoghi avanti"
+		"upNextFood": "Prossimo locale per mangiare",
+		"upNextAtm": "Prossimo bancomat",
+		"upNextViewpoint": "Prossimo belvedere",
+		"upNextPharmacy": "Prossima farmacia",
+		"upNextMoreAhead": "Altro avanti",
+		"upNextSeeAll": "Vedi tutti i {count} luoghi avanti",
+		"upNextHorizonAriaLabel": "Distanza avanti, {distance}"
 	},
 	"imports": {
 		"title": "Tracce importate",
@@ -693,7 +723,13 @@
 		"stagePackTooltipBase": "Zaino base {base}",
 		"stagePackTooltipLoaded": "Zaino base {base}, carico max {loaded} (porta fino a {volume} di acqua)",
 		"stageResupplyYes": "Rifornimento alimentari disponibile in questa tappa",
-		"stageResupplyNo": "Nessun rifornimento alimentari in questa tappa - porta il cibo"
+		"stageResupplyPartial": "Solo panificio in questa tappa - nessun rifornimento alimentari completo",
+		"stageResupplyNo": "Nessun rifornimento alimentari in questa tappa - porta il cibo",
+		"tripFoodGap": "Tratto più lungo senza alimentari: {distance}",
+		"tripNextGrocery": "Prossimo rifornimento alimentari: {town} ({distance})",
+		"stageFoodEntering": "Entri con {stages} tappe / {distance} dall'ultimo rifornimento alimentari",
+		"stageFoodCarry": "Porta cibo per {distance} fino a {town}",
+		"stageFoodPackDays": "Consumabili nello zaino: ~{days} giorni a {rate}"
 	},
 	"tripBrief": {
 		"defaultTitle": "Piano di viaggio CLDT",
@@ -739,7 +775,8 @@
 				"emergency": "Contatti di emergenza",
 				"generated": "Generato da CLDT Map il",
 				"pack": "Zaino",
-				"resupply": "rifornimento"
+				"resupply": "rifornimento",
+				"resupplyCadence": "Rifornimento alimentare"
 			},
 			"daysHeading": "Giorno per giorno",
 			"moreLabel": "altri luoghi",
@@ -769,6 +806,11 @@
 		"packSummary": "{base} + acqua",
 		"packBaseLine": "Zaino base: {weight}",
 		"packLoadedLine": "Carico max: {weight} (porta fino a {volume} di acqua lungo il tratto più lungo senza acqua)",
+		"resupplySummaryGap": "Tratto più lungo senza alimentari: {distance}.",
+		"resupplySummaryNext": "Prossimo rifornimento alimentari: {town} ({distance}).",
+		"resupplyEntering": "Dall'ultimo rifornimento alimentari: {stages} tappe, {distance}",
+		"resupplyCarry": "Porta cibo per {distance} fino a {town}",
+		"resupplyFoodPack": "Consumabili nello zaino: ~{days} giorni a {rate}",
 		"waterCarry": "Acqua: porta fino a {volume} per il tratto più lungo senza fonti (peso totale dello zaino {total})",
 		"gearHeading": "Lista attrezzatura ({name})",
 		"gearMissing": "Attrezzatura consigliata non trovata nella tua lista: {terms}. Verifica prima della partenza."
@@ -828,6 +870,7 @@
 		"shareCopiedShort": "Link breve copiato",
 		"shareFailed": "Copia non riuscita",
 		"openInMaps": "Apri in Mappe",
+		"addAsWaypoint": "Aggiungi come punto",
 		"listTitle": "Luoghi lungo il sentiero",
 		"listAriaLabel": "Apri elenco luoghi",
 		"listCount": "{count, plural, =0 {Nessun luogo visibile} =1 {# luogo} other {# luoghi}}",
@@ -850,6 +893,8 @@
 		"waterReliabilityFilterHeading": "Filtra acqua per affidabilità",
 		"waterReliabilityFilterPlaceholder": "Tutte le classi di affidabilità dell'acqua",
 		"waterReliabilityFilterHint": "Senza selezione sono incluse tutte le fonti d'acqua.",
+		"includeRemotePoisLabel": "Includi POI remoti",
+		"includeRemotePoisHint": "Mostra i luoghi segnati come difficili da raggiungere a piedi senza una fermata bus o stazione ferroviaria vicina sul lato del sentiero. Disattivato per impostazione predefinita.",
 		"groupByDecade": "Raggruppa per {distance} {unit}",
 		"groupCount": "{count, plural, =1 {# luogo} other {# luoghi}}",
 		"exportSelect": "Aggiungi {name} all'export GPX",
@@ -860,6 +905,23 @@
 		"starRemove": "Rimuovi {name} dai preferiti",
 		"starredCount": "{count, plural, =0 {Nessun preferito} =1 {# preferito} other {# preferiti}}",
 		"clearStarred": "Rimuovi tutti i preferiti",
+		"filterPresetsHeading": "Filtri salvati",
+		"filterPresetsSave": "Salva attuale",
+		"filterPresetsApply": "Applica filtro salvato",
+		"filterPresetsNamePlaceholder": "Nome preset",
+		"filterPresetsConfirm": "Salva",
+		"filterPresetsCancel": "Annulla",
+		"filterPresetsDelete": "Elimina preset filtro {name}",
+		"filterPresetsRename": "Rinomina preset filtro {name}",
+		"starCollectionHeading": "Lista preferiti",
+		"starCollectionDefaultName": "Preferiti",
+		"starCollectionNew": "Nuova lista",
+		"starCollectionSelect": "Lista preferiti attiva",
+		"starCollectionNamePlaceholder": "Nome lista (es. rifornimento)",
+		"starCollectionConfirm": "Crea",
+		"starCollectionCancel": "Annulla",
+		"starCollectionRename": "Rinomina lista preferiti {name}",
+		"starCollectionDelete": "Elimina lista preferiti {name}",
 		"sourceOsm": "Fonte: OpenStreetMap",
 		"sourceWikidata": "Fonte: Wikidata + OpenStreetMap",
 		"sourceHps": "Fonte: directory rifugi HPS",
@@ -1059,7 +1121,7 @@
 		"gestures": {
 			"sos": "Tieni premuto il pulsante rosso SOS per il pannello di emergenza offline: coordinate, Plus Code, accesso stradale più vicino, soccorso HGSS, 112 con un tocco e indirizzo quando sei online.",
 			"gpxDrop": "Trascina un file .gpx registrato sulla mappa per sovrapporre la tua escursione e confrontarla con il sentiero ufficiale.",
-			"poiList": "Nella lista dei luoghi digita un numero (\"100 km\") per saltarci; le frecce navigano, S seleziona le righe per l'export GPX.",
+			"poiList": "Nella lista dei luoghi digita un numero (\"100 km\") per saltarci; le frecce navigano, S seleziona le righe per l'export GPX. Salva preset di filtro e segna i luoghi in elenchi nominati (il brief \"solo selezionati\" usa l'elenco attivo).",
 			"waypoint": "Tieni premuto (o clic destro) in un punto qualsiasi della mappa per un punto personale con nota."
 		},
 		"planningHeading": "Strumenti di pianificazione",
@@ -1074,18 +1136,38 @@
 		"offline": {
 			"precache": "Il pannello cache pre-scarica tutto il corridoio del sentiero (tile, luoghi, foto) per usarlo senza segnale; si risincronizza sul Wi-Fi.",
 			"gps": "GPS, pannello di emergenza e progresso funzionano completamente offline una volta salvato il corridoio.",
-			"pushAlerts": "Attiva le notifiche di avviso nelle impostazioni per ricevere un push quando viene pubblicato un nuovo avviso stagionale."
+			"offRouteAlert": "Attiva l'avviso fuori percorso in Impostazioni (disattivato di default) per banner e vibrazione quando ti allontani più di ~200 m dal sentiero, con distanza e direzione di ritorno. Si arma solo dopo che il GPS conferma che sei sul sentiero; resta muto a casa o in auto e si disarma quando lasci l'area del sentiero.",
+			"pushAlerts": "Attiva le notifiche di avviso nelle impostazioni per ricevere un push quando viene pubblicato un nuovo avviso stagionale o una notifica sulle condizioni del sentiero."
 		},
-		"officialAppNote": "FarOut è l’app ufficiale del CLDT. Questa mappa è un progetto indipendente solo per scopi di ricerca ed educativi - verifica le informazioni critiche con le fonti ufficiali."
+		"officialAppNote": "FarOut è l’app ufficiale del CLDT. Questa mappa è un progetto indipendente solo per scopi di ricerca ed educativi - verifica le informazioni critiche con le fonti ufficiali.",
+		"demoHeading": "Escursione demo",
+		"demoDesc": "Prova un'escursione simulata a metà sentiero con waypoint e progresso di esempio - senza GPS.",
+		"demoLink": "Prova escursione demo"
 	},
 	"waypoints": {
 		"defaultName": "Punto",
 		"nameLabel": "Nome del punto",
+		"categoryLabel": "Tipo",
+		"category": {
+			"generic": "Punto",
+			"camp": "Campo / pernottamento",
+			"water": "Acqua",
+			"resupply": "Rifornimento",
+			"viewpoint": "Belvedere",
+			"transport": "Trasporto / incontro",
+			"hazard": "Pericolo / nota"
+		},
 		"noteLabel": "Nota",
 		"notePlaceholder": "Aggiungi una nota (scorta d’acqua, campeggio...)",
 		"atKm": "al {distance}",
 		"offTrail": "fuori dal sentiero",
 		"save": "Salva",
-		"delete": "Elimina"
+		"delete": "Elimina",
+		"filterHeading": "Filtra elenco",
+		"filterPlaceholder": "Scegli categorie",
+		"filterEmpty": "Nessun punto corrisponde a questo filtro.",
+		"mapLayersHeading": "Mostra sulla mappa",
+		"mapLayersPlaceholder": "Scegli categorie",
+		"hiddenOnMap": "nascosto sulla mappa"
 	}
 }

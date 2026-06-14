@@ -96,6 +96,7 @@ function buildCoverSection(brief: TripBrief): string {
 		[meta.strings.labels.eta, formatEta(overview.totalDurationSec)],
 		[meta.strings.labels.pace, `${meta.walkingPaceKmh.toFixed(1)} km/h`],
 		...(meta.packSummary ? [[meta.strings.labels.pack, meta.packSummary] as [string, string]] : []),
+		...(meta.resupplySummary ? [[meta.strings.labels.resupplyCadence, meta.resupplySummary] as [string, string]] : []),
 	];
 
 	const grid = rows
@@ -128,6 +129,11 @@ function buildDaySection(brief: TripBrief, day: TripBriefDay): string {
 		day.packBaseLabel ? `<p class="water-carry">${escapeHtml(day.packBaseLabel)}</p>` : '',
 		day.packLoadedLabel ? `<p class="water-carry">${escapeHtml(day.packLoadedLabel)}</p>` : '',
 	].join('');
+
+	const resupplyBlock = [day.resupplyEnteringLabel, day.resupplyCarryLabel, day.foodPackLabel]
+		.filter((line): line is string => !!line)
+		.map((line) => `<p class="resupply-carry">${escapeHtml(line)}</p>`)
+		.join('');
 
 	let alertsBlock = '';
 	if (day.seasonalAlerts.length > 0) {
@@ -174,6 +180,7 @@ function buildDaySection(brief: TripBrief, day: TripBriefDay): string {
   ${elevBlock}
   <p class="narrative">${escapeHtml(day.narrative)}</p>
   ${packBlock}
+  ${resupplyBlock}
   ${alertsBlock}
   ${poisBlock}
 </section>`;

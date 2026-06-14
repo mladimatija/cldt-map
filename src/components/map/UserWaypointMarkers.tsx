@@ -8,8 +8,15 @@ import { usePathname, useRouter } from '@/i18n/navigation';
 import { useMapStore, useStore, type MapStoreState } from '@/lib/store';
 import { newId, nextWaypointName, type UserWaypoint } from '@/lib/user-waypoints';
 import { buildWaypointShareUrl, clearShareUrlParams, formatDistance, getInitialShareUrlParams } from '@/lib/utils';
-import { resolveShareUrlForCopy } from '@/lib/share-shortener-client';
+import { wirePopupShareButton } from '@/lib/share-link-copy';
 import { formatIsoDate } from '@/lib/date-format';
+import { appendWaypointCategoryChips } from '@/lib/waypoint-popup-dom';
+import {
+	buildWaypointPinHtml,
+	isWaypointCategoryVisible,
+	normalizeWaypointCategory,
+	type WaypointCategoryId,
+} from '@/lib/waypoint-categories';
 
 const WAYPOINT_PANE = 'userWaypointPane';
 
@@ -17,15 +24,11 @@ const WAYPOINT_PANE = 'userWaypointPane';
  *  waypoint is simply "off trail" (null km), not an error. */
 const SNAP_MAX_M = 2000;
 
-/** Violet pin, visually distinct from every POI category and the location
- *  marker. Inline-styled so the layer needs no global CSS. */
-function buildWaypointIcon(): L.DivIcon {
+/** Teardrop pin coloured by waypoint category (distinct from POI markers). */
+function buildWaypointIcon(category: WaypointCategoryId | undefined): L.DivIcon {
 	return L.divIcon({
 		className: '',
-		html:
-			'<div style="width:18px;height:18px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);' +
-			'background:#7c3aed;border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,0.4);" ' +
-			'aria-hidden="true"></div>',
+		html: buildWaypointPinHtml(category),
 		iconSize: [18, 18],
 		iconAnchor: [9, 18],
 		popupAnchor: [0, -18],
@@ -48,6 +51,7 @@ export function UserWaypointMarkers(): null {
 	const tPois = useTranslations('pois');
 	const locale = useLocale();
 	const userWaypoints = useMapStore((s: MapStoreState) => s.userWaypoints);
+	const hiddenWaypointCategories = useMapStore((s: MapStoreState) => s.hiddenWaypointCategories);
 	const updateUserWaypoint = useMapStore((s: MapStoreState) => s.updateUserWaypoint);
 	const removeUserWaypoint = useMapStore((s: MapStoreState) => s.removeUserWaypoint);
 	const pendingOpenWaypointId = useMapStore((s: MapStoreState) => s.pendingOpenWaypointId);
@@ -59,8 +63,6 @@ export function UserWaypointMarkers(): null {
 	const markersRef = useRef<Map<string, L.Marker>>(new Map());
 	const deepLinkAppliedRef = useRef(false);
 
-	// Dedicated pane in the marker tier; z-index in map.css keeps pins below
-	// section tooltips while staying visible above the trail polyline.
 	useEffect(() => {
 		if (!map.getPane(WAYPOINT_PANE)) {
 			map.createPane(WAYPOINT_PANE);
@@ -68,8 +70,6 @@ export function UserWaypointMarkers(): null {
 		}
 	}, [map]);
 
-	// Drop a waypoint on contextmenu (right-click / long-press). Ignores
-	// events originating on markers, popups, or controls.
 	useEffect(() => {
 		const onContextMenu = (e: L.LeafletMouseEvent): void => {
 			const target = e.originalEvent.target as HTMLElement | null;
@@ -83,6 +83,7 @@ export function UserWaypointMarkers(): null {
 				lng: e.latlng.lng,
 				name: nextWaypointName(state.userWaypoints, t('defaultName')),
 				note: '',
+				category: state.lastWaypointCategory,
 				createdAt: new Date().toISOString(),
 				trailKm: snapped ? snapped.distanceFromStart / 1000 : null,
 			};
@@ -95,8 +96,6 @@ export function UserWaypointMarkers(): null {
 		};
 	}, [map, t]);
 
-	// Consume `?wp=<id>` once per page load (including after a `/s/{code}` redirect).
-	// ShareUrlHandler applies `trip` state first so imported waypoints keep their ids.
 	useEffect(() => {
 		if (deepLinkAppliedRef.current) return;
 		const params = getInitialShareUrlParams();
@@ -110,45 +109,35 @@ export function UserWaypointMarkers(): null {
 		router.replace(pathname);
 	}, [userWaypoints, requestOpenWaypoint, pathname, router]);
 
-	// Render markers; full rebuild on collection/unit changes (the list is
-	// small - personal annotations, not a dataset).
 	useEffect(() => {
 		const markers = markersRef.current;
 		for (const m of markers.values()) m.remove();
 		markers.clear();
 
+		const categoryLabel = (id: WaypointCategoryId): string => t(`category.${id}`);
+
 		for (const wp of userWaypoints) {
+			const category = normalizeWaypointCategory(wp.category);
+			if (!isWaypointCategoryVisible(category, hiddenWaypointCategories)) continue;
+
 			const marker = L.marker([wp.lat, wp.lng], {
-				icon: buildWaypointIcon(),
+				icon: buildWaypointIcon(category),
 				pane: WAYPOINT_PANE,
-				title: wp.name,
+				title: `${wp.name} (${categoryLabel(category)})`,
 				alt: wp.name,
 			});
-			// Same shell as POI popups: chrome lives on .poi-popup's content
-			// wrapper CSS, so the look is identical to every other map popup.
 			marker.bindPopup(() => buildWaypointPopup(wp), { className: 'poi-popup', maxWidth: 300 });
 			marker.on('popupopen', () => {
-				wireWaypointShareButton(marker, wp, {
-					shareCopied: tPois('shareCopied'),
-					shareCopiedShort: tPois('shareCopiedShort'),
-					shareFailed: tPois('shareFailed'),
-					shareLink: tPois('shareLink'),
-				});
+				wireWaypointShareButton(marker, wp, tPois('shareLink'));
 			});
 			marker.addTo(map);
 			markers.set(wp.id, marker);
 		}
 
-		/** Popup content in the shared POI popup vocabulary: the `.poi-popup`
-		 *  shell comes from bindPopup, rows/meta use the `poi-popup__row`
-		 *  classes, inputs use the popup-scale `poi-popup__input` styles, and
-		 *  the action pair mirrors the POI popup's primary (solid) /
-		 *  secondary (outlined) buttons. */
 		function buildWaypointPopup(wp: UserWaypoint): HTMLElement {
+			const category = normalizeWaypointCategory(wp.category);
 			const root = document.createElement('div');
 			root.style.minWidth = '220px';
-			// Clear Leaflet's corner close button, which would otherwise sit
-			// on top of the full-width name input.
 			root.style.paddingTop = '14px';
 
 			const nameInput = document.createElement('input');
@@ -157,6 +146,9 @@ export function UserWaypointMarkers(): null {
 			nameInput.maxLength = 80;
 			nameInput.setAttribute('aria-label', t('nameLabel'));
 			nameInput.className = 'poi-popup__input poi-popup__input--title';
+
+			const chipsHost = document.createElement('div');
+			const chipPicker = appendWaypointCategoryChips(chipsHost, category, t('categoryLabel'), categoryLabel);
 
 			const noteArea = document.createElement('textarea');
 			noteArea.value = wp.note;
@@ -191,7 +183,11 @@ export function UserWaypointMarkers(): null {
 			saveBtn.textContent = t('save');
 			saveBtn.className = 'poi-popup__open-maps';
 			saveBtn.addEventListener('click', () => {
-				updateUserWaypoint(wp.id, { name: nameInput.value.trim() || wp.name, note: noteArea.value });
+				updateUserWaypoint(wp.id, {
+					name: nameInput.value.trim() || wp.name,
+					note: noteArea.value,
+					category: chipPicker.getSelected(),
+				});
 				markers.get(wp.id)?.closePopup();
 			});
 
@@ -202,7 +198,7 @@ export function UserWaypointMarkers(): null {
 			shareBtn.dataset.waypointShare = wp.id;
 
 			buttonRow.append(deleteBtn, saveBtn, shareBtn);
-			root.append(nameInput, noteArea, metaLine, buttonRow);
+			root.append(nameInput, chipsHost, noteArea, metaLine, buttonRow);
 			return root;
 		}
 
@@ -210,10 +206,19 @@ export function UserWaypointMarkers(): null {
 			for (const m of markers.values()) m.remove();
 			markers.clear();
 		};
-	}, [map, userWaypoints, units, distancePrecision, t, tPois, locale, updateUserWaypoint, removeUserWaypoint]);
+	}, [
+		map,
+		userWaypoints,
+		hiddenWaypointCategories,
+		units,
+		distancePrecision,
+		t,
+		tPois,
+		locale,
+		updateUserWaypoint,
+		removeUserWaypoint,
+	]);
 
-	// Panel-initiated open (and the just-created flow): fly to the waypoint
-	// and open its popup once the marker exists.
 	useEffect(() => {
 		if (!pendingOpenWaypointId) return;
 		const marker = markersRef.current.get(pendingOpenWaypointId);
@@ -224,46 +229,19 @@ export function UserWaypointMarkers(): null {
 			map.flyTo(target, Math.max(map.getZoom(), 13));
 		}
 		marker.openPopup();
-	}, [pendingOpenWaypointId, userWaypoints, map, clearPendingOpenWaypoint]);
+	}, [pendingOpenWaypointId, userWaypoints, hiddenWaypointCategories, map, clearPendingOpenWaypoint]);
 
 	return null;
 }
 
-function wireWaypointShareButton(
-	marker: L.Marker,
-	wp: UserWaypoint,
-	labels: { shareLink: string; shareCopied: string; shareCopiedShort: string; shareFailed: string },
-): void {
+function wireWaypointShareButton(marker: L.Marker, wp: UserWaypoint, shareLinkLabel: string): void {
 	const popup = marker.getPopup();
 	if (!popup) return;
 	const el = popup.getElement();
 	if (!el) return;
 	const btn = el.querySelector<HTMLButtonElement>(`[data-waypoint-share="${cssEscape(wp.id)}"]`);
 	if (!btn) return;
-	if (btn.dataset.wired === '1') return;
-	btn.dataset.wired = '1';
-	const originalLabel = btn.textContent ?? labels.shareLink;
-	btn.addEventListener('click', async (e) => {
-		e.preventDefault();
-		const longUrl = buildWaypointShareUrl(wp.id);
-		const { url, short } = await resolveShareUrlForCopy(longUrl, {
-			useShortLinks: useMapStore.getState().shareShortLinks,
-			online: navigator.onLine,
-		});
-		let ok = false;
-		try {
-			if (typeof navigator !== 'undefined' && navigator.clipboard?.writeText) {
-				await navigator.clipboard.writeText(url);
-				ok = true;
-			}
-		} catch {
-			ok = false;
-		}
-		btn.textContent = ok ? (short ? labels.shareCopiedShort : labels.shareCopied) : labels.shareFailed;
-		window.setTimeout(() => {
-			btn.textContent = originalLabel;
-		}, 1800);
-	});
+	wirePopupShareButton(btn, () => buildWaypointShareUrl(wp.id), shareLinkLabel);
 }
 
 function cssEscape(value: string): string {
