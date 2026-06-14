@@ -12,7 +12,15 @@ import {
 import { getRandomLocationInBoundary, toLocationError } from '../utils';
 import { canShowOfflineInstallNudge, canShowPwaInstallPrompt, isStandalone } from '../pwa-install';
 import { LocationService } from '../services/location-service';
-import type { ImportedTrack, MapStoreState, StagePlan, StoreState, TrailDirection, UnitSystem } from './types';
+import {
+	DEFAULT_STARRED_COLLECTION_NAME,
+	type ImportedTrack,
+	type MapStoreState,
+	type StagePlan,
+	type StoreState,
+	type TrailDirection,
+	type UnitSystem,
+} from './types';
 import {
 	generateTrailTileUrls,
 	precacheTiles,
@@ -48,6 +56,7 @@ import {
 	type SeasonalStatusEntry,
 	type SeasonalStatusFile,
 } from '../seasonal-status';
+import { newId } from '@/lib/user-waypoints';
 
 /** Module-level abort controller for tile downloads - one download at a time. */
 let tilePrecacheAbortController: AbortController | null = null;
@@ -968,15 +977,107 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					resetPoiFiltersToDefaults: (): void => {
 						set({ enabledPoiTypes: defaultEnabledPoiTypes, enabledPoiTags: new Set<string>() });
 					},
-					starredPoiIds: new Set<string>(),
+					poiFilterPresets: [],
+					savePoiFilterPreset: (name: string): string | null => {
+						const trimmed = name.trim();
+						if (!trimmed) return null;
+						const id = newId();
+						const preset = {
+							id,
+							name: trimmed,
+							enabledPoiTypes: [...get().enabledPoiTypes],
+							enabledPoiTags: [...get().enabledPoiTags],
+						};
+						set({ poiFilterPresets: [...get().poiFilterPresets, preset] });
+						return id;
+					},
+					applyPoiFilterPreset: (id: string): void => {
+						const preset = get().poiFilterPresets.find((p) => p.id === id);
+						if (!preset) return;
+						set({
+							enabledPoiTypes: new Set(preset.enabledPoiTypes),
+							enabledPoiTags: new Set(preset.enabledPoiTags),
+							poiFiltersUserModified: true,
+						});
+					},
+					deletePoiFilterPreset: (id: string): void => {
+						set({ poiFilterPresets: get().poiFilterPresets.filter((p) => p.id !== id) });
+					},
+					renamePoiFilterPreset: (id: string, name: string): void => {
+						const trimmed = name.trim();
+						if (!trimmed) return;
+						set({
+							poiFilterPresets: get().poiFilterPresets.map((p) => (p.id === id ? { ...p, name: trimmed } : p)),
+						});
+					},
+					starredPoiCollections: [],
+					activeStarredCollectionId: null,
+					setActiveStarredCollectionId: (id: string): void => {
+						if (!get().starredPoiCollections.some((c) => c.id === id)) return;
+						set({ activeStarredCollectionId: id });
+					},
+					createStarredPoiCollection: (name: string): string | null => {
+						const trimmed = name.trim();
+						if (!trimmed) return null;
+						const id = newId();
+						set({
+							starredPoiCollections: [...get().starredPoiCollections, { id, name: trimmed, poiIds: [] }],
+							activeStarredCollectionId: id,
+						});
+						return id;
+					},
+					renameStarredPoiCollection: (id: string, name: string): void => {
+						const trimmed = name.trim();
+						if (!trimmed) return;
+						set({
+							starredPoiCollections: get().starredPoiCollections.map((c) =>
+								c.id === id ? { ...c, name: trimmed } : c,
+							),
+						});
+					},
+					deleteStarredPoiCollection: (id: string): void => {
+						const { starredPoiCollections, activeStarredCollectionId } = get();
+						const nextCollections = starredPoiCollections.filter((c) => c.id !== id);
+						if (nextCollections.length === starredPoiCollections.length) return;
+						const nextActiveId =
+							activeStarredCollectionId === id ? (nextCollections[0]?.id ?? null) : activeStarredCollectionId;
+						set({ starredPoiCollections: nextCollections, activeStarredCollectionId: nextActiveId });
+					},
 					toggleStarredPoi: (id: string): void => {
-						const next = new Set(get().starredPoiIds);
-						if (next.has(id)) next.delete(id);
-						else next.add(id);
-						set({ starredPoiIds: next });
+						let { starredPoiCollections, activeStarredCollectionId } = get();
+						if (!activeStarredCollectionId || !starredPoiCollections.some((c) => c.id === activeStarredCollectionId)) {
+							const colId = newId();
+							starredPoiCollections = [
+								...starredPoiCollections,
+								{ id: colId, name: DEFAULT_STARRED_COLLECTION_NAME, poiIds: [] },
+							];
+							activeStarredCollectionId = colId;
+						}
+						const activeId = activeStarredCollectionId;
+						const nextCollections = starredPoiCollections.map((c) => {
+							if (c.id !== activeId) return c;
+							const ids = new Set(c.poiIds);
+							if (ids.has(id)) ids.delete(id);
+							else ids.add(id);
+							return { ...c, poiIds: [...ids] };
+						});
+						set({ starredPoiCollections: nextCollections, activeStarredCollectionId: activeId });
 					},
 					clearStarredPois: (): void => {
-						set({ starredPoiIds: new Set<string>() });
+						const activeId = get().activeStarredCollectionId;
+						if (!activeId) return;
+						set({
+							starredPoiCollections: get().starredPoiCollections.map((c) =>
+								c.id === activeId ? { ...c, poiIds: [] } : c,
+							),
+						});
+					},
+					importStarredPoisFromShare: (poiIds: string[]): void => {
+						const colId = newId();
+						set({
+							starredPoiCollections: [{ id: colId, name: DEFAULT_STARRED_COLLECTION_NAME, poiIds: [...poiIds] }],
+							activeStarredCollectionId: colId,
+						});
 					},
 					pendingOpenPoiId: null,
 					requestOpenPoi: (id: string): void => {
@@ -1050,7 +1151,9 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 						enabledPoiTypes: [...state.enabledPoiTypes],
 						enabledPoiTags: [...state.enabledPoiTags],
 						poiFiltersUserModified: state.poiFiltersUserModified,
-						starredPoiIds: [...state.starredPoiIds],
+						poiFilterPresets: state.poiFilterPresets,
+						starredPoiCollections: state.starredPoiCollections,
+						activeStarredCollectionId: state.activeStarredCollectionId,
 						distancePrecision: state.distancePrecision,
 						darkMode: state.darkMode,
 						batterySaverMode: state.batterySaverMode,
@@ -1103,7 +1206,7 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					if (!merged.seasonalStatusLayerUserToggled) {
 						merged.seasonalStatusLayerEnabled = seasonalStatusLayerEnabledOverride ?? isSeasonalStatusDefaultEnabled();
 					}
-					// enabledPoiTypes/Tags/starredPoiIds were persisted as arrays
+					// enabledPoiTypes/Tags and legacy starredPoiIds were persisted as arrays
 					// (Set is not JSON-serialisable). Re-hydrate as Sets so the
 					// runtime API stays consistent across first paint and
 					// subsequent renders.
@@ -1113,8 +1216,53 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					if (rehydratedTypes) merged.enabledPoiTypes = rehydratedTypes;
 					const rehydratedTags = rehydrateSet((persistedState as { enabledPoiTags?: unknown })?.enabledPoiTags);
 					if (rehydratedTags) merged.enabledPoiTags = rehydratedTags;
-					const rehydratedStarred = rehydrateSet((persistedState as { starredPoiIds?: unknown })?.starredPoiIds);
-					if (rehydratedStarred) merged.starredPoiIds = rehydratedStarred;
+
+					const rawPresets = (persistedState as { poiFilterPresets?: unknown })?.poiFilterPresets;
+					if (Array.isArray(rawPresets)) {
+						merged.poiFilterPresets = rawPresets.filter(
+							(p): p is NonNullable<MapStoreState['poiFilterPresets']>[number] =>
+								!!p &&
+								typeof p === 'object' &&
+								typeof (p as { id?: unknown }).id === 'string' &&
+								typeof (p as { name?: unknown }).name === 'string' &&
+								Array.isArray((p as { enabledPoiTypes?: unknown }).enabledPoiTypes) &&
+								Array.isArray((p as { enabledPoiTags?: unknown }).enabledPoiTags),
+						);
+					}
+
+					const legacyStarred = rehydrateSet((persistedState as { starredPoiIds?: unknown })?.starredPoiIds);
+					const rawCollections = (persistedState as { starredPoiCollections?: unknown })?.starredPoiCollections;
+					if (Array.isArray(rawCollections) && rawCollections.length > 0) {
+						merged.starredPoiCollections = rawCollections
+							.filter(
+								(c): c is NonNullable<MapStoreState['starredPoiCollections']>[number] =>
+									!!c &&
+									typeof c === 'object' &&
+									typeof (c as { id?: unknown }).id === 'string' &&
+									typeof (c as { name?: unknown }).name === 'string' &&
+									Array.isArray((c as { poiIds?: unknown }).poiIds),
+							)
+							.map((c) => ({
+								id: c.id,
+								name: c.name,
+								poiIds: c.poiIds.filter((id): id is string => typeof id === 'string'),
+							}));
+						const activeId = (persistedState as { activeStarredCollectionId?: unknown })?.activeStarredCollectionId;
+						merged.activeStarredCollectionId =
+							typeof activeId === 'string' && merged.starredPoiCollections.some((c) => c.id === activeId)
+								? activeId
+								: (merged.starredPoiCollections[0]?.id ?? null);
+					} else if (legacyStarred && legacyStarred.size > 0) {
+						const colId = newId();
+						merged.starredPoiCollections = [
+							{ id: colId, name: DEFAULT_STARRED_COLLECTION_NAME, poiIds: [...legacyStarred] },
+						];
+						merged.activeStarredCollectionId = colId;
+					} else {
+						merged.starredPoiCollections = merged.starredPoiCollections ?? [];
+						merged.activeStarredCollectionId = merged.activeStarredCollectionId ?? null;
+					}
+
 					const rehydratedHiddenWp = rehydrateSet(
 						(persistedState as { hiddenWaypointCategories?: unknown })?.hiddenWaypointCategories,
 					);
