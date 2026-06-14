@@ -2,6 +2,9 @@
 //
 // Run: `npm run enrich-pois`
 // Optionally set OSM_OVERPASS_URL to a self-hosted instance.
+// On failure mid-run, resume with `ENRICH_FROM_PASS=6 npm run enrich-pois` or
+// `npm run enrich-pois -- --resume` (loads the latest checkpoint in
+// `.cache/enrich-checkpoints/`).
 //
 // Pipeline passes (executed in this order):
 //   1. OSM Overpass: per-type query (towns, settlements, peaks, viewpoints,
@@ -32,7 +35,7 @@ import { foldDiacritics } from '@/lib/pois';
 import type { Poi, PoiImage, PoiResupply, PoisFile, ResupplyKind, ResupplyPlace } from '../src/lib/poi-types';
 import { classifyWater } from '../src/lib/water-intelligence';
 import { parseWikipediaRef, SUMMARY_HOST_TEMPLATE as WIKIPEDIA_SUMMARY_HOST_TEMPLATE } from '../src/lib/wikipedia';
-import { applyReachabilityFilter, formatStats } from './poi-reachability';
+import { applyReachabilityFilter, formatStats, sliceCorridorIntoChunks } from './poi-reachability';
 import {
 	fetchOverpassJson,
 	fetchPolylineWithBisection,
@@ -86,7 +89,7 @@ const OVERPASS_CACHE_TTL_MS = Number(process.env.ENRICH_POIS_CACHE_TTL_HOURS ?? 
 const OVERPASS_CACHE_DISABLED = process.env.ENRICH_POIS_NO_CACHE === '1';
 
 const OVERPASS_TIMEOUT_S = 180;
-// Client timeout must exceed the server-side [timeout:] so we read Overpass's
+// Client timeout must exceed the server-side [timeout:], so we read Overpass's
 // own timeout response (a retryable 504-class signal) instead of aborting
 // first and losing the distinction from a dead connection.
 const FETCH_TIMEOUT_MS = 200_000;
@@ -184,6 +187,163 @@ interface Bbox {
 	maxLng: number;
 }
 
+// ---- Checkpoint / resume ---------------------------------------------------
+
+function checkpointPath(pass: EnrichPass): string {
+	return path.join(CHECKPOINT_DIR, `checkpoint-pass-${pass}.json`);
+}
+
+function shouldRunPass(pass: EnrichPass, fromPass: EnrichPass): boolean {
+	const fromIdx = PASS_EXECUTION_ORDER.indexOf(fromPass);
+	const passIdx = PASS_EXECUTION_ORDER.indexOf(pass);
+	return passIdx >= fromIdx;
+}
+
+function prerequisiteCheckpointPass(fromPass: EnrichPass): EnrichPass | null {
+	const idx = PASS_EXECUTION_ORDER.indexOf(fromPass);
+	if (idx <= 0) return null;
+	return PASS_EXECUTION_ORDER[idx - 1];
+}
+
+function nextPassInOrder(pass: EnrichPass): EnrichPass {
+	const idx = PASS_EXECUTION_ORDER.indexOf(pass);
+	if (idx < 0 || idx >= PASS_EXECUTION_ORDER.length - 1) return pass;
+	return PASS_EXECUTION_ORDER[idx + 1];
+}
+
+function formatSkippedPasses(fromPass: EnrichPass): string {
+	const skipped = PASS_EXECUTION_ORDER.filter((p) => !shouldRunPass(p, fromPass) && p !== 7);
+	if (skipped.length === 0) return '';
+	return skipped.map(String).join(', ');
+}
+
+async function resolveFromPass(): Promise<{ fromPass: EnrichPass; usedResume: boolean }> {
+	const args = process.argv.slice(2);
+	let fromPass: EnrichPass | null = null;
+	let usedResume = false;
+
+	const fromArg = args.find((a) => a.startsWith('--from-pass='));
+	if (fromArg) {
+		const n = parseInt(fromArg.slice('--from-pass='.length), 10);
+		if (Number.isFinite(n)) fromPass = n as EnrichPass;
+	}
+	const fromEnv = process.env.ENRICH_FROM_PASS?.trim();
+	if (fromEnv) {
+		const n = parseInt(fromEnv, 10);
+		if (Number.isFinite(n)) fromPass = n as EnrichPass;
+	}
+	if (args.includes('--resume') && fromPass === null) {
+		const latest = await findLatestEnrichCheckpoint();
+		if (!latest) fail('No checkpoint found in .cache/enrich-checkpoints/. Run a full enrich first.');
+		fromPass = nextPassInOrder(latest.pass);
+		usedResume = true;
+	}
+	if (fromPass === null) return { fromPass: 1, usedResume: false };
+	if (!PASS_EXECUTION_ORDER.includes(fromPass)) {
+		fail(`Invalid pass ${fromPass}. Valid passes: ${PASS_EXECUTION_ORDER.join(', ')}.`);
+	}
+	return { fromPass, usedResume };
+}
+
+async function findLatestEnrichCheckpoint(): Promise<EnrichCheckpoint | null> {
+	try {
+		const names = await fs.readdir(CHECKPOINT_DIR);
+		let best: EnrichCheckpoint | null = null;
+		let bestIdx = -1;
+		for (const name of names) {
+			const m = /^checkpoint-pass-(\d+)\.json$/.exec(name);
+			if (!m) continue;
+			const pass = parseInt(m[1], 10) as EnrichPass;
+			const idx = PASS_EXECUTION_ORDER.indexOf(pass);
+			if (idx < 0) continue;
+			const ck = await readJsonOptional<EnrichCheckpoint>(checkpointPath(pass));
+			if (!ck) continue;
+			if (idx > bestIdx) {
+				bestIdx = idx;
+				best = ck;
+			}
+		}
+		return best;
+	} catch {
+		return null;
+	}
+}
+
+async function saveEnrichCheckpoint(
+	pass: EnrichPass,
+	state: {
+		pois: Poi[];
+		failedTypes: Set<string>;
+		wdByPoiId: Map<string, WikidataPlace>;
+		trkptCount: number;
+		trailKm: number;
+	},
+): Promise<void> {
+	if (CHECKPOINT_DISABLED) return;
+	await fs.mkdir(CHECKPOINT_DIR, { recursive: true });
+	const ck: EnrichCheckpoint = {
+		pass,
+		timestamp: new Date().toISOString(),
+		trkptCount: state.trkptCount,
+		trailKm: round(state.trailKm, 1),
+		pois: state.pois,
+		failedTypes: [...state.failedTypes],
+		wdByPoiId: Object.fromEntries(state.wdByPoiId),
+	};
+	await fs.writeFile(checkpointPath(pass), JSON.stringify(ck) + '\n', 'utf8');
+	console.log(
+		`  Checkpoint saved: pass ${pass} (${ck.pois.length} POIs) -> ${path.relative(PROJECT_ROOT, checkpointPath(pass))}`,
+	);
+}
+
+async function loadCheckpointIntoState(
+	fromPass: EnrichPass,
+	byId: Map<string, Poi>,
+	failedTypes: Set<string>,
+	wdByPoiId: Map<string, WikidataPlace>,
+	trkptCount: number,
+	trailKm: number,
+): Promise<EnrichPass> {
+	const prereq = prerequisiteCheckpointPass(fromPass);
+	if (!prereq) return fromPass;
+	const ck = await readJsonOptional<EnrichCheckpoint>(checkpointPath(prereq));
+	if (!ck) {
+		fail(
+			`No checkpoint for pass ${prereq} (${path.relative(PROJECT_ROOT, checkpointPath(prereq))}). ` +
+				`Run passes 1-${prereq} first or start a full run.`,
+		);
+	}
+	if (ck.trkptCount !== trkptCount || Math.abs(ck.trailKm - trailKm) > 0.5) {
+		fail(
+			`Checkpoint trail mismatch (checkpoint: ${ck.trkptCount} trkpts / ${ck.trailKm} km, ` +
+				`current: ${trkptCount} trkpts / ${trailKm.toFixed(1)} km). Delete .cache/enrich-checkpoints/ and rerun.`,
+		);
+	}
+	byId.clear();
+	for (const p of ck.pois) byId.set(p.id, p);
+	failedTypes.clear();
+	for (const t of ck.failedTypes) failedTypes.add(t);
+	wdByPoiId.clear();
+	for (const [id, wd] of Object.entries(ck.wdByPoiId)) wdByPoiId.set(id, wd);
+	const skipped = formatSkippedPasses(fromPass);
+	console.log(
+		`\nLoaded checkpoint from pass ${prereq} (${ck.pois.length} POIs, ${ck.timestamp}), skipping passes ${skipped}.`,
+	);
+	return prereq;
+}
+
+async function clearEnrichCheckpoints(): Promise<void> {
+	try {
+		const names = await fs.readdir(CHECKPOINT_DIR);
+		for (const name of names) {
+			if (name.startsWith('checkpoint-pass-')) await fs.unlink(path.join(CHECKPOINT_DIR, name));
+		}
+		console.log('  Cleared enrich checkpoints.');
+	} catch {
+		// directory missing - nothing to clear
+	}
+}
+
 // ---- Main ------------------------------------------------------------------
 
 async function main(): Promise<void> {
@@ -205,251 +365,317 @@ async function main(): Promise<void> {
 	const corridorPoly = downsampleTrail(trkpts, cumKm, CORRIDOR_SAMPLE_STEP_KM);
 	console.log(`  Corridor polyline: ${corridorPoly.length} points (${CORRIDOR_SAMPLE_STEP_KM} km step).`);
 
-	// ---- Pass 1: OSM per-type ----
-	console.log('\n=== Pass 1: OSM Overpass ===');
+	const { fromPass } = await resolveFromPass();
+	if (fromPass > 1) {
+		console.log(`-> Resuming from Pass ${fromPass}.`);
+	}
+
+	const checkpointTrail = { trkptCount: trkpts.length, trailKm: totalKm };
 	const byId = new Map<string, Poi>();
 	/** POI types whose Pass 1 Overpass query failed (HTTP error or aborted).
 	 *  The merge step carries forward every prior entry of these types, so a
 	 *  transient upstream failure never silently nukes the dataset. */
 	const failedTypes = new Set<string>();
-	// Partial-refresh filter: POI_TYPES="water" (comma-separable) restricts
-	// the fresh Overpass pass to the listed types. Every skipped type routes
-	// through the same carry-forward path as a failed query, so the merge
-	// keeps its prior rows untouched - a partial run can only improve the
-	// listed types, never degrade the rest.
-	const onlyTypes = new Set(
-		(process.env.POI_TYPES ?? '')
-			.split(',')
-			.map((s) => s.trim())
-			.filter(Boolean),
-	);
-	for (let cfgIdx = 0; cfgIdx < TYPE_CONFIGS.length; cfgIdx++) {
-		const cfg = TYPE_CONFIGS[cfgIdx];
-		if (onlyTypes.size > 0 && !onlyTypes.has(cfg.type)) {
-			failedTypes.add(cfg.type);
-			console.log(`-> Skipping type=${cfg.type} (POI_TYPES filter) - prior rows carry forward.`);
-			continue;
-		}
-		console.log(`-> Querying type=${cfg.type} (selectors: ${describeSelectors(cfg.overpassSelectors)})...`);
-		const { elements, failed } = await fetchOsmElements(cfg, corridorPoly, paddedBbox);
-		if (failed) failedTypes.add(cfg.type);
-		console.log(`     ${elements.length} candidates.`);
-		let kept = 0;
-		for (const el of elements) {
-			const point = elementToLatLng(el);
-			if (!point) continue;
-			let name_en = pickName(el.tags ?? {}, 'en');
-			let name_hr = pickName(el.tags ?? {}, 'hr');
-			if (!name_en && !name_hr) {
-				// Water sources are overwhelmingly unnamed in OSM yet are the most
-				// safety-critical POI type on the trail - synthesize a generic name
-				// instead of dropping them. Every other type keeps the name gate.
-				if (cfg.type !== 'water') continue;
-				const isSpring = el.tags?.natural === 'spring';
-				name_en = isSpring ? 'Spring' : 'Drinking water';
-				name_hr = isSpring ? 'Izvor' : 'Pitka voda';
-			}
-			const { km, distKm } = snapToTrail(point, trkpts, cumKm);
-			if (distKm > cfg.maxDistanceKm) continue;
-			const population = parseInteger(el.tags?.population);
-			const id = slug(`${cfg.type}-${name_en || name_hr}-${el.id}`);
-			if (byId.has(id)) continue;
-			const elevationM = parseInteger(el.tags?.ele);
-			// OSM website tags are user-edited free text - sanitise, so a
-			// malformed value (no scheme, embedded whitespace, ...) doesn't
-			// blow up the Ajv `format: "uri"` check later.
-			const url = safeUrl(el.tags?.website) ?? safeUrl(el.tags?.['contact:website']);
-			const image = safeUrl(el.tags?.image);
-			byId.set(id, {
-				id,
-				type: cfg.type,
-				name_en: name_en || name_hr,
-				name_hr: name_hr || name_en,
-				lat: round(point.lat, 5),
-				lng: round(point.lng, 5),
-				trailKm: round(km, 1),
-				distanceFromTrailKm: round(distKm, 2),
-				...(population !== null && { population }),
-				...(elevationM !== null && { elevationM }),
-				...(el.tags?.phone && { phone: el.tags.phone }),
-				...(url && { url }),
-				...(image && { image }),
-				// Water intelligence: reliability class + seasonality flags derived
-				// from the raw OSM tags (seasonal / intermittent / drinking_water /
-				// check_date). Water type only.
-				...(cfg.type === 'water' && { water: classifyWater(el.tags ?? {}) }),
-				// Default source for any pass-1 entry. Upgraded to `wikidata` or
-				// `hps` if later passes add data; `curated` is preserved by the
-				// merge step from any prior committed row.
-				source: 'osm',
-			});
-			kept++;
-		}
-		console.log(`     kept ${kept} after distance filter.`);
-		if (cfgIdx < TYPE_CONFIGS.length - 1) await sleep(PAUSE_BETWEEN_PASSES_MS);
-	}
-	console.log(`  Pass 1 total: ${byId.size} POIs (pre-boundary).`);
+	const wdByPoiId = new Map<string, WikidataPlace>();
 
-	// ---- Boundary filter: drop POIs outside Croatia ----
-	// The Overpass bbox is the trail bbox + 30 km buffer, which inevitably
-	// bleeds into Slovenia, Hungary, Bosnia, and Italy. The per-type max-distance
-	// filter only checks distance from the trail, not country - a
-	// Slovenian village 8 km from the Istrian trail still passes that gate.
-	// A point-in-polygon check against the bundled Croatia boundary nukes
-	// the cross-border leaks.
+	if (fromPass > 1) {
+		await loadCheckpointIntoState(fromPass, byId, failedTypes, wdByPoiId, trkpts.length, totalKm);
+	}
+
 	const polys = await loadCroatiaBoundary();
-	if (polys.length > 0) {
-		const beforeBoundary = byId.size;
-		let dropped = 0;
-		for (const [id, poi] of [...byId.entries()]) {
-			if (!pointInCroatia(poi.lat, poi.lng, polys)) {
-				byId.delete(id);
-				dropped++;
-			}
-		}
-		console.log(
-			`  Boundary filter: dropped ${dropped} of ${beforeBoundary} POIs outside Croatia (${byId.size} remain).`,
+
+	// ---- Pass 1: OSM per-type ----
+	if (shouldRunPass(1, fromPass)) {
+		console.log('\n=== Pass 1: OSM Overpass ===');
+		// Partial-refresh filter: POI_TYPES="water" (comma-separable) restricts
+		// the fresh Overpass pass to the listed types. Every skipped type routes
+		// through the same carry-forward path as a failed query, so the merge
+		// keeps its prior rows untouched - a partial run can only improve the
+		// listed types, never degrade the rest.
+		const onlyTypes = new Set(
+			(process.env.POI_TYPES ?? '')
+				.split(',')
+				.map((s) => s.trim())
+				.filter(Boolean),
 		);
+		for (let cfgIdx = 0; cfgIdx < TYPE_CONFIGS.length; cfgIdx++) {
+			const cfg = TYPE_CONFIGS[cfgIdx];
+			if (onlyTypes.size > 0 && !onlyTypes.has(cfg.type)) {
+				failedTypes.add(cfg.type);
+				console.log(`-> Skipping type=${cfg.type} (POI_TYPES filter) - prior rows carry forward.`);
+				continue;
+			}
+			console.log(`-> Querying type=${cfg.type} (selectors: ${describeSelectors(cfg.overpassSelectors)})...`);
+			const { elements, failed } = await fetchOsmElements(cfg, corridorPoly, paddedBbox);
+			if (failed) failedTypes.add(cfg.type);
+			console.log(`     ${elements.length} candidates.`);
+			let kept = 0;
+			for (const el of elements) {
+				const point = elementToLatLng(el);
+				if (!point) continue;
+				let name_en = pickName(el.tags ?? {}, 'en');
+				let name_hr = pickName(el.tags ?? {}, 'hr');
+				if (!name_en && !name_hr) {
+					// Water sources are overwhelmingly unnamed in OSM yet are the most
+					// safety-critical POI type on the trail - synthesize a generic name
+					// instead of dropping them. Every other type keeps the name gate.
+					if (cfg.type !== 'water') continue;
+					const isSpring = el.tags?.natural === 'spring';
+					name_en = isSpring ? 'Spring' : 'Drinking water';
+					name_hr = isSpring ? 'Izvor' : 'Pitka voda';
+				}
+				const { km, distKm } = snapToTrail(point, trkpts, cumKm);
+				if (distKm > cfg.maxDistanceKm) continue;
+				const population = parseInteger(el.tags?.population);
+				const id = slug(`${cfg.type}-${name_en || name_hr}-${el.id}`);
+				if (byId.has(id)) continue;
+				const elevationM = parseInteger(el.tags?.ele);
+				// OSM website tags are user-edited free text - sanitise, so a
+				// malformed value (no scheme, embedded whitespace, ...) doesn't
+				// blow up the Ajv `format: "uri"` check later.
+				const url = safeUrl(el.tags?.website) ?? safeUrl(el.tags?.['contact:website']);
+				const image = safeUrl(el.tags?.image);
+				byId.set(id, {
+					id,
+					type: cfg.type,
+					name_en: name_en || name_hr,
+					name_hr: name_hr || name_en,
+					lat: round(point.lat, 5),
+					lng: round(point.lng, 5),
+					trailKm: round(km, 1),
+					distanceFromTrailKm: round(distKm, 2),
+					...(population !== null && { population }),
+					...(elevationM !== null && { elevationM }),
+					...(el.tags?.phone && { phone: el.tags.phone }),
+					...(url && { url }),
+					...(image && { image }),
+					// Water intelligence: reliability class + seasonality flags derived
+					// from the raw OSM tags (seasonal / intermittent / drinking_water /
+					// check_date). Water type only.
+					...(cfg.type === 'water' && { water: classifyWater(el.tags ?? {}) }),
+					// Default source for any pass-1 entry. Upgraded to `wikidata` or
+					// `hps` if later passes add data; `curated` is preserved by the
+					// merge step from any prior committed row.
+					source: 'osm',
+				});
+				kept++;
+			}
+			console.log(`     kept ${kept} after distance filter.`);
+			if (cfgIdx < TYPE_CONFIGS.length - 1) await sleep(PAUSE_BETWEEN_PASSES_MS);
+		}
+		console.log(`  Pass 1 total: ${byId.size} POIs (pre-boundary).`);
+
+		// ---- Boundary filter: drop POIs outside Croatia ----
+		// The Overpass bbox is the trail bbox + 30 km buffer, which inevitably
+		// bleeds into Slovenia, Hungary, Bosnia, and Italy. The per-type max-distance
+		// filter only checks distance from the trail, not country - a
+		// Slovenian village 8 km from the Istrian trail still passes that gate.
+		// A point-in-polygon check against the bundled Croatia boundary nukes
+		// the cross-border leaks.
+		if (polys.length > 0) {
+			const beforeBoundary = byId.size;
+			let dropped = 0;
+			for (const [id, poi] of [...byId.entries()]) {
+				if (!pointInCroatia(poi.lat, poi.lng, polys)) {
+					byId.delete(id);
+					dropped++;
+				}
+			}
+			console.log(
+				`  Boundary filter: dropped ${dropped} of ${beforeBoundary} POIs outside Croatia (${byId.size} remain).`,
+			);
+		}
+
+		await saveEnrichCheckpoint(1, {
+			pois: [...byId.values()],
+			failedTypes,
+			wdByPoiId,
+			...checkpointTrail,
+		});
 	}
 
 	// ---- Pass 2: Wikidata SPARQL supplement ----
-	// One bbox query per POI category (settlements / peaks / huts / viewpoints)
-	// because each maps to a different Wikidata entity-class umbrella. Results
-	// land in a per-type map; the matcher then runs per POI against the map
-	// that fits its type. Pass 4 reads `wdByPoiId` regardless of category, so
-	// every matched POI gets a chance at a Commons gallery.
-	console.log('\n=== Pass 2: Wikidata SPARQL (multi-type) ===');
-	const wdByPoiId = new Map<string, WikidataPlace>();
-	const wikidataByType = new Map<string, Map<string, WikidataPlace>>();
-	// Dedup queries that share the same IRI list (town + settlement both use
-	// the human-settlement umbrella) so we don't double up against the
-	// Wikidata endpoint. Cache keyed on the joined IRI string.
-	const cachedByIrisKey = new Map<string, Map<string, WikidataPlace>>();
-	for (const [poiType, filter] of Object.entries(WIKIDATA_TYPE_FILTERS)) {
-		// Cache key carries the membership mode, so a future config that
-		// shared the same IRI list across transitive + direct queries
-		// would still issue both.
-		const key = `${filter.transitive ? 'T' : 'D'}|${filter.iris.slice().sort().join(',')}`;
-		let map = cachedByIrisKey.get(key);
-		if (!map) {
-			const mode = filter.transitive ? 'subclass walk' : 'direct';
-			console.log(`-> Querying ${poiType} (${mode}, filters: ${filter.iris.join(',')})...`);
-			map = await fetchWikidataPlacesInBbox(paddedBbox, filter);
-			console.log(`     returned ${map.size} entries.`);
-			cachedByIrisKey.set(key, map);
-			await sleep(PAUSE_BETWEEN_PASSES_MS);
-		} else {
-			console.log(`-> Reusing ${poiType} query result (${map.size} entries).`);
+	if (shouldRunPass(2, fromPass)) {
+		// One bbox query per POI category (settlements / peaks / huts / viewpoints)
+		// because each maps to a different Wikidata entity-class umbrella. Results
+		// land in a per-type map; the matcher then runs per POI against the map
+		// that fits its type. Pass 4 reads `wdByPoiId` regardless of category, so
+		// every matched POI gets a chance at a Commons gallery.
+		console.log('\n=== Pass 2: Wikidata SPARQL (multi-type) ===');
+		const wikidataByType = new Map<string, Map<string, WikidataPlace>>();
+		// Dedup queries that share the same IRI list (town + settlement both use
+		// the human-settlement umbrella) so we don't double up against the
+		// Wikidata endpoint. Cache keyed on the joined IRI string.
+		const cachedByIrisKey = new Map<string, Map<string, WikidataPlace>>();
+		for (const [poiType, filter] of Object.entries(WIKIDATA_TYPE_FILTERS)) {
+			// Cache key carries the membership mode, so a future config that
+			// shared the same IRI list across transitive + direct queries
+			// would still issue both.
+			const key = `${filter.transitive ? 'T' : 'D'}|${filter.iris.slice().sort().join(',')}`;
+			let map = cachedByIrisKey.get(key);
+			if (!map) {
+				const mode = filter.transitive ? 'subclass walk' : 'direct';
+				console.log(`-> Querying ${poiType} (${mode}, filters: ${filter.iris.join(',')})...`);
+				map = await fetchWikidataPlacesInBbox(paddedBbox, filter);
+				console.log(`     returned ${map.size} entries.`);
+				cachedByIrisKey.set(key, map);
+				await sleep(PAUSE_BETWEEN_PASSES_MS);
+			} else {
+				console.log(`-> Reusing ${poiType} query result (${map.size} entries).`);
+			}
+			wikidataByType.set(poiType, map);
 		}
-		wikidataByType.set(poiType, map);
-	}
 
-	// Tally per-type hits, so the log tells us where the matcher is earning
-	// vs. wasted.
-	const hitsByType = new Map<string, { hits: number; total: number }>();
-	for (const poi of byId.values()) {
-		const map = wikidataByType.get(poi.type);
-		if (!map) continue;
-		const tally = hitsByType.get(poi.type) ?? { hits: 0, total: 0 };
-		tally.total++;
-		const wd = matchWikidataByName(map, poi);
-		if (!wd) {
+		// Tally per-type hits, so the log tells us where the matcher is earning
+		// vs. wasted.
+		const hitsByType = new Map<string, { hits: number; total: number }>();
+		for (const poi of byId.values()) {
+			const map = wikidataByType.get(poi.type);
+			if (!map) continue;
+			const tally = hitsByType.get(poi.type) ?? { hits: 0, total: 0 };
+			tally.total++;
+			const wd = matchWikidataByName(map, poi);
+			if (!wd) {
+				hitsByType.set(poi.type, tally);
+				continue;
+			}
+			tally.hits++;
 			hitsByType.set(poi.type, tally);
-			continue;
+			wdByPoiId.set(poi.id, wd);
+			if (wd.population && !poi.population) poi.population = wd.population;
+			if (!poi.url) {
+				const u = safeUrl(wd.url);
+				if (u) poi.url = u;
+			}
+			if (!poi.image) {
+				const i = safeUrl(wd.image);
+				if (i) poi.image = i;
+			}
+			if (!poi.wikipedia) {
+				const w = safeUrl(wd.wikipedia);
+				if (w) poi.wikipedia = w;
+			}
+			// Upgrade source: Wikidata is generally higher-fidelity for civic data
+			// than raw OSM tags. Only upgrade if not already a higher tier.
+			if (poi.source === 'osm') poi.source = 'wikidata';
 		}
-		tally.hits++;
-		hitsByType.set(poi.type, tally);
-		wdByPoiId.set(poi.id, wd);
-		if (wd.population && !poi.population) poi.population = wd.population;
-		if (!poi.url) {
-			const u = safeUrl(wd.url);
-			if (u) poi.url = u;
+		for (const [poiType, { hits, total }] of hitsByType) {
+			console.log(`  Wikidata matched ${hits} / ${total} ${poiType}.`);
 		}
-		if (!poi.image) {
-			const i = safeUrl(wd.image);
-			if (i) poi.image = i;
-		}
-		if (!poi.wikipedia) {
-			const w = safeUrl(wd.wikipedia);
-			if (w) poi.wikipedia = w;
-		}
-		// Upgrade source: Wikidata is generally higher-fidelity for civic data
-		// than raw OSM tags. Only upgrade if not already a higher tier.
-		if (poi.source === 'osm') poi.source = 'wikidata';
-	}
-	for (const [poiType, { hits, total }] of hitsByType) {
-		console.log(`  Wikidata matched ${hits} / ${total} ${poiType}.`);
+
+		await saveEnrichCheckpoint(2, {
+			pois: [...byId.values()],
+			failedTypes,
+			wdByPoiId,
+			...checkpointTrail,
+		});
 	}
 
 	// ---- Pass 6: Reachability filter (highway graph + tier rules) ----
-	// Runs here (after Wikidata enrichment, before the expensive Commons +
-	// Wikipedia passes) so per-type drop tallies reflect notability rescues
-	// from Pass 2, and so Pass 4 / Pass 5 don't waste API calls on POIs we're
-	// about to drop. Overpass failure is non-fatal: the pass logs and skips,
-	// leaving the Pass 1 distance-filtered set intact.
-	console.log('\n=== Pass 6: Reachability filter ===');
-	try {
-		const beforeReach = byId.size;
-		const result = await applyReachabilityFilter([...byId.values()], trkpts, corridorPoly, {
-			overpassUrl: OVERPASS_URL,
-			fallbackUrls: OVERPASS_FALLBACK_URLS,
-			userAgent: USER_AGENT,
-			cache: OVERPASS_CACHE,
-		});
-		byId.clear();
-		for (const p of result.kept) byId.set(p.id, p);
-		// Types whose graph-dependent rules could not be evaluated reuse the
-		// Pass 1 carry-forward mechanism: the merge keeps the prior dataset's
-		// rows (which passed reachability when the graph was last healthy)
-		// instead of either dropping them or writing unverified fresh rows.
-		for (const t of result.carryForwardTypes) failedTypes.add(t);
-		const dropped = beforeReach - result.kept.length;
-		console.log(`  Reachability filter dropped ${dropped} / ${beforeReach} POIs (${result.kept.length} remain).`);
-		console.log('  Per-type breakdown:');
-		console.log(formatStats(result.stats));
-	} catch (err) {
-		console.warn(`  Reachability filter failed (${(err as Error).message}) - skipping.`);
-		console.warn(
-			'  POIs that passed Pass 1 distance gate are kept as-is. Re-run when Overpass corridor query is healthy.',
-		);
+	if (shouldRunPass(6, fromPass)) {
+		// Runs here (after Wikidata enrichment, before the expensive Commons +
+		// Wikipedia passes), so per-type drop tallies reflect notability rescues
+		// from Pass 2, and so Pass 3 / Pass 4 / Pass 5 don't waste API calls on
+		// POIs we're about to drop. A hard failure aborts the run without saving
+		// a pass-6 checkpoint; resume with ENRICH_FROM_PASS=6 or --resume.
+		console.log('\n=== Pass 6: Reachability filter ===');
+		try {
+			const beforeReach = byId.size;
+			const result = await applyReachabilityFilter([...byId.values()], trkpts, corridorPoly, {
+				overpassUrl: OVERPASS_URL,
+				fallbackUrls: OVERPASS_FALLBACK_URLS,
+				userAgent: USER_AGENT,
+				cache: OVERPASS_CACHE,
+			});
+			byId.clear();
+			for (const p of result.kept) byId.set(p.id, p);
+			// Types whose graph-dependent rules could not be evaluated reuse the
+			// Pass 1 carry-forward mechanism: the merge keeps the prior dataset's
+			// rows (which passed reachability when the graph was last healthy)
+			// instead of either dropping them or writing unverified fresh rows.
+			for (const t of result.carryForwardTypes) failedTypes.add(t);
+			const dropped = beforeReach - result.kept.length;
+			console.log(`  Reachability filter dropped ${dropped} / ${beforeReach} POIs (${result.kept.length} remain).`);
+			console.log('  Per-type breakdown:');
+			console.log(formatStats(result.stats));
+
+			await saveEnrichCheckpoint(6, {
+				pois: [...byId.values()],
+				failedTypes,
+				wdByPoiId,
+				...checkpointTrail,
+			});
+		} catch (err) {
+			fail(
+				`Pass 6 (reachability filter) failed: ${(err as Error).message}. ` +
+					`Fix the issue and resume with ENRICH_FROM_PASS=6 or --resume.`,
+			);
+		}
 	}
 
 	// ---- Pass 3: HPS curated huts ----
-	console.log('\n=== Pass 3: HPS curated huts ===');
-	const hps = await readJsonOptional<HpsFile>(HPS_HUTS_PATH);
-	if (hps?.huts?.length) {
-		console.log(`  Loaded ${hps.huts.length} curated HPS entries.`);
-		let hpsHits = 0;
-		for (const poi of byId.values()) {
-			if (poi.type !== 'hut') continue;
-			const match = matchHpsByNameAndDistance(hps.huts, poi);
-			if (!match) continue;
-			hpsHits++;
-			if (match.phone) poi.phone = match.phone;
-			if (typeof match.capacity === 'number') poi.capacity = match.capacity;
-			if (match.season) poi.season = match.season;
-			if (!poi.url) {
-				const u = safeUrl(match.url);
-				if (u) poi.url = u;
+	if (shouldRunPass(3, fromPass)) {
+		console.log('\n=== Pass 3: HPS curated huts ===');
+		const hps = await readJsonOptional<HpsFile>(HPS_HUTS_PATH);
+		if (hps?.huts?.length) {
+			console.log(`  Loaded ${hps.huts.length} curated HPS entries.`);
+			let hpsHits = 0;
+			for (const poi of byId.values()) {
+				if (poi.type !== 'hut') continue;
+				const match = matchHpsByNameAndDistance(hps.huts, poi);
+				if (!match) continue;
+				hpsHits++;
+				if (match.phone) poi.phone = match.phone;
+				if (typeof match.capacity === 'number') poi.capacity = match.capacity;
+				if (match.season) poi.season = match.season;
+				if (!poi.url) {
+					const u = safeUrl(match.url);
+					if (u) poi.url = u;
+				}
+				if (match.note_en && !poi.note_en) poi.note_en = match.note_en;
+				if (match.note_hr && !poi.note_hr) poi.note_hr = match.note_hr;
+				// HPS is the strongest non-curated source for huts (manually
+				// maintained by the federation). Always upgrades osm / wikidata.
+				if (poi.source !== 'curated') poi.source = 'hps';
 			}
-			if (match.note_en && !poi.note_en) poi.note_en = match.note_en;
-			if (match.note_hr && !poi.note_hr) poi.note_hr = match.note_hr;
-			// HPS is the strongest non-curated source for huts (manually
-			// maintained by the federation). Always upgrades osm / wikidata.
-			if (poi.source !== 'curated') poi.source = 'hps';
+			console.log(`  HPS matched ${hpsHits} huts.`);
+		} else {
+			console.log('  (no scripts/hps-huts.json found - skipping HPS pass)');
 		}
-		console.log(`  HPS matched ${hpsHits} huts.`);
-	} else {
-		console.log('  (no scripts/hps-huts.json found - skipping HPS pass)');
+
+		await saveEnrichCheckpoint(3, {
+			pois: [...byId.values()],
+			failedTypes,
+			wdByPoiId,
+			...checkpointTrail,
+		});
 	}
 
 	// ---- Pass 4: Wikimedia Commons photo galleries ----
-	console.log('\n=== Pass 4: Wikimedia Commons ===');
-	await populatePhotoGalleries(byId, wdByPoiId);
+	if (shouldRunPass(4, fromPass)) {
+		console.log('\n=== Pass 4: Wikimedia Commons ===');
+		await populatePhotoGalleries(byId, wdByPoiId);
+
+		await saveEnrichCheckpoint(4, {
+			pois: [...byId.values()],
+			failedTypes,
+			wdByPoiId,
+			...checkpointTrail,
+		});
+	}
 
 	// ---- Pass 5: Wikipedia summaries baked into the dataset ----
-	console.log('\n=== Pass 5: Wikipedia summaries ===');
-	await populateWikipediaSummaries(byId);
+	if (shouldRunPass(5, fromPass)) {
+		console.log('\n=== Pass 5: Wikipedia summaries ===');
+		await populateWikipediaSummaries(byId);
+
+		await saveEnrichCheckpoint(5, {
+			pois: [...byId.values()],
+			failedTypes,
+			wdByPoiId,
+			...checkpointTrail,
+		});
+	}
 
 	// ---- Merge with existing curated fields ----
 	console.log('\n=== Merging with prior curated fields ===');
@@ -461,12 +687,21 @@ async function main(): Promise<void> {
 	// Runs on the merged set so towns carried forward from a partial run are
 	// covered too. A failed query carries each town's prior resupply forward
 	// by id rather than wiping it.
-	console.log('\n=== Pass 7: Town resupply amenities ===');
-	if (process.env.SKIP_RESUPPLY === '1') {
-		console.log('-> Skipped (SKIP_RESUPPLY=1) - prior resupply data carries forward.');
-		carryForwardResupply(merged, prior?.pois ?? []);
-	} else {
-		await enrichResupply(merged, corridorPoly, paddedBbox, prior?.pois ?? []);
+	if (shouldRunPass(7, fromPass)) {
+		console.log('\n=== Pass 7: Town resupply amenities ===');
+		if (process.env.SKIP_RESUPPLY === '1') {
+			console.log('-> Skipped (SKIP_RESUPPLY=1) - prior resupply data carries forward.');
+			carryForwardResupply(merged, prior?.pois ?? []);
+		} else {
+			await enrichResupply(merged, corridorPoly, prior?.pois ?? []);
+		}
+
+		await saveEnrichCheckpoint(7, {
+			pois: merged,
+			failedTypes,
+			wdByPoiId,
+			...checkpointTrail,
+		});
 	}
 
 	// Normalize em/en-dashes in all string fields before writing so the
@@ -510,6 +745,10 @@ async function main(): Promise<void> {
 
 	console.log('-> Writing output...');
 	await fs.writeFile(OUTPUT_PATH, JSON.stringify(output, null, '\t') + '\n', 'utf8');
+
+	if (process.env.ENRICH_CLEAR_CHECKPOINTS === '1') {
+		await clearEnrichCheckpoints();
+	}
 
 	const typeHist = histogram(merged, (p) => p.type);
 	console.log('\nType breakdown:');
@@ -664,6 +903,9 @@ interface OsmFetchResult {
 	 *  should be carried forward in the merge step) from a genuinely empty
 	 *  result. */
 	failed: boolean;
+	/** Labels of corridor slices that still failed after selective retry.
+	 *  Only set when some slices succeeded and others did not. */
+	failedLabels?: string[];
 }
 
 /**
@@ -687,7 +929,11 @@ function downsampleTrail(pts: LatLng[], cumKm: number[], stepKm: number): LatLng
 	return out;
 }
 
-function buildOverpassQuery(selectors: { key: string; values: string[] }[], areaClause: string): string {
+function buildOverpassQuery(
+	selectors: { key: string; values: string[] }[],
+	areaClause: string,
+	timeoutS = OVERPASS_TIMEOUT_S,
+): string {
 	// Build per-selector clauses for both `node` and `way` (so e.g., shelters
 	// modelled as buildings are picked up via their centroid).
 	const clauses: string[] = [];
@@ -697,7 +943,7 @@ function buildOverpassQuery(selectors: { key: string; values: string[] }[], area
 			clauses.push(`way["${s.key}"="${v}"](${areaClause});`);
 		}
 	}
-	return `[out:json][timeout:${OVERPASS_TIMEOUT_S}];(${clauses.join('')});out center tags;`;
+	return `[out:json][timeout:${timeoutS}];(${clauses.join('')});out center tags;`;
 }
 
 /** Shared cache config for every Overpass query this script issues. */
@@ -706,6 +952,27 @@ const OVERPASS_CACHE: OverpassCacheOptions = {
 	ttlMs: OVERPASS_CACHE_TTL_MS,
 	disabled: OVERPASS_CACHE_DISABLED,
 };
+
+/** Pass numbers as logged in the pipeline (execution order differs - see
+ *  PASS_EXECUTION_ORDER). Checkpoints are saved after each pass completes. */
+const PASS_EXECUTION_ORDER = [1, 2, 6, 3, 4, 5, 7] as const;
+type EnrichPass = (typeof PASS_EXECUTION_ORDER)[number];
+
+/** Merged POI state after each expensive pass so a rerun can skip completed
+ *  work. Lives under `.cache/` (gitignored). Disable writes with
+ *  ENRICH_NO_CHECKPOINTS=1. */
+const CHECKPOINT_DIR = path.resolve(PROJECT_ROOT, '.cache/enrich-checkpoints');
+const CHECKPOINT_DISABLED = process.env.ENRICH_NO_CHECKPOINTS === '1';
+
+interface EnrichCheckpoint {
+	pass: EnrichPass;
+	timestamp: string;
+	trkptCount: number;
+	trailKm: number;
+	pois: Poi[];
+	failedTypes: string[];
+	wdByPoiId: Record<string, WikidataPlace>;
+}
 
 async function runOverpassQuery(query: string): Promise<OverpassElement[]> {
 	// fetchOverpassJson also rejects HTTP 200 bodies carrying an Overpass
@@ -730,10 +997,10 @@ async function runOverpassQuery(query: string): Promise<OverpassElement[]> {
  *      after a partial failure only refetch the types that failed.
  *   2. Corridor query: `around:` the downsampled trail polyline with radius
  *      maxDistanceKm + slack. Overpass evaluates this against its spatial
- *      index over a ~2-17 km ribbon instead of scanning a country-sized
+ *      index over ~2-17 km ribbon instead of scanning a country-sized
  *      bbox, which is what made the old per-type queries blow the server
- *      [timeout:] and 504 under load. Results are identical because the
- *      precise snap-to-trail distance filter still runs afterwards.
+ *      [timeout:] and 504 under load. The results are identical because the
+ *      precise snap-to-trail distance filter still runs afterward.
  *   3. Legacy bbox query as a fallback when the corridor query fails
  *      terminally (e.g., a mirror that rejects long request bodies).
  */
@@ -741,7 +1008,7 @@ async function fetchOsmElements(cfg: TypeConfig, corridorPoly: LatLng[], bbox: B
 	const radiusM = Math.round((cfg.maxDistanceKm + CORRIDOR_RADIUS_SLACK_KM) * 1000);
 
 	// Corridor fetch with bisection-on-failure: when the full-trail query
-	// times out, the corridor is split into overlapping half slices and each
+	// times out, the corridor is split into overlapping half-slices and each
 	// half retried independently (up to 8 leaf slices). The depth-0 label and
 	// query are identical to the pre-bisection version, so existing cache
 	// files keep hitting. Halves overlap by one point - dedupe below.
@@ -953,7 +1220,7 @@ function normaliseWikidataLabel(raw: string | undefined): string {
 
 /** First whitespace-separated token of a normalized label. Used as a
  *  fallback target so OSM `Velika Gorica` can match Wikidata `Gorica
- *  (selo)` once both sides are normalised. */
+ *  (selo)` once both sides are normalized. */
 function firstToken(s: string): string {
 	const i = s.indexOf(' ');
 	return i === -1 ? s : s.slice(0, i);
@@ -1101,7 +1368,7 @@ function normalizeDashes(s: string): string {
 /** Applies normalizeDashes to every visible-text string field of a POI
  *  (names, summaries, notes, season, phone, attribution). Numeric fields
  *  and URL fields (url, image, wikipedia, wikidata) are intentionally
- *  excluded - they never surface as user-reading text and dash-normalizing
+ *  excluded - they never surface as user-reading text, and dash-normalizing
  *  a URL would break it. */
 function normalizePoiDashes(poi: Poi): Poi {
 	return {
@@ -1452,7 +1719,7 @@ async function fetchWikipediaSummaryRest(locale: string, title: string): Promise
  *     summary_en. Also try the hr counterpart speculatively using the
  *     same title - works for proper nouns like "Zagreb" where the article
  *     name is identical across wikis.
- *   - If it parses to an hr ref, fetch hr first and write summary_hr;
+ *   - If it parses to a hr ref, fetch hr first and write summary_hr;
  *     same speculative attempt for the en counterpart.
  *   - Throttled to avoid Wikipedia's "no more than 200 req/s per user"
  *     soft cap. We're way under, but the pause keeps connection reuse
@@ -1667,15 +1934,26 @@ const RESUPPLY_CONFIG: TypeConfig = {
 		{ key: 'healthcare', values: ['pharmacy'] },
 		{ key: 'highway', values: ['bus_stop'] },
 	],
-	// Towns are capped at 3 km off trail; amenities sit inside towns, so the
-	// corridor needs town cap + assignment radius of slack.
+	// Towns cap at 3 km off trail; amenities attach within RESUPPLY_ASSIGN_KM.
 	maxDistanceKm: 4.5,
 };
 
 /** Amenity-to-town assignment radius. */
 const RESUPPLY_ASSIGN_KM = 1.5;
-/** Cap per town so a city centre cannot bloat the dataset. */
+/** Cap per town so a city center cannot bloat the dataset. */
 const RESUPPLY_MAX_PLACES = 12;
+
+/** Pass 7 query tuning (mirrors Pass 6 highway strategy). One corridor-wide
+ *  union of many shop/amenity selectors is far heavier than a single Pass 1
+ *  type; urban stretches timed out at full-trail bisection. ~8 km slices with
+ *  per-slice bisection, shorter server timeout, and limited HTTP retries keep
+ *  each leaf query under the Overpass [timeout:]. */
+const RESUPPLY_CHUNK_TRAIL_KM = 8;
+const RESUPPLY_OVERPASS_TIMEOUT_S = 120;
+const RESUPPLY_FETCH_TIMEOUT_MS = 150_000;
+const RESUPPLY_BISECT_MAX_DEPTH = 4;
+/** Sampling-gap slack only (2 km step needs >= 1 km); no extra urban buffer. */
+const RESUPPLY_RADIUS_SLACK_KM = 1;
 
 const RESUPPLY_KIND_ORDER: ResupplyKind[] = ['grocery', 'bakery', 'pharmacy', 'atm', 'post', 'bus', 'fuel'];
 
@@ -1708,23 +1986,145 @@ function carryForwardResupply(merged: Poi[], prior: Poi[]): void {
 	console.log(`  carried forward resupply for ${carried} towns.`);
 }
 
+async function fetchResupplyChunk(
+	cfg: TypeConfig,
+	slice: LatLng[],
+	label: string,
+	radiusM: number,
+): Promise<{ elements: OverpassElement[]; failed: boolean }> {
+	return fetchPolylineWithBisection<OverpassElement>({
+		slice,
+		label,
+		maxDepth: RESUPPLY_BISECT_MAX_DEPTH,
+		onBisect: (bisectLabel, message) => console.warn(`     ${bisectLabel}: ${message}.`),
+		run: async (runSlice, runLabel) => {
+			const polyStr = runSlice.map((p) => `${p.lat.toFixed(5)},${p.lng.toFixed(5)}`).join(',');
+			const query = buildOverpassQuery(
+				cfg.overpassSelectors,
+				`around:${radiusM},${polyStr}`,
+				RESUPPLY_OVERPASS_TIMEOUT_S,
+			);
+			const cacheFile = overpassCacheFile(OVERPASS_CACHE, runLabel, query);
+			const cached = await readOverpassJsonCache<OverpassElement[]>(cacheFile, OVERPASS_CACHE);
+			if (cached) {
+				console.log(`     ${runLabel}: cache hit (${cached.length} elements).`);
+				return cached;
+			}
+			const json = await fetchOverpassJson<{ elements?: OverpassElement[]; remark?: string }>({
+				url: OVERPASS_URL,
+				fallbackUrls: OVERPASS_FALLBACK_URLS,
+				body: `data=${encodeURIComponent(query)}`,
+				userAgent: USER_AGENT,
+				fetchTimeoutMs: RESUPPLY_FETCH_TIMEOUT_MS,
+				maxAttempts: 2,
+				onRetry: ({ message }) => console.warn(`     ${runLabel}: Overpass ${message}.`),
+			});
+			const elements = json.elements ?? [];
+			await writeOverpassJsonCache(cacheFile, elements, OVERPASS_CACHE);
+			console.log(`     ${runLabel}: ${elements.length} elements.`);
+			return elements;
+		},
+	});
+}
+
+function mergeResupplyElements(byKey: Map<string, OverpassElement>, elements: OverpassElement[]): void {
+	for (const el of elements) {
+		byKey.set(`${el.type}/${el.id}`, el);
+	}
+}
+
+/**
+ * Fetches resupply amenity candidates along the trail corridor. Chunks the
+ * corridor into ~RESUPPLY_CHUNK_TRAIL_KM slices (like Pass 6 highways),
+ * bisects any slice that still times out, and dedupes across overlaps.
+ * Query timeouts fail fast to bisection (see overpass-fetch.ts) instead of
+ * retrying the same body four times at 180 s each. When most slices succeed
+ * but some fail, retries only the failed slices once before applying partial
+ * results.
+ */
+async function fetchResupplyElements(cfg: TypeConfig, corridorPoly: LatLng[]): Promise<OsmFetchResult> {
+	const radiusM = Math.round((cfg.maxDistanceKm + RESUPPLY_RADIUS_SLACK_KM) * 1000);
+	const chunks = sliceCorridorIntoChunks(corridorPoly, RESUPPLY_CHUNK_TRAIL_KM);
+	const byKey = new Map<string, OverpassElement>();
+	const failedLabels: string[] = [];
+	let succeededChunks = 0;
+
+	console.log(
+		`  -> Fetching resupply amenities (~${RESUPPLY_CHUNK_TRAIL_KM} km slices, ${chunks.length} chunks, r=${radiusM} m)...`,
+	);
+
+	for (let c = 0; c < chunks.length; c++) {
+		const slice = chunks[c];
+		if (slice.length < 2) continue;
+
+		const label = `resupply-${c + 1} of ${chunks.length}`;
+		const result = await fetchResupplyChunk(cfg, slice, label, radiusM);
+		if (result.failed) failedLabels.push(label);
+		else succeededChunks++;
+		mergeResupplyElements(byKey, result.elements);
+	}
+
+	if (failedLabels.length > 0 && succeededChunks > 0) {
+		console.log(`  -> Retrying ${failedLabels.length} failed resupply slice(s)...`);
+		const stillFailed: string[] = [];
+		for (const label of failedLabels) {
+			const m = /^resupply-(\d+) of \d+$/.exec(label);
+			if (!m) {
+				stillFailed.push(label);
+				continue;
+			}
+			const c = parseInt(m[1], 10) - 1;
+			const slice = chunks[c];
+			if (!slice || slice.length < 2) {
+				stillFailed.push(label);
+				continue;
+			}
+			const result = await fetchResupplyChunk(cfg, slice, label, radiusM);
+			if (result.failed) {
+				stillFailed.push(label);
+			} else {
+				mergeResupplyElements(byKey, result.elements);
+			}
+		}
+		return {
+			elements: [...byKey.values()],
+			failed: stillFailed.length > 0,
+			failedLabels: stillFailed,
+		};
+	}
+
+	return {
+		elements: [...byKey.values()],
+		failed: failedLabels.length > 0,
+		...(failedLabels.length > 0 && { failedLabels }),
+	};
+}
+
 /**
  * Queries resupply amenities along the corridor and attaches each to the
  * nearest town/settlement within RESUPPLY_ASSIGN_KM. On success every town
  * gets a `resupply` block - an empty `places` array documents "checked,
  * nothing nearby", which the planner renders as a no-resupply warning.
  */
-async function enrichResupply(merged: Poi[], corridorPoly: LatLng[], bbox: Bbox, prior: Poi[]): Promise<void> {
+async function enrichResupply(merged: Poi[], corridorPoly: LatLng[], prior: Poi[]): Promise<void> {
 	const towns = merged.filter((p) => p.type === 'town' || p.type === 'settlement');
 	if (towns.length === 0) {
 		console.log('  no towns in dataset; skipping.');
 		return;
 	}
-	const { elements, failed } = await fetchOsmElements(RESUPPLY_CONFIG, corridorPoly, bbox);
-	if (failed) {
+	const { elements, failed, failedLabels } = await fetchResupplyElements(RESUPPLY_CONFIG, corridorPoly);
+	if (elements.length === 0 && failed) {
 		console.log('  Overpass query failed - prior resupply data carries forward.');
 		carryForwardResupply(merged, prior);
 		return;
+	}
+	if (failed && failedLabels && failedLabels.length > 0) {
+		const chunks = sliceCorridorIntoChunks(corridorPoly, RESUPPLY_CHUNK_TRAIL_KM);
+		const okSlices = chunks.length - failedLabels.length;
+		console.warn(
+			`  ${failedLabels.length} slice(s) failed after retry; applying ${elements.length} elements from ${okSlices} slices. ` +
+				`Re-run ENRICH_FROM_PASS=7 to retry: ${failedLabels.join(', ')}`,
+		);
 	}
 	console.log(`  ${elements.length} amenity candidates.`);
 
