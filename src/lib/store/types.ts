@@ -464,6 +464,18 @@ export interface MapStoreState {
 
 	showUpNext: boolean;
 	setShowUpNext: (show: boolean) => void;
+	/** Optional Up Next row: nearest restaurant or cafe ahead. Default off. */
+	upNextShowFood: boolean;
+	setUpNextShowFood: (show: boolean) => void;
+	/** Optional Up Next row: nearest ATM ahead. Default off. */
+	upNextShowAtm: boolean;
+	setUpNextShowAtm: (show: boolean) => void;
+	/** Optional Up Next row: nearest viewpoint ahead. Default off. */
+	upNextShowViewpoint: boolean;
+	setUpNextShowViewpoint: (show: boolean) => void;
+	/** Expanded state of the optional "More ahead" block in the distance panel. */
+	upNextMoreExpanded: boolean;
+	setUpNextMoreExpanded: (expanded: boolean) => void;
 
 	/** Forward corridor length (km) for "along next N km" POI browsing; persisted. */
 	aheadHorizonKm: number;

@@ -10,21 +10,22 @@ import {
 
 const MAP_CONTROL_SELECT_PREFIX = 'map-control-select';
 
-/** Styled react-select for map control panels (unstyled + shared classNames/menu z-index). */
+/** Styled react-select for map control panels (unstyled + shared classNames/menu z-index).
+ *  Inline menu by default; pass `menuPortalTarget` only in useBlockMapPropagation overlays
+ *  where Leaflet swallows control pointer events (see DistanceRemainingOverlay horizon select). */
 function MapControlSelect<Option, IsMulti extends boolean = false, Group extends GroupBase<Option> = GroupBase<Option>>(
 	props: SelectProps<Option, IsMulti, Group>,
 ): React.ReactElement {
-	const { styles: stylesProp, classNames: classNamesProp, ...restProps } = props;
+	const { styles: stylesProp, classNames: classNamesProp, menuPortalTarget, ...restProps } = props;
+	const useMenuPortal = menuPortalTarget !== undefined && menuPortalTarget !== null;
 	return (
 		<Select
 			{...restProps}
 			unstyled
 			classNamePrefix={MAP_CONTROL_SELECT_PREFIX}
 			classNames={{ ...mapControlSelectClassNames, ...classNamesProp }}
-			menuPortalTarget={undefined}
-			// Inline menu only. react-select portals when menuPortalTarget is set or
-			// menuPosition is "fixed", which breaks clicks/focus in map panels.
-			menuPosition="absolute"
+			menuPortalTarget={menuPortalTarget}
+			menuPosition={useMenuPortal ? 'fixed' : 'absolute'}
 			styles={{ ...mapControlSelectMenuStyles, ...stylesProp }}
 		/>
 	);
