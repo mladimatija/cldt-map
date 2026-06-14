@@ -195,14 +195,30 @@ export function isNotable(poi: ReachabilityPoi): boolean {
 // ---- OSM highway graph -----------------------------------------------------
 
 /** Walking-network filter for the Overpass highway query. Includes service
- *  roads and footpaths, so a POI on a hiking path snaps to something. Excludes
- *  freeways (hikers don't walk those) and `highway=construction` /
+ *  roads and footpaths, so a POI on a hiking path snaps to something. Omits
+ *  motorway/trunk (not walkable; they dominate urban result sets without
+ *  helping hiker reachability). Excludes `highway=construction` /
  *  `highway=proposed` (not yet usable). */
 const HIGHWAY_REGEX =
-	'motorway|trunk|primary|secondary|tertiary|unclassified|residential|service|track|path|footway|bridleway|cycleway|steps|pedestrian|living_street';
+	'primary|secondary|tertiary|unclassified|residential|service|track|path|footway|bridleway|cycleway|steps|pedestrian|living_street';
 
-const OVERPASS_TIMEOUT_S = 240;
-const FETCH_TIMEOUT_MS = 300_000;
+/** Must stay in sync with CORRIDOR_SAMPLE_STEP_KM / CORRIDOR_RADIUS_SLACK_KM in
+ *  enrich-pois.ts - the corridor polyline step and the around-radius slack. */
+const CORRIDOR_SAMPLE_STEP_KM = 2;
+const CORRIDOR_RADIUS_SLACK_KM = 2;
+
+/** Target trail length per highway Overpass slice. Pass 6 uses `out geom` (full
+ *  way geometry), so each query is far heavier than Pass 1's `out center`.
+ *  Urban stretches (Zagreb, Split) timed out at 12 fixed chunks x 6 km radius;
+ *  ~8 km slices with bisection keep queries under the server [timeout:]. */
+const HIGHWAY_CHUNK_TRAIL_KM = 8;
+
+const HIGHWAY_OVERPASS_TIMEOUT_S = 120;
+const HIGHWAY_FETCH_TIMEOUT_MS = 150_000;
+const HIGHWAY_BISECT_MAX_DEPTH = 4;
+
+const PT_OVERPASS_TIMEOUT_S = 180;
+const PT_FETCH_TIMEOUT_MS = 200_000;
 
 /** Quantize a coordinate to a 5-decimal-place lattice (~1 m precision) so
  *  consecutive ways that share an endpoint at the same lat/lng land on the
@@ -222,13 +238,22 @@ interface Graph {
 	hasPath: Set<string>;
 }
 
-/** Fetches every `highway=*` way in the given bbox. Returns the ways with
- *  their full point geometry (Overpass `out geom;`). */
-/** Number of corridor slices the highway fetch is split into. The full-trail
- *  highway query (every road + path with geometry) is the heaviest request
- *  in the pipeline; chunking turns one server-killing query into several
- *  cacheable, independently retried ones. */
-const HIGHWAY_CHUNKS = 12;
+/** Split the downsampled corridor polyline into overlapping slices for
+ *  independent Overpass queries. Overlap by one point catches ways spanning
+ *  a boundary from at least one side. */
+export function sliceCorridorIntoChunks(corridorPoly: LatLng[], chunkTrailKm = HIGHWAY_CHUNK_TRAIL_KM): LatLng[][] {
+	const pointsPerChunk = Math.max(4, Math.round(chunkTrailKm / CORRIDOR_SAMPLE_STEP_KM) + 1);
+	const chunks: LatLng[][] = [];
+	if (corridorPoly.length < 2) return chunks;
+	let start = 0;
+	while (start < corridorPoly.length - 1) {
+		const end = Math.min(corridorPoly.length, start + pointsPerChunk);
+		chunks.push(corridorPoly.slice(start, end));
+		if (end >= corridorPoly.length) break;
+		start += pointsPerChunk - 1;
+	}
+	return chunks;
+}
 
 export interface HighwayFetchOptions {
 	overpassUrl: string;
@@ -237,74 +262,117 @@ export interface HighwayFetchOptions {
 	cache: OverpassCacheOptions;
 }
 
+async function fetchHighwayChunk(
+	slice: LatLng[],
+	label: string,
+	radiusM: number,
+	opts: HighwayFetchOptions,
+): Promise<{ elements: OverpassWayElement[]; failed: boolean }> {
+	return fetchPolylineWithBisection<OverpassWayElement>({
+		slice,
+		label,
+		maxDepth: HIGHWAY_BISECT_MAX_DEPTH,
+		onBisect: (bisectLabel, message) => console.warn(`     ${bisectLabel}: ${message}.`),
+		run: async (runSlice, runLabel) => {
+			const polyStr = runSlice.map((p) => `${p.lat.toFixed(5)},${p.lng.toFixed(5)}`).join(',');
+			const query =
+				`[out:json][timeout:${HIGHWAY_OVERPASS_TIMEOUT_S}];` +
+				`way[highway~"^(${HIGHWAY_REGEX})$"](around:${radiusM},${polyStr});` +
+				`out geom;`;
+			const cacheFile = overpassCacheFile(opts.cache, runLabel, query);
+			const cached = await readOverpassJsonCache<OverpassWayElement[]>(cacheFile, opts.cache);
+			if (cached) {
+				console.log(`     ${runLabel}: cache hit (${cached.length} ways).`);
+				return cached;
+			}
+			const data = await fetchOverpassJson<OverpassResponse & { remark?: string }>({
+				url: opts.overpassUrl,
+				fallbackUrls: opts.fallbackUrls,
+				body: `data=${encodeURIComponent(query)}`,
+				userAgent: opts.userAgent,
+				fetchTimeoutMs: HIGHWAY_FETCH_TIMEOUT_MS,
+				maxAttempts: 2,
+				onRetry: ({ message }) => console.warn(`     ${runLabel}: Overpass ${message}.`),
+			});
+			const elements = (data.elements ?? []).filter((e): e is OverpassWayElement => e.type === 'way');
+			await writeOverpassJsonCache(cacheFile, elements, opts.cache);
+			console.log(`     ${runLabel}: ${elements.length} ways.`);
+			return elements;
+		},
+	});
+}
+
+function mergeHighwayWays(byId: Map<number, OverpassWayElement>, ways: OverpassWayElement[]): void {
+	for (const way of ways) {
+		byId.set(way.id, way);
+	}
+}
+
 /**
- * Fetches every walking-relevant `highway=*` way along the trail corridor,
- * chunked into HIGHWAY_CHUNKS polyline slices queried via `around:`. Each
- * chunk is retried with backoff + endpoint failover and cached on disk, so a
- * rerun only refetches the chunks that failed. Overpass remark errors
- * (HTTP 200 bodies carrying "runtime error: Query timed out") are treated as
- * failures instead of empty results - returning `failed: true` rather than a
- * silently hollow graph.
+ * Fetches every walking-relevant `highway=*` way along the trail corridor.
+ * Strategy: slice the corridor into ~HIGHWAY_CHUNK_TRAIL_KM segments (much
+ * finer than the old 12 equal splits), query each with `around:radius` and
+ * `out geom`, and bisect any slice that still times out. Query timeouts do
+ * not retry the same body (see overpass-fetch.ts); bisection splits instead.
+ * Each leaf is cached on disk so reruns only refetch failed slices. When most
+ * slices succeed but some fail, retries only the failed slices once before
+ * applying partial results.
  */
 export async function fetchHighwaysAlongCorridor(
 	corridorPoly: LatLng[],
 	radiusM: number,
 	opts: HighwayFetchOptions,
-): Promise<{ ways: OverpassWayElement[]; failed: boolean }> {
+): Promise<{ ways: OverpassWayElement[]; failed: boolean; failedLabels?: string[] }> {
 	const byId = new Map<number, OverpassWayElement>();
-	let failed = false;
+	const failedLabels: string[] = [];
+	let succeededChunks = 0;
 
-	const chunkSize = Math.ceil(corridorPoly.length / HIGHWAY_CHUNKS);
-	for (let c = 0; c < HIGHWAY_CHUNKS; c++) {
-		// Overlap chunks by one point so ways spanning a boundary are caught
-		// from at least one side.
-		const start = Math.max(0, c * chunkSize - 1);
-		const slice = corridorPoly.slice(start, (c + 1) * chunkSize);
+	const chunks = sliceCorridorIntoChunks(corridorPoly);
+	for (let c = 0; c < chunks.length; c++) {
+		const slice = chunks[c];
 		if (slice.length < 2) continue;
 
-		// Bisection-on-failure: a chunk whose query keeps timing out is split
-		// into two overlapping half slices and retried, so one overloaded
-		// stretch of corridor degrades to a few smaller queries instead of
-		// failing the whole chunk. Leaf labels gain an "a"/"b" suffix per
-		// split; the depth-0 label and query match the pre-bisection cache
-		// files, so existing caches stay valid.
-		const result = await fetchPolylineWithBisection<OverpassWayElement>({
-			slice,
-			label: `highways-${c + 1}of${HIGHWAY_CHUNKS}`,
-			onBisect: (label, message) => console.warn(`     ${label}: ${message}.`),
-			run: async (runSlice, label) => {
-				const polyStr = runSlice.map((p) => `${p.lat.toFixed(5)},${p.lng.toFixed(5)}`).join(',');
-				const query =
-					`[out:json][timeout:${OVERPASS_TIMEOUT_S}];` +
-					`way[highway~"^(${HIGHWAY_REGEX})$"](around:${radiusM},${polyStr});` +
-					`out geom;`;
-				const cacheFile = overpassCacheFile(opts.cache, label, query);
-				const cached = await readOverpassJsonCache<OverpassWayElement[]>(cacheFile, opts.cache);
-				if (cached) {
-					console.log(`     ${label}: cache hit (${cached.length} ways).`);
-					return cached;
-				}
-				const data = await fetchOverpassJson<OverpassResponse & { remark?: string }>({
-					url: opts.overpassUrl,
-					fallbackUrls: opts.fallbackUrls,
-					body: `data=${encodeURIComponent(query)}`,
-					userAgent: opts.userAgent,
-					fetchTimeoutMs: FETCH_TIMEOUT_MS,
-					onRetry: ({ message }) => console.warn(`     ${label}: Overpass ${message}.`),
-				});
-				const elements = (data.elements ?? []).filter((e): e is OverpassWayElement => e.type === 'way');
-				await writeOverpassJsonCache(cacheFile, elements, opts.cache);
-				console.log(`     ${label}: ${elements.length} ways.`);
-				return elements;
-			},
-		});
-		if (result.failed) failed = true;
-		for (const way of result.elements) {
-			byId.set(way.id, way);
-		}
+		const label = `highways - ${c + 1} of ${chunks.length}`;
+		const result = await fetchHighwayChunk(slice, label, radiusM, opts);
+		if (result.failed) failedLabels.push(label);
+		else succeededChunks++;
+		mergeHighwayWays(byId, result.elements);
 	}
 
-	return { ways: [...byId.values()], failed };
+	if (failedLabels.length > 0 && succeededChunks > 0) {
+		console.log(`  -> Retrying ${failedLabels.length} failed highway slice(s)...`);
+		const stillFailed: string[] = [];
+		for (const label of failedLabels) {
+			const m = /^highways - (\d+) of \d+$/.exec(label);
+			if (!m) {
+				stillFailed.push(label);
+				continue;
+			}
+			const c = parseInt(m[1], 10) - 1;
+			const slice = chunks[c];
+			if (!slice || slice.length < 2) {
+				stillFailed.push(label);
+				continue;
+			}
+			const result = await fetchHighwayChunk(slice, label, radiusM, opts);
+			if (result.failed) {
+				stillFailed.push(label);
+			} else {
+				mergeHighwayWays(byId, result.elements);
+			}
+		}
+		return {
+			ways: [...byId.values()],
+			failed: stillFailed.length > 0,
+			failedLabels: stillFailed,
+		};
+	}
+
+	return {
+		ways: [...byId.values()],
+		failed: failedLabels.length > 0,
+		...(failedLabels.length > 0 && { failedLabels }),
+	};
 }
 
 /** Builds an undirected graph from Overpass way elements. Consecutive points
@@ -511,12 +579,12 @@ export async function fetchPublicTransportAlongCorridor(
 
 		const result = await fetchPolylineWithBisection<OverpassNodeElement>({
 			slice,
-			label: `pt-${c + 1}of${PT_CHUNKS}`,
+			label: `pt - ${c + 1} of ${PT_CHUNKS}`,
 			onBisect: (label, message) => console.warn(`     ${label}: ${message}.`),
 			run: async (runSlice, label) => {
 				const polyStr = runSlice.map((p) => `${p.lat.toFixed(5)},${p.lng.toFixed(5)}`).join(',');
 				const query =
-					`[out:json][timeout:${OVERPASS_TIMEOUT_S}];` +
+					`[out:json][timeout:${PT_OVERPASS_TIMEOUT_S}];` +
 					`(` +
 					`node["highway"="bus_stop"](around:${radiusM},${polyStr});` +
 					`node["amenity"="bus_station"](around:${radiusM},${polyStr});` +
@@ -534,7 +602,7 @@ export async function fetchPublicTransportAlongCorridor(
 					fallbackUrls: opts.fallbackUrls,
 					body: `data=${encodeURIComponent(query)}`,
 					userAgent: opts.userAgent,
-					fetchTimeoutMs: FETCH_TIMEOUT_MS,
+					fetchTimeoutMs: PT_FETCH_TIMEOUT_MS,
 					onRetry: ({ message }) => console.warn(`     ${label}: Overpass ${message}.`),
 				});
 				const elements = (data.elements ?? []).filter((e): e is OverpassNodeElement => e.type === 'node');
@@ -677,7 +745,7 @@ export interface ReachabilityResult<T extends ReachabilityPoi> {
 	/** Types whose graph-dependent rules (road / path / reachable) could not
 	 *  be evaluated because the highway graph failed to build. Their fresh
 	 *  rows are withheld from `kept`; the caller must carry forward the prior
-	 *  dataset's rows for these types (same mechanism as Pass 1 failures)
+	 *  dataset's rows for these types (the same mechanism as Pass 1 failures)
 	 *  instead of dropping or blindly keeping unverified data. */
 	carryForwardTypes: Set<string>;
 }
@@ -700,17 +768,19 @@ export async function applyReachabilityFilter<T extends ReachabilityPoi>(
 	opts: HighwayFetchOptions,
 ): Promise<ReachabilityResult<T>> {
 	// Radius covers the farthest off-trail POI of any GRAPH-DEPENDENT rule,
-	// plus slack for corridor downsampling. Rules that never consult the
-	// graph (notabilityOverride 'always', e.g. huts at 15 km) must not widen
-	// the ribbon: deriving the radius from all rules once produced an 18 km
-	// ribbon whose chunks blew the Overpass server timeout on both endpoints,
-	// when the road checks themselves only ever look ~3 km off trail.
+	// plus CORRIDOR_RADIUS_SLACK_KM (same slack Pass 1 uses for its around:
+	// queries). Rules that never consult the graph (notabilityOverride
+	// 'always', e.g. huts at 15 km) must not widen the ribbon: deriving the
+	// radius from all rules once produced an 18 km ribbon whose chunks blew the
+	// Overpass server timeout on both endpoints, when the road checks
+	// themselves only ever look ~3 km off trail.
 	const maxOffTrailKm = Math.max(
 		...Object.values(TIER_RULES)
 			.filter((r) => ruleNeedsGraph(r))
 			.map((r) => r.maxOffTrailKm),
 	);
-	const radiusM = Math.round((maxOffTrailKm + 3) * 1000);
+	const radiusM = Math.round((maxOffTrailKm + CORRIDOR_RADIUS_SLACK_KM) * 1000);
+	const highwayChunks = sliceCorridorIntoChunks(corridorPoly).length;
 
 	// Partial runs (e.g. POI_TYPES=water) can arrive with no POI whose rule
 	// ever consults the graph. The corridor fetch, flood fill, and spatial
@@ -723,15 +793,17 @@ export async function applyReachabilityFilter<T extends ReachabilityPoi>(
 	});
 
 	let ways: Awaited<ReturnType<typeof fetchHighwaysAlongCorridor>>['ways'] = [];
-	let failed = false;
+	let highwayFailedLabels: string[] = [];
 	if (graphNeeded) {
 		console.log(
-			`-> Fetching OSM highway corridor for reachability check (${HIGHWAY_CHUNKS} chunks, r=${radiusM} m)...`,
+			`-> Fetching OSM highway corridor for reachability check (~${HIGHWAY_CHUNK_TRAIL_KM} km slices, ${highwayChunks} chunks, r=${radiusM} m)...`,
 		);
 		const res = await fetchHighwaysAlongCorridor(corridorPoly, radiusM, opts);
 		ways = res.ways;
-		failed = res.failed;
-		console.log(`     ${ways.length} highway ways${failed ? ' (one or more chunks FAILED)' : ''}.`);
+		highwayFailedLabels = res.failedLabels ?? [];
+		console.log(
+			`     ${ways.length} highway ways${res.failed ? ` (${highwayFailedLabels.length} slice(s) still failed)` : ''}.`,
+		);
 	} else {
 		console.log('-> No graph-dependent POI types in this run - skipping highway corridor fetch.');
 	}
@@ -740,16 +812,11 @@ export async function applyReachabilityFilter<T extends ReachabilityPoi>(
 	const graph = buildHighwayGraph(ways);
 	console.log(`     ${graph.nodes.size} unique nodes, ${graph.hasPath.size} on walking paths.`);
 
-	// A failed chunk leaves a regional hole: every graph-dependent decision
-	// would be wrong for POIs in that region, and there is no way to tell
-	// which ones. An empty graph is the same condition at full scale (this is
-	// exactly how a silently timed-out highway query once dropped 7,000 POIs:
-	// every road check ran against zero nodes). In either case, withhold
-	// fresh rows for graph-dependent types and tell the caller to carry the
-	// prior dataset's rows forward. A deliberately skipped fetch (no
-	// graph-dependent POIs present) is NOT an unusable graph - nothing in
-	// this run consults it.
-	const graphUnusable = graphNeeded && (failed || graph.nodes.size === 0);
+	// A failed chunk leaves a regional hole in the graph, but when most slices
+	// succeeded we still use the partial graph rather than discarding all
+	// highway data. Only a completely empty graph (every slice failed) triggers
+	// carry-forward for graph-dependent types.
+	const graphUnusable = graphNeeded && graph.nodes.size === 0;
 	const carryForwardTypes = new Set<string>();
 	if (graphUnusable) {
 		for (const [type, rule] of Object.entries(TIER_RULES)) {
@@ -757,6 +824,12 @@ export async function applyReachabilityFilter<T extends ReachabilityPoi>(
 		}
 		console.warn(
 			`     highway graph unusable - carrying forward prior rows for graph-dependent types: ${[...carryForwardTypes].join(', ')}.`,
+		);
+	} else if (highwayFailedLabels.length > 0) {
+		const okSlices = highwayChunks - highwayFailedLabels.length;
+		console.warn(
+			`     ${highwayFailedLabels.length} highway slice(s) failed after retry; using partial graph (${graph.nodes.size} nodes from ${okSlices} slices). ` +
+				`Re-run ENRICH_FROM_PASS=6 to retry: ${highwayFailedLabels.join(', ')}`,
 		);
 	}
 

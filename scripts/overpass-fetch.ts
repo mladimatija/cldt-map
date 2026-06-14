@@ -154,7 +154,13 @@ async function fetchOverpassFromEndpoint<T>(
 					if (!(err instanceof OverpassRemarkError) || attempt === maxAttempts) {
 						throw new OverpassFetchError((err as Error).message);
 					}
-					// Remark-style runtime error: back off like a 5xx and retry.
+					// Query timeouts rarely succeed on an identical retry; fail fast so
+					// corridor bisection can split the slice instead of burning another
+					// full [timeout:] per attempt (Pass 6 saw ~16 min per chunk at 4x249s).
+					if (err instanceof OverpassRemarkError && /time\s*d?\s*out/i.test(err.message)) {
+						throw new OverpassFetchError(err.message);
+					}
+					// Other remark-style runtime errors: back off like a 5xx and retry.
 					const waitMs = STATUS_BACKOFF_MS_5XX[Math.min(attempt - 1, STATUS_BACKOFF_MS_5XX.length - 1)];
 					opts.onRetry?.({
 						attempt,
@@ -278,7 +284,8 @@ export interface BisectionResult<T> {
  * split in half (one point of overlap so geometries spanning the cut are seen
  * from both sides) and each half is retried independently, recursing up to
  * `maxDepth`. One overloaded stretch of corridor then costs a few smaller
- * queries instead of failing the whole chunk or type.
+ * queries instead of failing the whole chunk or type. At depth 4, up to 16
+ * leaf slices.
  *
  * `run` performs the actual query for a slice (building the query string,
  * consulting its cache, fetching) and throws on failure; leaf labels are the
