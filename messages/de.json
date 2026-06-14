@@ -255,9 +255,7 @@
 		"waymarkedLabel": "Overlay markierter Wanderwege",
 		"waymarkedHint": "Zeichnet OSM-Wanderrouten (Waymarked Trails) über die Basiskarte. Nur online.",
 		"shareShortLinksLabel": "Kurzlinks zum Teilen verwenden",
-		"shareShortLinksHint": "Kopiert einen kompakten Link mit derselben Kartenansicht. Zum Erstellen ist eine Internetverbindung nötig.",
-		"includeRemotePoisLabel": "Entfernte POIs einbeziehen",
-		"includeRemotePoisHint": "Zeigt Orte, die im Datensatz als zu Fuß schwer erreichbar gelten und keine nahe Bushaltestelle oder Bahnstation auf der Wegseite haben. Standardmäßig aus."
+		"shareShortLinksHint": "Kopiert einen kompakten Link mit derselben Kartenansicht. Zum Erstellen ist eine Internetverbindung nötig."
 	},
 	"baseMapSelector": {
 		"standard": "Standard",
@@ -881,6 +879,8 @@
 		"waterReliabilityFilterHeading": "Wasser nach Zuverlässigkeit filtern",
 		"waterReliabilityFilterPlaceholder": "Alle Wasser-Zuverlässigkeitsklassen",
 		"waterReliabilityFilterHint": "Ohne Auswahl werden alle Wasserstellen einbezogen.",
+		"includeRemotePoisLabel": "Entfernte POIs einbeziehen",
+		"includeRemotePoisHint": "Zeigt Orte, die im Datensatz als zu Fuß schwer erreichbar gelten und keine nahe Bushaltestelle oder Bahnstation auf der Wegseite haben. Standardmäßig aus.",
 		"groupByDecade": "Nach {distance} {unit} gruppieren",
 		"groupCount": "{count, plural, =1 {# Ort} other {# Orte}}",
 		"exportSelect": "{name} zum GPX-Export hinzufügen",

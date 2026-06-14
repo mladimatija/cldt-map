@@ -144,6 +144,12 @@ export function PoiMarkers(): null {
 	}, [map]);
 
 	useEffect(() => {
+		// Force marker rebuild when visiblePois changes. The moveend dirty-check
+		// compares viewport candidate ids only; toggling reachability (or other
+		// filters) can change the superset without changing in-view ids, which
+		// previously cleared markers in cleanup then skipped re-adding them.
+		prevCandidateIdsRef.current = '';
+
 		const popupLabels: PopupBuildLabels = {
 			distanceLabel: t('trailPositionLabel'),
 			offTrailLabel: t('offTrailLabel'),

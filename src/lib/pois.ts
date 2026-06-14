@@ -413,6 +413,21 @@ export function poiPassesReachabilityFilter(p: Poi, includeRemotePois: boolean):
 	return p.isReachable !== false;
 }
 
+/** True when this POI would be hidden with `includeRemotePois === false`.
+ *  Hut/shelter exemptions and PT-rescued POIs are not counted. */
+export function poiHiddenByReachabilityFilter(p: Poi): boolean {
+	return !poiPassesReachabilityFilter(p, false);
+}
+
+/** Count of POIs the "Include remote POIs" toggle would affect. */
+export function countPoisHiddenByReachabilityFilter(pois: Iterable<Poi>): number {
+	let count = 0;
+	for (const p of pois) {
+		if (poiHiddenByReachabilityFilter(p)) count++;
+	}
+	return count;
+}
+
 /** Collects the unique sorted set of tags present in the dataset. Used by
  *  the settings UI to render a chip per tag. */
 export function collectPoiTags(pois: Poi[]): string[] {
