@@ -3,7 +3,14 @@
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useMap, Polyline } from 'react-leaflet';
-import { IoHelpCircleOutline } from 'react-icons/io5';
+import {
+	IoCalendarOutline,
+	IoDocumentTextOutline,
+	IoDownloadOutline,
+	IoLocationOutline,
+	IoMapOutline,
+	IoWatchOutline,
+} from 'react-icons/io5';
 import SmartTooltip from '@/components/ui/SmartTooltip';
 import {
 	isKnownType,
@@ -16,9 +23,17 @@ import {
 import { Button } from '@/components/ui/Button';
 import { Radio } from '@/components/ui/Radio';
 import { Checkbox } from '@/components/ui/Checkbox';
+import { MapControlIconButton } from './MapControlIconButton';
+import { MapControlSectionCard } from './MapControlSectionCard';
+import { SettingsToggleRow } from './SettingsToggleRow';
 import { MapControlsTripBriefModal } from './MapControlsTripBriefModal';
 import { cn, formatDistance, formatElevation, kmToMiles, milesToKm } from '@/lib/utils';
-import { MAP_CONTROL_POPOVER, MAP_CONTROL_INPUT } from './map-controls-constants';
+import {
+	MAP_CONTROL_INPUT,
+	MAP_CONTROL_LABEL_INPUT_GRID,
+	MAP_CONTROL_PANEL_WIDTH,
+	MAP_CONTROL_POPOVER,
+} from './map-controls-constants';
 import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
 import { usePopoverFocusTrap, usePackAdjustedPaceKmh } from '@/hooks';
 import {
@@ -61,9 +76,11 @@ import { TRAIL_OFF_TRAIL_THRESHOLD_M } from '@/lib/config';
 import { resolveTrailAnchor, formatAheadHorizon } from '@/lib/poi-ahead-corridor';
 
 const MAX_STAGES = 200;
+const COLLAPSED_STAGE_CHIP_LIMIT = 3;
 
 export function MapControlsStagePlannerPanel(): React.ReactElement {
 	const t = useTranslations('stagePlanner');
+	const tProgress = useTranslations('progress');
 	const tPois = useTranslations('pois');
 	const tWeather = useTranslations('weather');
 	const locale = useLocale();
@@ -71,6 +88,12 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 	const stagePlan = useMapStore((s: MapStoreState) => s.stagePlan);
 	const setStagePlan = useMapStore((s: MapStoreState) => s.setStagePlan);
 	const clearStagePlan = useMapStore((s: MapStoreState) => s.clearStagePlan);
+	const stagePlannerSetupOpen = useMapStore((s: MapStoreState) => s.stagePlannerSetupOpen);
+	const setStagePlannerSetupOpen = useMapStore((s: MapStoreState) => s.setStagePlannerSetupOpen);
+	const stagePlannerStagesOpen = useMapStore((s: MapStoreState) => s.stagePlannerStagesOpen);
+	const setStagePlannerStagesOpen = useMapStore((s: MapStoreState) => s.setStagePlannerStagesOpen);
+	const stagePlannerExportOpen = useMapStore((s: MapStoreState) => s.stagePlannerExportOpen);
+	const setStagePlannerExportOpen = useMapStore((s: MapStoreState) => s.setStagePlannerExportOpen);
 	const walkingPaceKmh = usePackAdjustedPaceKmh();
 	const packBaseWeightKg = useMapStore((s: MapStoreState) => s.packBaseWeightKg);
 	const waterConsumptionLph = useMapStore((s: MapStoreState) => s.waterConsumptionLph);
@@ -88,6 +111,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 	const aheadHorizonKm = useMapStore((s: MapStoreState) => s.aheadHorizonKm);
 	const distancePrecision = useMapStore((s: MapStoreState) => s.distancePrecision);
 	const requestPoiListAhead = useMapStore((s: MapStoreState) => s.requestPoiListAhead);
+	const openHelpToPlanning = useMapStore((s: MapStoreState) => s.openHelpToPlanning);
 
 	const enhancedTrailPoints = useStore((s: StoreState) => s.enhancedTrailPoints);
 	const trailMetadata = useStore((s: StoreState) => s.trailMetadata);
@@ -180,6 +204,8 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 		setActiveStageIndex(0);
 		setSelectedStagePoiIdsByStage(new Map());
 		setConfirmReset(false);
+		setStagePlannerSetupOpen(false);
+		setStagePlannerStagesOpen(true);
 	};
 
 	const handleStageClick = (index: number): void => {
@@ -306,6 +332,8 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 		setActiveStageIndex(null);
 		setSelectedStagePoiIdsByStage(new Map());
 		setConfirmReset(false);
+		setStagePlannerSetupOpen(true);
+		setStagePlannerStagesOpen(false);
 	};
 
 	const highlightPositions = useMemo((): [number, number][] => {
@@ -320,6 +348,15 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 
 	const distanceUnitLabel = isImperial ? 'mi' : 'km';
 	const valueUnitLabel = mode === 'stages' ? t('modeStages') : `${distanceUnitLabel}/day`;
+	const showMaxHoursRow = balanceByEta || mode === 'kmPerDay';
+	const sectionCollapseLabel = tProgress('collapseSection');
+	const sectionExpandLabel = tProgress('expandSection');
+
+	const tripTotalDistance = useMemo((): string | null => {
+		if (!stagePlan || stageStats.length === 0) return null;
+		const totalKm = stageStats.reduce((sum, stats) => sum + stats.distanceM / 1000, 0);
+		return formatDistance(totalKm, units, distancePrecision);
+	}, [stagePlan, stageStats, units, distancePrecision]);
 
 	/** POIs that the renderer would also draw - same enabled-types and master
 	 *  toggle filter so the planner view never lists POIs the user has hidden. */
@@ -347,17 +384,6 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 			return visiblePois.filter((p) => p.trailKm >= lo && p.trailKm <= hi).sort((a, b) => a.trailKm - b.trailKm);
 		});
 	}, [stagePlan, visiblePois]);
-
-	const activeStagePois = useMemo((): Poi[] => {
-		if (activeStageIndex === null || !poisByStage[activeStageIndex]) return [];
-		const pois = poisByStage[activeStageIndex];
-		return isNobo ? [...pois].reverse() : pois;
-	}, [activeStageIndex, poisByStage, isNobo]);
-
-	const selectedStagePoiIds = useMemo((): ReadonlySet<string> => {
-		if (activeStageIndex === null) return new Set();
-		return selectedStagePoiIdsByStage.get(activeStageIndex) ?? new Set();
-	}, [activeStageIndex, selectedStagePoiIdsByStage]);
 
 	/** Trail-km positions of water sources a hiker can plan around (explicitly
 	 *  non-potable excluded). Deliberately ignores the layer / type visibility
@@ -503,43 +529,6 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 		downloadGpxFile(xml, 'cldt-stages-pois.gpx');
 	};
 
-	const toggleStagePoiSelected = useCallback(
-		(id: string): void => {
-			if (activeStageIndex === null) return;
-			setSelectedStagePoiIdsByStage((prev) => {
-				const next = new Map(prev);
-				const stageSet = new Set(next.get(activeStageIndex) ?? []);
-				if (stageSet.has(id)) stageSet.delete(id);
-				else stageSet.add(id);
-				if (stageSet.size === 0) next.delete(activeStageIndex);
-				else next.set(activeStageIndex, stageSet);
-				return next;
-			});
-		},
-		[activeStageIndex],
-	);
-
-	const handleStagePoiExport = (): void => {
-		if (activeStageIndex === null || selectedStagePoiIds.size === 0) return;
-		const picked = activeStagePois.filter((p) => selectedStagePoiIds.has(p.id));
-		if (picked.length === 0) return;
-		const waypoints: GpxWaypoint[] = picked.map((p) => {
-			const name = poiDisplayName(p, locale);
-			const typeLabel = tPois(`type.${p.type}`, { default: p.type });
-			return {
-				lat: p.lat,
-				lng: p.lng,
-				name,
-				type: typeLabel,
-				elevation: typeof p.elevationM === 'number' ? p.elevationM : undefined,
-				description: p.note_en || p.note_hr || undefined,
-				url: p.url || undefined,
-			};
-		});
-		const xml = buildGpxWaypointXml(waypoints, t('stagePoisHeading', { index: activeStageIndex + 1 }));
-		downloadGpxFile(xml, `cldt-stage-${activeStageIndex + 1}-pois.gpx`);
-	};
-
 	const handlePoiClick = (poi: Poi): void => {
 		requestOpenPoi(poi.id);
 	};
@@ -552,511 +541,692 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 			<div
 				aria-labelledby="stage-planner-title"
 				aria-modal="true"
-				className={`z-controls-popover fixed top-2 right-16 flex h-[calc(100dvh-4rem)] w-80 flex-col gap-2 overflow-hidden ${MAP_CONTROL_POPOVER}`}
+				className={cn(
+					'z-controls-popover fixed top-2 right-16 flex max-h-[calc(100dvh-4rem)] flex-col gap-2 overflow-hidden',
+					MAP_CONTROL_PANEL_WIDTH,
+					MAP_CONTROL_POPOVER,
+				)}
 				ref={popoverRef}
 				role="dialog"
 				onContextMenu={(e) => e.preventDefault()}
+				onMouseDown={(e) => e.stopPropagation()}
+				onTouchStart={(e) => e.stopPropagation()}
 			>
-				<h3 className="text-sm font-medium text-gray-700 dark:text-[var(--text-primary)]" id="stage-planner-title">
+				<h3
+					className="shrink-0 text-sm font-medium text-gray-700 dark:text-[var(--text-primary)]"
+					id="stage-planner-title"
+				>
 					{t('title')}
 				</h3>
 
-				<div className="flex flex-col gap-2">
-					<div className="flex gap-2">
-						<label className="flex flex-1 flex-col gap-0.5 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
-							{t('startKm', { unit: distanceUnitLabel })}
-							<input
-								className={MAP_CONTROL_INPUT}
-								max={toDisplay(endKm)}
-								min={0}
-								type="number"
-								value={toDisplay(startKm)}
-								onChange={(e) => {
-									const v = Number(e.target.value);
-									if (Number.isFinite(v)) setStartKm(fromDisplay(v));
-								}}
-							/>
-						</label>
-						<label className="flex flex-1 flex-col gap-0.5 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
-							{t('endKm', { unit: distanceUnitLabel })}
-							<input
-								className={MAP_CONTROL_INPUT}
-								max={trailMetadata?.totalDistance ? toDisplay(trailMetadata.totalDistance) : undefined}
-								min={0}
-								type="number"
-								value={toDisplay(endKm)}
-								onChange={(e) => {
-									const v = Number(e.target.value);
-									if (Number.isFinite(v)) setEndKm(fromDisplay(v));
-								}}
-							/>
-						</label>
-					</div>
-
-					<div className="flex gap-3 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
-						<label className="flex cursor-pointer items-center gap-1">
-							<Radio
-								checked={mode === 'kmPerDay'}
-								name="stage-mode"
-								value="kmPerDay"
-								onChange={() => setMode('kmPerDay')}
-							/>
-							{t('modeKmPerDay')}
-						</label>
-						<label className="flex cursor-pointer items-center gap-1">
-							<Radio checked={mode === 'stages'} name="stage-mode" value="stages" onChange={() => setMode('stages')} />
-							{t('modeStages')}
-						</label>
-					</div>
-
-					<div className="flex gap-2">
-						<label className="flex flex-1 flex-col gap-0.5 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
-							{valueUnitLabel}
-							<input
-								className={MAP_CONTROL_INPUT}
-								min={mode === 'stages' ? 1 : 0.1}
-								step={mode === 'stages' ? 1 : isImperial ? 0.5 : 1}
-								type="number"
-								value={mode === 'stages' ? stageCount : toDisplay(kmPerDayKm)}
-								onChange={(e) => {
-									const v = Number(e.target.value);
-									if (!Number.isFinite(v) || v <= 0) return;
-									if (mode === 'stages') setStageCount(Math.round(v));
-									else setKmPerDayKm(fromDisplay(v));
-								}}
-							/>
-						</label>
-						<label className="flex flex-1 flex-col gap-0.5 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
-							{t('maxHoursPerDay')}
-							<input
-								className={MAP_CONTROL_INPUT}
-								max={24}
-								min={1}
-								step={0.5}
-								type="number"
-								value={maxHoursPerDay}
-								onChange={(e) => {
-									const v = Number(e.target.value);
-									if (Number.isFinite(v) && v > 0) setMaxHoursPerDay(v);
-								}}
-							/>
-						</label>
-					</div>
-
-					<label className="flex cursor-pointer items-center gap-2 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
-						<Checkbox
-							checked={balanceByEta}
-							onCheckedChange={(checked) => {
-								setBalanceByEta(checked);
-							}}
-						/>
-						{t('balanceByEta')}
-						<span className="inline-flex" onClick={(e) => e.stopPropagation()} onMouseDown={(e) => e.stopPropagation()}>
-							<SmartTooltip content={t('balanceByEtaHelp')} position="top">
-								<IoHelpCircleOutline className="ml-0.5 h-3.5 w-3.5 shrink-0 cursor-help text-gray-400 hover:text-gray-600 dark:text-white" />
-							</SmartTooltip>
-						</span>
-					</label>
-
-					<label className="flex flex-col gap-0.5 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
-						{t('tripStartDate')}
-						<input
-							className={cn(MAP_CONTROL_INPUT, 'w-full')}
-							type="date"
-							value={tripStartDate}
-							onChange={(e) => handleTripStartDateChange(e.target.value)}
-						/>
-					</label>
-
-					<Button variant="mapControlOutline" onClick={handleGenerate}>
-						{t('generatePlan')}
-					</Button>
-
-					{trailAnchor && (
-						<Button
-							title={t('previewAheadTooltip', { distance: aheadHorizonLabel })}
-							variant="mapControlOutline"
-							onClick={() => requestPoiListAhead()}
-						>
-							{t('previewAhead', { distance: aheadHorizonLabel })}
-						</Button>
-					)}
-
-					{autoBumpNotice && (
-						<p className="text-cldt-blue dark:text-cldt-blue m-0 text-[11px]">
-							{t('autoBumpNotice', {
-								actual: autoBumpNotice.actual,
-								requested: autoBumpNotice.requested,
-								hours: maxHoursPerDay,
-								pace: walkingPaceKmh,
-							})}
-						</p>
-					)}
-				</div>
-
-				{!stagePlan && <p className="mb-0 text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('noStages')}</p>}
-
-				{stagePlan && planResupplyCadence && (
-					<div className="flex flex-col gap-0.5 rounded border border-gray-100 px-2 py-1.5 text-[11px] text-gray-600 dark:border-[var(--border-color)] dark:text-[var(--text-secondary)]">
-						<p className="m-0">
-							<span aria-hidden>🛒</span>{' '}
-							{t('tripFoodGap', {
-								distance: formatDistance(planResupplyCadence.maxFoodGapKm, units, distancePrecision),
-							})}
-						</p>
-						{tripNextGroceryTown && planResupplyCadence.kmToFirstGrocery !== null && (
-							<p className="m-0">
-								{t('tripNextGrocery', {
-									town: tripNextGroceryTown,
-									distance: formatDistance(planResupplyCadence.kmToFirstGrocery, units, distancePrecision),
-								})}
-							</p>
-						)}
-					</div>
-				)}
-
-				{stagePlan && (
-					<div className="flex min-h-0 flex-1 flex-col divide-y divide-gray-100 overflow-y-auto rounded border border-gray-100 dark:divide-[var(--border-color)] dark:border-[var(--border-color)]">
-						{stagePlan.stages.map((stage, i) => {
-							const stats = stageStats[i];
-							const poiCount = poisByStage[i]?.length ?? 0;
-							const stageCadence = planResupplyCadence?.stages[i];
-							const resupplyStatus = stageCadence?.status ?? null;
-							return (
-								<button
-									className={cn(
-										'focus-visible:ring-cldt-green flex w-full flex-col gap-0.5 px-2 py-1.5 text-left text-xs transition-colors outline-none focus-visible:ring-2 focus-visible:ring-offset-1',
-										i === activeStageIndex
-											? 'bg-cldt-light-blue text-gray-900 dark:text-white'
-											: 'hover:bg-gray-50 dark:hover:bg-[var(--bg-hover)]',
-									)}
-									key={`${stage.startKm}-${stage.endKm}`}
-									type="button"
-									onClick={() => handleStageClick(i)}
-								>
-									{/* Line 1: stage number, km range, elevation, ETA. */}
-									<span className="flex w-full flex-wrap items-center gap-x-1.5 gap-y-0.5">
-										<span className="min-w-4 font-medium">{i + 1}</span>
-										<span className="whitespace-nowrap text-gray-500 dark:text-[var(--text-secondary)]">
-											{toDisplay(stage.startKm).toFixed(0)}-{toDisplay(stage.endKm).toFixed(0)} {distanceUnitLabel}
-										</span>
-										{stats && (
-											<>
-												<span className="text-cldt-green shrink-0">
-													↑{formatElevation(isNobo ? stats.lossM : stats.gainM, units)}
-												</span>
-												<span className="text-cldt-red shrink-0">
-													↓{formatElevation(isNobo ? stats.gainM : stats.lossM, units)}
-												</span>
-												<span className="shrink-0 text-gray-500 tabular-nums dark:text-[var(--text-secondary)]">
-													{formatEta(stats.etaSec)}
-												</span>
-											</>
-										)}
-									</span>
-									{/* Line 2: POI count, water gap, and forecast chips - always their
-									    own row so row one stays scannable. */}
-									{(poiCount > 0 ||
-										(waterGapByStage[i] !== undefined && waterGapByStage[i] >= WATER_GAP_WARN_KM) ||
-										packScenariosByStage[i] !== undefined ||
-										resupplyStatus !== null ||
-										stageForecasts[i]) && (
-										<span className="flex w-full flex-wrap items-center gap-x-1.5 gap-y-0.5 pl-5">
-											{poiCount > 0 && (
-												<span
-													aria-label={t('stagePoiCount', { count: poiCount })}
-													className="text-cldt-blue bg-cldt-blue/10 shrink-0 rounded-full px-1.5 py-0 text-[10px] font-medium tabular-nums"
-													title={t('stagePoiCount', { count: poiCount })}
-												>
-													{poiCount}
-												</span>
-											)}
-											{waterGapByStage[i] !== undefined && waterGapByStage[i] >= WATER_GAP_WARN_KM && (
-												<span
-													aria-label={t('stageWaterGap', {
-														distance: `${toDisplay(waterGapByStage[i]).toFixed(0)} ${distanceUnitLabel}`,
-													})}
-													className={cn(
-														'shrink-0 rounded-full px-1.5 py-0 text-[10px] font-medium tabular-nums',
-														waterGapByStage[i] >= WATER_GAP_DANGER_KM
-															? 'bg-cldt-red/10 text-cldt-red'
-															: 'bg-amber-500/15 text-amber-700 dark:text-amber-400',
-													)}
-													title={t('stageWaterGap', {
-														distance: `${toDisplay(waterGapByStage[i]).toFixed(0)} ${distanceUnitLabel}`,
-													})}
-												>
-													<span aria-hidden>💧</span>
-													{toDisplay(waterGapByStage[i]).toFixed(0)}
-												</span>
-											)}
-											{packScenariosByStage[i] !== undefined && (
-												<span
-													aria-label={
-														packScenariosByStage[i].carryLiters > 0
-															? t('stagePackTooltipLoaded', {
-																	base: formatWeight(packScenariosByStage[i].baseKg, units),
-																	loaded: formatWeight(packScenariosByStage[i].loadedKg, units),
-																	volume: formatVolume(packScenariosByStage[i].carryLiters, units),
-																})
-															: t('stagePackTooltipBase', {
-																	base: formatWeight(packScenariosByStage[i].baseKg, units),
-																})
-													}
-													className={cn(
-														'shrink-0 rounded-full px-1.5 py-0 text-[10px] font-medium tabular-nums',
-														packScenariosByStage[i].carryLiters >= CARRY_WARN_L
-															? 'bg-amber-500/15 text-amber-700 dark:text-amber-400'
-															: 'bg-gray-500/10 text-gray-600 dark:text-[var(--text-primary)]',
-													)}
-													title={
-														packScenariosByStage[i].carryLiters > 0
-															? t('stagePackTooltipLoaded', {
-																	base: formatWeight(packScenariosByStage[i].baseKg, units),
-																	loaded: formatWeight(packScenariosByStage[i].loadedKg, units),
-																	volume: formatVolume(packScenariosByStage[i].carryLiters, units),
-																})
-															: t('stagePackTooltipBase', {
-																	base: formatWeight(packScenariosByStage[i].baseKg, units),
-																})
-													}
-												>
-													<span aria-hidden>🎒</span>
-													{formatPackWeightRange(
-														packScenariosByStage[i].baseKg,
-														packScenariosByStage[i].loadedKg,
-														units,
-													)}
-												</span>
-											)}
-											{resupplyStatus !== null && resupplyStatusLabel(resupplyStatus) && (
-												<span
-													aria-label={resupplyStatusLabel(resupplyStatus)}
-													className={cn(
-														'shrink-0 rounded-full px-1.5 py-0 text-[10px] font-medium',
-														resupplyStatus === 'yes'
-															? 'bg-gray-500/10 text-gray-600 dark:text-[var(--text-primary)]'
-															: resupplyStatus === 'partial'
-																? 'bg-amber-500/15 text-amber-700 dark:text-amber-400'
-																: 'bg-amber-500/15 text-amber-700 dark:text-amber-400',
-													)}
-													title={resupplyStatusLabel(resupplyStatus)}
-												>
-													<span aria-hidden>🛒</span>
-													{resupplyStatus === 'partial' && <span aria-hidden>~</span>}
-													{resupplyStatus === 'no' && <span aria-hidden>✕</span>}
-												</span>
-											)}
-											{stageForecasts[i] && (
-												<span
-													aria-label={t('forecastTitle', {
-														condition: tWeather(weatherCodeToKey(stageForecasts[i].weatherCode)),
-														max: formatCompactTemp(stageForecasts[i].tMaxC, units),
-														min: formatCompactTemp(stageForecasts[i].tMinC, units),
-														precip: stageForecasts[i].precipProbPct,
-													})}
-													className="shrink-0 text-gray-600 tabular-nums dark:text-[var(--text-primary)]"
-													title={t('forecastTitle', {
-														condition: tWeather(weatherCodeToKey(stageForecasts[i].weatherCode)),
-														max: formatCompactTemp(stageForecasts[i].tMaxC, units),
-														min: formatCompactTemp(stageForecasts[i].tMinC, units),
-														precip: stageForecasts[i].precipProbPct,
-													})}
-												>
-													<span aria-hidden>{weatherKeyToIcon(weatherCodeToKey(stageForecasts[i].weatherCode))}</span>{' '}
-													{formatCompactTemp(stageForecasts[i].tMaxC, units)}
-												</span>
-											)}
-										</span>
-									)}
-								</button>
-							);
-						})}
-					</div>
-				)}
-
-				{stagePlan && activeStageIndex !== null && activeStagePois.length > 0 && (
-					<div className="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto rounded border border-gray-100 px-2 py-1 dark:border-[var(--border-color)]">
-						<p className="text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
-							{t('stagePoisHeading', { index: activeStageIndex + 1 })}
-						</p>
-						{waterGapByStage[activeStageIndex] !== undefined && (
-							<p
-								className={cn(
-									'm-0 text-[10px]',
-									waterGapByStage[activeStageIndex] >= WATER_GAP_DANGER_KM
-										? 'text-cldt-red'
-										: waterGapByStage[activeStageIndex] >= WATER_GAP_WARN_KM
-											? 'text-amber-700 dark:text-amber-400'
-											: 'text-gray-500 dark:text-[var(--text-secondary)]',
-								)}
-							>
-								<span aria-hidden>💧</span>{' '}
-								{t('stageWaterGap', {
-									distance: `${toDisplay(waterGapByStage[activeStageIndex]).toFixed(0)} ${distanceUnitLabel}`,
-								})}
-							</p>
-						)}
-						{packScenariosByStage[activeStageIndex] !== undefined && (
-							<div className="m-0 flex flex-col gap-0.5 text-gray-500 dark:text-[var(--text-secondary)]">
-								<p className="m-0 text-[10px] leading-snug">
-									<span aria-hidden>🎒</span>{' '}
-									{t('stagePackBase', {
-										weight: formatWeight(packScenariosByStage[activeStageIndex].baseKg, units),
-									})}
+				<div className="-mr-1 min-h-0 flex-1 overflow-y-auto pr-1">
+					<div className="flex flex-col gap-2">
+						{stagePlan && tripTotalDistance && (
+							<div className="sticky top-0 z-[1] -mx-1 mb-1 border-b border-gray-200 bg-white px-1 pb-2 dark:border-[var(--border-color)] dark:bg-[var(--bg-secondary)]">
+								<p className="m-0 text-sm font-semibold text-gray-900 dark:text-white">
+									{t('tripSummaryLine', { count: stagePlan.stages.length, distance: tripTotalDistance })}
 								</p>
-								{packScenariosByStage[activeStageIndex].carryLiters > 0 ? (
-									<p className="m-0 text-[10px] leading-snug">
-										{t('stagePackLoaded', {
-											weight: formatWeight(packScenariosByStage[activeStageIndex].loadedKg, units),
-											volume: formatVolume(packScenariosByStage[activeStageIndex].carryLiters, units),
+								{planResupplyCadence && (
+									<p className="m-0 mt-0.5 text-[11px] text-gray-600 dark:text-[var(--text-secondary)]">
+										<span aria-hidden>🛒</span>{' '}
+										{t('tripFoodGap', {
+											distance: formatDistance(planResupplyCadence.maxFoodGapKm, units, distancePrecision),
 										})}
 									</p>
-								) : (
-									<p className="m-0 text-[10px] leading-snug">{t('stagePackLoadedSame')}</p>
 								)}
+								{tripNextGroceryTown &&
+									planResupplyCadence?.kmToFirstGrocery !== null &&
+									planResupplyCadence?.kmToFirstGrocery !== undefined && (
+										<p className="m-0 text-[11px] text-gray-600 dark:text-[var(--text-secondary)]">
+											{t('tripNextGrocery', {
+												town: tripNextGroceryTown,
+												distance: formatDistance(planResupplyCadence.kmToFirstGrocery, units, distancePrecision),
+											})}
+										</p>
+									)}
 							</div>
 						)}
-						{stageResupplyDetailLines(planResupplyCadence?.stages[activeStageIndex]).map((line) => (
-							<p className="m-0 text-[10px] leading-snug text-amber-700 dark:text-amber-400" key={line}>
-								<span aria-hidden>🛒</span> {line}
-							</p>
-						))}
-						{activeStagePois.map((poi) => {
-							const name = poiDisplayName(poi, locale);
-							const typeLabel = tPois(`type.${poi.type}`, { default: poi.type });
-							const isSelected = selectedStagePoiIds.has(poi.id);
-							return (
-								<div
-									className={cn(
-										'group hover:bg-cldt-blue/10 dark:hover:bg-cldt-blue/20 flex w-full items-center gap-1.5 rounded px-0.5 py-0',
-										isSelected && 'bg-cldt-blue/5 dark:bg-cldt-blue/15',
-									)}
-									key={poi.id}
-								>
-									<Checkbox
-										aria-label={isSelected ? tPois('exportDeselect', { name }) : tPois('exportSelect', { name })}
-										checked={isSelected}
-										className="shrink-0"
-										title={isSelected ? tPois('exportDeselect', { name }) : tPois('exportSelect', { name })}
-										onCheckedChange={() => toggleStagePoiSelected(poi.id)}
-									/>
-									<button
-										className="focus-visible:ring-cldt-green flex min-h-0 min-w-0 flex-1 items-baseline gap-1 rounded py-0 text-left text-xs leading-tight focus-visible:ring-2 focus-visible:outline-none"
-										type="button"
-										onClick={() => handlePoiClick(poi)}
-									>
-										<span className="truncate font-medium text-gray-800 dark:text-[var(--text-primary)]">{name}</span>
-										<span className="ml-auto shrink-0 text-[10px] text-gray-500 dark:text-[var(--text-secondary)]">
-											{typeLabel}
-										</span>
-									</button>
-								</div>
-							);
-						})}
-						<div className="flex items-center justify-between gap-2 border-t border-gray-100 pt-1 dark:border-[var(--border-color)]">
-							<span className="text-[10px] text-gray-500 dark:text-[var(--text-secondary)]">
-								{tPois('exportSelectionCount', { count: selectedStagePoiIds.size })}
-							</span>
-							<Button
-								disabled={selectedStagePoiIds.size === 0}
-								size="sm"
-								title={
-									activeStageIndex !== null
-										? t('gpxStagePoisExportTooltip', { index: activeStageIndex + 1 })
-										: undefined
-								}
-								variant="mapControlOutline"
-								onClick={handleStagePoiExport}
-							>
-								{t('gpxStagePoisExport')}
-							</Button>
-						</div>
-					</div>
-				)}
 
-				{stagePlan && !confirmReset && (
-					<div className="flex flex-col gap-2">
-						<Button
-							disabled={activeStageIndex === null}
-							title={t('gpxExportTooltip')}
-							variant="mapControlOutline"
-							onClick={handleGpxExport}
+						<MapControlSectionCard
+							collapsible
+							collapseLabel={sectionCollapseLabel}
+							expandLabel={sectionExpandLabel}
+							open={stagePlannerSetupOpen}
+							title={t('sections.planSetup')}
+							onOpenChange={setStagePlannerSetupOpen}
 						>
-							{t('gpxExport')}
-						</Button>
-						<Button
-							disabled={activeStageIndex === null}
-							title={t('fitExportTooltip')}
-							variant="mapControlOutline"
-							onClick={() => void handleFitExport()}
-						>
-							{t('fitExport')}
-						</Button>
-						<Button
-							disabled={allStagesWaypoints.length === 0}
-							title={t('gpxPoisExportTooltip')}
-							variant="mapControlOutline"
-							onClick={handleAllStagesPoiExport}
-						>
-							{t('gpxPoisExport')}
-						</Button>
-						{isPdfExporting ? (
-							<div className="flex gap-2">
-								<span className="flex flex-1 items-center justify-center text-xs text-gray-500 dark:text-[var(--text-secondary)]">
-									{pdfProgress
-										? t('stripMapPdfProgress', { current: pdfProgress.current, total: pdfProgress.total })
-										: t('stripMapPdf')}
+							<div className={MAP_CONTROL_LABEL_INPUT_GRID}>
+								<label className="text-xs text-gray-600 dark:text-[var(--text-secondary)]" htmlFor="stage-start-km">
+									{t('startLabel')}
+								</label>
+								<input
+									className={cn(MAP_CONTROL_INPUT, 'w-full text-right tabular-nums')}
+									id="stage-start-km"
+									max={toDisplay(endKm)}
+									min={0}
+									type="number"
+									value={toDisplay(startKm)}
+									onChange={(e) => {
+										const v = Number(e.target.value);
+										if (Number.isFinite(v)) setStartKm(fromDisplay(v));
+									}}
+								/>
+								<span className="text-xs text-gray-500 dark:text-[var(--text-secondary)]">{distanceUnitLabel}</span>
+								<label className="text-xs text-gray-600 dark:text-[var(--text-secondary)]" htmlFor="stage-end-km">
+									{t('endLabel')}
+								</label>
+								<input
+									className={cn(MAP_CONTROL_INPUT, 'w-full text-right tabular-nums')}
+									id="stage-end-km"
+									max={trailMetadata?.totalDistance ? toDisplay(trailMetadata.totalDistance) : undefined}
+									min={0}
+									type="number"
+									value={toDisplay(endKm)}
+									onChange={(e) => {
+										const v = Number(e.target.value);
+										if (Number.isFinite(v)) setEndKm(fromDisplay(v));
+									}}
+								/>
+								<span className="text-xs text-gray-500 dark:text-[var(--text-secondary)]">{distanceUnitLabel}</span>
+							</div>
+
+							<div className="flex gap-3 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
+								<label className="flex cursor-pointer items-center gap-1">
+									<Radio
+										checked={mode === 'kmPerDay'}
+										name="stage-mode"
+										value="kmPerDay"
+										onChange={() => setMode('kmPerDay')}
+									/>
+									{t('modeKmPerDay')}
+								</label>
+								<label className="flex cursor-pointer items-center gap-1">
+									<Radio
+										checked={mode === 'stages'}
+										name="stage-mode"
+										value="stages"
+										onChange={() => setMode('stages')}
+									/>
+									{t('modeStages')}
+								</label>
+							</div>
+
+							<div className={MAP_CONTROL_LABEL_INPUT_GRID}>
+								<label className="text-xs text-gray-600 dark:text-[var(--text-secondary)]" htmlFor="stage-value">
+									{valueUnitLabel}
+								</label>
+								<input
+									className={cn(MAP_CONTROL_INPUT, 'w-full text-right tabular-nums')}
+									id="stage-value"
+									min={mode === 'stages' ? 1 : 0.1}
+									step={mode === 'stages' ? 1 : isImperial ? 0.5 : 1}
+									type="number"
+									value={mode === 'stages' ? stageCount : toDisplay(kmPerDayKm)}
+									onChange={(e) => {
+										const v = Number(e.target.value);
+										if (!Number.isFinite(v) || v <= 0) return;
+										if (mode === 'stages') setStageCount(Math.round(v));
+										else setKmPerDayKm(fromDisplay(v));
+									}}
+								/>
+								<span className="text-xs text-gray-500 dark:text-[var(--text-secondary)]">
+									{mode === 'stages' ? '' : distanceUnitLabel}
 								</span>
+							</div>
+
+							{showMaxHoursRow && (
+								<div className={MAP_CONTROL_LABEL_INPUT_GRID}>
+									<label className="text-xs text-gray-600 dark:text-[var(--text-secondary)]" htmlFor="stage-max-hours">
+										{t('maxHoursPerDay')}
+									</label>
+									<input
+										className={cn(MAP_CONTROL_INPUT, 'w-full text-right tabular-nums')}
+										id="stage-max-hours"
+										max={24}
+										min={1}
+										step={0.5}
+										type="number"
+										value={maxHoursPerDay}
+										onChange={(e) => {
+											const v = Number(e.target.value);
+											if (Number.isFinite(v) && v > 0) setMaxHoursPerDay(v);
+										}}
+									/>
+									<span className="text-xs text-gray-500 dark:text-[var(--text-secondary)]">h</span>
+								</div>
+							)}
+
+							<SettingsToggleRow
+								checked={balanceByEta}
+								hint={t('balanceByEtaHint')}
+								label={t('balanceByEta')}
+								tooltip={t('balanceByEtaHelp')}
+								onCheckedChange={(checked) => setBalanceByEta(checked)}
+							/>
+
+							<div className="flex flex-col gap-0.5">
+								<label className="text-xs text-gray-600 dark:text-[var(--text-secondary)]" htmlFor="stage-trip-start">
+									{t('tripStartDate')}
+								</label>
+								<input
+									className={cn(MAP_CONTROL_INPUT, 'w-full')}
+									id="stage-trip-start"
+									type="date"
+									value={tripStartDate}
+									onChange={(e) => handleTripStartDateChange(e.target.value)}
+								/>
+								<p className="m-0 text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('tripStartDateHint')}</p>
+							</div>
+
+							<Button variant="mapControlOutline" onClick={handleGenerate}>
+								{t('generatePlan')}
+							</Button>
+
+							{trailAnchor && (
 								<Button
-									size="sm"
-									title={t('stripMapPdfCancelTooltip')}
-									variant="mapControlOutlineSecondary"
-									onClick={handleCancelPdfExport}
+									title={t('previewAheadTooltip', { distance: aheadHorizonLabel })}
+									variant="mapControlOutline"
+									onClick={() => requestPoiListAhead()}
 								>
-									{t('stripMapPdfCancel')}
+									{t('previewAhead', { distance: aheadHorizonLabel })}
+								</Button>
+							)}
+
+							{autoBumpNotice && (
+								<p className="text-cldt-blue dark:text-cldt-blue m-0 text-[11px]">
+									{t('autoBumpNotice', {
+										actual: autoBumpNotice.actual,
+										requested: autoBumpNotice.requested,
+										hours: maxHoursPerDay,
+										pace: walkingPaceKmh,
+									})}
+								</p>
+							)}
+
+							<button
+								className="text-cldt-blue focus-visible:ring-cldt-green mt-1 cursor-pointer rounded border-0 bg-transparent p-0 text-left text-xs underline outline-none focus-visible:ring-2 focus-visible:ring-offset-1"
+								type="button"
+								onClick={openHelpToPlanning}
+							>
+								{t('planningHelp')}
+							</button>
+						</MapControlSectionCard>
+
+						{!stagePlan && (
+							<p className="mb-0 text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('noStages')}</p>
+						)}
+
+						{stagePlan && (
+							<MapControlSectionCard
+								collapsible
+								collapseLabel={sectionCollapseLabel}
+								expandLabel={sectionExpandLabel}
+								open={stagePlannerStagesOpen}
+								title={t('sections.stages')}
+								onOpenChange={setStagePlannerStagesOpen}
+							>
+								<div className="divide-y divide-gray-100 rounded border border-gray-100 dark:divide-[var(--border-color)] dark:border-[var(--border-color)]">
+									{stagePlan.stages.map((stage, i) => {
+										const stats = stageStats[i];
+										const poiCount = poisByStage[i]?.length ?? 0;
+										const stageCadence = planResupplyCadence?.stages[i];
+										const resupplyStatus = stageCadence?.status ?? null;
+										const isActive = i === activeStageIndex;
+										const stagePois = isNobo ? [...(poisByStage[i] ?? [])].reverse() : (poisByStage[i] ?? []);
+										const stageSelectedPoiIds = selectedStagePoiIdsByStage.get(i) ?? new Set<string>();
+										return (
+											<div
+												className={cn(
+													'border-l-4',
+													isActive ? 'border-l-cldt-blue bg-cldt-light-blue/40' : 'border-l-transparent',
+												)}
+												key={`${stage.startKm}-${stage.endKm}`}
+											>
+												<button
+													aria-expanded={isActive}
+													className={cn(
+														'focus-visible:ring-cldt-green flex w-full flex-col gap-0.5 px-2 py-1.5 text-left text-xs transition-colors outline-none focus-visible:ring-2 focus-visible:ring-offset-1',
+														isActive
+															? 'text-gray-900 dark:text-white'
+															: 'hover:bg-gray-50 dark:hover:bg-[var(--bg-hover)]',
+													)}
+													type="button"
+													onClick={() => handleStageClick(i)}
+												>
+													<span className="flex w-full flex-wrap items-center gap-x-1.5 gap-y-0.5">
+														<span className="min-w-4 font-medium">{i + 1}</span>
+														<span className="whitespace-nowrap text-gray-500 dark:text-[var(--text-secondary)]">
+															{toDisplay(stage.startKm).toFixed(0)}-{toDisplay(stage.endKm).toFixed(0)}{' '}
+															{distanceUnitLabel}
+														</span>
+														{stats && (
+															<>
+																<span className="text-cldt-green shrink-0">
+																	↑{formatElevation(isNobo ? stats.lossM : stats.gainM, units)}
+																</span>
+																<span className="text-cldt-red shrink-0">
+																	↓{formatElevation(isNobo ? stats.gainM : stats.lossM, units)}
+																</span>
+																<span className="shrink-0 text-gray-500 tabular-nums dark:text-[var(--text-secondary)]">
+																	{formatEta(stats.etaSec)}
+																</span>
+															</>
+														)}
+													</span>
+													{(() => {
+														const chips: React.ReactElement[] = [];
+														if (poiCount > 0) {
+															chips.push(
+																<span
+																	aria-label={t('stagePoiCount', { count: poiCount })}
+																	className="text-cldt-blue bg-cldt-blue/10 shrink-0 rounded-full px-1.5 py-0 text-[10px] font-medium tabular-nums"
+																	key="poi"
+																	title={t('stagePoiCount', { count: poiCount })}
+																>
+																	{poiCount}
+																</span>,
+															);
+														}
+														if (waterGapByStage[i] !== undefined && waterGapByStage[i] >= WATER_GAP_WARN_KM) {
+															chips.push(
+																<span
+																	aria-label={t('stageWaterGap', {
+																		distance: `${toDisplay(waterGapByStage[i]).toFixed(0)} ${distanceUnitLabel}`,
+																	})}
+																	className={cn(
+																		'shrink-0 rounded-full px-1.5 py-0 text-[10px] font-medium tabular-nums',
+																		waterGapByStage[i] >= WATER_GAP_DANGER_KM
+																			? 'bg-cldt-red/10 text-cldt-red'
+																			: 'bg-amber-500/15 text-amber-700 dark:text-amber-400',
+																	)}
+																	key="water"
+																	title={t('stageWaterGap', {
+																		distance: `${toDisplay(waterGapByStage[i]).toFixed(0)} ${distanceUnitLabel}`,
+																	})}
+																>
+																	<span aria-hidden>💧</span>
+																	{toDisplay(waterGapByStage[i]).toFixed(0)}
+																</span>,
+															);
+														}
+														if (packScenariosByStage[i] !== undefined) {
+															chips.push(
+																<span
+																	aria-label={
+																		packScenariosByStage[i].carryLiters > 0
+																			? t('stagePackTooltipLoaded', {
+																					base: formatWeight(packScenariosByStage[i].baseKg, units),
+																					loaded: formatWeight(packScenariosByStage[i].loadedKg, units),
+																					volume: formatVolume(packScenariosByStage[i].carryLiters, units),
+																				})
+																			: t('stagePackTooltipBase', {
+																					base: formatWeight(packScenariosByStage[i].baseKg, units),
+																				})
+																	}
+																	className={cn(
+																		'shrink-0 rounded-full px-1.5 py-0 text-[10px] font-medium tabular-nums',
+																		packScenariosByStage[i].carryLiters >= CARRY_WARN_L
+																			? 'bg-amber-500/15 text-amber-700 dark:text-amber-400'
+																			: 'bg-gray-500/10 text-gray-600 dark:text-[var(--text-primary)]',
+																	)}
+																	key="pack"
+																	title={
+																		packScenariosByStage[i].carryLiters > 0
+																			? t('stagePackTooltipLoaded', {
+																					base: formatWeight(packScenariosByStage[i].baseKg, units),
+																					loaded: formatWeight(packScenariosByStage[i].loadedKg, units),
+																					volume: formatVolume(packScenariosByStage[i].carryLiters, units),
+																				})
+																			: t('stagePackTooltipBase', {
+																					base: formatWeight(packScenariosByStage[i].baseKg, units),
+																				})
+																	}
+																>
+																	<span aria-hidden>🎒</span>
+																	{formatPackWeightRange(
+																		packScenariosByStage[i].baseKg,
+																		packScenariosByStage[i].loadedKg,
+																		units,
+																	)}
+																</span>,
+															);
+														}
+														if (resupplyStatus !== null && resupplyStatusLabel(resupplyStatus)) {
+															chips.push(
+																<span
+																	aria-label={resupplyStatusLabel(resupplyStatus)}
+																	className={cn(
+																		'shrink-0 rounded-full px-1.5 py-0 text-[10px] font-medium',
+																		resupplyStatus === 'yes'
+																			? 'bg-gray-500/10 text-gray-600 dark:text-[var(--text-primary)]'
+																			: 'bg-amber-500/15 text-amber-700 dark:text-amber-400',
+																	)}
+																	key="resupply"
+																	title={resupplyStatusLabel(resupplyStatus)}
+																>
+																	<span aria-hidden>🛒</span>
+																	{resupplyStatus === 'partial' && <span aria-hidden>~</span>}
+																	{resupplyStatus === 'no' && <span aria-hidden>✕</span>}
+																</span>,
+															);
+														}
+														if (stageForecasts[i]) {
+															chips.push(
+																<span
+																	aria-label={t('forecastTitle', {
+																		condition: tWeather(weatherCodeToKey(stageForecasts[i].weatherCode)),
+																		max: formatCompactTemp(stageForecasts[i].tMaxC, units),
+																		min: formatCompactTemp(stageForecasts[i].tMinC, units),
+																		precip: stageForecasts[i].precipProbPct,
+																	})}
+																	className="shrink-0 text-gray-600 tabular-nums dark:text-[var(--text-primary)]"
+																	key="forecast"
+																	title={t('forecastTitle', {
+																		condition: tWeather(weatherCodeToKey(stageForecasts[i].weatherCode)),
+																		max: formatCompactTemp(stageForecasts[i].tMaxC, units),
+																		min: formatCompactTemp(stageForecasts[i].tMinC, units),
+																		precip: stageForecasts[i].precipProbPct,
+																	})}
+																>
+																	<span aria-hidden>
+																		{weatherKeyToIcon(weatherCodeToKey(stageForecasts[i].weatherCode))}
+																	</span>{' '}
+																	{formatCompactTemp(stageForecasts[i].tMaxC, units)}
+																</span>,
+															);
+														}
+														if (chips.length === 0) return null;
+														const visibleChips = isActive ? chips : chips.slice(0, COLLAPSED_STAGE_CHIP_LIMIT);
+														const overflowCount = isActive ? 0 : Math.max(0, chips.length - COLLAPSED_STAGE_CHIP_LIMIT);
+														return (
+															<span className="flex w-full flex-wrap items-center gap-x-1.5 gap-y-0.5 pl-5">
+																{visibleChips}
+																{overflowCount > 0 && (
+																	<span
+																		aria-label={t('stageChipOverflow', { count: overflowCount })}
+																		className="shrink-0 rounded-full bg-gray-500/10 px-1.5 py-0 text-[10px] font-medium text-gray-600 tabular-nums dark:text-[var(--text-primary)]"
+																		title={t('stageChipOverflow', { count: overflowCount })}
+																	>
+																		{t('stageChipOverflow', { count: overflowCount })}
+																	</span>
+																)}
+															</span>
+														);
+													})()}
+												</button>
+												{isActive && (
+													<div className="flex flex-col gap-1 border-t border-gray-100 px-2 py-1.5 pl-3 dark:border-[var(--border-color)]">
+														{waterGapByStage[i] !== undefined && (
+															<p
+																className={cn(
+																	'm-0 text-[10px]',
+																	waterGapByStage[i] >= WATER_GAP_DANGER_KM
+																		? 'text-cldt-red'
+																		: waterGapByStage[i] >= WATER_GAP_WARN_KM
+																			? 'text-amber-700 dark:text-amber-400'
+																			: 'text-gray-500 dark:text-[var(--text-secondary)]',
+																)}
+															>
+																<span aria-hidden>💧</span>{' '}
+																{t('stageWaterGap', {
+																	distance: `${toDisplay(waterGapByStage[i]).toFixed(0)} ${distanceUnitLabel}`,
+																})}
+															</p>
+														)}
+														{packScenariosByStage[i] !== undefined && (
+															<div className="m-0 flex flex-col gap-0.5 text-gray-500 dark:text-[var(--text-secondary)]">
+																<p className="m-0 text-[10px] leading-snug">
+																	<span aria-hidden>🎒</span>{' '}
+																	{t('stagePackBase', {
+																		weight: formatWeight(packScenariosByStage[i].baseKg, units),
+																	})}
+																</p>
+																{packScenariosByStage[i].carryLiters > 0 ? (
+																	<p className="m-0 text-[10px] leading-snug">
+																		{t('stagePackLoaded', {
+																			weight: formatWeight(packScenariosByStage[i].loadedKg, units),
+																			volume: formatVolume(packScenariosByStage[i].carryLiters, units),
+																		})}
+																	</p>
+																) : (
+																	<p className="m-0 text-[10px] leading-snug">{t('stagePackLoadedSame')}</p>
+																)}
+															</div>
+														)}
+														{stageResupplyDetailLines(stageCadence).map((line) => (
+															<p className="m-0 text-[10px] leading-snug text-amber-700 dark:text-amber-400" key={line}>
+																<span aria-hidden>🛒</span> {line}
+															</p>
+														))}
+														{stagePois.length > 0 && (
+															<>
+																<p className="m-0 text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
+																	{t('stagePoisHeading', { index: i + 1 })}
+																</p>
+																{stagePois.map((poi) => {
+																	const name = poiDisplayName(poi, locale);
+																	const typeLabel = tPois(`type.${poi.type}`, { default: poi.type });
+																	const isSelected = stageSelectedPoiIds.has(poi.id);
+																	return (
+																		<div
+																			className={cn(
+																				'group hover:bg-cldt-blue/10 dark:hover:bg-cldt-blue/20 flex w-full items-center gap-1.5 rounded px-0.5 py-0',
+																				isSelected && 'bg-cldt-blue/5 dark:bg-cldt-blue/15',
+																			)}
+																			key={poi.id}
+																		>
+																			<Checkbox
+																				aria-label={
+																					isSelected
+																						? tPois('exportDeselect', { name })
+																						: tPois('exportSelect', { name })
+																				}
+																				checked={isSelected}
+																				className="shrink-0"
+																				title={
+																					isSelected
+																						? tPois('exportDeselect', { name })
+																						: tPois('exportSelect', { name })
+																				}
+																				onCheckedChange={() => {
+																					setSelectedStagePoiIdsByStage((prev) => {
+																						const next = new Map(prev);
+																						const stageSet = new Set(next.get(i) ?? []);
+																						if (stageSet.has(poi.id)) stageSet.delete(poi.id);
+																						else stageSet.add(poi.id);
+																						if (stageSet.size === 0) next.delete(i);
+																						else next.set(i, stageSet);
+																						return next;
+																					});
+																				}}
+																			/>
+																			<button
+																				className="focus-visible:ring-cldt-green flex min-h-0 min-w-0 flex-1 items-baseline gap-1 rounded py-0 text-left text-xs leading-tight focus-visible:ring-2 focus-visible:outline-none"
+																				type="button"
+																				onClick={() => handlePoiClick(poi)}
+																			>
+																				<span className="truncate font-medium text-gray-800 dark:text-[var(--text-primary)]">
+																					{name}
+																				</span>
+																				<span className="ml-auto shrink-0 text-[10px] text-gray-500 dark:text-[var(--text-secondary)]">
+																					{typeLabel}
+																				</span>
+																			</button>
+																		</div>
+																	);
+																})}
+																<div className="flex items-center justify-between gap-2 border-t border-gray-100 pt-1 dark:border-[var(--border-color)]">
+																	<span className="text-[10px] text-gray-500 dark:text-[var(--text-secondary)]">
+																		{tPois('exportSelectionCount', { count: stageSelectedPoiIds.size })}
+																	</span>
+																	<Button
+																		disabled={stageSelectedPoiIds.size === 0}
+																		size="sm"
+																		title={t('gpxStagePoisExportTooltip', { index: i + 1 })}
+																		variant="mapControlOutline"
+																		onClick={() => {
+																			if (stageSelectedPoiIds.size === 0) return;
+																			const picked = stagePois.filter((p) => stageSelectedPoiIds.has(p.id));
+																			if (picked.length === 0) return;
+																			const waypoints: GpxWaypoint[] = picked.map((p) => {
+																				const name = poiDisplayName(p, locale);
+																				const typeLabel = tPois(`type.${p.type}`, { default: p.type });
+																				return {
+																					lat: p.lat,
+																					lng: p.lng,
+																					name,
+																					type: typeLabel,
+																					elevation: typeof p.elevationM === 'number' ? p.elevationM : undefined,
+																					description: p.note_en || p.note_hr || undefined,
+																					url: p.url || undefined,
+																				};
+																			});
+																			const xml = buildGpxWaypointXml(
+																				waypoints,
+																				t('stagePoisHeading', { index: i + 1 }),
+																			);
+																			downloadGpxFile(xml, `cldt-stage-${i + 1}-pois.gpx`);
+																		}}
+																	>
+																		{t('gpxStagePoisExport')}
+																	</Button>
+																</div>
+															</>
+														)}
+													</div>
+												)}
+											</div>
+										);
+									})}
+								</div>
+							</MapControlSectionCard>
+						)}
+
+						{stagePlan && (
+							<MapControlSectionCard
+								collapsible
+								collapseLabel={sectionCollapseLabel}
+								expandLabel={sectionExpandLabel}
+								open={stagePlannerExportOpen}
+								title={t('sections.export')}
+								onOpenChange={setStagePlannerExportOpen}
+							>
+								<div className="flex flex-wrap gap-1.5">
+									<SmartTooltip content={t('gpxExportTooltip')} position="top">
+										<MapControlIconButton
+											aria-label={t('gpxExport')}
+											disabled={activeStageIndex === null}
+											title={t('gpxExportTooltip')}
+											variant="mapControlOutline"
+											onClick={handleGpxExport}
+										>
+											<IoDownloadOutline aria-hidden className="h-3.5 w-3.5" />
+										</MapControlIconButton>
+									</SmartTooltip>
+									<SmartTooltip content={t('fitExportTooltip')} position="top">
+										<MapControlIconButton
+											aria-label={t('fitExport')}
+											disabled={activeStageIndex === null}
+											title={t('fitExportTooltip')}
+											variant="mapControlOutline"
+											onClick={() => void handleFitExport()}
+										>
+											<IoWatchOutline aria-hidden className="h-3.5 w-3.5" />
+										</MapControlIconButton>
+									</SmartTooltip>
+									<SmartTooltip content={t('gpxPoisExportTooltip')} position="top">
+										<MapControlIconButton
+											aria-label={t('gpxPoisExport')}
+											disabled={allStagesWaypoints.length === 0}
+											title={t('gpxPoisExportTooltip')}
+											variant="mapControlOutline"
+											onClick={handleAllStagesPoiExport}
+										>
+											<IoLocationOutline aria-hidden className="h-3.5 w-3.5" />
+										</MapControlIconButton>
+									</SmartTooltip>
+									<SmartTooltip content={t('stripMapPdfTooltip')} position="top">
+										<MapControlIconButton
+											aria-label={t('stripMapPdf')}
+											disabled={isPdfExporting}
+											title={t('stripMapPdfTooltip')}
+											variant="mapControlOutline"
+											onClick={handleStripMapPdfExport}
+										>
+											<IoMapOutline aria-hidden className="h-3.5 w-3.5" />
+										</MapControlIconButton>
+									</SmartTooltip>
+									<SmartTooltip
+										content={stagePlan.startDate ? t('icalExportTooltip') : t('icalNeedsStartDate')}
+										position="top"
+									>
+										<MapControlIconButton
+											aria-label={t('icalExport')}
+											disabled={!stagePlan.startDate}
+											title={stagePlan.startDate ? t('icalExportTooltip') : t('icalNeedsStartDate')}
+											variant="mapControlOutline"
+											onClick={handleIcalExport}
+										>
+											<IoCalendarOutline aria-hidden className="h-3.5 w-3.5" />
+										</MapControlIconButton>
+									</SmartTooltip>
+									<SmartTooltip content={t('tripBriefOpenTooltip')} position="top">
+										<MapControlIconButton
+											aria-label={t('tripBriefOpen')}
+											disabled={stagePlan.stages.length === 0}
+											title={t('tripBriefOpenTooltip')}
+											variant="mapControlOutline"
+											onClick={() => setIsTripBriefOpen(true)}
+										>
+											<IoDocumentTextOutline aria-hidden className="h-3.5 w-3.5" />
+										</MapControlIconButton>
+									</SmartTooltip>
+								</div>
+								{isPdfExporting && (
+									<div className="flex items-center gap-2 text-xs text-gray-500 dark:text-[var(--text-secondary)]">
+										<span className="flex-1 tabular-nums">
+											{pdfProgress
+												? t('stripMapPdfProgress', { current: pdfProgress.current, total: pdfProgress.total })
+												: t('stripMapPdf')}
+										</span>
+										<Button
+											size="sm"
+											title={t('stripMapPdfCancelTooltip')}
+											variant="mapControlOutlineSecondary"
+											onClick={handleCancelPdfExport}
+										>
+											{t('stripMapPdfCancel')}
+										</Button>
+									</div>
+								)}
+							</MapControlSectionCard>
+						)}
+					</div>
+				</div>
+
+				{stagePlan && (
+					<div className="shrink-0 border-t border-gray-200 pt-2 dark:border-[var(--border-color)]">
+						{confirmReset ? (
+							<div className="flex items-center gap-2 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
+								<span className="flex-1">{t('confirmReset')}</span>
+								<Button size="sm" variant="mapControlOutlineSecondary" onClick={handleConfirmReset}>
+									{t('confirmYes')}
+								</Button>
+								<Button size="sm" variant="mapControlOutline" onClick={() => setConfirmReset(false)}>
+									{t('confirmNo')}
 								</Button>
 							</div>
 						) : (
-							<Button title={t('stripMapPdfTooltip')} variant="mapControlOutline" onClick={handleStripMapPdfExport}>
-								{t('stripMapPdf')}
+							<Button
+								className="w-full"
+								size="sm"
+								title={t('resetTooltip')}
+								variant="mapControlOutlineSecondary"
+								onClick={() => setConfirmReset(true)}
+							>
+								{t('reset')}
 							</Button>
 						)}
-						<Button
-							disabled={!stagePlan.startDate}
-							title={stagePlan.startDate ? t('icalExportTooltip') : t('icalNeedsStartDate')}
-							variant="mapControlOutline"
-							onClick={handleIcalExport}
-						>
-							{t('icalExport')}
-						</Button>
-						<Button
-							disabled={!stagePlan || stagePlan.stages.length === 0}
-							title={t('tripBriefOpenTooltip')}
-							variant="mapControlOutline"
-							onClick={() => setIsTripBriefOpen(true)}
-						>
-							{t('tripBriefOpen')}
-						</Button>
-						<Button
-							title={t('resetTooltip')}
-							variant="mapControlOutlineSecondary"
-							onClick={() => setConfirmReset(true)}
-						>
-							{t('reset')}
-						</Button>
-					</div>
-				)}
-
-				{stagePlan && confirmReset && (
-					<div className="flex items-center gap-2 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
-						<span className="flex-1">{t('confirmReset')}</span>
-						<Button size="sm" variant="mapControlOutlineSecondary" onClick={handleConfirmReset}>
-							{t('confirmYes')}
-						</Button>
-						<Button size="sm" variant="mapControlOutline" onClick={() => setConfirmReset(false)}>
-							{t('confirmNo')}
-						</Button>
 					</div>
 				)}
 			</div>

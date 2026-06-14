@@ -1020,12 +1020,103 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					setProgressPanelJournalOpen: (open: boolean): void => {
 						set({ progressPanelJournalOpen: open });
 					},
+					settingsPanelOverlaysOpen: true,
+					setSettingsPanelOverlaysOpen: (open: boolean): void => {
+						set({ settingsPanelOverlaysOpen: open });
+					},
+					settingsPanelPackOpen: false,
+					setSettingsPanelPackOpen: (open: boolean): void => {
+						set({ settingsPanelPackOpen: open });
+					},
+					settingsPanelNotificationsOpen: false,
+					setSettingsPanelNotificationsOpen: (open: boolean): void => {
+						set({ settingsPanelNotificationsOpen: open });
+					},
+					settingsPanelOfflineOpen: null,
+					setSettingsPanelOfflineOpen: (open: boolean | null): void => {
+						set({ settingsPanelOfflineOpen: open });
+					},
+					settingsPanelImportsOpen: false,
+					setSettingsPanelImportsOpen: (open: boolean): void => {
+						set({ settingsPanelImportsOpen: open });
+					},
+					helpPanelBasicsOpen: true,
+					setHelpPanelBasicsOpen: (open: boolean): void => {
+						set({ helpPanelBasicsOpen: open });
+					},
+					helpPanelChartOpen: false,
+					setHelpPanelChartOpen: (open: boolean): void => {
+						set({ helpPanelChartOpen: open });
+					},
+					helpPanelGesturesOpen: false,
+					setHelpPanelGesturesOpen: (open: boolean): void => {
+						set({ helpPanelGesturesOpen: open });
+					},
+					helpPanelPlanningOpen: false,
+					setHelpPanelPlanningOpen: (open: boolean): void => {
+						set({ helpPanelPlanningOpen: open });
+					},
+					helpPanelOfflineOpen: false,
+					setHelpPanelOfflineOpen: (open: boolean): void => {
+						set({ helpPanelOfflineOpen: open });
+					},
+					helpPanelDemoOpen: true,
+					setHelpPanelDemoOpen: (open: boolean): void => {
+						set({ helpPanelDemoOpen: open });
+					},
+					poiListFiltersOpen: true,
+					setPoiListFiltersOpen: (open: boolean): void => {
+						set({ poiListFiltersOpen: open });
+					},
+					poiListSortOpen: true,
+					setPoiListSortOpen: (open: boolean): void => {
+						set({ poiListSortOpen: open });
+					},
+					poiListTagsOpen: false,
+					setPoiListTagsOpen: (open: boolean): void => {
+						set({ poiListTagsOpen: open });
+					},
+					poiListStarsOpen: false,
+					setPoiListStarsOpen: (open: boolean): void => {
+						set({ poiListStarsOpen: open });
+					},
+					poiListExportOpen: true,
+					setPoiListExportOpen: (open: boolean): void => {
+						set({ poiListExportOpen: open });
+					},
+					stagePlannerSetupOpen: true,
+					setStagePlannerSetupOpen: (open: boolean): void => {
+						set({ stagePlannerSetupOpen: open });
+					},
+					stagePlannerStagesOpen: false,
+					setStagePlannerStagesOpen: (open: boolean): void => {
+						set({ stagePlannerStagesOpen: open });
+					},
+					stagePlannerExportOpen: false,
+					setStagePlannerExportOpen: (open: boolean): void => {
+						set({ stagePlannerExportOpen: open });
+					},
 					settingsScrollTarget: null,
 					openSettingsToImports: (): void => {
-						set({ openPanel: 'settings', settingsScrollTarget: 'imports' });
+						set({
+							openPanel: 'settings',
+							settingsScrollTarget: 'imports',
+							settingsPanelImportsOpen: true,
+						});
 					},
 					clearSettingsScrollTarget: (): void => {
 						set({ settingsScrollTarget: null });
+					},
+					helpScrollTarget: null,
+					openHelpToPlanning: (): void => {
+						set({
+							openPanel: 'help',
+							helpScrollTarget: 'planning',
+							helpPanelPlanningOpen: true,
+						});
+					},
+					clearHelpScrollTarget: (): void => {
+						set({ helpScrollTarget: null });
 					},
 					progressPreviewTrackId: null,
 					progressPreviewIntervals: [],
@@ -1368,6 +1459,25 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 						showCompletionOverlay: state.showCompletionOverlay,
 						progressPanelWaypointsOpen: state.progressPanelWaypointsOpen,
 						progressPanelJournalOpen: state.progressPanelJournalOpen,
+						settingsPanelOverlaysOpen: state.settingsPanelOverlaysOpen,
+						settingsPanelPackOpen: state.settingsPanelPackOpen,
+						settingsPanelNotificationsOpen: state.settingsPanelNotificationsOpen,
+						settingsPanelOfflineOpen: state.settingsPanelOfflineOpen,
+						settingsPanelImportsOpen: state.settingsPanelImportsOpen,
+						helpPanelBasicsOpen: state.helpPanelBasicsOpen,
+						helpPanelChartOpen: state.helpPanelChartOpen,
+						helpPanelGesturesOpen: state.helpPanelGesturesOpen,
+						helpPanelPlanningOpen: state.helpPanelPlanningOpen,
+						helpPanelOfflineOpen: state.helpPanelOfflineOpen,
+						helpPanelDemoOpen: state.helpPanelDemoOpen,
+						poiListFiltersOpen: state.poiListFiltersOpen,
+						poiListSortOpen: state.poiListSortOpen,
+						poiListTagsOpen: state.poiListTagsOpen,
+						poiListStarsOpen: state.poiListStarsOpen,
+						poiListExportOpen: state.poiListExportOpen,
+						stagePlannerSetupOpen: state.stagePlannerSetupOpen,
+						stagePlannerStagesOpen: state.stagePlannerStagesOpen,
+						stagePlannerExportOpen: state.stagePlannerExportOpen,
 						seasonalStatusLayerEnabled: state.seasonalStatusLayerEnabled,
 						seasonalStatusLayerUserToggled: state.seasonalStatusLayerUserToggled,
 					};

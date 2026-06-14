@@ -10,6 +10,8 @@ import {
 	type SurfaceBucket,
 	type TrailOsmTagRun,
 } from '@/lib/trail-osm-tags';
+import { findNearestPointIndex } from '@/lib/distance-utils';
+import { type EnhancedTrailPoint } from '@/lib/store/types';
 import { type TrailDirection } from '@/lib/types';
 import { GRADE_BAND_ASCENT_COLORS, GRADE_BAND_DESCENT_COLORS } from '@/components/map/trail-route-constants';
 import { TRAIL_SECTIONS } from '@/lib/trail-sections';
@@ -36,6 +38,15 @@ export const GRADE_BUCKETS: readonly string[] = (['asc', 'desc'] as const).flatM
 	[0, 1, 2, 3, 4].map((band) => `g${band}_${sign}`),
 );
 
+/** i18n keys under mapControls.layers.trailStyle for each grade band (0 flat .. 4 extreme). */
+export const GRADE_BAND_LABEL_KEYS = [
+	'legendFlat',
+	'legendModerate',
+	'legendSteep',
+	'legendVerySteep',
+	'legendExtreme',
+] as const;
+
 export function gradeColorForKey(key: string): string {
 	// Regex domain `[0-4]` matches the closed band range; an out-of-range key
 	// from a future change would fail to match and produce undefined rather
@@ -58,6 +69,31 @@ export interface OsmAtTrailKm {
 	run: TrailOsmTagRun | null;
 	surfaceBucket: SurfaceBucket;
 	sacBucket: SacBucket;
+}
+
+export interface GradeAtTrailKm {
+	gradeBand: 0 | 1 | 2 | 3 | 4;
+	/** Signed grade percent in the active travel direction. */
+	gradePct: number;
+	sign: 'asc' | 'desc';
+	color: string;
+}
+
+/** Map chart km (direction-relative) to the grade band and signed percent at that point. */
+export function resolveGradeAtTrailKm(
+	km: number,
+	enhancedTrailPoints: readonly EnhancedTrailPoint[],
+): GradeAtTrailKm | null {
+	if (!enhancedTrailPoints.length) return null;
+	const ep = enhancedTrailPoints[findNearestPointIndex([...enhancedTrailPoints], km * 1000)];
+	if (!ep) return null;
+	const sign = ep.gradePct < 0 ? 'desc' : 'asc';
+	return {
+		gradeBand: ep.gradeBand,
+		gradePct: ep.gradePct,
+		sign,
+		color: gradeColorForKey(`g${ep.gradeBand}_${sign}`),
+	};
 }
 
 /** Map chart km (direction-relative) to the OSM tag run and coarse buckets at that point. */

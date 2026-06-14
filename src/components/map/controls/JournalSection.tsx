@@ -7,7 +7,6 @@ import L from 'leaflet';
 import {
 	IoAddOutline,
 	IoArchiveOutline,
-	IoCloseOutline,
 	IoCloudUploadOutline,
 	IoDocumentTextOutline,
 	IoEyeOutline,
@@ -22,6 +21,9 @@ import { parseJournalMarkdown, parsedJournalToEntries } from '@/lib/user-waypoin
 import { cn, formatDistance } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
 import { MAP_CONTROL_INPUT } from './map-controls-constants';
+import { MapControlIconButton } from './MapControlIconButton';
+import { MapControlModalShell } from './MapControlModalShell';
+import { MapControlSectionCard } from './MapControlSectionCard';
 import { JournalEntryEditor } from './JournalEntryEditor';
 import { JournalEntryOverflowMenu } from './JournalEntryOverflowMenu';
 import { JournalTrackAttachControls, type JournalAttachState } from './JournalTrackAttachControls';
@@ -250,44 +252,23 @@ export function JournalSection({ embedded = false }: JournalSectionProps): React
 		setComposeOpen(true);
 	};
 
+	const closeCompose = (): void => {
+		setComposeOpen(false);
+		setJournalPreview(null);
+	};
+
 	const composeModal =
 		composeOpen &&
 		typeof document !== 'undefined' &&
 		createPortal(
-			<div
-				aria-labelledby="journal-compose-title"
-				aria-modal="true"
-				className="z-modal fixed inset-0 flex items-center justify-center bg-[var(--modal-backdrop-bg)] p-4"
-				role="dialog"
-				onClick={() => {
-					setComposeOpen(false);
-					setJournalPreview(null);
-				}}
+			<MapControlModalShell
+				closeLabel={t('journalClose')}
+				open={composeOpen}
+				title={t('addEntry')}
+				titleId="journal-compose-title"
+				onClose={closeCompose}
 			>
-				<div
-					className="relative flex max-h-[90dvh] w-full max-w-lg flex-col gap-2 overflow-y-auto rounded bg-[var(--map-tooltip-bg)] p-4 shadow-xl dark:bg-[var(--bg-primary)]"
-					onClick={(ev) => ev.stopPropagation()}
-				>
-					<div className="relative shrink-0">
-						<Button
-							aria-label={t('journalClose')}
-							className="absolute top-0 right-0"
-							title={t('journalClose')}
-							variant="closeIcon"
-							onClick={() => {
-								setComposeOpen(false);
-								setJournalPreview(null);
-							}}
-						>
-							<IoCloseOutline aria-hidden className="h-4 w-4" />
-						</Button>
-						<h3
-							className="m-0 pr-7 text-sm font-medium text-gray-700 dark:text-[var(--text-primary)]"
-							id="journal-compose-title"
-						>
-							{t('addEntry')}
-						</h3>
-					</div>
+				<MapControlSectionCard title={t('journalSectionDate')}>
 					<label className="flex flex-col gap-0.5 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
 						{t('entryDateLabel')}
 						<input
@@ -297,6 +278,8 @@ export function JournalSection({ embedded = false }: JournalSectionProps): React
 							onChange={(ev) => setEntryDate(ev.target.value)}
 						/>
 					</label>
+				</MapControlSectionCard>
+				<MapControlSectionCard title={t('journalSectionText')}>
 					<textarea
 						autoFocus
 						aria-label={t('entryTextLabel')}
@@ -305,6 +288,8 @@ export function JournalSection({ embedded = false }: JournalSectionProps): React
 						value={entryText}
 						onChange={(ev) => setEntryText(ev.target.value)}
 					/>
+				</MapControlSectionCard>
+				<MapControlSectionCard title={t('journalSectionTrack')}>
 					<JournalTrackAttachControls
 						attachRuler={attachRuler}
 						rulerKms={rulerKms}
@@ -315,21 +300,21 @@ export function JournalSection({ embedded = false }: JournalSectionProps): React
 						onExportBundle={handleExportBundle}
 						onPreview={(next) => pushPreview(next, null)}
 					/>
-					<div className="flex justify-end gap-2 border-t border-gray-100 pt-2 dark:border-[var(--border-color)]">
-						<Button
-							aria-label={t('addEntry')}
-							className="h-8 w-8 shrink-0 px-0"
-							disabled={entryText.trim().length === 0}
-							size="sm"
-							title={t('addEntry')}
-							variant="base"
-							onClick={handleAddEntry}
-						>
-							<IoAddOutline aria-hidden className="h-3.5 w-3.5" />
-						</Button>
-					</div>
+				</MapControlSectionCard>
+				<div className="flex justify-end gap-2 border-t border-gray-100 pt-2 dark:border-[var(--border-color)]">
+					<Button size="sm" variant="mapControlOutlineSecondary" onClick={closeCompose}>
+						{t('journalCancel')}
+					</Button>
+					<Button
+						disabled={entryText.trim().length === 0}
+						size="sm"
+						variant="mapControlOutline"
+						onClick={handleAddEntry}
+					>
+						{t('addEntry')}
+					</Button>
 				</div>
-			</div>,
+			</MapControlModalShell>,
 			document.body,
 		);
 
@@ -342,16 +327,9 @@ export function JournalSection({ embedded = false }: JournalSectionProps): React
 					</p>
 				) : null}
 
-				<Button
-					aria-label={t('addEntry')}
-					className="h-8 w-8 shrink-0 px-0"
-					size="sm"
-					title={t('addEntry')}
-					variant="mapControlOutline"
-					onClick={openCompose}
-				>
+				<MapControlIconButton aria-label={t('addEntry')} variant="mapControlOutline" onClick={openCompose}>
 					<IoAddOutline aria-hidden className="h-3.5 w-3.5" />
-				</Button>
+				</MapControlIconButton>
 
 				{journalSorted.length === 0 ? (
 					<p className="m-0 text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('noEntries')}</p>
@@ -405,27 +383,17 @@ export function JournalSection({ embedded = false }: JournalSectionProps): React
 										{e.text}
 									</p>
 									<div className="mt-1 flex flex-wrap items-center gap-1">
-										<Button
+										<MapControlIconButton
 											aria-label={t('journalViewEntry', { date: e.date })}
-											className="h-8 w-8 shrink-0 px-0"
-											size="sm"
 											title={t('journalView')}
-											variant="base"
 											onClick={() => setViewingEntry(e)}
 										>
 											<IoEyeOutline aria-hidden className="h-3.5 w-3.5" />
-										</Button>
+										</MapControlIconButton>
 										{showOnMap ? (
-											<Button
-												aria-label={t('journalShowOnMap')}
-												className="h-8 w-8 shrink-0 px-0"
-												size="sm"
-												title={t('journalShowOnMap')}
-												variant="base"
-												onClick={() => showEntryOnMap(e)}
-											>
+											<MapControlIconButton aria-label={t('journalShowOnMap')} onClick={() => showEntryOnMap(e)}>
 												<IoMapOutline aria-hidden className="h-3.5 w-3.5" />
-											</Button>
+											</MapControlIconButton>
 										) : null}
 									</div>
 								</div>
@@ -447,39 +415,30 @@ export function JournalSection({ embedded = false }: JournalSectionProps): React
 				)}
 
 				<div className="flex flex-row flex-wrap items-center gap-1.5 border-t border-gray-200 pt-2 dark:border-[var(--border-color)]">
-					<Button
+					<MapControlIconButton
 						aria-label={t('importJournal')}
-						className="h-8 w-8 shrink-0 px-0"
-						size="sm"
-						title={t('importJournal')}
 						variant="mapControlOutlineSecondary"
 						onClick={() => journalImportInputRef.current?.click()}
 					>
 						<IoCloudUploadOutline aria-hidden className="h-3.5 w-3.5" />
-					</Button>
+					</MapControlIconButton>
 					{journalEntries.length > 0 && (
-						<Button
+						<MapControlIconButton
 							aria-label={t('exportJournal')}
-							className="h-8 w-8 shrink-0 px-0"
-							size="sm"
-							title={t('exportJournal')}
 							variant="mapControlOutlineSecondary"
 							onClick={handleExportJournal}
 						>
 							<IoDocumentTextOutline aria-hidden className="h-3.5 w-3.5" />
-						</Button>
+						</MapControlIconButton>
 					)}
 					{showExportBundle && (
-						<Button
+						<MapControlIconButton
 							aria-label={t('journalExportBundle')}
-							className="h-8 w-8 shrink-0 px-0"
-							size="sm"
-							title={t('journalExportBundle')}
 							variant="mapControlOutlineSecondary"
 							onClick={handleExportBundle}
 						>
 							<IoArchiveOutline aria-hidden className="h-3.5 w-3.5" />
-						</Button>
+						</MapControlIconButton>
 					)}
 				</div>
 

@@ -476,10 +476,71 @@ export interface MapStoreState {
 	/** Progress panel: Trip journal section expanded. Persisted. */
 	progressPanelJournalOpen: boolean;
 	setProgressPanelJournalOpen: (open: boolean) => void;
+	/** Settings panel: Map overlays section expanded. Persisted. */
+	settingsPanelOverlaysOpen: boolean;
+	setSettingsPanelOverlaysOpen: (open: boolean) => void;
+	/** Settings panel: Pack & pace section expanded. Persisted. */
+	settingsPanelPackOpen: boolean;
+	setSettingsPanelPackOpen: (open: boolean) => void;
+	/** Settings panel: Notifications & sharing section expanded. Persisted. */
+	settingsPanelNotificationsOpen: boolean;
+	setSettingsPanelNotificationsOpen: (open: boolean) => void;
+	/** Settings panel: Offline maps section expanded. null = open when tile cache exists. Persisted. */
+	settingsPanelOfflineOpen: boolean | null;
+	setSettingsPanelOfflineOpen: (open: boolean | null) => void;
+	/** Settings panel: Imports section expanded. Persisted. */
+	settingsPanelImportsOpen: boolean;
+	setSettingsPanelImportsOpen: (open: boolean) => void;
+	/** Help panel: Map basics section expanded. Persisted. */
+	helpPanelBasicsOpen: boolean;
+	setHelpPanelBasicsOpen: (open: boolean) => void;
+	/** Help panel: Elevation chart section expanded. Persisted. */
+	helpPanelChartOpen: boolean;
+	setHelpPanelChartOpen: (open: boolean) => void;
+	/** Help panel: Hidden gestures section expanded. Persisted. */
+	helpPanelGesturesOpen: boolean;
+	setHelpPanelGesturesOpen: (open: boolean) => void;
+	/** Help panel: Planning tools section expanded. Persisted. */
+	helpPanelPlanningOpen: boolean;
+	setHelpPanelPlanningOpen: (open: boolean) => void;
+	/** Help panel: Offline section expanded. Persisted. */
+	helpPanelOfflineOpen: boolean;
+	setHelpPanelOfflineOpen: (open: boolean) => void;
+	/** Help panel: Demo hike section expanded. Persisted. */
+	helpPanelDemoOpen: boolean;
+	setHelpPanelDemoOpen: (open: boolean) => void;
+	/** POI list panel: Filters section expanded. Persisted. */
+	poiListFiltersOpen: boolean;
+	setPoiListFiltersOpen: (open: boolean) => void;
+	/** POI list panel: Sort section expanded. Persisted. */
+	poiListSortOpen: boolean;
+	setPoiListSortOpen: (open: boolean) => void;
+	/** POI list panel: Tags section expanded. Persisted. */
+	poiListTagsOpen: boolean;
+	setPoiListTagsOpen: (open: boolean) => void;
+	/** POI list panel: Star collections section expanded. Persisted. */
+	poiListStarsOpen: boolean;
+	setPoiListStarsOpen: (open: boolean) => void;
+	/** POI list panel: Export section expanded. Persisted. */
+	poiListExportOpen: boolean;
+	setPoiListExportOpen: (open: boolean) => void;
+	/** Stage planner: Plan setup section expanded. Persisted. */
+	stagePlannerSetupOpen: boolean;
+	setStagePlannerSetupOpen: (open: boolean) => void;
+	/** Stage planner: Stages list section expanded. Persisted. */
+	stagePlannerStagesOpen: boolean;
+	setStagePlannerStagesOpen: (open: boolean) => void;
+	/** Stage planner: Export section expanded. Persisted. */
+	stagePlannerExportOpen: boolean;
+	setStagePlannerExportOpen: (open: boolean) => void;
 	/** Session-only: scroll target when opening settings from progress panel. */
 	settingsScrollTarget: 'imports' | null;
 	openSettingsToImports: () => void;
 	clearSettingsScrollTarget: () => void;
+	/** Session-only: scroll target when opening help from stage planner. */
+	helpScrollTarget: 'planning' | null;
+	openHelpToPlanning: () => void;
+	clearHelpScrollTarget: () => void;
 	/** Ephemeral preview of km intervals before confirming a GPX add-to-progress. */
 	progressPreviewTrackId: string | null;
 	progressPreviewIntervals: CompletionInterval[];

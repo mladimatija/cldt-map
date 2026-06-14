@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { IoEllipsisHorizontal } from 'react-icons/io5';
-import { Button } from '@/components/ui/Button';
+import { MapControlIconButton } from './MapControlIconButton';
 import { cn } from '@/lib/utils';
 
 interface JournalEntryOverflowMenuProps {
@@ -53,18 +53,14 @@ export function JournalEntryOverflowMenu({
 
 	return (
 		<div className="relative shrink-0" ref={rootRef}>
-			<Button
+			<MapControlIconButton
 				aria-expanded={open}
 				aria-haspopup="menu"
 				aria-label={menuLabel}
-				className="h-8 w-8 shrink-0 px-0"
-				size="sm"
-				title={menuLabel}
-				variant="base"
 				onClick={() => setOpen((prev) => !prev)}
 			>
 				<IoEllipsisHorizontal aria-hidden className="h-4 w-4" />
-			</Button>
+			</MapControlIconButton>
 			{open ? (
 				<div
 					className={cn(

@@ -20,9 +20,20 @@ import { formatIsoDate } from '@/lib/date-format';
 import { isKnownType, poiDisplayName, poiPassesReachabilityFilter } from '@/lib/pois';
 import { formatDistance } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
-import { IoDownloadOutline, IoEyeOffOutline, IoEyeOutline, IoTrashOutline } from 'react-icons/io5';
+import { MapControlIconButton } from './MapControlIconButton';
+import {
+	IoCloudUploadOutline,
+	IoDownloadOutline,
+	IoEyeOffOutline,
+	IoEyeOutline,
+	IoTrashOutline,
+} from 'react-icons/io5';
 
-export function MapControlsImportsPanel(): React.ReactElement {
+interface MapControlsImportsPanelProps {
+	embedded?: boolean;
+}
+
+export function MapControlsImportsPanel({ embedded = false }: MapControlsImportsPanelProps): React.ReactElement {
 	const t = useTranslations('imports');
 	const map = useMap();
 
@@ -169,195 +180,200 @@ export function MapControlsImportsPanel(): React.ReactElement {
 		document.getElementById('gpx-file-input')?.click();
 	};
 
+	const listContent =
+		importedTracks.length === 0 ? (
+			<p className="text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('noImports')}</p>
+		) : (
+			<ul className="space-y-2">
+				{importedTracks.map((track) => {
+					const stats = trackStats[track.id];
+					const isHovered = hoveredImportedTrackId === track.id;
+					return (
+						<li
+							className={`rounded p-1.5 transition-colors ${isHovered ? 'bg-gray-100 dark:bg-[var(--bg-secondary)]' : ''}`}
+							key={track.id}
+							onMouseEnter={() => setHoveredImportedTrackId(track.id)}
+							onMouseLeave={() => setHoveredImportedTrackId(null)}
+						>
+							<div className="flex w-full items-center gap-2">
+								<input
+									aria-label={t('colorLabel', { trackName: track.name })}
+									className="track-color-input h-4 w-4 shrink-0 cursor-pointer rounded-sm"
+									title={t('colorLabel', { trackName: track.name })}
+									type="color"
+									value={track.color}
+									onChange={(e) => updateImportedTrack(track.id, { color: e.target.value })}
+								/>
+								<button
+									className="focus-visible:ring-cldt-green min-w-0 flex-1 cursor-pointer truncate rounded border-0 bg-transparent p-0 text-left text-xs font-medium text-gray-700 outline-none focus-visible:ring-2 focus-visible:ring-offset-1 dark:text-[var(--text-primary)]"
+									title={track.name}
+									type="button"
+									onClick={() => fitToTrack(track)}
+								>
+									{track.name}
+								</button>
+							</div>
+							<div className="mt-1 flex flex-wrap gap-x-3 gap-y-0.5 pl-5 text-xs text-gray-500 dark:text-[var(--text-secondary)]">
+								<span>
+									{t('distance')}: {stats ? formatDistanceM(stats.totalDistanceM, units) : '-'}
+								</span>
+								<span>
+									{t('elapsed')}: {stats && stats.totalElapsedSec > 0 ? formatEta(stats.totalElapsedSec) : '-'}
+								</span>
+								{stats && stats.totalMovingSec > 0 && (
+									<span>
+										{t('moving')}: {formatEta(stats.totalMovingSec)}
+									</span>
+								)}
+								<span>
+									{t('avgPace')}: {stats ? formatPaceFromSecPerKm(stats.avgMovingPaceSecPerKm, units) : '-'}
+								</span>
+								<span>
+									{t('maxDeviation')}: {stats ? `${Math.round(stats.maxDeviationM)} m` : '-'}
+								</span>
+								<span>
+									{t('coverage')}: {stats ? `${stats.coveragePercent.toFixed(0)}%` : '-'}
+								</span>
+							</div>
+							<div className="mt-1 flex flex-col gap-1.5 pl-5">
+								<div className="flex flex-wrap items-center gap-2">
+									<MapControlIconButton
+										aria-label={
+											track.visible === false
+												? t('showTrack', { trackName: track.name })
+												: t('hideTrack', { trackName: track.name })
+										}
+										title={
+											track.visible === false
+												? t('showTrack', { trackName: track.name })
+												: t('hideTrack', { trackName: track.name })
+										}
+										variant="mapControlOutlineSecondary"
+										onClick={() => updateImportedTrack(track.id, { visible: track.visible === false })}
+									>
+										{track.visible === false ? (
+											<IoEyeOffOutline aria-hidden className="h-3.5 w-3.5" />
+										) : (
+											<IoEyeOutline aria-hidden className="h-3.5 w-3.5" />
+										)}
+									</MapControlIconButton>
+									<MapControlIconButton
+										aria-label={t('removeAriaLabel', { trackName: track.name })}
+										title={t('removeAriaLabel', { trackName: track.name })}
+										variant="mapControlOutlineSecondary"
+										onClick={() => void removeImportedTrack(track.id)}
+									>
+										<IoTrashOutline aria-hidden className="h-3.5 w-3.5" />
+									</MapControlIconButton>
+									<Button
+										className="h-8 shrink-0"
+										disabled={!stats}
+										size="sm"
+										title={t('exportReportCsvTooltip')}
+										variant="mapControlOutlineSecondary"
+										onClick={() => handleExportCsv(track)}
+									>
+										{t('exportReportCsv')}
+									</Button>
+									<Button
+										className="h-8 shrink-0"
+										disabled={!stats}
+										size="sm"
+										title={t('exportReportPdfTooltip')}
+										variant="mapControlOutlineSecondary"
+										onClick={() => void handleExportPdf(track)}
+									>
+										{t('exportReportPdf')}
+									</Button>
+								</div>
+								{poisFile?.pois?.length ? (
+									<button
+										aria-expanded={expandedTrackId === track.id}
+										className="text-cldt-blue focus-visible:ring-cldt-green w-fit rounded text-xs underline focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:outline-none"
+										type="button"
+										onClick={() => toggleProximity(track)}
+									>
+										{expandedTrackId === track.id ? t('hidePoisHit') : t('showPoisHit')}
+									</button>
+								) : null}
+							</div>
+							{expandedTrackId === track.id && (
+								<div className="mt-1.5 rounded border border-gray-100 px-2 py-1 pl-5 text-xs dark:border-[var(--border-color)]">
+									{(() => {
+										const hits = proximityByTrackId[track.id];
+										if (!hits) {
+											return (
+												<p className="text-gray-500 italic dark:text-[var(--text-secondary)]">{t('poisComputing')}</p>
+											);
+										}
+										if (hits.length === 0) {
+											return (
+												<p className="text-gray-500 italic dark:text-[var(--text-secondary)]">{t('poisNoneNearby')}</p>
+											);
+										}
+										return (
+											<>
+												<p className="mb-1 text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
+													{t('poisCountHit', { count: hits.length })}
+												</p>
+												<p className="mb-1.5 text-[10px] leading-snug text-gray-500 dark:text-[var(--text-secondary)]">
+													{t('reportPoisLegend')}
+												</p>
+												{hits.map((hit) => {
+													const name = poiDisplayName(hit.poi, locale);
+													const typeLabel = tPois(`type.${hit.poi.type}`, { default: hit.poi.type });
+													const closestDistance = formatDistance(hit.minDistanceM / 1000, units, distancePrecision);
+													const atRecording = formatDistance(hit.atTrackKm, units, 1);
+													const summaryLine = t('poiHitSummary', { closest: closestDistance, atRecording });
+													return (
+														<button
+															className="hover:bg-cldt-blue/10 focus-visible:ring-cldt-green flex w-full cursor-pointer items-baseline gap-2 rounded border-0 bg-transparent px-0.5 py-0.5 text-left text-xs text-gray-700 outline-none focus-visible:ring-2 dark:text-[var(--text-primary)]"
+															key={hit.poi.id}
+															title={name}
+															type="button"
+															onClick={() => handlePoiHitClick(hit.poi)}
+														>
+															<span className="truncate font-medium">{name}</span>
+															<span className="ml-auto shrink-0 text-[10px] text-gray-500 dark:text-[var(--text-secondary)]">
+																{typeLabel} · {summaryLine}
+															</span>
+														</button>
+													);
+												})}
+											</>
+										);
+									})()}
+								</div>
+							)}
+						</li>
+					);
+				})}
+			</ul>
+		);
+
+	const uploadButton = (
+		<MapControlIconButton aria-label={t('pickFile')} variant="mapControlOutlineSecondary" onClick={openFilePicker}>
+			<IoCloudUploadOutline aria-hidden className="h-3.5 w-3.5" />
+		</MapControlIconButton>
+	);
+
+	if (embedded) {
+		return (
+			<div className="flex flex-col gap-2" id="settings-imports-section">
+				<div className="flex items-center justify-end">{uploadButton}</div>
+				{listContent}
+			</div>
+		);
+	}
+
 	return (
 		<div className="mt-1 border-t border-gray-200 pt-2 dark:border-[var(--border-color)]" id="settings-imports-section">
 			<div className="mb-1.5 flex items-center gap-1.5">
 				<IoDownloadOutline aria-hidden className="h-4 w-4 shrink-0 text-gray-500 dark:text-[var(--text-secondary)]" />
 				<span className="flex-1 text-xs font-medium text-gray-600 dark:text-[var(--text-primary)]">{t('title')}</span>
-				<button
-					className="text-cldt-blue focus-visible:ring-cldt-green rounded text-xs underline outline-none focus-visible:ring-2 focus-visible:ring-offset-1"
-					type="button"
-					onClick={openFilePicker}
-				>
-					{t('pickFile')}
-				</button>
+				{uploadButton}
 			</div>
-
-			{importedTracks.length === 0 ? (
-				<p className="text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('noImports')}</p>
-			) : (
-				<ul className="space-y-2">
-					{importedTracks.map((track) => {
-						const stats = trackStats[track.id];
-						const isHovered = hoveredImportedTrackId === track.id;
-						return (
-							<li
-								className={`rounded p-1.5 transition-colors ${isHovered ? 'bg-gray-100 dark:bg-[var(--bg-secondary)]' : ''}`}
-								key={track.id}
-								onMouseEnter={() => setHoveredImportedTrackId(track.id)}
-								onMouseLeave={() => setHoveredImportedTrackId(null)}
-							>
-								<div className="flex w-full items-center gap-2">
-									<input
-										aria-label={t('colorLabel', { trackName: track.name })}
-										className="track-color-input h-4 w-4 shrink-0 cursor-pointer rounded-sm"
-										title={t('colorLabel', { trackName: track.name })}
-										type="color"
-										value={track.color}
-										onChange={(e) => updateImportedTrack(track.id, { color: e.target.value })}
-									/>
-									<button
-										className="focus-visible:ring-cldt-green min-w-0 flex-1 cursor-pointer truncate rounded border-0 bg-transparent p-0 text-left text-xs font-medium text-gray-700 outline-none focus-visible:ring-2 focus-visible:ring-offset-1 dark:text-[var(--text-primary)]"
-										title={track.name}
-										type="button"
-										onClick={() => fitToTrack(track)}
-									>
-										{track.name}
-									</button>
-								</div>
-								<div className="mt-1 flex flex-wrap gap-x-3 gap-y-0.5 pl-5 text-xs text-gray-500 dark:text-[var(--text-secondary)]">
-									<span>
-										{t('distance')}: {stats ? formatDistanceM(stats.totalDistanceM, units) : '-'}
-									</span>
-									<span>
-										{t('elapsed')}: {stats && stats.totalElapsedSec > 0 ? formatEta(stats.totalElapsedSec) : '-'}
-									</span>
-									{stats && stats.totalMovingSec > 0 && (
-										<span>
-											{t('moving')}: {formatEta(stats.totalMovingSec)}
-										</span>
-									)}
-									<span>
-										{t('avgPace')}: {stats ? formatPaceFromSecPerKm(stats.avgMovingPaceSecPerKm, units) : '-'}
-									</span>
-									<span>
-										{t('maxDeviation')}: {stats ? `${Math.round(stats.maxDeviationM)} m` : '-'}
-									</span>
-									<span>
-										{t('coverage')}: {stats ? `${stats.coveragePercent.toFixed(0)}%` : '-'}
-									</span>
-								</div>
-								<div className="mt-1 flex flex-col gap-1.5 pl-5">
-									<div className="flex flex-wrap items-center gap-2">
-										<Button
-											aria-label={
-												track.visible === false
-													? t('showTrack', { trackName: track.name })
-													: t('hideTrack', { trackName: track.name })
-											}
-											className="h-8 w-8 shrink-0 px-0"
-											size="sm"
-											title={
-												track.visible === false
-													? t('showTrack', { trackName: track.name })
-													: t('hideTrack', { trackName: track.name })
-											}
-											variant="mapControlOutlineSecondary"
-											onClick={() => updateImportedTrack(track.id, { visible: track.visible === false })}
-										>
-											{track.visible === false ? (
-												<IoEyeOffOutline aria-hidden className="h-3.5 w-3.5" />
-											) : (
-												<IoEyeOutline aria-hidden className="h-3.5 w-3.5" />
-											)}
-										</Button>
-										<Button
-											aria-label={t('removeAriaLabel', { trackName: track.name })}
-											className="h-8 w-8 shrink-0 px-0"
-											size="sm"
-											title={t('removeAriaLabel', { trackName: track.name })}
-											variant="mapControlOutlineSecondary"
-											onClick={() => void removeImportedTrack(track.id)}
-										>
-											<IoTrashOutline aria-hidden className="h-3.5 w-3.5" />
-										</Button>
-										<Button
-											className="h-8 shrink-0"
-											disabled={!stats}
-											size="sm"
-											title={t('exportReportCsvTooltip')}
-											variant="mapControlOutlineSecondary"
-											onClick={() => handleExportCsv(track)}
-										>
-											{t('exportReportCsv')}
-										</Button>
-										<Button
-											className="h-8 shrink-0"
-											disabled={!stats}
-											size="sm"
-											title={t('exportReportPdfTooltip')}
-											variant="mapControlOutlineSecondary"
-											onClick={() => void handleExportPdf(track)}
-										>
-											{t('exportReportPdf')}
-										</Button>
-									</div>
-									{poisFile?.pois?.length ? (
-										<button
-											aria-expanded={expandedTrackId === track.id}
-											className="text-cldt-blue focus-visible:ring-cldt-green w-fit rounded text-xs underline focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:outline-none"
-											type="button"
-											onClick={() => toggleProximity(track)}
-										>
-											{expandedTrackId === track.id ? t('hidePoisHit') : t('showPoisHit')}
-										</button>
-									) : null}
-								</div>
-								{expandedTrackId === track.id && (
-									<div className="mt-1.5 max-h-40 overflow-y-auto rounded border border-gray-100 px-2 py-1 pl-5 text-xs dark:border-[var(--border-color)]">
-										{(() => {
-											const hits = proximityByTrackId[track.id];
-											if (!hits) {
-												return (
-													<p className="text-gray-500 italic dark:text-[var(--text-secondary)]">{t('poisComputing')}</p>
-												);
-											}
-											if (hits.length === 0) {
-												return (
-													<p className="text-gray-500 italic dark:text-[var(--text-secondary)]">
-														{t('poisNoneNearby')}
-													</p>
-												);
-											}
-											return (
-												<>
-													<p className="mb-1 text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
-														{t('poisCountHit', { count: hits.length })}
-													</p>
-													<p className="mb-1.5 text-[10px] leading-snug text-gray-500 dark:text-[var(--text-secondary)]">
-														{t('reportPoisLegend')}
-													</p>
-													{hits.map((hit) => {
-														const name = poiDisplayName(hit.poi, locale);
-														const typeLabel = tPois(`type.${hit.poi.type}`, { default: hit.poi.type });
-														const closestDistance = formatDistance(hit.minDistanceM / 1000, units, distancePrecision);
-														const atRecording = formatDistance(hit.atTrackKm, units, 1);
-														const summaryLine = t('poiHitSummary', { closest: closestDistance, atRecording });
-														return (
-															<button
-																className="hover:bg-cldt-blue/10 focus-visible:ring-cldt-green flex w-full cursor-pointer items-baseline gap-2 rounded border-0 bg-transparent px-0.5 py-0.5 text-left text-xs text-gray-700 outline-none focus-visible:ring-2 dark:text-[var(--text-primary)]"
-																key={hit.poi.id}
-																title={name}
-																type="button"
-																onClick={() => handlePoiHitClick(hit.poi)}
-															>
-																<span className="truncate font-medium">{name}</span>
-																<span className="ml-auto shrink-0 text-[10px] text-gray-500 dark:text-[var(--text-secondary)]">
-																	{typeLabel} · {summaryLine}
-																</span>
-															</button>
-														);
-													})}
-												</>
-											);
-										})()}
-									</div>
-								)}
-							</li>
-						);
-					})}
-				</ul>
-			)}
+			{listContent}
 		</div>
 	);
 }

@@ -12,7 +12,14 @@ import { type UnitSystem } from '@/lib/store';
 import { type TrailDirection } from '@/lib/types';
 import { type TrailOsmTagRun } from '@/lib/trail-osm-tags';
 import { SAC_BUCKET_SHORT_LABELS, SAC_COLORS, SURFACE_COLORS } from '@/components/map/trail-route-constants';
-import { resolveOsmAtTrailKm, type ElevationChartFillMode, type ElevationPoint } from './elevation-chart-shared';
+import { type EnhancedTrailPoint } from '@/lib/store/types';
+import {
+	GRADE_BAND_LABEL_KEYS,
+	resolveGradeAtTrailKm,
+	resolveOsmAtTrailKm,
+	type ElevationChartFillMode,
+	type ElevationPoint,
+} from './elevation-chart-shared';
 
 export function ChartTooltipSync(props: {
 	highlightTrailPosition: ((pos: { distance: number; elevation: number }) => void) | undefined;
@@ -24,6 +31,7 @@ export function ChartTooltipSync(props: {
 	elevationUnitASL: string;
 	fillMode: ElevationChartFillMode;
 	trailOsmRuns: TrailOsmTagRun[] | null | undefined;
+	enhancedTrailPoints: readonly EnhancedTrailPoint[];
 	direction: TrailDirection;
 	totalKm: number;
 	active?: boolean;
@@ -42,6 +50,7 @@ export function ChartTooltipSync(props: {
 		elevationUnitASL,
 		fillMode,
 		trailOsmRuns,
+		enhancedTrailPoints,
 		direction,
 		totalKm,
 		active,
@@ -119,6 +128,7 @@ export function ChartTooltipSync(props: {
 		fillMode === 'surface' || fillMode === 'sac'
 			? resolveOsmAtTrailKm(point.distance, direction, totalKm, trailOsmRuns)
 			: null;
+	const grade = fillMode === 'grade' ? resolveGradeAtTrailKm(point.distance, enhancedTrailPoints) : null;
 
 	return (
 		<div className="map-tooltip !max-w-none !min-w-0">
@@ -178,6 +188,24 @@ export function ChartTooltipSync(props: {
 					) : (
 						<p className="text-xs opacity-75">{t('osmTagUntagged')}</p>
 					)}
+				</>
+			)}
+			{fillMode === 'grade' && grade && (
+				<>
+					<p className="flex items-center gap-2">
+						<span className="font-medium">{t('gradeLabel')}:</span>
+						<span className="inline-flex items-center gap-1.5">
+							<span
+								aria-hidden="true"
+								className="inline-block h-2 w-4 shrink-0 rounded-sm"
+								style={{ backgroundColor: grade.color }}
+							/>
+							{tTrailStyle(GRADE_BAND_LABEL_KEYS[grade.gradeBand])}
+						</span>
+					</p>
+					<p className="text-xs opacity-75">
+						{Math.abs(grade.gradePct).toFixed(1)}% · {grade.sign === 'asc' ? t('gradeAscent') : t('gradeDescent')}
+					</p>
 				</>
 			)}
 		</div>

@@ -2,13 +2,19 @@
 export const DISTANCE_PRECISION_MIN = 0;
 export const DISTANCE_PRECISION_MAX = 3;
 
-/** Popover/bar container: used by share panel, go-to-distance bar, etc. Uses z-controls-popover so base.css dark overrides apply. */
+/** Fixed right-side control panel width (Progress, Stage Planner, Settings). */
+export const MAP_CONTROL_PANEL_WIDTH = 'w-[min(100vw-5rem,28rem)] max-w-md min-w-80';
+
+/** Popover/bar container: used by share panel and other map control popovers. Uses z-controls-popover so base.css dark overrides apply. */
 export const MAP_CONTROL_POPOVER =
 	'z-controls-popover rounded-lg border border-gray-200 bg-white p-3 shadow-md dark:border-[var(--border-color)] dark:bg-[var(--bg-secondary)]';
 
-/** Inline input matching map control styling; dark mode: white text and border for GoToDistance. */
+/** Inline input matching map control styling; dark mode: white text and border. */
 export const MAP_CONTROL_INPUT =
 	'w-20 rounded-md border border-gray-200 bg-white px-2 py-1.5 text-sm outline-none focus-visible:border-cldt-green focus-visible:ring-1 focus-visible:ring-cldt-green dark:border-white dark:bg-[var(--bg-secondary)] dark:text-white dark:placeholder-[var(--text-secondary)]';
+
+/** Label + numeric input + unit rows (settings pack weight, etc.). */
+export const MAP_CONTROL_LABEL_INPUT_GRID = 'grid grid-cols-[minmax(0,1fr)_6rem_3.5rem] items-center gap-x-2 gap-y-1.5';
 
 /**
  * Shared dark-mode class fragments - keep in sync with theme.css .dark variables.

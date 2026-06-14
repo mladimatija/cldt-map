@@ -35,6 +35,7 @@ import {
 	WAYPOINT_CATEGORIES,
 	type WaypointCategoryId,
 } from '@/lib/waypoint-categories';
+import { displayTrailKm } from '@/lib/journal-track-link';
 import { cn, formatDistance } from '@/lib/utils';
 import { parseGpxWaypoints, gpxWaypointsToUserWaypoints } from '@/lib/user-waypoint-import';
 import { TRAIL_SECTIONS } from '@/lib/trail-sections';
@@ -43,10 +44,11 @@ import { computeTrackStats, trackBounds, trackOnTrailKms } from '@/lib/imported-
 import SmartTooltip from '@/components/ui/SmartTooltip';
 import { Button } from '@/components/ui/Button';
 import { Checkbox } from '@/components/ui/Checkbox';
-import { MAP_CONTROL_POPOVER } from './map-controls-constants';
+import { MAP_CONTROL_PANEL_WIDTH, MAP_CONTROL_POPOVER } from './map-controls-constants';
 import { MapControlMultiSelect, MapControlSelectColorDotLabel } from './MapControlSelect';
+import { MapControlIconButton } from './MapControlIconButton';
 import { JournalSection } from './JournalSection';
-import { ProgressSectionCard } from './ProgressSectionCard';
+import { MapControlSectionCard } from './MapControlSectionCard';
 import { usePopoverFocusTrap } from '@/hooks';
 import { useAnimatedNumber } from '@/hooks/useAnimatedNumber';
 
@@ -73,6 +75,7 @@ export function MapControlsProgressPanel(): React.ReactElement | null {
 	const setShowCompletionOverlay = useMapStore((s: MapStoreState) => s.setShowCompletionOverlay);
 	const units = useMapStore((s: MapStoreState) => s.units);
 	const distancePrecision = useMapStore((s: MapStoreState) => s.distancePrecision);
+	const direction = useMapStore((s: MapStoreState) => s.direction);
 	const rulerRange = useMapStore((s: MapStoreState) => s.rulerRange);
 	const importedTracks = useMapStore((s: MapStoreState) => s.importedTracks);
 	const progressTrackIds = useMapStore((s: MapStoreState) => s.progressTrackIds);
@@ -123,6 +126,7 @@ export function MapControlsProgressPanel(): React.ReactElement | null {
 	const animatedPct = useAnimatedNumber(pct);
 
 	const fmt = (km: number): string => formatDistance(km, units, distancePrecision);
+	const fmtDisplayKm = (soboKm: number): string => fmt(displayTrailKm(soboKm, direction, totalKm));
 
 	const filteredWaypoints = useMemo(() => {
 		if (waypointListFilter.size === 0) return userWaypoints;
@@ -296,7 +300,7 @@ export function MapControlsProgressPanel(): React.ReactElement | null {
 			aria-labelledby="progress-panel-title"
 			aria-modal="true"
 			className={cn(
-				'z-controls-popover fixed top-2 right-16 flex max-h-[calc(100dvh-4rem)] w-[min(100vw-5rem,28rem)] max-w-md min-w-80 flex-col gap-2 overflow-hidden',
+				`z-controls-popover fixed top-2 right-16 flex max-h-[calc(100dvh-4rem)] ${MAP_CONTROL_PANEL_WIDTH} flex-col gap-2 overflow-hidden`,
 				MAP_CONTROL_POPOVER,
 			)}
 			ref={popoverRef}
@@ -361,7 +365,7 @@ export function MapControlsProgressPanel(): React.ReactElement | null {
 				</div>
 
 				<div className="flex flex-col gap-3">
-					<ProgressSectionCard title={t('yourProgressHeading')}>
+					<MapControlSectionCard title={t('yourProgressHeading')}>
 						<div className="flex flex-col gap-1">
 							<p className="m-0 text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
 								{t('sectionsHeading')}
@@ -403,14 +407,14 @@ export function MapControlsProgressPanel(): React.ReactElement | null {
 										}
 									/>
 									<span className="min-w-0 flex-1 truncate text-gray-600 dark:text-[var(--text-primary)]">
-										{fmt(rulerKms.lo)} - {fmt(rulerKms.hi)}
+										{fmtDisplayKm(rulerKms.lo)} - {fmtDisplayKm(rulerKms.hi)}
 									</span>
 								</label>
 							</div>
 						) : null}
-					</ProgressSectionCard>
+					</MapControlSectionCard>
 
-					<ProgressSectionCard title={t('fromGpxHeading')}>
+					<MapControlSectionCard title={t('fromGpxHeading')}>
 						{importedTracks.length > 0 ? (
 							importedTracks.map((track) => {
 								const isPreviewing = progressPreviewTrackId === track.id;
@@ -432,51 +436,27 @@ export function MapControlsProgressPanel(): React.ReactElement | null {
 											{addableById[track.id] === false && !progressTrackIds.includes(track.id) ? (
 												<SmartTooltip content={t('trackNoCoverage')} position="top">
 													<span className="inline-flex shrink-0">
-														<Button
-															disabled
-															aria-label={t('addTrack')}
-															className="h-8 w-8 shrink-0 px-0"
-															size="sm"
-															title={t('addTrack')}
-															variant="base"
-														>
+														<MapControlIconButton disabled aria-label={t('addTrack')}>
 															<IoAddOutline aria-hidden className="h-3.5 w-3.5" />
-														</Button>
+														</MapControlIconButton>
 													</span>
 												</SmartTooltip>
 											) : progressTrackIds.includes(track.id) ? (
-												<Button
-													aria-label={t('removeTrack')}
-													className="h-8 w-8 shrink-0 px-0"
-													size="sm"
-													title={t('removeTrack')}
-													variant="base"
-													onClick={() => handleRemoveTrack(track.id)}
-												>
+												<MapControlIconButton aria-label={t('removeTrack')} onClick={() => handleRemoveTrack(track.id)}>
 													<IoRemoveOutline aria-hidden className="h-3.5 w-3.5" />
-												</Button>
+												</MapControlIconButton>
 											) : isPreviewing ? (
-												<Button
+												<MapControlIconButton
 													aria-label={t('previewCancel')}
-													className="h-8 w-8 shrink-0 px-0"
-													size="sm"
-													title={t('previewCancel')}
 													variant="mapControlOutlineSecondary"
 													onClick={clearPreview}
 												>
 													<IoCloseOutline aria-hidden className="h-3.5 w-3.5" />
-												</Button>
+												</MapControlIconButton>
 											) : (
-												<Button
-													aria-label={t('addTrack')}
-													className="h-8 w-8 shrink-0 px-0"
-													size="sm"
-													title={t('addTrack')}
-													variant="base"
-													onClick={() => handleStartPreview(track.id)}
-												>
+												<MapControlIconButton aria-label={t('addTrack')} onClick={() => handleStartPreview(track.id)}>
 													<IoAddOutline aria-hidden className="h-3.5 w-3.5" />
-												</Button>
+												</MapControlIconButton>
 											)}
 										</div>
 										{isPreviewing && previewIntervals.length > 0 && (
@@ -513,36 +493,27 @@ export function MapControlsProgressPanel(): React.ReactElement | null {
 													))}
 												</ul>
 												<div className="mt-2 flex flex-wrap items-center gap-2">
-													<Button
+													<MapControlIconButton
 														aria-label={t('previewConfirm')}
-														className="h-8 w-8 shrink-0 px-0"
-														size="sm"
-														title={t('previewConfirm')}
 														variant="mapControlOutline"
 														onClick={() => handleConfirmAddTrack(track.id)}
 													>
 														<IoCheckmarkOutline aria-hidden className="h-3.5 w-3.5" />
-													</Button>
-													<Button
+													</MapControlIconButton>
+													<MapControlIconButton
 														aria-label={t('previewCancel')}
-														className="h-8 w-8 shrink-0 px-0"
-														size="sm"
-														title={t('previewCancel')}
 														variant="mapControlOutlineSecondary"
 														onClick={clearPreview}
 													>
 														<IoCloseOutline aria-hidden className="h-3.5 w-3.5" />
-													</Button>
-													<Button
+													</MapControlIconButton>
+													<MapControlIconButton
 														aria-label={t('previewShowOnMap')}
-														className="h-8 w-8 shrink-0 px-0"
-														size="sm"
-														title={t('previewShowOnMap')}
 														variant="mapControlOutlineSecondary"
 														onClick={() => fitToTrack(track)}
 													>
 														<IoMapOutline aria-hidden className="h-3.5 w-3.5" />
-													</Button>
+													</MapControlIconButton>
 												</div>
 											</div>
 										)}
@@ -559,9 +530,9 @@ export function MapControlsProgressPanel(): React.ReactElement | null {
 						>
 							{t('manageTracksInSettings')}
 						</button>
-					</ProgressSectionCard>
+					</MapControlSectionCard>
 
-					<ProgressSectionCard
+					<MapControlSectionCard
 						collapsible
 						collapseLabel={t('collapseSection')}
 						expandLabel={t('expandSection')}
@@ -572,16 +543,13 @@ export function MapControlsProgressPanel(): React.ReactElement | null {
 						{userWaypoints.length === 0 ? (
 							<>
 								<p className="m-0 text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('noWaypoints')}</p>
-								<Button
+								<MapControlIconButton
 									aria-label={t('importWaypoints')}
-									className="h-8 w-8 shrink-0 px-0"
-									size="sm"
-									title={t('importWaypoints')}
 									variant="mapControlOutlineSecondary"
 									onClick={() => waypointImportInputRef.current?.click()}
 								>
 									<IoCloudUploadOutline aria-hidden className="h-3.5 w-3.5" />
-								</Button>
+								</MapControlIconButton>
 							</>
 						) : (
 							<>
@@ -684,41 +652,31 @@ export function MapControlsProgressPanel(): React.ReactElement | null {
 															</span>
 														) : null}
 													</button>
-													<Button
+													<MapControlIconButton
 														aria-label={t('waypointDelete')}
-														className="h-8 w-8 shrink-0 px-0"
-														size="sm"
-														title={t('waypointDelete')}
-														variant="base"
 														onClick={() => removeUserWaypoint(wp.id)}
 													>
 														<IoTrashOutline aria-hidden className="h-3.5 w-3.5" />
-													</Button>
+													</MapControlIconButton>
 												</div>
 											);
 										})}
 									</div>
 									<div className="mt-2 flex flex-wrap gap-2">
-										<Button
+										<MapControlIconButton
 											aria-label={t('exportWaypoints')}
-											className="h-8 w-8 shrink-0 px-0"
-											size="sm"
-											title={t('exportWaypoints')}
 											variant="mapControlOutlineSecondary"
 											onClick={handleExportWaypoints}
 										>
 											<IoDownloadOutline aria-hidden className="h-3.5 w-3.5" />
-										</Button>
-										<Button
+										</MapControlIconButton>
+										<MapControlIconButton
 											aria-label={t('importWaypoints')}
-											className="h-8 w-8 shrink-0 px-0"
-											size="sm"
-											title={t('importWaypoints')}
 											variant="mapControlOutlineSecondary"
 											onClick={() => waypointImportInputRef.current?.click()}
 										>
 											<IoCloudUploadOutline aria-hidden className="h-3.5 w-3.5" />
-										</Button>
+										</MapControlIconButton>
 									</div>
 								</div>
 							</>
@@ -735,9 +693,9 @@ export function MapControlsProgressPanel(): React.ReactElement | null {
 							}}
 						/>
 						{waypointImportError && <p className="text-cldt-red m-0 text-xs">{waypointImportError}</p>}
-					</ProgressSectionCard>
+					</MapControlSectionCard>
 
-					<ProgressSectionCard
+					<MapControlSectionCard
 						collapsible
 						collapseLabel={t('collapseSection')}
 						expandLabel={t('expandSection')}
@@ -746,7 +704,7 @@ export function MapControlsProgressPanel(): React.ReactElement | null {
 						onOpenChange={setProgressPanelJournalOpen}
 					>
 						<JournalSection embedded />
-					</ProgressSectionCard>
+					</MapControlSectionCard>
 
 					<div className="border-t border-gray-200 pt-3 dark:border-[var(--border-color)]">
 						{!confirmClear ? (

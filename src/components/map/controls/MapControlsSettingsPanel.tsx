@@ -4,7 +4,6 @@ import React, { useEffect, useRef, useState, type RefObject } from 'react';
 import { useTranslations } from 'next-intl';
 import { usePopoverFocusTrap } from '@/hooks';
 import SmartTooltip from '@/components/ui/SmartTooltip';
-import { Checkbox } from '@/components/ui/Checkbox';
 import { formatPace } from '@/lib/distance-utils';
 import {
 	displayToKg,
@@ -28,11 +27,12 @@ import {
 	IoHandLeftOutline,
 	IoLayersOutline,
 	IoSettingsOutline,
-	IoHelpCircleOutline,
 	IoAlertCircleOutline,
 	IoWarningOutline,
 	IoSnowOutline,
 	IoFlagOutline,
+	IoRefreshOutline,
+	IoCloudUploadOutline,
 } from 'react-icons/io5';
 import { severityColor, type SeasonalSeverity } from '@/lib/seasonal-status';
 import {
@@ -43,21 +43,29 @@ import {
 } from '@/components/map/trail-route-constants';
 import { Button } from '@/components/ui/Button';
 import { cn } from '@/lib/utils';
-import { MAP_CONTROL_INPUT, MAP_CONTROL_POPOVER } from './map-controls-constants';
+import {
+	MAP_CONTROL_INPUT,
+	MAP_CONTROL_LABEL_INPUT_GRID,
+	MAP_CONTROL_PANEL_WIDTH,
+	MAP_CONTROL_POPOVER,
+} from './map-controls-constants';
 import { MapControlsTileCachePanel } from './MapControlsTileCachePanel';
 import { MapControlsImportsPanel } from './MapControlsImportsPanel';
-// From the shared constants module, NOT the chart component: importing the
-// component would statically pull recharts into the main bundle and defeat
-// the dynamic() split on ElevationChart.
 import { SAC_BUCKETS, SURFACE_BUCKETS } from '@/components/charts/elevation-chart-shared';
 import { requestCompassPermission } from '@/hooks/useCompassHeading';
 import { Radio } from '@/components/ui/Radio';
+import { MapControlSectionCard } from './MapControlSectionCard';
+import { MapControlIconButton } from './MapControlIconButton';
+import { SettingsToggleRow } from './SettingsToggleRow';
 
 interface MapControlsSettingsPanelProps {
 	containerRef: RefObject<HTMLDivElement | null>;
 	isExpanded: boolean;
 	onToggle: () => void;
 }
+
+const LEGEND_PANEL =
+	'rounded border border-gray-100 bg-gray-50 p-2 text-xs text-gray-600 dark:border-[var(--border-color)] dark:bg-[var(--bg-hover)] dark:text-[var(--text-secondary)]';
 
 /** Settings popover: dark mode, battery saver, large touch targets, show sections. */
 export function MapControlsSettingsPanel({
@@ -66,19 +74,36 @@ export function MapControlsSettingsPanel({
 	onToggle,
 }: MapControlsSettingsPanelProps): React.ReactElement {
 	const t = useTranslations('mapControls');
+	const tProgress = useTranslations('progress');
 	const tWeather = useTranslations('severeWeather');
 	const tMineAreas = useTranslations('mineAreas');
 	const tSeasonal = useTranslations('seasonalStatus');
 	const popoverRef = usePopoverFocusTrap(isExpanded);
 	const settingsScrollTarget = useMapStore((state: MapStoreState) => state.settingsScrollTarget);
 	const clearSettingsScrollTarget = useMapStore((state: MapStoreState) => state.clearSettingsScrollTarget);
+	const settingsPanelOverlaysOpen = useMapStore((state: MapStoreState) => state.settingsPanelOverlaysOpen);
+	const setSettingsPanelOverlaysOpen = useMapStore((state: MapStoreState) => state.setSettingsPanelOverlaysOpen);
+	const settingsPanelPackOpen = useMapStore((state: MapStoreState) => state.settingsPanelPackOpen);
+	const setSettingsPanelPackOpen = useMapStore((state: MapStoreState) => state.setSettingsPanelPackOpen);
+	const settingsPanelNotificationsOpen = useMapStore((state: MapStoreState) => state.settingsPanelNotificationsOpen);
+	const setSettingsPanelNotificationsOpen = useMapStore(
+		(state: MapStoreState) => state.setSettingsPanelNotificationsOpen,
+	);
+	const settingsPanelOfflineOpen = useMapStore((state: MapStoreState) => state.settingsPanelOfflineOpen);
+	const setSettingsPanelOfflineOpen = useMapStore((state: MapStoreState) => state.setSettingsPanelOfflineOpen);
+	const settingsPanelImportsOpen = useMapStore((state: MapStoreState) => state.settingsPanelImportsOpen);
+	const setSettingsPanelImportsOpen = useMapStore((state: MapStoreState) => state.setSettingsPanelImportsOpen);
+	const tileCacheMeta = useMapStore((state: MapStoreState) => state.tileCacheMeta);
+
+	const offlineSectionOpen = settingsPanelOfflineOpen ?? !!tileCacheMeta;
 
 	useEffect(() => {
 		if (!isExpanded || settingsScrollTarget !== 'imports') return;
+		setSettingsPanelImportsOpen(true);
 		const el = document.getElementById('settings-imports-section');
 		el?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 		clearSettingsScrollTarget();
-	}, [isExpanded, settingsScrollTarget, clearSettingsScrollTarget]);
+	}, [isExpanded, settingsScrollTarget, clearSettingsScrollTarget, setSettingsPanelImportsOpen]);
 
 	const darkMode = useMapStore((state: MapStoreState) => state.darkMode);
 	const setDarkMode = useMapStore((state: MapStoreState) => state.setDarkMode);
@@ -93,8 +118,6 @@ export function MapControlsSettingsPanel({
 	const offRouteAlertEnabled = useMapStore((state: MapStoreState) => state.offRouteAlertEnabled);
 	const setOffRouteAlertEnabled = useMapStore((state: MapStoreState) => state.setOffRouteAlertEnabled);
 
-	/** iOS gates DeviceOrientation behind a permission prompt that must run
-	 *  inside this user-gesture handler; only enable when events may flow. */
 	const handleCompassToggle = async (checked: boolean): Promise<void> => {
 		if (!checked) {
 			setCompassEnabled(false);
@@ -103,6 +126,7 @@ export function MapControlsSettingsPanel({
 		const granted = await requestCompassPermission();
 		setCompassEnabled(granted);
 	};
+
 	const showSections = useMapStore((state: MapStoreState) => state.showSections);
 	const setShowSections = useMapStore((state: MapStoreState) => state.setShowSections);
 	const gradeTintedTrail = useMapStore((state: MapStoreState) => state.gradeTintedTrail);
@@ -154,8 +178,7 @@ export function MapControlsSettingsPanel({
 	const setWaymarkedTrailsOverlay = useMapStore((state: MapStoreState) => state.setWaymarkedTrailsOverlay);
 	const shareShortLinks = useMapStore((state: MapStoreState) => state.shareShortLinks);
 	const setShareShortLinks = useMapStore((state: MapStoreState) => state.setShareShortLinks);
-	/** Permission prompt must run inside this click handler; failures (denied,
-	 *  unsupported, deploy without VAPID keys) revert the toggle silently. */
+
 	const handlePushAlertsToggle = async (checked: boolean): Promise<void> => {
 		if (!checked) {
 			setPushAlertsEnabled(false);
@@ -164,17 +187,13 @@ export function MapControlsSettingsPanel({
 		}
 		setPushAlertsEnabled(await enablePushAlerts());
 	};
+
 	const units = useMapStore((state: MapStoreState) => state.units);
 
-	// Capture "now" once at mount via a lazy useState init
-	// so the days-ago display stays pure during render
-	// while still reflecting the active dataset's lastUpdated value.
 	const [nowMs] = useState(() => Date.now());
 	const packCsvInputRef = useRef<HTMLInputElement>(null);
 	const [packCsvError, setPackCsvError] = useState(false);
 
-	/** LighterPack / Packstack CSV import: fills the gear list and the base
-	 *  weight field in one go. Parsing is synchronous and local. */
 	const handlePackCsv = async (file: File): Promise<void> => {
 		setPackCsvError(false);
 		try {
@@ -185,6 +204,7 @@ export function MapControlsSettingsPanel({
 			setPackCsvError(true);
 		}
 	};
+
 	const seasonalLastUpdatedDays: number | null = ((): number | null => {
 		if (!seasonalStatusFile?.lastUpdated) return null;
 		const ts = Date.parse(seasonalStatusFile.lastUpdated);
@@ -192,9 +212,19 @@ export function MapControlsSettingsPanel({
 		return Math.max(0, Math.round((nowMs - ts) / 86_400_000));
 	})();
 
-	const preferencesTitle = t('preferences');
-	const tooltipShow = t('preferencesShow');
-	const tooltipHide = t('preferencesHide');
+	const trailStyleSelected = sacColoured
+		? 'sac'
+		: surfaceColoured
+			? 'surface'
+			: gradeTintedTrail
+				? 'grade'
+				: showSections
+					? 'sections'
+					: 'default';
+	const osmReady = Boolean(trailOsmTagsFile?.runs?.length);
+
+	const sectionCollapseLabel = tProgress('collapseSection');
+	const sectionExpandLabel = tProgress('expandSection');
 
 	return (
 		<div className="relative inline-block w-10 shrink-0" ref={containerRef}>
@@ -204,532 +234,533 @@ export function MapControlsSettingsPanel({
 					aria-modal="true"
 					className={cn(
 						MAP_CONTROL_POPOVER,
-						'fixed top-2 right-16 flex max-h-[calc(100dvh-4rem)] w-80 flex-col gap-2 overflow-y-auto',
+						`fixed top-2 right-16 flex max-h-[calc(100dvh-4rem)] ${MAP_CONTROL_PANEL_WIDTH} flex-col gap-2 overflow-hidden`,
 					)}
 					ref={popoverRef}
 					role="dialog"
 				>
-					<h3 className="text-sm font-medium text-gray-700 dark:text-[var(--text-primary)]" id="settings-panel-title">
-						{preferencesTitle}
+					<h3
+						className="shrink-0 text-sm font-medium text-gray-700 dark:text-[var(--text-primary)]"
+						id="settings-panel-title"
+					>
+						{t('preferences')}
 					</h3>
-					<label className="flex cursor-pointer items-center gap-2">
-						<Checkbox checked={darkMode} onCheckedChange={(checked) => setDarkMode(checked)} />
-						<IoMoonOutline className="h-4 w-4 shrink-0 text-gray-600 dark:text-white" />
-						<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">{t('darkMode')}</span>
-					</label>
-					<label className="flex cursor-pointer items-center gap-2">
-						<Checkbox checked={batterySaverMode} onCheckedChange={(checked) => setBatterySaverMode(checked)} />
-						<IoBatteryHalfOutline className="h-4 w-4 shrink-0 text-gray-600 dark:text-white" />
-						<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">{t('batterySaver')}</span>
-						<span className="inline-flex" onClick={(e) => e.stopPropagation()} onMouseDown={(e) => e.stopPropagation()}>
-							<SmartTooltip content={t('batterySaverTooltip')} position="top">
-								<IoHelpCircleOutline className="ml-0.5 h-3.5 w-3.5 shrink-0 cursor-help text-gray-400 hover:text-gray-600 dark:text-white" />
-							</SmartTooltip>
-						</span>
-					</label>
-					<label className="flex cursor-pointer items-center gap-2">
-						<Checkbox checked={largeTouchTargets} onCheckedChange={(checked) => setLargeTouchTargets(checked)} />
-						<IoHandLeftOutline className="h-4 w-4 shrink-0 text-gray-600 dark:text-white" />
-						<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">{t('largeTouchTargets')}</span>
-					</label>
-					<label className="flex cursor-pointer items-center gap-2">
-						<Checkbox checked={compassEnabled} onCheckedChange={(checked) => void handleCompassToggle(checked)} />
-						<IoCompassOutline className="h-4 w-4 shrink-0 text-gray-600 dark:text-white" />
-						<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">{t('compassHeading')}</span>
-						<span className="inline-flex" onClick={(e) => e.stopPropagation()} onMouseDown={(e) => e.stopPropagation()}>
-							<SmartTooltip content={t('compassHeadingTooltip')} position="top">
-								<IoHelpCircleOutline className="ml-0.5 h-3.5 w-3.5 shrink-0 cursor-help text-gray-400 hover:text-gray-600 dark:text-white" />
-							</SmartTooltip>
-						</span>
-					</label>
-					<label className="flex cursor-pointer items-center gap-2">
-						<Checkbox checked={keepScreenOn} onCheckedChange={(checked) => setKeepScreenOn(checked)} />
-						<IoSunnyOutline className="h-4 w-4 shrink-0 text-gray-600 dark:text-white" />
-						<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">{t('keepScreenOn')}</span>
-						<span className="inline-flex" onClick={(e) => e.stopPropagation()} onMouseDown={(e) => e.stopPropagation()}>
-							<SmartTooltip content={t('keepScreenOnTooltip')} position="top">
-								<IoHelpCircleOutline className="ml-0.5 h-3.5 w-3.5 shrink-0 cursor-help text-gray-400 hover:text-gray-600 dark:text-white" />
-							</SmartTooltip>
-						</span>
-					</label>
-					<label className="flex cursor-pointer items-center gap-2">
-						<Checkbox checked={offRouteAlertEnabled} onCheckedChange={(checked) => setOffRouteAlertEnabled(checked)} />
-						<IoTrailSignOutline className="h-4 w-4 shrink-0 text-gray-600 dark:text-white" />
-						<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">{t('offRouteAlert')}</span>
-						<span className="inline-flex" onClick={(e) => e.stopPropagation()} onMouseDown={(e) => e.stopPropagation()}>
-							<SmartTooltip content={t('offRouteAlertTooltip')} position="top">
-								<IoHelpCircleOutline className="ml-0.5 h-3.5 w-3.5 shrink-0 cursor-help text-gray-400 hover:text-gray-600 dark:text-white" />
-							</SmartTooltip>
-						</span>
-					</label>
-					<p className="mt-1 text-xs font-semibold tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
-						{t('layersSection')}
-					</p>
-					<fieldset className="m-0 flex flex-col gap-1 border-0 p-0">
-						<legend className="mb-1 flex items-center gap-2 p-0 text-sm text-gray-700 dark:text-[var(--text-primary)]">
-							<IoLayersOutline className="h-4 w-4 shrink-0 text-gray-600 dark:text-white" />
-							<span>{t('layers.trailStyle.legend')}</span>
-							<span
-								className="inline-flex"
-								onClick={(e) => e.stopPropagation()}
-								onMouseDown={(e) => e.stopPropagation()}
+
+					<div className="-mr-1 min-h-0 flex-1 overflow-y-auto pr-1">
+						<div className="flex flex-col gap-2">
+							<MapControlSectionCard title={t('sections.displayDevice')}>
+								<SettingsToggleRow
+									checked={darkMode}
+									icon={<IoMoonOutline className="h-4 w-4" />}
+									label={t('darkMode')}
+									onCheckedChange={(checked) => setDarkMode(checked)}
+								/>
+								<SettingsToggleRow
+									checked={batterySaverMode}
+									icon={<IoBatteryHalfOutline className="h-4 w-4" />}
+									label={t('batterySaver')}
+									tooltip={t('batterySaverTooltip')}
+									onCheckedChange={(checked) => setBatterySaverMode(checked)}
+								/>
+								<SettingsToggleRow
+									checked={largeTouchTargets}
+									icon={<IoHandLeftOutline className="h-4 w-4" />}
+									label={t('largeTouchTargets')}
+									tooltip={t('largeTouchTargetsTooltip')}
+									onCheckedChange={(checked) => setLargeTouchTargets(checked)}
+								/>
+								<SettingsToggleRow
+									checked={compassEnabled}
+									icon={<IoCompassOutline className="h-4 w-4" />}
+									label={t('compassHeading')}
+									tooltip={t('compassHeadingTooltip')}
+									onCheckedChange={(checked) => void handleCompassToggle(checked)}
+								/>
+								<SettingsToggleRow
+									checked={keepScreenOn}
+									icon={<IoSunnyOutline className="h-4 w-4" />}
+									label={t('keepScreenOn')}
+									tooltip={t('keepScreenOnTooltip')}
+									onCheckedChange={(checked) => setKeepScreenOn(checked)}
+								/>
+								<SettingsToggleRow
+									checked={offRouteAlertEnabled}
+									icon={<IoTrailSignOutline className="h-4 w-4" />}
+									label={t('offRouteAlert')}
+									tooltip={t('offRouteAlertTooltip')}
+									onCheckedChange={(checked) => setOffRouteAlertEnabled(checked)}
+								/>
+							</MapControlSectionCard>
+
+							<MapControlSectionCard title={t('sections.trailAppearance')}>
+								<div className="flex flex-col gap-2">
+									<div className="flex items-center gap-2">
+										<IoLayersOutline aria-hidden className="h-4 w-4 shrink-0 text-gray-600 dark:text-white" />
+										<span className="text-sm font-medium text-gray-700 dark:text-[var(--text-primary)]">
+											{t('layers.trailStyle.legend')}
+										</span>
+									</div>
+									<div className="grid grid-cols-2 gap-1.5">
+										{(['default', 'sections', 'grade', 'surface', 'sac'] as const).map((option) => {
+											const disabled = (option === 'surface' || option === 'sac') && !osmReady;
+											return (
+												<label
+													className={cn(
+														'flex items-center gap-2',
+														disabled ? 'pointer-events-none cursor-not-allowed opacity-50' : 'cursor-pointer',
+													)}
+													key={option}
+												>
+													<Radio
+														checked={trailStyleSelected === option}
+														disabled={disabled}
+														name="trail-style"
+														value={option}
+														onChange={() => {
+															if (option === 'sac') {
+																setSacColoured(true);
+															} else if (option === 'surface') {
+																setSurfaceColoured(true);
+															} else if (option === 'grade') {
+																setGradeTintedTrail(true);
+															} else if (option === 'sections') {
+																setShowSections(true);
+															} else {
+																setShowSections(false);
+																setGradeTintedTrail(false);
+																setSurfaceColoured(false);
+																setSacColoured(false);
+															}
+														}}
+													/>
+													<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">
+														{t(`layers.trailStyle.${option}`)}
+														{disabled && (
+															<span className="ml-1 text-xs italic opacity-75">
+																({t('layers.trailStyle.dataUnavailable')})
+															</span>
+														)}
+													</span>
+												</label>
+											);
+										})}
+									</div>
+									<p className="m-0 text-xs text-gray-500 dark:text-[var(--text-secondary)]">
+										{t('layers.trailStyle.tooltip')}
+									</p>
+								</div>
+
+								{gradeTintedTrail && (
+									<div className={LEGEND_PANEL}>
+										<p className="m-0 mb-1 font-semibold text-gray-700 dark:text-[var(--text-primary)]">
+											{t('layers.trailStyle.legendTitle')}
+										</p>
+										{(
+											[
+												{ band: 0, key: 'legendFlat', range: '0-3%' },
+												{ band: 1, key: 'legendModerate', range: '3-6%' },
+												{ band: 2, key: 'legendSteep', range: '6-10%' },
+												{ band: 3, key: 'legendVerySteep', range: '10-15%' },
+												{ band: 4, key: 'legendExtreme', range: '>15%' },
+											] as const
+										).map(({ band, key, range }) => (
+											<div className="flex items-center gap-2" key={key}>
+												<span
+													aria-hidden="true"
+													className="inline-block h-2 w-6 shrink-0 rounded-sm"
+													style={{ backgroundColor: GRADE_BAND_ASCENT_COLORS[band] }}
+												/>
+												<span>
+													{t(`layers.trailStyle.${key}`)} ({range})
+												</span>
+											</div>
+										))}
+										<p className="mt-1 mb-0 text-xs italic opacity-75">{t('layers.trailStyle.legendNote')}</p>
+									</div>
+								)}
+								{surfaceColoured && (
+									<div className={LEGEND_PANEL}>
+										<p className="m-0 mb-1 font-semibold text-gray-700 dark:text-[var(--text-primary)]">
+											{t('layers.trailStyle.surfaceLegendTitle')}
+										</p>
+										{SURFACE_BUCKETS.map((bucket) => (
+											<div className="flex items-center gap-2" key={bucket}>
+												<span
+													aria-hidden="true"
+													className="inline-block h-2 w-6 shrink-0 rounded-sm"
+													style={{ backgroundColor: SURFACE_COLORS[bucket] }}
+												/>
+												<span>{t(`layers.trailStyle.surfaceBuckets.${bucket}`)}</span>
+											</div>
+										))}
+									</div>
+								)}
+								{sacColoured && (
+									<div className={LEGEND_PANEL}>
+										<p className="m-0 mb-1 font-semibold text-gray-700 dark:text-[var(--text-primary)]">
+											{t('layers.trailStyle.sacLegendTitle')}
+										</p>
+										{SAC_BUCKETS.map((key) => (
+											<div className="flex items-center gap-2" key={key}>
+												<span
+													aria-hidden="true"
+													className="inline-block h-2 w-6 shrink-0 rounded-sm"
+													style={{ backgroundColor: SAC_COLORS[key] }}
+												/>
+												<span>
+													<span className="font-mono">{SAC_BUCKET_SHORT_LABELS[key]}</span>{' '}
+													{t(`layers.trailStyle.sacBuckets.${key}`)}
+												</span>
+											</div>
+										))}
+									</div>
+								)}
+
+								<SettingsToggleRow
+									checked={showDistanceMarkers}
+									icon={<IoFlagOutline className="h-4 w-4" />}
+									label={t('showDistanceMarkers')}
+									tooltip={t('showDistanceMarkersTooltip')}
+									onCheckedChange={(checked) => setShowDistanceMarkers(checked)}
+								/>
+							</MapControlSectionCard>
+
+							<MapControlSectionCard
+								collapsible
+								collapseLabel={sectionCollapseLabel}
+								expandLabel={sectionExpandLabel}
+								open={settingsPanelOverlaysOpen}
+								title={t('sections.mapOverlays')}
+								onOpenChange={setSettingsPanelOverlaysOpen}
 							>
-								<SmartTooltip content={t('layers.trailStyle.tooltip')} position="top">
-									<IoHelpCircleOutline className="ml-0.5 h-3.5 w-3.5 shrink-0 cursor-help text-gray-400 hover:text-gray-600 dark:text-white" />
-								</SmartTooltip>
-							</span>
-						</legend>
-						{(() => {
-							const selected = sacColoured
-								? 'sac'
-								: surfaceColoured
-									? 'surface'
-									: gradeTintedTrail
-										? 'grade'
-										: showSections
-											? 'sections'
-											: 'default';
-							// Surface / SAC require the OSM tag dataset. Disable until it loads
-							// so the user can't pick a style with no data behind it.
-							const osmReady = Boolean(trailOsmTagsFile?.runs?.length);
-							return (['default', 'sections', 'grade', 'surface', 'sac'] as const).map((option) => {
-								const disabled = (option === 'surface' || option === 'sac') && !osmReady;
-								return (
-									<label
-										className={cn(
-											'flex items-center gap-2 pl-6',
-											disabled ? 'pointer-events-none cursor-not-allowed opacity-50' : 'cursor-pointer',
+								<SettingsToggleRow
+									checked={severeWeatherLayer}
+									icon={<IoWarningOutline className="h-4 w-4" />}
+									label={tWeather('layerLabel')}
+									tooltip={tWeather('layerTooltip')}
+									onCheckedChange={(checked) => setSevereWeatherLayer(checked)}
+								/>
+
+								{mineAreasFile && mineAreasFile.areas.length > 0 && (
+									<SettingsToggleRow
+										checked={mineAreasEnabled}
+										icon={<IoAlertCircleOutline className="h-4 w-4" />}
+										label={tMineAreas('layerLabel')}
+										tooltip={tMineAreas('layerTooltip')}
+										onCheckedChange={(checked) => setMineAreasEnabled(checked)}
+									/>
+								)}
+
+								{seasonalStatusFile && (
+									<SettingsToggleRow
+										checked={seasonalStatusLayerEnabled}
+										icon={<IoSnowOutline className="h-4 w-4" />}
+										label={tSeasonal('layerToggle')}
+										tooltip={tSeasonal('layerTooltip')}
+										onCheckedChange={(checked) => setSeasonalStatusLayerEnabled(checked)}
+									/>
+								)}
+								{seasonalStatusFile && seasonalStatusLayerEnabled && (
+									<div className={LEGEND_PANEL}>
+										{(['open', 'caution', 'closed_recommended', 'experts_only'] as SeasonalSeverity[]).map((sev) => (
+											<div className="flex items-center gap-2" key={sev}>
+												<span
+													aria-hidden="true"
+													className="inline-block h-3 w-4 shrink-0 rounded-sm"
+													style={{ backgroundColor: severityColor(sev) }}
+												/>
+												<span>{tSeasonal(`severity.${sev}`)}</span>
+											</div>
+										))}
+										{seasonalLastUpdatedDays !== null && (
+											<p className="mt-1 mb-0 text-xs italic opacity-75">
+												{tSeasonal('lastUpdatedDaysAgo', { days: seasonalLastUpdatedDays })}
+											</p>
 										)}
-										key={option}
-									>
-										<Radio
-											checked={selected === option}
-											disabled={disabled}
-											name="trail-style"
-											value={option}
-											onChange={() => {
-												if (option === 'sac') {
-													setSacColoured(true);
-												} else if (option === 'surface') {
-													setSurfaceColoured(true);
-												} else if (option === 'grade') {
-													setGradeTintedTrail(true);
-												} else if (option === 'sections') {
-													setShowSections(true);
-												} else {
-													setShowSections(false);
-													setGradeTintedTrail(false);
-													setSurfaceColoured(false);
-													setSacColoured(false);
+									</div>
+								)}
+
+								<SettingsToggleRow
+									checked={waymarkedTrailsOverlay}
+									hint={t('waymarkedHint')}
+									label={t('waymarkedLabel')}
+									onCheckedChange={(checked) => setWaymarkedTrailsOverlay(checked)}
+								/>
+							</MapControlSectionCard>
+
+							<MapControlSectionCard title={t('sections.walkingEta')}>
+								<div className="flex flex-col gap-1">
+									<div className="flex items-center gap-2">
+										<label
+											className="text-sm text-gray-700 dark:text-[var(--text-primary)]"
+											htmlFor="walking-pace-slider"
+										>
+											{t('walkingPace')}
+										</label>
+										<span className="text-cldt-blue ml-auto shrink-0 text-sm font-semibold tabular-nums">
+											{formatPace(walkingPaceKmh, units)}
+										</span>
+										{walkingPaceKmh !== 4 && (
+											<MapControlIconButton
+												aria-label={t('walkingPaceReset')}
+												variant="mapControlOutlineSecondary"
+												onClick={() => setWalkingPaceKmh(4)}
+											>
+												<IoRefreshOutline aria-hidden className="h-3.5 w-3.5" />
+											</MapControlIconButton>
+										)}
+									</div>
+									<input
+										className="precision-slider w-full min-w-0"
+										id="walking-pace-slider"
+										max={10}
+										min={1}
+										step={0.1}
+										type="range"
+										value={walkingPaceKmh}
+										onChange={(e) => setWalkingPaceKmh(Number(e.target.value))}
+									/>
+									<p className="m-0 text-xs text-gray-500 dark:text-[var(--text-secondary)]">
+										{t('walkingPaceHint', {
+											min: formatPace(1, units),
+											max: formatPace(10, units),
+											default: formatPace(4, units),
+										})}
+									</p>
+								</div>
+
+								<SettingsToggleRow
+									checked={gradeAdjustedEta}
+									hint={t('gradeAdjustedEtaHint')}
+									label={t('gradeAdjustedEtaLabel')}
+									onCheckedChange={(checked) => setGradeAdjustedEta(checked)}
+								/>
+								<SettingsToggleRow
+									checked={sunsetProjection}
+									hint={t('sunsetProjectionHint')}
+									label={t('sunsetProjectionLabel')}
+									onCheckedChange={(checked) => setSunsetProjection(checked)}
+								/>
+								<SettingsToggleRow
+									checked={showUpNext}
+									hint={t('showUpNextHint')}
+									label={t('showUpNextLabel')}
+									onCheckedChange={(checked) => setShowUpNext(checked)}
+								/>
+
+								{showUpNext && (
+									<div className="ml-6 flex flex-col gap-2">
+										<SettingsToggleRow
+											checked={upNextShowFood}
+											label={t('upNextShowFoodLabel')}
+											tooltip={t('upNextShowFoodHint')}
+											onCheckedChange={(checked) => setUpNextShowFood(checked)}
+										/>
+										<SettingsToggleRow
+											checked={upNextShowAtm}
+											label={t('upNextShowAtmLabel')}
+											tooltip={t('upNextShowAtmHint')}
+											onCheckedChange={(checked) => setUpNextShowAtm(checked)}
+										/>
+										<SettingsToggleRow
+											checked={upNextShowViewpoint}
+											label={t('upNextShowViewpointLabel')}
+											tooltip={t('upNextShowViewpointHint')}
+											onCheckedChange={(checked) => setUpNextShowViewpoint(checked)}
+										/>
+										<SettingsToggleRow
+											checked={upNextShowPharmacy}
+											label={t('upNextShowPharmacyLabel')}
+											tooltip={t('upNextShowPharmacyHint')}
+											onCheckedChange={(checked) => setUpNextShowPharmacy(checked)}
+										/>
+									</div>
+								)}
+							</MapControlSectionCard>
+
+							<MapControlSectionCard
+								collapsible
+								collapseLabel={sectionCollapseLabel}
+								expandLabel={sectionExpandLabel}
+								open={settingsPanelPackOpen}
+								title={t('sections.packPace')}
+								onOpenChange={setSettingsPanelPackOpen}
+							>
+								<div className="flex flex-col gap-1.5">
+									<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">{t('packWeightTitle')}</span>
+									<div className={MAP_CONTROL_LABEL_INPUT_GRID}>
+										<label
+											className="text-xs text-gray-600 dark:text-[var(--text-secondary)]"
+											htmlFor="pack-base-weight"
+										>
+											{t('packBaseWeightLabel')}
+										</label>
+										<input
+											className={cn(MAP_CONTROL_INPUT, 'w-full text-right tabular-nums')}
+											id="pack-base-weight"
+											min={0}
+											step={0.1}
+											type="number"
+											value={
+												packBaseWeightKg === null ? '' : Math.round(kgToDisplay(packBaseWeightKg, units) * 10) / 10
+											}
+											onChange={(e) => {
+												if (e.target.value === '') {
+													setPackBaseWeightKg(null);
+													return;
 												}
+												const v = Number(e.target.value);
+												if (Number.isFinite(v) && v >= 0) setPackBaseWeightKg(displayToKg(v, units));
 											}}
 										/>
-										<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">
-											{t(`layers.trailStyle.${option}`)}
-											{disabled && (
-												<span className="ml-1 text-xs italic opacity-75">
-													({t('layers.trailStyle.dataUnavailable')})
-												</span>
-											)}
+										<span className="text-xs whitespace-nowrap text-gray-600 dark:text-[var(--text-secondary)]">
+											{weightUnitLabel(units)}
 										</span>
-									</label>
-								);
-							});
-						})()}
-					</fieldset>
-					{gradeTintedTrail && (
-						<div className="ml-6 flex flex-col gap-1 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
-							<p className="font-semibold text-gray-700 dark:text-[var(--text-primary)]">
-								{t('layers.trailStyle.legendTitle')}
-							</p>
-							{(
-								[
-									{ band: 0, key: 'legendFlat', range: '0-3%' },
-									{ band: 1, key: 'legendModerate', range: '3-6%' },
-									{ band: 2, key: 'legendSteep', range: '6-10%' },
-									{ band: 3, key: 'legendVerySteep', range: '10-15%' },
-									{ band: 4, key: 'legendExtreme', range: '>15%' },
-								] as const
-							).map(({ band, key, range }) => (
-								<div className="flex items-center gap-2" key={key}>
-									<span
-										aria-hidden="true"
-										className="inline-block h-2 w-6 shrink-0 rounded-sm"
-										style={{ backgroundColor: GRADE_BAND_ASCENT_COLORS[band] }}
+										<label
+											className="text-xs text-gray-600 dark:text-[var(--text-secondary)]"
+											htmlFor="pack-water-consumption"
+										>
+											{t('waterConsumptionLabel')}
+										</label>
+										<input
+											className={cn(MAP_CONTROL_INPUT, 'w-full text-right tabular-nums')}
+											id="pack-water-consumption"
+											min={0.1}
+											step={0.1}
+											type="number"
+											value={Math.round(lphToDisplay(waterConsumptionLph, units) * 100) / 100}
+											onChange={(e) => {
+												const v = Number(e.target.value);
+												if (Number.isFinite(v) && v > 0) setWaterConsumptionLph(displayToLph(v, units));
+											}}
+										/>
+										<span className="text-xs whitespace-nowrap text-gray-600 dark:text-[var(--text-secondary)]">
+											{volumeUnitLabel(units)}/h
+										</span>
+										<label
+											className="text-xs text-gray-600 dark:text-[var(--text-secondary)]"
+											htmlFor="pack-food-consumption"
+										>
+											{t('foodConsumptionLabel')}
+										</label>
+										<input
+											className={cn(MAP_CONTROL_INPUT, 'w-full text-right tabular-nums')}
+											id="pack-food-consumption"
+											min={0.1}
+											step={0.1}
+											type="number"
+											value={Math.round(kgToDisplay(foodConsumptionKgPerDay, units) * 100) / 100}
+											onChange={(e) => {
+												const v = Number(e.target.value);
+												if (Number.isFinite(v) && v > 0) setFoodConsumptionKgPerDay(displayToKg(v, units));
+											}}
+										/>
+										<span className="text-xs whitespace-nowrap text-gray-600 dark:text-[var(--text-secondary)]">
+											{weightUnitLabel(units)}/day
+										</span>
+									</div>
+									<p className="m-0 text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('packWeightHint')}</p>
+									<input
+										accept=".csv,text/csv"
+										className="hidden"
+										ref={packCsvInputRef}
+										type="file"
+										onChange={(e) => {
+											const file = e.target.files?.[0];
+											if (file) void handlePackCsv(file);
+											e.target.value = '';
+										}}
 									/>
-									<span>
-										{t(`layers.trailStyle.${key}`)} ({range})
-									</span>
+									{packGearList ? (
+										<div className="flex items-center gap-2 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
+											<span className="min-w-0 flex-1 truncate">
+												{t('packCsvSummary', {
+													name: packGearList.sourceName,
+													count: packGearList.items.length,
+													base: formatWeight(packGearList.baseKg, units),
+												})}
+											</span>
+											<Button size="sm" variant="base" onClick={() => setPackGearList(null)}>
+												{t('packCsvClear')}
+											</Button>
+										</div>
+									) : (
+										<Button
+											className="h-8 w-fit"
+											size="sm"
+											variant="mapControlOutlineSecondary"
+											onClick={() => packCsvInputRef.current?.click()}
+										>
+											<IoCloudUploadOutline aria-hidden className="mr-1.5 h-3.5 w-3.5 shrink-0" />
+											{t('packCsvImport')}
+										</Button>
+									)}
+									{packCsvError && <p className="text-cldt-red m-0 text-xs">{t('packCsvError')}</p>}
 								</div>
-							))}
-							<p className="mt-0.5 text-xs italic opacity-75">{t('layers.trailStyle.legendNote')}</p>
-						</div>
-					)}
-					{surfaceColoured && (
-						<div className="ml-6 flex flex-col gap-1 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
-							<p className="font-semibold text-gray-700 dark:text-[var(--text-primary)]">
-								{t('layers.trailStyle.surfaceLegendTitle')}
-							</p>
-							{SURFACE_BUCKETS.map((bucket) => (
-								<div className="flex items-center gap-2" key={bucket}>
-									<span
-										aria-hidden="true"
-										className="inline-block h-2 w-6 shrink-0 rounded-sm"
-										style={{ backgroundColor: SURFACE_COLORS[bucket] }}
-									/>
-									<span>{t(`layers.trailStyle.surfaceBuckets.${bucket}`)}</span>
-								</div>
-							))}
-						</div>
-					)}
-					{sacColoured && (
-						<div className="ml-6 flex flex-col gap-1 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
-							<p className="font-semibold text-gray-700 dark:text-[var(--text-primary)]">
-								{t('layers.trailStyle.sacLegendTitle')}
-							</p>
-							{SAC_BUCKETS.map((key) => (
-								<div className="flex items-center gap-2" key={key}>
-									<span
-										aria-hidden="true"
-										className="inline-block h-2 w-6 shrink-0 rounded-sm"
-										style={{ backgroundColor: SAC_COLORS[key] }}
-									/>
-									<span>
-										<span className="font-mono">{SAC_BUCKET_SHORT_LABELS[key]}</span>{' '}
-										{t(`layers.trailStyle.sacBuckets.${key}`)}
-									</span>
-								</div>
-							))}
-						</div>
-					)}
-					<label className="flex cursor-pointer items-center gap-2">
-						<Checkbox checked={showDistanceMarkers} onCheckedChange={(checked) => setShowDistanceMarkers(checked)} />
-						<IoFlagOutline className="h-4 w-4 shrink-0 text-gray-600 dark:text-white" />
-						<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">{t('showDistanceMarkers')}</span>
-						<span className="inline-flex" onClick={(e) => e.stopPropagation()} onMouseDown={(e) => e.stopPropagation()}>
-							<SmartTooltip content={t('showDistanceMarkersTooltip')} position="top">
-								<IoHelpCircleOutline className="ml-0.5 h-3.5 w-3.5 shrink-0 cursor-help text-gray-400 hover:text-gray-600 dark:text-white" />
-							</SmartTooltip>
-						</span>
-					</label>
 
-					<label className="flex cursor-pointer items-center gap-2">
-						<Checkbox checked={severeWeatherLayer} onCheckedChange={(checked) => setSevereWeatherLayer(checked)} />
-						<IoWarningOutline className="h-4 w-4 shrink-0 text-gray-600 dark:text-white" />
-						<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">{tWeather('layerLabel')}</span>
-						<span className="inline-flex" onClick={(e) => e.stopPropagation()} onMouseDown={(e) => e.stopPropagation()}>
-							<SmartTooltip content={tWeather('layerTooltip')} position="top">
-								<IoHelpCircleOutline className="ml-0.5 h-3.5 w-3.5 shrink-0 cursor-help text-gray-400 hover:text-gray-600 dark:text-white" />
-							</SmartTooltip>
-						</span>
-					</label>
+								<SettingsToggleRow
+									checked={packEtaAdjust}
+									hint={t('packEtaAdjustHint', { reference: formatWeight(PACK_ETA_REFERENCE_KG, units) })}
+									label={t('packEtaAdjustLabel')}
+									onCheckedChange={(checked) => setPackEtaAdjust(checked)}
+								/>
+							</MapControlSectionCard>
 
-					{mineAreasFile && mineAreasFile.areas.length > 0 && (
-						<label className="flex cursor-pointer items-center gap-2">
-							<Checkbox checked={mineAreasEnabled} onCheckedChange={(checked) => setMineAreasEnabled(checked)} />
-							<IoAlertCircleOutline className="h-4 w-4 shrink-0 text-gray-600 dark:text-white" />
-							<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">{tMineAreas('layerLabel')}</span>
-							<span
-								className="inline-flex"
-								onClick={(e) => e.stopPropagation()}
-								onMouseDown={(e) => e.stopPropagation()}
+							<MapControlSectionCard
+								collapsible
+								collapseLabel={sectionCollapseLabel}
+								expandLabel={sectionExpandLabel}
+								open={settingsPanelNotificationsOpen}
+								title={t('sections.notificationsSharing')}
+								onOpenChange={setSettingsPanelNotificationsOpen}
 							>
-								<SmartTooltip content={tMineAreas('layerTooltip')} position="top">
-									<IoHelpCircleOutline className="ml-0.5 h-3.5 w-3.5 shrink-0 cursor-help text-gray-400 hover:text-gray-600 dark:text-white" />
-								</SmartTooltip>
-							</span>
-						</label>
-					)}
-
-					{seasonalStatusFile && (
-						<label className="flex cursor-pointer items-center gap-2">
-							<Checkbox
-								checked={seasonalStatusLayerEnabled}
-								onCheckedChange={(checked) => setSeasonalStatusLayerEnabled(checked)}
-							/>
-							<IoSnowOutline className="h-4 w-4 shrink-0 text-gray-600 dark:text-white" />
-							<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">{tSeasonal('layerToggle')}</span>
-							<span
-								className="inline-flex"
-								onClick={(e) => e.stopPropagation()}
-								onMouseDown={(e) => e.stopPropagation()}
-							>
-								<SmartTooltip content={tSeasonal('layerTooltip')} position="top">
-									<IoHelpCircleOutline className="ml-0.5 h-3.5 w-3.5 shrink-0 cursor-help text-gray-400 hover:text-gray-600 dark:text-white" />
-								</SmartTooltip>
-							</span>
-						</label>
-					)}
-					{seasonalStatusFile && seasonalStatusLayerEnabled && (
-						<div className="ml-6 flex flex-col gap-1 text-xs text-gray-700 dark:text-[var(--text-primary)]">
-							{(['open', 'caution', 'closed_recommended', 'experts_only'] as SeasonalSeverity[]).map((sev) => (
-								<div className="flex items-center gap-2" key={sev}>
-									<span
-										aria-hidden="true"
-										className="inline-block h-3 w-4 shrink-0 rounded-sm"
-										style={{ backgroundColor: severityColor(sev) }}
+								{pushAlertsSupported() && (
+									<SettingsToggleRow
+										checked={pushAlertsEnabled}
+										hint={t('pushAlertsHint')}
+										label={t('pushAlertsLabel')}
+										onCheckedChange={(checked) => void handlePushAlertsToggle(checked)}
 									/>
-									<span>{tSeasonal(`severity.${sev}`)}</span>
-								</div>
-							))}
-							{seasonalLastUpdatedDays !== null && (
-								<p className="mt-0.5 text-xs italic opacity-75">
-									{tSeasonal('lastUpdatedDaysAgo', { days: seasonalLastUpdatedDays })}
+								)}
+								<SettingsToggleRow
+									checked={shareShortLinks}
+									hint={t('shareShortLinksHint')}
+									label={t('shareShortLinksLabel')}
+									onCheckedChange={(checked) => setShareShortLinks(checked)}
+								/>
+							</MapControlSectionCard>
+
+							<MapControlSectionCard
+								collapsible
+								collapseLabel={sectionCollapseLabel}
+								expandLabel={sectionExpandLabel}
+								open={offlineSectionOpen}
+								title={t('sections.offlineMaps')}
+								onOpenChange={(open) => setSettingsPanelOfflineOpen(open)}
+							>
+								<MapControlsTileCachePanel embedded />
+							</MapControlSectionCard>
+
+							<MapControlSectionCard
+								collapsible
+								collapseLabel={sectionCollapseLabel}
+								expandLabel={sectionExpandLabel}
+								open={settingsPanelImportsOpen}
+								title={t('sections.imports')}
+								onOpenChange={setSettingsPanelImportsOpen}
+							>
+								<p className="m-0 text-xs text-gray-500 dark:text-[var(--text-secondary)]">
+									{t('sections.importsProgressHint')}
 								</p>
-							)}
+								<MapControlsImportsPanel embedded />
+							</MapControlSectionCard>
 						</div>
-					)}
-
-					{pushAlertsSupported() && (
-						<label className="flex cursor-pointer items-start gap-2">
-							<Checkbox
-								checked={pushAlertsEnabled}
-								onCheckedChange={(checked) => void handlePushAlertsToggle(checked)}
-							/>
-							<div className="flex flex-col">
-								<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">{t('pushAlertsLabel')}</span>
-								<span className="text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('pushAlertsHint')}</span>
-							</div>
-						</label>
-					)}
-
-					<label className="flex cursor-pointer items-start gap-2">
-						<Checkbox checked={shareShortLinks} onCheckedChange={(checked) => setShareShortLinks(checked)} />
-						<div className="flex flex-col">
-							<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">{t('shareShortLinksLabel')}</span>
-							<span className="text-xs text-gray-500 dark:text-[var(--text-secondary)]">
-								{t('shareShortLinksHint')}
-							</span>
-						</div>
-					</label>
-
-					<label className="flex cursor-pointer items-start gap-2">
-						<Checkbox
-							checked={waymarkedTrailsOverlay}
-							onCheckedChange={(checked) => setWaymarkedTrailsOverlay(checked)}
-						/>
-						<div className="flex flex-col">
-							<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">{t('waymarkedLabel')}</span>
-							<span className="text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('waymarkedHint')}</span>
-						</div>
-					</label>
-
-					<div className="flex flex-col gap-1">
-						<div className="flex items-center gap-2">
-							<label className="text-sm text-gray-700 dark:text-[var(--text-primary)]" htmlFor="walking-pace-slider">
-								{t('walkingPace')}
-							</label>
-							<span className="text-cldt-blue ml-auto shrink-0 text-sm font-semibold tabular-nums">
-								{formatPace(walkingPaceKmh, units)}
-							</span>
-							{walkingPaceKmh !== 4 && (
-								<button
-									aria-label={t('walkingPaceReset')}
-									className="text-cldt-blue focus-visible:ring-cldt-green min-h-[var(--min-touch-target)] min-w-[var(--min-touch-target)] cursor-pointer rounded border-0 bg-transparent p-0 text-sm underline outline-none focus-visible:ring-2 focus-visible:ring-offset-1"
-									type="button"
-									onClick={() => setWalkingPaceKmh(4)}
-								>
-									{t('walkingPaceReset')}
-								</button>
-							)}
-						</div>
-						<input
-							className="precision-slider w-full min-w-0"
-							id="walking-pace-slider"
-							max={10}
-							min={1}
-							step={0.1}
-							type="range"
-							value={walkingPaceKmh}
-							onChange={(e) => setWalkingPaceKmh(Number(e.target.value))}
-						/>
-						<p className="text-xs text-gray-500 dark:text-[var(--text-secondary)]">
-							{t('walkingPaceHint', {
-								min: formatPace(1, units),
-								max: formatPace(10, units),
-								default: formatPace(4, units),
-							})}
-						</p>
 					</div>
-
-					<label className="flex cursor-pointer items-start gap-2">
-						<Checkbox checked={gradeAdjustedEta} onCheckedChange={(checked) => setGradeAdjustedEta(checked)} />
-						<div className="flex flex-col">
-							<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">
-								{t('gradeAdjustedEtaLabel')}
-							</span>
-							<span className="text-xs text-gray-500 dark:text-[var(--text-secondary)]">
-								{t('gradeAdjustedEtaHint')}
-							</span>
-						</div>
-					</label>
-
-					<label className="flex cursor-pointer items-start gap-2">
-						<Checkbox checked={sunsetProjection} onCheckedChange={(checked) => setSunsetProjection(checked)} />
-						<div className="flex flex-col">
-							<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">
-								{t('sunsetProjectionLabel')}
-							</span>
-							<span className="text-xs text-gray-500 dark:text-[var(--text-secondary)]">
-								{t('sunsetProjectionHint')}
-							</span>
-						</div>
-					</label>
-
-					<label className="flex cursor-pointer items-start gap-2">
-						<Checkbox checked={showUpNext} onCheckedChange={(checked) => setShowUpNext(checked)} />
-						<div className="flex flex-col">
-							<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">{t('showUpNextLabel')}</span>
-							<span className="text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('showUpNextHint')}</span>
-						</div>
-					</label>
-
-					{showUpNext && (
-						<div className="ml-6 flex flex-col gap-2">
-							<label className="flex cursor-pointer items-center gap-2">
-								<Checkbox checked={upNextShowFood} onCheckedChange={(checked) => setUpNextShowFood(checked)} />
-								<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]" title={t('upNextShowFoodHint')}>
-									{t('upNextShowFoodLabel')}
-								</span>
-							</label>
-							<label className="flex cursor-pointer items-center gap-2">
-								<Checkbox checked={upNextShowAtm} onCheckedChange={(checked) => setUpNextShowAtm(checked)} />
-								<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]" title={t('upNextShowAtmHint')}>
-									{t('upNextShowAtmLabel')}
-								</span>
-							</label>
-							<label className="flex cursor-pointer items-center gap-2">
-								<Checkbox
-									checked={upNextShowViewpoint}
-									onCheckedChange={(checked) => setUpNextShowViewpoint(checked)}
-								/>
-								<span
-									className="text-sm text-gray-700 dark:text-[var(--text-primary)]"
-									title={t('upNextShowViewpointHint')}
-								>
-									{t('upNextShowViewpointLabel')}
-								</span>
-							</label>
-							<label className="flex cursor-pointer items-center gap-2">
-								<Checkbox checked={upNextShowPharmacy} onCheckedChange={(checked) => setUpNextShowPharmacy(checked)} />
-								<span
-									className="text-sm text-gray-700 dark:text-[var(--text-primary)]"
-									title={t('upNextShowPharmacyHint')}
-								>
-									{t('upNextShowPharmacyLabel')}
-								</span>
-							</label>
-						</div>
-					)}
-
-					<div className="flex flex-col gap-1.5">
-						<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">{t('packWeightTitle')}</span>
-						<label className="flex items-center justify-between gap-2 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
-							{t('packBaseWeightLabel')}
-							<span className="flex shrink-0 items-center gap-1">
-								<input
-									className={cn(MAP_CONTROL_INPUT, 'w-20 text-right')}
-									min={0}
-									step={0.1}
-									type="number"
-									value={packBaseWeightKg === null ? '' : Math.round(kgToDisplay(packBaseWeightKg, units) * 10) / 10}
-									onChange={(e) => {
-										if (e.target.value === '') {
-											setPackBaseWeightKg(null);
-											return;
-										}
-										const v = Number(e.target.value);
-										if (Number.isFinite(v) && v >= 0) setPackBaseWeightKg(displayToKg(v, units));
-									}}
-								/>
-								<span className="w-5">{weightUnitLabel(units)}</span>
-							</span>
-						</label>
-						<label className="flex items-center justify-between gap-2 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
-							{t('waterConsumptionLabel')}
-							<span className="flex shrink-0 items-center gap-1">
-								<input
-									className={cn(MAP_CONTROL_INPUT, 'w-20 text-right')}
-									min={0.1}
-									step={0.1}
-									type="number"
-									value={Math.round(lphToDisplay(waterConsumptionLph, units) * 100) / 100}
-									onChange={(e) => {
-										const v = Number(e.target.value);
-										if (Number.isFinite(v) && v > 0) setWaterConsumptionLph(displayToLph(v, units));
-									}}
-								/>
-								<span className="w-5">{volumeUnitLabel(units)}/h</span>
-							</span>
-						</label>
-						<label className="flex items-center justify-between gap-2 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
-							{t('foodConsumptionLabel')}
-							<span className="flex shrink-0 items-center gap-1">
-								<input
-									className={cn(MAP_CONTROL_INPUT, 'w-20 text-right')}
-									min={0.1}
-									step={0.1}
-									type="number"
-									value={Math.round(kgToDisplay(foodConsumptionKgPerDay, units) * 100) / 100}
-									onChange={(e) => {
-										const v = Number(e.target.value);
-										if (Number.isFinite(v) && v > 0) setFoodConsumptionKgPerDay(displayToKg(v, units));
-									}}
-								/>
-								<span className="w-8">{weightUnitLabel(units)}/day</span>
-							</span>
-						</label>
-						<p className="m-0 text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('packWeightHint')}</p>
-						<input
-							accept=".csv,text/csv"
-							className="hidden"
-							ref={packCsvInputRef}
-							type="file"
-							onChange={(e) => {
-								const file = e.target.files?.[0];
-								if (file) void handlePackCsv(file);
-								e.target.value = '';
-							}}
-						/>
-						{packGearList ? (
-							<div className="flex items-center gap-2 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
-								<span className="min-w-0 flex-1 truncate">
-									{t('packCsvSummary', {
-										name: packGearList.sourceName,
-										count: packGearList.items.length,
-										base: formatWeight(packGearList.baseKg, units),
-									})}
-								</span>
-								<Button size="sm" variant="base" onClick={() => setPackGearList(null)}>
-									{t('packCsvClear')}
-								</Button>
-							</div>
-						) : (
-							<Button size="sm" variant="mapControlOutlineSecondary" onClick={() => packCsvInputRef.current?.click()}>
-								{t('packCsvImport')}
-							</Button>
-						)}
-						{packCsvError && <p className="text-cldt-red m-0 text-xs">{t('packCsvError')}</p>}
-					</div>
-
-					<label className="flex cursor-pointer items-start gap-2">
-						<Checkbox checked={packEtaAdjust} onCheckedChange={(checked) => setPackEtaAdjust(checked)} />
-						<div className="flex flex-col">
-							<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">{t('packEtaAdjustLabel')}</span>
-							<span className="text-xs text-gray-500 dark:text-[var(--text-secondary)]">
-								{t('packEtaAdjustHint', { reference: formatWeight(PACK_ETA_REFERENCE_KG, units) })}
-							</span>
-						</div>
-					</label>
-
-					<MapControlsTileCachePanel />
-
-					<MapControlsImportsPanel />
 				</div>
 			)}
-			<SmartTooltip content={isExpanded ? tooltipHide : tooltipShow} position="left">
+			<SmartTooltip content={isExpanded ? t('preferencesHide') : t('preferencesShow')} position="left">
 				<Button
-					aria-label={isExpanded ? tooltipHide : tooltipShow}
+					aria-label={isExpanded ? t('preferencesHide') : t('preferencesShow')}
 					variant={isExpanded ? 'controlRoundActive' : 'controlRound'}
 					onClick={onToggle}
 				>
