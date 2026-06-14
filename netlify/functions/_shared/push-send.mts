@@ -10,11 +10,7 @@ export function configureVapid(): boolean {
 	const publicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
 	const privateKey = process.env.VAPID_PRIVATE_KEY;
 	if (!publicKey || !privateKey) return false;
-	webpush.setVapidDetails(
-		process.env.VAPID_SUBJECT ?? 'mailto:matija.culjak@gmail.com',
-		publicKey,
-		privateKey,
-	);
+	webpush.setVapidDetails(process.env.VAPID_SUBJECT ?? 'mailto:matija.culjak@gmail.com', publicKey, privateKey);
 	return true;
 }
 
