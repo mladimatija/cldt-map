@@ -6,9 +6,13 @@
  * by the drag-to-ruler hit testing. Extracted from ElevationChart.
  */
 import React, { useEffect, useRef } from 'react';
+import { useTranslations } from 'next-intl';
 import { formatDistance, formatElevation } from '@/lib/utils';
 import { type UnitSystem } from '@/lib/store';
-import { type ElevationPoint } from './elevation-chart-shared';
+import { type TrailDirection } from '@/lib/types';
+import { type TrailOsmTagRun } from '@/lib/trail-osm-tags';
+import { SAC_BUCKET_SHORT_LABELS, SAC_COLORS, SURFACE_COLORS } from '@/components/map/trail-route-constants';
+import { resolveOsmAtTrailKm, type ElevationChartFillMode, type ElevationPoint } from './elevation-chart-shared';
 
 export function ChartTooltipSync(props: {
 	highlightTrailPosition: ((pos: { distance: number; elevation: number }) => void) | undefined;
@@ -18,6 +22,10 @@ export function ChartTooltipSync(props: {
 	distanceLabel: string;
 	elevationLabel: string;
 	elevationUnitASL: string;
+	fillMode: ElevationChartFillMode;
+	trailOsmRuns: TrailOsmTagRun[] | null | undefined;
+	direction: TrailDirection;
+	totalKm: number;
 	active?: boolean;
 	payload?: ReadonlyArray<{ payload?: ElevationPoint }>;
 	coordinate?: { x: number; y: number };
@@ -32,12 +40,18 @@ export function ChartTooltipSync(props: {
 		distanceLabel,
 		elevationLabel,
 		elevationUnitASL,
+		fillMode,
+		trailOsmRuns,
+		direction,
+		totalKm,
 		active,
 		payload,
 		coordinate,
 		isPinned,
 		onScaleCalibration,
 	} = props;
+	const t = useTranslations('elevationChart');
+	const tTrailStyle = useTranslations('mapControls.layers.trailStyle');
 	const prevDistanceRef = useRef<number | null>(null);
 	const wasActiveRef = useRef(false);
 	const highlightTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -101,6 +115,11 @@ export function ChartTooltipSync(props: {
 		return null;
 	}
 	const point = payload[0].payload;
+	const osm =
+		fillMode === 'surface' || fillMode === 'sac'
+			? resolveOsmAtTrailKm(point.distance, direction, totalKm, trailOsmRuns)
+			: null;
+
 	return (
 		<div className="map-tooltip !max-w-none !min-w-0">
 			<p>
@@ -110,6 +129,57 @@ export function ChartTooltipSync(props: {
 				<span className="font-medium">{elevationLabel}:</span> {formatElevation(point.elevation, units)}{' '}
 				{elevationUnitASL}
 			</p>
+			{fillMode === 'surface' && osm && (
+				<>
+					<p className="flex items-center gap-2">
+						<span className="font-medium">{t('osmSurfaceLabel')}:</span>
+						<span className="inline-flex items-center gap-1.5">
+							<span
+								aria-hidden="true"
+								className="inline-block h-2 w-4 shrink-0 rounded-sm"
+								style={{ backgroundColor: SURFACE_COLORS[osm.surfaceBucket] }}
+							/>
+							{tTrailStyle(`surfaceBuckets.${osm.surfaceBucket}`)}
+						</span>
+					</p>
+					{(osm.run?.surface || osm.run?.highway) && (
+						<p className="text-xs opacity-75">
+							{osm.run.surface ? (
+								<span>
+									surface={osm.run.surface}
+									{osm.run.highway ? ' · ' : ''}
+								</span>
+							) : null}
+							{osm.run?.highway ? (
+								<span>
+									{t('osmHighwayLabel')}={osm.run.highway}
+								</span>
+							) : null}
+						</p>
+					)}
+				</>
+			)}
+			{fillMode === 'sac' && osm && (
+				<>
+					<p className="flex items-center gap-2">
+						<span className="font-medium">{t('osmSacLabel')}:</span>
+						<span className="inline-flex items-center gap-1.5">
+							<span
+								aria-hidden="true"
+								className="inline-block h-2 w-4 shrink-0 rounded-sm"
+								style={{ backgroundColor: SAC_COLORS[osm.sacBucket] }}
+							/>
+							<span className="font-mono">{SAC_BUCKET_SHORT_LABELS[osm.sacBucket]}</span>
+							{tTrailStyle(`sacBuckets.${osm.sacBucket}`)}
+						</span>
+					</p>
+					{osm.run?.sac_scale ? (
+						<p className="text-xs opacity-75">sac_scale={osm.run.sac_scale}</p>
+					) : (
+						<p className="text-xs opacity-75">{t('osmTagUntagged')}</p>
+					)}
+				</>
+			)}
 		</div>
 	);
 }

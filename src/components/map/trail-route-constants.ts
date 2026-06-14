@@ -73,3 +73,14 @@ export const SAC_COLORS = {
 	difficult_alpine_hiking: '#7f1d1d',
 	untagged: '#94a3b8',
 } as const;
+
+/** Short SAC T-scale labels for legends and tooltips (T1 easiest through T6). */
+export const SAC_BUCKET_SHORT_LABELS: Record<keyof typeof SAC_COLORS, string> = {
+	hiking: 'T1',
+	mountain_hiking: 'T2',
+	demanding_mountain_hiking: 'T3',
+	alpine_hiking: 'T4',
+	demanding_alpine_hiking: 'T5',
+	difficult_alpine_hiking: 'T6',
+	untagged: '-',
+};

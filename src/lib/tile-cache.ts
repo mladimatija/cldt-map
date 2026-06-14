@@ -287,11 +287,7 @@ export function resolveAheadSliceStartIndex({
 	offTrailThresholdM,
 }: ResolveAheadSliceStartArgs): number {
 	if (!points.length) return 0;
-	if (
-		userLocation &&
-		closestPoint &&
-		closestPoint.distance <= offTrailThresholdM
-	) {
+	if (userLocation && closestPoint && closestPoint.distance <= offTrailThresholdM) {
 		return findNearestPointIndex(points, closestPoint.distanceFromStart);
 	}
 	return direction === 'SOBO' ? 0 : points.length - 1;
@@ -317,10 +313,7 @@ export function buildAheadTrailSlice({
 }
 
 /** Tile URLs for the high-detail ahead pack (zoom 15 only, narrow corridor). */
-export function generateAheadHighDetailTileUrls(
-	slice: PredictivePrecacheSlicePoint[],
-	urlTemplate: string,
-): string[] {
+export function generateAheadHighDetailTileUrls(slice: PredictivePrecacheSlicePoint[], urlTemplate: string): string[] {
 	return generateTrailTileUrls(slice, urlTemplate, PRECACHE_ZOOM_MAX_HIGH, PRECACHE_ZOOM_MAX_HIGH);
 }
 

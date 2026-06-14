@@ -32,7 +32,7 @@
 		"mapFeatures": "Kartenfunktionen",
 		"mapFeaturesList": {
 			"trail": "Klicke auf die Route oder das Höhenprofil, um Entfernung und Höhe an jedem Punkt anzuzeigen",
-			"elevation": "Höhenprofil-Diagramm; Hover zeigt den Punkt auf der Karte, Klick fixiert einen Punkt",
+			"elevation": "Höhenprofil-Diagramm; Hover zeigt den Punkt auf der Karte, Klick fixiert einen Punkt; bei aktivem Trail-Stil Untergrund oder SAC zeigt der Hover-Tooltip auch das OSM-Untergrund- oder Schwierigkeitslabel an diesem km",
 			"ruler": "Entfernungslineal zum Messen von Streckenabschnitten",
 			"distanceEtaOverlay": "Entfernungs- und ETA-Overlay - Live-HUD mit zurückgelegter und verbleibender Distanz, verbleibendem Höhengewinn/-verlust und ETA bis Trailende oder aktivem Linealabschnitt",
 			"layers": "Mehrere Kartenebenen (Standard, Topo, Wandern, Satellit, Gelände, Radfahren, Kroatien Topo, Dunkel), plus optionales Waymarked-Trails-Overlay mit OSM-Wanderrouten (Einstellungen, nur online)",
@@ -229,6 +229,7 @@
 		"helpItems": {
 			"trailClick": "Auf den Trail klicken, um Entfernung und Höhe für einen Punkt anzuzeigen.",
 			"chartHover": "Über das Höhenprofil hovern, um den entsprechenden Punkt auf der Karte anzuzeigen.",
+			"chartOsmTooltip": "Bei aktivem Trail-Stil Untergrund oder Schwierigkeit (SAC) zeigt der Hover-Tooltip auch das OSM-Untergrund- oder SAC-Label an diesem km (Farbfeld plus Roh-Tag, wenn vorhanden).",
 			"chartClickPin": "Auf das Höhenprofil klicken, um einen Punkt zu fixieren (bleibt sichtbar, bis geschlossen).",
 			"chartDragRuler": "Auf dem Höhenprofil klicken und ziehen, um einen Abschnitt zu messen (Entfernungslineal).",
 			"escCancelRuler": "<kbd>Esc</kbd> drücken, um das Entfernungslineal abzubrechen."
@@ -338,7 +339,11 @@
 		"elevationLabel": "Höhe",
 		"rulerSegment": "Abschnitt",
 		"rulerHikingTime": "Gesch. Zeit",
-		"rulerSection": "Sektion"
+		"rulerSection": "Sektion",
+		"osmSurfaceLabel": "Untergrund",
+		"osmSacLabel": "SAC",
+		"osmHighwayLabel": "highway",
+		"osmTagUntagged": "Kein SAC-Tag"
 	},
 	"trailRoute": {
 		"startingPoint": "Startpunkt ({direction})",

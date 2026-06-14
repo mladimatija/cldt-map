@@ -2,7 +2,15 @@
  * Shared constants, types, and pure helpers for the elevation chart family
  * (ElevationChart, ChartTooltipSync, useElevationChartRulerDrag).
  */
-import { type SacBucket, type SurfaceBucket } from '@/lib/trail-osm-tags';
+import {
+	bucketSac,
+	bucketSurface,
+	findRunAtKm,
+	type SacBucket,
+	type SurfaceBucket,
+	type TrailOsmTagRun,
+} from '@/lib/trail-osm-tags';
+import { type TrailDirection } from '@/lib/types';
 import { GRADE_BAND_ASCENT_COLORS, GRADE_BAND_DESCENT_COLORS } from '@/components/map/trail-route-constants';
 import { TRAIL_SECTIONS } from '@/lib/trail-sections';
 
@@ -42,6 +50,31 @@ export interface ElevationPoint {
 	elevation: number;
 	lat?: number;
 	lng?: number;
+}
+
+export type ElevationChartFillMode = 'surface' | 'sac' | 'sections' | 'grade' | null;
+
+export interface OsmAtTrailKm {
+	run: TrailOsmTagRun | null;
+	surfaceBucket: SurfaceBucket;
+	sacBucket: SacBucket;
+}
+
+/** Map chart km (direction-relative) to the OSM tag run and coarse buckets at that point. */
+export function resolveOsmAtTrailKm(
+	km: number,
+	direction: TrailDirection,
+	totalKm: number,
+	runs: TrailOsmTagRun[] | null | undefined,
+): OsmAtTrailKm | null {
+	if (!runs?.length) return null;
+	const soboKm = direction === 'SOBO' ? km : Math.max(0, totalKm - km);
+	const run = findRunAtKm(runs, soboKm);
+	return {
+		run,
+		surfaceBucket: bucketSurface(run?.surface ?? null),
+		sacBucket: bucketSac(run?.sac_scale ?? null),
+	};
 }
 
 export type PinnedPoint = { distanceM: number; elevation: number };

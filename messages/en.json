@@ -32,7 +32,7 @@
 		"mapFeatures": "Map features",
 		"mapFeaturesList": {
 			"trail": "Click the route or elevation chart to see distance and elevation at any point",
-			"elevation": "Elevation profile chart; hover to preview on the map, click to pin a point",
+			"elevation": "Elevation profile chart; hover to preview on the map, click to pin a point; with Surface or SAC trail style active, the hover tooltip also shows the OSM surface or difficulty label at that km",
 			"ruler": "Distance ruler to measure segments between two points",
 			"distanceEtaOverlay": "Distance & ETA overlay - live HUD chip with distance traveled and remaining, elevation gain/loss remaining, and ETA to trail end or the active ruler section",
 			"layers": "Multiple map layers (standard, topo, hiking, satellite, terrain, cycling, Croatia Topo, dark), plus an optional Waymarked Trails overlay of OSM hiking routes (Settings toggle, online only)",
@@ -229,6 +229,7 @@
 		"helpItems": {
 			"trailClick": "Click the trail to show distance and elevation for a point.",
 			"chartHover": "Hover the elevation chart to preview the corresponding point on the map.",
+			"chartOsmTooltip": "With Surface or Difficulty (SAC) trail style active, the hover tooltip also shows the OSM surface or SAC label at that km (colour swatch plus raw tag when available).",
 			"chartClickPin": "Click the elevation chart to pin a point (stays visible until you close it).",
 			"chartDragRuler": "Click and drag on the elevation chart to measure a segment (Distance Ruler).",
 			"escCancelRuler": "Press <kbd>Esc</kbd> to cancel the Distance Ruler."
@@ -338,7 +339,11 @@
 		"elevationLabel": "Elevation",
 		"rulerSegment": "Segment",
 		"rulerHikingTime": "Est. time",
-		"rulerSection": "Section"
+		"rulerSection": "Section",
+		"osmSurfaceLabel": "Surface",
+		"osmSacLabel": "SAC",
+		"osmHighwayLabel": "highway",
+		"osmTagUntagged": "No SAC tag"
 	},
 	"trailRoute": {
 		"startingPoint": "Starting point ({direction})",

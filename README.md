@@ -36,7 +36,7 @@ Interactive web map for the **Croatian Long Distance Trail (CLDT)** – a 2,200+
 ## User Features
 
 - **Interactive trail route** – Click the route or the elevation chart to see distance and elevation at any point
-- **Elevation profile** – Chart showing terrain along the route; hover to preview on the map, click to pin a point
+- **Elevation profile** – Chart showing terrain along the route; hover to preview on the map, click to pin a point; when Surface or SAC trail style is active, the hover tooltip also shows the OSM surface or difficulty label at that km
 - **Distance ruler** – Measure segments; see estimated hiking time (based on configurable walking pace), elevation gain/loss, and section name for the selected range
 - **Distance & ETA overlay** – Live HUD chip showing traveled distance, distance remaining, elevation gain/loss remaining, and ETA to trail end (and active ruler section); updates as you move
 - **Up next data-book view** - Strip in the distance HUD listing the nearest usable water source, shelter/hut, and town/settlement ahead in your direction of travel (optional food, ATM, viewpoint, and pharmacy rows in Settings; pharmacy shows the nearest town/settlement ahead whose resupply guide lists a pharmacy), sorted by distance within a configurable ahead horizon (25/50/100 km); optional rows collapse under "More ahead"; tap a row to fly to it on the map (works regardless of which marker layers are visible; toggleable in Settings)
