@@ -132,9 +132,6 @@ export function MapControlsSettingsPanel({
 	const setWaymarkedTrailsOverlay = useMapStore((state: MapStoreState) => state.setWaymarkedTrailsOverlay);
 	const shareShortLinks = useMapStore((state: MapStoreState) => state.shareShortLinks);
 	const setShareShortLinks = useMapStore((state: MapStoreState) => state.setShareShortLinks);
-	const includeRemotePois = useMapStore((state: MapStoreState) => state.includeRemotePois);
-	const setIncludeRemotePois = useMapStore((state: MapStoreState) => state.setIncludeRemotePois);
-
 	/** Permission prompt must run inside this click handler; failures (denied,
 	 *  unsupported, deploy without VAPID keys) revert the toggle silently. */
 	const handlePushAlertsToggle = async (checked: boolean): Promise<void> => {
@@ -482,18 +479,6 @@ export function MapControlsSettingsPanel({
 							</div>
 						</label>
 					)}
-
-					<label className="flex cursor-pointer items-start gap-2">
-						<Checkbox checked={includeRemotePois} onCheckedChange={(checked) => setIncludeRemotePois(checked)} />
-						<div className="flex flex-col">
-							<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">
-								{t('includeRemotePoisLabel')}
-							</span>
-							<span className="text-xs text-gray-500 dark:text-[var(--text-secondary)]">
-								{t('includeRemotePoisHint')}
-							</span>
-						</div>
-					</label>
 
 					<label className="flex cursor-pointer items-start gap-2">
 						<Checkbox checked={shareShortLinks} onCheckedChange={(checked) => setShareShortLinks(checked)} />

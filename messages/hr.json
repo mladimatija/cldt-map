@@ -255,9 +255,7 @@
 		"waymarkedLabel": "Sloj markiranih planinarskih ruta",
 		"waymarkedHint": "Iscrtava OSM planinarske rute (Waymarked Trails) preko osnovne karte. Samo online.",
 		"shareShortLinksLabel": "Koristi kratke poveznice za dijeljenje",
-		"shareShortLinksHint": "Kopira kratku poveznicu koja otvara isti prikaz karte. Za stvaranje poveznice potrebna je internetska veza.",
-		"includeRemotePoisLabel": "Uključi udaljene POI-je",
-		"includeRemotePoisHint": "Prikazuje mjesta označena kao teško dostupna pješice bez obližnje autobusne ili željezničke stanice sa strane staze. Prema zadanim postavkama isključeno."
+		"shareShortLinksHint": "Kopira kratku poveznicu koja otvara isti prikaz karte. Za stvaranje poveznice potrebna je internetska veza."
 	},
 	"baseMapSelector": {
 		"standard": "Standardna",
@@ -881,6 +879,8 @@
 		"waterReliabilityFilterHeading": "Filtriraj vodu po pouzdanosti",
 		"waterReliabilityFilterPlaceholder": "Sve klase pouzdanosti vode",
 		"waterReliabilityFilterHint": "Bez odabira uključene su sve vodene točke.",
+		"includeRemotePoisLabel": "Uključi udaljene POI-je",
+		"includeRemotePoisHint": "Prikazuje mjesta označena kao teško dostupna pješice bez obližnje autobusne ili željezničke stanice sa strane staze. Prema zadanim postavkama isključeno.",
 		"groupByDecade": "Grupiraj po {distance} {unit}",
 		"groupCount": "{count, plural, =1 {# mjesto} few {# mjesta} other {# mjesta}}",
 		"exportSelect": "Dodaj {name} u GPX izvoz",

@@ -255,9 +255,7 @@
 		"waymarkedLabel": "Marked hiking routes overlay",
 		"waymarkedHint": "Draws OSM hiking route relations (Waymarked Trails) over the base map. Online only.",
 		"shareShortLinksLabel": "Use short share links",
-		"shareShortLinksHint": "Copies a compact link that opens the same map view. Requires an internet connection to create.",
-		"includeRemotePoisLabel": "Include remote POIs",
-		"includeRemotePoisHint": "Shows places the dataset marks as hard to reach on foot with no nearby trail-side bus or train stop. Off by default."
+		"shareShortLinksHint": "Copies a compact link that opens the same map view. Requires an internet connection to create."
 	},
 	"baseMapSelector": {
 		"standard": "Standard",
@@ -881,6 +879,8 @@
 		"waterReliabilityFilterHeading": "Filter water by reliability",
 		"waterReliabilityFilterPlaceholder": "All water reliability classes",
 		"waterReliabilityFilterHint": "No selection means all water sources are included.",
+		"includeRemotePoisLabel": "Include remote POIs",
+		"includeRemotePoisHint": "Shows places the dataset marks as hard to reach on foot with no nearby trail-side bus or train stop. Off by default.",
 		"groupByDecade": "Group by {distance} {unit}",
 		"groupCount": "{count, plural, =1 {# place} other {# places}}",
 		"exportSelect": "Add {name} to GPX export",

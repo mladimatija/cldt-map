@@ -255,9 +255,7 @@
 		"waymarkedLabel": "Overlay sentieri segnalati",
 		"waymarkedHint": "Disegna le rotte escursionistiche OSM (Waymarked Trails) sopra la mappa di base. Solo online.",
 		"shareShortLinksLabel": "Usa link brevi per la condivisione",
-		"shareShortLinksHint": "Copia un link compatto che apre la stessa vista mappa. Serve una connessione internet per crearlo.",
-		"includeRemotePoisLabel": "Includi POI remoti",
-		"includeRemotePoisHint": "Mostra i luoghi segnati come difficili da raggiungere a piedi senza una fermata bus o stazione ferroviaria vicina sul lato del sentiero. Disattivato per impostazione predefinita."
+		"shareShortLinksHint": "Copia un link compatto che apre la stessa vista mappa. Serve una connessione internet per crearlo."
 	},
 	"baseMapSelector": {
 		"standard": "Standard",
@@ -881,6 +879,8 @@
 		"waterReliabilityFilterHeading": "Filtra acqua per affidabilità",
 		"waterReliabilityFilterPlaceholder": "Tutte le classi di affidabilità dell'acqua",
 		"waterReliabilityFilterHint": "Senza selezione sono incluse tutte le fonti d'acqua.",
+		"includeRemotePoisLabel": "Includi POI remoti",
+		"includeRemotePoisHint": "Mostra i luoghi segnati come difficili da raggiungere a piedi senza una fermata bus o stazione ferroviaria vicina sul lato del sentiero. Disattivato per impostazione predefinita.",
 		"groupByDecade": "Raggruppa per {distance} {unit}",
 		"groupCount": "{count, plural, =1 {# luogo} other {# luoghi}}",
 		"exportSelect": "Aggiungi {name} all'export GPX",

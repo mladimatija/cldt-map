@@ -9,6 +9,7 @@ import { type GroupBase, type MultiValue } from 'react-select';
 import { useMapStore, useStore, type MapStoreState, type StoreState, TrailDirection, UnitSystem } from '@/lib/store';
 import {
 	collectPoiTags,
+	countPoisHiddenByReachabilityFilter,
 	loadPoiTypeCounts,
 	POI_TYPE_GROUPS,
 	poiDisplayName,
@@ -267,6 +268,7 @@ export function MapControlsPoiList({
 	const setEnabledPoiTypes = useMapStore((s: MapStoreState) => s.setEnabledPoiTypes);
 	const enabledPoiTags = useMapStore((s: MapStoreState) => s.enabledPoiTags);
 	const includeRemotePois = useMapStore((s: MapStoreState) => s.includeRemotePois);
+	const setIncludeRemotePois = useMapStore((s: MapStoreState) => s.setIncludeRemotePois);
 	const togglePoiTag = useMapStore((s: MapStoreState) => s.togglePoiTag);
 	const clearPoiTags = useMapStore((s: MapStoreState) => s.clearPoiTags);
 	const direction = useMapStore((s: MapStoreState) => s.direction);
@@ -371,6 +373,11 @@ export function MapControlsPoiList({
 	 *  hides the tag-chip row entirely - keeps the panel clean for datasets
 	 *  that don't carry tags yet. */
 	const allTags = useMemo((): string[] => (poisFile?.pois?.length ? collectPoiTags(poisFile.pois) : []), [poisFile]);
+
+	const hiddenByReachabilityCount = useMemo(
+		(): number => countPoisHiddenByReachabilityFilter(poisFile?.pois ?? []),
+		[poisFile],
+	);
 
 	/** Grouped options for the react-select POI-type multi-select. Rebuilds
 	 *  only on locale change since labels go through next-intl. */
@@ -838,6 +845,18 @@ export function MapControlsPoiList({
 					setEnabledPoiTypes(new Set(val.map((o) => o.value)))
 				}
 			/>
+
+			{hiddenByReachabilityCount > 0 && (
+				<label className="flex cursor-pointer items-start gap-2">
+					<Checkbox checked={includeRemotePois} onCheckedChange={setIncludeRemotePois} />
+					<div className="flex flex-col gap-0.5">
+						<span className="text-xs text-gray-700 dark:text-[var(--text-primary)]">{t('includeRemotePoisLabel')}</span>
+						<span className="text-[10px] text-gray-500 dark:text-[var(--text-secondary)]">
+							{t('includeRemotePoisHint')}
+						</span>
+					</div>
+				</label>
+			)}
 
 			<div className="flex items-center gap-2">
 				<div className="flex-1">
