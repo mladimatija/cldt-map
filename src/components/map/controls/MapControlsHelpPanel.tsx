@@ -2,8 +2,10 @@
 
 import React from 'react';
 import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/navigation';
 import { MAP_CONTROL_POPOVER } from './map-controls-constants';
 import { usePopoverFocusTrap } from '@/hooks';
+import { INLINE_LINK_CLASS } from '@/components/ui/ExternalLink';
 
 /**
  * Topic-grouped help panel behind the ? control. The app's features hide
@@ -85,6 +87,18 @@ export function MapControlsHelpPanel(): React.ReactElement {
 				['gps', t('offline.gps')],
 				['offRouteAlert', t('offline.offRouteAlert')],
 				['pushAlerts', t('offline.pushAlerts')],
+			])}
+
+			{section(t('demoHeading'), [
+				[
+					'demo',
+					<>
+						{t('demoDesc')}{' '}
+						<Link className={INLINE_LINK_CLASS} href="/demo">
+							{t('demoLink')}
+						</Link>
+					</>,
+				],
 			])}
 
 			<p className="m-0 border-t border-gray-200 pt-2 text-[11px] leading-snug text-gray-500 dark:border-[var(--border-color)] dark:text-[var(--text-secondary)]">
