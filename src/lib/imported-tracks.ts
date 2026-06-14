@@ -1,5 +1,5 @@
 import localforage from 'localforage';
-import type { ParsedTrack } from './gpx-parser';
+import { parseGpx, type ParsedTrack } from './gpx-parser';
 import type { ImportedTrack, TrackStats } from './store/types';
 import { haversineDistanceM as haversineM } from './haversine';
 import { buildSpatialGrid, type SpatialGrid } from './spatial-grid';
@@ -124,6 +124,42 @@ export async function saveImportedTrack(
 	};
 	await importedTracksStore.setItem(id, track);
 	return track;
+}
+
+export type ImportGpxXmlResult =
+	| { status: 'ok'; track: ImportedTrack; isNew: boolean }
+	| { status: 'empty' }
+	| { status: 'tooLarge' }
+	| { status: 'error' };
+
+/** Parse GPX XML and persist the first track. Dedupes by content hash. */
+export async function importGpxXmlAsTrack(
+	xml: string,
+	existingTracks: readonly ImportedTrack[],
+): Promise<ImportGpxXmlResult> {
+	try {
+		const parsed = parseGpx(xml);
+		const firstTrack = parsed.tracks[0];
+		if (!firstTrack || firstTrack.points.length === 0) {
+			return { status: 'empty' };
+		}
+		const track = await saveImportedTrack(xml, firstTrack, existingTracks.length);
+		const isNew = !existingTracks.some((existing) => existing.id === track.id);
+		return { status: 'ok', track, isNew };
+	} catch (err) {
+		const msg = err instanceof Error ? err.message : '';
+		if (msg.includes('large')) return { status: 'tooLarge' };
+		return { status: 'error' };
+	}
+}
+
+/** Read a GPX file and import its first track. */
+export async function importGpxFileAsTrack(
+	file: File,
+	existingTracks: readonly ImportedTrack[],
+): Promise<ImportGpxXmlResult> {
+	const xml = await file.text();
+	return importGpxXmlAsTrack(xml, existingTracks);
 }
 
 export async function loadImportedTracks(): Promise<ImportedTrack[]> {

@@ -98,6 +98,11 @@ const ProgressPreviewOverlay = dynamic(
 	() => import('@/components/map/ProgressPreviewOverlay').then((m) => ({ default: m.ProgressPreviewOverlay })),
 	{ ssr: false },
 );
+const JournalTrackHighlightOverlay = dynamic(
+	() =>
+		import('@/components/map/JournalTrackHighlightOverlay').then((m) => ({ default: m.JournalTrackHighlightOverlay })),
+	{ ssr: false },
+);
 const MineAreaLayer = dynamic(
 	() => import('@/components/map/MineAreaLayer').then((m) => ({ default: m.MineAreaLayer })),
 	{ ssr: false },
@@ -218,6 +223,7 @@ export default function MapContent(): React.ReactElement {
 			<MineAreaLayer />
 			<CompletionOverlay />
 			<ProgressPreviewOverlay />
+			<JournalTrackHighlightOverlay />
 			<MapControls />
 			<RulerHint />
 			<ZoomControls />

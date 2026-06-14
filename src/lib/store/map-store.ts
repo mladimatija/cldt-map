@@ -59,7 +59,7 @@ import {
 	type SeasonalStatusEntry,
 	type SeasonalStatusFile,
 } from '../seasonal-status';
-import { newId } from '@/lib/user-waypoints';
+import { newId, type JournalEntry } from '@/lib/user-waypoints';
 
 /** Module-level abort controller for tile downloads - one download at a time. */
 let tilePrecacheAbortController: AbortController | null = null;
@@ -882,11 +882,33 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					},
 					updateJournalEntry: (id, patch): void => {
 						set((s) => ({
-							journalEntries: s.journalEntries.map((e) => (e.id === id ? { ...e, ...patch } : e)),
+							journalEntries: s.journalEntries.map((e) => {
+								if (e.id !== id) return e;
+								const merged: JournalEntry = { ...e, ...patch };
+								if ('trackLink' in patch && patch.trackLink === undefined) delete merged.trackLink;
+								if ('startKm' in patch && patch.startKm === undefined) delete merged.startKm;
+								if ('endKm' in patch && patch.endKm === undefined) delete merged.endKm;
+								return merged;
+							}),
 						}));
 					},
 					removeJournalEntry: (id): void => {
-						set((s) => ({ journalEntries: s.journalEntries.filter((e) => e.id !== id) }));
+						set((s) => ({
+							journalEntries: s.journalEntries.filter((e) => e.id !== id),
+							journalHighlightEntryId: s.journalHighlightEntryId === id ? null : s.journalHighlightEntryId,
+							journalPreview: s.journalPreview?.entryId === id ? null : s.journalPreview,
+						}));
+					},
+					journalHighlightEntryId: null,
+					setJournalHighlightEntryId: (id: string | null): void => {
+						set({ journalHighlightEntryId: id });
+					},
+					journalPreview: null,
+					setJournalPreview: (preview): void => {
+						set({
+							journalPreview: preview,
+							...(preview === null ? { journalHighlightEntryId: null } : {}),
+						});
 					},
 
 					gradeAdjustedEta: config.gradeAdjustedEta,
@@ -921,6 +943,7 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 							progressTrackIds: state.progressTrackIds.filter((tid) => tid !== id),
 							progressPreviewTrackId: state.progressPreviewTrackId === id ? null : state.progressPreviewTrackId,
 							progressPreviewIntervals: state.progressPreviewTrackId === id ? [] : state.progressPreviewIntervals,
+							journalPreview: state.journalPreview?.trackId === id ? null : state.journalPreview,
 						}));
 					},
 
@@ -974,7 +997,12 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 						set({ completedIntervals: removeInterval(get().completedIntervals, startKm, endKm) });
 					},
 					clearCompletion: (): void => {
-						set({ completedIntervals: [] });
+						set({
+							completedIntervals: [],
+							progressTrackIds: [],
+							progressPreviewTrackId: null,
+							progressPreviewIntervals: [],
+						});
 					},
 					completionAutoTrack: true,
 					setCompletionAutoTrack: (enabled: boolean): void => {
@@ -983,6 +1011,21 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					showCompletionOverlay: true,
 					setShowCompletionOverlay: (show: boolean): void => {
 						set({ showCompletionOverlay: show });
+					},
+					progressPanelWaypointsOpen: true,
+					setProgressPanelWaypointsOpen: (open: boolean): void => {
+						set({ progressPanelWaypointsOpen: open });
+					},
+					progressPanelJournalOpen: true,
+					setProgressPanelJournalOpen: (open: boolean): void => {
+						set({ progressPanelJournalOpen: open });
+					},
+					settingsScrollTarget: null,
+					openSettingsToImports: (): void => {
+						set({ openPanel: 'settings', settingsScrollTarget: 'imports' });
+					},
+					clearSettingsScrollTarget: (): void => {
+						set({ settingsScrollTarget: null });
 					},
 					progressPreviewTrackId: null,
 					progressPreviewIntervals: [],
@@ -1323,6 +1366,8 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 						progressTrackIds: state.progressTrackIds,
 						completionAutoTrack: state.completionAutoTrack,
 						showCompletionOverlay: state.showCompletionOverlay,
+						progressPanelWaypointsOpen: state.progressPanelWaypointsOpen,
+						progressPanelJournalOpen: state.progressPanelJournalOpen,
 						seasonalStatusLayerEnabled: state.seasonalStatusLayerEnabled,
 						seasonalStatusLayerUserToggled: state.seasonalStatusLayerUserToggled,
 					};

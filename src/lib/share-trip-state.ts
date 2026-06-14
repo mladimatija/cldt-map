@@ -30,7 +30,7 @@ export interface ShareTripStatePayload {
 		sd?: string;
 	};
 	wp?: { i?: string; la: number; ln: number; n: string; no?: string; tk?: number | null; c?: string }[];
-	j?: { d: string; t: string; s?: number; e?: number }[];
+	j?: { d: string; t: string; s?: number; e?: number; tr?: string; ti?: [number, number] }[];
 	done?: [number, number][];
 	stars?: string[];
 }
@@ -92,6 +92,7 @@ function encodeJournal(entry: JournalEntry): NonNullable<ShareTripStatePayload['
 		t: trimText(entry.text, MAX_JOURNAL_TEXT),
 		...(entry.startKm !== undefined && { s: roundKm(entry.startKm) }),
 		...(entry.endKm !== undefined && { e: roundKm(entry.endKm) }),
+		...(entry.trackLink && { tr: entry.trackLink.trackId, ti: [entry.trackLink.startIdx, entry.trackLink.endIdx] }),
 	};
 }
 
@@ -273,12 +274,30 @@ function parseJournal(raw: unknown): JournalEntry[] {
 		const entry = item as NonNullable<ShareTripStatePayload['j']>[number];
 		if (typeof entry.d !== 'string' || typeof entry.t !== 'string') continue;
 		if (!ISO_DATE_RE.test(entry.d)) continue;
+		const trackRef = typeof entry.tr === 'string' && /^[a-f0-9]{8}$/i.test(entry.tr) ? entry.tr : undefined;
+		const trackIdx =
+			Array.isArray(entry.ti) &&
+			entry.ti.length === 2 &&
+			Number.isFinite(entry.ti[0]) &&
+			Number.isFinite(entry.ti[1]) &&
+			entry.ti[1] >= entry.ti[0]
+				? ([Math.floor(entry.ti[0]), Math.floor(entry.ti[1])] as [number, number])
+				: undefined;
 		result.push({
 			id: newId(),
 			date: entry.d,
 			text: trimText(entry.t, MAX_JOURNAL_TEXT),
 			...(entry.s !== undefined && Number.isFinite(entry.s) && { startKm: roundKm(entry.s) }),
 			...(entry.e !== undefined && Number.isFinite(entry.e) && { endKm: roundKm(entry.e) }),
+			...(trackRef &&
+				trackIdx && {
+					trackLink: {
+						trackId: trackRef,
+						startIdx: trackIdx[0],
+						endIdx: trackIdx[1],
+						trackName: '',
+					},
+				}),
 			createdAt: now,
 		});
 	}

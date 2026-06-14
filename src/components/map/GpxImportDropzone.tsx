@@ -2,8 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { parseGpx } from '@/lib/gpx-parser';
-import { saveImportedTrack } from '@/lib/imported-tracks';
+import { importGpxFileAsTrack } from '@/lib/imported-tracks';
 import { useMapStore, type MapStoreState } from '@/lib/store';
 import { Button } from '@/components/ui/Button';
 
@@ -17,28 +16,17 @@ export default function GpxImportDropzone(): React.ReactElement {
 	const fileInputRef = useRef<HTMLInputElement>(null);
 
 	async function processFile(file: File): Promise<string | null> {
-		const xml = await file.text();
-		try {
-			const parsed = parseGpx(xml);
-			const firstTrack = parsed.tracks[0];
-			if (!firstTrack || firstTrack.points.length === 0) {
-				return t('errorMalformed');
-			}
-			// getState() reads synchronously, so sequential batch imports see
-			// each other immediately - the ref-based count only updates after a
-			// render and would hand every file in a batch the same color.
-			const currentTracks = useMapStore.getState().importedTracks;
-			const track = await saveImportedTrack(xml, firstTrack, currentTracks.length);
-			// Content-hash dedup: re-importing an identical file returns the
-			// stored track; don't add a duplicate row.
-			if (!currentTracks.some((existing) => existing.id === track.id)) {
-				addImportedTrack(track);
-			}
+		// getState() reads synchronously, so sequential batch imports see
+		// each other immediately - the ref-based count only updates after a
+		// render and would hand every file in a batch the same color.
+		const currentTracks = useMapStore.getState().importedTracks;
+		const result = await importGpxFileAsTrack(file, currentTracks);
+		if (result.status === 'ok') {
+			if (result.isNew) addImportedTrack(result.track);
 			return null;
-		} catch (err) {
-			const msg = err instanceof Error ? err.message : '';
-			return msg.includes('large') ? t('errorTooLarge') : t('errorMalformed');
 		}
+		if (result.status === 'tooLarge') return t('errorTooLarge');
+		return t('errorMalformed');
 	}
 
 	/** Imports a batch sequentially: order keeps the palette color cycle
