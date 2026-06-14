@@ -31,6 +31,7 @@ import {
 	mapControlSelectInlineHorizonStyles,
 } from '@/components/map/controls/map-control-select-styles';
 import { isUsableWaterSource, WATER_COLOR } from '@/lib/water-intelligence';
+import { poiHasResupplyKind } from '@/lib/resupply-cadence';
 import { formatVolume, waterCarryLiters } from '@/lib/pack-weight';
 import { formatDistance, formatElevation } from '@/lib/utils';
 
@@ -40,10 +41,10 @@ const UP_NEXT_VISIBLE_COUNT = 5;
 /** Categories shown in the up-next data-book strip. Core rows are always
  *  candidates; optional rows need a Settings toggle. Display order is by
  *  distance ahead, not category grouping. */
-type UpNextKey = 'water' | 'shelter' | 'town' | 'food' | 'atm' | 'viewpoint';
+type UpNextKey = 'water' | 'shelter' | 'town' | 'food' | 'atm' | 'viewpoint' | 'pharmacy';
 
 const CORE_UP_NEXT_KEYS = ['water', 'shelter', 'town'] as const satisfies readonly UpNextKey[];
-const OPTIONAL_UP_NEXT_KEYS = ['food', 'atm', 'viewpoint'] as const satisfies readonly UpNextKey[];
+const OPTIONAL_UP_NEXT_KEYS = ['food', 'atm', 'viewpoint', 'pharmacy'] as const satisfies readonly UpNextKey[];
 
 /** POI types the up-next strip needs. Loaded directly (module-cached per
  *  type) rather than read from the store's poisFile, which only carries the
@@ -130,6 +131,7 @@ export function DistanceRemainingOverlay(): React.ReactElement | null {
 	const upNextShowFood = useMapStore((state: MapStoreState) => state.upNextShowFood);
 	const upNextShowAtm = useMapStore((state: MapStoreState) => state.upNextShowAtm);
 	const upNextShowViewpoint = useMapStore((state: MapStoreState) => state.upNextShowViewpoint);
+	const upNextShowPharmacy = useMapStore((state: MapStoreState) => state.upNextShowPharmacy);
 	const upNextMoreExpanded = useMapStore((state: MapStoreState) => state.upNextMoreExpanded);
 	const setUpNextMoreExpanded = useMapStore((state: MapStoreState) => state.setUpNextMoreExpanded);
 	const packBaseWeightKg = useMapStore((state: MapStoreState) => state.packBaseWeightKg);
@@ -170,6 +172,7 @@ export function DistanceRemainingOverlay(): React.ReactElement | null {
 			food: reachable.filter((p) => p.type === 'restaurant' || p.type === 'cafe').sort(byKm),
 			atm: reachable.filter((p) => p.type === 'atm').sort(byKm),
 			viewpoint: reachable.filter((p) => p.type === 'viewpoint').sort(byKm),
+			pharmacy: reachable.filter((p) => poiHasResupplyKind(p, 'pharmacy')).sort(byKm),
 		};
 	}, [upNextPois, includeRemotePois]);
 
@@ -199,7 +202,8 @@ export function DistanceRemainingOverlay(): React.ReactElement | null {
 			...OPTIONAL_UP_NEXT_KEYS.filter((key) => {
 				if (key === 'food') return upNextShowFood;
 				if (key === 'atm') return upNextShowAtm;
-				return upNextShowViewpoint;
+				if (key === 'viewpoint') return upNextShowViewpoint;
+				return upNextShowPharmacy;
 			}),
 		];
 		const sortedRows = enabledKeys
@@ -219,6 +223,7 @@ export function DistanceRemainingOverlay(): React.ReactElement | null {
 		upNextShowFood,
 		upNextShowAtm,
 		upNextShowViewpoint,
+		upNextShowPharmacy,
 	]);
 
 	const aheadCorridorCount = useMemo((): number => {
@@ -263,6 +268,7 @@ export function DistanceRemainingOverlay(): React.ReactElement | null {
 		food: t('upNextFood'),
 		atm: t('upNextAtm'),
 		viewpoint: t('upNextViewpoint'),
+		pharmacy: t('upNextPharmacy'),
 	};
 
 	const renderUpNextRow = ({ key, poi, km }: { key: UpNextKey; poi: Poi; km: number }): React.ReactElement => {
@@ -373,7 +379,7 @@ export function DistanceRemainingOverlay(): React.ReactElement | null {
 
 	if (distanceInfo === null) return null;
 
-	const anyOptionalUpNextEnabled = upNextShowFood || upNextShowAtm || upNextShowViewpoint;
+	const anyOptionalUpNextEnabled = upNextShowFood || upNextShowAtm || upNextShowViewpoint || upNextShowPharmacy;
 	const hasUpNextContent =
 		showUpNext && (primaryUpNextRows.length > 0 || moreUpNextRows.length > 0 || anyOptionalUpNextEnabled);
 

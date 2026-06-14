@@ -7,7 +7,7 @@
  * resupply (amber chip) but not as grocery gap breakpoints.
  */
 
-import type { Poi } from './poi-types';
+import type { Poi, ResupplyKind } from './poi-types';
 import { longestDryStretchKm } from './water-intelligence';
 
 /** Default food consumption for pack-day estimates (kg/day). */
@@ -47,9 +47,12 @@ export interface PlanResupplyCadence {
 }
 
 export function poiHasGroceryResupply(poi: Poi): boolean {
+	return poiHasResupplyKind(poi, 'grocery');
+}
+
+export function poiHasResupplyKind(poi: Poi, kind: ResupplyKind): boolean {
 	return (
-		(poi.type === 'town' || poi.type === 'settlement') &&
-		!!poi.resupply?.places.some((place) => place.kind === 'grocery')
+		(poi.type === 'town' || poi.type === 'settlement') && !!poi.resupply?.places.some((place) => place.kind === kind)
 	);
 }
 

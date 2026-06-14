@@ -114,6 +114,8 @@ export function MapControlsSettingsPanel({
 	const setUpNextShowAtm = useMapStore((state: MapStoreState) => state.setUpNextShowAtm);
 	const upNextShowViewpoint = useMapStore((state: MapStoreState) => state.upNextShowViewpoint);
 	const setUpNextShowViewpoint = useMapStore((state: MapStoreState) => state.setUpNextShowViewpoint);
+	const upNextShowPharmacy = useMapStore((state: MapStoreState) => state.upNextShowPharmacy);
+	const setUpNextShowPharmacy = useMapStore((state: MapStoreState) => state.setUpNextShowPharmacy);
 	const packBaseWeightKg = useMapStore((state: MapStoreState) => state.packBaseWeightKg);
 	const setPackBaseWeightKg = useMapStore((state: MapStoreState) => state.setPackBaseWeightKg);
 	const waterConsumptionLph = useMapStore((state: MapStoreState) => state.waterConsumptionLph);
@@ -601,6 +603,15 @@ export function MapControlsSettingsPanel({
 									title={t('upNextShowViewpointHint')}
 								>
 									{t('upNextShowViewpointLabel')}
+								</span>
+							</label>
+							<label className="flex cursor-pointer items-center gap-2">
+								<Checkbox checked={upNextShowPharmacy} onCheckedChange={(checked) => setUpNextShowPharmacy(checked)} />
+								<span
+									className="text-sm text-gray-700 dark:text-[var(--text-primary)]"
+									title={t('upNextShowPharmacyHint')}
+								>
+									{t('upNextShowPharmacyLabel')}
 								</span>
 							</label>
 						</div>
