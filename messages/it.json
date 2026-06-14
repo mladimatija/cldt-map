@@ -66,7 +66,7 @@
 			"packWeight": "Peso dello zaino e acqua da portare - suggerimenti \"porta fino a X L\" per tappa dal peso base e dal consumo, in unità metriche o imperiali",
 			"waypointsJournal": "Punti personali e diario di viaggio - tieni premuto sulla mappa per segnaposti con note, diario datato, esportazione GPX/Markdown; tutto resta sul tuo dispositivo",
 			"resupply": "Guide al rifornimento - negozi, farmacie, bancomat, posta e autobus da OpenStreetMap nei popup delle città, con indicatori di rifornimento per tappa nel planner",
-			"pushAlerts": "Notifiche di avviso - push opzionali del browser quando viene pubblicato un nuovo avviso stagionale, anche ad app chiusa; nessun account"
+			"pushAlerts": "Notifiche di avviso - push opzionali del browser quando viene pubblicato un nuovo avviso stagionale o una notifica sulle condizioni del sentiero, anche ad app chiusa; nessun account"
 		},
 		"dataAttribution": "Dati e attribuzioni",
 		"dataAttributionDesc": "I dati del sentiero sono forniti dall'organizzazione Udruga Long Distance Trail Hrvatska (LDTH). Le tessere mappa provengono da OpenStreetMap, OpenTopoMap, OpenHikingMap (openmaps.fr), Waymarked Trails, CyclOSM e altri provider. Le mappe topografiche croate provengono dall'Amministrazione Geodetica Statale (DGU). I dati meteo provengono da DHMZ (Servizio Meteorologico Croato) e Open-Meteo. Le tessere radar sono fornite da RainViewer. Stato stagionale del sentiero, avvisi di pericolo e dati delle stazioni di soccorso alpino provengono da HGSS (Servizio croato di soccorso in montagna), HPS (Federazione croata di alpinismo) e dalle autorità dei parchi nazionali (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) e Parco naturale Velebit. I dati visualizzati su questo sito potrebbero non riflettere le condizioni più recenti. In caso di dubbio, verificare sempre le fonti ufficiali.",
@@ -251,7 +251,7 @@
 		"packCsvClear": "Rimuovi",
 		"packCsvError": "Impossibile leggere il CSV. Esportalo da LighterPack o Packstack e riprova.",
 		"pushAlertsLabel": "Notifica nuovi avvisi del sentiero",
-		"pushAlertsHint": "Notifica del browser quando viene pubblicato un nuovo avviso stagionale per il sentiero. Funziona anche ad app chiusa; nessun account.",
+		"pushAlertsHint": "Notifica del browser quando viene pubblicato un nuovo avviso stagionale o una notifica sulle condizioni del sentiero. Funziona anche ad app chiusa; nessun account.",
 		"waymarkedLabel": "Overlay sentieri segnalati",
 		"waymarkedHint": "Disegna le rotte escursionistiche OSM (Waymarked Trails) sopra la mappa di base. Solo online.",
 		"shareShortLinksLabel": "Usa link brevi per la condivisione",
@@ -1104,7 +1104,7 @@
 			"precache": "Il pannello cache pre-scarica tutto il corridoio del sentiero (tile, luoghi, foto) per usarlo senza segnale; si risincronizza sul Wi-Fi.",
 			"gps": "GPS, pannello di emergenza e progresso funzionano completamente offline una volta salvato il corridoio.",
 			"offRouteAlert": "Attiva l'avviso fuori percorso in Impostazioni (disattivato di default) per banner e vibrazione quando ti allontani più di ~200 m dal sentiero, con distanza e direzione di ritorno. Si arma solo dopo che il GPS conferma che sei sul sentiero; resta muto a casa o in auto e si disarma quando lasci l'area del sentiero.",
-			"pushAlerts": "Attiva le notifiche di avviso nelle impostazioni per ricevere un push quando viene pubblicato un nuovo avviso stagionale."
+			"pushAlerts": "Attiva le notifiche di avviso nelle impostazioni per ricevere un push quando viene pubblicato un nuovo avviso stagionale o una notifica sulle condizioni del sentiero."
 		},
 		"officialAppNote": "FarOut è l’app ufficiale del CLDT. Questa mappa è un progetto indipendente solo per scopi di ricerca ed educativi - verifica le informazioni critiche con le fonti ufficiali.",
 		"demoHeading": "Escursione demo",

@@ -66,7 +66,7 @@
 			"packWeight": "Težina ruksaka i nošenje vode - preporuke \"ponesite do X L\" po etapi iz vaše osnovne težine i potrošnje, metrički ili imperijalno",
 			"waypointsJournal": "Vlastite točke i dnevnik puta - dugi pritisak na kartu za osobne oznake s bilješkama, dnevnik s datumima, izvoz u GPX/Markdown; sve ostaje na vašem uređaju",
 			"resupply": "Vodiči za opskrbu - trgovine, ljekarne, bankomati, pošta i autobus iz OpenStreetMapa u prozorima gradova, s oznakama opskrbe po etapi u planeru",
-			"pushAlerts": "Obavijesti o upozorenjima - neobavezne push obavijesti preglednika kad se objavi novo sezonsko upozorenje, čak i kad je aplikacija zatvorena; bez računa"
+			"pushAlerts": "Obavijesti o upozorenjima - neobavezne push obavijesti preglednika kad se objavi novo sezonsko upozorenje ili obavijest o stanju staze, čak i kad je aplikacija zatvorena; bez računa"
 		},
 		"dataAttribution": "Podaci i atribucija",
 		"dataAttributionDesc": "Podatke o stazi pruža organizacija Udruga Long Distance Trail Hrvatska (LDTH). Karte dolaze od OpenStreetMap, OpenTopoMap, OpenHikingMap (openmaps.fr), Waymarked Trails, CyclOSM i drugih pružatelja. Hrvatske topografske karte su od Državne geodetske uprave (DGU). Meteorološki podaci dolaze od DHMZ-a (Državni hidrometeorološki zavod) i Open-Meteo. Radarske pločice osigurava RainViewer. Podaci o sezonskom stanju puta, upozorenja o opasnostima i podaci o stanicama gorske službe spašavanja preuzeti su od HGSS-a (Hrvatska gorska služba spašavanja), HPS-a (Hrvatski planinarski savez) te uprava nacionalnih parkova (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) i Parka prirode Velebit. Podaci prikazani na ovoj stranici možda ne odražavaju najnovije stanje. U slučaju sumnje, uvijek provjerite službene izvore.",
@@ -250,8 +250,8 @@
 		"packCsvSummary": "{name}: {count} stavki, osnovno {base}",
 		"packCsvClear": "Ukloni",
 		"packCsvError": "CSV nije moguće pročitati. Izvezite ga iz LighterPacka ili Packstacka i pokušajte ponovno.",
-		"pushAlertsLabel": "Obavijesti o novim upozorenjima",
-		"pushAlertsHint": "Obavijest preglednika kad se objavi novo sezonsko upozorenje za stazu. Radi i dok je aplikacija zatvorena; bez računa.",
+		"pushAlertsLabel": "Obavijesti o upozorenjima staze",
+		"pushAlertsHint": "Obavijest preglednika kad se objavi novo sezonsko upozorenje ili obavijest o stanju staze. Radi i dok je aplikacija zatvorena; bez računa.",
 		"waymarkedLabel": "Sloj markiranih planinarskih ruta",
 		"waymarkedHint": "Iscrtava OSM planinarske rute (Waymarked Trails) preko osnovne karte. Samo online.",
 		"shareShortLinksLabel": "Koristi kratke poveznice za dijeljenje",
@@ -1106,7 +1106,7 @@
 			"precache": "Ploča predmemorije unaprijed preuzima cijeli koridor staze (pločice, mjesta, fotografije) za korištenje bez signala; sinkronizira se na Wi-Fi mreži.",
 			"gps": "GPS, ploča za hitne slučajeve i tvoj napredak rade potpuno offline čim je koridor spremljen.",
 			"offRouteAlert": "Uključi upozorenje o skretanju u Postavkama (zadano isključeno) za traku i vibraciju kad skreneš više od ~200 m s rute, s udaljenošću i smjerom natrag. Aktivira se tek kad GPS potvrdi da si na ruti; šuti kod kuće ili u vožnji i deaktivira se kad napustiš područje staze.",
-			"pushAlerts": "Uključite obavijesti o upozorenjima u postavkama za push poruku kad se objavi novo sezonsko upozorenje."
+			"pushAlerts": "Uključite obavijesti o upozorenjima u postavkama za push poruku kad se objavi novo sezonsko upozorenje ili obavijest o stanju staze."
 		},
 		"officialAppNote": "FarOut je službena CLDT aplikacija. Ova karta je neovisan projekt isključivo za istraživačke i edukativne svrhe - ključne informacije provjerite u službenim izvorima.",
 		"demoHeading": "Demo hodnja",

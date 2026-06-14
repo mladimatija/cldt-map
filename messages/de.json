@@ -66,7 +66,7 @@
 			"packWeight": "Rucksackgewicht & Wassertransport - Empfehlungen \"bis zu X L mitnehmen\" pro Etappe aus Basisgewicht und Verbrauch, metrisch oder imperial",
 			"waypointsJournal": "Eigene Wegpunkte & Reisetagebuch - langes Drücken auf die Karte für persönliche Marker mit Notizen, datiertes Tagebuch, Export als GPX/Markdown; alles bleibt auf dem Gerät",
 			"resupply": "Versorgungs-Infos - Geschäfte, Apotheken, Geldautomaten, Post und Bus aus OpenStreetMap in Orts-Popups, mit Versorgungs-Chips pro Etappe im Planer",
-			"pushAlerts": "Warnungs-Benachrichtigungen - optionale Browser-Pushes bei neuen saisonalen Warnungen, auch bei geschlossener App; kein Konto nötig"
+			"pushAlerts": "Warnungs-Benachrichtigungen - optionale Browser-Pushes bei neuen saisonalen Warnungen oder Hinweisen zum Wegzustand, auch bei geschlossener App; kein Konto nötig"
 		},
 		"dataAttribution": "Daten & Urheberrecht",
 		"dataAttributionDesc": "Trail-Daten werden von der Udruga Long Distance Trail Hrvatska (LDTH) bereitgestellt. Kartenkacheln kommen von OpenStreetMap, OpenTopoMap, OpenHikingMap (openmaps.fr), Waymarked Trails, CyclOSM und anderen Anbietern. Kroatische topografische Karten stammen vom Staatlichen Geodätischen Amt (DGU). Wetterdaten kommen von DHMZ (Kroatischer Wetterdienst) und Open-Meteo. Radarkacheln werden von RainViewer bereitgestellt. Daten zum saisonalen Wegzustand, Gefahrenwarnungen sowie Standorte der Bergwacht-Stationen stammen von HGSS (Kroatische Bergrettung), HPS (Kroatischer Bergsteigerverband) und den Verwaltungen der Nationalparks (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) sowie Naturpark Velebit. Die auf dieser Seite angezeigten Daten entsprechen möglicherweise nicht dem aktuellen Stand. Im Zweifelsfall bitte immer die offiziellen Quellen prüfen.",
@@ -250,8 +250,8 @@
 		"packCsvSummary": "{name}: {count} Artikel, Basis {base}",
 		"packCsvClear": "Entfernen",
 		"packCsvError": "CSV konnte nicht gelesen werden. Aus LighterPack oder Packstack exportieren und erneut versuchen.",
-		"pushAlertsLabel": "Über neue Warnungen benachrichtigen",
-		"pushAlertsHint": "Browser-Benachrichtigung bei neuen saisonalen Warnungen für den Weg. Funktioniert auch bei geschlossener App; kein Konto nötig.",
+		"pushAlertsLabel": "Über neue Weg-Hinweise benachrichtigen",
+		"pushAlertsHint": "Browser-Benachrichtigung bei neuen saisonalen Warnungen oder Hinweisen zum Wegzustand. Funktioniert auch bei geschlossener App; kein Konto nötig.",
 		"waymarkedLabel": "Overlay markierter Wanderwege",
 		"waymarkedHint": "Zeichnet OSM-Wanderrouten (Waymarked Trails) über die Basiskarte. Nur online.",
 		"shareShortLinksLabel": "Kurzlinks zum Teilen verwenden",
@@ -1106,7 +1106,7 @@
 			"precache": "Das Cache-Panel lädt den ganzen Trail-Korridor vor (Kacheln, Orte, Fotos) für die Nutzung ohne Empfang; Sync erfolgt über WLAN.",
 			"gps": "GPS, Notfallpanel und dein Fortschritt funktionieren vollständig offline, sobald der Korridor gespeichert ist.",
 			"offRouteAlert": "Aktiviere den Routenabweichungs-Alarm in den Einstellungen (standardmäßig aus) für Banner und Vibration, wenn du mehr als ~200 m vom Trail abkommst, mit Distanz und Richtung zurück. Schärft sich erst, wenn GPS bestätigt, dass du auf dem Trail bist; bleibt zu Hause oder in der Fahrt stumm und entschärft sich, wenn du das Trail-Gebiet verlässt.",
-			"pushAlerts": "Warnungs-Benachrichtigungen in den Einstellungen aktivieren, um bei neuen saisonalen Warnungen eine Push-Nachricht zu erhalten."
+			"pushAlerts": "Warnungs-Benachrichtigungen in den Einstellungen aktivieren, um bei neuen saisonalen Warnungen oder Hinweisen zum Wegzustand eine Push-Nachricht zu erhalten."
 		},
 		"officialAppNote": "FarOut ist die offizielle CLDT-App. Diese Karte ist ein unabhängiges Projekt nur für Forschungs- und Bildungszwecke - prüfen Sie kritische Informationen anhand offizieller Quellen.",
 		"demoHeading": "Demo-Wanderung",

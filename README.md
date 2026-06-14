@@ -24,6 +24,7 @@ Interactive web map for the **Croatian Long Distance Trail (CLDT)** – a 2,200+
   - [Environment](#environment)
   - [Run](#run)
 - [Deploy to Netlify](#deploy-to-netlify)
+  - [Web push notifications (VAPID)](#web-push-notifications-vapid)
 - [Scripts](#scripts)
 - [Project Structure](#project-structure)
 - [Known Bugs](#known-bugs)
@@ -152,13 +153,13 @@ Optional overrides (see `src/lib/config.ts`, `src/lib/gpx-cache.ts`):
 - `NEXT_PUBLIC_DEFAULT_MAP_ZOOM` - initial zoom level
 - `NEXT_PUBLIC_TILE_CACHE_TTL_DAYS` - days after which offline tile cache is considered stale (default `30`)
 - `NEXT_PUBLIC_NOTICES_URL` - URL for remote trail-condition notices JSON; falls back to bundled `/notices.json` on network error
-- `NEXT_PUBLIC_SEASONAL_STATUS_URL` - URL for remote seasonal-status JSON; falls back to bundled `/seasonal-status.json` on network error
+- `NEXT_PUBLIC_SEASONAL_STATUS_URL` - URL for remote seasonal trail status JSON; falls back to bundled `/seasonal-status.json` on network error
 - `NEXT_PUBLIC_TRAIL_OSM_TAGS_URL` - URL for remote OSM tag dataset JSON; falls back to bundled `/trail-osm-tags.json` on network error
 - `NEXT_PUBLIC_POIS_URL` - URL for remote POI dataset JSON; falls back to bundled `/pois.json` on network error. The bundled file currently runs ~1.5 MB uncompressed (~7,700 rows after Phase 4–5 enrichment) and gzips to ~250 KB; Next.js serves static assets gzipped by default, and `next.config.ts` sets `Cache-Control: public, max-age=86400` on the route so returning visitors do not re-download it. The runtime loader rejects payloads above 20,000 rows with a `console.warn` to surface enricher mistakes that would otherwise silently kill the feature.
 
 Script-only:
 
-- `NEXT_PUBLIC_VAPID_PUBLIC_KEY` / `VAPID_PRIVATE_KEY` / `VAPID_SUBJECT` - enable web-push notifications for new seasonal warnings. Generate a key pair with `npx web-push generate-vapid-keys`, set all three in the Netlify deploy environment (subject is a `mailto:` contact), and the Settings toggle appears automatically. Subscriptions are stored in Netlify Blobs; `netlify/functions/push-seasonal-check.mts` runs hourly, diffs `seasonal-status.json` against the previously seen entry ids, and notifies subscribers of new entries (first run only records a baseline). Unset keys disable the feature end to end
+- `NEXT_PUBLIC_VAPID_PUBLIC_KEY` / `VAPID_PRIVATE_KEY` / `VAPID_SUBJECT` - optional deploy-only web push for new seasonal warnings and trail condition notices (see [Web push notifications (VAPID)](#web-push-notifications-vapid)). Users opt in via Settings; without all three vars the toggle stays hidden and in-app banners still work
 - `ANTHROPIC_API_KEY` - required by `npm run update-seasonal` (the curator that synthesises `public/seasonal-status.json` from configured sources), and, when set in the deploy environment, enables the `/api/narrative` route that writes AI day narratives for trip briefs (optional; the brief falls back to templated text when unset). `NARRATIVE_MODEL` optionally overrides the model.
 - `OSM_OVERPASS_URL` - optional Overpass endpoint override for `npm run enrich-osm` and `npm run enrich-pois`. Defaults to `https://overpass-api.de/api/interpreter`. Set to a self-hosted instance to bypass public-instance rate limits.
 - `OSM_OVERPASS_FALLBACK_URLS` - comma-separated Overpass mirrors that `npm run enrich-pois` fails over to after the primary endpoint exhausts its retry budget. Defaults to `https://overpass.kumi.systems/api/interpreter`; set to an empty string to disable failover.
@@ -220,6 +221,38 @@ Locally, plain `npm run dev` leaves all three unset; localhost is still allowed 
 
 **Security:** Only same-origin URLs whose query string contains recognised share params are accepted (no open redirects). Codes are random, not sequential.
 
+### Web push notifications (VAPID)
+
+Optional **browser push** when a new seasonal warning or trail condition notice is published, even with the app closed. End users opt in via the **Notify about trail alerts** toggle in Settings (no account). **VAPID keys are deployer/server infrastructure** - they identify your app to browser push services and are never shown to users.
+
+The map works fully without them: seasonal-status and trail-notice **in-app banners still work**, and the Settings toggle is hidden when keys are not configured.
+
+Generate a key pair:
+
+```bash
+npx web-push generate-vapid-keys
+```
+
+Set all three variables in the Netlify deploy environment (Production scope):
+
+| Variable                        | Required | Secret? | Role                                                                                                                                 |
+| ------------------------------- | -------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `NEXT_PUBLIC_VAPID_PUBLIC_KEY`  | Yes      | No      | Public half of the VAPID key pair; baked into the client bundle at build time so the browser can subscribe                           |
+| `VAPID_PRIVATE_KEY`             | Yes      | Yes     | Private half; used only by Netlify Functions to sign outgoing push messages. Never commit                                           |
+| `VAPID_SUBJECT`                 | Yes      | No      | Contact URI for push services (typically `mailto:you@example.com` or an `https://` site URL). Not shown to users; not a secret key |
+
+**Netlify:** Site configuration → Environment variables → **Production** (and Deploy Previews if you want push there). After adding or changing `NEXT_PUBLIC_VAPID_PUBLIC_KEY`, trigger a **new deploy** so the public key is rebuilt into the app.
+
+**Local testing:** Copy the three vars into `.env.local`, then run [`netlify dev`](https://docs.netlify.com/api-and-deploy-docs/cli/local-development/) (not plain `npm run dev`) so Functions, Blobs, and the baked-in public key match production. Plain `npm run dev` leaves push disabled.
+
+| Route / function                            | Role                                                                                                                                                                                                                         |
+| ------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `POST /.netlify/functions/push-subscribe`   | Store or remove a browser push subscription in Netlify Blobs (`push-subscriptions`). Returns `503` when VAPID is not configured.                                                                                           |
+| `netlify/functions/push-seasonal-check.mts` | Scheduled **hourly**: same pattern for seasonal trail warnings (`NEXT_PUBLIC_SEASONAL_STATUS_URL` with bundled `/seasonal-status.json` fallback), using a `seen-seasonal-ids` baseline (first run records baseline only, no blast notification) |
+| `netlify/functions/push-notices-check.mts`  | Scheduled **hourly**: same pattern for active trail condition notices (`NEXT_PUBLIC_NOTICES_URL` with bundled `/notices.json` fallback), using a `seen-notice-ids` baseline                                                 |
+
+Dead subscriptions (HTTP 404/410 from the push service) are pruned automatically on send.
+
 ---
 
 ## Scripts
@@ -234,7 +267,7 @@ Locally, plain `npm run dev` leaves all three unset; localhost is still allowed 
 | `npm run format:check`         | Check Prettier formatting                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | `npm run clean-install`        | Clean reinstall dependencies                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 | `npm run build:emergency-data` | Regenerate `public/data/road-access.json` from the trail GPX intersected with OSM roads (Overpass API). Run when the GPX changes; commit the result. `public/data/hgss-stations.json` is hand-curated separately.                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| `npm run update-seasonal`      | Refresh `public/seasonal-status.json` from the curated source pages defined in `scripts/seasonal-status-sources.json` (DHMZ, HGSS, HPS, national parks). Requires `ANTHROPIC_API_KEY` in `.env.local`. Resolves Croatian-landmark km positions from the live GPX, summarises each source page with Haiku, synthesises a new JSON file with Sonnet, validates against `public/seasonal-status.schema.json`, and writes the result. Review with `git diff public/seasonal-status.json`, commit on a feature branch, open a PR.                                                                                                                   |
+| `npm run update-seasonal`      | Refresh `public/seasonal-status.json` from the curated source pages defined in `scripts/seasonal-status-sources.json` (DHMZ, HGSS, HPS, national parks). Requires `ANTHROPIC_API_KEY` in `.env.local`. Resolves Croatian-landmark km positions from the live GPX, summarises each source page with Haiku, synthesises a new JSON file with Sonnet, validates against `public/seasonal-status.schema.json`, and writes the result. Review with `git diff public/seasonal-status.json`, commit on a feature branch, and deploy (or point `NEXT_PUBLIC_SEASONAL_STATUS_URL` at the hosted file) so in-app users and seasonal web push stay aligned.                                                                                                                   |
 | `npm run enrich-pois`          | Enrich `public/pois.json` from multiple data sources (Wikidata, HPS hut list, Wikimedia Commons, Wikipedia, OSM reachability filter). Requires `NEXT_PUBLIC_GPX_URL` in `.env.local`; `OSM_OVERPASS_URL` optionally overrides the Overpass endpoint (applies to both `enrich-pois` and `enrich-osm`), with automatic failover to `OSM_OVERPASS_FALLBACK_URLS` and a 24 h per-type result cache in `.cache/enrich-pois` so reruns only refetch failed types. Also triggered automatically by the GitHub Action in `.github/workflows/enrich-pois.yml`. Review the diff with `git diff public/pois.json`, commit on a feature branch, open a PR. |
 
 ---
@@ -296,7 +329,7 @@ src/
 ├── i18n/             # next-intl routing and request config
 ├── types/            # TypeScript definitions
 └── messages/         # en.json, hr.json, de.json, it.json translations
-netlify/functions/    # Scheduled jobs (seasonal push, share-link cleanup)
+netlify/functions/    # Scheduled jobs (seasonal/notices push, share-link cleanup) + push-subscribe
 ```
 
 ---

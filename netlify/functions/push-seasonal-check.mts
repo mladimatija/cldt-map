@@ -10,73 +10,75 @@
 
 import { getStore } from '@netlify/blobs';
 import type { Config } from '@netlify/functions';
-import webpush from 'web-push';
+import { configureVapid, sendToAllSubscribers } from './_shared/push-send.mts';
 
 const SITE_URL = process.env.URL ?? 'https://map.cldt.hr';
 
 interface SeasonalEntry {
 	id: string;
 	severity?: string;
-	title_en?: string;
-	title_hr?: string;
+	note_en?: string;
+	note_hr?: string;
+}
+
+async function fetchSeasonalEntries(): Promise<SeasonalEntry[] | null> {
+	const remoteUrl = process.env.NEXT_PUBLIC_SEASONAL_STATUS_URL;
+	if (remoteUrl) {
+		try {
+			const res = await fetch(remoteUrl, { cache: 'no-store' });
+			if (res.ok) {
+				const file = (await res.json()) as { entries?: SeasonalEntry[] };
+				return (file.entries ?? []).filter((e) => typeof e.id === 'string');
+			}
+		} catch {
+			// fall through to bundled file
+		}
+	}
+
+	const res = await fetch(`${SITE_URL}/seasonal-status.json`, { cache: 'no-store' });
+	if (!res.ok) return null;
+	const file = (await res.json()) as { entries?: SeasonalEntry[] };
+	return (file.entries ?? []).filter((e) => typeof e.id === 'string');
 }
 
 export default async function handler(): Promise<Response> {
-	const publicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
-	const privateKey = process.env.VAPID_PRIVATE_KEY;
-	if (!publicKey || !privateKey) return new Response('push not configured', { status: 200 });
-	webpush.setVapidDetails(process.env.VAPID_SUBJECT ?? 'mailto:matija.culjak@gmail.com', publicKey, privateKey);
+	if (!configureVapid()) return new Response('push not configured', { status: 200 });
 
-	const res = await fetch(`${SITE_URL}/seasonal-status.json`, { cache: 'no-store' });
-	if (!res.ok) return new Response('seasonal fetch failed', { status: 200 });
-	const file = (await res.json()) as { entries?: SeasonalEntry[] };
-	const entries = (file.entries ?? []).filter((e) => typeof e.id === 'string');
+	const entries = await fetchSeasonalEntries();
+	if (entries === null) return new Response('seasonal fetch failed', { status: 200 });
 	const currentIds = entries.map((e) => e.id);
 
 	const stateStore = getStore('push-state');
 	const seen = (await stateStore.get('seen-seasonal-ids', { type: 'json' })) as string[] | null;
-	await stateStore.setJSON('seen-seasonal-ids', currentIds);
 
 	// First run: baseline only, never blast the whole dataset.
-	if (seen === null) return new Response('baseline recorded', { status: 200 });
+	if (seen === null) {
+		await stateStore.setJSON('seen-seasonal-ids', currentIds);
+		return new Response('baseline recorded', { status: 200 });
+	}
 
 	const seenSet = new Set(seen);
 	const fresh = entries.filter((e) => !seenSet.has(e.id));
 	if (fresh.length === 0) return new Response('no new entries', { status: 200 });
 
-	const subsStore = getStore('push-subscriptions');
-	const { blobs } = await subsStore.list();
-	if (blobs.length === 0) return new Response('no subscribers', { status: 200 });
-
 	const title =
 		fresh.length === 1
-			? (fresh[0].title_en ?? fresh[0].title_hr ?? 'New trail warning')
+			? (fresh[0].note_en ?? fresh[0].note_hr ?? 'New trail warning')
 			: `${fresh.length} new trail warnings`;
 	const payload = JSON.stringify({
 		title: `CLDT Map: ${title}`,
 		body: fresh
 			.slice(0, 3)
-			.map((e) => `[${e.severity ?? 'info'}] ${e.title_en ?? e.title_hr ?? e.id}`)
+			.map((e) => `[${e.severity ?? 'info'}] ${e.note_en ?? e.note_hr ?? e.id}`)
 			.join('\n'),
 		url: `${SITE_URL}/`,
 	});
 
-	let sent = 0;
-	for (const blob of blobs) {
-		const sub = (await subsStore.get(blob.key, { type: 'json' })) as {
-			endpoint: string;
-			keys: { p256dh: string; auth: string };
-		} | null;
-		if (!sub) continue;
-		try {
-			await webpush.sendNotification(sub, payload, { TTL: 6 * 3600 });
-			sent++;
-		} catch (err) {
-			const status = (err as { statusCode?: number }).statusCode;
-			if (status === 404 || status === 410) await subsStore.delete(blob.key);
-		}
-	}
-	return new Response(`sent ${sent}/${blobs.length} for ${fresh.length} new entries`, { status: 200 });
+	const { sent, total } = await sendToAllSubscribers(payload);
+	if (total === 0) return new Response('no subscribers', { status: 200 });
+
+	await stateStore.setJSON('seen-seasonal-ids', [...new Set([...seen, ...fresh.map((e) => e.id)])]);
+	return new Response(`sent ${sent}/${total} for ${fresh.length} new entries`, { status: 200 });
 }
 
 export const config: Config = {
