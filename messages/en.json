@@ -446,6 +446,9 @@
 	"pwa": {
 		"installTitle": "Install CLDT Map",
 		"installDescription": "Add to home screen for quick access and an app-like experience.",
+		"installTitleOffline": "Install for offline use",
+		"installDescriptionOffline": "Your trail tiles are saved. Install the app on your home screen to open the map offline without a browser tab.",
+		"installDescriptionOfflineIos": "Your trail tiles are saved. Tap Share, then Add to Home Screen to open the map offline.",
 		"install": "Install",
 		"dismiss": "Not now"
 	},
@@ -500,7 +503,8 @@
 		"clearPoiAssets": "Clear POI assets",
 		"confirmClear": "Are you sure?",
 		"confirmYes": "Yes",
-		"confirmNo": "No"
+		"confirmNo": "No",
+		"downloadComplete": "Offline maps ready"
 	},
 	"gpxDownload": {
 		"modalTitle": "Download CLDT GPX",

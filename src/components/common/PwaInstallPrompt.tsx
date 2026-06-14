@@ -3,44 +3,37 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/Button';
-
-const SESSION_DISMISS_KEY = 'cldt-map-pwa-install-dismissed';
-const COOLDOWN_DAYS = 7;
-const COOLDOWN_KEY = 'cldt-map-pwa-install-dismissed-until';
+import { useMapStore, type MapStoreState } from '@/lib/store';
+import {
+	canShowOfflineInstallNudge,
+	canShowPwaInstallPrompt,
+	dismissPwaInstallPrompt,
+	isIosInstallHint,
+	isStandalone,
+	markOfflineInstallNudgeShown,
+} from '@/lib/pwa-install';
 
 type BeforeInstallPromptEvent = Event & {
 	prompt: () => Promise<{ outcome: 'accepted' | 'dismissed' }>;
 	userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
 };
 
-function isStandalone(): boolean {
-	if (typeof window === 'undefined') return false;
-
-	const isDisplayModeStandalone = window.matchMedia('(display-mode: standalone)').matches;
-	const isIosStandalone = (window.navigator as Navigator & { standalone?: boolean }).standalone!;
-
-	return isDisplayModeStandalone || isIosStandalone;
-}
-
-function canShowPrompt(): boolean {
-	if (typeof window === 'undefined') return false;
-	if (sessionStorage.getItem(SESSION_DISMISS_KEY)) return false;
-	const until = localStorage.getItem(COOLDOWN_KEY);
-	if (until) {
-		const ts = Number(until);
-		if (!Number.isNaN(ts) && Date.now() < ts) return false;
-	}
-	return true;
-}
+type BannerMode = 'generic' | 'offline';
 
 /**
  * Optional PWA install prompt: non-intrusive, dismissible, low-frequency.
- * Shows when beforeinstallprompt fires and not dismissed this session or in cooldown (7 days).
+ * Generic copy on beforeinstallprompt; contextual copy after the first manual offline download.
  */
 export default function PwaInstallPrompt(): React.ReactElement | null {
 	const t = useTranslations('pwa');
+	const pwaInstallTrigger = useMapStore((s: MapStoreState) => s.pwaInstallTrigger);
+	const clearPwaInstallTrigger = useMapStore((s: MapStoreState) => s.clearPwaInstallTrigger);
 	const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
-	const [showBanner, setShowBanner] = useState(false);
+	const [userDismissed, setUserDismissed] = useState(false);
+	const [bannerMode, setBannerMode] = useState<BannerMode | null>(null);
+
+	const iosHint = isIosInstallHint();
+	const promptAllowed = canShowPwaInstallPrompt() && !isStandalone() && !userDismissed;
 
 	useEffect(() => {
 		if (typeof window === 'undefined' || isStandalone()) return;
@@ -48,15 +41,36 @@ export default function PwaInstallPrompt(): React.ReactElement | null {
 		const handleBeforeInstall = (e: Event): void => {
 			e.preventDefault();
 			const installEvent = e as BeforeInstallPromptEvent;
-			// Only store and show when the event has prompt() (real browser event). Ignore synthetic events.
 			if (typeof installEvent.prompt !== 'function') return;
 			setDeferredPrompt(installEvent);
-			if (canShowPrompt()) setShowBanner(true);
+			if (!canShowPwaInstallPrompt()) return;
+			if (useMapStore.getState().pwaInstallTrigger === 'offlineDownload') return;
+			setBannerMode('generic');
 		};
 
 		window.addEventListener('beforeinstallprompt', handleBeforeInstall);
 		return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstall);
 	}, []);
+
+	useEffect(() => {
+		if (pwaInstallTrigger !== 'offlineDownload') return;
+		if (!canShowPwaInstallPrompt() || !canShowOfflineInstallNudge() || isStandalone()) {
+			clearPwaInstallTrigger();
+			return;
+		}
+		if (!deferredPrompt && !iosHint) return;
+
+		const id = window.requestAnimationFrame(() => {
+			setBannerMode('offline');
+			clearPwaInstallTrigger();
+		});
+		return () => window.cancelAnimationFrame(id);
+	}, [pwaInstallTrigger, deferredPrompt, iosHint, clearPwaInstallTrigger]);
+
+	const showOfflineBanner = promptAllowed && bannerMode === 'offline' && (deferredPrompt !== null || iosHint);
+	const showGenericBanner = promptAllowed && bannerMode === 'generic' && deferredPrompt !== null;
+	const showBanner = showOfflineBanner || showGenericBanner;
+	const isOfflineContext = bannerMode === 'offline';
 
 	const handleInstall = useCallback(async () => {
 		if (!deferredPrompt) return;
@@ -67,33 +81,48 @@ export default function PwaInstallPrompt(): React.ReactElement | null {
 				e.userChoice !== null && typeof (e.userChoice as Promise<unknown>).then === 'function'
 					? await e.userChoice
 					: { outcome: 'dismissed' as const };
-			if (choice.outcome === 'accepted') setShowBanner(false);
+			if (choice.outcome === 'accepted') {
+				setUserDismissed(true);
+				if (isOfflineContext) markOfflineInstallNudgeShown();
+			}
 		} catch {
-			// Simulated event in dev, or prompt no longer valid - just close banner
-			setShowBanner(false);
+			setUserDismissed(true);
 		}
 		setDeferredPrompt(null);
-	}, [deferredPrompt]);
+		setBannerMode(null);
+	}, [deferredPrompt, isOfflineContext]);
 
 	const handleDismiss = useCallback(() => {
-		sessionStorage.setItem(SESSION_DISMISS_KEY, '1');
-		localStorage.setItem(COOLDOWN_KEY, String(Date.now() + COOLDOWN_DAYS * 24 * 60 * 60 * 1000));
-		setShowBanner(false);
-	}, []);
+		dismissPwaInstallPrompt();
+		setUserDismissed(true);
+		if (bannerMode === 'offline') markOfflineInstallNudgeShown();
+		setBannerMode(null);
+		clearPwaInstallTrigger();
+	}, [bannerMode, clearPwaInstallTrigger]);
 
-	if (!showBanner || !deferredPrompt) return null;
+	if (!showBanner) return null;
+	if (!deferredPrompt && !(isOfflineContext && iosHint)) return null;
+
+	const title = isOfflineContext ? t('installTitleOffline') : t('installTitle');
+	const description = isOfflineContext
+		? deferredPrompt
+			? t('installDescriptionOffline')
+			: t('installDescriptionOfflineIos')
+		: t('installDescription');
 
 	return (
-		<div aria-label={t('installTitle')} className="map-tooltip map-tooltip--pwa" role="dialog">
-			<p className="font-medium">{t('installTitle')}</p>
-			<p>{t('installDescription')}</p>
+		<div aria-label={title} className="map-tooltip map-tooltip--pwa" role="dialog">
+			<p className="font-medium">{title}</p>
+			<p>{description}</p>
 			<div className="mt-2 flex flex-wrap items-center justify-end gap-2">
 				<Button variant="mapTooltipSecondary" onClick={handleDismiss}>
 					{t('dismiss')}
 				</Button>
-				<Button variant="mapTooltipPrimary" onClick={handleInstall}>
-					{t('install')}
-				</Button>
+				{deferredPrompt ? (
+					<Button variant="mapTooltipPrimary" onClick={handleInstall}>
+						{t('install')}
+					</Button>
+				) : null}
 			</div>
 		</div>
 	);

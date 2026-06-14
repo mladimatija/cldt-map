@@ -446,6 +446,9 @@
 	"pwa": {
 		"installTitle": "Instaliraj CLDT kartu",
 		"installDescription": "Dodaj na početni zaslon za brzi pristup i iskustvo poput aplikacije.",
+		"installTitleOffline": "Instaliraj za offline korištenje",
+		"installDescriptionOffline": "Pločice staze su spremljene. Instaliraj aplikaciju na početni zaslon kako bi kartu otvarao offline bez kartice preglednika.",
+		"installDescriptionOfflineIos": "Pločice staze su spremljene. Dodirni Dijeli, zatim Dodaj na početni zaslon kako bi kartu otvarao offline.",
 		"install": "Instaliraj",
 		"dismiss": "Ne sada"
 	},
@@ -500,7 +503,8 @@
 		"clearPoiAssets": "Obriši POI sadržaje",
 		"confirmClear": "Jeste li sigurni?",
 		"confirmYes": "Da",
-		"confirmNo": "Ne"
+		"confirmNo": "Ne",
+		"downloadComplete": "Offline karte spremne"
 	},
 	"gpxDownload": {
 		"modalTitle": "Preuzmi CLDT GPX",

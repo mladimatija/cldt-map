@@ -446,6 +446,9 @@
 	"pwa": {
 		"installTitle": "CLDT Map installieren",
 		"installDescription": "Zum Startbildschirm hinzufügen für schnellen Zugriff und App-ähnliche Erfahrung.",
+		"installTitleOffline": "Für Offline-Nutzung installieren",
+		"installDescriptionOffline": "Deine Trail-Kacheln sind gespeichert. Installiere die App auf dem Startbildschirm, um die Karte offline ohne Browser-Tab zu öffnen.",
+		"installDescriptionOfflineIos": "Deine Trail-Kacheln sind gespeichert. Tippe auf Teilen, dann Zum Home-Bildschirm, um die Karte offline zu öffnen.",
 		"install": "Installieren",
 		"dismiss": "Nicht jetzt"
 	},
@@ -500,7 +503,8 @@
 		"clearPoiAssets": "POI-Inhalte löschen",
 		"confirmClear": "Sind Sie sicher?",
 		"confirmYes": "Ja",
-		"confirmNo": "Nein"
+		"confirmNo": "Nein",
+		"downloadComplete": "Offline-Karten bereit"
 	},
 	"gpxDownload": {
 		"modalTitle": "CLDT GPX herunterladen",
