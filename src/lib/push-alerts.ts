@@ -1,5 +1,5 @@
 /**
- * Client side of the seasonal-alert web push opt-in.
+ * Client side of trail-alert web push opt-in (seasonal warnings + condition notices).
  *
  * The deploy is the source of capability (VAPID public key baked in at
  * build time; subscribe endpoint answers 503 when the private half is not

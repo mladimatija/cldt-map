@@ -5,6 +5,7 @@ import React from 'react';
 import { useTranslations } from 'next-intl';
 import { useMapStore, type MapStoreState } from '@/lib/store';
 import { IoCloudOfflineOutline } from 'react-icons/io5';
+import { COMPACT_BANNER_CHIP_CLASSES } from './banner-styles';
 
 export function OfflineIndicator(): React.ReactElement | null {
 	const t = useTranslations('offlineIndicator');
@@ -13,13 +14,9 @@ export function OfflineIndicator(): React.ReactElement | null {
 	if (!isOffline) return null;
 
 	return (
-		<div
-			aria-live="polite"
-			className="z-controls absolute top-20 left-1/2 flex -translate-x-1/2 items-center gap-1.5 rounded-full bg-gray-800/90 px-3 py-1 text-xs font-medium text-white shadow dark:bg-[var(--bg-primary)]/90"
-			role="status"
-		>
+		<div aria-live="polite" className={COMPACT_BANNER_CHIP_CLASSES} role="status">
 			<IoCloudOfflineOutline aria-hidden className="h-3.5 w-3.5 shrink-0" />
-			<span>{t('offline')}</span>
+			<span className="font-medium">{t('offline')}</span>
 		</div>
 	);
 }

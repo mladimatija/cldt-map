@@ -20,8 +20,10 @@ import { dayHeader, tripBriefStringsFromMessages } from '@/lib/trip-brief-i18n';
 import { exportTripBriefPdf } from '@/lib/trip-brief-pdf';
 import { exportTripBriefDocx } from '@/lib/trip-brief-docx';
 import { exportTripBriefHtml } from '@/lib/trip-brief-html';
-import { usePopoverFocusTrap, usePackAdjustedPaceKmh } from '@/hooks';
-import { computeStagePackScenarios, formatVolume, formatWeight } from '@/lib/pack-weight';
+import { usePopoverFocusTrap, usePackAdjustedPaceKmh, useActiveStarredPoiIds } from '@/hooks';
+import { computeStagePackScenarios, formatVolume, formatWeight, kgToDisplay, weightUnitLabel } from '@/lib/pack-weight';
+import { estimatedFoodDaysFromPack, type StageResupplyCadence } from '@/lib/resupply-cadence';
+import { poiDisplayName } from '@/lib/pois';
 import { missingGearTerms } from '@/lib/pack-csv';
 import { renderElevationThumbnail } from '@/lib/elevation-thumbnail';
 import { Locale } from '@/i18n/routing';
@@ -64,13 +66,14 @@ export function MapControlsTripBriefModal({
 
 	const stagePlan = useMapStore((s: MapStoreState) => s.stagePlan);
 	const poisFile = useMapStore((s: MapStoreState) => s.poisFile);
-	const starredPoiIds = useMapStore((s: MapStoreState) => s.starredPoiIds);
+	const activeStarredPoiIds = useActiveStarredPoiIds();
 	const enabledPoiTypes = useMapStore((s: MapStoreState) => s.enabledPoiTypes);
 	const enabledPoiTags = useMapStore((s: MapStoreState) => s.enabledPoiTags);
 	const includeRemotePois = useMapStore((s: MapStoreState) => s.includeRemotePois);
 	const walkingPaceKmh = usePackAdjustedPaceKmh();
 	const packBaseWeightKg = useMapStore((s: MapStoreState) => s.packBaseWeightKg);
 	const waterConsumptionLph = useMapStore((s: MapStoreState) => s.waterConsumptionLph);
+	const foodConsumptionKgPerDay = useMapStore((s: MapStoreState) => s.foodConsumptionKgPerDay);
 	const packGearList = useMapStore((s: MapStoreState) => s.packGearList);
 	const gradeAdjustedEta = useMapStore((s: MapStoreState) => s.gradeAdjustedEta);
 	const units = useMapStore((s: MapStoreState) => s.units);
@@ -120,12 +123,51 @@ export function MapControlsTripBriefModal({
 		if (!stagePlan) {
 			throw new Error('Stage plan required');
 		}
+
+		const poiName = (id: string): string => {
+			const poi = poisFile?.pois.find((p) => p.id === id);
+			return poi ? poiDisplayName(poi, locale) : id;
+		};
+
+		const buildResupplyCadenceLabels = (
+			cadence: StageResupplyCadence,
+		): { entering?: string; carry?: string; foodPack?: string } => {
+			const out: { entering?: string; carry?: string; foodPack?: string } = {};
+			if (cadence.status !== 'yes' && cadence.kmSinceGrocery !== null && cadence.stagesSinceGrocery > 0) {
+				out.entering = t('resupplyEntering', {
+					stages: cadence.stagesSinceGrocery,
+					distance: makeDistanceLabelFn(units, distancePrecision)(cadence.kmSinceGrocery),
+				});
+			}
+			if (
+				(cadence.status === 'no' || cadence.status === 'partial') &&
+				cadence.kmToNextGrocery !== null &&
+				cadence.nextGrocery
+			) {
+				out.carry = t('resupplyCarry', {
+					distance: makeDistanceLabelFn(units, distancePrecision)(cadence.kmToNextGrocery),
+					town: poiName(cadence.nextGrocery.id),
+				});
+			}
+			const consumableKg = packGearList?.consumableKg ?? 0;
+			if (consumableKg > 0 && foodConsumptionKgPerDay > 0) {
+				const foodDays = estimatedFoodDaysFromPack(consumableKg, foodConsumptionKgPerDay);
+				if (foodDays !== null) {
+					out.foodPack = t('resupplyFoodPack', {
+						days: foodDays,
+						rate: `${Math.round(kgToDisplay(foodConsumptionKgPerDay, units) * 10) / 10} ${weightUnitLabel(units)}/day`,
+					});
+				}
+			}
+			return out;
+		};
+
 		return assembleTripBrief({
 			stagePlan,
 			poisFile,
 			enhancedTrailPoints,
 			elevationPoints: enhancedTrailPoints,
-			selectedPoiIds: starredPoiIds,
+			selectedPoiIds: activeStarredPoiIds,
 			includeAllInStage: poiScope === 'allInStage',
 			enabledPoiTypes,
 			enabledPoiTags,
@@ -181,12 +223,26 @@ export function MapControlsTripBriefModal({
 					};
 				},
 			}),
+			poiName,
+			resupplyCadenceLabels: (cadence) => buildResupplyCadenceLabels(cadence),
+			resupplySummaryLabel: ({ maxFoodGapKm, nextTown, nextDistanceKm }) => {
+				const gapLine = t('resupplySummaryGap', {
+					distance: makeDistanceLabelFn(units, distancePrecision)(maxFoodGapKm),
+				});
+				if (nextTown && nextDistanceKm !== undefined) {
+					return `${gapLine} ${t('resupplySummaryNext', {
+						town: nextTown,
+						distance: makeDistanceLabelFn(units, distancePrecision)(nextDistanceKm),
+					})}`;
+				}
+				return gapLine;
+			},
 		});
 	}, [
 		stagePlan,
 		poisFile,
 		enhancedTrailPoints,
-		starredPoiIds,
+		activeStarredPoiIds,
 		poiScope,
 		enabledPoiTypes,
 		enabledPoiTags,
@@ -205,6 +261,7 @@ export function MapControlsTripBriefModal({
 		t,
 		packBaseWeightKg,
 		waterConsumptionLph,
+		foodConsumptionKgPerDay,
 	]);
 
 	const resetModalState = useCallback((): void => {
@@ -369,7 +426,7 @@ export function MapControlsTripBriefModal({
 						)}
 
 						<label className="mb-3 block">
-							<span className="mb-1 block text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400">
+							<span className="mb-1 block text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
 								{t('document.labels.overview')}
 							</span>
 							<textarea
@@ -383,9 +440,16 @@ export function MapControlsTripBriefModal({
 
 						{preparedBrief?.days.map((day, i) => (
 							<label className="mb-3 block" key={day.index}>
-								<span className="mb-1 block text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400">
+								<span className="mb-1 block text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
 									{dayHeader(day, documentStrings, preparedBrief.meta.units)}
 								</span>
+								{[day.resupplyEnteringLabel, day.resupplyCarryLabel, day.foodPackLabel]
+									.filter((line): line is string => !!line)
+									.map((line) => (
+										<p className="mb-1 text-[10px] text-amber-700 dark:text-amber-400" key={line}>
+											{line}
+										</p>
+									))}
 								<textarea
 									className={NARRATIVE_TEXTAREA}
 									disabled={generating}
@@ -407,7 +471,7 @@ export function MapControlsTripBriefModal({
 						{!enabled && <p className="mb-2 text-xs text-amber-700 italic dark:text-amber-300">{t('needsPlan')}</p>}
 
 						<fieldset className="mb-3 flex flex-col gap-1">
-							<legend className="text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400">
+							<legend className="text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
 								{t('format')}
 							</legend>
 							<label className="flex items-center gap-2 text-sm text-gray-700 dark:text-[var(--text-primary)]">
@@ -440,7 +504,7 @@ export function MapControlsTripBriefModal({
 						</fieldset>
 
 						<fieldset className="mb-3 flex flex-col gap-1">
-							<legend className="text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400">
+							<legend className="text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
 								{t('poiScope')}
 							</legend>
 							<label className="flex items-center gap-2 text-sm text-gray-700 dark:text-[var(--text-primary)]">
@@ -455,23 +519,25 @@ export function MapControlsTripBriefModal({
 							<label
 								className={cn(
 									'flex items-center gap-2 text-sm',
-									starredPoiIds.size > 0
+									activeStarredPoiIds.size > 0
 										? 'cursor-pointer text-gray-700 dark:text-[var(--text-primary)]'
-										: 'cursor-not-allowed text-gray-400 dark:text-gray-600',
+										: 'cursor-not-allowed text-gray-400 dark:text-[var(--text-secondary)]',
 								)}
-								title={starredPoiIds.size > 0 ? undefined : t('poisSelectedComingSoon')}
+								title={activeStarredPoiIds.size > 0 ? undefined : t('poisSelectedComingSoon')}
 							>
 								<Radio
 									checked={poiScope === 'selected'}
-									disabled={starredPoiIds.size === 0}
+									disabled={activeStarredPoiIds.size === 0}
 									name="trip-brief-pois"
 									value="selected"
 									onChange={() => setPoiScope('selected')}
 								/>
-								<span className={starredPoiIds.size === 0 ? 'line-through' : undefined}>
+								<span className={activeStarredPoiIds.size === 0 ? 'line-through' : undefined}>
 									{t('poisSelected')}
-									{starredPoiIds.size > 0 && (
-										<span className="ml-1 text-xs text-amber-600 dark:text-amber-400">({starredPoiIds.size})</span>
+									{activeStarredPoiIds.size > 0 && (
+										<span className="ml-1 text-xs text-amber-600 dark:text-amber-400">
+											({activeStarredPoiIds.size})
+										</span>
 									)}
 								</span>
 							</label>

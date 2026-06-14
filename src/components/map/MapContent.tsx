@@ -17,6 +17,8 @@ import { useTrailOsmTagsFetch } from '@/hooks/useTrailOsmTagsFetch';
 import { usePoisFetch } from '@/hooks/usePoisFetch';
 import { usePanelListeners } from '@/hooks';
 import { useWakeLock } from '@/hooks/useWakeLock';
+import { ShareCopyToast } from '@/components/map/ShareCopyToast';
+import { TileDownloadCompleteToast } from '@/components/map/TileDownloadCompleteToast';
 
 function MapTrailLoadingFallback(): React.ReactElement {
 	const t = useTranslations('mapWrapper');
@@ -39,6 +41,9 @@ const OfflineIndicator = dynamic(
 	() => import('@/components/map/OfflineIndicator').then((m) => ({ default: m.OfflineIndicator })),
 	{ ssr: false },
 );
+const DemoBanner = dynamic(() => import('@/components/map/DemoBanner').then((m) => ({ default: m.DemoBanner })), {
+	ssr: false,
+});
 const StaleCacheNotification = dynamic(
 	() => import('@/components/map/StaleCacheNotification').then((m) => ({ default: m.StaleCacheNotification })),
 	{ ssr: false },
@@ -185,8 +190,11 @@ export default function MapContent(): React.ReactElement {
 
 	return (
 		<>
+			<DemoBanner />
 			<OfflineIndicator />
 			<StaleCacheNotification />
+			<ShareCopyToast />
+			<TileDownloadCompleteToast />
 			<GpxImportDropzone />
 			<DistanceRemainingOverlay />
 			<ShareUrlHandler />

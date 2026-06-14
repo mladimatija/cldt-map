@@ -24,6 +24,7 @@ import {
 	getShareBaseUrl,
 	isWithinMapBoundary,
 } from '@/lib/utils';
+import { copyTextToClipboard } from '@/lib/share-link-copy';
 import type * as GeoJSON from 'geojson';
 import {
 	IoArrowDownOutline,
@@ -444,10 +445,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 		return null;
 	};
 
-	const [showCopyToast, setShowCopyToast] = useState(false);
-	const [copyToastShort, setCopyToastShort] = useState(false);
 	const [tileBoundaryError, setTileBoundaryError] = useState<string | null>(null);
-	const copyToastTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 	const tileBoundaryErrorTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 	const shareShortLinks = useMapStore((state: MapStoreState) => state.shareShortLinks);
 	const [sharePanelUrlSnapshot, setSharePanelUrlSnapshot] = useState<string | null>(null);
@@ -467,24 +465,17 @@ const MapControls: React.FC<MapControlsProps> = ({
 
 	const writeShareLinkToClipboard = async (finalUrl: string, short: boolean, withText: boolean): Promise<void> => {
 		const text = withText ? `${t('shareText')}\n${finalUrl}` : finalUrl;
-		try {
-			await navigator.clipboard.writeText(text);
-			setCopyToastShort(short);
-			setShowCopyToast(true);
-			if (copyToastTimeoutRef.current) clearTimeout(copyToastTimeoutRef.current);
-			copyToastTimeoutRef.current = setTimeout(() => {
-				setShowCopyToast(false);
-				setCopyToastShort(false);
-				copyToastTimeoutRef.current = null;
-			}, 1500);
-		} catch (err) {
-			console.error('Could not copy text:', err);
+		const ok = await copyTextToClipboard(text);
+		if (ok) {
+			useMapStore.getState().showShareCopyToast({ status: 'success', short });
+		} else {
+			useMapStore.getState().showShareCopyToast({ status: 'error', short: false });
 		}
 	};
 
 	useEffect(
 		() => () => {
-			if (copyToastTimeoutRef.current) clearTimeout(copyToastTimeoutRef.current);
+			if (tileBoundaryErrorTimeoutRef.current) clearTimeout(tileBoundaryErrorTimeoutRef.current);
 		},
 		[],
 	);
@@ -960,15 +951,6 @@ const MapControls: React.FC<MapControlsProps> = ({
 							onCopy={copyResolvedShareLink}
 						/>
 					) : null}
-					{showCopyToast && (
-						<div
-							aria-live="polite"
-							className="map-tooltip map-tooltip--pwa animate-slide-in-from-top fixed top-4 right-4 z-[var(--z-toast)] motion-reduce:animate-none"
-							role="status"
-						>
-							<p className="font-medium">{copyToastShort ? t('linkCopiedShort') : t('linkCopied')}</p>
-						</div>
-					)}
 					{tileBoundaryError && (
 						<div
 							aria-live="assertive"

@@ -13,6 +13,7 @@ import { usePanel, usePanelListeners, usePanelManager } from './usePanelManager'
 import { usePoiListRows } from './usePoiListRows';
 import { useRuler } from './useRuler';
 import { usePackAdjustedPaceKmh, packAdjustedPaceKmhFromState } from './usePackAdjustedPace';
+import { useActiveStarredPoiIds } from './useActiveStarredPoiIds';
 
 export {
 	useSiteMetadata,
@@ -28,6 +29,7 @@ export {
 	useRuler,
 	usePackAdjustedPaceKmh,
 	packAdjustedPaceKmhFromState,
+	useActiveStarredPoiIds,
 };
 export type { UseRulerResult } from './useRuler';
 export type {

@@ -8,7 +8,7 @@ export const MAP_CONTROL_POPOVER =
 
 /** Inline input matching map control styling; dark mode: white text and border for GoToDistance. */
 export const MAP_CONTROL_INPUT =
-	'w-20 rounded-md border border-gray-200 bg-white px-2 py-1.5 text-sm outline-none focus-visible:border-cldt-green focus-visible:ring-1 focus-visible:ring-cldt-green dark:border-white dark:bg-[var(--bg-secondary)] dark:text-white dark:placeholder-gray-400';
+	'w-20 rounded-md border border-gray-200 bg-white px-2 py-1.5 text-sm outline-none focus-visible:border-cldt-green focus-visible:ring-1 focus-visible:ring-cldt-green dark:border-white dark:bg-[var(--bg-secondary)] dark:text-white dark:placeholder-[var(--text-secondary)]';
 
 /**
  * Shared dark-mode class fragments - keep in sync with theme.css .dark variables.
@@ -19,3 +19,7 @@ export const DARK_PANEL = 'dark:border-[var(--border-color)] dark:bg-[var(--bg-s
 export const DARK_TEXT = 'dark:text-[var(--text-primary)]';
 /** Dark muted/secondary text (descriptions, hints, labels). */
 export const DARK_TEXT_MUTED = 'dark:text-[var(--text-secondary)]';
+/** Dark hover/active surface (progress bar track, list row hover). */
+export const DARK_BG_HOVER = 'dark:bg-[var(--bg-hover)]';
+/** Dark list row hover background. */
+export const DARK_HOVER_BG = 'dark:hover:bg-[var(--bg-hover)]';

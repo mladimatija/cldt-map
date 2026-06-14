@@ -1,5 +1,5 @@
 /**
- * Dev-only walk simulator: a fake hiker that moves along the trail.
+ * Walk simulator: a fake hiker that moves along the trail.
  *
  * Drives the same store paths a real GPS fix does (map-store userLocation +
  * main-store closestPoint), so everything downstream reacts exactly as in
@@ -11,8 +11,8 @@
  *
  * The timer and trail geometry live at module scope, so a walk started on
  * the /test page keeps going while you switch to the map page to watch.
- * UI state is mirrored into `mapStore.walkSim` for rendering. Never imported
- * by production components - only the dev-gated test page.
+ * UI state is mirrored into `mapStore.walkSim` for rendering. Production
+ * use is limited to the public /demo route; dev controls stay on /test.
  */
 
 import { useMapStore, useStore } from '@/lib/store';
@@ -40,6 +40,8 @@ let speedKmh = 4;
 let walkDirection: TrailDirection = 'SOBO';
 let offsetM = 0;
 let lastIdx = 0;
+let loopAtEnds = false;
+let loopStartM = 0;
 
 async function loadTrail(): Promise<boolean> {
 	if (points.length > 1) return true;
@@ -118,6 +120,13 @@ function tick(): void {
 	posM += walkDirection === 'SOBO' ? stepM : -stepM;
 	const endM = cumM[cumM.length - 1];
 	if (posM <= 0 || posM >= endM) {
+		if (loopAtEnds) {
+			posM = loopStartM;
+			lastIdx = 0;
+			applyPosition();
+			mirrorState(true);
+			return;
+		}
 		posM = Math.max(0, Math.min(endM, posM));
 		applyPosition();
 		pauseWalkSim();
@@ -132,12 +141,16 @@ export async function startWalkSim(config: {
 	speedKmh: number;
 	walkDirection: TrailDirection;
 	offsetM: number;
+	/** When true, reaching either trail end jumps back to the start km (demo hike). */
+	loopAtEnds?: boolean;
 }): Promise<boolean> {
 	if (!(await loadTrail())) return false;
 	speedKmh = config.speedKmh;
 	walkDirection = config.walkDirection;
 	offsetM = config.offsetM;
+	loopAtEnds = config.loopAtEnds ?? false;
 	posM = Math.max(0, Math.min(cumM[cumM.length - 1], config.startKm * 1000));
+	loopStartM = posM;
 	lastIdx = 0;
 	const mapStore = useMapStore.getState();
 	mapStore.setFakeUserLocationEnabled(true);

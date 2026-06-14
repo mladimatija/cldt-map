@@ -5,10 +5,12 @@ import { createPortal } from 'react-dom';
 import { useMap } from 'react-leaflet';
 import { useLocale, useTranslations } from 'next-intl';
 import { IoLocationOutline } from 'react-icons/io5';
-import Select, { type GroupBase, type MultiValue } from 'react-select';
+import { type GroupBase, type MultiValue } from 'react-select';
 import { useMapStore, useStore, type MapStoreState, type StoreState, TrailDirection, UnitSystem } from '@/lib/store';
+import { isDefaultStarredCollectionName } from '@/lib/store/types';
 import {
 	collectPoiTags,
+	countPoisHiddenByReachabilityFilter,
 	loadPoiTypeCounts,
 	POI_TYPE_GROUPS,
 	poiDisplayName,
@@ -30,7 +32,13 @@ import {
 	poiAheadKm,
 	resolveTrailAnchor,
 } from '@/lib/poi-ahead-corridor';
-import { usePoiListRows, usePopoverFocusTrap, type ParsedDistance, type SortMode } from '@/hooks';
+import {
+	usePoiListRows,
+	usePopoverFocusTrap,
+	useActiveStarredPoiIds,
+	type ParsedDistance,
+	type SortMode,
+} from '@/hooks';
 import { cn, formatDistance, formatOffTrail } from '@/lib/utils';
 import { findNearestPointIndex } from '@/lib/distance-utils';
 import { haversineDistanceM } from '@/lib/haversine';
@@ -38,6 +46,8 @@ import { buildGpxWaypointXml, downloadGpxFile, type GpxWaypoint } from '@/lib/gp
 import { Button } from '@/components/ui/Button';
 import { Checkbox } from '@/components/ui/Checkbox';
 import { MAP_CONTROL_INPUT, MAP_CONTROL_POPOVER } from './map-controls-constants';
+import { MapControlMultiSelect, MapControlSelectColorDotLabel, MapControlSingleSelect } from './MapControlSelect';
+import { MapControlInlineNameForm } from './MapControlInlineNameForm';
 import { MapControlsButton } from './MapControlsButton';
 import { MapControlsPoiDisclaimerModal } from './MapControlsPoiDisclaimerModal';
 import { DistanceUnit } from '@/lib/types';
@@ -52,52 +62,6 @@ function formatJumpLabel(distance: number, unit: DistanceUnit): string {
 	const rounded = Math.round(distance * 10) / 10;
 	return `${rounded.toFixed(rounded % 1 === 0 ? 0 : 1)} ${unit}`;
 }
-
-/** Shared Tailwind classNames for the react-select instances in this panel.
- *  Tracking both the multi-select (POI types) and single-select (sort) on the
- *  same vocabulary so the dropdowns visually match. */
-const poiSelectClassNames = {
-	// No z-index on the container: a stacking context here would trap the open
-	// menu inside it, letting a later sibling (e.g. the sort Select) paint over
-	// the menu. The menu's own z-controls-popover (110) below sits in the popover
-	// stacking context and wins against sibling controls and the sticky bucket header.
-	container: () => 'relative w-full text-xs leading-snug',
-	// Layout (flex, items-center, justify-between) is repeated here on purpose:
-	// react-select's base flex CSS is injected via Emotion at runtime, which
-	// silently drops out in the Next.js App Router production build. Restating
-	// the layout in Tailwind makes the control render correctly without
-	// depending on Emotion's runtime style injection.
-	control: ({ isFocused }: { isFocused: boolean }) =>
-		cn(
-			'flex min-h-[44px] flex-wrap items-center justify-between cursor-pointer rounded-md border bg-[var(--map-tooltip-bg)] px-2 py-0.5 text-xs leading-snug text-gray-800 outline-none dark:bg-[var(--bg-secondary)] dark:text-white',
-			isFocused ? 'border-cldt-green ring-1 ring-cldt-green' : 'border-gray-200 dark:border-white',
-		),
-	placeholder: () => 'text-xs text-gray-400',
-	input: () => 'text-xs text-gray-800 dark:text-white',
-	singleValue: () => 'text-xs text-gray-800 dark:text-white',
-	valueContainer: () => 'flex flex-wrap items-center gap-1 flex-1',
-	multiValue: () =>
-		'flex items-center gap-1 rounded bg-cldt-blue/15 dark:bg-cldt-blue/25 text-[11px] px-1.5 py-0.5 leading-none',
-	multiValueLabel: () => 'text-cldt-blue dark:text-cldt-blue text-[11px]',
-	multiValueRemove: () => 'cursor-pointer hover:text-red-500 ml-0.5 text-[11px]',
-	indicatorsContainer: () => 'flex items-center self-stretch shrink-0',
-	indicatorSeparator: () => 'hidden',
-	dropdownIndicator: () => 'flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-white px-1',
-	clearIndicator: () => 'flex items-center text-gray-400 hover:text-red-500 px-1 cursor-pointer',
-	menu: () =>
-		'absolute z-controls-popover mt-1 w-full rounded-md border border-gray-200 bg-[var(--map-tooltip-bg)] shadow-md text-xs leading-snug dark:border-[var(--border-color)] dark:bg-[var(--bg-secondary)]',
-	menuList: () => 'py-1 max-h-60 overflow-y-auto',
-	group: () => '',
-	groupHeading: () =>
-		'px-2 pt-1 pb-0.5 text-[10px] font-semibold tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]',
-	option: ({ isFocused, isSelected }: { isFocused: boolean; isSelected: boolean }) =>
-		cn(
-			'cursor-pointer px-2 py-1 text-xs leading-snug text-gray-800 dark:text-[var(--text-primary)]',
-			isFocused && 'bg-cldt-blue/10 dark:bg-cldt-blue/20',
-			isSelected && 'text-cldt-blue font-medium dark:text-cldt-blue',
-		),
-	noOptionsMessage: () => 'p-2 text-xs italic text-gray-500',
-};
 
 interface PoiListRowProps {
 	poi: Poi;
@@ -198,7 +162,7 @@ const PoiListRow = React.memo(function PoiListRow({
 					'focus-visible:outline-cldt-green ml-1 flex min-h-[44px] min-w-[44px] shrink-0 items-center justify-center rounded text-lg transition-colors focus-visible:outline-2',
 					isStarred
 						? 'text-amber-400'
-						: 'text-gray-300 hover:text-amber-400 dark:text-gray-600 dark:hover:text-amber-400',
+						: 'text-gray-300 hover:text-amber-400 dark:text-[var(--poi-star-inactive)] dark:hover:text-amber-400',
 				)}
 				title={isStarred ? tStarRemove : tStarAdd}
 				type="button"
@@ -312,6 +276,7 @@ export function MapControlsPoiList({
 	const setEnabledPoiTypes = useMapStore((s: MapStoreState) => s.setEnabledPoiTypes);
 	const enabledPoiTags = useMapStore((s: MapStoreState) => s.enabledPoiTags);
 	const includeRemotePois = useMapStore((s: MapStoreState) => s.includeRemotePois);
+	const setIncludeRemotePois = useMapStore((s: MapStoreState) => s.setIncludeRemotePois);
 	const togglePoiTag = useMapStore((s: MapStoreState) => s.togglePoiTag);
 	const clearPoiTags = useMapStore((s: MapStoreState) => s.clearPoiTags);
 	const direction = useMapStore((s: MapStoreState) => s.direction);
@@ -320,7 +285,18 @@ export function MapControlsPoiList({
 	const userLocation = useMapStore((s: MapStoreState) => s.userLocation);
 	const permissionStatus = useMapStore((s: MapStoreState) => s.permissionStatus);
 	const hasGps = !!userLocation && permissionStatus === 'granted';
-	const starredPoiIds = useMapStore((s: MapStoreState) => s.starredPoiIds);
+	const starredPoiCollections = useMapStore((s: MapStoreState) => s.starredPoiCollections);
+	const activeStarredCollectionId = useMapStore((s: MapStoreState) => s.activeStarredCollectionId);
+	const setActiveStarredCollectionId = useMapStore((s: MapStoreState) => s.setActiveStarredCollectionId);
+	const createStarredPoiCollection = useMapStore((s: MapStoreState) => s.createStarredPoiCollection);
+	const renameStarredPoiCollection = useMapStore((s: MapStoreState) => s.renameStarredPoiCollection);
+	const deleteStarredPoiCollection = useMapStore((s: MapStoreState) => s.deleteStarredPoiCollection);
+	const poiFilterPresets = useMapStore((s: MapStoreState) => s.poiFilterPresets);
+	const savePoiFilterPreset = useMapStore((s: MapStoreState) => s.savePoiFilterPreset);
+	const applyPoiFilterPreset = useMapStore((s: MapStoreState) => s.applyPoiFilterPreset);
+	const deletePoiFilterPreset = useMapStore((s: MapStoreState) => s.deletePoiFilterPreset);
+	const renamePoiFilterPreset = useMapStore((s: MapStoreState) => s.renamePoiFilterPreset);
+	const activeStarredPoiIds = useActiveStarredPoiIds();
 	const toggleStarredPoi = useMapStore((s: MapStoreState) => s.toggleStarredPoi);
 	const clearStarredPois = useMapStore((s: MapStoreState) => s.clearStarredPois);
 	const requestOpenPoi = useMapStore((s: MapStoreState) => s.requestOpenPoi);
@@ -350,6 +326,15 @@ export function MapControlsPoiList({
 	 *  with a header per bucket. Useful for 8k+ POI datasets where a flat
 	 *  list is too long to scan. */
 	const [groupByDecade, setGroupByDecade] = useState(false);
+	/** Inline name input when saving a filter preset or creating a star collection. */
+	const [presetNameInput, setPresetNameInput] = useState('');
+	const [savingFilterPreset, setSavingFilterPreset] = useState(false);
+	const [collectionNameInput, setCollectionNameInput] = useState('');
+	const [creatingStarCollection, setCreatingStarCollection] = useState(false);
+	const [renamingPresetId, setRenamingPresetId] = useState<string | null>(null);
+	const [renamePresetInput, setRenamePresetInput] = useState('');
+	const [renamingCollectionId, setRenamingCollectionId] = useState<string | null>(null);
+	const [renameCollectionInput, setRenameCollectionInput] = useState('');
 	/** When non-empty, only water POIs in the selected reliability classes appear. */
 	const [enabledWaterReliability, setEnabledWaterReliability] = useState<ReadonlySet<WaterReliability>>(
 		() => new Set(),
@@ -417,6 +402,11 @@ export function MapControlsPoiList({
 	 *  that don't carry tags yet. */
 	const allTags = useMemo((): string[] => (poisFile?.pois?.length ? collectPoiTags(poisFile.pois) : []), [poisFile]);
 
+	const hiddenByReachabilityCount = useMemo(
+		(): number => countPoisHiddenByReachabilityFilter(poisFile?.pois ?? []),
+		[poisFile],
+	);
+
 	/** Grouped options for the react-select POI-type multi-select. Rebuilds
 	 *  only on locale change since labels go through next-intl. */
 	const typeOptions = useMemo(
@@ -477,6 +467,63 @@ export function MapControlsPoiList({
 		() => sortOptions.find((o) => o.value === sort) ?? sortOptions[0],
 		[sortOptions, sort],
 	);
+
+	const filterPresetOptions = useMemo(
+		(): { value: string; label: string }[] => poiFilterPresets.map((p) => ({ value: p.id, label: p.name })),
+		[poiFilterPresets],
+	);
+
+	const displayStarCollectionName = useCallback(
+		(name: string): string => (isDefaultStarredCollectionName(name) ? t('starCollectionDefaultName') : name),
+		[t],
+	);
+
+	const starCollectionOptions = useMemo(
+		(): { value: string; label: string }[] =>
+			starredPoiCollections.map((c) => ({
+				value: c.id,
+				label: `${displayStarCollectionName(c.name)} (${c.poiIds.length})`,
+			})),
+		[starredPoiCollections, displayStarCollectionName],
+	);
+	const selectedStarCollectionOption = useMemo(
+		() => starCollectionOptions.find((o) => o.value === activeStarredCollectionId) ?? null,
+		[starCollectionOptions, activeStarredCollectionId],
+	);
+
+	const handleSaveFilterPreset = useCallback((): void => {
+		const id = savePoiFilterPreset(presetNameInput);
+		if (id) {
+			setPresetNameInput('');
+			setSavingFilterPreset(false);
+		}
+	}, [presetNameInput, savePoiFilterPreset]);
+
+	const handleCreateStarCollection = useCallback((): void => {
+		const id = createStarredPoiCollection(collectionNameInput);
+		if (id) {
+			setCollectionNameInput('');
+			setCreatingStarCollection(false);
+		}
+	}, [collectionNameInput, createStarredPoiCollection]);
+
+	const handleRenameFilterPreset = useCallback((): void => {
+		if (!renamingPresetId) return;
+		const trimmed = renamePresetInput.trim();
+		if (!trimmed) return;
+		renamePoiFilterPreset(renamingPresetId, trimmed);
+		setRenamingPresetId(null);
+		setRenamePresetInput('');
+	}, [renamingPresetId, renamePresetInput, renamePoiFilterPreset]);
+
+	const handleRenameStarCollection = useCallback((): void => {
+		if (!renamingCollectionId) return;
+		const trimmed = renameCollectionInput.trim();
+		if (!trimmed) return;
+		renameStarredPoiCollection(renamingCollectionId, trimmed);
+		setRenamingCollectionId(null);
+		setRenameCollectionInput('');
+	}, [renamingCollectionId, renameCollectionInput, renameStarredPoiCollection]);
 
 	/** Pre-compute display names keyed by POI id. Scoped to [poisFile, locale],
 	 *  so it only rebuilds when the dataset or language changes - not on every
@@ -759,7 +806,7 @@ export function MapControlsPoiList({
 					index={i}
 					isActive={activeIndex === i}
 					isSelected={selected.has(poi.id)}
-					isStarred={starredPoiIds.has(poi.id)}
+					isStarred={activeStarredPoiIds.has(poi.id)}
 					key={poi.id}
 					poi={poi}
 					rowRefsRef={rowRefs}
@@ -797,7 +844,7 @@ export function MapControlsPoiList({
 			selected,
 			sort,
 			starHandlers,
-			starredPoiIds,
+			activeStarredPoiIds,
 			tAheadOfYou,
 			tFromYou,
 			tOffTrailShort,
@@ -858,19 +905,15 @@ export function MapControlsPoiList({
 				</button>
 			)}
 
-			<Select<{ value: string; label: string }, true>
-				hideSelectedOptions
-				isMulti
-				unstyled
+			<MapControlMultiSelect<{ value: string; label: string }>
 				aria-label={t('typeFilterPlaceholder')}
-				classNamePrefix="poi-type-select"
-				classNames={poiSelectClassNames}
-				closeMenuOnSelect={false}
 				formatOptionLabel={(option, meta) =>
 					meta.context === 'menu' && typeCounts ? (
 						<span>
 							{option.label}{' '}
-							<span className="text-gray-400 tabular-nums dark:text-gray-500">({typeCounts[option.value] ?? 0})</span>
+							<span className="text-gray-400 tabular-nums dark:text-[var(--text-secondary)]">
+								({typeCounts[option.value] ?? 0})
+							</span>
 						</span>
 					) : (
 						option.label
@@ -882,34 +925,120 @@ export function MapControlsPoiList({
 				noOptionsMessage={() => t('typeFilterNoMatches')}
 				options={typeOptions}
 				placeholder={t('typeFilterPlaceholder')}
-				styles={{
-					menu: (base) => ({
-						...base,
-						zIndex: 'calc(var(--z-map-overlay) + 1)',
-					}),
-				}}
 				value={selectedTypeOptions}
 				onChange={(val: MultiValue<{ value: string; label: string }>) =>
 					setEnabledPoiTypes(new Set(val.map((o) => o.value)))
 				}
 			/>
 
+			<div className="flex flex-col gap-1">
+				<div className="flex items-center justify-between text-[10px] tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
+					<span>{t('filterPresetsHeading')}</span>
+					{!savingFilterPreset && (
+						<button
+							className="text-cldt-blue focus-visible:ring-cldt-green rounded hover:underline focus-visible:underline focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:outline-none"
+							type="button"
+							onClick={() => setSavingFilterPreset(true)}
+						>
+							{t('filterPresetsSave')}
+						</button>
+					)}
+				</div>
+				{filterPresetOptions.length > 0 && (
+					<MapControlSingleSelect<{ value: string; label: string }>
+						aria-label={t('filterPresetsApply')}
+						options={filterPresetOptions}
+						placeholder={t('filterPresetsApply')}
+						value={null}
+						onChange={(val) => {
+							if (val) applyPoiFilterPreset(val.value);
+						}}
+					/>
+				)}
+				{poiFilterPresets.map((preset) =>
+					renamingPresetId === preset.id ? (
+						<MapControlInlineNameForm
+							ariaLabel={t('filterPresetsNamePlaceholder')}
+							cancelLabel={t('filterPresetsCancel')}
+							confirmLabel={t('filterPresetsConfirm')}
+							key={preset.id}
+							placeholder={t('filterPresetsNamePlaceholder')}
+							value={renamePresetInput}
+							onCancel={() => {
+								setRenamingPresetId(null);
+								setRenamePresetInput('');
+							}}
+							onChange={setRenamePresetInput}
+							onConfirm={handleRenameFilterPreset}
+						/>
+					) : (
+						<div className="flex items-center justify-between gap-1 text-xs" key={preset.id}>
+							<button
+								className="text-cldt-blue focus-visible:ring-cldt-green truncate text-left hover:underline focus-visible:underline focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:outline-none"
+								type="button"
+								onClick={() => applyPoiFilterPreset(preset.id)}
+							>
+								{preset.name}
+							</button>
+							<div className="flex shrink-0 items-center gap-0.5">
+								<button
+									aria-label={t('filterPresetsRename', { name: preset.name })}
+									className="text-cldt-blue focus-visible:ring-cldt-green rounded px-1 hover:underline focus-visible:underline focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:outline-none"
+									type="button"
+									onClick={() => {
+										setRenamingPresetId(preset.id);
+										setRenamePresetInput(preset.name);
+									}}
+								>
+									✎
+								</button>
+								<button
+									aria-label={t('filterPresetsDelete', { name: preset.name })}
+									className="focus-visible:ring-cldt-green rounded px-1 text-gray-400 hover:text-red-600 focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:outline-none dark:text-[var(--text-secondary)] dark:hover:text-red-400"
+									type="button"
+									onClick={() => deletePoiFilterPreset(preset.id)}
+								>
+									×
+								</button>
+							</div>
+						</div>
+					),
+				)}
+				{savingFilterPreset && (
+					<MapControlInlineNameForm
+						ariaLabel={t('filterPresetsNamePlaceholder')}
+						cancelLabel={t('filterPresetsCancel')}
+						confirmLabel={t('filterPresetsConfirm')}
+						placeholder={t('filterPresetsNamePlaceholder')}
+						value={presetNameInput}
+						onCancel={() => {
+							setSavingFilterPreset(false);
+							setPresetNameInput('');
+						}}
+						onChange={setPresetNameInput}
+						onConfirm={handleSaveFilterPreset}
+					/>
+				)}
+			</div>
+
+			{hiddenByReachabilityCount > 0 && (
+				<label className="flex cursor-pointer items-start gap-2">
+					<Checkbox checked={includeRemotePois} onCheckedChange={setIncludeRemotePois} />
+					<div className="flex flex-col gap-0.5">
+						<span className="text-xs text-gray-700 dark:text-[var(--text-primary)]">{t('includeRemotePoisLabel')}</span>
+						<span className="text-[10px] text-gray-500 dark:text-[var(--text-secondary)]">
+							{t('includeRemotePoisHint')}
+						</span>
+					</div>
+				</label>
+			)}
+
 			<div className="flex items-center gap-2">
 				<div className="flex-1">
-					<Select<{ value: SortMode; label: string }, false>
-						unstyled
+					<MapControlSingleSelect<{ value: SortMode; label: string }>
 						aria-label={t('sortLabel')}
-						classNamePrefix="poi-sort-select"
-						classNames={poiSelectClassNames}
-						isSearchable={false}
 						options={sortOptions}
 						placeholder={t('sortLabel')}
-						styles={{
-							menu: (base) => ({
-								...base,
-								zIndex: 'calc(var(--z-map-overlay) + 1)',
-							}),
-						}}
 						value={selectedSortOption}
 						onChange={(val) => {
 							if (val) setSort(val.value);
@@ -919,33 +1048,14 @@ export function MapControlsPoiList({
 			</div>
 
 			{showWaterReliabilityFilter && (
-				<Select<{ value: WaterReliability; label: string }, true>
-					hideSelectedOptions
-					isMulti
-					unstyled
+				<MapControlMultiSelect<{ value: WaterReliability; label: string }>
 					aria-label={t('waterReliabilityFilterHeading')}
-					classNamePrefix="poi-water-reliability-select"
-					classNames={poiSelectClassNames}
-					closeMenuOnSelect={false}
 					formatOptionLabel={(option) => (
-						<span className="inline-flex items-center gap-1.5">
-							<span
-								aria-hidden
-								className="inline-block size-1.5 shrink-0 rounded-full"
-								style={{ background: WATER_COLOR[option.value] }}
-							/>
-							{option.label}
-						</span>
+						<MapControlSelectColorDotLabel color={WATER_COLOR[option.value]} label={option.label} />
 					)}
 					isSearchable={false}
 					options={waterReliabilityOptions}
 					placeholder={t('waterReliabilityFilterPlaceholder')}
-					styles={{
-						menu: (base) => ({
-							...base,
-							zIndex: 'calc(var(--z-map-overlay) + 1)',
-						}),
-					}}
 					value={selectedWaterReliabilityOptions}
 					onChange={(val: MultiValue<{ value: WaterReliability; label: string }>) =>
 						setEnabledWaterReliability(new Set((val ?? []).map((o) => o.value)))
@@ -961,7 +1071,7 @@ export function MapControlsPoiList({
 
 			{sort === 'ahead' && (
 				<div className="flex flex-wrap items-center gap-1">
-					<span className="text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400">
+					<span className="text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
 						{t('aheadHorizonLabel')}
 					</span>
 					{AHEAD_HORIZON_OPTIONS.map((km) => (
@@ -997,7 +1107,7 @@ export function MapControlsPoiList({
 					    so the user understands why it has no effect. */}
 			<label
 				className={cn(
-					'flex items-center gap-2 text-[10px] tracking-wide text-gray-500 uppercase dark:text-gray-400',
+					'flex items-center gap-2 text-[10px] tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]',
 					sort !== 'trail' && 'opacity-40',
 				)}
 				title={groupByDecadeLabel}
@@ -1008,7 +1118,7 @@ export function MapControlsPoiList({
 
 			{allTags.length > 0 && (
 				<div className="flex flex-col gap-1">
-					<div className="flex items-center justify-between text-[10px] tracking-wide text-gray-500 uppercase dark:text-gray-400">
+					<div className="flex items-center justify-between text-[10px] tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
 						<span>{t('tagFilterHeading')}</span>
 						{enabledPoiTags.size > 0 && (
 							<button
@@ -1070,7 +1180,7 @@ export function MapControlsPoiList({
 							if (item.type === 'header') {
 								return (
 									<div
-										className="sticky top-0 z-10 mt-1 bg-[var(--map-tooltip-bg)] px-1 py-1 text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:bg-[var(--bg-primary)] dark:text-gray-400"
+										className="sticky top-0 z-10 mt-1 bg-[var(--map-tooltip-bg)] px-1 py-1 text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:bg-[var(--bg-primary)] dark:text-[var(--text-secondary)]"
 										key={item.key}
 									>
 										{item.label} · {t('groupCount', { count: item.count })}
@@ -1082,31 +1192,128 @@ export function MapControlsPoiList({
 					: rows.map((poi, i) => renderRow(poi, i))}
 			</div>
 
-			{rows.length > 0 && (
-				<div className="flex flex-col gap-1.5 border-t border-gray-100 pt-2 dark:border-[var(--border-color)]">
-					{starredPoiIds.size > 0 && (
-						<div className="flex items-center justify-between gap-2">
-							<span className="text-xs text-amber-600 dark:text-amber-400">
-								{t('starredCount', { count: starredPoiIds.size })}
-							</span>
-							<Button size="sm" variant="mapControlOutlineSecondary" onClick={clearStarredPois}>
-								{t('clearStarred')}
-							</Button>
-						</div>
+			<div className="flex flex-col gap-1.5 border-t border-gray-100 pt-2 dark:border-[var(--border-color)]">
+				<div className="flex flex-col gap-1">
+					<div className="flex items-center justify-between text-[10px] tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
+						<span>{t('starCollectionHeading')}</span>
+						{!creatingStarCollection && (
+							<button
+								className="text-cldt-blue focus-visible:ring-cldt-green rounded hover:underline focus-visible:underline focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:outline-none"
+								type="button"
+								onClick={() => setCreatingStarCollection(true)}
+							>
+								{t('starCollectionNew')}
+							</button>
+						)}
+					</div>
+					{starCollectionOptions.length > 0 && (
+						<MapControlSingleSelect<{ value: string; label: string }>
+							aria-label={t('starCollectionSelect')}
+							options={starCollectionOptions}
+							placeholder={t('starCollectionSelect')}
+							value={selectedStarCollectionOption}
+							onChange={(val) => {
+								if (val) setActiveStarredCollectionId(val.value);
+							}}
+						/>
 					)}
+					{starredPoiCollections.map((collection) => {
+						const collectionLabel = displayStarCollectionName(collection.name);
+						return renamingCollectionId === collection.id ? (
+							<MapControlInlineNameForm
+								ariaLabel={t('starCollectionNamePlaceholder')}
+								cancelLabel={t('starCollectionCancel')}
+								confirmLabel={t('filterPresetsConfirm')}
+								key={collection.id}
+								placeholder={t('starCollectionNamePlaceholder')}
+								value={renameCollectionInput}
+								onCancel={() => {
+									setRenamingCollectionId(null);
+									setRenameCollectionInput('');
+								}}
+								onChange={setRenameCollectionInput}
+								onConfirm={handleRenameStarCollection}
+							/>
+						) : (
+							<div className="flex items-center justify-between gap-1 text-xs" key={collection.id}>
+								<button
+									className={cn(
+										'focus-visible:ring-cldt-green truncate text-left hover:underline focus-visible:underline focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:outline-none',
+										collection.id === activeStarredCollectionId
+											? 'text-amber-600 dark:text-amber-400'
+											: 'text-cldt-blue',
+									)}
+									type="button"
+									onClick={() => setActiveStarredCollectionId(collection.id)}
+								>
+									{collectionLabel} ({collection.poiIds.length})
+								</button>
+								<div className="flex shrink-0 items-center gap-0.5">
+									<button
+										aria-label={t('starCollectionRename', { name: collectionLabel })}
+										className="text-cldt-blue focus-visible:ring-cldt-green rounded px-1 hover:underline focus-visible:underline focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:outline-none"
+										type="button"
+										onClick={() => {
+											setRenamingCollectionId(collection.id);
+											setRenameCollectionInput(collection.name);
+										}}
+									>
+										✎
+									</button>
+									<button
+										aria-label={t('starCollectionDelete', { name: collectionLabel })}
+										className="focus-visible:ring-cldt-green rounded px-1 text-gray-400 hover:text-red-600 focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:outline-none dark:text-[var(--text-secondary)] dark:hover:text-red-400"
+										type="button"
+										onClick={() => {
+											if (renamingCollectionId === collection.id) {
+												setRenamingCollectionId(null);
+												setRenameCollectionInput('');
+											}
+											deleteStarredPoiCollection(collection.id);
+										}}
+									>
+										×
+									</button>
+								</div>
+							</div>
+						);
+					})}
+					{creatingStarCollection && (
+						<MapControlInlineNameForm
+							ariaLabel={t('starCollectionNamePlaceholder')}
+							cancelLabel={t('starCollectionCancel')}
+							confirmLabel={t('starCollectionConfirm')}
+							placeholder={t('starCollectionNamePlaceholder')}
+							value={collectionNameInput}
+							onCancel={() => {
+								setCreatingStarCollection(false);
+								setCollectionNameInput('');
+							}}
+							onChange={setCollectionNameInput}
+							onConfirm={handleCreateStarCollection}
+						/>
+					)}
+				</div>
+				{activeStarredPoiIds.size > 0 && (
 					<div className="flex items-center justify-between gap-2">
-						<span className="text-xs text-gray-500 dark:text-[var(--text-secondary)]">
-							{t('exportSelectionCount', { count: selected.size })}
+						<span className="text-xs text-amber-600 dark:text-amber-400">
+							{t('starredCount', { count: activeStarredPoiIds.size })}
 						</span>
-						<Button
-							disabled={selected.size === 0}
-							size="sm"
-							variant="mapControlOutline"
-							onClick={handleExportSelection}
-						>
-							{t('exportSelectionButton')}
+						<Button size="sm" variant="mapControlOutlineSecondary" onClick={clearStarredPois}>
+							{t('clearStarred')}
 						</Button>
 					</div>
+				)}
+			</div>
+
+			{rows.length > 0 && (
+				<div className="flex items-center justify-between gap-2">
+					<span className="text-xs text-gray-500 dark:text-[var(--text-secondary)]">
+						{t('exportSelectionCount', { count: selected.size })}
+					</span>
+					<Button disabled={selected.size === 0} size="sm" variant="mapControlOutline" onClick={handleExportSelection}>
+						{t('exportSelectionButton')}
+					</Button>
 				</div>
 			)}
 		</div>

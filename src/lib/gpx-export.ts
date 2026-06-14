@@ -79,6 +79,8 @@ export interface GpxWaypoint {
 	elevation?: number;
 	/** Optional free-text description shown when the user taps the waypoint. */
 	description?: string;
+	/** GPX 1.1 `<sym>` - symbol name for GPS apps that render icons from sym. */
+	sym?: string;
 	/** Optional canonical URL associated with the POI. */
 	url?: string;
 }
@@ -98,6 +100,7 @@ export function buildGpxWaypointXml(waypoints: GpxWaypoint[], documentName: stri
 			if (w.description) parts.push(`\t\t<desc>${escapeXml(w.description)}</desc>`);
 			if (w.url) parts.push(`\t\t<link href="${escapeXml(w.url)}" />`);
 			if (w.type) parts.push(`\t\t<type>${escapeXml(w.type)}</type>`);
+			if (w.sym) parts.push(`\t\t<sym>${escapeXml(w.sym)}</sym>`);
 			parts.push('\t</wpt>');
 			return parts.join('\n');
 		})

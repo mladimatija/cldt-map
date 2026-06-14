@@ -39,6 +39,8 @@ export interface TripBriefStrings {
 		pack: string;
 		/** Suffix appended to a town POI line when groceries are available. */
 		resupply: string;
+		/** Cover-table label for the food resupply cadence row. */
+		resupplyCadence: string;
 	};
 	daysHeading: string;
 	moreLabel: string;

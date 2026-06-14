@@ -96,6 +96,9 @@ export async function exportTripBriefDocx(args: TripBriefDocxArgs): Promise<void
 			[meta.strings.labels.eta, formatEta(overview.totalDurationSec)],
 			[meta.strings.labels.pace, `${meta.walkingPaceKmh.toFixed(1)} km/h`],
 			...(meta.packSummary ? [[meta.strings.labels.pack, meta.packSummary] as [string, string]] : []),
+			...(meta.resupplySummary
+				? [[meta.strings.labels.resupplyCadence, meta.resupplySummary] as [string, string]]
+				: []),
 		];
 		for (const [k, v] of grid) {
 			out.push(
@@ -179,6 +182,11 @@ export async function exportTripBriefDocx(args: TripBriefDocxArgs): Promise<void
 		}
 		if (day.packLoadedLabel) {
 			out.push(new Paragraph({ children: [new TextRun({ text: day.packLoadedLabel, color: '0e7490' })] }));
+		}
+		for (const label of [day.resupplyEnteringLabel, day.resupplyCarryLabel, day.foodPackLabel].filter(
+			(line): line is string => !!line,
+		)) {
+			out.push(new Paragraph({ children: [new TextRun({ text: label, color: 'b45309' })] }));
 		}
 		out.push(
 			new Paragraph({

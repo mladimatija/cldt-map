@@ -397,13 +397,35 @@ export function poiMatchesTagFilter(p: Poi, enabledTags: ReadonlySet<string>): b
 	return p.tags.some((tag) => enabledTags.has(tag));
 }
 
+/** Stay types the enricher keeps regardless of highway-graph connectivity
+ *  (`notabilityOverride: 'always'` in Pass 6). Their `isReachable` flag is
+ *  still stamped from the graph but must not gate map/list visibility - many
+ *  huts sit on hiking paths the corridor graph does not connect to the trail. */
+const REACHABILITY_EXEMPT_TYPES = new Set<string>(['hut', 'shelter']);
+
 /** When `includeRemotePois` is false, hide POIs tagged unreachable by the
  *  enricher (`isReachable === false`), except POIs rescued by a nearby
  *  trail-side public transport stop. Missing field means reachable. */
 export function poiPassesReachabilityFilter(p: Poi, includeRemotePois: boolean): boolean {
 	if (includeRemotePois) return true;
+	if (REACHABILITY_EXEMPT_TYPES.has(p.type)) return true;
 	if (p.isReachableViaPublicTransport === true) return true;
 	return p.isReachable !== false;
+}
+
+/** True when this POI would be hidden with `includeRemotePois === false`.
+ *  Hut/shelter exemptions and PT-rescued POIs are not counted. */
+export function poiHiddenByReachabilityFilter(p: Poi): boolean {
+	return !poiPassesReachabilityFilter(p, false);
+}
+
+/** Count of POIs the "Include remote POIs" toggle would affect. */
+export function countPoisHiddenByReachabilityFilter(pois: Iterable<Poi>): number {
+	let count = 0;
+	for (const p of pois) {
+		if (poiHiddenByReachabilityFilter(p)) count++;
+	}
+	return count;
 }
 
 /** Collects the unique sorted set of tags present in the dataset. Used by
