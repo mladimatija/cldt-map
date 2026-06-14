@@ -563,7 +563,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 
 				<div className="flex flex-col gap-2">
 					<div className="flex gap-2">
-						<label className="flex flex-1 flex-col gap-0.5 text-xs text-gray-600 dark:text-gray-400">
+						<label className="flex flex-1 flex-col gap-0.5 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
 							{t('startKm', { unit: distanceUnitLabel })}
 							<input
 								className={MAP_CONTROL_INPUT}
@@ -577,7 +577,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 								}}
 							/>
 						</label>
-						<label className="flex flex-1 flex-col gap-0.5 text-xs text-gray-600 dark:text-gray-400">
+						<label className="flex flex-1 flex-col gap-0.5 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
 							{t('endKm', { unit: distanceUnitLabel })}
 							<input
 								className={MAP_CONTROL_INPUT}
@@ -593,7 +593,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 						</label>
 					</div>
 
-					<div className="flex gap-3 text-xs text-gray-600 dark:text-gray-400">
+					<div className="flex gap-3 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
 						<label className="flex cursor-pointer items-center gap-1">
 							<Radio
 								checked={mode === 'kmPerDay'}
@@ -610,7 +610,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 					</div>
 
 					<div className="flex gap-2">
-						<label className="flex flex-1 flex-col gap-0.5 text-xs text-gray-600 dark:text-gray-400">
+						<label className="flex flex-1 flex-col gap-0.5 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
 							{valueUnitLabel}
 							<input
 								className={MAP_CONTROL_INPUT}
@@ -626,7 +626,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 								}}
 							/>
 						</label>
-						<label className="flex flex-1 flex-col gap-0.5 text-xs text-gray-600 dark:text-gray-400">
+						<label className="flex flex-1 flex-col gap-0.5 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
 							{t('maxHoursPerDay')}
 							<input
 								className={MAP_CONTROL_INPUT}
@@ -643,7 +643,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 						</label>
 					</div>
 
-					<label className="flex cursor-pointer items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
+					<label className="flex cursor-pointer items-center gap-2 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
 						<Checkbox
 							checked={balanceByEta}
 							onCheckedChange={(checked) => {
@@ -658,7 +658,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 						</span>
 					</label>
 
-					<label className="flex flex-col gap-0.5 text-xs text-gray-600 dark:text-gray-400">
+					<label className="flex flex-col gap-0.5 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
 						{t('tripStartDate')}
 						<input
 							className={cn(MAP_CONTROL_INPUT, 'w-full')}
@@ -694,10 +694,10 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 					)}
 				</div>
 
-				{!stagePlan && <p className="mb-0 text-xs text-gray-500 dark:text-gray-400">{t('noStages')}</p>}
+				{!stagePlan && <p className="mb-0 text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('noStages')}</p>}
 
 				{stagePlan && planResupplyCadence && (
-					<div className="flex flex-col gap-0.5 rounded border border-gray-100 px-2 py-1.5 text-[11px] text-gray-600 dark:border-[var(--border-color)] dark:text-gray-400">
+					<div className="flex flex-col gap-0.5 rounded border border-gray-100 px-2 py-1.5 text-[11px] text-gray-600 dark:border-[var(--border-color)] dark:text-[var(--text-secondary)]">
 						<p className="m-0">
 							<span aria-hidden>🛒</span>{' '}
 							{t('tripFoodGap', {
@@ -728,7 +728,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 										'focus-visible:ring-cldt-green flex w-full flex-col gap-0.5 px-2 py-1.5 text-left text-xs transition-colors outline-none focus-visible:ring-2 focus-visible:ring-offset-1',
 										i === activeStageIndex
 											? 'bg-cldt-light-blue text-gray-900 dark:text-white'
-											: 'hover:bg-gray-50 dark:hover:bg-gray-700',
+											: 'hover:bg-gray-50 dark:hover:bg-[var(--bg-hover)]',
 									)}
 									key={`${stage.startKm}-${stage.endKm}`}
 									type="button"
@@ -737,7 +737,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 									{/* Line 1: stage number, km range, elevation, ETA. */}
 									<span className="flex w-full flex-wrap items-center gap-x-1.5 gap-y-0.5">
 										<span className="min-w-4 font-medium">{i + 1}</span>
-										<span className="whitespace-nowrap text-gray-500 dark:text-gray-400">
+										<span className="whitespace-nowrap text-gray-500 dark:text-[var(--text-secondary)]">
 											{toDisplay(stage.startKm).toFixed(0)}-{toDisplay(stage.endKm).toFixed(0)} {distanceUnitLabel}
 										</span>
 										{stats && (
@@ -748,7 +748,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 												<span className="text-cldt-red shrink-0">
 													↓{formatElevation(isNobo ? stats.gainM : stats.lossM, units)}
 												</span>
-												<span className="shrink-0 text-gray-500 tabular-nums dark:text-gray-400">
+												<span className="shrink-0 text-gray-500 tabular-nums dark:text-[var(--text-secondary)]">
 													{formatEta(stats.etaSec)}
 												</span>
 											</>
@@ -807,7 +807,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 														'shrink-0 rounded-full px-1.5 py-0 text-[10px] font-medium tabular-nums',
 														packScenariosByStage[i].carryLiters >= CARRY_WARN_L
 															? 'bg-amber-500/15 text-amber-700 dark:text-amber-400'
-															: 'bg-gray-500/10 text-gray-600 dark:text-gray-300',
+															: 'bg-gray-500/10 text-gray-600 dark:text-[var(--text-primary)]',
 													)}
 													title={
 														packScenariosByStage[i].carryLiters > 0
@@ -835,7 +835,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 													className={cn(
 														'shrink-0 rounded-full px-1.5 py-0 text-[10px] font-medium',
 														resupplyStatus === 'yes'
-															? 'bg-gray-500/10 text-gray-600 dark:text-gray-300'
+															? 'bg-gray-500/10 text-gray-600 dark:text-[var(--text-primary)]'
 															: resupplyStatus === 'partial'
 																? 'bg-amber-500/15 text-amber-700 dark:text-amber-400'
 																: 'bg-amber-500/15 text-amber-700 dark:text-amber-400',
@@ -855,7 +855,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 														min: formatCompactTemp(stageForecasts[i].tMinC, units),
 														precip: stageForecasts[i].precipProbPct,
 													})}
-													className="shrink-0 text-gray-600 tabular-nums dark:text-gray-300"
+													className="shrink-0 text-gray-600 tabular-nums dark:text-[var(--text-primary)]"
 													title={t('forecastTitle', {
 														condition: tWeather(weatherCodeToKey(stageForecasts[i].weatherCode)),
 														max: formatCompactTemp(stageForecasts[i].tMaxC, units),
@@ -877,7 +877,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 
 				{stagePlan && activeStageIndex !== null && activeStagePois.length > 0 && (
 					<div className="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto rounded border border-gray-100 px-2 py-1 dark:border-[var(--border-color)]">
-						<p className="text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400">
+						<p className="text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
 							{t('stagePoisHeading', { index: activeStageIndex + 1 })}
 						</p>
 						{waterGapByStage[activeStageIndex] !== undefined && (
@@ -888,7 +888,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 										? 'text-cldt-red'
 										: waterGapByStage[activeStageIndex] >= WATER_GAP_WARN_KM
 											? 'text-amber-700 dark:text-amber-400'
-											: 'text-gray-500 dark:text-gray-400',
+											: 'text-gray-500 dark:text-[var(--text-secondary)]',
 								)}
 							>
 								<span aria-hidden>💧</span>{' '}
@@ -898,7 +898,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 							</p>
 						)}
 						{packScenariosByStage[activeStageIndex] !== undefined && (
-							<div className="m-0 flex flex-col gap-0.5 text-gray-500 dark:text-gray-400">
+							<div className="m-0 flex flex-col gap-0.5 text-gray-500 dark:text-[var(--text-secondary)]">
 								<p className="m-0 text-[10px] leading-snug">
 									<span aria-hidden>🎒</span>{' '}
 									{t('stagePackBase', {
@@ -947,7 +947,9 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 										onClick={() => handlePoiClick(poi)}
 									>
 										<span className="truncate font-medium text-gray-800 dark:text-[var(--text-primary)]">{name}</span>
-										<span className="ml-auto shrink-0 text-[10px] text-gray-500 dark:text-gray-400">{typeLabel}</span>
+										<span className="ml-auto shrink-0 text-[10px] text-gray-500 dark:text-[var(--text-secondary)]">
+											{typeLabel}
+										</span>
 									</button>
 								</div>
 							);
@@ -1001,7 +1003,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 						</Button>
 						{isPdfExporting ? (
 							<div className="flex gap-2">
-								<span className="flex flex-1 items-center justify-center text-xs text-gray-500 dark:text-gray-400">
+								<span className="flex flex-1 items-center justify-center text-xs text-gray-500 dark:text-[var(--text-secondary)]">
 									{pdfProgress
 										? t('stripMapPdfProgress', { current: pdfProgress.current, total: pdfProgress.total })
 										: t('stripMapPdf')}
@@ -1047,7 +1049,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 				)}
 
 				{stagePlan && confirmReset && (
-					<div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
+					<div className="flex items-center gap-2 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
 						<span className="flex-1">{t('confirmReset')}</span>
 						<Button size="sm" variant="mapControlOutlineSecondary" onClick={handleConfirmReset}>
 							{t('confirmYes')}
