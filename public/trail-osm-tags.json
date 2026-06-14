@@ -1,5 +1,5 @@
 {
-	"lastUpdated": "2026-05-30",
+	"lastUpdated": "2026-06-14",
 	"totalKm": 2220.8,
 	"sampleStepM": 100,
 	"runs": [
@@ -1093,17 +1093,121 @@
 		},
 		{
 			"fromKm": 133.5,
-			"toKm": 141.6,
+			"toKm": 143.9,
 			"surface": null,
 			"highway": "track",
 			"sac_scale": null,
 			"mtb_scale": null
 		},
 		{
-			"fromKm": 141.7,
-			"toKm": 157.2,
+			"fromKm": 144,
+			"toKm": 144.4,
 			"surface": null,
-			"highway": null,
+			"highway": "unclassified",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 144.5,
+			"toKm": 144.6,
+			"surface": null,
+			"highway": "residential",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 144.7,
+			"toKm": 145,
+			"surface": "asphalt",
+			"highway": "primary",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 145.1,
+			"toKm": 145.4,
+			"surface": "paved",
+			"highway": "residential",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 145.5,
+			"toKm": 145.5,
+			"surface": "asphalt",
+			"highway": "unclassified",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 145.6,
+			"toKm": 152.1,
+			"surface": null,
+			"highway": "track",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 152.2,
+			"toKm": 152.5,
+			"surface": "asphalt",
+			"highway": "unclassified",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 152.6,
+			"toKm": 152.6,
+			"surface": "asphalt",
+			"highway": "secondary",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 152.7,
+			"toKm": 153.6,
+			"surface": null,
+			"highway": "residential",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 153.7,
+			"toKm": 153.9,
+			"surface": null,
+			"highway": "unclassified",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 154,
+			"toKm": 156.4,
+			"surface": null,
+			"highway": "track",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 156.5,
+			"toKm": 156.9,
+			"surface": "dirt",
+			"highway": "track",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 157,
+			"toKm": 157.1,
+			"surface": null,
+			"highway": "unclassified",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 157.2,
+			"toKm": 157.2,
+			"surface": "asphalt",
+			"highway": "unclassified",
 			"sac_scale": null,
 			"mtb_scale": null
 		},
@@ -2918,7 +3022,7 @@
 		{
 			"fromKm": 443.3,
 			"toKm": 444.3,
-			"surface": null,
+			"surface": "compacted",
 			"highway": "unclassified",
 			"sac_scale": null,
 			"mtb_scale": null
@@ -2934,24 +3038,16 @@
 		{
 			"fromKm": 444.7,
 			"toKm": 445.1,
-			"surface": null,
+			"surface": "compacted",
 			"highway": "unclassified",
 			"sac_scale": null,
 			"mtb_scale": null
 		},
 		{
 			"fromKm": 445.2,
-			"toKm": 445.2,
-			"surface": "unpaved",
-			"highway": "track",
-			"sac_scale": null,
-			"mtb_scale": null
-		},
-		{
-			"fromKm": 445.3,
 			"toKm": 445.3,
-			"surface": null,
-			"highway": "path",
+			"surface": "compacted",
+			"highway": "track",
 			"sac_scale": null,
 			"mtb_scale": null
 		},
@@ -2965,16 +3061,24 @@
 		},
 		{
 			"fromKm": 445.5,
-			"toKm": 445.5,
-			"surface": null,
-			"highway": "path",
+			"toKm": 446.2,
+			"surface": "compacted",
+			"highway": "track",
 			"sac_scale": null,
 			"mtb_scale": null
 		},
 		{
-			"fromKm": 445.6,
-			"toKm": 447.4,
+			"fromKm": 446.3,
+			"toKm": 446.6,
 			"surface": null,
+			"highway": "track",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 446.7,
+			"toKm": 447.4,
+			"surface": "compacted",
 			"highway": "track",
 			"sac_scale": null,
 			"mtb_scale": null
@@ -2990,7 +3094,7 @@
 		{
 			"fromKm": 447.6,
 			"toKm": 448.2,
-			"surface": null,
+			"surface": "asphalt",
 			"highway": "residential",
 			"sac_scale": null,
 			"mtb_scale": null
@@ -4461,17 +4565,273 @@
 		},
 		{
 			"fromKm": 637.6,
-			"toKm": 637.7,
+			"toKm": 638,
 			"surface": null,
 			"highway": "residential",
 			"sac_scale": null,
 			"mtb_scale": null
 		},
 		{
-			"fromKm": 637.8,
-			"toKm": 673.6,
+			"fromKm": 638.1,
+			"toKm": 638.1,
+			"surface": "asphalt",
+			"highway": "primary",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 638.2,
+			"toKm": 640.2,
+			"surface": null,
+			"highway": "track",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 640.3,
+			"toKm": 640.4,
+			"surface": "asphalt",
+			"highway": "tertiary",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 640.5,
+			"toKm": 640.8,
+			"surface": null,
+			"highway": "unclassified",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 640.9,
+			"toKm": 641.1,
+			"surface": null,
+			"highway": "residential",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 641.2,
+			"toKm": 644.9,
+			"surface": null,
+			"highway": "track",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 645,
+			"toKm": 645.3,
+			"surface": "asphalt",
+			"highway": "unclassified",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 645.4,
+			"toKm": 645.4,
+			"surface": "asphalt",
+			"highway": "secondary",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 645.5,
+			"toKm": 650,
+			"surface": null,
+			"highway": "tertiary",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 650.1,
+			"toKm": 650.1,
+			"surface": "unpaved",
+			"highway": "track",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 650.2,
+			"toKm": 650.4,
+			"surface": null,
+			"highway": "tertiary",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 650.5,
+			"toKm": 652.4,
+			"surface": "asphalt",
+			"highway": "secondary",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 652.5,
+			"toKm": 652.5,
+			"surface": null,
+			"highway": "residential",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 652.6,
+			"toKm": 653.8,
+			"surface": "asphalt",
+			"highway": "secondary",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 653.9,
+			"toKm": 659,
+			"surface": null,
+			"highway": "unclassified",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 659.1,
+			"toKm": 660.1,
+			"surface": "unpaved",
+			"highway": "path",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 660.2,
+			"toKm": 660.5,
+			"surface": null,
+			"highway": "unclassified",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 660.6,
+			"toKm": 662.3,
 			"surface": null,
 			"highway": null,
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 662.4,
+			"toKm": 662.4,
+			"surface": null,
+			"highway": "unclassified",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 662.5,
+			"toKm": 662.9,
+			"surface": "dirt",
+			"highway": "path",
+			"sac_scale": "hiking",
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 663,
+			"toKm": 663.2,
+			"surface": null,
+			"highway": null,
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 663.3,
+			"toKm": 663.9,
+			"surface": "asphalt",
+			"highway": "secondary",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 664,
+			"toKm": 665.3,
+			"surface": null,
+			"highway": "track",
+			"sac_scale": "hiking",
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 665.4,
+			"toKm": 665.8,
+			"surface": null,
+			"highway": "path",
+			"sac_scale": "hiking",
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 665.9,
+			"toKm": 666,
+			"surface": null,
+			"highway": "track",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 666.1,
+			"toKm": 669.1,
+			"surface": null,
+			"highway": "path",
+			"sac_scale": "hiking",
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 669.2,
+			"toKm": 669.3,
+			"surface": "unpaved",
+			"highway": "track",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 669.4,
+			"toKm": 670.8,
+			"surface": "gravel",
+			"highway": "track",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 670.9,
+			"toKm": 670.9,
+			"surface": null,
+			"highway": "path",
+			"sac_scale": "hiking",
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 671,
+			"toKm": 671.6,
+			"surface": null,
+			"highway": "track",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 671.7,
+			"toKm": 672.8,
+			"surface": null,
+			"highway": "path",
+			"sac_scale": "mountain_hiking",
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 672.9,
+			"toKm": 673.1,
+			"surface": null,
+			"highway": "track",
+			"sac_scale": "mountain_hiking",
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 673.2,
+			"toKm": 673.6,
+			"surface": "asphalt",
+			"highway": "tertiary",
 			"sac_scale": null,
 			"mtb_scale": null
 		},
@@ -7309,14 +7669,190 @@
 		},
 		{
 			"fromKm": 908.9,
-			"toKm": 910.6,
+			"toKm": 911.9,
 			"surface": null,
 			"highway": "path",
 			"sac_scale": null,
 			"mtb_scale": null
 		},
 		{
-			"fromKm": 910.7,
+			"fromKm": 912,
+			"toKm": 913.5,
+			"surface": null,
+			"highway": "track",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 913.6,
+			"toKm": 914,
+			"surface": "asphalt",
+			"highway": "unclassified",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 914.1,
+			"toKm": 915.4,
+			"surface": "asphalt",
+			"highway": "tertiary",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 915.5,
+			"toKm": 915.7,
+			"surface": null,
+			"highway": "unclassified",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 915.8,
+			"toKm": 916.1,
+			"surface": null,
+			"highway": "residential",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 916.2,
+			"toKm": 916.4,
+			"surface": null,
+			"highway": "track",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 916.5,
+			"toKm": 917,
+			"surface": null,
+			"highway": "path",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 917.1,
+			"toKm": 917.1,
+			"surface": null,
+			"highway": "unclassified",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 917.2,
+			"toKm": 917.9,
+			"surface": null,
+			"highway": null,
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 918,
+			"toKm": 918.6,
+			"surface": null,
+			"highway": "unclassified",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 918.7,
+			"toKm": 919.1,
+			"surface": "asphalt",
+			"highway": "unclassified",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 919.2,
+			"toKm": 919.9,
+			"surface": null,
+			"highway": "residential",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 920,
+			"toKm": 921.4,
+			"surface": null,
+			"highway": "path",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 921.5,
+			"toKm": 921.5,
+			"surface": null,
+			"highway": "residential",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 921.6,
+			"toKm": 921.8,
+			"surface": null,
+			"highway": "unclassified",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 921.9,
+			"toKm": 922.2,
+			"surface": null,
+			"highway": "path",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 922.3,
+			"toKm": 923.7,
+			"surface": "unpaved",
+			"highway": "residential",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 923.8,
+			"toKm": 923.9,
+			"surface": null,
+			"highway": "unclassified",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 924,
+			"toKm": 924.5,
+			"surface": null,
+			"highway": "track",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 924.6,
+			"toKm": 925.7,
+			"surface": null,
+			"highway": "unclassified",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 925.8,
+			"toKm": 926.9,
+			"surface": "asphalt",
+			"highway": "primary",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 927,
+			"toKm": 927.4,
+			"surface": "asphalt",
+			"highway": "secondary",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 927.5,
 			"toKm": 927.8,
 			"surface": null,
 			"highway": null,
@@ -7805,22 +8341,526 @@
 		},
 		{
 			"fromKm": 993.9,
-			"toKm": 995.7,
+			"toKm": 996.6,
 			"surface": null,
 			"highway": "path",
 			"sac_scale": "hiking",
 			"mtb_scale": null
 		},
 		{
-			"fromKm": 995.8,
-			"toKm": 1051.6,
+			"fromKm": 996.7,
+			"toKm": 997.5,
 			"surface": null,
-			"highway": null,
+			"highway": "path",
 			"sac_scale": null,
 			"mtb_scale": null
 		},
 		{
-			"fromKm": 1051.7,
+			"fromKm": 997.6,
+			"toKm": 998.6,
+			"surface": null,
+			"highway": "unclassified",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 998.7,
+			"toKm": 999.3,
+			"surface": "asphalt",
+			"highway": "secondary",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 999.4,
+			"toKm": 1001.4,
+			"surface": null,
+			"highway": "path",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1001.5,
+			"toKm": 1003.8,
+			"surface": "unpaved",
+			"highway": "unclassified",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1003.9,
+			"toKm": 1003.9,
+			"surface": "asphalt",
+			"highway": "primary",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1004,
+			"toKm": 1004.1,
+			"surface": null,
+			"highway": "unclassified",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1004.2,
+			"toKm": 1004.5,
+			"surface": null,
+			"highway": "path",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1004.6,
+			"toKm": 1006.7,
+			"surface": null,
+			"highway": "unclassified",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1006.8,
+			"toKm": 1007.1,
+			"surface": "asphalt",
+			"highway": "tertiary",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1007.2,
+			"toKm": 1007.9,
+			"surface": null,
+			"highway": "path",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1008,
+			"toKm": 1008,
+			"surface": null,
+			"highway": "residential",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1008.1,
+			"toKm": 1008.1,
+			"surface": null,
+			"highway": "unclassified",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1008.2,
+			"toKm": 1008.5,
+			"surface": null,
+			"highway": "path",
+			"sac_scale": "hiking",
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1008.6,
+			"toKm": 1009,
+			"surface": null,
+			"highway": "track",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1009.1,
+			"toKm": 1009.5,
+			"surface": null,
+			"highway": "path",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1009.6,
+			"toKm": 1010.8,
+			"surface": "ground",
+			"highway": "path",
+			"sac_scale": "hiking",
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1010.9,
+			"toKm": 1011.1,
+			"surface": null,
+			"highway": "unclassified",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1011.2,
+			"toKm": 1011.8,
+			"surface": "asphalt",
+			"highway": "tertiary",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1011.9,
+			"toKm": 1011.9,
+			"surface": null,
+			"highway": "residential",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1012,
+			"toKm": 1012,
+			"surface": null,
+			"highway": "footway",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1012.1,
+			"toKm": 1012.1,
+			"surface": null,
+			"highway": "steps",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1012.2,
+			"toKm": 1012.3,
+			"surface": "asphalt",
+			"highway": "tertiary",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1012.4,
+			"toKm": 1012.5,
+			"surface": "asphalt",
+			"highway": "primary",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1012.6,
+			"toKm": 1012.8,
+			"surface": "sett",
+			"highway": "residential",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1012.9,
+			"toKm": 1014.3,
+			"surface": null,
+			"highway": "path",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1014.4,
+			"toKm": 1014.4,
+			"surface": null,
+			"highway": "service",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1014.5,
+			"toKm": 1018.7,
+			"surface": null,
+			"highway": "path",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1018.8,
+			"toKm": 1022.5,
+			"surface": null,
+			"highway": "unclassified",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1022.6,
+			"toKm": 1022.6,
+			"surface": null,
+			"highway": "residential",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1022.7,
+			"toKm": 1024.4,
+			"surface": null,
+			"highway": "path",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1024.5,
+			"toKm": 1025.5,
+			"surface": null,
+			"highway": "track",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1025.6,
+			"toKm": 1025.6,
+			"surface": null,
+			"highway": "residential",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1025.7,
+			"toKm": 1025.7,
+			"surface": "asphalt",
+			"highway": "primary",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1025.8,
+			"toKm": 1026.4,
+			"surface": "asphalt",
+			"highway": "unclassified",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1026.5,
+			"toKm": 1026.6,
+			"surface": null,
+			"highway": "residential",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1026.7,
+			"toKm": 1029.4,
+			"surface": null,
+			"highway": "path",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1029.5,
+			"toKm": 1031.4,
+			"surface": null,
+			"highway": "track",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1031.5,
+			"toKm": 1032.4,
+			"surface": null,
+			"highway": "unclassified",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1032.5,
+			"toKm": 1032.7,
+			"surface": "gravel",
+			"highway": "track",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1032.8,
+			"toKm": 1035,
+			"surface": null,
+			"highway": "track",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1035.1,
+			"toKm": 1035.4,
+			"surface": null,
+			"highway": "path",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1035.5,
+			"toKm": 1036.4,
+			"surface": null,
+			"highway": "track",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1036.5,
+			"toKm": 1037,
+			"surface": null,
+			"highway": "path",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1037.1,
+			"toKm": 1038.2,
+			"surface": null,
+			"highway": "track",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1038.3,
+			"toKm": 1038.6,
+			"surface": null,
+			"highway": "path",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1038.7,
+			"toKm": 1038.9,
+			"surface": null,
+			"highway": "track",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1039,
+			"toKm": 1039.4,
+			"surface": null,
+			"highway": "path",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1039.5,
+			"toKm": 1039.5,
+			"surface": null,
+			"highway": "track",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1039.6,
+			"toKm": 1042.8,
+			"surface": null,
+			"highway": "path",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1042.9,
+			"toKm": 1042.9,
+			"surface": "gravel",
+			"highway": "track",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1043,
+			"toKm": 1043.4,
+			"surface": null,
+			"highway": "track",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1043.5,
+			"toKm": 1044.5,
+			"surface": null,
+			"highway": "path",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1044.6,
+			"toKm": 1044.9,
+			"surface": null,
+			"highway": "track",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1045,
+			"toKm": 1045.9,
+			"surface": null,
+			"highway": "path",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1046,
+			"toKm": 1046.1,
+			"surface": null,
+			"highway": "track",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1046.2,
+			"toKm": 1047,
+			"surface": null,
+			"highway": "path",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1047.1,
+			"toKm": 1047.1,
+			"surface": "paved",
+			"highway": "unclassified",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1047.2,
+			"toKm": 1047.7,
+			"surface": "compacted",
+			"highway": "residential",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1047.8,
+			"toKm": 1048.7,
+			"surface": null,
+			"highway": "footway",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1048.8,
+			"toKm": 1048.8,
+			"surface": null,
+			"highway": "steps",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1048.9,
+			"toKm": 1049.1,
+			"surface": null,
+			"highway": "footway",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1049.2,
+			"toKm": 1050.7,
+			"surface": "gravel",
+			"highway": "track",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1050.8,
+			"toKm": 1051,
+			"surface": "concrete",
+			"highway": "unclassified",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1051.1,
 			"toKm": 1052.5,
 			"surface": null,
 			"highway": "unclassified",
@@ -9485,6 +10525,22 @@
 		},
 		{
 			"fromKm": 1189,
+			"toKm": 1189.1,
+			"surface": "gravel",
+			"highway": "track",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1189.2,
+			"toKm": 1189.2,
+			"surface": "concrete",
+			"highway": "unclassified",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1189.3,
 			"toKm": 1190,
 			"surface": "gravel",
 			"highway": "track",
@@ -9645,22 +10701,230 @@
 		},
 		{
 			"fromKm": 1199.3,
-			"toKm": 1199.3,
+			"toKm": 1200.1,
 			"surface": "grass",
 			"highway": "track",
 			"sac_scale": null,
 			"mtb_scale": null
 		},
 		{
-			"fromKm": 1199.4,
-			"toKm": 1215.4,
-			"surface": null,
-			"highway": null,
+			"fromKm": 1200.2,
+			"toKm": 1200.4,
+			"surface": "gravel",
+			"highway": "unclassified",
 			"sac_scale": null,
 			"mtb_scale": null
 		},
 		{
-			"fromKm": 1215.5,
+			"fromKm": 1200.5,
+			"toKm": 1200.5,
+			"surface": "asphalt",
+			"highway": "secondary",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1200.6,
+			"toKm": 1202.1,
+			"surface": "compacted",
+			"highway": "track",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1202.2,
+			"toKm": 1202.3,
+			"surface": "asphalt",
+			"highway": "unclassified",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1202.4,
+			"toKm": 1202.7,
+			"surface": "gravel",
+			"highway": "track",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1202.8,
+			"toKm": 1203.3,
+			"surface": "ground",
+			"highway": "track",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1203.4,
+			"toKm": 1203.4,
+			"surface": "compacted",
+			"highway": "track",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1203.5,
+			"toKm": 1203.6,
+			"surface": "ground",
+			"highway": "track",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1203.7,
+			"toKm": 1204.5,
+			"surface": "ground",
+			"highway": "path",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1204.6,
+			"toKm": 1204.6,
+			"surface": "gravel",
+			"highway": "track",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1204.7,
+			"toKm": 1204.9,
+			"surface": "ground",
+			"highway": "path",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1205,
+			"toKm": 1205.1,
+			"surface": "gravel",
+			"highway": "track",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1205.2,
+			"toKm": 1205.2,
+			"surface": "asphalt",
+			"highway": "primary",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1205.3,
+			"toKm": 1205.3,
+			"surface": "asphalt",
+			"highway": "service",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1205.4,
+			"toKm": 1206.5,
+			"surface": "compacted",
+			"highway": "path",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1206.6,
+			"toKm": 1206.6,
+			"surface": "asphalt",
+			"highway": "primary",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1206.7,
+			"toKm": 1206.7,
+			"surface": "asphalt",
+			"highway": "motorway",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1206.8,
+			"toKm": 1206.8,
+			"surface": "asphalt",
+			"highway": "primary",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1206.9,
+			"toKm": 1207.3,
+			"surface": null,
+			"highway": "path",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1207.4,
+			"toKm": 1207.4,
+			"surface": "compacted",
+			"highway": "unclassified",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1207.5,
+			"toKm": 1209.3,
+			"surface": null,
+			"highway": "path",
+			"sac_scale": "mountain_hiking",
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1209.4,
+			"toKm": 1209.5,
+			"surface": "asphalt",
+			"highway": "track",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1209.6,
+			"toKm": 1211.6,
+			"surface": "compacted",
+			"highway": "path",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1211.7,
+			"toKm": 1213.7,
+			"surface": "gravel",
+			"highway": "track",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1213.8,
+			"toKm": 1214.2,
+			"surface": null,
+			"highway": "track",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1214.3,
+			"toKm": 1215,
+			"surface": "gravel",
+			"highway": "track",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1215.1,
+			"toKm": 1215.1,
+			"surface": "asphalt",
+			"highway": "service",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1215.2,
 			"toKm": 1216.8,
 			"surface": "asphalt",
 			"highway": "residential",
@@ -10781,22 +12045,134 @@
 		},
 		{
 			"fromKm": 1311.9,
-			"toKm": 1312,
+			"toKm": 1312.6,
 			"surface": "asphalt",
 			"highway": "tertiary",
 			"sac_scale": null,
 			"mtb_scale": null
 		},
 		{
-			"fromKm": 1312.1,
-			"toKm": 1326.8,
+			"fromKm": 1312.7,
+			"toKm": 1312.7,
+			"surface": null,
+			"highway": "residential",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1312.8,
+			"toKm": 1313,
+			"surface": "asphalt",
+			"highway": "tertiary",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1313.1,
+			"toKm": 1313.3,
+			"surface": null,
+			"highway": "residential",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1313.4,
+			"toKm": 1313.5,
+			"surface": null,
+			"highway": "track",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1313.6,
+			"toKm": 1313.7,
 			"surface": null,
 			"highway": null,
 			"sac_scale": null,
 			"mtb_scale": null
 		},
 		{
-			"fromKm": 1326.9,
+			"fromKm": 1313.8,
+			"toKm": 1314.1,
+			"surface": null,
+			"highway": "track",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1314.2,
+			"toKm": 1314.8,
+			"surface": null,
+			"highway": "tertiary",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1314.9,
+			"toKm": 1315.9,
+			"surface": null,
+			"highway": "unclassified",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1316,
+			"toKm": 1316.5,
+			"surface": null,
+			"highway": "track",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1316.6,
+			"toKm": 1317.3,
+			"surface": "ground",
+			"highway": "track",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1317.4,
+			"toKm": 1317.5,
+			"surface": null,
+			"highway": "tertiary",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1317.6,
+			"toKm": 1319.8,
+			"surface": null,
+			"highway": "track",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1319.9,
+			"toKm": 1320.1,
+			"surface": "asphalt",
+			"highway": "primary",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1320.2,
+			"toKm": 1320.2,
+			"surface": null,
+			"highway": "unclassified",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1320.3,
+			"toKm": 1320.5,
+			"surface": null,
+			"highway": "track",
+			"sac_scale": null,
+			"mtb_scale": null
+		},
+		{
+			"fromKm": 1320.6,
 			"toKm": 1329.8,
 			"surface": "compacted",
 			"highway": "track",
