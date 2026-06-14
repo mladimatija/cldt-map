@@ -34,9 +34,10 @@
 			"trail": "Klicke auf die Route oder das Höhenprofil, um Entfernung und Höhe an jedem Punkt anzuzeigen",
 			"elevation": "Höhenprofil-Diagramm; Hover zeigt den Punkt auf der Karte, Klick fixiert einen Punkt",
 			"ruler": "Entfernungslineal zum Messen von Streckenabschnitten",
-			"layers": "Mehrere Kartenebenen (Standard, Topo, Satellit, Gelände, Radfahren, Kroatien Topo)",
+			"distanceEtaOverlay": "Entfernungs- und ETA-Overlay - Live-HUD mit zurückgelegter und verbleibender Distanz, verbleibendem Höhengewinn/-verlust und ETA bis Trailende oder aktivem Linealabschnitt",
+			"layers": "Mehrere Kartenebenen (Standard, Topo, Wandern, Satellit, Gelände, Radfahren, Kroatien Topo, Dunkel), plus optionales Waymarked-Trails-Overlay mit OSM-Wanderrouten (Einstellungen, nur online)",
 			"location": "Optionale Standortverfolgung zur Anzeige der Position auf dem Trail",
-			"share": "Links teilen mit aktueller Ansicht oder Fortschritt auf dem Trail; der Teilen-Button öffnet einen QR-Code zum Scannen vom anderen Telefon plus Link kopieren",
+			"share": "Links tragen deine vollständige Kartenansicht - Position, Richtung, Einheiten, Ebenen, Linealbereich, Etappenplan, Wegpunkte und Tagebuch. Der Teilen-Button öffnet ein QR-Panel und Link kopieren; kompakte Kurzlinks (/s/{code}) wenn online und in Einstellungen aktiviert",
 			"units": "Metrische und imperiale Einheiten",
 			"darkMode": "Dunkelmodus und Energiespar-Optionen",
 			"offlineMaps": "Offline-Karten - Trail-Korridor für die Nutzung ohne Netzempfang vorladen",
@@ -45,6 +46,8 @@
 			"weather": "Aktuelles Wetter an Ihrem Trailstandort - Temperatur, Wind, Niederschlagswahrscheinlichkeit, Sonnenaufgang/-untergang; 12-Stunden-Vorhersage mit Niederschlagsbalken und Empfehlung des besten Zeitfensters (DHMZ + Open-Meteo)",
 			"trailNotices": "Regionale Trail-Zustandsbenachrichtigungen - abbaubare Banner mit Warnungen zu aktuellen Bedingungen auf dem Trail",
 			"seasonalStatus": "Saisonaler Wegzustand - kuratierte Kartenebene mit Warnungen, Sperrungen und saisonalen Bedingungen aus Quellen von DHMZ, HGSS, HPS und kroatischen Nationalparks; nach Schweregrad gefärbte Chip-Markierungen am Wegmittelpunkt jedes betroffenen Abschnitts; Hover oder Klick auf einen Chip hebt die betroffene Strecke hervor und öffnet ein Detailfenster mit Schweregrad, empfohlener Ausrüstung und Link zur Originalmeldung; Daten werden mit `npm run update-seasonal` aktualisiert",
+			"mineAreas": "Minenverdachtsgebiete - offizielle MUP/HCR-Polygone am Trail mit Warn-Chips und GPS-Bannern (nicht abweisbar im Polygon, abweisbar innerhalb 500 m); standardmäßig an, vollständig offline nach dem Cachen; nur zur Information - immer Beschilderung vor Ort beachten",
+			"severeWeather": "Unwetterwarnungen - Meteoalarm-CAP-Warnungen für Kroatien als farbcodierte Kartenpolygone mit GPS-Bannern; rot/schwere Warnungen nicht abweisbar; Daten alle 15 Minuten aktualisiert",
 			"radar": "Niederschlagsradar-Overlay - animierter RainViewer-Radar mit vergangenen und vorhergesagten Frames, Wiedergabesteuerung und Farblegende",
 			"sunsetPosition": "Sonnenuntergang/Sonnenaufgang-Position - zeigt, wo du bei Sonnenuntergang und Sonnenaufgang auf dem Weg sein wirst; umschaltbare Markierungen auf der Strecke",
 			"stagePlanner": "Mehrtages-Etappenplaner - teile beliebige Streckenabschnitte nach Distanz oder Zeit in Tagesetappen auf, zeige Höhen- und ETA-Statistiken je Etappe an, exportiere einzelne Etappen als GPX-Dateien oder alle Etappen als Etappenkarten-PDF",
@@ -1088,6 +1091,7 @@
 		"offline": {
 			"precache": "Das Cache-Panel lädt den ganzen Trail-Korridor vor (Kacheln, Orte, Fotos) für die Nutzung ohne Empfang; Sync erfolgt über WLAN.",
 			"gps": "GPS, Notfallpanel und dein Fortschritt funktionieren vollständig offline, sobald der Korridor gespeichert ist.",
+			"offRouteAlert": "Aktiviere den Routenabweichungs-Alarm in den Einstellungen (standardmäßig aus) für Banner und Vibration, wenn du mehr als ~200 m vom Trail abkommst, mit Distanz und Richtung zurück. Schärft sich erst, wenn GPS bestätigt, dass du auf dem Trail bist; bleibt zu Hause oder in der Fahrt stumm und entschärft sich, wenn du das Trail-Gebiet verlässt.",
 			"pushAlerts": "Warnungs-Benachrichtigungen in den Einstellungen aktivieren, um bei neuen saisonalen Warnungen eine Push-Nachricht zu erhalten."
 		},
 		"officialAppNote": "FarOut ist die offizielle CLDT-App. Diese Karte ist ein unabhängiges Projekt nur für Forschungs- und Bildungszwecke - prüfen Sie kritische Informationen anhand offizieller Quellen."

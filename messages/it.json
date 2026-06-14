@@ -34,9 +34,10 @@
 			"trail": "Clicca sul percorso o sul profilo altimetrico per vedere distanza e altitudine in qualsiasi punto",
 			"elevation": "Grafico del profilo altimetrico; passa il mouse per visualizzare il punto sulla mappa, clicca per fissarlo",
 			"ruler": "Righello per misurare segmenti tra due punti",
-			"layers": "Più livelli mappa (standard, topo, satellite, terreno, ciclismo, Croazia Topo)",
+			"distanceEtaOverlay": "Overlay distanza ed ETA - HUD in tempo reale con distanza percorsa e rimanente, dislivello rimanente ed ETA alla fine del sentiero o al segmento attivo del righello",
+			"layers": "Più livelli mappa (standard, topo, escursionismo, satellite, terreno, ciclismo, Croazia Topo, scuro), più overlay opzionale Waymarked Trails con relazioni OSM (interruttore in Impostazioni, solo online)",
 			"location": "Tracciamento opzionale della posizione per vedere dove ti trovi sul sentiero",
-			"share": "Link di condivisione con la visualizzazione attuale o i progressi sul sentiero; il pulsante condividi apre un codice QR da scansionare con un altro telefono e copia link",
+			"share": "I link condividono l'intera vista mappa - posizione, direzione, unità, livelli, intervallo righello, piano tappe, waypoint e diario. Il pulsante condividi apre un pannello QR e copia link; link brevi compatti (/s/{code}) se online e attivati in Impostazioni",
 			"units": "Unità metriche e imperiali",
 			"darkMode": "Modalità scura e opzioni risparmio energetico",
 			"offlineMaps": "Mappe offline - pre-scarica il corridoio del sentiero per l'uso senza segnale",
@@ -45,6 +46,8 @@
 			"weather": "Meteo attuale nella tua posizione sul sentiero - temperatura, vento, probabilità precipitazioni, alba/tramonto; previsione oraria 12 ore con barre precipitazioni e suggerimento finestra migliore (DHMZ + Open-Meteo)",
 			"trailNotices": "Avvisi regionali sulle condizioni del sentiero - banner eliminabili con avvisi sulle condizioni attuali sul percorso",
 			"seasonalStatus": "Stato stagionale del sentiero - livello mappa curato con avvisi, chiusure e condizioni stagionali da DHMZ, HGSS, HPS e parchi nazionali croati; marcatori colorati per gravità al centro di ogni tratto interessato; passa il cursore o clicca un marcatore per evidenziare il tratto e aprire un riquadro con gravità, attrezzatura consigliata e link all'avviso originale; i dati si aggiornano con `npm run update-seasonal`",
+			"mineAreas": "Aree con sospetta presenza di mine - poligoni ufficiali MUP/HCR vicino al sentiero con marcatori di avviso e banner GPS (non eliminabile dentro il poligono, eliminabile entro 500 m); attivo di default, completamente offline dopo la cache; solo informativo - rispetta sempre la segnaletica sul posto",
+			"severeWeather": "Allerte meteo gravi - avvisi Meteoalarm CAP per la Croazia come poligoni colorati sulla mappa con banner GPS; rosso/grave non eliminabile; dati aggiornati ogni 15 minuti",
 			"radar": "Overlay radar precipitazioni - radar RainViewer animato con frame passati e previsionali, controlli play/pausa e legenda colori",
 			"sunsetPosition": "Posizione tramonto/alba - mostra dove ti troverai sul sentiero al tramonto e all'alba in base al tuo ritmo attuale; indicatori attivabili sulla linea",
 			"stagePlanner": "Pianificatore tappe multi-giorno - suddividi qualsiasi tratto del sentiero in tappe giornaliere per distanza o tempo, visualizza statistiche di dislivello ed ETA per tappa, esporta le singole tappe come file GPX o tutte le tappe come PDF tappe in mappa",
@@ -1088,6 +1091,7 @@
 		"offline": {
 			"precache": "Il pannello cache pre-scarica tutto il corridoio del sentiero (tile, luoghi, foto) per usarlo senza segnale; si risincronizza sul Wi-Fi.",
 			"gps": "GPS, pannello di emergenza e progresso funzionano completamente offline una volta salvato il corridoio.",
+			"offRouteAlert": "Attiva l'avviso fuori percorso in Impostazioni (disattivato di default) per banner e vibrazione quando ti allontani più di ~200 m dal sentiero, con distanza e direzione di ritorno. Si arma solo dopo che il GPS conferma che sei sul sentiero; resta muto a casa o in auto e si disarma quando lasci l'area del sentiero.",
 			"pushAlerts": "Attiva le notifiche di avviso nelle impostazioni per ricevere un push quando viene pubblicato un nuovo avviso stagionale."
 		},
 		"officialAppNote": "FarOut è l’app ufficiale del CLDT. Questa mappa è un progetto indipendente solo per scopi di ricerca ed educativi - verifica le informazioni critiche con le fonti ufficiali."

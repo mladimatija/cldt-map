@@ -81,6 +81,7 @@ export function MapControlsHelpPanel(): React.ReactElement {
 			{section(t('offlineHeading'), [
 				['precache', t('offline.precache')],
 				['gps', t('offline.gps')],
+				['offRouteAlert', t('offline.offRouteAlert')],
 				['pushAlerts', t('offline.pushAlerts')],
 			])}
 
