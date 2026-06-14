@@ -158,6 +158,35 @@ export interface ShareCopyToast {
 	nonce: number;
 }
 
+/** Saved type + tag filter combination in the POI list panel. */
+export interface PoiFilterPreset {
+	id: string;
+	name: string;
+	enabledPoiTypes: string[];
+	enabledPoiTags: string[];
+}
+
+/** Named list of starred POI ids (trip brief "Selected only", share export). */
+export interface StarredPoiCollection {
+	id: string;
+	name: string;
+	poiIds: string[];
+}
+
+export const DEFAULT_STARRED_COLLECTION_NAME = 'Starred';
+
+export function isDefaultStarredCollectionName(name: string): boolean {
+	return name === DEFAULT_STARRED_COLLECTION_NAME;
+}
+
+export function getActiveStarredPoiIds(
+	state: Pick<MapStoreState, 'starredPoiCollections' | 'activeStarredCollectionId'>,
+): ReadonlySet<string> {
+	const active = state.starredPoiCollections.find((c) => c.id === state.activeStarredCollectionId);
+	if (!active) return new Set<string>();
+	return new Set(active.poiIds);
+}
+
 export interface MapStoreState {
 	selectedTrail: string | null;
 	setSelectedTrail: (id: string | null) => void;
@@ -513,12 +542,23 @@ export interface MapStoreState {
 	 *  `poiFiltersUserModified` - used by the disclaimer handlers, not by
 	 *  user-facing controls. */
 	resetPoiFiltersToDefaults: () => void;
-	/** POI ids the user has explicitly starred for trip-brief "Selected only" scope.
-	 *  Persisted in the store so the selection survives panel close/reopen and
-	 *  is still present when the trip-brief modal is opened. */
-	starredPoiIds: ReadonlySet<string>;
+	/** Named saved type + tag filter combinations. */
+	poiFilterPresets: PoiFilterPreset[];
+	savePoiFilterPreset: (name: string) => string | null;
+	applyPoiFilterPreset: (id: string) => void;
+	deletePoiFilterPreset: (id: string) => void;
+	renamePoiFilterPreset: (id: string, name: string) => void;
+	/** Named starred POI lists; stars apply to the active collection. */
+	starredPoiCollections: StarredPoiCollection[];
+	activeStarredCollectionId: string | null;
+	setActiveStarredCollectionId: (id: string) => void;
+	createStarredPoiCollection: (name: string) => string | null;
+	renameStarredPoiCollection: (id: string, name: string) => void;
+	deleteStarredPoiCollection: (id: string) => void;
 	toggleStarredPoi: (id: string) => void;
 	clearStarredPois: () => void;
+	/** Replace all starred collections with one default list (share URL import). */
+	importStarredPoisFromShare: (poiIds: string[]) => void;
 	/** POI id the renderer should fly to and open the popup for on the next
 	 *  effect tick. Set by panels that want to surface a POI on the map
 	 *  (e.g. the stage planner places list); cleared by PoiMarkers after

@@ -20,7 +20,7 @@ import { dayHeader, tripBriefStringsFromMessages } from '@/lib/trip-brief-i18n';
 import { exportTripBriefPdf } from '@/lib/trip-brief-pdf';
 import { exportTripBriefDocx } from '@/lib/trip-brief-docx';
 import { exportTripBriefHtml } from '@/lib/trip-brief-html';
-import { usePopoverFocusTrap, usePackAdjustedPaceKmh } from '@/hooks';
+import { usePopoverFocusTrap, usePackAdjustedPaceKmh, useActiveStarredPoiIds } from '@/hooks';
 import { computeStagePackScenarios, formatVolume, formatWeight, kgToDisplay, weightUnitLabel } from '@/lib/pack-weight';
 import { estimatedFoodDaysFromPack, type StageResupplyCadence } from '@/lib/resupply-cadence';
 import { poiDisplayName } from '@/lib/pois';
@@ -66,7 +66,7 @@ export function MapControlsTripBriefModal({
 
 	const stagePlan = useMapStore((s: MapStoreState) => s.stagePlan);
 	const poisFile = useMapStore((s: MapStoreState) => s.poisFile);
-	const starredPoiIds = useMapStore((s: MapStoreState) => s.starredPoiIds);
+	const activeStarredPoiIds = useActiveStarredPoiIds();
 	const enabledPoiTypes = useMapStore((s: MapStoreState) => s.enabledPoiTypes);
 	const enabledPoiTags = useMapStore((s: MapStoreState) => s.enabledPoiTags);
 	const includeRemotePois = useMapStore((s: MapStoreState) => s.includeRemotePois);
@@ -167,7 +167,7 @@ export function MapControlsTripBriefModal({
 			poisFile,
 			enhancedTrailPoints,
 			elevationPoints: enhancedTrailPoints,
-			selectedPoiIds: starredPoiIds,
+			selectedPoiIds: activeStarredPoiIds,
 			includeAllInStage: poiScope === 'allInStage',
 			enabledPoiTypes,
 			enabledPoiTags,
@@ -242,7 +242,7 @@ export function MapControlsTripBriefModal({
 		stagePlan,
 		poisFile,
 		enhancedTrailPoints,
-		starredPoiIds,
+		activeStarredPoiIds,
 		poiScope,
 		enabledPoiTypes,
 		enabledPoiTags,
@@ -519,23 +519,25 @@ export function MapControlsTripBriefModal({
 							<label
 								className={cn(
 									'flex items-center gap-2 text-sm',
-									starredPoiIds.size > 0
+									activeStarredPoiIds.size > 0
 										? 'cursor-pointer text-gray-700 dark:text-[var(--text-primary)]'
 										: 'cursor-not-allowed text-gray-400 dark:text-[var(--text-secondary)]',
 								)}
-								title={starredPoiIds.size > 0 ? undefined : t('poisSelectedComingSoon')}
+								title={activeStarredPoiIds.size > 0 ? undefined : t('poisSelectedComingSoon')}
 							>
 								<Radio
 									checked={poiScope === 'selected'}
-									disabled={starredPoiIds.size === 0}
+									disabled={activeStarredPoiIds.size === 0}
 									name="trip-brief-pois"
 									value="selected"
 									onChange={() => setPoiScope('selected')}
 								/>
-								<span className={starredPoiIds.size === 0 ? 'line-through' : undefined}>
+								<span className={activeStarredPoiIds.size === 0 ? 'line-through' : undefined}>
 									{t('poisSelected')}
-									{starredPoiIds.size > 0 && (
-										<span className="ml-1 text-xs text-amber-600 dark:text-amber-400">({starredPoiIds.size})</span>
+									{activeStarredPoiIds.size > 0 && (
+										<span className="ml-1 text-xs text-amber-600 dark:text-amber-400">
+											({activeStarredPoiIds.size})
+										</span>
 									)}
 								</span>
 							</label>

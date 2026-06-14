@@ -5,6 +5,7 @@ import { useMap } from 'react-leaflet';
 import L from 'leaflet';
 import { useLocale, useTranslations } from 'next-intl';
 import { useMapStore, type MapStoreState } from '@/lib/store';
+import { getActiveStarredPoiIds } from '@/lib/store/types';
 import { isKnownType, poiDisplayName, poiMatchesTagFilter, poiPassesReachabilityFilter, type Poi } from '@/lib/pois';
 import {
 	buildPoiShareUrl,
@@ -288,7 +289,7 @@ export function PoiMarkers(): null {
 							// Called via .getState() (not a selector hook) because this
 							// factory runs lazily at popup-open time, outside the React
 							// render path, so subscription-based hooks are not available.
-							isStarred: useMapStore.getState().starredPoiIds.has(poi.id),
+							isStarred: getActiveStarredPoiIds(useMapStore.getState()).has(poi.id),
 						}),
 					{
 						closeButton: true,
@@ -563,8 +564,6 @@ function wireStarButton(marker: L.Marker, poi: Poi, labels: { starAddLabel: stri
 	if (!el) return;
 	const btn = el.querySelector<HTMLButtonElement>(`[data-poi-star="${cssEscape(poi.id)}"]`);
 	if (!btn) return;
-	if (btn.dataset.wired === '1') return;
-	btn.dataset.wired = '1';
 	const sync = (starred: boolean): void => {
 		btn.textContent = starred ? '★' : '☆';
 		btn.setAttribute('aria-pressed', starred ? 'true' : 'false');
@@ -573,12 +572,29 @@ function wireStarButton(marker: L.Marker, poi: Poi, labels: { starAddLabel: stri
 		btn.setAttribute('title', aria);
 		btn.classList.toggle('poi-popup__star--active', starred);
 	};
-	sync(useMapStore.getState().starredPoiIds.has(poi.id));
-	btn.addEventListener('click', (e) => {
-		e.preventDefault();
-		useMapStore.getState().toggleStarredPoi(poi.id);
-		sync(useMapStore.getState().starredPoiIds.has(poi.id));
+	const updateFromStore = (): void => {
+		sync(getActiveStarredPoiIds(useMapStore.getState()).has(poi.id));
+	};
+	if (btn.dataset.wired !== '1') {
+		btn.dataset.wired = '1';
+		btn.addEventListener('click', (e) => {
+			e.preventDefault();
+			useMapStore.getState().toggleStarredPoi(poi.id);
+			updateFromStore();
+		});
+	}
+	updateFromStore();
+	const unsub = useMapStore.subscribe((state, prev) => {
+		if (
+			state.starredPoiCollections === prev.starredPoiCollections &&
+			state.activeStarredCollectionId === prev.activeStarredCollectionId
+		) {
+			return;
+		}
+		if (!popup.isOpen()) return;
+		updateFromStore();
 	});
+	marker.once('popupclose', unsub);
 }
 
 /** Wires the share button inside an open POI popup (see share-link-copy). */
