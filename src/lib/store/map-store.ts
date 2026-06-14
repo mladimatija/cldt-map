@@ -67,18 +67,31 @@ const PREDICTIVE_GPS_DEBOUNCE_MS = 30_000;
 
 /** Optional Up Next row toggles: expand "More ahead" when enabling any; collapse when all off. */
 function patchOptionalUpNextToggles(
-	state: Pick<MapStoreState, 'upNextShowFood' | 'upNextShowAtm' | 'upNextShowViewpoint' | 'upNextMoreExpanded'>,
-	patch: Partial<Pick<MapStoreState, 'upNextShowFood' | 'upNextShowAtm' | 'upNextShowViewpoint'>>,
-): Pick<MapStoreState, 'upNextShowFood' | 'upNextShowAtm' | 'upNextShowViewpoint' | 'upNextMoreExpanded'> {
+	state: Pick<
+		MapStoreState,
+		'upNextShowFood' | 'upNextShowAtm' | 'upNextShowViewpoint' | 'upNextShowPharmacy' | 'upNextMoreExpanded'
+	>,
+	patch: Partial<
+		Pick<MapStoreState, 'upNextShowFood' | 'upNextShowAtm' | 'upNextShowViewpoint' | 'upNextShowPharmacy'>
+	>,
+): Pick<
+	MapStoreState,
+	'upNextShowFood' | 'upNextShowAtm' | 'upNextShowViewpoint' | 'upNextShowPharmacy' | 'upNextMoreExpanded'
+> {
 	const upNextShowFood = patch.upNextShowFood ?? state.upNextShowFood;
 	const upNextShowAtm = patch.upNextShowAtm ?? state.upNextShowAtm;
 	const upNextShowViewpoint = patch.upNextShowViewpoint ?? state.upNextShowViewpoint;
-	const enabling = patch.upNextShowFood === true || patch.upNextShowAtm === true || patch.upNextShowViewpoint === true;
-	const anyOn = upNextShowFood || upNextShowAtm || upNextShowViewpoint;
+	const upNextShowPharmacy = patch.upNextShowPharmacy ?? state.upNextShowPharmacy;
+	const enabling =
+		patch.upNextShowFood === true ||
+		patch.upNextShowAtm === true ||
+		patch.upNextShowViewpoint === true ||
+		patch.upNextShowPharmacy === true;
+	const anyOn = upNextShowFood || upNextShowAtm || upNextShowViewpoint || upNextShowPharmacy;
 	let upNextMoreExpanded = state.upNextMoreExpanded;
 	if (enabling) upNextMoreExpanded = true;
 	else if (!anyOn) upNextMoreExpanded = false;
-	return { upNextShowFood, upNextShowAtm, upNextShowViewpoint, upNextMoreExpanded };
+	return { upNextShowFood, upNextShowAtm, upNextShowViewpoint, upNextShowPharmacy, upNextMoreExpanded };
 }
 
 /**
@@ -915,6 +928,10 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					setUpNextShowViewpoint: (show: boolean): void => {
 						set((state) => patchOptionalUpNextToggles(state, { upNextShowViewpoint: show }));
 					},
+					upNextShowPharmacy: false,
+					setUpNextShowPharmacy: (show: boolean): void => {
+						set((state) => patchOptionalUpNextToggles(state, { upNextShowPharmacy: show }));
+					},
 					upNextMoreExpanded: false,
 					setUpNextMoreExpanded: (expanded: boolean): void => {
 						set({ upNextMoreExpanded: expanded });
@@ -1220,6 +1237,7 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 						upNextShowFood: state.upNextShowFood,
 						upNextShowAtm: state.upNextShowAtm,
 						upNextShowViewpoint: state.upNextShowViewpoint,
+						upNextShowPharmacy: state.upNextShowPharmacy,
 						upNextMoreExpanded: state.upNextMoreExpanded,
 						aheadHorizonKm: state.aheadHorizonKm,
 						completedIntervals: demoSnapshot ? demoSnapshot.completedIntervals : state.completedIntervals,

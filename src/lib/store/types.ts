@@ -473,6 +473,9 @@ export interface MapStoreState {
 	/** Optional Up Next row: nearest viewpoint ahead. Default off. */
 	upNextShowViewpoint: boolean;
 	setUpNextShowViewpoint: (show: boolean) => void;
+	/** Optional Up Next row: nearest town with a pharmacy ahead. Default off. */
+	upNextShowPharmacy: boolean;
+	setUpNextShowPharmacy: (show: boolean) => void;
 	/** Expanded state of the optional "More ahead" block in the distance panel. */
 	upNextMoreExpanded: boolean;
 	setUpNextMoreExpanded: (expanded: boolean) => void;

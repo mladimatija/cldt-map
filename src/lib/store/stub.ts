@@ -265,6 +265,8 @@ export function createMapStoreStub(): MapStoreState {
 		setUpNextShowAtm: () => {},
 		upNextShowViewpoint: false,
 		setUpNextShowViewpoint: () => {},
+		upNextShowPharmacy: false,
+		setUpNextShowPharmacy: () => {},
 		upNextMoreExpanded: false,
 		setUpNextMoreExpanded: () => {},
 		aheadHorizonKm: 50,

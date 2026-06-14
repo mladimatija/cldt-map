@@ -1662,8 +1662,9 @@ main().catch((err) => {
 const RESUPPLY_CONFIG: TypeConfig = {
 	type: 'resupply',
 	overpassSelectors: [
-		{ key: 'shop', values: ['supermarket', 'convenience', 'general', 'greengrocer', 'bakery'] },
+		{ key: 'shop', values: ['supermarket', 'convenience', 'general', 'greengrocer', 'bakery', 'chemist'] },
 		{ key: 'amenity', values: ['pharmacy', 'atm', 'bank', 'post_office', 'fuel', 'bus_station'] },
+		{ key: 'healthcare', values: ['pharmacy'] },
 		{ key: 'highway', values: ['bus_stop'] },
 	],
 	// Towns are capped at 3 km off trail; amenities sit inside towns, so the
@@ -1682,8 +1683,10 @@ function classifyResupply(tags: Record<string, string>): ResupplyKind | null {
 	const shop = tags.shop ?? '';
 	if (['supermarket', 'convenience', 'general', 'greengrocer'].includes(shop)) return 'grocery';
 	if (shop === 'bakery') return 'bakery';
+	if (shop === 'chemist') return 'pharmacy';
 	const amenity = tags.amenity ?? '';
 	if (amenity === 'pharmacy') return 'pharmacy';
+	if (tags.healthcare === 'pharmacy') return 'pharmacy';
 	if (amenity === 'atm' || amenity === 'bank') return 'atm';
 	if (amenity === 'post_office') return 'post';
 	if (amenity === 'fuel') return 'fuel';
