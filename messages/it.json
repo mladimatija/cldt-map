@@ -514,7 +514,9 @@
 		"confirmClear": "Sei sicuro?",
 		"confirmYes": "Sì",
 		"confirmNo": "No",
-		"downloadComplete": "Mappe offline pronte",
+		"downloadComplete": "Mappe offline pronte"
+	},
+	"gpxDownload": {
 		"modalTitle": "Scarica GPX CLDT",
 		"disclaimerIntro": "Benvenuto nella sezione di download GPX del Sentiero a Lunga Percorrenza Croato! Qui puoi scaricare la traccia GPS ed esplorarla sulla mappa interattiva. Si prega di notare quanto segue:",
 		"disclaimerItem1": "Il sentiero è attualmente in costruzione.",
