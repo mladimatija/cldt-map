@@ -23,15 +23,14 @@ import {
 } from '@/lib/tile-cache';
 import { clearPoiAssetCache, getPoiAssetCount } from '@/lib/poi-prefetch';
 import { tileCacheTtlDays, TRAIL_OFF_TRAIL_THRESHOLD_M } from '@/lib/config';
+import { formatDistance } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
-import { Checkbox } from '@/components/ui/Checkbox';
-import SmartTooltip from '@/components/ui/SmartTooltip';
+import { SettingsToggleRow } from './SettingsToggleRow';
 import {
 	IoCloudDownloadOutline,
 	IoTrashOutline,
 	IoRefreshOutline,
 	IoWarningOutline,
-	IoHelpCircleOutline,
 	IoEllipsisHorizontal,
 } from 'react-icons/io5';
 
@@ -43,7 +42,11 @@ function formatAge(cachedAt: number, t: ReturnType<typeof useTranslations<'tileC
 	return t('daysAgo', { days: diffDays });
 }
 
-export function MapControlsTileCachePanel(): React.ReactElement {
+interface MapControlsTileCachePanelProps {
+	embedded?: boolean;
+}
+
+export function MapControlsTileCachePanel({ embedded = false }: MapControlsTileCachePanelProps): React.ReactElement {
 	const t = useTranslations('tileCache');
 
 	// Store state
@@ -71,6 +74,8 @@ export function MapControlsTileCachePanel(): React.ReactElement {
 	const startHighDetailAheadDownload = useMapStore((s: MapStoreState) => s.startHighDetailAheadDownload);
 	const enhancedTrailPoints = useStore((s: StoreState) => s.enhancedTrailPoints);
 	const closestPoint = useStore((s: StoreState) => s.closestPoint);
+	const units = useMapStore((s: MapStoreState) => s.units);
+	const distancePrecision = useMapStore((s: MapStoreState) => s.distancePrecision);
 
 	// Live tile count local state
 	const [liveCount, setLiveCount] = useState<number | null>(null);
@@ -93,6 +98,10 @@ export function MapControlsTileCachePanel(): React.ReactElement {
 	const cacheable = isProviderCacheable(baseMapProvider);
 	const stale = isCacheStale(tileCacheMeta);
 	const hasCache = !!tileCacheMeta;
+	const highDetailAheadDistance = useMemo(
+		() => formatDistance(HIGH_DETAIL_AHEAD_KM, units, distancePrecision),
+		[units, distancePrecision],
+	);
 
 	const refreshLiveCount = useCallback(async (providerKey: string) => {
 		setQuerying(true);
@@ -195,16 +204,8 @@ export function MapControlsTileCachePanel(): React.ReactElement {
 
 	const progressPercent = tileCacheTotal > 0 ? Math.round((tileCacheDone / tileCacheTotal) * 100) : 0;
 
-	return (
-		<div className="mt-1 border-t border-gray-200 pt-2 dark:border-[var(--border-color)]">
-			<div className="mb-1.5 flex items-center gap-1.5">
-				<IoCloudDownloadOutline
-					aria-hidden
-					className="h-4 w-4 shrink-0 text-gray-500 dark:text-[var(--text-secondary)]"
-				/>
-				<span className="text-xs font-medium text-gray-600 dark:text-[var(--text-primary)]">{t('title')}</span>
-			</div>
-
+	const content = (
+		<>
 			{/* Provider not cacheable */}
 			{!cacheable && (
 				<p className="text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('providerNotCacheable')}</p>
@@ -283,7 +284,7 @@ export function MapControlsTileCachePanel(): React.ReactElement {
 									)}
 									<div className="flex flex-wrap gap-1.5 pt-0.5">
 										<Button
-											className="min-h-[44px] text-xs"
+											className="h-8 text-xs"
 											size="sm"
 											variant="mapControlOutlineSecondary"
 											onClick={() => void handleClear()}
@@ -292,7 +293,7 @@ export function MapControlsTileCachePanel(): React.ReactElement {
 											{t('clear')}
 										</Button>
 										<Button
-											className="min-h-[44px] text-xs"
+											className="h-8 text-xs"
 											size="sm"
 											variant="mapControlOutline"
 											onClick={() => void handleRedownload()}
@@ -302,7 +303,7 @@ export function MapControlsTileCachePanel(): React.ReactElement {
 										</Button>
 										{!confirmClearAll && (
 											<Button
-												className="min-h-[44px] text-xs"
+												className="h-8 text-xs"
 												size="sm"
 												variant="mapControlOutlineSecondary"
 												onClick={() => setConfirmClearAll(true)}
@@ -316,7 +317,7 @@ export function MapControlsTileCachePanel(): React.ReactElement {
 										<div className="flex items-center gap-2 pt-0.5 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
 											<span>{t('confirmClear')}</span>
 											<Button
-												className="min-h-[44px] text-xs"
+												className="h-8 text-xs"
 												ref={confirmYesRef}
 												size="sm"
 												variant="mapControlOutlineSecondary"
@@ -325,7 +326,7 @@ export function MapControlsTileCachePanel(): React.ReactElement {
 												{t('confirmYes')}
 											</Button>
 											<Button
-												className="min-h-[44px] text-xs"
+												className="h-8 text-xs"
 												size="sm"
 												variant="base"
 												onClick={() => setConfirmClearAll(false)}
@@ -341,7 +342,7 @@ export function MapControlsTileCachePanel(): React.ReactElement {
 							{!hasCache && (
 								<div className="space-y-0.5">
 									<Button
-										className="min-h-[44px] w-full justify-start text-xs"
+										className="h-8 w-full justify-start text-xs"
 										disabled={!enhancedTrailPoints?.length}
 										size="sm"
 										variant="mapControlOutline"
@@ -358,23 +359,12 @@ export function MapControlsTileCachePanel(): React.ReactElement {
 								</div>
 							)}
 
-							{/* Auto-sync toggle */}
-							<label className="flex cursor-pointer items-center gap-2">
-								<Checkbox checked={autoSync} onCheckedChange={(checked) => setAutoSync(checked)} />
-								<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">{t('autoSync')}</span>
-								<span
-									className="inline-flex"
-									onClick={(e) => e.stopPropagation()}
-									onMouseDown={(e) => e.stopPropagation()}
-								>
-									<SmartTooltip content={t('autoSyncTooltip')} position="top">
-										<IoHelpCircleOutline
-											aria-hidden
-											className="ml-0.5 h-3.5 w-3.5 shrink-0 cursor-help text-gray-400 hover:text-gray-600 dark:text-[var(--text-primary)]"
-										/>
-									</SmartTooltip>
-								</span>
-							</label>
+							<SettingsToggleRow
+								checked={autoSync}
+								label={t('autoSync')}
+								tooltip={t('autoSyncTooltip')}
+								onCheckedChange={(checked) => setAutoSync(checked)}
+							/>
 
 							{/* POI offline assets: cached image thumbnails + Wikipedia
 							    summaries. Populated as a side-effect of the corridor
@@ -399,55 +389,21 @@ export function MapControlsTileCachePanel(): React.ReactElement {
 								</Button>
 							</div>
 
-							{/* Predictive pre-cache toggle */}
-							<label
-								className={`flex items-center gap-2 ${hasCache ? 'cursor-pointer' : 'pointer-events-none cursor-not-allowed opacity-50'}`}
-							>
-								<Checkbox
-									checked={predictivePrecache}
-									disabled={!hasCache}
-									onCheckedChange={(checked) => setPredictivePrecache(checked)}
-								/>
-								<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">{t('predictive.label')}</span>
-								<span
-									className="inline-flex"
-									onClick={(e) => e.stopPropagation()}
-									onMouseDown={(e) => e.stopPropagation()}
-								>
-									<SmartTooltip content={t('predictive.hint')} position="top">
-										<IoHelpCircleOutline
-											aria-hidden
-											className="ml-0.5 h-3.5 w-3.5 shrink-0 cursor-help text-gray-400 hover:text-gray-600 dark:text-[var(--text-primary)]"
-										/>
-									</SmartTooltip>
-								</span>
-							</label>
+							<SettingsToggleRow
+								checked={predictivePrecache}
+								disabled={!hasCache}
+								label={t('predictive.label')}
+								tooltip={t('predictive.hint')}
+								onCheckedChange={(checked) => setPredictivePrecache(checked)}
+							/>
 
-							{/* High detail ahead (zoom 15) toggle + download */}
-							<label
-								className={`flex items-center gap-2 ${hasCache ? 'cursor-pointer' : 'pointer-events-none cursor-not-allowed opacity-50'}`}
-							>
-								<Checkbox
-									checked={offlineHighDetailAheadEnabled}
-									disabled={!hasCache}
-									onCheckedChange={(checked) => setOfflineHighDetailAheadEnabled(checked)}
-								/>
-								<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">
-									{t('highDetailAhead.label')}
-								</span>
-								<span
-									className="inline-flex"
-									onClick={(e) => e.stopPropagation()}
-									onMouseDown={(e) => e.stopPropagation()}
-								>
-									<SmartTooltip content={t('highDetailAhead.hint', { km: HIGH_DETAIL_AHEAD_KM })} position="top">
-										<IoHelpCircleOutline
-											aria-hidden
-											className="ml-0.5 h-3.5 w-3.5 shrink-0 cursor-help text-gray-400 hover:text-gray-600 dark:text-[var(--text-primary)]"
-										/>
-									</SmartTooltip>
-								</span>
-							</label>
+							<SettingsToggleRow
+								checked={offlineHighDetailAheadEnabled}
+								disabled={!hasCache}
+								label={t('highDetailAhead.label')}
+								tooltip={t('highDetailAhead.hint', { distance: highDetailAheadDistance })}
+								onCheckedChange={(checked) => setOfflineHighDetailAheadEnabled(checked)}
+							/>
 							{offlineHighDetailAheadEnabled && hasCache && estimatedAheadHighDetailTiles > 0 && (
 								<div className="space-y-1">
 									<div className="flex items-start gap-1 text-xs text-amber-600 dark:text-amber-400">
@@ -455,12 +411,12 @@ export function MapControlsTileCachePanel(): React.ReactElement {
 										<span>
 											{t('highDetailAhead.storageWarning', {
 												count: estimatedAheadHighDetailTiles.toLocaleString(),
-												km: HIGH_DETAIL_AHEAD_KM,
+												distance: highDetailAheadDistance,
 											})}
 										</span>
 									</div>
 									<Button
-										className="min-h-[44px] w-full justify-start text-xs"
+										className="h-8 w-full justify-start text-xs"
 										disabled={tileCacheDownloading}
 										size="sm"
 										variant="mapControlOutline"
@@ -475,6 +431,23 @@ export function MapControlsTileCachePanel(): React.ReactElement {
 					)}
 				</div>
 			)}
+		</>
+	);
+
+	if (embedded) {
+		return <div className="flex flex-col gap-2">{content}</div>;
+	}
+
+	return (
+		<div className="mt-1 border-t border-gray-200 pt-2 dark:border-[var(--border-color)]">
+			<div className="mb-1.5 flex items-center gap-1.5">
+				<IoCloudDownloadOutline
+					aria-hidden
+					className="h-4 w-4 shrink-0 text-gray-500 dark:text-[var(--text-secondary)]"
+				/>
+				<span className="text-xs font-medium text-gray-600 dark:text-[var(--text-primary)]">{t('title')}</span>
+			</div>
+			{content}
 		</div>
 	);
 }

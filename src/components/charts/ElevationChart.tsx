@@ -406,11 +406,7 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 	const handleGpxShare = (): void => {
 		const payload = buildGpxPayload();
 		if (!payload) return;
-		void shareGpxFile(payload.gpx, payload.filename).then((handled) => {
-			// Unsupported or hard failure: fall back to a regular download so
-			// the user's acknowledged intent still completes.
-			if (!handled) downloadGpxFile(payload.gpx, payload.filename);
-		});
+		void shareGpxFile(payload.gpx, payload.filename);
 	};
 
 	return (
@@ -593,6 +589,7 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 											distancePrecision={distancePrecision}
 											elevationLabel={t('elevationLabel')}
 											elevationUnitASL={tControls('elevationUnitASL')}
+											enhancedTrailPoints={enhancedTrailPoints}
 											fillMode={fillMode}
 											highlightTrailPosition={highlightTrailPosition}
 											isPinned={pinnedPoint !== null}

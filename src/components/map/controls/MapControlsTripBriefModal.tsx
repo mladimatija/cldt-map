@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { useLocale, useMessages, useTranslations } from 'next-intl';
 import { useMap } from 'react-leaflet';
 import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
@@ -20,7 +20,7 @@ import { dayHeader, tripBriefStringsFromMessages } from '@/lib/trip-brief-i18n';
 import { exportTripBriefPdf } from '@/lib/trip-brief-pdf';
 import { exportTripBriefDocx } from '@/lib/trip-brief-docx';
 import { exportTripBriefHtml } from '@/lib/trip-brief-html';
-import { usePopoverFocusTrap, usePackAdjustedPaceKmh, useActiveStarredPoiIds } from '@/hooks';
+import { useActiveStarredPoiIds, usePackAdjustedPaceKmh } from '@/hooks';
 import { computeStagePackScenarios, formatVolume, formatWeight, kgToDisplay, weightUnitLabel } from '@/lib/pack-weight';
 import { estimatedFoodDaysFromPack, type StageResupplyCadence } from '@/lib/resupply-cadence';
 import { poiDisplayName } from '@/lib/pois';
@@ -28,6 +28,7 @@ import { missingGearTerms } from '@/lib/pack-csv';
 import { renderElevationThumbnail } from '@/lib/elevation-thumbnail';
 import { Locale } from '@/i18n/routing';
 import { MAP_CONTROL_INPUT } from './map-controls-constants';
+import { MapControlModalShell } from './MapControlModalShell';
 
 interface MapControlsTripBriefModalProps {
 	open: boolean;
@@ -94,7 +95,6 @@ export function MapControlsTripBriefModal({
 	const [progress, setProgress] = useState<{ current: number; total: number } | null>(null);
 	const [exportError, setExportError] = useState<string | null>(null);
 	const abortRef = useRef<AbortController | null>(null);
-	const cardRef = usePopoverFocusTrap(open);
 
 	const enabled = useMemo(
 		() => canAssembleTripBrief(stagePlan, enhancedTrailPoints.length > 0),
@@ -379,234 +379,209 @@ export function MapControlsTripBriefModal({
 		onClose();
 	}, [onClose, resetModalState]);
 
-	useEffect(() => {
-		if (!open) return;
-		const handler = (e: KeyboardEvent): void => {
-			if (e.key === 'Escape') handleCancel();
-		};
-		document.addEventListener('keydown', handler);
-		return () => document.removeEventListener('keydown', handler);
-	}, [open, handleCancel]);
-
 	if (!open) return null;
 
 	const isEditStep = step === 'edit';
 
 	return (
-		<div
-			aria-labelledby="trip-brief-title"
-			aria-modal="true"
-			className="z-modal fixed inset-0 flex items-center justify-center bg-[var(--modal-backdrop-bg)] p-4"
-			role="dialog"
-			onClick={handleCancel}
+		<MapControlModalShell
+			cardClassName={cn(isEditStep ? 'max-h-[85vh] max-w-md' : 'max-w-sm')}
+			closeLabel={generating ? t('cancel') : t('close')}
+			open={open}
+			title={isEditStep ? t('editTitle') : t('title')}
+			titleClassName="text-cldt-blue mb-2 text-base font-semibold dark:text-[var(--text-primary)]"
+			titleId="trip-brief-title"
+			onClose={handleCancel}
 		>
-			<div
-				className={cn(
-					'w-full rounded bg-[var(--map-tooltip-bg)] p-4 shadow-xl dark:bg-[var(--bg-primary)]',
-					isEditStep ? 'max-h-[85vh] max-w-md overflow-y-auto' : 'max-w-sm',
-				)}
-				ref={cardRef}
-				onClick={(e) => e.stopPropagation()}
-			>
-				<h3
-					className="text-cldt-blue mb-2 text-base font-semibold dark:text-[var(--text-primary)]"
-					id="trip-brief-title"
-				>
-					{isEditStep ? t('editTitle') : t('title')}
-				</h3>
+			{isEditStep ? (
+				<>
+					<p className="mb-3 text-xs text-gray-600 dark:text-[var(--text-secondary)]">{t('editDescription')}</p>
 
-				{isEditStep ? (
-					<>
-						<p className="mb-3 text-xs text-gray-600 dark:text-[var(--text-secondary)]">{t('editDescription')}</p>
+					{preparedBrief?.meta.aiDisclaimer && (
+						<p className="mb-3 text-xs text-gray-500 dark:text-[var(--text-secondary)]">
+							{preparedBrief.meta.aiDisclaimer}
+						</p>
+					)}
 
-						{preparedBrief?.meta.aiDisclaimer && (
-							<p className="mb-3 text-xs text-gray-500 dark:text-[var(--text-secondary)]">
-								{preparedBrief.meta.aiDisclaimer}
-							</p>
-						)}
+					<label className="mb-3 block">
+						<span className="mb-1 block text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
+							{t('document.labels.overview')}
+						</span>
+						<textarea
+							className={NARRATIVE_TEXTAREA}
+							disabled={generating}
+							rows={4}
+							value={editOverview}
+							onChange={(e) => setEditOverview(e.target.value)}
+						/>
+					</label>
 
-						<label className="mb-3 block">
+					{preparedBrief?.days.map((day, i) => (
+						<label className="mb-3 block" key={day.index}>
 							<span className="mb-1 block text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
-								{t('document.labels.overview')}
+								{dayHeader(day, documentStrings, preparedBrief.meta.units)}
 							</span>
+							{[day.resupplyEnteringLabel, day.resupplyCarryLabel, day.foodPackLabel]
+								.filter((line): line is string => !!line)
+								.map((line) => (
+									<p className="mb-1 text-[10px] text-amber-700 dark:text-amber-400" key={line}>
+										{line}
+									</p>
+								))}
 							<textarea
 								className={NARRATIVE_TEXTAREA}
 								disabled={generating}
 								rows={4}
-								value={editOverview}
-								onChange={(e) => setEditOverview(e.target.value)}
+								value={editDayNarratives[i] ?? ''}
+								onChange={(e) => {
+									const next = [...editDayNarratives];
+									next[i] = e.target.value;
+									setEditDayNarratives(next);
+								}}
 							/>
 						</label>
+					))}
+				</>
+			) : (
+				<>
+					<p className="mb-3 text-xs text-gray-600 dark:text-[var(--text-secondary)]">{t('description')}</p>
 
-						{preparedBrief?.days.map((day, i) => (
-							<label className="mb-3 block" key={day.index}>
-								<span className="mb-1 block text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
-									{dayHeader(day, documentStrings, preparedBrief.meta.units)}
-								</span>
-								{[day.resupplyEnteringLabel, day.resupplyCarryLabel, day.foodPackLabel]
-									.filter((line): line is string => !!line)
-									.map((line) => (
-										<p className="mb-1 text-[10px] text-amber-700 dark:text-amber-400" key={line}>
-											{line}
-										</p>
-									))}
-								<textarea
-									className={NARRATIVE_TEXTAREA}
-									disabled={generating}
-									rows={4}
-									value={editDayNarratives[i] ?? ''}
-									onChange={(e) => {
-										const next = [...editDayNarratives];
-										next[i] = e.target.value;
-										setEditDayNarratives(next);
-									}}
-								/>
-							</label>
-						))}
-					</>
-				) : (
-					<>
-						<p className="mb-3 text-xs text-gray-600 dark:text-[var(--text-secondary)]">{t('description')}</p>
+					{!enabled && <p className="mb-2 text-xs text-amber-700 italic dark:text-amber-300">{t('needsPlan')}</p>}
 
-						{!enabled && <p className="mb-2 text-xs text-amber-700 italic dark:text-amber-300">{t('needsPlan')}</p>}
-
-						<fieldset className="mb-3 flex flex-col gap-1">
-							<legend className="text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
-								{t('format')}
-							</legend>
-							<label className="flex items-center gap-2 text-sm text-gray-700 dark:text-[var(--text-primary)]">
-								<Radio
-									checked={format === 'pdf'}
-									name="trip-brief-format"
-									value="pdf"
-									onChange={() => setFormat('pdf')}
-								/>
-								{t('pdf')}
-							</label>
-							<label className="flex items-center gap-2 text-sm text-gray-700 dark:text-[var(--text-primary)]">
-								<Radio
-									checked={format === 'docx'}
-									name="trip-brief-format"
-									value="docx"
-									onChange={() => setFormat('docx')}
-								/>
-								{t('docx')}
-							</label>
-							<label className="flex items-center gap-2 text-sm text-gray-700 dark:text-[var(--text-primary)]">
-								<Radio
-									checked={format === 'html'}
-									name="trip-brief-format"
-									value="html"
-									onChange={() => setFormat('html')}
-								/>
-								{t('html')}
-							</label>
-						</fieldset>
-
-						<fieldset className="mb-3 flex flex-col gap-1">
-							<legend className="text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
-								{t('poiScope')}
-							</legend>
-							<label className="flex items-center gap-2 text-sm text-gray-700 dark:text-[var(--text-primary)]">
-								<Radio
-									checked={poiScope === 'allInStage'}
-									name="trip-brief-pois"
-									value="allInStage"
-									onChange={() => setPoiScope('allInStage')}
-								/>
-								{t('poisAll')}
-							</label>
-							<label
-								className={cn(
-									'flex items-center gap-2 text-sm',
-									activeStarredPoiIds.size > 0
-										? 'cursor-pointer text-gray-700 dark:text-[var(--text-primary)]'
-										: 'cursor-not-allowed text-gray-400 dark:text-[var(--text-secondary)]',
-								)}
-								title={activeStarredPoiIds.size > 0 ? undefined : t('poisSelectedComingSoon')}
-							>
-								<Radio
-									checked={poiScope === 'selected'}
-									disabled={activeStarredPoiIds.size === 0}
-									name="trip-brief-pois"
-									value="selected"
-									onChange={() => setPoiScope('selected')}
-								/>
-								<span className={activeStarredPoiIds.size === 0 ? 'line-through' : undefined}>
-									{t('poisSelected')}
-									{activeStarredPoiIds.size > 0 && (
-										<span className="ml-1 text-xs text-amber-600 dark:text-amber-400">
-											({activeStarredPoiIds.size})
-										</span>
-									)}
-								</span>
-							</label>
-						</fieldset>
-
-						<label
-							className="mb-3 flex cursor-pointer items-center gap-2 text-sm text-gray-700 dark:text-[var(--text-primary)]"
-							title={t('aiTooltip')}
-						>
-							<Checkbox checked={aiNarrative} onCheckedChange={(checked) => setAiNarrative(checked)} />
-							{t('aiNarrative')}
+					<fieldset className="mb-3 flex flex-col gap-1">
+						<legend className="text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
+							{t('format')}
+						</legend>
+						<label className="flex items-center gap-2 text-sm text-gray-700 dark:text-[var(--text-primary)]">
+							<Radio
+								checked={format === 'pdf'}
+								name="trip-brief-format"
+								value="pdf"
+								onChange={() => setFormat('pdf')}
+							/>
+							{t('pdf')}
 						</label>
+						<label className="flex items-center gap-2 text-sm text-gray-700 dark:text-[var(--text-primary)]">
+							<Radio
+								checked={format === 'docx'}
+								name="trip-brief-format"
+								value="docx"
+								onChange={() => setFormat('docx')}
+							/>
+							{t('docx')}
+						</label>
+						<label className="flex items-center gap-2 text-sm text-gray-700 dark:text-[var(--text-primary)]">
+							<Radio
+								checked={format === 'html'}
+								name="trip-brief-format"
+								value="html"
+								onChange={() => setFormat('html')}
+							/>
+							{t('html')}
+						</label>
+					</fieldset>
 
-						{aiNarrative && (
-							<p className="-mt-2 mb-3 text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('aiDisclaimer')}</p>
-						)}
-					</>
-				)}
+					<fieldset className="mb-3 flex flex-col gap-1">
+						<legend className="text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
+							{t('poiScope')}
+						</legend>
+						<label className="flex items-center gap-2 text-sm text-gray-700 dark:text-[var(--text-primary)]">
+							<Radio
+								checked={poiScope === 'allInStage'}
+								name="trip-brief-pois"
+								value="allInStage"
+								onChange={() => setPoiScope('allInStage')}
+							/>
+							{t('poisAll')}
+						</label>
+						<label
+							className={cn(
+								'flex items-center gap-2 text-sm',
+								activeStarredPoiIds.size > 0
+									? 'cursor-pointer text-gray-700 dark:text-[var(--text-primary)]'
+									: 'cursor-not-allowed text-gray-400 dark:text-[var(--text-secondary)]',
+							)}
+							title={activeStarredPoiIds.size > 0 ? undefined : t('poisSelectedComingSoon')}
+						>
+							<Radio
+								checked={poiScope === 'selected'}
+								disabled={activeStarredPoiIds.size === 0}
+								name="trip-brief-pois"
+								value="selected"
+								onChange={() => setPoiScope('selected')}
+							/>
+							<span className={activeStarredPoiIds.size === 0 ? 'line-through' : undefined}>
+								{t('poisSelected')}
+								{activeStarredPoiIds.size > 0 && (
+									<span className="ml-1 text-xs text-amber-600 dark:text-amber-400">({activeStarredPoiIds.size})</span>
+								)}
+							</span>
+						</label>
+					</fieldset>
 
-				{generating && aiPhase && (
-					<p className="mb-2 text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('aiGenerating')}</p>
-				)}
+					<label
+						className="mb-3 flex cursor-pointer items-center gap-2 text-sm text-gray-700 dark:text-[var(--text-primary)]"
+						title={t('aiTooltip')}
+					>
+						<Checkbox checked={aiNarrative} onCheckedChange={(checked) => setAiNarrative(checked)} />
+						{t('aiNarrative')}
+					</label>
 
-				{generating && !aiPhase && step === 'options' && (
-					<p className="mb-2 text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('preparing')}</p>
-				)}
-
-				{generating && progress && (
-					<p className="mb-2 text-xs text-gray-500 dark:text-[var(--text-secondary)]">
-						{t('progress', { current: progress.current, total: progress.total })}
-					</p>
-				)}
-
-				{exportError && (
-					<p className="mb-2 text-xs text-red-600 dark:text-red-400" role="alert">
-						{exportError}
-					</p>
-				)}
-
-				<div className="flex justify-end gap-2">
-					{isEditStep && (
-						<Button disabled={generating} size="sm" variant="mapControlOutlineSecondary" onClick={handleBack}>
-							{t('back')}
-						</Button>
+					{aiNarrative && (
+						<p className="-mt-2 mb-3 text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('aiDisclaimer')}</p>
 					)}
-					<Button size="sm" variant="mapControlOutlineSecondary" onClick={handleCancel}>
-						{generating ? t('cancel') : t('close')}
+				</>
+			)}
+
+			{generating && aiPhase && (
+				<p className="mb-2 text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('aiGenerating')}</p>
+			)}
+
+			{generating && !aiPhase && step === 'options' && (
+				<p className="mb-2 text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('preparing')}</p>
+			)}
+
+			{generating && progress && (
+				<p className="mb-2 text-xs text-gray-500 dark:text-[var(--text-secondary)]">
+					{t('progress', { current: progress.current, total: progress.total })}
+				</p>
+			)}
+
+			{exportError && (
+				<p className="mb-2 text-xs text-red-600 dark:text-red-400" role="alert">
+					{exportError}
+				</p>
+			)}
+
+			<div className="flex justify-end gap-2">
+				{isEditStep && (
+					<Button disabled={generating} size="sm" variant="mapControlOutlineSecondary" onClick={handleBack}>
+						{t('back')}
 					</Button>
-					{isEditStep ? (
-						<Button
-							disabled={generating || !preparedBrief}
-							size="sm"
-							variant="mapControlOutline"
-							onClick={() => void handleExport()}
-						>
-							{generating ? t('generating') : t('generate')}
-						</Button>
-					) : (
-						<Button
-							disabled={!enabled || generating}
-							size="sm"
-							variant="mapControlOutline"
-							onClick={() => void handleContinue()}
-						>
-							{generating ? t('preparing') : t('continue')}
-						</Button>
-					)}
-				</div>
+				)}
+				<Button size="sm" variant="mapControlOutlineSecondary" onClick={handleCancel}>
+					{generating ? t('cancel') : t('close')}
+				</Button>
+				{isEditStep ? (
+					<Button
+						disabled={generating || !preparedBrief}
+						size="sm"
+						variant="mapControlOutline"
+						onClick={() => void handleExport()}
+					>
+						{generating ? t('generating') : t('generate')}
+					</Button>
+				) : (
+					<Button
+						disabled={!enabled || generating}
+						size="sm"
+						variant="mapControlOutline"
+						onClick={() => void handleContinue()}
+					>
+						{generating ? t('preparing') : t('continue')}
+					</Button>
+				)}
 			</div>
-		</div>
+		</MapControlModalShell>
 	);
 }

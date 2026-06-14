@@ -128,12 +128,32 @@ export function downloadGpxFile(gpxContent: string, filename: string): void {
 	URL.revokeObjectURL(url);
 }
 
+const GPX_MIME = 'application/gpx+xml';
+
+/**
+ * Chromium ShareServiceImpl (desktop Mac/Win, ChromeOS, Android Chrome) rejects
+ * GPX at share() via a fixed MIME/extension allowlist. Blink canShare() does not
+ * apply that check, so it can return true for GPX even though share() fails.
+ */
+function usesChromiumWebShareFileAllowlist(): boolean {
+	if (typeof navigator === 'undefined') return false;
+	const ua = navigator.userAgent;
+	// iOS browsers (including CriOS) use WebKit sharing, not Chromium's allowlist.
+	if (/iPhone|iPad|iPod/.test(ua)) return false;
+	if (/Android/.test(ua)) return /Chrome\//.test(ua);
+	// Desktop Chromium forks (Chrome, Edge, Opera). Safari uses WebKit sharing.
+	if (/Edg\//.test(ua) || /OPR\//.test(ua)) return true;
+	if (/Chrome\//.test(ua) && !/Edg\//.test(ua)) return true;
+	return false;
+}
+
 /** True when the Web Share API can hand a GPX file to another app (OsmAnd,
  *  Locus, Gaia, mail, ...) - the mobile share-sheet path. */
 export function canShareGpxFiles(): boolean {
 	if (typeof navigator === 'undefined' || typeof navigator.canShare !== 'function') return false;
+	if (usesChromiumWebShareFileAllowlist()) return false;
 	try {
-		const probe = new File(['<gpx/>'], 'probe.gpx', { type: 'application/gpx+xml' });
+		const probe = new File(['<gpx/>'], 'probe.gpx', { type: GPX_MIME });
 		return navigator.canShare({ files: [probe] });
 	} catch {
 		return false;
@@ -144,11 +164,11 @@ export function canShareGpxFiles(): boolean {
  * Opens the platform share sheet with the GPX as a file attachment. Must be
  * called from a user-gesture handler. Resolves true when the share sheet was
  * opened (a user cancel still counts as handled); false means unsupported or
- * rejected, in which case callers should fall back to downloadGpxFile.
+ * rejected.
  */
 export async function shareGpxFile(gpxContent: string, filename: string, title?: string): Promise<boolean> {
 	if (!canShareGpxFiles()) return false;
-	const file = new File([gpxContent], filename, { type: 'application/gpx+xml' });
+	const file = new File([gpxContent], filename, { type: GPX_MIME });
 	try {
 		await navigator.share({ files: [file], title: title ?? filename });
 		return true;

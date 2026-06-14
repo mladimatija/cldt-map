@@ -1,11 +1,13 @@
 'use client';
 
-import React, { useCallback, useEffect, useMemo, useRef, useState, type RefObject } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { OpenLocationCode } from 'open-location-code';
 import { IoCallOutline, IoCopyOutline, IoOpenOutline, IoWarningOutline } from 'react-icons/io5';
-import { MAP_CONTROL_POPOVER } from './map-controls-constants';
+import { MAP_CONTROL_SECTION_HEADING } from './MapControlSectionCard';
+import { MapControlIconButton } from './MapControlIconButton';
 import { Button, buttonVariants } from '@/components/ui/Button';
+import { usePopoverFocusTrap } from '@/hooks';
 import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
 import { computeBearing, findNearestPointIndex, formatDistanceM } from '@/lib/distance-utils';
 import {
@@ -16,13 +18,13 @@ import {
 	type RoadAccessEntry,
 } from '@/lib/emergency-data';
 import { fetchReverseGeocodeAddress } from '@/lib/reverse-geocode-client';
-import { isSafeUrl } from '@/lib/utils';
+import { cn, isSafeUrl } from '@/lib/utils';
 
-const FOCUSABLE_SELECTOR = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
 const COPY_RESET_MS = 1500;
 
+const SECTION_DIVIDER = 'border-t border-gray-200 pt-3 dark:border-[var(--border-color)]';
+
 interface MapControlsEmergencyPanelProps {
-	containerRef: RefObject<HTMLDivElement | null>;
 	onClose: () => void;
 }
 
@@ -38,7 +40,7 @@ interface NearestHgss {
 	bearingDeg: number;
 }
 
-type CopyField = 'coords' | 'plusCode' | 'section' | 'address';
+type CopyField = 'coords' | 'plusCode' | 'section' | 'address' | 'all';
 
 async function copyTextToClipboard(text: string): Promise<boolean> {
 	try {
@@ -82,35 +84,51 @@ function CopyButton({ value, ariaLabel, field, copiedField, onCopied }: CopyButt
 		});
 	};
 	return (
-		<button
+		<MapControlIconButton
 			aria-label={ariaLabel}
-			className={`focus-visible:ring-cldt-green -my-1 inline-flex h-11 w-11 items-center justify-center rounded-md transition-colors duration-200 outline-none focus-visible:ring-2 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-[var(--bg-secondary)] ${
-				isCopied ? 'text-cldt-green' : 'text-gray-500 dark:text-[var(--text-secondary)]'
-			} hover:bg-gray-100 focus-visible:bg-gray-100 dark:hover:bg-white/10 dark:focus-visible:bg-white/10`}
+			className={cn(isCopied && 'text-cldt-green')}
 			title={isCopied ? t('copyTooltipSuccess') : t('copyTooltipDefault')}
-			type="button"
 			onClick={handleClick}
 		>
-			<IoCopyOutline aria-hidden className="h-4 w-4" />
-		</button>
+			<IoCopyOutline aria-hidden className="h-3.5 w-3.5" />
+		</MapControlIconButton>
+	);
+}
+
+function CompassBearing({
+	bearingDeg,
+	compass,
+	label,
+}: {
+	bearingDeg: number;
+	compass: string;
+	label: string;
+}): React.ReactElement {
+	return (
+		<span aria-label={label} className="inline-flex shrink-0 items-center gap-1 text-xs" role="img" title={label}>
+			<span
+				aria-hidden="true"
+				className="text-cldt-blue inline-block"
+				style={{ transform: `rotate(${bearingDeg}deg)` }}
+			>
+				&#8593;
+			</span>
+			<span aria-hidden="true" className="font-medium">
+				{compass}
+			</span>
+		</span>
 	);
 }
 
 const olc = new OpenLocationCode();
-// Road-type tokens (e.g. 'residential', 'unclassified') get a localised label;
-// proper-noun roadRefs like 'D2' or 'Ulica X' pass through as-is.
 const LOCALISABLE_ROAD_TYPES = new Set(['unclassified', 'residential', 'road']);
 
-// Format an E.164-ish phone (e.g. +385917210000) for display: "+385 91 721 0000".
 function formatPhoneDisplay(phone: string): string {
 	const m = /^\+(\d{1,3})(\d{2,3})(\d{3})(\d{3,4})$/.exec(phone);
 	return m ? `+${m[1]} ${m[2]} ${m[3]} ${m[4]}` : phone;
 }
 
-export function MapControlsEmergencyPanel({
-	containerRef,
-	onClose,
-}: MapControlsEmergencyPanelProps): React.ReactElement {
+export function MapControlsEmergencyPanel({ onClose }: MapControlsEmergencyPanelProps): React.ReactElement {
 	const t = useTranslations('emergency');
 	const tTrail = useTranslations('trailRoute');
 	const locale = useLocale();
@@ -127,8 +145,8 @@ export function MapControlsEmergencyPanel({
 	const [copiedField, setCopiedField] = useState<CopyField | null>(null);
 	const copyResetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 	const [addressLookup, setAddressLookup] = useState<{ key: string; line: string | null } | null>(null);
+	const cardRef = usePopoverFocusTrap(true);
 
-	// Lazy-load emergency data on first open
 	useEffect(() => {
 		let cancelled = false;
 		void loadEmergencyData()
@@ -147,38 +165,13 @@ export function MapControlsEmergencyPanel({
 		};
 	}, []);
 
-	// Focus trap mirroring MapControlsSharePanel
 	useEffect(() => {
-		const el = containerRef.current;
-		if (!el) return;
-		const focusables = el.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR);
-		const first = focusables[0];
-		const last = focusables[focusables.length - 1];
-		first?.focus();
-
-		const handleKeyDown = (e: KeyboardEvent): void => {
-			if (e.key === 'Escape') {
-				e.stopPropagation();
-				onClose();
-				return;
-			}
-			if (e.key !== 'Tab') return;
-			if (focusables.length === 0) return;
-			if (e.shiftKey) {
-				if (document.activeElement === first) {
-					e.preventDefault();
-					last?.focus();
-				}
-			} else {
-				if (document.activeElement === last) {
-					e.preventDefault();
-					first?.focus();
-				}
-			}
+		const handler = (e: KeyboardEvent): void => {
+			if (e.key === 'Escape') onClose();
 		};
-		el.addEventListener('keydown', handleKeyDown);
-		return () => el.removeEventListener('keydown', handleKeyDown);
-	}, [containerRef, onClose]);
+		document.addEventListener('keydown', handler);
+		return () => document.removeEventListener('keydown', handler);
+	}, [onClose]);
 
 	useEffect(
 		() => () => {
@@ -198,7 +191,6 @@ export function MapControlsEmergencyPanel({
 
 	const gpsUnavailable = !userLocation || permissionStatus !== 'granted' || locationError !== null;
 
-	// Resolve the display position: GPS first, fallback to closestPoint.
 	const displayPosition: { lat: number; lng: number; source: 'gps' | 'closest' | null } = useMemo(() => {
 		if (userLocation) {
 			return { lat: userLocation.lat, lng: userLocation.lng, source: 'gps' };
@@ -233,8 +225,7 @@ export function MapControlsEmergencyPanel({
 
 	const nearestRoad: NearestRoad | null = useMemo(() => {
 		if (displayPosition.source === null || roadAccess === null) return null;
-		const nearest = findNearestEntry(roadAccess, displayPosition.lat, displayPosition.lng, computeBearing);
-		return nearest;
+		return findNearestEntry(roadAccess, displayPosition.lat, displayPosition.lng, computeBearing);
 	}, [roadAccess, displayPosition]);
 
 	const nearestHgss: NearestHgss | null = useMemo(() => {
@@ -255,7 +246,6 @@ export function MapControlsEmergencyPanel({
 	const sectionString = useMemo((): string => {
 		const { sectionName, km } = sectionInfo;
 		if (sectionName === null && km === null) return '';
-		// trail-slice stores the section as an i18n key (e.g. 'sectionA') in the trailRoute namespace.
 		const localisedName = sectionName ? tTrail(sectionName) : null;
 		const parts = [localisedName, km !== null ? t('kmFromStart', { km: km.toFixed(2) }) : null].filter(
 			(p): p is string => p !== null,
@@ -291,226 +281,242 @@ export function MapControlsEmergencyPanel({
 		if (!hasPosition) return undefined;
 		const lat = displayPosition.lat.toFixed(6);
 		const lng = displayPosition.lng.toFixed(6);
-		// geo: URIs are mobile-only (no desktop browser registers a handler) and
-		// let the user open the coordinates in whichever maps app they have set
-		// as default - Google Maps, Apple Maps, OsmAnd, etc. On desktop fall back
-		// to Google Maps to share the link with HGSS dispatch.
 		const isMobile =
 			typeof window !== 'undefined' &&
 			(window.matchMedia('(pointer: coarse)').matches || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent));
 		return isMobile ? `geo:${lat},${lng}?q=${lat},${lng}` : `https://www.google.com/maps?q=${lat},${lng}`;
 	}, [hasPosition, displayPosition]);
 
+	const copyAllText = useMemo((): string => {
+		const lines: string[] = [];
+		if (coordsString) lines.push(`${t('position')}: ${coordsString}`);
+		if (addressLine) lines.push(`${t('address')}: ${addressLine}`);
+		if (plusCode) lines.push(`${t('plusCode')}: ${plusCode}`);
+		if (sectionString) lines.push(`${t('section')}: ${sectionString}`);
+		if (roadLabel && roadCompass) {
+			lines.push(`${t('nearestRoad')}: ${roadLabel} (${t(`compass.${roadCompass}`)})`);
+		}
+		if (nearestHgss) {
+			const stationLine = `${t('nearestRescue')}: ${nearestHgss.entry.name} (${formatDistanceM(nearestHgss.distanceM, units)})`;
+			lines.push(hgssCompass ? `${stationLine} (${t(`compass.${hgssCompass}`)})` : stationLine);
+			if (nearestHgss.entry.phone) {
+				lines.push(formatPhoneDisplay(nearestHgss.entry.phone));
+			}
+		}
+		return lines.join('\n');
+	}, [coordsString, addressLine, plusCode, sectionString, roadLabel, roadCompass, nearestHgss, hgssCompass, units, t]);
+
+	const handleCopyAll = (): void => {
+		if (!copyAllText) return;
+		void copyTextToClipboard(copyAllText).then((ok) => {
+			if (ok) handleCopied('all');
+		});
+	};
+
 	return (
 		<div
 			aria-labelledby="emergency-panel-title"
 			aria-modal="true"
-			className={`z-controls-popover border-l-cldt-red absolute right-[calc(100%+0.5rem)] bottom-0 flex w-80 flex-col gap-2 border-l-2 ${MAP_CONTROL_POPOVER}`}
-			ref={containerRef}
+			className="z-modal fixed inset-0 flex items-center justify-center bg-[var(--modal-backdrop-bg)] p-4"
 			role="dialog"
-			onContextMenu={(e) => e.preventDefault()}
+			onClick={onClose}
 		>
-			<Button aria-label={t('close')} className="absolute top-0 right-0" variant="closeIcon" onClick={onClose}>
-				×
-			</Button>
-			<h3
-				className="text-cldt-red pr-7 text-sm font-semibold dark:text-[var(--text-primary)]"
-				id="emergency-panel-title"
+			<div
+				className="border-l-cldt-red max-h-[85vh] w-full max-w-sm overflow-y-auto rounded border-l-2 bg-[var(--map-tooltip-bg)] p-4 shadow-xl dark:bg-[var(--bg-primary)]"
+				ref={cardRef}
+				onClick={(e) => e.stopPropagation()}
 			>
-				{t('title')}
-			</h3>
-
-			{gpsUnavailable && (
-				<div className="-mx-3 -mt-3 mb-0 flex items-start gap-2 bg-amber-100 px-3 py-2 text-xs text-amber-900 dark:bg-amber-950 dark:text-amber-200">
-					<IoWarningOutline aria-hidden className="mt-0.5 h-4 w-4 shrink-0" />
-					<span>{displayPosition.source === 'closest' ? t('gpsUnavailable') : t('gpsNoPosition')}</span>
-				</div>
-			)}
-
-			{/* Position section */}
-			<section className="flex flex-col gap-1 text-xs text-gray-700 dark:text-[var(--text-primary)]">
-				<h4 className="font-medium text-gray-600 dark:text-[var(--text-secondary)]">{t('position')}</h4>
-				{hasPosition ? (
-					<>
-						<div className="flex items-center justify-between gap-2">
-							<span className="font-mono text-base">{coordsString}</span>
-							<CopyButton
-								ariaLabel={t('copyAriaLabel.coords')}
-								copiedField={copiedField}
-								field="coords"
-								value={coordsString}
-								onCopied={handleCopied}
-							/>
-						</div>
-						{addressLoading ? (
-							<p className="text-gray-500 italic dark:text-[var(--text-secondary)]">{t('addressLoading')}</p>
-						) : null}
-						{addressLine ? (
-							<div className="flex items-start justify-between gap-2">
-								<span>
-									<span className="text-gray-500 dark:text-[var(--text-secondary)]">{t('address')}: </span>
-									{addressLine}
-								</span>
-								<CopyButton
-									ariaLabel={t('copyAriaLabel.address')}
-									copiedField={copiedField}
-									field="address"
-									value={addressLine}
-									onCopied={handleCopied}
-								/>
-							</div>
-						) : null}
-						{plusCode && (
-							<div className="flex items-center justify-between gap-2">
-								<span className="font-mono text-base">
-									<span className="text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('plusCode')}: </span>
-									{plusCode}
-								</span>
-								<CopyButton
-									ariaLabel={t('copyAriaLabel.plusCode')}
-									copiedField={copiedField}
-									field="plusCode"
-									value={plusCode}
-									onCopied={handleCopied}
-								/>
-							</div>
-						)}
-						{sectionString && (
-							<div className="flex items-center justify-between gap-2">
-								<span>
-									<span className="text-gray-500 dark:text-[var(--text-secondary)]">{t('section')}: </span>
-									{sectionString}
-								</span>
-								<CopyButton
-									ariaLabel={t('copyAriaLabel.section')}
-									copiedField={copiedField}
-									field="section"
-									value={sectionString}
-									onCopied={handleCopied}
-								/>
-							</div>
-						)}
-					</>
-				) : (
-					<span className="text-gray-500 dark:text-[var(--text-secondary)]">{t('gpsNoPosition')}</span>
-				)}
-			</section>
-
-			{/* Nearest road */}
-			<section className="flex flex-col gap-1 text-xs text-gray-700 dark:text-[var(--text-primary)]">
-				<h4 className="font-medium text-gray-600 dark:text-[var(--text-secondary)]">{t('nearestRoad')}</h4>
-				{nearestRoad && roadCompass ? (
-					<div className="flex items-center justify-between gap-2">
-						<span>{roadLabel}</span>
-						<span
-							aria-label={t(`compass.${roadCompass}`)}
-							className="inline-flex items-center gap-1 text-xs"
-							role="img"
-							title={t(`compass.${roadCompass}`)}
-						>
-							<span
-								aria-hidden="true"
-								className="text-cldt-blue inline-block"
-								style={{ transform: `rotate(${nearestRoad.bearingDeg}deg)` }}
-							>
-								&#8593;
-							</span>
-							<span aria-hidden="true" className="font-medium">
-								{t(`compass.${roadCompass}`)}
-							</span>
-						</span>
-					</div>
-				) : (
-					<span className="text-gray-500 dark:text-[var(--text-secondary)]">-</span>
-				)}
-			</section>
-
-			{/* Nearest HGSS */}
-			<section className="flex flex-col gap-1 text-xs text-gray-700 dark:text-[var(--text-primary)]">
-				<h4 className="font-medium text-gray-600 dark:text-[var(--text-secondary)]">{t('nearestRescue')}</h4>
-				{nearestHgss && hgssCompass ? (
-					<div className="flex flex-col gap-1">
-						<div className="flex items-center justify-between gap-2">
-							<span>
-								{nearestHgss.entry.name}
-								<span className="ml-1 text-gray-500 dark:text-[var(--text-secondary)]">
-									· {formatDistanceM(nearestHgss.distanceM, units)}
-								</span>
-							</span>
-							<span
-								aria-label={t(`compass.${hgssCompass}`)}
-								className="inline-flex items-center gap-1 text-xs"
-								role="img"
-								title={t(`compass.${hgssCompass}`)}
-							>
-								<span
-									aria-hidden="true"
-									className="text-cldt-blue inline-block"
-									style={{ transform: `rotate(${nearestHgss.bearingDeg}deg)` }}
-								>
-									&#8593;
-								</span>
-								<span aria-hidden="true" className="font-medium">
-									{t(`compass.${hgssCompass}`)}
-								</span>
-							</span>
-						</div>
-						{(nearestHgss.entry.phone || nearestHgss.entry.url) && (
-							<div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
-								{nearestHgss.entry.phone && (
-									<a
-										aria-label={t('callStation', { name: nearestHgss.entry.name })}
-										className="text-cldt-blue hover:text-cldt-green focus-visible:text-cldt-green focus-visible:ring-cldt-green inline-flex items-center gap-1 outline-none focus-visible:ring-1 focus-visible:ring-offset-1"
-										href={`tel:${nearestHgss.entry.phone}`}
-									>
-										<IoCallOutline aria-hidden className="h-3.5 w-3.5" />
-										<span className="font-mono">{formatPhoneDisplay(nearestHgss.entry.phone)}</span>
-									</a>
-								)}
-								{isSafeUrl(nearestHgss.entry.url) && (
-									<a
-										aria-label={t('openStationPage', { name: nearestHgss.entry.name })}
-										className="text-cldt-blue hover:text-cldt-green focus-visible:text-cldt-green focus-visible:ring-cldt-green inline-flex items-center gap-1 outline-none focus-visible:ring-1 focus-visible:ring-offset-1"
-										href={nearestHgss.entry.url}
-										rel="noopener noreferrer"
-										target="_blank"
-									>
-										<IoOpenOutline aria-hidden className="h-3.5 w-3.5" />
-										<span>{t('stationDetails')}</span>
-									</a>
-								)}
-							</div>
-						)}
-					</div>
-				) : (
-					<span className="text-gray-500 dark:text-[var(--text-secondary)]">-</span>
-				)}
-			</section>
-
-			{/* Action buttons */}
-			<div className="mt-1 flex flex-col gap-2">
-				<a
-					aria-label={t('callButton')}
-					className={`${buttonVariants({ variant: 'emergencyPrimary', size: 'default' })} h-10`}
-					href="tel:112"
+				<h3
+					className="text-cldt-red mb-2 text-base font-semibold dark:text-[var(--text-primary)]"
+					id="emergency-panel-title"
 				>
-					{t('callButton')}
-				</a>
-				{mapsHref ? (
-					<a
-						aria-label={t('mapsButton')}
-						className={`${buttonVariants({ variant: 'mapControlOutline', size: 'default' })} h-10`}
-						href={mapsHref}
-						rel="noopener noreferrer"
-						target="_blank"
-					>
-						{t('mapsButton')}
-					</a>
-				) : (
-					<Button disabled aria-disabled="true" variant="mapControlOutline">
-						{t('mapsButton')}
-					</Button>
+					{t('title')}
+				</h3>
+
+				{gpsUnavailable && (
+					<div className="mb-3 flex items-start gap-2 rounded-md bg-amber-100 px-3 py-2 text-xs text-amber-900 dark:bg-amber-950 dark:text-amber-200">
+						<IoWarningOutline aria-hidden className="mt-0.5 h-4 w-4 shrink-0" />
+						<span>{displayPosition.source === 'closest' ? t('gpsUnavailable') : t('gpsNoPosition')}</span>
+					</div>
 				)}
+
+				<div className="flex flex-col gap-3 text-sm text-gray-700 dark:text-[var(--text-primary)]">
+					<section className="flex flex-col gap-1.5">
+						<h4 className={MAP_CONTROL_SECTION_HEADING}>{t('position')}</h4>
+						{hasPosition ? (
+							<>
+								<div className="flex items-center justify-between gap-2">
+									<span className="min-w-0 font-mono text-sm">{coordsString}</span>
+									<CopyButton
+										ariaLabel={t('copyAriaLabel.coords')}
+										copiedField={copiedField}
+										field="coords"
+										value={coordsString}
+										onCopied={handleCopied}
+									/>
+								</div>
+								{addressLoading ? (
+									<p className="text-xs text-gray-500 italic dark:text-[var(--text-secondary)]">
+										{t('addressLoading')}
+									</p>
+								) : null}
+								{addressLine ? (
+									<div className="flex items-start justify-between gap-2">
+										<span className="min-w-0 text-sm">
+											<span className="text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('address')}: </span>
+											{addressLine}
+										</span>
+										<CopyButton
+											ariaLabel={t('copyAriaLabel.address')}
+											copiedField={copiedField}
+											field="address"
+											value={addressLine}
+											onCopied={handleCopied}
+										/>
+									</div>
+								) : null}
+								{plusCode ? (
+									<div className="flex items-center justify-between gap-2">
+										<span className="min-w-0 text-sm">
+											<span className="text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('plusCode')}: </span>
+											<span className="font-mono text-sm">{plusCode}</span>
+										</span>
+										<CopyButton
+											ariaLabel={t('copyAriaLabel.plusCode')}
+											copiedField={copiedField}
+											field="plusCode"
+											value={plusCode}
+											onCopied={handleCopied}
+										/>
+									</div>
+								) : null}
+								{sectionString ? (
+									<div className="flex items-center justify-between gap-2">
+										<span className="min-w-0 text-sm">
+											<span className="text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('section')}: </span>
+											{sectionString}
+										</span>
+										<CopyButton
+											ariaLabel={t('copyAriaLabel.section')}
+											copiedField={copiedField}
+											field="section"
+											value={sectionString}
+											onCopied={handleCopied}
+										/>
+									</div>
+								) : null}
+							</>
+						) : (
+							<span className="text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('gpsNoPosition')}</span>
+						)}
+					</section>
+
+					<section className={cn('flex flex-col gap-1.5', SECTION_DIVIDER)}>
+						<h4 className={MAP_CONTROL_SECTION_HEADING}>{t('nearestRoad')}</h4>
+						{nearestRoad && roadCompass ? (
+							<div className="flex items-center justify-between gap-2">
+								<span className="min-w-0 text-sm">{roadLabel}</span>
+								<CompassBearing
+									bearingDeg={nearestRoad.bearingDeg}
+									compass={t(`compass.${roadCompass}`)}
+									label={t(`compass.${roadCompass}`)}
+								/>
+							</div>
+						) : (
+							<span className="text-xs text-gray-500 dark:text-[var(--text-secondary)]">-</span>
+						)}
+					</section>
+
+					<section className={cn('flex flex-col gap-1.5', SECTION_DIVIDER)}>
+						<h4 className={MAP_CONTROL_SECTION_HEADING}>{t('nearestRescue')}</h4>
+						{nearestHgss && hgssCompass ? (
+							<div className="flex flex-col gap-1.5">
+								<div className="flex items-center justify-between gap-2">
+									<span className="min-w-0 text-sm">
+										{nearestHgss.entry.name}
+										<span className="ml-1 text-xs text-gray-500 dark:text-[var(--text-secondary)]">
+											· {formatDistanceM(nearestHgss.distanceM, units)}
+										</span>
+									</span>
+									<CompassBearing
+										bearingDeg={nearestHgss.bearingDeg}
+										compass={t(`compass.${hgssCompass}`)}
+										label={t(`compass.${hgssCompass}`)}
+									/>
+								</div>
+								{(nearestHgss.entry.phone || nearestHgss.entry.url) && (
+									<div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
+										{nearestHgss.entry.phone && (
+											<a
+												aria-label={t('callStation', { name: nearestHgss.entry.name })}
+												className="text-cldt-blue hover:text-cldt-green focus-visible:text-cldt-green focus-visible:ring-cldt-green inline-flex items-center gap-1 outline-none focus-visible:ring-1 focus-visible:ring-offset-1"
+												href={`tel:${nearestHgss.entry.phone}`}
+											>
+												<IoCallOutline aria-hidden className="h-3.5 w-3.5" />
+												<span className="font-mono text-sm">{formatPhoneDisplay(nearestHgss.entry.phone)}</span>
+											</a>
+										)}
+										{isSafeUrl(nearestHgss.entry.url) && (
+											<a
+												aria-label={t('openStationPage', { name: nearestHgss.entry.name })}
+												className="text-cldt-blue hover:text-cldt-green focus-visible:text-cldt-green focus-visible:ring-cldt-green inline-flex items-center gap-1 outline-none focus-visible:ring-1 focus-visible:ring-offset-1"
+												href={nearestHgss.entry.url}
+												rel="noopener noreferrer"
+												target="_blank"
+											>
+												<IoOpenOutline aria-hidden className="h-3.5 w-3.5" />
+												<span>{t('stationDetails')}</span>
+											</a>
+										)}
+									</div>
+								)}
+							</div>
+						) : (
+							<span className="text-xs text-gray-500 dark:text-[var(--text-secondary)]">-</span>
+						)}
+					</section>
+				</div>
+
+				<div className="mt-4 flex flex-col gap-2">
+					<a
+						aria-label={t('callButton')}
+						className={cn(buttonVariants({ variant: 'emergencyPrimary', size: 'default' }), 'h-10 w-full')}
+						href="tel:112"
+					>
+						{t('callButton')}
+					</a>
+					{mapsHref ? (
+						<a
+							aria-label={t('mapsButton')}
+							className={cn(buttonVariants({ variant: 'mapControlOutline', size: 'default' }), 'h-10 w-full')}
+							href={mapsHref}
+							rel="noopener noreferrer"
+							target="_blank"
+						>
+							{t('mapsButton')}
+						</a>
+					) : (
+						<Button disabled aria-disabled="true" className="h-10 w-full" size="default" variant="mapControlOutline">
+							{t('mapsButton')}
+						</Button>
+					)}
+				</div>
+
+				<div className="mt-3 flex justify-end gap-2">
+					{copyAllText ? (
+						<Button
+							className={cn(copiedField === 'all' && 'text-cldt-green')}
+							size="sm"
+							variant="mapControlOutlineSecondary"
+							onClick={handleCopyAll}
+						>
+							{copiedField === 'all' ? t('copyTooltipSuccess') : t('copyAllButton')}
+						</Button>
+					) : null}
+					<Button size="sm" variant="mapControlOutlineSecondary" onClick={onClose}>
+						{t('close')}
+					</Button>
+				</div>
 			</div>
 		</div>
 	);

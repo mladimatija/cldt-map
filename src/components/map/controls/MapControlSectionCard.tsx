@@ -4,13 +4,17 @@ import React from 'react';
 import { IoChevronDownOutline } from 'react-icons/io5';
 import { cn } from '@/lib/utils';
 
-export const PROGRESS_SECTION_HEADING =
+export const MAP_CONTROL_SECTION_HEADING =
 	'm-0 text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-[var(--text-secondary)]';
 
-interface ProgressSectionCardProps {
+/** @deprecated Use MAP_CONTROL_SECTION_HEADING */
+export const PROGRESS_SECTION_HEADING = MAP_CONTROL_SECTION_HEADING;
+
+interface MapControlSectionCardProps {
 	title: string;
 	children: React.ReactNode;
 	className?: string;
+	id?: string;
 	collapsible?: boolean;
 	open?: boolean;
 	onOpenChange?: (open: boolean) => void;
@@ -18,16 +22,17 @@ interface ProgressSectionCardProps {
 	expandLabel?: string;
 }
 
-export function ProgressSectionCard({
+export function MapControlSectionCard({
 	title,
 	children,
 	className,
+	id,
 	collapsible = false,
 	open = true,
 	onOpenChange,
 	collapseLabel,
 	expandLabel,
-}: ProgressSectionCardProps): React.ReactElement {
+}: MapControlSectionCardProps): React.ReactElement {
 	const headingId = React.useId();
 
 	if (collapsible) {
@@ -35,6 +40,7 @@ export function ProgressSectionCard({
 			<section
 				aria-labelledby={headingId}
 				className={cn('rounded-lg border border-gray-200 p-3 dark:border-[var(--border-color)]', className)}
+				id={id}
 			>
 				<button
 					aria-controls={`${headingId}-body`}
@@ -51,7 +57,7 @@ export function ProgressSectionCard({
 							!open && '-rotate-90',
 						)}
 					/>
-					<span className={PROGRESS_SECTION_HEADING}>{title}</span>
+					<span className={MAP_CONTROL_SECTION_HEADING}>{title}</span>
 					<span className="sr-only">{open ? collapseLabel : expandLabel}</span>
 				</button>
 				{open ? (
@@ -67,11 +73,15 @@ export function ProgressSectionCard({
 		<section
 			aria-labelledby={headingId}
 			className={cn('rounded-lg border border-gray-200 p-3 dark:border-[var(--border-color)]', className)}
+			id={id}
 		>
-			<h4 className={PROGRESS_SECTION_HEADING} id={headingId}>
+			<h4 className={MAP_CONTROL_SECTION_HEADING} id={headingId}>
 				{title}
 			</h4>
 			<div className="mt-2 flex flex-col gap-2">{children}</div>
 		</section>
 	);
 }
+
+/** @deprecated Use MapControlSectionCard */
+export const ProgressSectionCard = MapControlSectionCard;

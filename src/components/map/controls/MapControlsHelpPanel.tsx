@@ -1,11 +1,31 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
-import { MAP_CONTROL_POPOVER } from './map-controls-constants';
+import { MAP_CONTROL_PANEL_WIDTH, MAP_CONTROL_POPOVER } from './map-controls-constants';
+import { MapControlSectionCard } from './MapControlSectionCard';
 import { usePopoverFocusTrap } from '@/hooks';
 import { INLINE_LINK_CLASS } from '@/components/ui/ExternalLink';
+import { useMapStore, type MapStoreState } from '@/lib/store';
+
+function HelpKbd({ children }: { children: React.ReactNode }): React.ReactElement {
+	return (
+		<kbd className="rounded border border-gray-200 bg-gray-50 px-1 py-0.5 font-mono text-[11px] text-gray-700 dark:border-[var(--border-color)] dark:bg-[var(--bg-primary)] dark:text-[var(--text-primary)]">
+			{children}
+		</kbd>
+	);
+}
+
+function HelpList({ items }: { items: [string, React.ReactNode][] }): React.ReactElement {
+	return (
+		<ul className="m-0 list-none space-y-1 p-0 text-xs leading-snug text-gray-600 dark:text-[var(--text-secondary)]">
+			{items.map(([key, item]) => (
+				<li key={key}>{item}</li>
+			))}
+		</ul>
+	);
+}
 
 /**
  * Topic-grouped help panel behind the ? control. The app's features hide
@@ -18,32 +38,40 @@ import { INLINE_LINK_CLASS } from '@/components/ui/ExternalLink';
 export function MapControlsHelpPanel(): React.ReactElement {
 	const t = useTranslations('help');
 	const tControls = useTranslations('mapControls');
+	const tProgress = useTranslations('progress');
 	const popoverRef = usePopoverFocusTrap(true);
 
-	const kbd = (chunks: React.ReactNode): React.ReactElement => (
-		<kbd className="rounded border border-gray-200 bg-gray-50 px-1 py-0.5 font-mono text-[11px] text-gray-700 dark:border-[var(--border-color)] dark:bg-[var(--bg-primary)] dark:text-[var(--text-primary)]">
-			{chunks}
-		</kbd>
-	);
+	const helpPanelBasicsOpen = useMapStore((state: MapStoreState) => state.helpPanelBasicsOpen);
+	const setHelpPanelBasicsOpen = useMapStore((state: MapStoreState) => state.setHelpPanelBasicsOpen);
+	const helpPanelChartOpen = useMapStore((state: MapStoreState) => state.helpPanelChartOpen);
+	const setHelpPanelChartOpen = useMapStore((state: MapStoreState) => state.setHelpPanelChartOpen);
+	const helpPanelGesturesOpen = useMapStore((state: MapStoreState) => state.helpPanelGesturesOpen);
+	const setHelpPanelGesturesOpen = useMapStore((state: MapStoreState) => state.setHelpPanelGesturesOpen);
+	const helpPanelPlanningOpen = useMapStore((state: MapStoreState) => state.helpPanelPlanningOpen);
+	const setHelpPanelPlanningOpen = useMapStore((state: MapStoreState) => state.setHelpPanelPlanningOpen);
+	const helpPanelOfflineOpen = useMapStore((state: MapStoreState) => state.helpPanelOfflineOpen);
+	const setHelpPanelOfflineOpen = useMapStore((state: MapStoreState) => state.setHelpPanelOfflineOpen);
+	const helpPanelDemoOpen = useMapStore((state: MapStoreState) => state.helpPanelDemoOpen);
+	const setHelpPanelDemoOpen = useMapStore((state: MapStoreState) => state.setHelpPanelDemoOpen);
+	const helpScrollTarget = useMapStore((state: MapStoreState) => state.helpScrollTarget);
+	const clearHelpScrollTarget = useMapStore((state: MapStoreState) => state.clearHelpScrollTarget);
 
-	const section = (heading: string, items: [string, React.ReactNode][]): React.ReactElement => (
-		<div key={heading}>
-			<p className="m-0 text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
-				{heading}
-			</p>
-			<ul className="mt-1 space-y-1 text-xs leading-snug text-gray-600 dark:text-[var(--text-secondary)]">
-				{items.map(([key, item]) => (
-					<li key={key}>{item}</li>
-				))}
-			</ul>
-		</div>
-	);
+	const sectionCollapseLabel = tProgress('collapseSection');
+
+	useEffect(() => {
+		if (helpScrollTarget !== 'planning') return;
+		setHelpPanelPlanningOpen(true);
+		const el = document.getElementById('help-planning-section');
+		el?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+		clearHelpScrollTarget();
+	}, [helpScrollTarget, clearHelpScrollTarget, setHelpPanelPlanningOpen]);
+	const sectionExpandLabel = tProgress('expandSection');
 
 	return (
 		<div
 			aria-labelledby="help-panel-title"
 			aria-modal="true"
-			className={`z-controls-popover fixed top-2 right-16 flex max-h-[calc(100dvh-4rem)] w-80 flex-col gap-3 overflow-y-auto ${MAP_CONTROL_POPOVER}`}
+			className={`z-controls-popover fixed top-2 right-16 flex max-h-[calc(100dvh-4rem)] ${MAP_CONTROL_PANEL_WIDTH} flex-col gap-2 overflow-y-auto ${MAP_CONTROL_POPOVER}`}
 			ref={popoverRef}
 			role="dialog"
 			onContextMenu={(e) => e.preventDefault()}
@@ -52,56 +80,128 @@ export function MapControlsHelpPanel(): React.ReactElement {
 				{t('title')}
 			</h3>
 
-			{section(t('basicsHeading'), [
-				['layers', t('basics.layers')],
-				['trail', t('basics.trail')],
-				['share', t('basics.share')],
-				['settings', t('basics.settings')],
-			])}
+			<MapControlSectionCard
+				collapsible
+				collapseLabel={sectionCollapseLabel}
+				expandLabel={sectionExpandLabel}
+				open={helpPanelBasicsOpen}
+				title={t('basicsHeading')}
+				onOpenChange={setHelpPanelBasicsOpen}
+			>
+				<HelpList
+					items={[
+						['layers', t('basics.layers')],
+						['trail', t('basics.trail')],
+						['share', t('basics.share')],
+						['settings', t('basics.settings')],
+					]}
+				/>
+			</MapControlSectionCard>
 
-			{section(t('chartHeading'), [
-				['trailClick', tControls('helpItems.trailClick')],
-				['chartHover', tControls('helpItems.chartHover')],
-				['chartOsmTooltip', tControls('helpItems.chartOsmTooltip')],
-				['chartClickPin', tControls('helpItems.chartClickPin')],
-				['chartDragRuler', tControls('helpItems.chartDragRuler')],
-				['escCancelRuler', tControls.rich('helpItems.escCancelRuler', { kbd })],
-			])}
+			<MapControlSectionCard
+				collapsible
+				collapseLabel={sectionCollapseLabel}
+				expandLabel={sectionExpandLabel}
+				open={helpPanelChartOpen}
+				title={t('chartHeading')}
+				onOpenChange={setHelpPanelChartOpen}
+			>
+				<HelpList
+					items={[
+						['trailClick', tControls('helpItems.trailClick')],
+						['chartHover', tControls('helpItems.chartHover')],
+						['chartOsmTooltip', tControls('helpItems.chartOsmTooltip')],
+						['chartClickPin', tControls('helpItems.chartClickPin')],
+						['chartDragRuler', tControls('helpItems.chartDragRuler')],
+						[
+							'escCancelRuler',
+							tControls.rich('helpItems.escCancelRuler', {
+								kbd: (chunks) => <HelpKbd>{chunks}</HelpKbd>,
+							}),
+						],
+					]}
+				/>
+			</MapControlSectionCard>
 
-			{section(t('gesturesHeading'), [
-				['sos', t('gestures.sos')],
-				['gpxDrop', t('gestures.gpxDrop')],
-				['poiList', t('gestures.poiList')],
-				['waypoint', t('gestures.waypoint')],
-			])}
+			<MapControlSectionCard
+				collapsible
+				collapseLabel={sectionCollapseLabel}
+				expandLabel={sectionExpandLabel}
+				open={helpPanelGesturesOpen}
+				title={t('gesturesHeading')}
+				onOpenChange={setHelpPanelGesturesOpen}
+			>
+				<HelpList
+					items={[
+						['sos', t('gestures.sos')],
+						['gpxDrop', t('gestures.gpxDrop')],
+						['poiList', t('gestures.poiList')],
+						['waypoint', t('gestures.waypoint')],
+					]}
+				/>
+			</MapControlSectionCard>
 
-			{section(t('planningHeading'), [
-				['planner', t('planning.planner')],
-				['tripBrief', t('planning.tripBrief')],
-				['progress', t('planning.progress')],
-				['journal', t('planning.journal')],
-				['packWeight', t('planning.packWeight')],
-				['resupply', t('planning.resupply')],
-			])}
+			<MapControlSectionCard
+				collapsible
+				collapseLabel={sectionCollapseLabel}
+				expandLabel={sectionExpandLabel}
+				id="help-planning-section"
+				open={helpPanelPlanningOpen}
+				title={t('planningHeading')}
+				onOpenChange={setHelpPanelPlanningOpen}
+			>
+				<HelpList
+					items={[
+						['planner', t('planning.planner')],
+						['tripBrief', t('planning.tripBrief')],
+						['progress', t('planning.progress')],
+						['journal', t('planning.journal')],
+						['packWeight', t('planning.packWeight')],
+						['resupply', t('planning.resupply')],
+					]}
+				/>
+			</MapControlSectionCard>
 
-			{section(t('offlineHeading'), [
-				['precache', t('offline.precache')],
-				['gps', t('offline.gps')],
-				['offRouteAlert', t('offline.offRouteAlert')],
-				['pushAlerts', t('offline.pushAlerts')],
-			])}
+			<MapControlSectionCard
+				collapsible
+				collapseLabel={sectionCollapseLabel}
+				expandLabel={sectionExpandLabel}
+				open={helpPanelOfflineOpen}
+				title={t('offlineHeading')}
+				onOpenChange={setHelpPanelOfflineOpen}
+			>
+				<HelpList
+					items={[
+						['precache', t('offline.precache')],
+						['gps', t('offline.gps')],
+						['offRouteAlert', t('offline.offRouteAlert')],
+						['pushAlerts', t('offline.pushAlerts')],
+					]}
+				/>
+			</MapControlSectionCard>
 
-			{section(t('demoHeading'), [
-				[
-					'demo',
-					<>
-						{t('demoDesc')}{' '}
-						<Link className={INLINE_LINK_CLASS} href="/demo">
-							{t('demoLink')}
-						</Link>
-					</>,
-				],
-			])}
+			<MapControlSectionCard
+				collapsible
+				collapseLabel={sectionCollapseLabel}
+				expandLabel={sectionExpandLabel}
+				open={helpPanelDemoOpen}
+				title={t('demoHeading')}
+				onOpenChange={setHelpPanelDemoOpen}
+			>
+				<HelpList
+					items={[
+						[
+							'demo',
+							<>
+								{t('demoDesc')}{' '}
+								<Link className={INLINE_LINK_CLASS} href="/demo">
+									{t('demoLink')}
+								</Link>
+							</>,
+						],
+					]}
+				/>
+			</MapControlSectionCard>
 
 			<p className="m-0 border-t border-gray-200 pt-2 text-[11px] leading-snug text-gray-500 dark:border-[var(--border-color)] dark:text-[var(--text-secondary)]">
 				{t('officialAppNote')}

@@ -31,12 +31,10 @@ import {
 	IoArrowUpOutline,
 	IoCalendarOutline,
 	IoCheckmarkDoneOutline,
+	IoConstructOutline,
 	IoHelpCircleOutline,
 	IoCreateOutline,
-	IoGridOutline,
 	IoMapOutline,
-	IoPrintOutline,
-	IoRainyOutline,
 	IoShareSocialOutline,
 } from 'react-icons/io5';
 import SmartTooltip from '@/components/ui/SmartTooltip';
@@ -45,9 +43,8 @@ import { useTranslations } from 'next-intl';
 import { MapControlsButton } from './MapControlsButton';
 import { MapControlsPrecisionSlider } from './MapControlsPrecisionSlider';
 import { MapControlsSettingsPanel } from './MapControlsSettingsPanel';
-import { MapControlsColorAdjust } from './MapControlsColorAdjust';
+import { MapControlsToolsPanel } from './MapControlsToolsPanel';
 import { MapControlsTestLink } from './MapControlsTestLink';
-import { MapControlsExportPanel } from './MapControlsExportPanel';
 import { MapControlsSharePanel } from './MapControlsSharePanel';
 import { MapControlsStagePlannerPanel } from './MapControlsStagePlannerPanel';
 import { MapControlsProgressPanel } from './MapControlsProgressPanel';
@@ -148,32 +145,27 @@ const MapControls: React.FC<MapControlsProps> = ({
 }): React.ReactElement => {
 	const map = useMap() as ExtendedMap;
 	const t = useTranslations('mapControls');
-	const tExport = useTranslations('mapExport');
 	const [showTilesBoundary, setShowTilesBoundary] = useState(false);
 	const [tileBoundaryReinitKey, setTileBoundaryReinitKey] = useState(0);
 	const precisionContainerRef = useRef<HTMLDivElement>(null);
 	const settingsContainerRef = useRef<HTMLDivElement>(null);
 	const poiListContainerRef = useRef<HTMLDivElement>(null);
-	const colorAdjustContainerRef = useRef<HTMLDivElement>(null);
+	const toolsContainerRef = useRef<HTMLDivElement>(null);
 	const testLinkRef = useRef<HTMLDivElement>(null);
 	const topRightControlsRef = useRef<HTMLDivElement>(null);
-	const exportPanelRef = useRef<HTMLDivElement>(null);
 	const shareContainerRef = useRef<HTMLDivElement>(null);
-	const exportContainerRef = useRef<HTMLDivElement>(null);
 	const stagePlannerRef = useRef<HTMLDivElement>(null);
 	const progressRef = useRef<HTMLDivElement>(null);
 	const helpRef = useRef<HTMLDivElement>(null);
 	const emergencyContainerRef = useRef<HTMLDivElement>(null);
-	const emergencyPanelRef = useRef<HTMLDivElement>(null);
 
 	// Each panel registers its container ref with the shared mutual-exclusion
 	// manager (state lives in mapStore.openPanel; document listeners installed
 	// once in MapContent via usePanelListeners). Opening one closes any other;
 	// outside click or Escape close the open panel.
 	const precisionPanel = usePanel('precision', precisionContainerRef);
-	const colorAdjustPanel = usePanel('colorAdjust', colorAdjustContainerRef);
+	const toolsPanel = usePanel('tools', toolsContainerRef);
 	const settingsPanel = usePanel('settings', settingsContainerRef);
-	const exportPanel = usePanel('export', exportContainerRef);
 	const sharePanel = usePanel('share', shareContainerRef);
 	const stagePlannerPanel = usePanel('stagePlanner', stagePlannerRef);
 	const progressPanel = usePanel('progress', progressRef);
@@ -186,8 +178,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 	useBlockMapPropagation(precisionContainerRef);
 	useBlockMapPropagation(settingsContainerRef);
 	useBlockMapPropagation(poiListContainerRef);
-	useBlockMapPropagation(colorAdjustContainerRef);
-	useBlockMapPropagation(exportPanelRef);
+	useBlockMapPropagation(toolsContainerRef);
 	useBlockMapPropagation(stagePlannerRef);
 	useBlockMapPropagation(progressRef);
 	useBlockMapPropagation(helpRef);
@@ -253,7 +244,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 		if (!mapElement) {
 			return;
 		}
-		if (colorAdjustPanel.isOpen) {
+		if (toolsPanel.isOpen) {
 			mapElement.style.filter = `
                 brightness(${colorSettings.brightness}%)
                 contrast(${colorSettings.contrast}%)
@@ -262,14 +253,14 @@ const MapControls: React.FC<MapControlsProps> = ({
 		} else {
 			mapElement.style.filter = '';
 		}
-	}, [colorAdjustPanel.isOpen, colorSettings]);
+	}, [toolsPanel.isOpen, colorSettings]);
 
 	useEffect(() => {
 		const mapContainer = map?.getContainer();
 		if (!mapContainer) {
 			return;
 		}
-		if (colorAdjustPanel.isOpen) {
+		if (toolsPanel.isOpen) {
 			const overlay = document.createElement('div');
 			overlay.className = 'color-adjust-overlay';
 			overlay.style.cssText = `
@@ -297,7 +288,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 				colorAdjustRef.current = null;
 			}
 		};
-	}, [map, colorAdjustPanel.isOpen]);
+	}, [map, toolsPanel.isOpen]);
 
 	const toggleDirection = (): void => {
 		closePanel();
@@ -346,7 +337,6 @@ const MapControls: React.FC<MapControlsProps> = ({
 	};
 
 	const toggleTilesBoundary = async (): Promise<void> => {
-		closePanel();
 		const shouldShow = !showTilesBoundary;
 
 		setShowTilesBoundary(shouldShow);
@@ -454,7 +444,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 		if (sharePanel.isOpen) {
 			sharePanel.close();
 		} else {
-			setSharePanelUrlSnapshot(getShareProgressUrl() ?? getShareViewUrl());
+			setSharePanelUrlSnapshot(canShare ? (getShareProgressUrl() ?? getShareViewUrl()) : null);
 			sharePanel.open();
 		}
 	};
@@ -844,58 +834,32 @@ const MapControls: React.FC<MapControlsProps> = ({
 					<IoCreateOutline aria-hidden className="h-5 w-5" />
 				</MapControlsButton>
 
-				<MapControlsButton
-					active={showTilesBoundary}
-					ariaLabel={showTilesBoundary ? t('tilesDisable') : t('tilesEnable')}
-					content={showTilesBoundary ? t('tilesDisable') : t('tilesEnable')}
-					onClick={toggleTilesBoundary}
-				>
-					<IoGridOutline aria-hidden className="h-5 w-5" />
-				</MapControlsButton>
-
-				<MapControlsButton
-					active={showRadarOverlay}
-					ariaLabel={showRadarOverlay ? t('radarDisable') : t('radarEnable')}
-					content={showRadarOverlay ? t('radarDisable') : t('radarEnable')}
-					onClick={() => setShowRadarOverlay(!showRadarOverlay)}
-				>
-					<IoRainyOutline aria-hidden className="h-5 w-5" />
-				</MapControlsButton>
-
-				<MapControlsColorAdjust
-					colorSettings={colorSettings}
-					containerRef={colorAdjustContainerRef}
-					isEnabled={colorAdjustPanel.isOpen}
-					setColorSettings={setColorSettings}
-					tooltipHide={t('colorHide')}
-					tooltipShow={t('colorShow')}
-					onToggle={colorAdjustPanel.toggle}
-				/>
+				<div className="relative inline-block w-10 shrink-0" ref={toolsContainerRef}>
+					<MapControlsButton
+						active={toolsPanel.isOpen}
+						ariaLabel={toolsPanel.isOpen ? t('toolsHide') : t('toolsShow')}
+						content={toolsPanel.isOpen ? t('toolsHide') : t('toolsShow')}
+						onClick={toolsPanel.toggle}
+					>
+						<IoConstructOutline aria-hidden className="h-5 w-5" />
+					</MapControlsButton>
+					{toolsPanel.isOpen && (
+						<MapControlsToolsPanel
+							colorSettings={colorSettings}
+							setColorSettings={setColorSettings}
+							showRadarOverlay={showRadarOverlay}
+							showTilesBoundary={showTilesBoundary}
+							onToggleRadarOverlay={() => setShowRadarOverlay(!showRadarOverlay)}
+							onToggleTilesBoundary={toggleTilesBoundary}
+						/>
+					)}
+				</div>
 
 				<MapControlsSettingsPanel
 					containerRef={settingsContainerRef}
 					isExpanded={settingsPanel.isOpen}
 					onToggle={settingsPanel.toggle}
 				/>
-
-				<div className="relative inline-block w-10 shrink-0" ref={exportContainerRef}>
-					<MapControlsButton
-						ariaLabel={tExport('exportButtonLabel')}
-						content={tExport('exportButtonLabel')}
-						onClick={exportPanel.toggle}
-					>
-						<IoPrintOutline aria-hidden className="h-5 w-5" />
-					</MapControlsButton>
-					{exportPanel.isOpen && (
-						<MapControlsExportPanel
-							baseMapProvider={baseMapProvider}
-							containerRef={exportPanelRef}
-							onClose={closePanel}
-							onPngDownload={handlePngDownload}
-							onPrint={handlePrint}
-						/>
-					)}
-				</div>
 
 				<div className="relative inline-block w-10 shrink-0" ref={stagePlannerRef}>
 					<MapControlsButton
@@ -936,19 +900,21 @@ const MapControls: React.FC<MapControlsProps> = ({
 				<div className="relative inline-block w-10 shrink-0" ref={shareContainerRef}>
 					<MapControlsButton
 						active={sharePanel.isOpen}
-						ariaLabel={canShare ? (sharePanel.isOpen ? t('shareHide') : t('shareShow')) : t('shareUnavailable')}
-						content={canShare ? (sharePanel.isOpen ? t('shareHide') : t('shareShow')) : t('shareUnavailable')}
-						disabled={!canShare}
-						onClick={canShare ? handleShareButton : undefined}
+						ariaLabel={sharePanel.isOpen ? t('shareHide') : canShare ? t('shareShow') : t('shareExportShow')}
+						content={sharePanel.isOpen ? t('shareHide') : canShare ? t('shareShow') : t('shareExportShow')}
+						onClick={handleShareButton}
 					>
 						<IoShareSocialOutline aria-hidden className="h-5 w-5" />
 					</MapControlsButton>
-					{sharePanel.isOpen && canShare && sharePanelUrlSnapshot ? (
+					{sharePanel.isOpen ? (
 						<MapControlsSharePanel
+							baseMapProvider={baseMapProvider}
+							canShare={canShare}
 							longUrl={sharePanelUrlSnapshot}
 							useShortLinks={shareShortLinks}
-							onClose={closePanel}
 							onCopy={copyResolvedShareLink}
+							onPngDownload={handlePngDownload}
+							onPrint={handlePrint}
 						/>
 					) : null}
 					{tileBoundaryError && (
@@ -974,7 +940,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 				onContextMenu={(e) => e.preventDefault()}
 			>
 				<MapControlsEmergencyButton expanded={emergencyPanel.isOpen} onOpen={emergencyPanel.open} />
-				{emergencyPanel.isOpen && <MapControlsEmergencyPanel containerRef={emergencyPanelRef} onClose={closePanel} />}
+				{emergencyPanel.isOpen && <MapControlsEmergencyPanel onClose={closePanel} />}
 			</div>
 		</>
 	);

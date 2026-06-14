@@ -1,19 +1,15 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
-import {
-	IoCheckmarkOutline,
-	IoCloseOutline,
-	IoContractOutline,
-	IoDownloadOutline,
-	IoExpandOutline,
-	IoMapOutline,
-} from 'react-icons/io5';
+import { IoContractOutline, IoExpandOutline } from 'react-icons/io5';
 import type { JournalEntry } from '@/lib/user-waypoints';
+import { useMapStore, type MapStoreState } from '@/lib/store';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
 import { MAP_CONTROL_INPUT } from './map-controls-constants';
+import { MapControlModalShell } from './MapControlModalShell';
+import { MapControlSectionCard } from './MapControlSectionCard';
 import { JournalTrackAttachControls, type JournalAttachState } from './JournalTrackAttachControls';
 
 interface JournalEntryEditorProps {
@@ -42,6 +38,9 @@ export function JournalEntryEditor({
 	showOnMapAvailable = false,
 }: JournalEntryEditorProps): React.ReactElement {
 	const t = useTranslations('progress');
+	const importedTracks = useMapStore((s: MapStoreState) => s.importedTracks);
+	const setJournalPreview = useMapStore((s: MapStoreState) => s.setJournalPreview);
+
 	const [date, setDate] = useState(entry.date);
 	const [text, setText] = useState(entry.text);
 	const [attachRuler, setAttachRuler] = useState(
@@ -53,6 +52,43 @@ export function JournalEntryEditor({
 		endKm: entry.endKm,
 	});
 	const [focusMode, setFocusMode] = useState(false);
+
+	const pushPreview = useCallback(
+		(state: JournalAttachState): void => {
+			let trailStartKm = state.startKm;
+			let trailEndKm = state.endKm;
+			if (attachRuler && rulerKms && !state.trackLink) {
+				trailStartKm = rulerKms.lo;
+				trailEndKm = rulerKms.hi;
+			}
+			if (trailStartKm === undefined || trailEndKm === undefined) {
+				setJournalPreview(null);
+				return;
+			}
+			const track = state.trackLink ? importedTracks.find((tr) => tr.id === state.trackLink!.trackId) : null;
+			setJournalPreview({
+				entryId: entry.id,
+				trailStartKm,
+				trailEndKm,
+				...(state.trackLink && track
+					? {
+							trackId: state.trackLink.trackId,
+							startIdx: state.trackLink.startIdx,
+							endIdx: state.trackLink.endIdx,
+							trackColor: track.color,
+						}
+					: {}),
+			});
+		},
+		[attachRuler, entry.id, importedTracks, rulerKms, setJournalPreview],
+	);
+
+	const handleClose = useCallback((): void => {
+		setJournalPreview(null);
+		onClose();
+	}, [onClose, setJournalPreview]);
+
+	useEffect(() => () => setJournalPreview(null), [setJournalPreview]);
 
 	const buildPatch = (): Partial<JournalEntry> => {
 		const trimmed = text.trim();
@@ -86,172 +122,133 @@ export function JournalEntryEditor({
 		const patch = buildPatch();
 		if (!patch.text || !onSave) return;
 		onSave(patch);
-		onClose();
+		handleClose();
 	};
 
 	const titleId = readOnly ? 'journal-view-title' : 'journal-edit-title';
 	const dialogLabel = readOnly ? t('journalView') : t('journalEdit');
-	const hasFooterActions = readOnly ? (showOnMapAvailable && !!onShowOnMap) || !!onExportGpx || focusMode : true;
-
-	const editorBody = (
-		<>
-			<label className="flex flex-col gap-0.5 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
-				{t('entryDateLabel')}
-				<input
-					aria-readonly={readOnly || undefined}
-					className={cn(MAP_CONTROL_INPUT, 'w-full', readOnly && 'cursor-default opacity-100')}
-					readOnly={readOnly}
-					type="date"
-					value={date}
-					onChange={readOnly ? undefined : (e) => setDate(e.target.value)}
-				/>
-			</label>
-			<div className="relative">
-				<textarea
-					aria-label={t('entryTextLabel')}
-					aria-readonly={readOnly || undefined}
-					autoFocus={!readOnly && focusMode}
-					className={cn(
-						MAP_CONTROL_INPUT,
-						readOnly && 'cursor-default resize-none',
-						focusMode ? 'min-h-[40dvh] w-full resize-y text-base' : 'w-full resize-y pr-8',
-					)}
-					placeholder={readOnly ? undefined : t('entryPlaceholder')}
-					readOnly={readOnly}
-					rows={focusMode ? 12 : 6}
-					value={text}
-					onChange={readOnly ? undefined : (e) => setText(e.target.value)}
-				/>
-				{!focusMode && (
-					<button
-						aria-label={t('focusEditor')}
-						className="hover:text-cldt-blue focus-visible:ring-cldt-green absolute top-1 right-1 flex h-7 w-7 cursor-pointer items-center justify-center rounded border-0 bg-transparent text-gray-500 outline-none focus-visible:ring-2 dark:text-[var(--text-secondary)]"
-						title={t('focusEditor')}
-						type="button"
-						onClick={() => setFocusMode(true)}
-					>
-						<IoExpandOutline aria-hidden className="h-4.5 w-4.5" />
-					</button>
-				)}
-			</div>
-			<JournalTrackAttachControls
-				attachRuler={attachRuler}
-				readOnly={readOnly}
-				rulerKms={rulerKms}
-				value={attachState}
-				onAttachRulerChange={(checked) => {
-					setAttachRuler(checked);
-					if (!checked && !attachState.trackLink) {
-						setAttachState({ trackLink: null });
-					} else if (checked && rulerKms && !attachState.trackLink) {
-						setAttachState({ ...attachState, startKm: rulerKms.lo, endKm: rulerKms.hi });
-					}
-				}}
-				onChange={setAttachState}
-				onPreview={() => {}}
-			/>
-		</>
-	);
 
 	return (
-		<div
-			aria-labelledby={titleId}
-			aria-modal="true"
-			className="z-modal fixed inset-0 flex items-center justify-center bg-[var(--modal-backdrop-bg)] p-4"
-			role="dialog"
-			onClick={onClose}
+		<MapControlModalShell
+			open
+			closeLabel={t('journalClose')}
+			title={dialogLabel}
+			titleId={titleId}
+			onClose={handleClose}
 		>
-			<div
-				className="relative flex max-h-[90dvh] w-full max-w-lg flex-col gap-2 overflow-y-auto rounded bg-[var(--map-tooltip-bg)] p-4 shadow-xl dark:bg-[var(--bg-primary)]"
-				onClick={(e) => e.stopPropagation()}
-			>
-				<div className="relative shrink-0">
-					<Button
-						aria-label={t('journalClose')}
-						className="absolute top-0 right-0"
-						title={t('journalClose')}
-						variant="closeIcon"
-						onClick={onClose}
-					>
-						<IoCloseOutline aria-hidden className="h-4 w-4" />
-					</Button>
-					<h3 className="m-0 pr-7 text-sm font-medium text-gray-700 dark:text-[var(--text-primary)]" id={titleId}>
-						{dialogLabel}
-					</h3>
-				</div>
-				{editorBody}
-				{hasFooterActions && (
-					<div className="flex flex-wrap justify-end gap-2">
-						{readOnly ? (
-							<>
-								{showOnMapAvailable && onShowOnMap && (
-									<Button
-										aria-label={t('journalShowOnMap')}
-										className="h-8 w-8 shrink-0 px-0"
-										size="sm"
-										title={t('journalShowOnMap')}
-										variant="base"
-										onClick={onShowOnMap}
-									>
-										<IoMapOutline aria-hidden className="h-3.5 w-3.5" />
-									</Button>
-								)}
-								{onExportGpx && (
-									<Button
-										aria-label={t('journalExportGpx')}
-										className="h-8 w-8 shrink-0 px-0"
-										disabled={exportGpxDisabled}
-										size="sm"
-										title={exportGpxTitle ?? t('journalExportGpx')}
-										variant="base"
-										onClick={onExportGpx}
-									>
-										<IoDownloadOutline aria-hidden className="h-3.5 w-3.5" />
-									</Button>
-								)}
-								{focusMode && (
-									<Button
-										aria-label={t('focusEditorClose')}
-										className="h-8 w-8 shrink-0 px-0"
-										size="sm"
-										title={t('focusEditorClose')}
-										variant="mapControlOutlineSecondary"
-										onClick={() => setFocusMode(false)}
-									>
-										<IoContractOutline aria-hidden className="h-3.5 w-3.5" />
-									</Button>
-								)}
-							</>
-						) : (
-							<>
-								{focusMode && (
-									<Button
-										aria-label={t('focusEditorClose')}
-										className="h-8 w-8 shrink-0 px-0"
-										size="sm"
-										title={t('focusEditorClose')}
-										variant="mapControlOutlineSecondary"
-										onClick={() => setFocusMode(false)}
-									>
-										<IoContractOutline aria-hidden className="h-3.5 w-3.5" />
-									</Button>
-								)}
-								<Button
-									aria-label={t('journalSave')}
-									className="h-8 w-8 shrink-0 px-0"
-									disabled={text.trim().length === 0}
-									size="sm"
-									title={t('journalSave')}
-									variant="base"
-									onClick={handleSave}
-								>
-									<IoCheckmarkOutline aria-hidden className="h-3.5 w-3.5" />
-								</Button>
-							</>
+			<MapControlSectionCard title={t('journalSectionDate')}>
+				<label className="flex flex-col gap-0.5 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
+					{t('entryDateLabel')}
+					<input
+						aria-readonly={readOnly || undefined}
+						className={cn(MAP_CONTROL_INPUT, 'w-full', readOnly && 'cursor-default opacity-100')}
+						readOnly={readOnly}
+						type="date"
+						value={date}
+						onChange={readOnly ? undefined : (e) => setDate(e.target.value)}
+					/>
+				</label>
+			</MapControlSectionCard>
+
+			<MapControlSectionCard title={t('journalSectionText')}>
+				<div className="relative">
+					<textarea
+						aria-label={t('entryTextLabel')}
+						aria-readonly={readOnly || undefined}
+						autoFocus={!readOnly && focusMode}
+						className={cn(
+							MAP_CONTROL_INPUT,
+							readOnly && 'cursor-default resize-none',
+							focusMode ? 'min-h-[40dvh] w-full resize-y text-base' : 'w-full resize-y pr-8',
 						)}
-					</div>
+						placeholder={readOnly ? undefined : t('entryPlaceholder')}
+						readOnly={readOnly}
+						rows={focusMode ? 12 : 6}
+						value={text}
+						onChange={readOnly ? undefined : (e) => setText(e.target.value)}
+					/>
+					{!readOnly && !focusMode && (
+						<button
+							aria-label={t('focusEditor')}
+							className="hover:text-cldt-blue focus-visible:ring-cldt-green absolute top-1 right-1 flex h-7 w-7 cursor-pointer items-center justify-center rounded border-0 bg-transparent text-gray-500 outline-none focus-visible:ring-2 dark:text-[var(--text-secondary)]"
+							title={t('focusEditor')}
+							type="button"
+							onClick={() => setFocusMode(true)}
+						>
+							<IoExpandOutline aria-hidden className="h-4.5 w-4.5" />
+						</button>
+					)}
+					{focusMode && (
+						<button
+							aria-label={t('focusEditorClose')}
+							className="hover:text-cldt-blue focus-visible:ring-cldt-green absolute top-1 right-1 flex h-7 w-7 cursor-pointer items-center justify-center rounded border-0 bg-transparent text-gray-500 outline-none focus-visible:ring-2 dark:text-[var(--text-secondary)]"
+							title={t('focusEditorClose')}
+							type="button"
+							onClick={() => setFocusMode(false)}
+						>
+							<IoContractOutline aria-hidden className="h-4.5 w-4.5" />
+						</button>
+					)}
+				</div>
+			</MapControlSectionCard>
+
+			<MapControlSectionCard title={t('journalSectionTrack')}>
+				<JournalTrackAttachControls
+					attachRuler={attachRuler}
+					readOnly={readOnly}
+					rulerKms={rulerKms}
+					value={attachState}
+					onAttachRulerChange={(checked) => {
+						setAttachRuler(checked);
+						if (!checked && !attachState.trackLink) {
+							const next = { trackLink: null };
+							setAttachState(next);
+							pushPreview(next);
+						} else if (checked && rulerKms && !attachState.trackLink) {
+							const next = { ...attachState, startKm: rulerKms.lo, endKm: rulerKms.hi };
+							setAttachState(next);
+							pushPreview(next);
+						}
+					}}
+					onChange={setAttachState}
+					onPreview={pushPreview}
+				/>
+			</MapControlSectionCard>
+
+			<div className="flex flex-wrap justify-end gap-2 border-t border-gray-100 pt-2 dark:border-[var(--border-color)]">
+				{readOnly ? (
+					<>
+						{showOnMapAvailable && onShowOnMap && (
+							<Button size="sm" variant="mapControlOutline" onClick={onShowOnMap}>
+								{t('journalShowOnMap')}
+							</Button>
+						)}
+						{onExportGpx && (
+							<Button
+								disabled={exportGpxDisabled}
+								size="sm"
+								title={exportGpxTitle ?? t('journalExportGpx')}
+								variant="mapControlOutline"
+								onClick={onExportGpx}
+							>
+								{t('journalExportGpx')}
+							</Button>
+						)}
+						<Button size="sm" variant="mapControlOutlineSecondary" onClick={handleClose}>
+							{t('journalClose')}
+						</Button>
+					</>
+				) : (
+					<>
+						<Button size="sm" variant="mapControlOutlineSecondary" onClick={handleClose}>
+							{t('journalCancel')}
+						</Button>
+						<Button disabled={text.trim().length === 0} size="sm" variant="mapControlOutline" onClick={handleSave}>
+							{t('journalSave')}
+						</Button>
+					</>
 				)}
 			</div>
-		</div>
+		</MapControlModalShell>
 	);
 }

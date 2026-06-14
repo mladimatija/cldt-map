@@ -17,8 +17,8 @@ import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/li
 import type { ImportedTrack } from '@/lib/store/types';
 import type { JournalTrackLink } from '@/lib/user-waypoints';
 import { cn, formatDistance } from '@/lib/utils';
-import { Button } from '@/components/ui/Button';
 import { Checkbox } from '@/components/ui/Checkbox';
+import { MapControlIconButton } from './MapControlIconButton';
 
 export interface JournalAttachState {
 	trackLink: JournalTrackLink | null;
@@ -217,16 +217,9 @@ export function JournalTrackAttachControls({
 						>
 							{linkedTrack ? linkedTrackName : t('journalTrackMissing', { name: linkedTrackName })}
 						</span>
-						<Button
-							aria-label={t('journalRemoveTrackLink')}
-							className="h-8 w-8 shrink-0 px-0"
-							size="sm"
-							title={t('journalRemoveTrackLink')}
-							variant="base"
-							onClick={handleRemoveLink}
-						>
+						<MapControlIconButton aria-label={t('journalRemoveTrackLink')} onClick={handleRemoveLink}>
 							<IoUnlinkOutline aria-hidden className="h-3.5 w-3.5" />
-						</Button>
+						</MapControlIconButton>
 					</div>
 					{!linkedTrack && (
 						<p className="m-0 pl-4 text-xs text-gray-500 dark:text-[var(--text-secondary)]">
@@ -241,16 +234,13 @@ export function JournalTrackAttachControls({
 					)}
 					{showExportBundle && onExportBundle && (
 						<div className="flex flex-row flex-wrap items-center gap-1.5 pl-4">
-							<Button
+							<MapControlIconButton
 								aria-label={t('journalExportBundle')}
-								className="h-8 w-8 shrink-0 px-0"
-								size="sm"
-								title={t('journalExportBundle')}
 								variant="mapControlOutlineSecondary"
 								onClick={onExportBundle}
 							>
 								<IoArchiveOutline aria-hidden className="h-3.5 w-3.5" />
-							</Button>
+							</MapControlIconButton>
 						</div>
 					)}
 				</div>
@@ -271,42 +261,29 @@ export function JournalTrackAttachControls({
 									>
 										{track.name}
 									</span>
-									<Button
-										aria-label={t('journalAttachTrack')}
-										className="h-8 w-8 shrink-0 px-0"
-										size="sm"
-										title={t('journalAttachTrack')}
-										variant="base"
-										onClick={() => handlePickTrack(track.id)}
-									>
+									<MapControlIconButton aria-label={t('journalAttachTrack')} onClick={() => handlePickTrack(track.id)}>
 										<IoLinkOutline aria-hidden className="h-3.5 w-3.5" />
-									</Button>
+									</MapControlIconButton>
 								</div>
 							))}
 						</div>
 					)}
 					<div className="flex flex-row flex-wrap items-center gap-1.5">
-						<Button
+						<MapControlIconButton
 							aria-label={t('journalImportGpx')}
-							className="h-8 w-8 shrink-0 px-0"
-							size="sm"
-							title={t('journalImportGpx')}
 							variant="mapControlOutlineSecondary"
 							onClick={() => fileInputRef.current?.click()}
 						>
 							<IoCloudUploadOutline aria-hidden className="h-3.5 w-3.5" />
-						</Button>
+						</MapControlIconButton>
 						{showExportBundle && onExportBundle && (
-							<Button
+							<MapControlIconButton
 								aria-label={t('journalExportBundle')}
-								className="h-8 w-8 shrink-0 px-0"
-								size="sm"
-								title={t('journalExportBundle')}
 								variant="mapControlOutlineSecondary"
 								onClick={onExportBundle}
 							>
 								<IoArchiveOutline aria-hidden className="h-3.5 w-3.5" />
-							</Button>
+							</MapControlIconButton>
 						)}
 					</div>
 				</>
