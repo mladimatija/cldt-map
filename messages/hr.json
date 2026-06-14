@@ -32,7 +32,7 @@
 		"mapFeatures": "Značajke karte",
 		"mapFeaturesList": {
 			"trail": "Kliknite rutu ili grafikon nadmorske visine za prikaz udaljenosti i nadmorske visine u bilo kojoj točki",
-			"elevation": "Grafikon profila nadmorske visine; prelazak mišem za pregled na karti, klik za prikvačivanje točke",
+			"elevation": "Grafikon profila nadmorske visine; prelazak mišem za pregled na karti, klik za prikvačivanje točke; kad je aktivan stil staze Površina ili SAC, hover tooltip također prikazuje OSM oznaku površine ili težine na tom km",
 			"ruler": "Ravnalo za mjerenje udaljenosti između dvije točke",
 			"distanceEtaOverlay": "Preklop udaljenosti i ETA - živi HUD s pređenom i preostalom udaljenošću, preostalim usponom/spustom i ETA do kraja staze ili aktivnog odsječka ravnala",
 			"layers": "Više slojeva karte (standardna, topo, planinarska, satelit, teren, bicikl, Hrvatska Topo, tamna), plus opcionalni Waymarked Trails sloj OSM planinarskih ruta (prekidač u Postavkama, samo online)",
@@ -229,6 +229,7 @@
 		"helpItems": {
 			"trailClick": "Kliknite stazu za prikaz udaljenosti i visine za točku.",
 			"chartHover": "Prijeđite mišem preko profila visine za pregled odgovarajuće točke na karti.",
+			"chartOsmTooltip": "Kad je aktivan stil staze Površina ili Težina (SAC), hover tooltip također prikazuje OSM oznaku površine ili SAC na tom km (uzorak boje plus sirovi tag kad postoji).",
 			"chartClickPin": "Kliknite profil visine za fiksiranje točke (ostaje vidljiva dok je ne zatvorite).",
 			"chartDragRuler": "Kliknite i povucite po profilu visine za mjerenje segmenta (Ravnalo udaljenosti).",
 			"escCancelRuler": "Pritisnite <kbd>Esc</kbd> za poništavanje Ravnala udaljenosti."
@@ -338,7 +339,11 @@
 		"elevationLabel": "Nadmorska visina",
 		"rulerSegment": "Segment",
 		"rulerHikingTime": "Procijenjeno vrijeme",
-		"rulerSection": "Dionica"
+		"rulerSection": "Dionica",
+		"osmSurfaceLabel": "Površina",
+		"osmSacLabel": "SAC",
+		"osmHighwayLabel": "highway",
+		"osmTagUntagged": "Bez SAC oznake"
 	},
 	"trailRoute": {
 		"startingPoint": "Početna točka ({direction})",

@@ -21,7 +21,6 @@ import {
 import { formatElevation, formatDistance } from '@/lib/utils';
 import { computeEta, findNearestPointIndex } from '@/lib/distance-utils';
 import { useStore, useMapStore, type StoreState, type MapStoreState } from '@/lib/store';
-import { bucketSac, bucketSurface, findRunAtKm } from '@/lib/trail-osm-tags';
 import { SAC_COLORS, SURFACE_COLORS } from '@/components/map/trail-route-constants';
 import { TRAIL_SECTIONS } from '@/lib/trail-sections';
 import {
@@ -32,6 +31,7 @@ import {
 	SURFACE_BUCKETS,
 	formatHikingTime,
 	gradeColorForKey,
+	resolveOsmAtTrailKm,
 	type ElevationPoint,
 	type PinnedPoint,
 } from './elevation-chart-shared';
@@ -260,9 +260,9 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 				if (!runs?.length) return null;
 				const totalKm = trailMetadata?.totalDistance ?? 0;
 				return (p) => {
-					const soboKm = direction === 'SOBO' ? p.distance : Math.max(0, totalKm - p.distance);
-					const run = findRunAtKm(runs, soboKm);
-					return fillMode === 'surface' ? bucketSurface(run?.surface ?? null) : bucketSac(run?.sac_scale ?? null);
+					const osm = resolveOsmAtTrailKm(p.distance, direction, totalKm, runs);
+					if (!osm) return fillMode === 'surface' ? 'unknown' : 'untagged';
+					return fillMode === 'surface' ? osm.surfaceBucket : osm.sacBucket;
 				};
 			}
 			if (enhancedTrailPoints.length === 0) return null;
@@ -446,6 +446,7 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 										<ul className="list-inside list-disc space-y-0.5 text-gray-600 dark:text-[var(--text-secondary)]">
 											<li>{tControls('helpItems.trailClick')}</li>
 											<li>{tControls('helpItems.chartHover')}</li>
+											<li>{tControls('helpItems.chartOsmTooltip')}</li>
 											<li>{tControls('helpItems.chartClickPin')}</li>
 											<li>{tControls('helpItems.chartDragRuler')}</li>
 											<li>
@@ -587,13 +588,17 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 											active={props.active && !rulerRange}
 											clearTrailHighlight={clearTrailHighlight}
 											coordinate={props.coordinate}
+											direction={direction}
 											distanceLabel={t('distanceLabel')}
 											distancePrecision={distancePrecision}
 											elevationLabel={t('elevationLabel')}
 											elevationUnitASL={tControls('elevationUnitASL')}
+											fillMode={fillMode}
 											highlightTrailPosition={highlightTrailPosition}
 											isPinned={pinnedPoint !== null}
 											payload={props.payload}
+											totalKm={totalDistance}
+											trailOsmRuns={trailOsmTagsFile?.runs}
 											units={units}
 											onScaleCalibration={handleScaleCalibration}
 										/>

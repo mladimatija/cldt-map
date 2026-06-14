@@ -32,7 +32,7 @@
 		"mapFeatures": "Funzionalità della mappa",
 		"mapFeaturesList": {
 			"trail": "Clicca sul percorso o sul profilo altimetrico per vedere distanza e altitudine in qualsiasi punto",
-			"elevation": "Grafico del profilo altimetrico; passa il mouse per visualizzare il punto sulla mappa, clicca per fissarlo",
+			"elevation": "Grafico del profilo altimetrico; passa il mouse per visualizzare il punto sulla mappa, clicca per fissarlo; con stile sentiero Superficie o SAC attivo, il tooltip al passaggio del mouse mostra anche l'etichetta OSM di superficie o difficoltà a quel km",
 			"ruler": "Righello per misurare segmenti tra due punti",
 			"distanceEtaOverlay": "Overlay distanza ed ETA - HUD in tempo reale con distanza percorsa e rimanente, dislivello rimanente ed ETA alla fine del sentiero o al segmento attivo del righello",
 			"layers": "Più livelli mappa (standard, topo, escursionismo, satellite, terreno, ciclismo, Croazia Topo, scuro), più overlay opzionale Waymarked Trails con relazioni OSM (interruttore in Impostazioni, solo online)",
@@ -229,6 +229,7 @@
 		"helpItems": {
 			"trailClick": "Clicca sul sentiero per mostrare distanza e altitudine di un punto.",
 			"chartHover": "Passa il mouse sul profilo altimetrico per visualizzare il punto corrispondente sulla mappa.",
+			"chartOsmTooltip": "Con stile sentiero Superficie o Difficoltà (SAC) attivo, il tooltip al passaggio del mouse mostra anche l'etichetta OSM di superficie o SAC a quel km (campione colore più tag grezzo se disponibile).",
 			"chartClickPin": "Clicca sul profilo altimetrico per fissare un punto (rimane visibile fino alla chiusura).",
 			"chartDragRuler": "Clicca e trascina sul profilo altimetrico per misurare un segmento (Righello).",
 			"escCancelRuler": "Premi <kbd>Esc</kbd> per annullare il Righello."
@@ -338,7 +339,11 @@
 		"elevationLabel": "Altitudine",
 		"rulerSegment": "Segmento",
 		"rulerHikingTime": "Tempo stimato",
-		"rulerSection": "Sezione"
+		"rulerSection": "Sezione",
+		"osmSurfaceLabel": "Superficie",
+		"osmSacLabel": "SAC",
+		"osmHighwayLabel": "highway",
+		"osmTagUntagged": "Nessun tag SAC"
 	},
 	"trailRoute": {
 		"startingPoint": "Punto di partenza ({direction})",

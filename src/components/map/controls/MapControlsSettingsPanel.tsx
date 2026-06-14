@@ -35,7 +35,12 @@ import {
 	IoFlagOutline,
 } from 'react-icons/io5';
 import { severityColor, type SeasonalSeverity } from '@/lib/seasonal-status';
-import { GRADE_BAND_ASCENT_COLORS, SAC_COLORS, SURFACE_COLORS } from '@/components/map/trail-route-constants';
+import {
+	GRADE_BAND_ASCENT_COLORS,
+	SAC_BUCKET_SHORT_LABELS,
+	SAC_COLORS,
+	SURFACE_COLORS,
+} from '@/components/map/trail-route-constants';
 import { Button } from '@/components/ui/Button';
 import { cn } from '@/lib/utils';
 import { MAP_CONTROL_INPUT, MAP_CONTROL_POPOVER } from './map-controls-constants';
@@ -44,7 +49,7 @@ import { MapControlsImportsPanel } from './MapControlsImportsPanel';
 // From the shared constants module, NOT the chart component: importing the
 // component would statically pull recharts into the main bundle and defeat
 // the dynamic() split on ElevationChart.
-import { SURFACE_BUCKETS } from '@/components/charts/elevation-chart-shared';
+import { SAC_BUCKETS, SURFACE_BUCKETS } from '@/components/charts/elevation-chart-shared';
 import { requestCompassPermission } from '@/hooks/useCompassHeading';
 import { Radio } from '@/components/ui/Radio';
 
@@ -373,17 +378,7 @@ export function MapControlsSettingsPanel({
 							<p className="font-semibold text-gray-700 dark:text-[var(--text-primary)]">
 								{t('layers.trailStyle.sacLegendTitle')}
 							</p>
-							{(
-								[
-									{ key: 'hiking', label: 'T1' },
-									{ key: 'mountain_hiking', label: 'T2' },
-									{ key: 'demanding_mountain_hiking', label: 'T3' },
-									{ key: 'alpine_hiking', label: 'T4' },
-									{ key: 'demanding_alpine_hiking', label: 'T5' },
-									{ key: 'difficult_alpine_hiking', label: 'T6' },
-									{ key: 'untagged', label: '-' },
-								] as const
-							).map(({ key, label }) => (
+							{SAC_BUCKETS.map((key) => (
 								<div className="flex items-center gap-2" key={key}>
 									<span
 										aria-hidden="true"
@@ -391,7 +386,8 @@ export function MapControlsSettingsPanel({
 										style={{ backgroundColor: SAC_COLORS[key] }}
 									/>
 									<span>
-										<span className="font-mono">{label}</span> {t(`layers.trailStyle.sacBuckets.${key}`)}
+										<span className="font-mono">{SAC_BUCKET_SHORT_LABELS[key]}</span>{' '}
+										{t(`layers.trailStyle.sacBuckets.${key}`)}
 									</span>
 								</div>
 							))}

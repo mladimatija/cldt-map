@@ -62,6 +62,7 @@ export function MapControlsHelpPanel(): React.ReactElement {
 			{section(t('chartHeading'), [
 				['trailClick', tControls('helpItems.trailClick')],
 				['chartHover', tControls('helpItems.chartHover')],
+				['chartOsmTooltip', tControls('helpItems.chartOsmTooltip')],
 				['chartClickPin', tControls('helpItems.chartClickPin')],
 				['chartDragRuler', tControls('helpItems.chartDragRuler')],
 				['escCancelRuler', tControls.rich('helpItems.escCancelRuler', { kbd })],
