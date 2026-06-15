@@ -581,6 +581,12 @@
 		"moreInfo": "More info"
 	},
 	"weather": {
+		"exposure": {
+			"coldWarning": "Cold: high hypothermia risk - layer up, limit exposure",
+			"coldCaution": "Cold: dress warm, watch for wind chill",
+			"heatCaution": "Heat: hydrate and pace yourself",
+			"heatWarning": "Heat: high risk - rest in shade, hydrate often"
+		},
 		"loading": "Loading weather…",
 		"temperature": "Temperature",
 		"feelsLike": "Feels like",

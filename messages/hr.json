@@ -581,6 +581,12 @@
 		"moreInfo": "Više informacija"
 	},
 	"weather": {
+		"exposure": {
+			"coldWarning": "Hladno: visok rizik od pothlađivanja - obucite slojeve, skratite izloženost",
+			"coldCaution": "Hladno: obucite se toplo, pazite na osjet vjetra",
+			"heatCaution": "Vrućina: pijte vodu i odmjerite tempo",
+			"heatWarning": "Vrućina: visok rizik - odmarajte u hladu, često pijte"
+		},
 		"loading": "Učitavanje vremenske prognoze…",
 		"temperature": "Temperatura",
 		"feelsLike": "Osjeća se kao",

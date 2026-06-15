@@ -21,6 +21,7 @@ import {
 	weatherKeyToIcon,
 	type WeatherData,
 } from '@/lib/weather';
+import { tooltipExposure } from '@/lib/exposure-risk';
 import {
 	TrailTooltipContent,
 	type TrailTooltipData,
@@ -251,6 +252,7 @@ export default function MapMarkers(): React.ReactElement | null {
 			wind: formatWindSpeed(effectiveWeatherData.windspeedKmh, units),
 			sunrise: formatSunTime(effectiveWeatherData.sunrise, units),
 			sunset: formatSunTime(effectiveWeatherData.sunset, units),
+			exposure: tooltipExposure(effectiveWeatherData.feelsLikeC, effectiveWeatherData.windspeedKmh, tWeather),
 		};
 	}, [effectiveWeatherData, units, tWeather]);
 

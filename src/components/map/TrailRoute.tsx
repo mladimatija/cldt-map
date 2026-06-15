@@ -51,6 +51,7 @@ import {
 	weatherKeyToIcon,
 	type WeatherData,
 } from '@/lib/weather';
+import { tooltipExposure } from '@/lib/exposure-risk';
 import {
 	TrailTooltipContent,
 	type TrailTooltipData,
@@ -488,6 +489,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 					wind: formatWindSpeed(weatherData.windspeedKmh, currentUnits),
 					sunrise: formatSunTime(weatherData.sunrise, currentUnits),
 					sunset: formatSunTime(weatherData.sunset, currentUnits),
+					exposure: tooltipExposure(weatherData.feelsLikeC, weatherData.windspeedKmh, tWeather),
 				};
 			};
 			const buildWindCompass = (weatherData: WeatherData | null): TrailTooltipWindCompass | null => {
