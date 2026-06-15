@@ -346,7 +346,7 @@ export function MapControlsEmergencyPanel({ onClose }: MapControlsEmergencyPanel
 		<MapControlModalShell
 			open
 			cardClassName="max-w-sm border-l-cldt-red border-l-2"
-			showCloseButton={false}
+			closeLabel={t('close')}
 			title={t('title')}
 			titleClassName="text-cldt-red mb-2 text-base font-semibold"
 			titleId="emergency-panel-title"
@@ -531,8 +531,8 @@ export function MapControlsEmergencyPanel({ onClose }: MapControlsEmergencyPanel
 					)}
 				</div>
 
-				<div className="mt-3 flex justify-end gap-2">
-					{copyAllText ? (
+				{copyAllText ? (
+					<div className="mt-3 flex justify-end gap-2">
 						<Button
 							className={cn(copiedField === 'all' && 'text-cldt-green')}
 							size="sm"
@@ -541,11 +541,8 @@ export function MapControlsEmergencyPanel({ onClose }: MapControlsEmergencyPanel
 						>
 							{copiedField === 'all' ? t('copyTooltipSuccess') : t('copyAllButton')}
 						</Button>
-					) : null}
-					<Button size="sm" variant="mapControlOutlineSecondary" onClick={onClose}>
-						{t('close')}
-					</Button>
-				</div>
+					</div>
+				) : null}
 			</div>
 		</MapControlModalShell>
 	);
