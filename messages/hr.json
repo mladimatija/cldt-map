@@ -1179,6 +1179,13 @@
 		"journalExportGpxMissing": "Uvezi povezani GPX da izvezeš ovaj segment."
 	},
 	"help": {
+		"startHereHeading": "Počnite ovdje",
+		"start": {
+			"plan": "Isplanirajte višednevni put",
+			"places": "Pregledajte mjesta (POI)",
+			"progress": "Pratite svoj napredak",
+			"offline": "Preuzmite karte za offline"
+		},
 		"title": "Pomoć",
 		"basicsHeading": "Osnove karte",
 		"basics": {

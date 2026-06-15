@@ -2,10 +2,12 @@
 
 import React, { useEffect } from 'react';
 import { useTranslations } from 'next-intl';
+import { IoArrowForwardOutline } from 'react-icons/io5';
 import { Link } from '@/i18n/navigation';
-import { MAP_CONTROL_PANEL_WIDTH, MAP_CONTROL_POPOVER } from './map-controls-constants';
+import { MAP_CONTROL_LINK_BUTTON, MAP_CONTROL_PANEL_WIDTH, MAP_CONTROL_POPOVER } from './map-controls-constants';
 import { MapControlSectionCard } from './MapControlSectionCard';
 import { usePopoverFocusTrap } from '@/hooks';
+import { cn } from '@/lib/utils';
 import { INLINE_LINK_CLASS } from '@/components/ui/ExternalLink';
 import { useMapStore, type MapStoreState } from '@/lib/store';
 
@@ -55,6 +57,16 @@ export function MapControlsHelpPanel(): React.ReactElement {
 	const setHelpPanelDemoOpen = useMapStore((state: MapStoreState) => state.setHelpPanelDemoOpen);
 	const helpScrollTarget = useMapStore((state: MapStoreState) => state.helpScrollTarget);
 	const clearHelpScrollTarget = useMapStore((state: MapStoreState) => state.clearHelpScrollTarget);
+	const setOpenPanel = useMapStore((state: MapStoreState) => state.setOpenPanel);
+
+	// "Start here" launcher: deep-link into the most useful panels (mutual
+	// exclusion in the store closes help and opens the target).
+	const startHereRows = [
+		{ key: 'plan', panel: 'stagePlanner' },
+		{ key: 'places', panel: 'poiList' },
+		{ key: 'progress', panel: 'progress' },
+		{ key: 'offline', panel: 'settings' },
+	] as const;
 
 	const sectionCollapseLabel = tProgress('collapseSection');
 
@@ -79,6 +91,22 @@ export function MapControlsHelpPanel(): React.ReactElement {
 			<h3 className="text-sm font-medium text-gray-700 dark:text-[var(--text-primary)]" id="help-panel-title">
 				{t('title')}
 			</h3>
+
+			<MapControlSectionCard title={t('startHereHeading')}>
+				<div className="flex flex-col gap-0.5">
+					{startHereRows.map(({ key, panel }) => (
+						<button
+							className={cn(MAP_CONTROL_LINK_BUTTON, 'flex w-full items-center gap-2')}
+							key={key}
+							type="button"
+							onClick={() => setOpenPanel(panel)}
+						>
+							<IoArrowForwardOutline aria-hidden className="h-3.5 w-3.5 shrink-0" />
+							{t(`start.${key}`)}
+						</button>
+					))}
+				</div>
+			</MapControlSectionCard>
 
 			<MapControlSectionCard
 				collapsible

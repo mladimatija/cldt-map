@@ -1179,6 +1179,13 @@
 		"journalExportGpxMissing": "Importiere den verknüpften GPX, um dieses Segment zu exportieren."
 	},
 	"help": {
+		"startHereHeading": "Hier starten",
+		"start": {
+			"plan": "Mehrtagestour planen",
+			"places": "Orte durchsuchen (POI)",
+			"progress": "Fortschritt verfolgen",
+			"offline": "Offline-Karten herunterladen"
+		},
 		"title": "Hilfe",
 		"basicsHeading": "Kartengrundlagen",
 		"basics": {
