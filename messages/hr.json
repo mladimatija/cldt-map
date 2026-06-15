@@ -750,7 +750,7 @@
 		"maxHoursPerDay": "Maks. sati/dan",
 		"autoBumpNotice": "Prilagođeno na {actual} etapa (tražili ste {requested}) kako bi svaki dan ostao ispod ~{hours}h pri {pace} km/h.",
 		"generatePlan": "Generiraj plan",
-		"planningHelp": "Pomoc za planiranje",
+		"planningHelp": "Pomoć za planiranje",
 		"previewAhead": "Pregled sljedećih {distance}",
 		"previewAheadTooltip": "Otvori popis mjesta filtriranih na POI-je duž sljedećih {distance} od vaše pozicije.",
 		"noStages": "Nema plana. Unesite raspon i generirajte.",
