@@ -648,6 +648,9 @@
 		"upNextHorizonAriaLabel": "Distanza avanti, {distance}"
 	},
 	"imports": {
+		"elevation": "Dislivello",
+		"stops": "Soste",
+		"movingEfficiency": "In movimento %",
 		"title": "Tracce importate",
 		"dropToImport": "Trascina un file GPX per importarlo",
 		"noImports": "Nessuna traccia importata. Trascina un file .gpx sulla mappa per importarne una.",

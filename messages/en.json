@@ -648,6 +648,9 @@
 		"upNextHorizonAriaLabel": "Distance ahead, {distance}"
 	},
 	"imports": {
+		"elevation": "Elevation",
+		"stops": "Stops",
+		"movingEfficiency": "Moving %",
 		"title": "Imported tracks",
 		"dropToImport": "Drop GPX file to import",
 		"noImports": "No imported tracks yet. Drag and drop a .gpx file anywhere onto the map to import one.",

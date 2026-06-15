@@ -648,6 +648,9 @@
 		"upNextHorizonAriaLabel": "Udaljenost ispred, {distance}"
 	},
 	"imports": {
+		"elevation": "Visinska razlika",
+		"stops": "Stanke",
+		"movingEfficiency": "Kretanje %",
 		"title": "Uvezene rute",
 		"dropToImport": "Ispusti GPX datoteku za uvoz",
 		"noImports": "Još nema uvezenih ruta. Povuci i ispusti .gpx datoteku bilo gdje na kartu za uvoz.",

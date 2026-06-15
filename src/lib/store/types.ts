@@ -728,4 +728,11 @@ export interface TrackStats {
 	maxDeviationM: number;
 	/** Share of the TRACK that runs within 25 m of the official trail. */
 	coveragePercent: number;
+	/** Cumulative ascent / descent (m) over the recorded elevation, 5 m hysteresis. 0 if no elevation. */
+	elevationGainM: number;
+	elevationLossM: number;
+	/** Number of pauses longer than 2 min (the gaps excluded from moving time). */
+	stopCount: number;
+	/** movingTime / elapsedTime as a percent; 0 if no timestamps. */
+	movingEfficiencyPct: number;
 }
