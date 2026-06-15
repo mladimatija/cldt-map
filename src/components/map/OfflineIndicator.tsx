@@ -10,8 +10,11 @@ import { COMPACT_BANNER_CHIP_CLASSES } from './banner-styles';
 export function OfflineIndicator(): React.ReactElement | null {
 	const t = useTranslations('offlineIndicator');
 	const isOffline = useMapStore((state: MapStoreState) => state.isOffline);
+	const demoModeActive = useMapStore((state: MapStoreState) => state.demoModeActive);
 
-	if (!isOffline) return null;
+	// The demo banner owns the top-center slot; suppress this pill while a demo
+	// session is active so it never paints over the demo Exit button.
+	if (!isOffline || demoModeActive) return null;
 
 	return (
 		<div aria-live="polite" className={COMPACT_BANNER_CHIP_CLASSES} role="status">

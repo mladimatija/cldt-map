@@ -14,6 +14,7 @@ export function StaleCacheNotification(): React.ReactElement | null {
 	const t = useTranslations('staleCacheNotification');
 	const showStaleCacheNotification = useMapStore((s: MapStoreState) => s.showStaleCacheNotification);
 	const setStaleCacheNotification = useMapStore((s: MapStoreState) => s.setStaleCacheNotification);
+	const demoModeActive = useMapStore((s: MapStoreState) => s.demoModeActive);
 	const [sessionDismissed, setSessionDismissed] = useState(() => !!sessionStorage.getItem(SESSION_KEY));
 
 	const handleDismiss = (): void => {
@@ -22,7 +23,9 @@ export function StaleCacheNotification(): React.ReactElement | null {
 		setSessionDismissed(true);
 	};
 
-	if (!showStaleCacheNotification || sessionDismissed) return null;
+	// The demo banner owns the top-center slot; suppress this nag while a demo
+	// session is active so it never covers the demo Exit button.
+	if (!showStaleCacheNotification || sessionDismissed || demoModeActive) return null;
 
 	return (
 		<div aria-live="polite" className="map-tooltip map-tooltip--banner" role="alert">
