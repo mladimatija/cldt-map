@@ -18,6 +18,9 @@ import {
 	type ImportedTrack,
 	type LastKnownFix,
 	type MapStoreState,
+	type SosCard,
+	SOS_CARD_FIELDS,
+	SOS_CARD_FIELD_MAX_LEN,
 	type StagePlan,
 	type StoreState,
 	type TrailDirection,
@@ -89,6 +92,20 @@ function isValidLastKnownFix(raw: unknown): raw is LastKnownFix {
 	if (accuracy !== undefined && (typeof accuracy !== 'number' || !Number.isFinite(accuracy) || accuracy < 0))
 		return false;
 	return Date.now() - timestamp <= LAST_KNOWN_FIX_MAX_AGE_MS;
+}
+
+/** Sanitize a rehydrated SOS card from localStorage: keep only known fields with
+ *  non-empty string values, length-capped. Rejects tampered/garbage shapes so the
+ *  emergency panel only ever renders clean on-device text. */
+function sanitizeSosCard(raw: unknown): SosCard {
+	if (!raw || typeof raw !== 'object') return {};
+	const source = raw as Record<string, unknown>;
+	const out: SosCard = {};
+	for (const key of SOS_CARD_FIELDS) {
+		const value = source[key];
+		if (typeof value === 'string' && value.length > 0) out[key] = value.slice(0, SOS_CARD_FIELD_MAX_LEN);
+	}
+	return out;
 }
 
 /** Optional Up Next row toggles: expand "More ahead" when enabling any; collapse when all off. */
@@ -238,6 +255,8 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 
 					userLocation: null,
 					lastKnownFix: null,
+					sosCard: {},
+					setSosCard: (card: SosCard) => set({ sosCard: card }),
 					isLocating: false,
 					permissionStatus: null,
 					locationError: null,
@@ -1489,6 +1508,7 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					return {
 						units: state.units,
 						lastKnownFix: state.lastKnownFix,
+						sosCard: state.sosCard,
 						direction: state.direction,
 						showBoundary: state.showBoundary,
 						showTileBoundary: state.showTileBoundary,
@@ -1584,6 +1604,8 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					// emergency panel never renders garbage coordinates or a months-old position.
 					const rawLastKnownFix = (persistedState as { lastKnownFix?: unknown })?.lastKnownFix;
 					merged.lastKnownFix = isValidLastKnownFix(rawLastKnownFix) ? rawLastKnownFix : null;
+					// Sanitize the rehydrated SOS card to known string fields only.
+					merged.sosCard = sanitizeSosCard((persistedState as { sosCard?: unknown })?.sosCard);
 					// If the user has never explicitly toggled the seasonal layer,
 					// recompute it on every hydration. Explicit env override wins
 					// unconditionally; otherwise fall back to the winter-window

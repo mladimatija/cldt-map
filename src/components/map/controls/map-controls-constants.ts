@@ -24,6 +24,9 @@ export const MAP_CONTROL_LABEL_INPUT_GRID = 'grid grid-cols-[minmax(0,1fr)_6rem_
 export const MAP_CONTROL_LINK_BUTTON =
 	'text-cldt-blue hover:text-cldt-green focus-visible:ring-cldt-green cursor-pointer rounded border-0 bg-transparent p-1 text-left text-xs outline-none focus-visible:ring-2 focus-visible:ring-offset-1';
 
+/** Section divider: top border + padding between modal/panel sections. */
+export const MAP_CONTROL_SECTION_DIVIDER = 'border-t border-gray-200 pt-3 dark:border-[var(--border-color)]';
+
 /**
  * Shared dark-mode class fragments - keep in sync with theme.css .dark variables.
  */

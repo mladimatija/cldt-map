@@ -42,6 +42,36 @@ export interface LastKnownFix {
 	timestamp: number;
 }
 
+/** Optional, on-device personal/medical info surfaced in the emergency panel to help
+ *  responders. Every field is optional and empty by default. The card is persisted
+ *  locally as plaintext (the same as every other user setting) and is deliberately
+ *  never included in share links - it stays on the device that entered it. */
+export interface SosCard {
+	bloodType?: string;
+	allergies?: string;
+	conditions?: string;
+	medications?: string;
+	emergencyContactName?: string;
+	emergencyContactPhone?: string;
+	partySize?: string;
+	notes?: string;
+}
+
+/** Max characters kept per SOS-card field (defensive cap, applied on save and on rehydration). */
+export const SOS_CARD_FIELD_MAX_LEN = 500;
+
+/** Field keys of SosCard in display/edit order. */
+export const SOS_CARD_FIELDS = [
+	'bloodType',
+	'allergies',
+	'conditions',
+	'medications',
+	'emergencyContactName',
+	'emergencyContactPhone',
+	'partySize',
+	'notes',
+] as const satisfies readonly (keyof SosCard)[];
+
 export interface ClosestPoint {
 	point: LatLng;
 	distance: number;
@@ -275,10 +305,13 @@ export interface MapStoreState {
 	/** Persisted last successful GPS fix; survives reload so the emergency panel can
 	 *  fall back to a real position with its age when live GPS is unavailable. */
 	lastKnownFix: LastKnownFix | null;
+	/** Optional on-device medical/contact card for the emergency panel; never shared. */
+	sosCard: SosCard;
 	isLocating: boolean;
 	permissionStatus: 'granted' | 'denied' | 'prompt' | null;
 	locationError: { code: number; message: string } | null;
 	setUserLocation: (location: { lat: number; lng: number; accuracy?: number } | null) => void;
+	setSosCard: (card: SosCard) => void;
 	setIsLocating: (isLocating: boolean) => void;
 	setPermissionStatus: (status: 'granted' | 'denied' | 'prompt' | null) => void;
 	setLocationError: (error: { code: number; message: string } | null) => void;

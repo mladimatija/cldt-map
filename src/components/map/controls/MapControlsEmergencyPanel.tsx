@@ -5,8 +5,10 @@ import { useLocale, useTranslations } from 'next-intl';
 import { OpenLocationCode } from 'open-location-code';
 import { IoCallOutline, IoCheckmarkOutline, IoCopyOutline, IoOpenOutline, IoWarningOutline } from 'react-icons/io5';
 import { MAP_CONTROL_SECTION_HEADING } from './MapControlSectionCard';
+import { MAP_CONTROL_SECTION_DIVIDER as SECTION_DIVIDER } from './map-controls-constants';
 import { MapControlIconButton } from './MapControlIconButton';
 import { MapControlModalShell } from './MapControlModalShell';
+import { EmergencySosCard } from './EmergencySosCard';
 import { Button, buttonVariants } from '@/components/ui/Button';
 import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
 import { computeBearing, findNearestPointIndex, formatDistanceM } from '@/lib/distance-utils';
@@ -21,8 +23,6 @@ import { fetchReverseGeocodeAddress } from '@/lib/reverse-geocode-client';
 import { cn, isSafeUrl } from '@/lib/utils';
 
 const COPY_RESET_MS = 1500;
-
-const SECTION_DIVIDER = 'border-t border-gray-200 pt-3 dark:border-[var(--border-color)]';
 
 interface MapControlsEmergencyPanelProps {
 	onClose: () => void;
@@ -504,6 +504,29 @@ export function MapControlsEmergencyPanel({ onClose }: MapControlsEmergencyPanel
 							<span className="text-xs text-gray-500 dark:text-[var(--text-secondary)]">-</span>
 						)}
 					</section>
+
+					<EmergencySosCard />
+
+					<details className={cn('flex flex-col', SECTION_DIVIDER)}>
+						<summary
+							className={cn(
+								MAP_CONTROL_SECTION_HEADING,
+								'focus-visible:ring-cldt-green cursor-pointer rounded outline-none focus-visible:ring-1 focus-visible:ring-offset-1',
+							)}
+						>
+							{t('script.heading')}
+						</summary>
+						<div className="mt-1.5 flex flex-col gap-1 text-xs text-gray-600 dark:text-[var(--text-primary)]">
+							<p className="m-0">{t('script.intro')}</p>
+							<ul className="m-0 flex list-disc flex-col gap-0.5 pl-4">
+								<li>{t('script.point1')}</li>
+								<li>{t('script.point2')}</li>
+								<li>{t('script.point3')}</li>
+								<li>{t('script.point4')}</li>
+								<li>{t('script.point5')}</li>
+							</ul>
+						</div>
+					</details>
 				</div>
 
 				<div className="mt-4 flex flex-col gap-2">

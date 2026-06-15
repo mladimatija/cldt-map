@@ -66,7 +66,7 @@
 			"daylightBudget": "Budget di luce diurna - sul sentiero l'HUD delle distanze avvisa quando potresti non raggiungere il prossimo rifugio, riparo o paese prima del buio, confrontando l'orario del tramonto con il tuo tempo di arrivo al luogo più vicino davanti",
 			"stagePlanner": "Pianificatore tappe multi-giorno - suddividi qualsiasi tratto del sentiero in tappe giornaliere per distanza o tempo, visualizza dislivello, ETA, acqua, zaino e chip rifornimento per tappa. Imposta una data di inizio per mostrare la data di ogni tappa e inserisci giorni di riposo (giorni zero) che spostano ogni data, previsione ed evento di calendario successivi senza cambiare la suddivisione. Esporta singole tappe come GPX o FIT, tutti i POI come GPX, un PDF tappe in mappa, iCal (include i giorni di riposo) o apri il Trip brief",
 			"gpxImport": "Importazione tracce GPX - trascina (o seleziona) un file GPX registrato per sovrapporre la tua escursione alla mappa ufficiale; statistiche su distanza, passo, tempo totale, tempo in movimento, deviazione massima e copertura del percorso",
-			"emergency": "Pannello di emergenza 112 - tieni premuto il pulsante SOS rosso (in basso a destra) per aprire un modal centrato offline-first con coordinate GPS, Plus Code, tratta e km del percorso, direzione e distanza al più vicino accesso stradale e alla stazione di soccorso alpino HGSS; online viene cercato un indirizzo leggibile da copiare; copia ogni campo negli appunti e passa al dialer (Chiama 112) o alle mappe (Apri nelle mappe); se il GPS non è disponibile, ripiega sull'ultima posizione nota con la sua età; funziona completamente offline una volta in cache",
+			"emergency": "Pannello di emergenza 112 - tieni premuto il pulsante SOS rosso (in basso a destra) per aprire un modal centrato offline-first con coordinate GPS, Plus Code, tratta e km del percorso, direzione e distanza al più vicino accesso stradale e alla stazione di soccorso alpino HGSS; online viene cercato un indirizzo leggibile da copiare; copia ogni campo negli appunti e passa al dialer (Chiama 112) o alle mappe (Apri nelle mappe); se il GPS non è disponibile, ripiega sull'ultima posizione nota con la sua età; include una scheda medica/contatti opzionale sul dispositivo e una guida \"cosa dire al 112\"; funziona completamente offline una volta in cache",
 			"trailStyle": "Stile del percorso - scegli in Impostazioni (scheda Aspetto del sentiero) come colorare la polilinea: Predefinito (un solo colore), Tratte (zone A/B/C con marker di confine e statistiche per tratta), Pendenza (colorazione a cinque bande in stile Strava, toni caldi per le salite e freddi per le discese nella direzione di marcia attiva; legenda del colore nella scheda; ricalcolata al cambio di direzione SOBO/NOBO), Fondo o Difficoltà (SAC)",
 			"surfaceAndSac": "Colorazione per fondo e difficoltà - colora la polilinea del sentiero (e il riempimento del grafico altimetrico) in base al tipo di fondo OSM (asfaltato / non asfaltato / ghiaia / terra / roccia) o alla scala escursionistica SAC (T1 escursionismo fino a T6 escursionismo alpino difficile). I dati vengono arricchiti mensilmente da una GitHub Action a partire da OpenStreetMap; le opzioni Fondo e Difficoltà restano disabilitate finché il set di dati non viene caricato al primo rendering. Consapevole della direzione: il set è indicizzato per km SOBO e il renderer lo specchia al volo per NOBO",
 			"distanceMarkers": "Indicatori di distanza - piccole etichette km/mi lungo il sentiero a intervalli di 100 / 50 / 25 / 10 / 5 / 1 unità. Visualizzazione progressiva in base al livello di zoom: 100 km sempre visibili a qualsiasi zoom, intervalli più fini compaiono man mano che ingrandisci (etichette da 1 km solo da zoom 13+). Attivabile dalle Impostazioni; le etichette seguono il sistema di unità attivo e la direzione corrente (SOBO/NOBO)",
@@ -1128,6 +1128,33 @@
 		"callStation": "Chiama {name}",
 		"openStationPage": "Apri pagina per {name}",
 		"stationDetails": "Dettagli stazione",
+		"sosCard": {
+			"heading": "Dati personali e medici",
+			"add": "Aggiungi dati medici e di contatto",
+			"edit": "Modifica",
+			"save": "Salva",
+			"cancel": "Annulla",
+			"privacyNote": "Memorizzato solo su questo dispositivo. Mai condiviso né incluso nei link.",
+			"field": {
+				"bloodType": "Gruppo sanguigno",
+				"allergies": "Allergie",
+				"conditions": "Patologie",
+				"medications": "Farmaci",
+				"emergencyContactName": "Contatto di emergenza",
+				"emergencyContactPhone": "Telefono di contatto",
+				"partySize": "Numero di persone",
+				"notes": "Note"
+			}
+		},
+		"script": {
+			"heading": "Cosa dire al 112",
+			"intro": "Parla lentamente e con chiarezza. Sii pronto a dire all'operatore:",
+			"point1": "Dove ti trovi - leggi le coordinate e il Plus Code qui sopra e il tratto del sentiero.",
+			"point2": "Cosa è successo e quante persone sono ferite.",
+			"point3": "Quante persone ci sono nel tuo gruppo e in che condizioni (in grado di camminare, bloccato, ferito).",
+			"point4": "Il tuo nome e un numero di telefono per essere richiamato.",
+			"point5": "Non riagganciare finché l'operatore non te lo dice."
+		},
 		"compass": {
 			"N": "N",
 			"NE": "NE",
@@ -1257,7 +1284,7 @@
 		"chartHeading": "Profilo altimetrico",
 		"gesturesHeading": "Gesti nascosti",
 		"gestures": {
-			"sos": "Tieni premuto il pulsante rosso SOS per il pannello di emergenza offline: coordinate, Plus Code, accesso stradale più vicino, soccorso HGSS, 112 con un tocco e indirizzo quando sei online. Se il GPS non è disponibile, mostra l'ultima posizione nota con la sua età.",
+			"sos": "Tieni premuto il pulsante rosso SOS per il pannello di emergenza offline: coordinate, Plus Code, accesso stradale più vicino, soccorso HGSS, 112 con un tocco e indirizzo quando sei online. Se il GPS non è disponibile, mostra l'ultima posizione nota con la sua età. Include anche una scheda medica/contatti opzionale sul dispositivo e una guida \"cosa dire al 112\".",
 			"gpxDrop": "Trascina un file .gpx registrato sulla mappa per sovrapporre la tua escursione e confrontarla con il sentiero ufficiale.",
 			"poiList": "Nella lista dei luoghi digita un numero (\"100 km\") per saltarci; le frecce navigano, S seleziona le righe per l'export GPX. Salva preset di filtro e segna i luoghi in elenchi nominati (il brief \"solo selezionati\" usa l'elenco attivo).",
 			"waypoint": "Tieni premuto (o clic destro) in un punto qualsiasi della mappa per un punto personale con nota."

@@ -99,6 +99,8 @@ export function createMapStoreStub(): MapStoreState {
 		setRulerRange: noop,
 		userLocation: null,
 		lastKnownFix: null,
+		sosCard: {},
+		setSosCard: noop,
 		isLocating: false,
 		permissionStatus: null,
 		locationError: null,
