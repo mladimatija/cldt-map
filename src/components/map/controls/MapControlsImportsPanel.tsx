@@ -234,6 +234,21 @@ export function MapControlsImportsPanel({ embedded = false }: MapControlsImports
 								<span>
 									{t('coverage')}: {stats ? `${stats.coveragePercent.toFixed(0)}%` : '-'}
 								</span>
+								{stats && (stats.elevationGainM > 0 || stats.elevationLossM > 0) && (
+									<span>
+										{t('elevation')}: ↑{Math.round(stats.elevationGainM)} m ↓{Math.round(stats.elevationLossM)} m
+									</span>
+								)}
+								{stats && stats.stopCount > 0 && (
+									<span>
+										{t('stops')}: {stats.stopCount}
+									</span>
+								)}
+								{stats && stats.movingEfficiencyPct > 0 && (
+									<span>
+										{t('movingEfficiency')}: {stats.movingEfficiencyPct.toFixed(0)}%
+									</span>
+								)}
 							</div>
 							<div className="mt-1 flex flex-col gap-1.5 pl-5">
 								<div className="flex flex-wrap items-center gap-2">

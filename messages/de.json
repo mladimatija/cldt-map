@@ -648,6 +648,9 @@
 		"upNextHorizonAriaLabel": "Strecke voraus, {distance}"
 	},
 	"imports": {
+		"elevation": "Höhenmeter",
+		"stops": "Pausen",
+		"movingEfficiency": "Bewegung %",
 		"title": "Importierte Tracks",
 		"dropToImport": "GPX-Datei zum Importieren ablegen",
 		"noImports": "Noch keine importierten Tracks. Ziehe eine .gpx-Datei irgendwo auf die Karte, um einen zu importieren.",

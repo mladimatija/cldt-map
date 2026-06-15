@@ -213,6 +213,10 @@ function computeTrackStatsUncached(
 			avgMovingPaceSecPerKm: 0,
 			maxDeviationM: 0,
 			coveragePercent: 0,
+			elevationGainM: 0,
+			elevationLossM: 0,
+			stopCount: 0,
+			movingEfficiencyPct: 0,
 		};
 	}
 
@@ -232,17 +236,43 @@ function computeTrackStatsUncached(
 	// Elapsed and moving time
 	let totalElapsedSec = 0;
 	let totalMovingSec = 0;
+	let stopCount = 0;
 	const timedPts = trackPoints.filter((p) => p.time instanceof Date);
 	if (timedPts.length >= 2) {
 		totalElapsedSec = (timedPts[timedPts.length - 1].time!.getTime() - timedPts[0].time!.getTime()) / 1000;
 		for (let i = 1; i < timedPts.length; i++) {
 			const deltaMs = timedPts[i].time!.getTime() - timedPts[i - 1].time!.getTime();
-			// Skip negative deltas (out-of-order timestamps) and pauses >2 min
+			// Skip negative deltas (out-of-order timestamps) and pauses >2 min;
+			// the long pauses are the "significant stops" worth surfacing.
 			if (deltaMs > 0 && deltaMs <= 120_000) totalMovingSec += deltaMs / 1000;
+			else if (deltaMs > 120_000) stopCount++;
 		}
 	}
 
 	const avgMovingPaceSecPerKm = totalDistanceM > 0 && totalMovingSec > 0 ? totalMovingSec / (totalDistanceM / 1000) : 0;
+	const movingEfficiencyPct = totalElapsedSec > 0 && totalMovingSec > 0 ? (totalMovingSec / totalElapsedSec) * 100 : 0;
+
+	// Cumulative ascent/descent with a 5 m hysteresis so GPS altitude noise does
+	// not inflate the totals (a common failure mode of raw barometric/GPS tracks).
+	let elevationGainM = 0;
+	let elevationLossM = 0;
+	const ELE_HYSTERESIS_M = 5;
+	let refEle: number | null = null;
+	for (const p of trackPoints) {
+		if (typeof p.ele !== 'number') continue;
+		if (refEle === null) {
+			refEle = p.ele;
+			continue;
+		}
+		const delta = p.ele - refEle;
+		if (delta >= ELE_HYSTERESIS_M) {
+			elevationGainM += delta;
+			refEle = p.ele;
+		} else if (delta <= -ELE_HYSTERESIS_M) {
+			elevationLossM += -delta;
+			refEle = p.ele;
+		}
+	}
 
 	// Deviation and coverage are computed over the track RESAMPLED every 50 m,
 	// not over the stored vertices: import-time simplification keeps few
@@ -275,6 +305,10 @@ function computeTrackStatsUncached(
 		avgMovingPaceSecPerKm,
 		maxDeviationM,
 		coveragePercent,
+		elevationGainM,
+		elevationLossM,
+		stopCount,
+		movingEfficiencyPct,
 	};
 }
 
