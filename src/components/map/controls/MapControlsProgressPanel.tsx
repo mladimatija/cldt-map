@@ -375,7 +375,7 @@ export function MapControlsProgressPanel(): React.ReactElement | null {
 				<div className="flex flex-col gap-3">
 					<MapControlSectionCard title={t('yourProgressHeading')}>
 						<div className="flex flex-col gap-1">
-							<p className="m-0 text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
+							<p className="m-0 text-[0.625rem] font-medium tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
 								{t('sectionsHeading')}
 							</p>
 							{sections.map((s) => {
@@ -403,7 +403,7 @@ export function MapControlsProgressPanel(): React.ReactElement | null {
 
 						{rulerKms ? (
 							<div className="border-t border-gray-200 pt-2 dark:border-[var(--border-color)]">
-								<p className="m-0 text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
+								<p className="m-0 text-[0.625rem] font-medium tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
 									{t('rulerHeading')}
 								</p>
 								<label className="mt-1 flex min-w-0 cursor-pointer items-center gap-2 text-xs">
@@ -562,7 +562,7 @@ export function MapControlsProgressPanel(): React.ReactElement | null {
 						) : (
 							<>
 								<div className="flex flex-col gap-1">
-									<p className="m-0 text-[10px] text-gray-500 dark:text-[var(--text-secondary)]">
+									<p className="m-0 text-[0.625rem] text-gray-500 dark:text-[var(--text-secondary)]">
 										{tWaypoints('filterHeading')}
 									</p>
 									<div className="relative w-full min-w-0">
@@ -586,7 +586,7 @@ export function MapControlsProgressPanel(): React.ReactElement | null {
 									</div>
 								</div>
 								<div className="flex flex-col gap-1">
-									<p className="m-0 text-[10px] text-gray-500 dark:text-[var(--text-secondary)]">
+									<p className="m-0 text-[0.625rem] text-gray-500 dark:text-[var(--text-secondary)]">
 										{tWaypoints('mapLayersHeading')}
 									</p>
 									<div className="relative w-full min-w-0">

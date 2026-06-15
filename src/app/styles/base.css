@@ -4,6 +4,17 @@
 		font-size: 16px;
 	}
 
+	/* UI text-size accessibility setting (ThemeProvider toggles the class on
+	   <html>). Scales the root font so every rem-based UI text follows; the map
+	   tiles and the viewport-sized map container are unaffected. */
+	html.ui-scale-large {
+		font-size: 18px;
+	}
+
+	html.ui-scale-larger {
+		font-size: 20px;
+	}
+
 	html.dark body {
 		background-color: var(--bg-primary, #0f172a);
 		color: var(--text-primary, #f1f5f9);

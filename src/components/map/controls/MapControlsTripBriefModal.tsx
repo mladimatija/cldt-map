@@ -382,7 +382,7 @@ export function MapControlsTripBriefModal({
 					)}
 
 					<label className="mb-3 block">
-						<span className="mb-1 block text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
+						<span className="mb-1 block text-[0.625rem] font-medium tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
 							{t('document.labels.overview')}
 						</span>
 						<textarea
@@ -396,13 +396,13 @@ export function MapControlsTripBriefModal({
 
 					{preparedBrief?.days.map((day, i) => (
 						<label className="mb-3 block" key={day.index}>
-							<span className="mb-1 block text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
+							<span className="mb-1 block text-[0.625rem] font-medium tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
 								{dayHeader(day, documentStrings, preparedBrief.meta.units)}
 							</span>
 							{[day.resupplyEnteringLabel, day.resupplyCarryLabel, day.foodPackLabel]
 								.filter((line): line is string => !!line)
 								.map((line) => (
-									<p className="mb-1 text-[10px] text-amber-700 dark:text-amber-400" key={line}>
+									<p className="mb-1 text-[0.625rem] text-amber-700 dark:text-amber-400" key={line}>
 										{line}
 									</p>
 								))}
@@ -427,7 +427,7 @@ export function MapControlsTripBriefModal({
 					{!enabled && <p className="mb-2 text-xs text-amber-700 italic dark:text-amber-300">{t('needsPlan')}</p>}
 
 					<fieldset className="mb-3 flex flex-col gap-1">
-						<legend className="text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
+						<legend className="text-[0.625rem] font-medium tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
 							{t('format')}
 						</legend>
 						<label className="flex items-center gap-2 text-sm text-gray-700 dark:text-[var(--text-primary)]">
@@ -460,7 +460,7 @@ export function MapControlsTripBriefModal({
 					</fieldset>
 
 					<fieldset className="mb-3 flex flex-col gap-1">
-						<legend className="text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
+						<legend className="text-[0.625rem] font-medium tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
 							{t('poiScope')}
 						</legend>
 						<label className="flex items-center gap-2 text-sm text-gray-700 dark:text-[var(--text-primary)]">

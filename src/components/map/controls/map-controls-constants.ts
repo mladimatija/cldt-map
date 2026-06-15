@@ -2,8 +2,11 @@
 export const DISTANCE_PRECISION_MIN = 0;
 export const DISTANCE_PRECISION_MAX = 3;
 
-/** Fixed right-side control panel width (Progress, Stage Planner, Settings). */
-export const MAP_CONTROL_PANEL_WIDTH = 'w-[min(100vw-5rem,28rem)] max-w-md min-w-80';
+/** Fixed right-side control panel width (Progress, Stage Planner, Settings).
+ *  The min-width floor is clamped to the viewport so a larger UI text scale
+ *  (rem-based widths grow with the root font) can never push the panel wider
+ *  than a narrow phone screen. */
+export const MAP_CONTROL_PANEL_WIDTH = 'w-[min(100vw-5rem,28rem)] max-w-md min-w-[min(20rem,100vw-2.5rem)]';
 
 /** Popover/bar container: used by share panel and other map control popovers. Uses z-controls-popover so base.css dark overrides apply. */
 export const MAP_CONTROL_POPOVER =

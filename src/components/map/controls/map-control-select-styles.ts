@@ -23,9 +23,9 @@ export const mapControlSelectClassNames = {
 	/** Chip scroll row: layout (nowrap, overflow, height) lives in mapControlSelectChipScrollStyles. */
 	scrollValueContainer: () => 'flex flex-1 items-center gap-1',
 	multiValue: () =>
-		'flex items-center gap-1 rounded bg-cldt-blue/15 dark:bg-cldt-blue/25 text-[11px] px-1.5 py-0.5 leading-none',
-	multiValueLabel: () => 'text-cldt-blue dark:text-cldt-blue text-[11px]',
-	multiValueRemove: () => 'cursor-pointer hover:text-red-500 ml-0.5 text-[11px]',
+		'flex items-center gap-1 rounded bg-cldt-blue/15 dark:bg-cldt-blue/25 text-[0.6875rem] px-1.5 py-0.5 leading-none',
+	multiValueLabel: () => 'text-cldt-blue dark:text-cldt-blue text-[0.6875rem]',
+	multiValueRemove: () => 'cursor-pointer hover:text-red-500 ml-0.5 text-[0.6875rem]',
 	indicatorsContainer: () => 'flex items-center self-stretch shrink-0',
 	indicatorSeparator: () => 'hidden',
 	dropdownIndicator: () => 'flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-white px-1',
@@ -35,7 +35,7 @@ export const mapControlSelectClassNames = {
 	menuList: () => 'py-1 max-h-60 overflow-y-auto',
 	group: () => '',
 	groupHeading: () =>
-		'px-2 pt-1 pb-0.5 text-[10px] font-semibold tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]',
+		'px-2 pt-1 pb-0.5 text-[0.625rem] font-semibold tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]',
 	option: ({ isFocused, isSelected }: { isFocused: boolean; isSelected: boolean }) =>
 		cn(
 			'cursor-pointer px-2 py-1 text-xs leading-snug text-gray-800 dark:text-[var(--text-primary)]',
@@ -58,23 +58,23 @@ export const mapControlSelectInlineHorizonClassNames = {
 	container: () => 'relative inline-block w-auto align-baseline',
 	control: ({ isFocused }: { isFocused: boolean }) =>
 		cn(
-			'inline-flex min-h-0 cursor-pointer items-center rounded-none border-0 border-b border-dotted border-gray-400/70 bg-transparent p-0 text-[10px] font-medium leading-none text-gray-400 outline-none dark:border-[var(--text-secondary)]/70 dark:text-[var(--text-secondary)]',
+			'inline-flex min-h-0 cursor-pointer items-center rounded-none border-0 border-b border-dotted border-gray-400/70 bg-transparent p-0 text-[0.625rem] font-medium leading-none text-gray-400 outline-none dark:border-[var(--text-secondary)]/70 dark:text-[var(--text-secondary)]',
 			isFocused && 'border-cldt-green text-cldt-blue dark:border-cldt-green dark:text-cldt-blue',
 		),
-	placeholder: () => 'm-0 text-[10px] leading-none text-gray-400',
-	input: () => 'text-[10px] text-inherit',
-	singleValue: () => 'm-0 p-0 text-[10px] font-medium tabular-nums text-inherit',
+	placeholder: () => 'm-0 text-[0.625rem] leading-none text-gray-400',
+	input: () => 'text-[0.625rem] text-inherit',
+	singleValue: () => 'm-0 p-0 text-[0.625rem] font-medium tabular-nums text-inherit',
 	valueContainer: () => 'm-0 flex items-center p-0',
 	indicatorsContainer: () => 'flex shrink-0 items-center self-center pl-0.5',
 	indicatorSeparator: () => 'hidden',
 	dropdownIndicator: () =>
 		'flex items-center p-0 leading-none text-gray-400 dark:text-[var(--text-secondary)] [&>svg]:size-[10px]',
 	menu: () =>
-		'absolute z-controls-popover mt-0.5 min-w-[4.5rem] rounded border border-gray-200 bg-[var(--map-tooltip-bg)] text-[10px] leading-snug shadow-md dark:border-[var(--border-color)] dark:bg-[var(--bg-secondary)]',
+		'absolute z-controls-popover mt-0.5 min-w-[4.5rem] rounded border border-gray-200 bg-[var(--map-tooltip-bg)] text-[0.625rem] leading-snug shadow-md dark:border-[var(--border-color)] dark:bg-[var(--bg-secondary)]',
 	menuList: () => 'max-h-40 overflow-y-auto py-0.5',
 	option: ({ isFocused, isSelected }: { isFocused: boolean; isSelected: boolean }) =>
 		cn(
-			'cursor-pointer px-2 py-0.5 text-[10px] leading-snug tabular-nums text-gray-800 dark:text-[var(--text-primary)]',
+			'cursor-pointer px-2 py-0.5 text-[0.625rem] leading-snug tabular-nums text-gray-800 dark:text-[var(--text-primary)]',
 			isFocused && 'bg-cldt-blue/10 dark:bg-cldt-blue/20',
 			isSelected && 'font-medium text-cldt-blue dark:text-cldt-blue',
 		),

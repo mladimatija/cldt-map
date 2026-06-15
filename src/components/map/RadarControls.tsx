@@ -52,8 +52,8 @@ export function RadarControls(): React.ReactElement | null {
 			>
 				{radarPlaying ? <IoPauseOutline size={16} /> : <IoPlayOutline size={16} />}
 			</button>
-			<span className="text-[11px] text-zinc-600 tabular-nums dark:text-zinc-400">{timestamp}</span>
-			<span className="text-[10px] text-zinc-400 dark:text-zinc-500">
+			<span className="text-[0.6875rem] text-zinc-600 tabular-nums dark:text-zinc-400">{timestamp}</span>
+			<span className="text-[0.625rem] text-zinc-400 dark:text-zinc-500">
 				{radarFrameIndex + 1}/{radarFrames.length}
 			</span>
 
@@ -63,7 +63,7 @@ export function RadarControls(): React.ReactElement | null {
 			{/* Precipitation legend */}
 			<div className="flex flex-col gap-0.5">
 				<div className="h-2.5 w-24 rounded-sm" style={{ background: GRADIENT }} />
-				<div className="flex justify-between text-[9px] text-zinc-500 dark:text-zinc-400">
+				<div className="flex justify-between text-[0.5625rem] text-zinc-500 dark:text-zinc-400">
 					<span>{t('legendNone')}</span>
 					<span>{t('legendLight')}</span>
 					<span>{t('legendModerate')}</span>

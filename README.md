@@ -69,6 +69,7 @@ Interactive web map for the **Croatian Long Distance Trail (CLDT)** - a 2,200+ k
 - **In-app help** - A ? button in the control rail opens six collapsible topic sections (map basics, elevation chart, hidden gestures, planning tools, offline behaviour, demo hike); basics and demo open by default and section open state persists across sessions. Covers elevation chart interactions, hidden gestures like the SOS long-press and GPX drag-and-drop, the merged share/export panel, and the Tools panel. The SOS button additionally hints "hold to open" when short-tapped, and the imports panel advertises drag-and-drop in its empty state
 - **Demo hike** - A `/demo` route opens the full map with a simulated mid-trail GPS track and sample progress data, so you can try live tracking, the up-next strip, completion overlay, and other GPS-driven features without being on the trail; a banner offers pause / resume / exit. Linked from the in-app help
 - **Dark mode & battery saver** - UI preferences and reduced location updates; optional keep-screen-on while tracking (screen wake lock, battery saver wins)
+- **Accessibility** - Large touch targets and an adjustable UI text size (Settings > Display: Default / Large / Larger) that scales the control panels, settings, and overlays up for readability without resizing the map; persisted across sessions
 - **4 languages** - English (en), Croatian (hr), German (de), Italian (it)
 - **Offline maps** - Pre-cache the full trail corridor for offline use; per-provider caching, staleness detection, and self-healing auto-sync (with Auto-sync on, an outdated corridor is silently re-downloaded both at launch and on reconnect, which also dismisses the "cache outdated" nag; skipped in battery saver mode, where the nag is shown instead so you can refresh manually), predictive corridor pre-cache on Wi-Fi when on-trail, optional zoom-15 high-detail ahead pack for the next 50 km (explicit download), and storage quota handling
 - **Emergency 112 panel** - Long-press the red SOS button (bottom-right) for an offline-first emergency modal (centered popout with dimmed backdrop, focus trap, Escape/backdrop dismiss) showing current GPS coordinates, Plus Code, trail section/km, bearing and distance to the nearest road access and HGSS mountain rescue station, copy-to-clipboard for each field, and one-tap "Call 112" / "Open in maps" handoff. When online, an address line is looked up via the server (Nominatim proxy) and can be copied; offline or on lookup failure the panel still works from bundled datasets (`public/data/road-access.json` from build-time OSM intersections, `public/data/hgss-stations.json` hand-curated)
@@ -134,6 +135,7 @@ Optional overrides (see `src/lib/config.ts`, `src/lib/gpx-cache.ts`):
 - `NEXT_PUBLIC_DEFAULT_DARK_MODE` - dark mode on load
 - `NEXT_PUBLIC_DEFAULT_BATTERY_SAVER` - battery saver on load
 - `NEXT_PUBLIC_DEFAULT_LARGE_TOUCH_TARGETS` - large touch targets on load (accessibility)
+- `NEXT_PUBLIC_DEFAULT_UI_TEXT_SCALE` - default UI text size: `default`, `large`, or `larger` (accessibility)
 - `NEXT_PUBLIC_DEFAULT_RULER_ENABLED` - distance ruler on load
 - `NEXT_PUBLIC_DEFAULT_SHOW_SECTIONS` - show trail sections on load (default `false`)
 - `NEXT_PUBLIC_DEFAULT_GRADE_TINTED_TRAIL` - render grade-tinted trail on load (default `false`; mutually exclusive with show-sections / surface-colored / sac-colored)
@@ -301,6 +303,7 @@ src/
 │   ├── store/            # Zustand slices, map-store, trail-slice, stub, types
 │   ├── services/         # LocationService, MapService, base-map-provider
 │   ├── config.ts         # App defaults (env overrides)
+│   ├── ui-text-scale.ts  # UI text-size accessibility levels (default/large/larger) + root-class helper
 │   ├── api-defense.ts    # Per-IP rate limiting + upstream size caps for the server routes
 │   ├── distance-utils.ts # ETA, grade-adjusted pace, nearest-point search, ruler formatting
 │   ├── spatial-grid.ts   # Uniform-grid nearest-point lookups (GPS fixes, track coverage)

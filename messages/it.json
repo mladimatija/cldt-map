@@ -92,6 +92,13 @@
 		"loadingTrailData": "Caricamento dati sentiero..."
 	},
 	"mapControls": {
+		"textSize": "Dimensione testo",
+		"textSizeTooltip": "Ingrandisce il testo dell'app per una lettura più facile. Non ridimensiona la mappa.",
+		"textSizeOption": {
+			"default": "Predefinito",
+			"large": "Grande",
+			"larger": "Più grande"
+		},
 		"preferences": "Preferenze",
 		"sections": {
 			"displayDevice": "Display e dispositivo",
