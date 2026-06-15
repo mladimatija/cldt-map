@@ -264,6 +264,12 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 	const tooltipRef = useRef<L.Tooltip | null>(null);
 	const tooltipRootRef = useRef<Root | null>(null);
 	const weatherAbortRef = useRef<AbortController | null>(null);
+	// One click highlights the trail through three paths (direct click handler,
+	// the `trailPositionHighlighted` event, and the highlightedPoint effect),
+	// each of which re-renders the tooltip. This caches the in-flight weather
+	// request per coordinate so those paths share a single fetch instead of
+	// firing and aborting three. Cleared when the tooltip is torn down.
+	const weatherCacheRef = useRef<{ key: string; promise: Promise<WeatherData | null> } | null>(null);
 	const startMarkerRef = useRef<L.Marker | null>(null);
 	const finishMarkerRef = useRef<L.Marker | null>(null);
 	const [isTooltipVisible, setIsTooltipVisible] = useState(false);
@@ -358,6 +364,9 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 			weatherAbortRef.current.abort();
 			weatherAbortRef.current = null;
 		}
+		// Drop the per-coordinate weather cache so reopening this point later
+		// fetches fresh weather instead of reusing a stale resolved request.
+		weatherCacheRef.current = null;
 		if (tooltipRootRef.current) {
 			tooltipRootRef.current.unmount();
 			tooltipRootRef.current = null;
@@ -523,11 +532,23 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 			// Fetch weather and re-render once data arrives; if fetch fails weatherData is null and loading state clears.
 			// The AbortController cancels the request when this tooltip is replaced or torn down
 			// (clearMarkerAndTooltip aborts); the identity check below is the render-side guard.
-			weatherAbortRef.current?.abort();
-			const weatherAbort = new AbortController();
-			weatherAbortRef.current = weatherAbort;
-			void fetchWeather(point.lat, point.lng, weatherAbort.signal).then((weatherData) => {
-				if (weatherAbort.signal.aborted) return;
+			// Reuse the in-flight (or just-resolved) weather request when the same
+			// point is shown again within one tooltip session - the three highlight
+			// paths fire in the same tick, and a units/precision change re-renders
+			// the open tooltip without needing fresh weather. Only start (and abort
+			// the previous) when the target coordinate actually changes.
+			const weatherKey = `${point.lat.toFixed(5)},${point.lng.toFixed(5)}`;
+			let weatherCache = weatherCacheRef.current;
+			if (weatherCache?.key !== weatherKey) {
+				weatherAbortRef.current?.abort();
+				const weatherAbort = new AbortController();
+				weatherAbortRef.current = weatherAbort;
+				weatherCache = { key: weatherKey, promise: fetchWeather(point.lat, point.lng, weatherAbort.signal) };
+				weatherCacheRef.current = weatherCache;
+			}
+			const activeAbort = weatherAbortRef.current;
+			void weatherCache.promise.then((weatherData) => {
+				if (activeAbort?.signal.aborted) return;
 				if (tooltipRootRef.current === tooltipRoot) {
 					renderTooltip(weatherData, false);
 				}
