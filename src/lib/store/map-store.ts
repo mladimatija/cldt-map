@@ -425,6 +425,9 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 							set({
 								tileCacheMeta: meta,
 								tileCacheDownloading: false,
+								// A freshly cached corridor is never stale - dismiss the nag for
+								// both the manual "Re-download" path and the silent self-heal.
+								showStaleCacheNotification: false,
 								...(isManualDownload && result.done > 0 ? { tileDownloadCompleteToast: true } : {}),
 								...(offlineNudgeEligible ? { pwaInstallTrigger: 'offlineDownload' as const } : {}),
 							});
@@ -637,11 +640,43 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 						try {
 							const providerKey = getProviderCacheKey(get().baseMapProvider);
 							const meta = await getTileCacheMeta(providerKey);
-							set({ showStaleCacheNotification: isCacheStale(meta) });
+							// Auto-sync silently self-heals a stale cache when online and off
+							// battery saver, so only nag the user when that path will not run.
+							const selfHealEligible = get().autoSync && !get().batterySaverMode && navigator.onLine;
+							set({ showStaleCacheNotification: isCacheStale(meta) && !selfHealEligible });
 						} catch {
 							// Storage unavailable or corrupted - leave flag false
 							set({ showStaleCacheNotification: false });
 						}
+					},
+
+					selfHealStaleTiles: async (): Promise<void> => {
+						if (typeof window === 'undefined') return;
+						const state = get();
+						// Gates: opted in (auto-sync), online, not conserving battery, and no
+						// download already running. Battery saver falls back to the nag.
+						if (!state.autoSync || state.batterySaverMode || state.tileCacheDownloading) return;
+						if (!navigator.onLine) return;
+						const providerName = state.baseMapProvider;
+						if (!isProviderCacheable(providerName)) return;
+						const points = getMainStore().enhancedTrailPoints ?? [];
+						if (points.length < 2) return;
+						const providerKey = getProviderCacheKey(providerName);
+						let meta: TileCacheMeta | null;
+						try {
+							meta = await getTileCacheMeta(providerKey);
+						} catch {
+							// Storage unavailable or corrupted - degrade to a no-op (the call
+							// sites are fire-and-forget, so never leak an unhandled rejection).
+							return;
+						}
+						// Only heal an existing corridor that has aged out; the first
+						// baseline download stays a deliberate, manual action.
+						if (!meta || !isCacheStale(meta)) return;
+						// Re-check after the async meta read: a manual download may have begun
+						// in the meantime, and startTileDownload aborts the shared controller.
+						if (get().tileCacheDownloading) return;
+						await get().startTileDownload(points, providerName, { source: 'autoSync' });
 					},
 
 					pwaInstallTrigger: null,

@@ -188,6 +188,7 @@ export function createMapStoreStub(): MapStoreState {
 		showStaleCacheNotification: false,
 		setStaleCacheNotification: noop,
 		initStaleCacheCheck: noopAsyncVoid,
+		selfHealStaleTiles: noopAsyncVoid,
 		pwaInstallTrigger: null,
 		clearPwaInstallTrigger: noop,
 		tileDownloadCompleteToast: false,
