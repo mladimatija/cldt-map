@@ -1,4 +1,18 @@
 {
+	"a11y": {
+		"mapLabel": "Mappa del sentiero",
+		"mapInstructions": "Mappa interattiva del sentiero. Usa le frecce per spostarti e i tasti più o meno per lo zoom. Premi Tab per il cursore del sentiero e percorrere il tracciato ascoltando la tua posizione.",
+		"mapOrientation": "Mappa attiva. Le frecce spostano la mappa, più e meno per lo zoom. Premi Tab per il cursore del sentiero per esplorare il tracciato.",
+		"scrubberLabel": "Esplora il sentiero con la tastiera",
+		"position": "{distance}, {elevation}, {grade}",
+		"grade": {
+			"climbing": "in salita",
+			"descending": "in discesa",
+			"flat": "in piano"
+		},
+		"enteringSection": "Inizio di {section}",
+		"waterAhead": "Acqua tra {distance}"
+	},
 	"common": {
 		"about": "Info",
 		"backToMap": "Torna alla mappa",

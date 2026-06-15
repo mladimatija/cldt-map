@@ -612,6 +612,12 @@ export interface MapStoreState {
 	} | null;
 	setWalkSim: (state: MapStoreState['walkSim']) => void;
 
+	// ── Accessibility live-region narration (session-only, never persisted) ──
+	/** Latest polite screen-reader announcement; the nonce forces the live
+	 *  region to re-announce even when the text repeats. */
+	a11yAnnouncement: { text: string; nonce: number } | null;
+	announce: (text: string) => void;
+
 	// ── End-user demo mode (/demo; session-only, never persisted) ───────
 	demoModeActive: boolean;
 	demoPersistSnapshot: {

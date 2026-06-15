@@ -1208,6 +1208,11 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 						set({ walkSim: state });
 					},
 
+					a11yAnnouncement: null,
+					announce: (text): void => {
+						set((state) => ({ a11yAnnouncement: { text, nonce: (state.a11yAnnouncement?.nonce ?? 0) + 1 } }));
+					},
+
 					demoModeActive: false,
 					demoPersistSnapshot: null,
 					enterDemoMode: (snapshot): void => {

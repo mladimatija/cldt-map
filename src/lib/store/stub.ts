@@ -334,6 +334,8 @@ export function createMapStoreStub(): MapStoreState {
 		clearPendingPoiListSort: () => {},
 		walkSim: null,
 		setWalkSim: () => {},
+		a11yAnnouncement: null,
+		announce: () => {},
 		demoModeActive: false,
 		demoPersistSnapshot: null,
 		enterDemoMode: () => {},

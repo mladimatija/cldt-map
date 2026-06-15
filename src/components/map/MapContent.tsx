@@ -107,6 +107,15 @@ const MineAreaLayer = dynamic(
 	() => import('@/components/map/MineAreaLayer').then((m) => ({ default: m.MineAreaLayer })),
 	{ ssr: false },
 );
+const MapKeyboardA11y = dynamic(() => import('@/components/map/MapKeyboardA11y'), { ssr: false });
+const TrailA11yLiveRegion = dynamic(
+	() => import('@/components/map/TrailA11yLiveRegion').then((m) => ({ default: m.TrailA11yLiveRegion })),
+	{ ssr: false },
+);
+const TrailScrubber = dynamic(
+	() => import('@/components/charts/TrailScrubber').then((m) => ({ default: m.TrailScrubber })),
+	{ ssr: false },
+);
 
 export default function MapContent(): React.ReactElement {
 	const [initialLocationFetched, setInitialLocationFetched] = useState(false);
@@ -195,6 +204,8 @@ export default function MapContent(): React.ReactElement {
 
 	return (
 		<>
+			<TrailA11yLiveRegion />
+			<MapKeyboardA11y />
 			<DemoBanner />
 			<OfflineIndicator />
 			<StaleCacheNotification />
@@ -230,6 +241,7 @@ export default function MapContent(): React.ReactElement {
 			<LocationControls checkPermission={checkAndRequestLocation} />
 			<div className="z-map-overlay absolute right-16 bottom-2 left-16 mx-2 flex flex-col gap-1 sm:mx-0">
 				<RadarControls />
+				<TrailScrubber />
 				<ElevationChart className="shadow-lg" />
 			</div>
 		</>
