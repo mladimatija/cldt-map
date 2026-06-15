@@ -145,6 +145,8 @@ export function DistanceRemainingOverlay(): React.ReactElement | null {
 	const requestPoiListAhead = useMapStore((state: MapStoreState) => state.requestPoiListAhead);
 	const setEnabledPoiTypes = useMapStore((state: MapStoreState) => state.setEnabledPoiTypes);
 	const togglePoiType = useMapStore((state: MapStoreState) => state.togglePoiType);
+	const poisLayerEnabled = useMapStore((state: MapStoreState) => state.poisLayerEnabled);
+	const setPoisLayerEnabled = useMapStore((state: MapStoreState) => state.setPoisLayerEnabled);
 	const requestOpenPoi = useMapStore((state: MapStoreState) => state.requestOpenPoi);
 	const locale = useLocale();
 
@@ -248,6 +250,9 @@ export function DistanceRemainingOverlay(): React.ReactElement | null {
 
 	/** Open the ahead-sorted POI list and enable filters for types shown in Up Next. */
 	const handleSeeAllAhead = (): void => {
+		// Turn on the "Show on map" POI layer so the ahead POIs are actually
+		// rendered as markers, not just listed (markers are gated on this flag).
+		if (!poisLayerEnabled) setPoisLayerEnabled(true);
 		const displayedTypes = upNextDisplayedPoiTypes(primaryUpNextRows, moreUpNextRows, upNextMoreExpanded);
 		let needsUpdate = false;
 		const merged = new Set(enabledPoiTypes);
