@@ -872,6 +872,10 @@
 				"NOBO": "Nordwärts (Prevlaka - Ilok)"
 			},
 			"dayHeader": "Tag {day} - {unit} {start} bis {end}",
+			"restDay": {
+				"heading": "Ruhetag",
+				"body": "Ein geplanter Ruhetag - keine Wanderung. Nutze ihn zum Erholen, Auffüllen der Vorräte und Erkunden der Umgebung."
+			},
 			"emergencyBody": {
 				"l1": "Notruf: 112",
 				"l2": "Bergrettung (HGSS): 112 (HGSS anfordern)",

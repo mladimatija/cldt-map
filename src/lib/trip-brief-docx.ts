@@ -17,6 +17,7 @@ import type { EnhancedTrailPoint } from '@/lib/store/types';
 import { dataUrlToBytes } from './elevation-thumbnail';
 import { downloadBlob } from './gpx-export';
 import {
+	dayDateLabel,
 	emergencyLines,
 	dayHeader,
 	directionDisplay,
@@ -134,6 +135,29 @@ export async function exportTripBriefDocx(args: TripBriefDocxArgs): Promise<void
 		const day = brief.days[dayIndex];
 		const { meta } = brief;
 		const out: DocxParagraph[] = [];
+		const dateLabel = dayDateLabel(day, meta.locale);
+
+		// Rest days: heading + optional date + body paragraph only. No map,
+		// elevation, stats, alerts, or POIs - a rest day has no km bounds.
+		if (day.kind === 'rest') {
+			out.push(
+				new Paragraph({
+					text: meta.strings.restDay.heading,
+					heading: HeadingLevel.HEADING_1,
+					pageBreakBefore: true,
+				}),
+			);
+			if (dateLabel) {
+				out.push(new Paragraph({ children: [new TextRun({ text: dateLabel, color: '707070' })] }));
+			}
+			out.push(
+				new Paragraph({
+					children: [new TextRun({ text: day.narrative, italics: true })],
+					spacing: { before: 200, after: 200 },
+				}),
+			);
+			return out;
+		}
 
 		out.push(
 			new Paragraph({
@@ -142,6 +166,9 @@ export async function exportTripBriefDocx(args: TripBriefDocxArgs): Promise<void
 				pageBreakBefore: true,
 			}),
 		);
+		if (dateLabel) {
+			out.push(new Paragraph({ children: [new TextRun({ text: dateLabel, color: '707070' })] }));
+		}
 		out.push(
 			new Paragraph({
 				children: [
@@ -309,18 +336,22 @@ export async function exportTripBriefDocx(args: TripBriefDocxArgs): Promise<void
 		for (let i = 0; i < brief.days.length; i++) {
 			if (signal?.aborted) return;
 			const day = brief.days[i];
-			const mapSnapshot = await captureStageMapSnapshot(
-				map,
-				resolvedMapEl,
-				enhancedTrailPoints,
-				day.startKm,
-				day.endKm,
-				captureFilter,
-				toBlob,
-				MAP_IMG_W,
-				MAP_IMG_H,
-				signal,
-			);
+			// Rest days carry no km bounds to capture a map for.
+			const mapSnapshot =
+				day.kind === 'rest'
+					? null
+					: await captureStageMapSnapshot(
+							map,
+							resolvedMapEl,
+							enhancedTrailPoints,
+							day.startKm,
+							day.endKm,
+							captureFilter,
+							toBlob,
+							MAP_IMG_W,
+							MAP_IMG_H,
+							signal,
+						);
 			dayBlocks.push(...buildDay(i, mapSnapshot));
 			tick();
 		}

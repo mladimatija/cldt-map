@@ -33,12 +33,14 @@ function trim(s: string): string {
  */
 export async function fetchAiNarratives(brief: TripBrief, signal?: AbortSignal): Promise<AiNarratives | null> {
 	const locale = brief.meta.locale;
+	// Only hiking stages get AI narratives; rest days keep their templated copy.
+	const stageDays = brief.days.filter((d) => d.kind !== 'rest');
 	const payload = {
 		locale,
 		directionLabel: trim(brief.meta.strings.narrativeDirection[brief.meta.direction]),
 		totalDistanceLabel: trim(`${Math.round(brief.overview.totalKm)} km`),
 		etaLabel: trim(formatEta(brief.overview.totalDurationSec)),
-		days: brief.days.map((day) => ({
+		days: stageDays.map((day) => ({
 			day: day.index + 1,
 			kmRange: trim(`${Math.round(day.directionStartKm)}-${Math.round(day.directionEndKm)}`),
 			distanceLabel: trim(day.distanceLabel),
@@ -66,7 +68,7 @@ export async function fetchAiNarratives(brief: TripBrief, signal?: AbortSignal):
 		if (
 			typeof json.overview !== 'string' ||
 			!Array.isArray(json.days) ||
-			json.days.length !== brief.days.length ||
+			json.days.length !== stageDays.length ||
 			json.days.some((d) => typeof d !== 'string' || d.trim().length === 0)
 		) {
 			return null;
@@ -85,10 +87,16 @@ export async function fetchAiNarratives(brief: TripBrief, signal?: AbortSignal):
  *  cover. The caller resolves `disclaimer` from messages/*.json (the
  *  exporters run outside React/next-intl). */
 export function applyAiNarratives(brief: TripBrief, ai: AiNarratives, disclaimer: string): TripBrief {
+	// ai.days holds one paragraph per hiking stage (rest days were excluded from
+	// the request). Walk the interleaved day list with a cursor so stage days
+	// consume ai.days in order while rest days keep their templated narrative.
+	let cursor = 0;
 	return {
 		...brief,
 		meta: { ...brief.meta, aiDisclaimer: disclaimer },
 		overview: { ...brief.overview, narrative: ai.overview },
-		days: brief.days.map((day, i) => ({ ...day, narrative: ai.days[i] ?? day.narrative })),
+		days: brief.days.map((day) =>
+			day.kind === 'rest' ? day : { ...day, narrative: ai.days[cursor++] ?? day.narrative },
+		),
 	};
 }

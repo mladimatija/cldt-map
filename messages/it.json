@@ -872,6 +872,10 @@
 				"NOBO": "Verso nord (Prevlaka - Ilok)"
 			},
 			"dayHeader": "Giorno {day} - {unit} {start} a {end}",
+			"restDay": {
+				"heading": "Giorno di riposo",
+				"body": "Un giorno di riposo pianificato - niente cammino. Usalo per recuperare, rifornirti ed esplorare la zona."
+			},
 			"emergencyBody": {
 				"l1": "Emergenza: 112",
 				"l2": "Soccorso alpino (HGSS): 112 (chiedere HGSS)",

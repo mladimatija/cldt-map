@@ -9,6 +9,7 @@ import { formatEta } from '@/lib/distance-utils';
 import { siteMetadata } from '@/lib/metadata';
 import type { TripBrief, TripBriefDay } from '@/lib/trip-brief';
 import {
+	dayDateLabel,
 	dayHeader,
 	directionDisplay,
 	emergencyLines,
@@ -115,6 +116,19 @@ function buildCoverSection(brief: TripBrief): string {
 
 function buildDaySection(brief: TripBrief, day: TripBriefDay): string {
 	const { meta } = brief;
+	const dateLabel = dayDateLabel(day, meta.locale);
+
+	// Rest days: heading + optional date + body. No map / stats / elevation /
+	// POIs - a rest day has no km bounds.
+	if (day.kind === 'rest') {
+		const dateLine = dateLabel ? `<p class="day-date">${escapeHtml(dateLabel)}</p>` : '';
+		return `<section class="brief-section day-section" id="day-${escapeHtml(day.dayId)}">
+  <h2>${escapeHtml(meta.strings.restDay.heading)}</h2>
+  ${dateLine}
+  <p class="narrative">${escapeHtml(day.narrative)}</p>
+</section>`;
+	}
+
 	const distKm = day.endKm - day.startKm;
 	const header = dayHeader(day, meta.strings, meta.units);
 	const gainStr = formatElevation(day.gainM, meta.units);
@@ -169,8 +183,11 @@ function buildDaySection(brief: TripBrief, day: TripBriefDay): string {
 		poisBlock = `<h3>${escapeHtml(meta.strings.labels.pois)} (${day.pois.length})</h3><ul class="poi-list">${items}</ul>${more}`;
 	}
 
-	return `<section class="brief-section day-section" id="day-${day.index + 1}">
+	const dateLine = dateLabel ? `<p class="day-date">${escapeHtml(dateLabel)}</p>` : '';
+
+	return `<section class="brief-section day-section" id="day-${escapeHtml(day.dayId)}">
   <h2>${escapeHtml(header)}</h2>
+  ${dateLine}
   <p class="day-stats">
     <span class="stat-gain">+${escapeHtml(gainStr)}</span>
     <span class="stat-loss">-${escapeHtml(lossStr)}</span>
@@ -270,6 +287,7 @@ body {
 .stats-table td { padding: 0.35rem 0; }
 .narrative { color: var(--muted); font-style: italic; margin: 0.75rem 0 0; }
 .disclaimer { font-size: 0.8125rem; color: var(--muted); font-style: italic; margin-top: 0.75rem; }
+.day-date { margin: -0.25rem 0 0.5rem; font-size: 0.8125rem; color: var(--muted); }
 .day-stats { display: flex; flex-wrap: wrap; gap: 0.75rem; font-size: 0.9375rem; font-weight: 600; margin: 0 0 0.75rem; }
 .stat-gain { color: var(--gain); }
 .stat-loss { color: var(--loss); }

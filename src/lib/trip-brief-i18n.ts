@@ -16,6 +16,7 @@
 
 import type { TripBrief, TripBriefDay } from '@/lib/trip-brief';
 import { TrailDirection } from '@/lib/types';
+import { formatShortWeekdayDate } from './date-format';
 
 export type TripBriefLocale = TripBrief['meta']['locale'];
 
@@ -55,6 +56,8 @@ export interface TripBriefStrings {
 	directionDisplay: Record<TrailDirection, string>;
 	/** Template: {day}, {unit}, {start}, {end}. */
 	dayHeader: string;
+	/** Heading + body copy for a planned rest (zero) day page / section. */
+	restDay: { heading: string; body: string };
 	/** Emergency back-page bullet lines. */
 	emergencyBody: { l1: string; l2: string; l3: string; l4: string; l5: string };
 }
@@ -76,6 +79,8 @@ export function tripBriefStringsFromMessages(documentMessages: unknown): TripBri
 		typeof s.narrativeDirection?.SOBO !== 'string' ||
 		typeof s.directionDisplay?.SOBO !== 'string' ||
 		typeof s.dayPoiSentence?.withPois !== 'string' ||
+		typeof s.restDay?.heading !== 'string' ||
+		typeof s.restDay?.body !== 'string' ||
 		typeof s.emergencyBody?.l1 !== 'string'
 	) {
 		throw new Error('tripBrief.document strings missing from messages - check messages/<locale>.json');
@@ -140,6 +145,12 @@ export function dayHeader(day: TripBriefDay, s: TripBriefStrings, units: TripBri
 		.replace('{unit}', units === 'imperial' ? 'mi' : 'km')
 		.replace('{start}', String(Math.round(day.directionStartKm)))
 		.replace('{end}', String(Math.round(day.directionEndKm)));
+}
+
+/** Compact calendar-date line for a day (e.g. "Mon 17 Jun"); empty when the
+ *  plan has no start date and the day therefore carries no date. */
+export function dayDateLabel(day: TripBriefDay, locale: string): string {
+	return day.date ? formatShortWeekdayDate(day.date, locale) : '';
 }
 
 /** Format a distance value for display in trip-brief documents. */
