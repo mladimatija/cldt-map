@@ -694,6 +694,12 @@
 		"exportReportPdfTooltip": "Download a PDF coverage report for this track."
 	},
 	"stagePlanner": {
+		"restDayLabel": "Rest day",
+		"addRestDay": "Add rest day after",
+		"removeRestDay": "Remove rest day",
+		"icalRestDaySummary": "Rest day",
+		"icalRestDayDescription": "Zero day after stage {stage}",
+		"tripRestDays": "{count, plural, =1 {# rest day} other {# rest days}} · {total} days total",
 		"presetsHeading": "Saved plans",
 		"saveAsPreset": "Save current as preset",
 		"presetNameLabel": "Preset name",

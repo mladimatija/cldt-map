@@ -694,6 +694,12 @@
 		"exportReportPdfTooltip": "Preuzmi PDF izvještaj pokrivenosti za ovu rutu."
 	},
 	"stagePlanner": {
+		"restDayLabel": "Dan odmora",
+		"addRestDay": "Dodaj dan odmora nakon",
+		"removeRestDay": "Ukloni dan odmora",
+		"icalRestDaySummary": "Dan odmora",
+		"icalRestDayDescription": "Dan odmora nakon etape {stage}",
+		"tripRestDays": "{count, plural, =1 {# dan odmora} few {# dana odmora} other {# dana odmora}} · ukupno {total} dana",
 		"presetsHeading": "Spremljeni planovi",
 		"saveAsPreset": "Spremi trenutno kao predložak",
 		"presetNameLabel": "Naziv predloška",

@@ -7,6 +7,7 @@ import { getActiveStarredPoiIds, type StagePlan } from '@/lib/store/types';
 import { SHARE_TARGET_MAX_LEN, SHARE_TRIP_PARAM_KEY } from '@/lib/share-url-constants';
 import { newId, type JournalEntry, type UserWaypoint } from '@/lib/user-waypoints';
 import { normalizeWaypointCategory } from '@/lib/waypoint-categories';
+import { normalizeRestDays } from '@/lib/stage-rest-days';
 
 const POI_ID_RE = /^[A-Za-z0-9._-]{1,128}$/;
 const ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
@@ -18,6 +19,7 @@ const MAX_STARS = 80;
 const MAX_WAYPOINT_NAME = 80;
 const MAX_WAYPOINT_NOTE = 200;
 const MAX_JOURNAL_TEXT = 400;
+const MAX_REST_DAYS = 60;
 
 /** Compact wire format (short keys keep URLs within short-link limits). */
 export interface ShareTripStatePayload {
@@ -28,6 +30,8 @@ export interface ShareTripStatePayload {
 		st: [number, number][];
 		b: 'd' | 'e';
 		sd?: string;
+		/** Rest-day anchors: 0-based stage indices a zero day follows. */
+		r?: number[];
 	};
 	wp?: { i?: string; la: number; ln: number; n: string; no?: string; tk?: number | null; c?: string }[];
 	j?: { d: string; t: string; s?: number; e?: number; tr?: string; ti?: [number, number] }[];
@@ -71,6 +75,7 @@ function encodeStagePlan(plan: StagePlan): ShareTripStatePayload['sp'] {
 		st: plan.stages.map((stage) => [roundKm(stage.startKm), roundKm(stage.endKm)]),
 		b: plan.balanceMode === 'eta' ? 'e' : 'd',
 		...(plan.startDate && ISO_DATE_RE.test(plan.startDate) && { sd: plan.startDate }),
+		...(plan.restDays?.length && { r: normalizeRestDays(plan.restDays).slice(0, MAX_REST_DAYS) }),
 	};
 }
 
@@ -228,12 +233,22 @@ function parseStagePlan(raw: unknown): StagePlan | null {
 
 	if (stages.length === 0) return null;
 
+	// Rest-day anchors must point at a real stage index; out-of-range or junk
+	// values are dropped. Duplicates survive (a multi-day rest). normalizeRestDays
+	// handles the integer/>= 0/sort rule; the upper bound and cap are share-specific.
+	const restDays = Array.isArray(sp.r)
+		? normalizeRestDays(sp.r)
+				.filter((v) => v < stages.length)
+				.slice(0, MAX_REST_DAYS)
+		: [];
+
 	return {
 		startKm: roundKm(sp.s),
 		endKm: roundKm(sp.e),
 		stages,
 		balanceMode: sp.b === 'e' ? 'eta' : 'distance',
 		...(sp.sd && ISO_DATE_RE.test(sp.sd) && { startDate: sp.sd }),
+		...(restDays.length > 0 && { restDays }),
 	};
 }
 

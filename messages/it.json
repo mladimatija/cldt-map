@@ -694,6 +694,12 @@
 		"exportReportPdfTooltip": "Scarica un report PDF di copertura per questa traccia."
 	},
 	"stagePlanner": {
+		"restDayLabel": "Giorno di riposo",
+		"addRestDay": "Aggiungi giorno di riposo dopo",
+		"removeRestDay": "Rimuovi giorno di riposo",
+		"icalRestDaySummary": "Giorno di riposo",
+		"icalRestDayDescription": "Giorno di riposo dopo la tappa {stage}",
+		"tripRestDays": "{count, plural, =1 {# giorno di riposo} other {# giorni di riposo}} · {total} giorni totali",
 		"presetsHeading": "Piani salvati",
 		"saveAsPreset": "Salva come preset",
 		"presetNameLabel": "Nome preset",
