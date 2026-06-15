@@ -23,7 +23,7 @@ import {
 } from '@/lib/tile-cache';
 import { clearPoiAssetCache, getPoiAssetCount } from '@/lib/poi-prefetch';
 import { tileCacheTtlDays, TRAIL_OFF_TRAIL_THRESHOLD_M } from '@/lib/config';
-import { formatDistance } from '@/lib/utils';
+import { formatDistance, isMobile } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
 import { SettingsToggleRow } from './SettingsToggleRow';
 import {
@@ -82,6 +82,10 @@ export function MapControlsTileCachePanel({ embedded = false }: MapControlsTileC
 	const [querying, setQuerying] = useState(false);
 	const [confirmClearAll, setConfirmClearAll] = useState(false);
 	const confirmYesRef = useRef<HTMLButtonElement>(null);
+	// On mobile, downloads are gated behind a confirm row warning about storage
+	// and cellular data instead of starting on the first tap.
+	const [pendingMobileDownload, setPendingMobileDownload] = useState<null | 'base' | 'redownload' | 'highDetail'>(null);
+	const confirmDownloadRef = useRef<HTMLButtonElement>(null);
 
 	// Live POI-asset count (images + Wikipedia summaries cached by
 	// `prefetchPoiAssets`). Refreshed when the download finishes and after a
@@ -143,6 +147,13 @@ export function MapControlsTileCachePanel({ embedded = false }: MapControlsTileC
 		}
 	}, [confirmClearAll]);
 
+	// Focus the confirm button when the mobile download warning appears
+	useEffect(() => {
+		if (pendingMobileDownload) {
+			confirmDownloadRef.current?.focus();
+		}
+	}, [pendingMobileDownload]);
+
 	// Estimate tile count for the current provider (memoized as it's expensive to compute)
 	const estimatedTileCount = useMemo(() => {
 		if (!gpxLoaded || !enhancedTrailPoints?.length || !cacheable) return 0;
@@ -166,13 +177,43 @@ export function MapControlsTileCachePanel({ embedded = false }: MapControlsTileC
 		return generateAheadHighDetailTileUrls(slice, template).length;
 	}, [gpxLoaded, enhancedTrailPoints, cacheable, baseMapProvider, direction, userLocation, closestPoint]);
 
-	const handleDownload = (): void => {
+	const runBaseDownload = useCallback((): void => {
 		if (!enhancedTrailPoints?.length) return;
 		void startTileDownload(enhancedTrailPoints, baseMapProvider);
+	}, [enhancedTrailPoints, startTileDownload, baseMapProvider]);
+
+	const runRedownload = useCallback(async (): Promise<void> => {
+		await clearTileCacheForProvider(getProviderCacheKey(baseMapProvider));
+		setLiveCount(0);
+		runBaseDownload();
+	}, [clearTileCacheForProvider, baseMapProvider, runBaseDownload]);
+
+	const runHighDetailDownload = useCallback((): void => {
+		void startHighDetailAheadDownload();
+	}, [startHighDetailAheadDownload]);
+
+	const runPendingDownload = useCallback(
+		(kind: 'base' | 'redownload' | 'highDetail'): void => {
+			if (kind === 'base') runBaseDownload();
+			else if (kind === 'redownload') void runRedownload();
+			else runHighDetailDownload();
+		},
+		[runBaseDownload, runRedownload, runHighDetailDownload],
+	);
+
+	// On mobile, surface the storage/data warning first; otherwise download now.
+	const requestDownload = (kind: 'base' | 'redownload' | 'highDetail'): void => {
+		if (isMobile()) {
+			setPendingMobileDownload(kind);
+			return;
+		}
+		runPendingDownload(kind);
 	};
 
-	const handleHighDetailAheadDownload = (): void => {
-		void startHighDetailAheadDownload();
+	const confirmMobileDownload = (): void => {
+		const kind = pendingMobileDownload;
+		setPendingMobileDownload(null);
+		if (kind) runPendingDownload(kind);
 	};
 
 	const zoomRangeLabel =
@@ -184,12 +225,6 @@ export function MapControlsTileCachePanel({ embedded = false }: MapControlsTileC
 			: tileCacheMeta
 				? t('zoomRange', { min: tileCacheMeta.zoomMin, max: tileCacheMeta.zoomMax })
 				: null;
-
-	const handleRedownload = async (): Promise<void> => {
-		await clearTileCacheForProvider(getProviderCacheKey(baseMapProvider));
-		setLiveCount(0);
-		handleDownload();
-	};
 
 	const handleClear = async (): Promise<void> => {
 		await clearTileCacheForProvider(getProviderCacheKey(baseMapProvider));
@@ -253,6 +288,36 @@ export function MapControlsTileCachePanel({ embedded = false }: MapControlsTileC
 					{/* Idle: download or cache info */}
 					{!tileCacheDownloading && (
 						<>
+							{/* Mobile download warning (storage + cellular data) */}
+							{pendingMobileDownload && (
+								<div className="space-y-1.5 rounded-md border border-amber-300 bg-amber-50 p-2 dark:border-amber-500/40 dark:bg-amber-500/10">
+									<div className="flex items-start gap-1 text-xs text-amber-700 dark:text-amber-300">
+										<IoWarningOutline aria-hidden className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+										<span>{t('mobileDownloadWarning')}</span>
+									</div>
+									<div className="flex items-center gap-2">
+										<Button
+											className="h-8 text-xs"
+											ref={confirmDownloadRef}
+											size="sm"
+											variant="mapControlOutline"
+											onClick={confirmMobileDownload}
+										>
+											<IoCloudDownloadOutline aria-hidden className="mr-1 h-3 w-3" />
+											{t('mobileDownloadConfirm')}
+										</Button>
+										<Button
+											className="h-8 text-xs"
+											size="sm"
+											variant="base"
+											onClick={() => setPendingMobileDownload(null)}
+										>
+											{t('confirmNo')}
+										</Button>
+									</div>
+								</div>
+							)}
+
 							{/* Cache info row */}
 							{hasCache && tileCacheMeta && (
 								<div className="space-y-1">
@@ -296,7 +361,7 @@ export function MapControlsTileCachePanel({ embedded = false }: MapControlsTileC
 											className="h-8 text-xs"
 											size="sm"
 											variant="mapControlOutline"
-											onClick={() => void handleRedownload()}
+											onClick={() => requestDownload('redownload')}
 										>
 											<IoRefreshOutline aria-hidden className="mr-1 h-3 w-3" />
 											{t('redownload')}
@@ -346,7 +411,7 @@ export function MapControlsTileCachePanel({ embedded = false }: MapControlsTileC
 										disabled={!enhancedTrailPoints?.length}
 										size="sm"
 										variant="mapControlOutline"
-										onClick={handleDownload}
+										onClick={() => requestDownload('base')}
 									>
 										<IoCloudDownloadOutline aria-hidden className="mr-1.5 h-3.5 w-3.5 shrink-0" />
 										{t('download')}
@@ -420,7 +485,7 @@ export function MapControlsTileCachePanel({ embedded = false }: MapControlsTileC
 										disabled={tileCacheDownloading}
 										size="sm"
 										variant="mapControlOutline"
-										onClick={handleHighDetailAheadDownload}
+										onClick={() => requestDownload('highDetail')}
 									>
 										<IoCloudDownloadOutline aria-hidden className="mr-1.5 h-3.5 w-3.5 shrink-0" />
 										{t('highDetailAhead.download')}

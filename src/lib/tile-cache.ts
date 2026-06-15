@@ -111,6 +111,32 @@ function buildTileUrl(template: string, z: number, x: number, y: number): string
 	return template.replace('{z}', String(z)).replace('{x}', String(x)).replace('{y}', String(y)).replace(/{s}/g, 'a'); // use subdomain 'a' for pre-caching
 }
 
+/** Croatia bounding box - mirror of CROATIA_BBOX in public/sw.js. Used as a
+ *  defence-in-depth clip so the pre-cache never emits tiles outside Croatia,
+ *  even if the corridor math ever drifts. The Service Worker applies the
+ *  authoritative bbox + polygon clip on the cache-write path. */
+const CROATIA_BBOX = { latMin: 42.3, latMax: 46.56, lngMin: 13.2, lngMax: 19.45 };
+
+/** Web-Mercator tile (z/x/y) to its lat/lng bounds. */
+function tileLatLngBounds(z: number, x: number, y: number): { lngW: number; lngE: number; latN: number; latS: number } {
+	const n = 2 ** z;
+	const lngW = (x / n) * 360 - 180;
+	const lngE = ((x + 1) / n) * 360 - 180;
+	const latN = (Math.atan(Math.sinh(Math.PI * (1 - (2 * y) / n))) * 180) / Math.PI;
+	const latS = (Math.atan(Math.sinh(Math.PI * (1 - (2 * (y + 1)) / n))) * 180) / Math.PI;
+	return { lngW, lngE, latN, latS };
+}
+
+function tileIntersectsCroatia(z: number, x: number, y: number): boolean {
+	const b = tileLatLngBounds(z, x, y);
+	return (
+		b.lngE >= CROATIA_BBOX.lngMin &&
+		b.lngW <= CROATIA_BBOX.lngMax &&
+		b.latN >= CROATIA_BBOX.latMin &&
+		b.latS <= CROATIA_BBOX.latMax
+	);
+}
+
 function tilesForBounds(
 	minLat: number,
 	maxLat: number,
@@ -126,6 +152,7 @@ function tilesForBounds(
 	const tiles: string[] = [];
 	for (let x = xMin; x <= xMax; x++) {
 		for (let y = yMin; y <= yMax; y++) {
+			if (!tileIntersectsCroatia(zoom, x, y)) continue; // never pre-cache outside Croatia
 			tiles.push(buildTileUrl(template, zoom, x, y));
 		}
 	}

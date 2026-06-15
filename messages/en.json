@@ -530,6 +530,8 @@
 		"providerNotCacheable": "This map layer cannot be cached for offline use.",
 		"noTrailData": "Load a trail first to enable offline maps.",
 		"download": "Download for offline",
+		"mobileDownloadWarning": "Downloading offline maps can use a lot of storage and mobile data. Download now?",
+		"mobileDownloadConfirm": "Download now",
 		"downloading": "Downloading {done} / {total} tiles…",
 		"cancel": "Cancel",
 		"clear": "Clear",

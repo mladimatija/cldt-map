@@ -530,6 +530,8 @@
 		"providerNotCacheable": "Ovaj sloj karte nije moguće predmemorirati za offline korištenje.",
 		"noTrailData": "Prvo učitaj stazu kako bi omogućio offline karte.",
 		"download": "Preuzmi za offline",
+		"mobileDownloadWarning": "Preuzimanje offline karata može potrošiti puno prostora za pohranu i mobilnih podataka. Preuzmi sada?",
+		"mobileDownloadConfirm": "Preuzmi sada",
 		"downloading": "Preuzimanje {done} / {total} pločica…",
 		"cancel": "Odustani",
 		"clear": "Obriši",
