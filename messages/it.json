@@ -530,6 +530,8 @@
 		"providerNotCacheable": "Questo livello mappa non può essere salvato in cache per l'uso offline.",
 		"noTrailData": "Carica prima un sentiero per abilitare le mappe offline.",
 		"download": "Scarica per uso offline",
+		"mobileDownloadWarning": "Lo scaricamento delle mappe offline può usare molto spazio di archiviazione e dati mobili. Scaricare ora?",
+		"mobileDownloadConfirm": "Scarica ora",
 		"downloading": "Scaricamento {done} / {total} tessere…",
 		"cancel": "Annulla",
 		"clear": "Cancella",

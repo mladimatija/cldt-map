@@ -530,6 +530,8 @@
 		"providerNotCacheable": "Diese Kartenebene kann nicht für die Offline-Nutzung gespeichert werden.",
 		"noTrailData": "Zuerst einen Trail laden, um Offline-Karten zu aktivieren.",
 		"download": "Für Offline herunterladen",
+		"mobileDownloadWarning": "Das Herunterladen von Offline-Karten kann viel Speicherplatz und mobile Daten verbrauchen. Jetzt herunterladen?",
+		"mobileDownloadConfirm": "Jetzt herunterladen",
 		"downloading": "{done} / {total} Kacheln werden heruntergeladen…",
 		"cancel": "Abbrechen",
 		"clear": "Löschen",
