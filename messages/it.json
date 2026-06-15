@@ -63,6 +63,7 @@
 			"severeWeather": "Allerte meteo gravi - avvisi Meteoalarm CAP per la Croazia come poligoni colorati sulla mappa con banner GPS; rosso/grave non eliminabile; dati aggiornati ogni 15 minuti",
 			"radar": "Overlay radar precipitazioni - radar RainViewer animato nel pannello Strumenti (icona chiave inglese); frame passati e previsionali, controlli play/pausa e legenda colori",
 			"sunsetPosition": "Posizione tramonto/alba - mostra dove ti troverai sul sentiero al tramonto e all'alba in base al tuo ritmo attuale; indicatori attivabili sulla linea",
+			"daylightBudget": "Budget di luce diurna - sul sentiero l'HUD delle distanze avvisa quando potresti non raggiungere il prossimo rifugio, riparo o paese prima del buio, confrontando l'orario del tramonto con il tuo tempo di arrivo al luogo più vicino davanti",
 			"stagePlanner": "Pianificatore tappe multi-giorno - suddividi qualsiasi tratto del sentiero in tappe giornaliere per distanza o tempo, visualizza dislivello, ETA, acqua, zaino e chip rifornimento per tappa. Imposta una data di inizio per mostrare la data di ogni tappa e inserisci giorni di riposo (giorni zero) che spostano ogni data, previsione ed evento di calendario successivi senza cambiare la suddivisione. Esporta singole tappe come GPX o FIT, tutti i POI come GPX, un PDF tappe in mappa, iCal (include i giorni di riposo) o apri il Trip brief",
 			"gpxImport": "Importazione tracce GPX - trascina (o seleziona) un file GPX registrato per sovrapporre la tua escursione alla mappa ufficiale; statistiche su distanza, passo, tempo totale, tempo in movimento, deviazione massima e copertura del percorso",
 			"emergency": "Pannello di emergenza 112 - tieni premuto il pulsante SOS rosso (in basso a destra) per aprire un modal centrato offline-first con coordinate GPS, Plus Code, tratta e km del percorso, direzione e distanza al più vicino accesso stradale e alla stazione di soccorso alpino HGSS; online viene cercato un indirizzo leggibile da copiare; copia ogni campo negli appunti e passa al dialer (Chiama 112) o alle mappe (Apri nelle mappe); funziona completamente offline una volta in cache",
@@ -669,7 +670,11 @@
 		"upNextPharmacy": "Prossima farmacia",
 		"upNextMoreAhead": "Altro avanti",
 		"upNextSeeAll": "Vedi tutti i {count} luoghi avanti",
-		"upNextHorizonAriaLabel": "Distanza avanti, {distance}"
+		"upNextHorizonAriaLabel": "Distanza avanti, {distance}",
+		"daylightSunset": "Tramonto {time}",
+		"daylightAfterDark": "{eta} dopo il buio",
+		"daylightBeforeDark": "{eta} prima del buio",
+		"daylightAria": "Budget di luce: raggiungi {place} in {eta}. Tramonto {time}, {margin}."
 	},
 	"imports": {
 		"elevation": "Dislivello",
@@ -1270,6 +1275,7 @@
 			"precache": "Il pannello cache pre-scarica il corridoio del sentiero (tile, luoghi, foto) per usarlo senza segnale e si risincronizza sul Wi-Fi. Il caching è limitato alla Croazia, quindi viene salvato solo il corridoio entro il confine - le tile fuori dal paese non vengono mai scaricate, mantenendo lo spazio sotto controllo.",
 			"gps": "GPS, pannello di emergenza e progresso funzionano completamente offline una volta salvato il corridoio.",
 			"offRouteAlert": "Attiva l'avviso fuori percorso in Impostazioni (disattivato di default) per banner e vibrazione quando ti allontani più di ~200 m dal sentiero, con distanza e direzione di ritorno. Si arma solo dopo che il GPS conferma che sei sul sentiero; resta muto a casa o in auto e si disarma quando lasci l'area del sentiero.",
+			"daylight": "Sul sentiero l'HUD delle distanze mostra un indicatore di luce diurna quando potresti non raggiungere il prossimo rifugio, riparo o paese prima del buio - confronta l'orario del tramonto (una rapida ricerca meteo online) con il tuo tempo di arrivo al luogo più vicino davanti (ambra quando è al limite, rosso quando arriveresti dopo il buio).",
 			"pushAlerts": "Attiva le notifiche di avviso nelle impostazioni per ricevere un push quando viene pubblicato un nuovo avviso stagionale o una notifica sulle condizioni del sentiero.",
 			"mobileDownload": "Su un telefono, l'avvio di un download offline avverte prima che può usare molto spazio e dati mobili, poi chiede conferma - così non avvii mai per sbaglio un download di diversi gigabyte."
 		},

@@ -15,6 +15,7 @@ import { useRuler } from './useRuler';
 import { usePackAdjustedPaceKmh, packAdjustedPaceKmhFromState } from './usePackAdjustedPace';
 import { useActiveStarredPoiIds } from './useActiveStarredPoiIds';
 import { useAnimatedNumber } from './useAnimatedNumber';
+import { useTrailSunWeather } from './useTrailSunWeather';
 
 export {
 	useSiteMetadata,
@@ -32,8 +33,10 @@ export {
 	packAdjustedPaceKmhFromState,
 	useActiveStarredPoiIds,
 	useAnimatedNumber,
+	useTrailSunWeather,
 };
 export type { UseRulerResult } from './useRuler';
+export type { TrailSunWeather } from './useTrailSunWeather';
 export type {
 	ParsedDistance,
 	PoiListGroupedItem,

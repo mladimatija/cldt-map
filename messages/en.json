@@ -63,6 +63,7 @@
 			"severeWeather": "Severe weather alerts - Meteoalarm CAP warnings for Croatia as color-coded map polygons with GPS-triggered banners; non-dismissible for red/severe warnings; data refreshed every 15 minutes",
 			"radar": "Precipitation radar overlay - animated RainViewer radar in the Tools panel (wrench icon); past and nowcast frames, play/pause controls, and colour legend",
 			"sunsetPosition": "Sunset/sunrise position - projects where you will be on the trail at sunset and sunrise based on your current pace; toggleable markers on the polyline",
+			"daylightBudget": "Daylight budget - on the trail, the distance HUD warns when you may not reach the next hut, shelter, or town before dark, comparing the day's sunset time with your ETA to the nearest place to shelter ahead",
 			"stagePlanner": "Multi-day stage planner - split any trail range into daily stages by distance or time, view per-stage elevation, ETA, water, pack, and resupply chips. Set a trip start date to show each stage's calendar date and insert rest (zero) days that shift every later date, forecast, and calendar event without changing the split. Export individual stages as GPX or FIT, all POIs as GPX, a strip-map PDF, iCal (includes rest days), or open the Trip brief",
 			"gpxImport": "GPX track import - drag and drop (or pick) a recorded GPX file to overlay your actual hike on the map; compare your track against the official trail with stats on distance, pace, elapsed time, max deviation, and % of trail covered",
 			"emergency": "Emergency 112 panel - long-press the red SOS button (bottom-right) for an offline-first centered modal with your GPS coordinates, Plus Code, trail section and km, and the bearing and distance to the nearest road access and HGSS mountain rescue station; when online, a readable address line is looked up and can be copied; copy any field to the clipboard and hand off to your phone dialer (Call 112) or maps app (Open in maps); fully offline once cached",
@@ -669,7 +670,11 @@
 		"upNextPharmacy": "Next pharmacy stop",
 		"upNextMoreAhead": "More ahead",
 		"upNextSeeAll": "See all {count} places ahead",
-		"upNextHorizonAriaLabel": "Distance ahead, {distance}"
+		"upNextHorizonAriaLabel": "Distance ahead, {distance}",
+		"daylightSunset": "Sunset {time}",
+		"daylightAfterDark": "{eta} after dark",
+		"daylightBeforeDark": "{eta} before dark",
+		"daylightAria": "Daylight budget: reach {place} in {eta}. Sunset {time}, {margin}."
 	},
 	"imports": {
 		"elevation": "Elevation",
@@ -1270,6 +1275,7 @@
 			"precache": "The cache panel pre-downloads the trail corridor (tiles, places, photos) for use without signal, and re-syncs on Wi-Fi. Caching is clipped to Croatia, so only the corridor inside the border is stored - tiles outside the country are never downloaded, keeping storage in check.",
 			"gps": "GPS, the emergency panel, and your progress keep working fully offline once the corridor is cached.",
 			"offRouteAlert": "Enable the off-route alert in Settings (off by default) for a banner and vibration when you drift more than ~200 m from the trail, with distance and bearing back. Arms only after GPS confirms you are on the trail; stays silent at home or while driving, and disarms when you leave the trail area.",
+			"daylight": "On the trail, the distance HUD shows a daylight chip when you might not reach the next hut, shelter, or town before dark - it compares the day's sunset time (a quick online weather lookup) with your ETA to the nearest place ahead (amber when it is close, red when you would arrive after dark).",
 			"pushAlerts": "Enable trail alert notifications in Settings to get a push when a new seasonal warning or trail condition notice is published.",
 			"mobileDownload": "On a phone, starting an offline download first warns that it can use a lot of storage and mobile data, then asks you to confirm - so you never trigger a multi-gigabyte download by accident."
 		},

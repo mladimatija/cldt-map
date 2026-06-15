@@ -63,6 +63,7 @@
 			"severeWeather": "Upozorenja na ozbiljno vrijeme - Meteoalarm CAP upozorenja za Hrvatsku kao poligoni na karti s GPS trakama; crvena/upozorenja visoke razine ne mogu se odbaciti; podaci se osvježavaju svakih 15 minuta",
 			"radar": "Preklopni sloj radara padalina - animirani RainViewer radar u ploči Alati (ikona ključa); prošli i prognozirani kadrovi, kontrole reproduciranja i legenda boja",
 			"sunsetPosition": "Pozicija zalaska/izlaska sunca - prikazuje gdje ćete biti na stazi u trenutku zalaska i izlaska sunca prema trenutnom tempu; markeri na poliliniji",
+			"daylightBudget": "Procjena dnevnog svjetla - na stazi te HUD s udaljenostima upozorava kad možda nećeš stići do sljedećeg doma, skloništa ili mjesta prije mraka, uspoređujući vrijeme zalaska sunca s procjenom dolaska do najbližeg odredišta ispred",
 			"stagePlanner": "Planer višednevnih etapa - podijelite bilo koji dio staze na dnevne etape prema udaljenosti ili vremenu, pregledajte nadmorsku visinu, ETA, vodu, težinu ruksaka i čipove opskrbe po etapi. Postavite datum početka putovanja da prikažete datum svake etape i umetnite dane odmora (nulte dane) koji pomiču svaki kasniji datum, prognozu i kalendarski događaj bez mijenjanja podjele. Izvezite pojedine etape kao GPX ili FIT, sve POI-jeve kao GPX, PDF karte etapa, iCal (uključuje dane odmora) ili otvorite Trip brief",
 			"gpxImport": "Uvoz GPX rute - povuci i ispusti (ili odaberi) snimljenu GPX datoteku i usporedi svoju rutu sa službenom stazom; statistike o udaljenosti, tempu, ukupnom i vremenu kretanja, maksimalnom odstupanju i pokrivenosti staze",
 			"emergency": "Hitna ploča 112 - dugim pritiskom crvenog SOS gumba (donji desni kut) otvara se offline-first centrirani modal s tvojim GPS koordinatama, Plus kodom, etapom i kilometrom staze te smjerom i udaljenošću do najbližeg pristupa cesti i HGSS stanice; kad si online, traži se čitljiva adresa koju možeš kopirati; kopiraj svako polje i pokreni biranje (Nazovi 112) ili karte (Otvori u kartama); radi potpuno offline jednom kad se podaci spreme u predmemoriju",
@@ -669,7 +670,11 @@
 		"upNextPharmacy": "Sljedeća ljekarna",
 		"upNextMoreAhead": "Više ispred",
 		"upNextSeeAll": "Prikaži svih {count} mjesta ispred",
-		"upNextHorizonAriaLabel": "Udaljenost ispred, {distance}"
+		"upNextHorizonAriaLabel": "Udaljenost ispred, {distance}",
+		"daylightSunset": "Zalazak {time}",
+		"daylightAfterDark": "{eta} nakon mraka",
+		"daylightBeforeDark": "{eta} prije mraka",
+		"daylightAria": "Dnevno svjetlo: do odredišta {place} stižeš za {eta}. Zalazak u {time}, {margin}."
 	},
 	"imports": {
 		"elevation": "Visinska razlika",
@@ -1270,6 +1275,7 @@
 			"precache": "Ploča predmemorije unaprijed preuzima koridor staze (pločice, mjesta, fotografije) za korištenje bez signala i sinkronizira se na Wi-Fi mreži. Predmemoriranje je ograničeno na Hrvatsku pa se sprema samo koridor unutar granice - pločice izvan zemlje nikad se ne preuzimaju, što drži pohranu pod kontrolom.",
 			"gps": "GPS, ploča za hitne slučajeve i tvoj napredak rade potpuno offline čim je koridor spremljen.",
 			"offRouteAlert": "Uključi upozorenje o skretanju u Postavkama (zadano isključeno) za traku i vibraciju kad skreneš više od ~200 m s rute, s udaljenošću i smjerom natrag. Aktivira se tek kad GPS potvrdi da si na ruti; šuti kod kuće ili u vožnji i deaktivira se kad napustiš područje staze.",
+			"daylight": "Na stazi HUD s udaljenostima prikazuje oznaku dnevnog svjetla kad možda nećeš stići do sljedećeg doma, skloništa ili mjesta prije mraka - uspoređuje vrijeme zalaska sunca (kratko mrežno dohvaćanje vremena) s procjenom dolaska do najbližeg odredišta ispred (žuto kad je blizu, crveno kad bi stigao nakon mraka).",
 			"pushAlerts": "Uključite obavijesti o upozorenjima u postavkama za push poruku kad se objavi novo sezonsko upozorenje ili obavijest o stanju staze.",
 			"mobileDownload": "Na telefonu pokretanje offline preuzimanja prvo upozorava da može potrošiti puno prostora i mobilnih podataka, a zatim traži potvrdu - tako slučajno ne pokrenete preuzimanje od više gigabajta."
 		},

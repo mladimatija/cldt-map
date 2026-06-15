@@ -88,6 +88,7 @@ export default function AboutPage(): React.ReactNode {
 							<li className="mb-2">{t('mapFeaturesList.severeWeather')}</li>
 							<li className="mb-2">{t('mapFeaturesList.radar')}</li>
 							<li className="mb-2">{t('mapFeaturesList.sunsetPosition')}</li>
+							<li className="mb-2">{t('mapFeaturesList.daylightBudget')}</li>
 							<li className="mb-2">{t('mapFeaturesList.stagePlanner')}</li>
 							<li className="mb-2">{t('mapFeaturesList.gpxImport')}</li>
 							<li className="mb-2">{t('mapFeaturesList.emergency')}</li>

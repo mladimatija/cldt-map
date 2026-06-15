@@ -1,14 +1,13 @@
 'use client';
 
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useMemo } from 'react';
 import { Marker, Tooltip } from 'react-leaflet';
 import { useTranslations } from 'next-intl';
 import L from 'leaflet';
 import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
-import { usePackAdjustedPaceKmh } from '@/hooks';
-import { TRAIL_OFF_TRAIL_THRESHOLD_M } from '@/lib/config';
+import { usePackAdjustedPaceKmh, useTrailSunWeather } from '@/hooks';
 import { findNearestPointIndex, projectPositionAtTime, type ProjectedPosition } from '@/lib/distance-utils';
-import { fetchWeather, type WeatherData } from '@/lib/weather';
+import { isoLocalToUtcMs } from '@/lib/weather';
 import { formatDistance, formatElevation } from '@/lib/utils';
 
 const createSunDivIcon = (color: string): L.DivIcon =>
@@ -24,14 +23,6 @@ const SUNRISE_COLORS = { light: '#fcd34d', dark: '#fde68a' };
 
 /** Returns "HH:MM" from an Open-Meteo local ISO string (already in trail location's timezone). */
 const formatHHMM = (isoString: string): string => isoString.slice(11, 16);
-
-/**
- * Converts an Open-Meteo local ISO string (no timezone suffix, in the trail location's timezone)
- * to a UTC millisecond timestamp. Without this, new Date(isoString) parses in the browser's
- * local timezone - wrong outside the trail's timezone.
- */
-const isoLocalToUtcMs = (isoLocal: string, utcOffsetSeconds: number): number =>
-	new Date(isoLocal + 'Z').getTime() - utcOffsetSeconds * 1000;
 
 interface SunProjection {
 	result: ProjectedPosition;
@@ -49,13 +40,8 @@ interface SunProjection {
  */
 export default function SunsetSunriseMarkers(): React.ReactElement | null {
 	const t = useTranslations('mapControls');
-	const weatherFetchedAtRef = useRef<number>(0);
-	const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
-	// accurate to within the 30s weather-throttle window, which is fine for hour-scale projections.
-	const [nowMs, setNowMs] = useState(() => Date.now());
 
 	const sunsetProjection = useMapStore((state: MapStoreState) => state.sunsetProjection);
-	const userLocation = useMapStore((state: MapStoreState) => state.userLocation);
 	const walkingPaceKmh = usePackAdjustedPaceKmh();
 	const gradeAdjustedEta = useMapStore((state: MapStoreState) => state.gradeAdjustedEta);
 	const units = useMapStore((state: MapStoreState) => state.units);
@@ -71,25 +57,8 @@ export default function SunsetSunriseMarkers(): React.ReactElement | null {
 	const closestPoint = useStore((state: StoreState) => state.closestPoint);
 	const enhancedTrailPoints = useStore((state: StoreState) => state.enhancedTrailPoints);
 
-	const isOnTrail =
-		sunsetProjection && !!closestPoint && closestPoint.distance <= TRAIL_OFF_TRAIL_THRESHOLD_M && !!userLocation;
-
-	// Fetch weather when on-trail; throttle to once per 30 s.
-	useEffect(() => {
-		if (!isOnTrail || !userLocation) {
-			weatherFetchedAtRef.current = 0;
-			return;
-		}
-		if (Date.now() - weatherFetchedAtRef.current < 30_000) return;
-		weatherFetchedAtRef.current = Date.now();
-		void fetchWeather(userLocation.lat, userLocation.lng).then((data) => {
-			setNowMs(Date.now());
-			setWeatherData(data);
-		});
-	}, [isOnTrail, userLocation]);
-
-	// Derive effective weather: null when off-trail
-	const effectiveWeatherData: WeatherData | null = isOnTrail ? weatherData : null;
+	// Daylight data + on-trail state, throttled and shared with the daylight budget chip.
+	const { weatherData: effectiveWeatherData, nowMs, isOnTrail } = useTrailSunWeather(sunsetProjection);
 
 	// Quantize the projection origin to 100 m buckets: walking 100 m moves a
 	// sunset marker hours away by a negligible amount, but using the raw

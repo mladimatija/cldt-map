@@ -4,7 +4,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useStore, useMapStore, type StoreState, type MapStoreState } from '@/lib/store';
-import { useBlockMapPropagation, usePackAdjustedPaceKmh } from '@/hooks';
+import { useBlockMapPropagation, usePackAdjustedPaceKmh, useTrailSunWeather } from '@/hooks';
 import { TRAIL_OFF_TRAIL_THRESHOLD_M } from '@/lib/config';
 import {
 	computeDistanceRemaining,
@@ -34,6 +34,7 @@ import { isUsableWaterSource, WATER_COLOR } from '@/lib/water-intelligence';
 import { poiHasResupplyKind } from '@/lib/resupply-cadence';
 import { formatVolume, waterCarryLiters } from '@/lib/pack-weight';
 import { formatDistance, formatElevation } from '@/lib/utils';
+import { formatSunTime, isoLocalToUtcMs } from '@/lib/weather';
 
 /** Nearest POI rows shown before the "More ahead" collapse. */
 const UP_NEXT_VISIBLE_COUNT = 5;
@@ -84,6 +85,43 @@ function nearestPoiAheadInCorridor(
 	}
 	for (const p of arr) {
 		if (isPoiInAheadCorridor(p.trailKm, anchorSoboKm, horizonKm, direction)) return p;
+	}
+	return null;
+}
+
+/** The daylight budget chip surfaces only when the projected arrival at the next
+ *  place to shelter lands within this many minutes of sunset (or after it). Civil
+ *  twilight buys roughly 30 min of usable light past sunset, so a sub-45-minute
+ *  margin is the point worth warning about; comfortable daylight stays silent. */
+const DAYLIGHT_WARN_BUFFER_MIN = 45;
+
+/** Shape backing the daylight budget chip; the memo returns null when no warning applies. */
+interface DaylightChipData {
+	poi: Poi;
+	etaSec: number;
+	afterDark: boolean;
+	marginSec: number;
+	sunsetTimeStr: string;
+}
+
+/** Nearest POI ahead in the direction of travel, ignoring the up-next horizon.
+ *  The daylight chip must find the next place to get out of the dark even when it
+ *  lies beyond the corridor the up-next strip shows. */
+function nearestPoiAheadUnbounded(
+	arr: Poi[],
+	anchorSoboKm: number,
+	direction: MapStoreState['direction'],
+): { poi: Poi; km: number } | null {
+	if (direction === 'NOBO') {
+		for (let i = arr.length - 1; i >= 0; i--) {
+			const km = poiAheadKm(arr[i].trailKm, anchorSoboKm, direction);
+			if (km !== null) return { poi: arr[i], km };
+		}
+		return null;
+	}
+	for (const poi of arr) {
+		const km = poiAheadKm(poi.trailKm, anchorSoboKm, direction);
+		if (km !== null) return { poi, km };
 	}
 	return null;
 }
@@ -150,10 +188,16 @@ export function DistanceRemainingOverlay(): React.ReactElement | null {
 	const requestOpenPoi = useMapStore((state: MapStoreState) => state.requestOpenPoi);
 	const locale = useLocale();
 
-	// Up-next dataset, independent of which marker layers are enabled.
+	// Daylight data for the daylight-budget chip; shared with the sunset markers.
+	const sunWeather = useTrailSunWeather(true);
+
+	// Up-next dataset, independent of which marker layers are enabled. Loaded when
+	// the up-next strip is shown OR the hiker is on-trail, since the daylight chip
+	// needs the shelter/town data even with the up-next strip toggled off (the
+	// loadPois call is module-cached, so the extra trigger costs nothing once warm).
 	const [upNextPois, setUpNextPois] = useState<Poi[]>([]);
 	useEffect(() => {
-		if (!showUpNext) return;
+		if (!showUpNext && !sunWeather.isOnTrail) return;
 		let cancelled = false;
 		void loadPois(UP_NEXT_TYPES).then((file) => {
 			if (!cancelled && file) setUpNextPois(file.pois);
@@ -161,7 +205,7 @@ export function DistanceRemainingOverlay(): React.ReactElement | null {
 		return () => {
 			cancelled = true;
 		};
-	}, [showUpNext]);
+	}, [showUpNext, sunWeather.isOnTrail]);
 
 	// Per-category km-sorted indexes; rebuilt only when the dataset changes.
 	const upNextIndex = useMemo(() => {
@@ -348,6 +392,76 @@ export function DistanceRemainingOverlay(): React.ReactElement | null {
 		};
 	}, [distanceInfo, enhancedTrailPoints, fromIndex, direction, gradeAdjustedEta, walkingPaceKmh]);
 
+	/** Daylight budget: can the hiker reach the next place to shelter before dark?
+	 *  Cross-references the fetched sunset time against the projected arrival at the
+	 *  nearest hut/shelter or town ahead. Null (no chip) when off-trail, after
+	 *  sunset, with no place ahead, or when there is comfortable daylight to spare. */
+	const daylight = useMemo((): DaylightChipData | null => {
+		const w = sunWeather.weatherData;
+		if (!w?.sunset || closestPoint === null || enhancedTrailPoints.length < 2) return null;
+		const sunsetMs = isoLocalToUtcMs(w.sunset, w.utcOffsetSeconds);
+		if (!Number.isFinite(sunsetMs)) return null; // guard a malformed sunset string from the weather API
+		if (sunsetMs <= sunWeather.nowMs) return null; // already past sunset - not a "racing the dark" case
+		const anchorSoboKm = closestPoint.distanceFromStart / 1000;
+		const candidates = [
+			nearestPoiAheadUnbounded(upNextIndex.shelter, anchorSoboKm, direction),
+			nearestPoiAheadUnbounded(upNextIndex.town, anchorSoboKm, direction),
+		].filter((c): c is { poi: Poi; km: number } => c !== null);
+		if (candidates.length === 0) return null;
+		const nearest = candidates.reduce((best, c) => (c.km < best.km ? c : best));
+		const etaOpts = { elevationPoints: enhancedTrailPoints, fromIndex, direction, gradeAdjusted: gradeAdjustedEta };
+		const etaSec = computeEta(nearest.km * 1000, walkingPaceKmh, etaOpts);
+		const marginMin = (sunsetMs - (sunWeather.nowMs + etaSec * 1000)) / 60_000;
+		if (marginMin > DAYLIGHT_WARN_BUFFER_MIN) return null; // comfortable daylight - stay out of the way
+		return {
+			poi: nearest.poi,
+			etaSec,
+			afterDark: marginMin < 0,
+			marginSec: Math.abs(Math.round(marginMin * 60)),
+			sunsetTimeStr: formatSunTime(w.sunset, units),
+		};
+	}, [
+		sunWeather.weatherData,
+		sunWeather.nowMs,
+		closestPoint,
+		enhancedTrailPoints,
+		upNextIndex,
+		direction,
+		fromIndex,
+		gradeAdjustedEta,
+		walkingPaceKmh,
+		units,
+	]);
+
+	const renderDaylightChip = (d: DaylightChipData): React.ReactElement => {
+		const colorClass = d.afterDark ? 'text-cldt-red' : 'text-amber-700 dark:text-amber-400';
+		const placeName = poiDisplayName(d.poi, locale);
+		const marginText = d.afterDark
+			? t('daylightAfterDark', { eta: formatEta(d.marginSec) })
+			: t('daylightBeforeDark', { eta: formatEta(d.marginSec) });
+		return (
+			<div className="mt-1 border-t border-gray-200 pt-1 dark:border-[var(--border-color)]">
+				<span className="sr-only">
+					{t('daylightAria', {
+						place: placeName,
+						eta: formatEta(d.etaSec),
+						time: d.sunsetTimeStr,
+						margin: marginText,
+					})}
+				</span>
+				<div aria-hidden="true" className={`flex justify-between gap-4 ${colorClass}`}>
+					<span className="min-w-0 truncate" title={placeName}>
+						{placeName}
+					</span>
+					<span className="shrink-0">{formatEta(d.etaSec)}</span>
+				</div>
+				<div aria-hidden="true" className={`text-[0.625rem] ${colorClass}`}>
+					{t('daylightSunset', { time: d.sunsetTimeStr })} · {marginText}
+				</div>
+			</div>
+		);
+	};
+
 	const aheadHorizonOptions = useMemo(
 		() =>
 			AHEAD_HORIZON_OPTIONS.map((km) => ({
@@ -462,6 +576,7 @@ export function DistanceRemainingOverlay(): React.ReactElement | null {
 					</div>
 				)}
 			</div>
+			{daylight && renderDaylightChip(daylight)}
 			{hasUpNextContent && (
 				<div className="mt-1 border-t border-gray-200 pt-1 dark:border-[var(--border-color)]">
 					<div className="m-0 text-[0.625rem] font-medium tracking-wide text-gray-400 dark:text-[var(--text-secondary)]">

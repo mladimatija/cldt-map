@@ -373,6 +373,17 @@ export function formatSunTime(isoString: string, units: UnitSystem = 'metric'): 
 	}
 }
 
+/**
+ * Converts an Open-Meteo local ISO string (no timezone suffix, expressed in the
+ * trail location's timezone) to a UTC millisecond timestamp. Without this,
+ * `new Date(isoLocal)` parses in the browser's timezone, which is wrong whenever
+ * the browser sits in a different zone than the trail. Use the returned value
+ * for arithmetic (deltas against Date.now()); use formatSunTime for display.
+ */
+export function isoLocalToUtcMs(isoLocal: string, utcOffsetSeconds: number): number {
+	return new Date(isoLocal + 'Z').getTime() - utcOffsetSeconds * 1000;
+}
+
 export interface HourlyColumnData {
 	hourLabel: string;
 	precipPct: number;

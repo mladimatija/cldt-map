@@ -63,6 +63,7 @@
 			"severeWeather": "Unwetterwarnungen - Meteoalarm-CAP-Warnungen für Kroatien als farbcodierte Kartenpolygone mit GPS-Bannern; rot/schwere Warnungen nicht abweisbar; Daten alle 15 Minuten aktualisiert",
 			"radar": "Niederschlagsradar-Overlay - animierter RainViewer-Radar im Werkzeuge-Panel (Schraubenschlüssel); vergangene und vorhergesagte Frames, Wiedergabesteuerung und Farblegende",
 			"sunsetPosition": "Sonnenuntergang/Sonnenaufgang-Position - zeigt, wo du bei Sonnenuntergang und Sonnenaufgang auf dem Weg sein wirst; umschaltbare Markierungen auf der Strecke",
+			"daylightBudget": "Tageslicht-Budget - unterwegs warnt das Distanz-HUD, wenn du die nächste Hütte, Schutzhütte oder Ortschaft womöglich nicht vor Einbruch der Dunkelheit erreichst, durch Vergleich der Sonnenuntergangszeit mit deiner Ankunftszeit am nächsten Ziel voraus",
 			"stagePlanner": "Mehrtages-Etappenplaner - teile beliebige Streckenabschnitte nach Distanz oder Zeit in Tagesetappen auf, zeige Höhe, ETA, Wasser-, Pack- und Versorgungs-Chips je Etappe. Lege ein Startdatum fest, um das Kalenderdatum jeder Etappe anzuzeigen, und füge Ruhetage (Nulltage) ein, die jedes spätere Datum, jede Prognose und jeden Kalendereintrag verschieben, ohne die Aufteilung zu ändern. Exportiere einzelne Etappen als GPX oder FIT, alle POIs als GPX, ein Etappenkarten-PDF, iCal (inklusive Ruhetage) oder öffne den Trip Brief",
 			"gpxImport": "GPX-Track-Import - ziehe eine aufgezeichnete GPX-Datei auf die Karte (oder wähle sie aus) und vergleiche deine Route mit dem offiziellen Weg; Statistiken zu Distanz, Tempo, Gesamtzeit, Gehzeit, max. Abweichung und Streckenabdeckung",
 			"emergency": "Notfallpanel 112 - langes Drücken des roten SOS-Buttons (unten rechts) öffnet ein offline-first zentriertes Modal mit deinen GPS-Koordinaten, Plus Code, Etappe und Kilometer auf dem Weg sowie Richtung und Entfernung zur nächsten Straßenanbindung und HGSS-Bergrettungsstation; online wird eine lesbare Adresse nachgeschlagen und kann kopiert werden; jedes Feld in die Zwischenablage kopieren und an die Telefon-App (112 anrufen) oder Karten-App (In Karten öffnen) übergeben; vollständig offline, sobald die Daten im Cache sind",
@@ -669,7 +670,11 @@
 		"upNextPharmacy": "Nächste Apotheke",
 		"upNextMoreAhead": "Mehr voraus",
 		"upNextSeeAll": "Alle {count} Orte voraus anzeigen",
-		"upNextHorizonAriaLabel": "Strecke voraus, {distance}"
+		"upNextHorizonAriaLabel": "Strecke voraus, {distance}",
+		"daylightSunset": "Sonnenuntergang {time}",
+		"daylightAfterDark": "{eta} nach Einbruch der Dunkelheit",
+		"daylightBeforeDark": "{eta} vor Einbruch der Dunkelheit",
+		"daylightAria": "Tageslicht-Budget: {place} in {eta} erreichbar. Sonnenuntergang {time}, {margin}."
 	},
 	"imports": {
 		"elevation": "Höhenmeter",
@@ -1270,6 +1275,7 @@
 			"precache": "Das Cache-Panel lädt den Trail-Korridor vor (Kacheln, Orte, Fotos) für die Nutzung ohne Empfang und synchronisiert über WLAN. Das Caching ist auf Kroatien beschränkt, sodass nur der Korridor innerhalb der Grenze gespeichert wird - Kacheln außerhalb des Landes werden nie geladen, was den Speicher in Schach hält.",
 			"gps": "GPS, Notfallpanel und dein Fortschritt funktionieren vollständig offline, sobald der Korridor gespeichert ist.",
 			"offRouteAlert": "Aktiviere den Routenabweichungs-Alarm in den Einstellungen (standardmäßig aus) für Banner und Vibration, wenn du mehr als ~200 m vom Trail abkommst, mit Distanz und Richtung zurück. Schärft sich erst, wenn GPS bestätigt, dass du auf dem Trail bist; bleibt zu Hause oder in der Fahrt stumm und entschärft sich, wenn du das Trail-Gebiet verlässt.",
+			"daylight": "Unterwegs zeigt das Distanz-HUD eine Tageslicht-Anzeige, wenn du die nächste Hütte, Schutzhütte oder Ortschaft womöglich nicht vor Einbruch der Dunkelheit erreichst - sie vergleicht die Sonnenuntergangszeit (eine kurze Online-Wetterabfrage) mit deiner Ankunftszeit am nächsten Ziel voraus (gelb wenn es knapp wird, rot wenn du nach Einbruch der Dunkelheit ankämst).",
 			"pushAlerts": "Warnungs-Benachrichtigungen in den Einstellungen aktivieren, um bei neuen saisonalen Warnungen oder Hinweisen zum Wegzustand eine Push-Nachricht zu erhalten.",
 			"mobileDownload": "Auf dem Handy warnt ein gestarteter Offline-Download zuerst, dass er viel Speicherplatz und mobile Daten verbrauchen kann, und fragt dann nach Bestätigung - so löst du nie versehentlich einen Download von mehreren Gigabyte aus."
 		},
