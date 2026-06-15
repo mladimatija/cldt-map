@@ -32,6 +32,7 @@ import {
 import { TRAIL_SECTIONS } from '@/lib/trail-sections';
 import { fetchGPXWithCache } from '@/lib/gpx-cache';
 import { computeTrailDataInWorker } from '@/lib/trail-compute-client';
+import { computedTrailCacheKey, loadComputedTrail, saveComputedTrail } from '@/lib/trail-compute-cache';
 import { parseGpx } from '@/lib/gpx-parser';
 import { calculateTrailMetadata, estimatePassageDays } from '@/lib/map';
 import {
@@ -644,12 +645,18 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 					setRawGpxData(result.data);
 				}
 
-				// Worker-first: parse + enhance off the main thread. On a cold
-				// load this is the largest single main-thread block in the app
-				// (XML parse + O(n) enhancement over the full trail). Any
-				// worker failure (unsupported, bundler hiccup, timeout) falls
-				// back to the historical synchronous path below.
-				const workerData = await computeTrailDataInWorker(result.data, direction).catch(() => null);
+				// Persisted-compute first: a prior visit's enhanced dataset (keyed by
+				// GPX cache version + direction) lets repeat loads and SOBO<->NOBO
+				// flips skip the parse + O(n) enhancement entirely - the largest
+				// cold-load block. On a miss, fall back to the worker (parse + enhance
+				// off the main thread) and persist its output for next time; any
+				// worker failure drops to the historical synchronous path below.
+				const computedKey = computedTrailCacheKey(result.version, direction);
+				let workerData = await loadComputedTrail(computedKey);
+				if (!workerData) {
+					workerData = await computeTrailDataInWorker(result.data, direction).catch(() => null);
+					if (workerData) void saveComputedTrail(computedKey, workerData);
+				}
 
 				if (!isMounted) {
 					return;
