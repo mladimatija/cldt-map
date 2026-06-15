@@ -32,7 +32,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { haversineDistanceM as haversineM } from '../src/lib/haversine';
 import { foldDiacritics } from '@/lib/pois';
-import type { Poi, PoiImage, PoiResupply, PoisFile, ResupplyKind, ResupplyPlace } from '../src/lib/poi-types';
+import type { HutInfo, Poi, PoiImage, PoiResupply, PoisFile, ResupplyKind, ResupplyPlace } from '../src/lib/poi-types';
 import { classifyWater } from '../src/lib/water-intelligence';
 import { parseWikipediaRef, SUMMARY_HOST_TEMPLATE as WIKIPEDIA_SUMMARY_HOST_TEMPLATE } from '../src/lib/wikipedia';
 import { applyReachabilityFilter, formatStats, sliceCorridorIntoChunks } from './poi-reachability';
@@ -453,6 +453,7 @@ async function main(): Promise<void> {
 					// from the raw OSM tags (seasonal / intermittent / drinking_water /
 					// check_date). Water type only.
 					...(cfg.type === 'water' && { water: classifyWater(el.tags ?? {}) }),
+					...((cfg.type === 'hut' || cfg.type === 'shelter') && buildHutInfo(el.tags ?? {})),
 					// Default source for any pass-1 entry. Upgraded to `wikidata` or
 					// `hps` if later passes add data; `curated` is preserved by the
 					// merge step from any prior committed row.
@@ -1321,6 +1322,17 @@ function pickName(tags: Record<string, string>, locale: 'en' | 'hr'): string {
 	const localised = tags[`name:${locale}`];
 	if (typeof localised === 'string' && localised.trim().length > 0) return localised.trim();
 	return (tags.name ?? '').trim();
+}
+
+/** Hut/shelter lodging details from OSM tags. Returns {} when nothing useful is
+ *  tagged so the field is omitted entirely. */
+function buildHutInfo(tags: Record<string, string>): { hutInfo?: HutInfo } {
+	const info: HutInfo = {};
+	if (tags.fee === 'yes' || tags.fee === 'no') info.fee = tags.fee;
+	if (tags.reservation) info.reservation = tags.reservation;
+	if (tags.operator) info.operator = tags.operator;
+	if (tags.internet_access && tags.internet_access !== 'no') info.internetAccess = tags.internet_access;
+	return Object.keys(info).length > 0 ? { hutInfo: info } : {};
 }
 
 function parseInteger(raw: string | undefined): number | null {

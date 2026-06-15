@@ -887,6 +887,10 @@
 		"lastUpdatedDaysAgo": "{days, plural, =0 {Ažurirano danas} =1 {Ažurirano jučer} few {Ažurirano prije # dana} other {Ažurirano prije # dana}}"
 	},
 	"pois": {
+		"operatorLabel": "Upravitelj:",
+		"reservationLabel": "Rezervacija:",
+		"feeLabel": "Naplata",
+		"wifiLabel": "Wi-Fi",
 		"layerToggle": "Točke interesa",
 		"layerTooltip": "Prikaži gradove, vrhove, planinarske domove, hranu, bankomate i još na stazi ili u blizini. Filtri po tipu u ovoj ploči.",
 		"layerToggleShort": "Prikaži na karti",

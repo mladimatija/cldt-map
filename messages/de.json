@@ -887,6 +887,10 @@
 		"lastUpdatedDaysAgo": "{days, plural, =0 {Heute aktualisiert} =1 {Gestern aktualisiert} other {Vor # Tagen aktualisiert}}"
 	},
 	"pois": {
+		"operatorLabel": "Betreiber:",
+		"reservationLabel": "Reservierung:",
+		"feeLabel": "Gebühr",
+		"wifiLabel": "WLAN",
 		"layerToggle": "Points of Interest",
 		"layerTooltip": "Städte, Gipfel, Hütten, Verpflegung, Geldautomaten u. v. m. am oder nahe dem Trail anzeigen. Filter pro Typ in diesem Panel.",
 		"layerToggleShort": "Auf Karte anzeigen",

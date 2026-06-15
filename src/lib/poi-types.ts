@@ -92,6 +92,19 @@ export interface PoiResupply {
 	places: ResupplyPlace[];
 }
 
+/** Hut/shelter lodging details from OSM tags (fee, reservation, operator,
+ *  internet access). Fields are present only when the source tag exists. */
+export interface HutInfo {
+	/** OSM fee=yes/no. */
+	fee?: 'yes' | 'no';
+	/** OSM reservation=* (e.g. yes, required, recommended, members_only). */
+	reservation?: string;
+	/** OSM operator=* (the managing organisation). */
+	operator?: string;
+	/** OSM internet_access=* when not "no" (e.g. wlan, yes). */
+	internetAccess?: string;
+}
+
 export interface PoiImage {
 	/** Full-resolution image URL (typically a Commons file URL). */
 	url: string;
@@ -166,6 +179,8 @@ export interface Poi {
 	water?: WaterInfo;
 	/** Town/settlement only: nearby resupply amenities. */
 	resupply?: PoiResupply;
+	/** Hut/shelter only: lodging details (fee, reservation, operator, wifi) from OSM tags. */
+	hutInfo?: HutInfo;
 }
 
 export interface PoisFile {

@@ -887,6 +887,10 @@
 		"lastUpdatedDaysAgo": "{days, plural, =0 {Aggiornato oggi} =1 {Aggiornato ieri} other {Aggiornato # giorni fa}}"
 	},
 	"pois": {
+		"operatorLabel": "Gestore:",
+		"reservationLabel": "Prenotazione:",
+		"feeLabel": "A pagamento",
+		"wifiLabel": "Wi-Fi",
 		"layerToggle": "Punti d'interesse",
 		"layerTooltip": "Mostra città, vette, rifugi, cibo, bancomat e altro lungo o vicino al sentiero. Filtri per tipo in questo pannello.",
 		"layerToggleShort": "Mostra sulla mappa",

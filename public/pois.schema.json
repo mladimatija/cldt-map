@@ -234,6 +234,17 @@
 								}
 							}
 						}
+					},
+					"hutInfo": {
+						"type": "object",
+						"description": "Hut/shelter lodging details from OSM tags (fee, reservation, operator, internet access). Fields present only when the source tag exists.",
+						"additionalProperties": false,
+						"properties": {
+							"fee": { "enum": ["yes", "no"] },
+							"reservation": { "type": "string" },
+							"operator": { "type": "string" },
+							"internetAccess": { "type": "string" }
+						}
 					}
 				}
 			}
