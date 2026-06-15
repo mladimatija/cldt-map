@@ -4,11 +4,11 @@ import React from 'react';
 import { useTranslations } from 'next-intl';
 import { IoGridOutline, IoRainyOutline } from 'react-icons/io5';
 import { Button } from '@/components/ui/Button';
-import { Checkbox } from '@/components/ui/Checkbox';
 import { usePopoverFocusTrap } from '@/hooks';
 import { cn } from '@/lib/utils';
 import { MAP_CONTROL_PANEL_WIDTH, MAP_CONTROL_POPOVER } from './map-controls-constants';
 import { MapControlSectionCard } from './MapControlSectionCard';
+import { SettingsToggleRow } from './SettingsToggleRow';
 
 interface ColorSettings {
 	brightness: number;
@@ -90,22 +90,19 @@ export function MapControlsToolsPanel({
 				<div className="flex flex-col gap-2">
 					<MapControlSectionCard title={t('toolsSections.overlays')}>
 						<div className="flex flex-col gap-2">
-							<label className="flex cursor-pointer items-center gap-2 text-sm text-gray-700 dark:text-[var(--text-primary)]">
-								<Checkbox checked={showTilesBoundary} onCheckedChange={() => onToggleTilesBoundary()} />
-								<span className="inline-flex items-center gap-1.5">
-									<IoGridOutline aria-hidden className="h-4 w-4" />
-									{showTilesBoundary ? t('tilesDisable') : t('tilesEnable')}
-								</span>
-							</label>
-							<p className="m-0 text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('toolsTilesHint')}</p>
-
-							<label className="flex cursor-pointer items-center gap-2 text-sm text-gray-700 dark:text-[var(--text-primary)]">
-								<Checkbox checked={showRadarOverlay} onCheckedChange={() => onToggleRadarOverlay()} />
-								<span className="inline-flex items-center gap-1.5">
-									<IoRainyOutline aria-hidden className="h-4 w-4" />
-									{showRadarOverlay ? t('radarDisable') : t('radarEnable')}
-								</span>
-							</label>
+							<SettingsToggleRow
+								checked={showTilesBoundary}
+								hint={t('toolsTilesHint')}
+								icon={<IoGridOutline aria-hidden className="h-4 w-4" />}
+								label={showTilesBoundary ? t('tilesDisable') : t('tilesEnable')}
+								onCheckedChange={() => onToggleTilesBoundary()}
+							/>
+							<SettingsToggleRow
+								checked={showRadarOverlay}
+								icon={<IoRainyOutline aria-hidden className="h-4 w-4" />}
+								label={showRadarOverlay ? t('radarDisable') : t('radarEnable')}
+								onCheckedChange={() => onToggleRadarOverlay()}
+							/>
 						</div>
 					</MapControlSectionCard>
 
