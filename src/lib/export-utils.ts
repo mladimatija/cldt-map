@@ -122,6 +122,73 @@ export function fitMapToRulerBounds(
 	map.fitBounds(pointsToBounds(segmentPoints), { padding: [40, 40], ...options });
 }
 
+/** Minimal Leaflet GridLayer surface used by waitForTilesLoaded. Duck-typed on
+ *  `isLoading` (only GridLayer-derived tile layers have it) so this module does
+ *  not need to import the Leaflet value (keeps it SSR/bundle-safe). */
+interface CaptureTileLayer {
+	options?: { pane?: string };
+	isLoading: () => boolean;
+	on: (type: 'load', fn: (e: { target: CaptureTileLayer }) => void) => void;
+	off: (type: 'load', fn: (e: { target: CaptureTileLayer }) => void) => void;
+}
+
+/**
+ * Resolves once the map's base tile layers have finished loading, so a
+ * screenshot is never taken over blank/gray tiles. Only base tiles (default
+ * `tilePane`) are tracked; radar/Waymarked overlays in custom panes are
+ * ignored. When nothing is loading (cached/offline tiles fire no `load`
+ * event) it short-circuits to a settle delay instead of stalling on the
+ * timeout ceiling. The post-load settle (default `MAP_RENDER_SETTLE_MS`) also
+ * lets the React stage-highlight commit before capture.
+ */
+export async function waitForTilesLoaded(
+	map: LeafletMapForExport,
+	timeoutMs = 4000,
+	settleMs = MAP_RENDER_SETTLE_MS,
+): Promise<void> {
+	const layers: CaptureTileLayer[] = [];
+	try {
+		(map as unknown as { eachLayer: (fn: (layer: unknown) => void) => void }).eachLayer((layer) => {
+			const l = layer as Partial<CaptureTileLayer>;
+			if (typeof l.isLoading !== 'function') return; // not a tile/grid layer
+			const pane = l.options?.pane;
+			if (pane === undefined || pane === 'tilePane') layers.push(l as CaptureTileLayer);
+		});
+	} catch {
+		// Map stub without eachLayer: fall back to a plain settle below.
+	}
+
+	let loading: CaptureTileLayer[] = [];
+	try {
+		loading = layers.filter((l) => l.isLoading());
+	} catch {
+		loading = [];
+	}
+
+	if (loading.length === 0) {
+		await new Promise<void>((resolve) => setTimeout(resolve, settleMs));
+		return;
+	}
+
+	await new Promise<void>((resolve) => {
+		const remaining = new Set(loading);
+		let done = false;
+		const onLoad = (e: { target: CaptureTileLayer }): void => {
+			remaining.delete(e.target);
+			if (remaining.size === 0) finish();
+		};
+		const finish = (): void => {
+			if (done) return;
+			done = true;
+			clearTimeout(timer);
+			loading.forEach((l) => l.off('load', onLoad));
+			setTimeout(resolve, settleMs);
+		};
+		loading.forEach((l) => l.on('load', onLoad));
+		const timer = setTimeout(finish, timeoutMs); // ceiling for slow/dead tiles
+	});
+}
+
 /** Capture the live Leaflet map framed to a stage km window, cropped to aspect. */
 export async function captureStageMapSnapshot(
 	map: LeafletMapForExport,
@@ -148,7 +215,8 @@ export async function captureStageMapSnapshot(
 		animate: false,
 	});
 	map.invalidateSize({ animate: false });
-	await new Promise<void>((resolve) => setTimeout(resolve, MAP_RENDER_SETTLE_MS));
+	// Wait for the repositioned tiles to actually load before snapshotting.
+	await waitForTilesLoaded(map);
 	if (signal?.aborted) return null;
 	const blob = await toBlob(mapEl, { cacheBust: true, filter: captureFilter });
 	if (!blob) return null;
@@ -248,8 +316,9 @@ export async function exportStripMapPdf(
 				map.invalidateSize({ animate: false });
 			}
 
-			// Wait for tiles and React highlight to render after map reposition
-			await new Promise<void>((resolve) => setTimeout(resolve, MAP_RENDER_SETTLE_MS));
+			// Wait for tiles to load (and the React highlight to commit during
+			// the settle) after the map reposition, before snapshotting.
+			await waitForTilesLoaded(map);
 
 			if (signal?.aborted) return;
 

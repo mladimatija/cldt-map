@@ -53,7 +53,7 @@ import { MapControlsEmergencyButton } from './MapControlsEmergencyButton';
 import { MapControlsPoiList } from './MapControlsPoiList';
 import { MapControlsEmergencyPanel } from './MapControlsEmergencyPanel';
 import { prefetchEmergencyData } from '@/lib/emergency-data';
-import { fitMapToRulerBounds } from '@/lib/export-utils';
+import { fitMapToRulerBounds, waitForTilesLoaded } from '@/lib/export-utils';
 
 function getCroatiaGeoJsonBoundary(): GeoJSON.FeatureCollection {
 	return {
@@ -490,15 +490,20 @@ const MapControls: React.FC<MapControlsProps> = ({
 	const handlePngDownload = (): void => {
 		closePanel();
 		if (rulerRange && enhancedTrailPoints?.length) {
-			fitMapToRulerBounds(map, rulerRange, enhancedTrailPoints);
+			fitMapToRulerBounds(map, rulerRange, enhancedTrailPoints, { animate: false });
 		}
 		if (pngExportTimerRef.current) clearTimeout(pngExportTimerRef.current);
+		// Short defer lets the panel close and the ruler refit apply; the real
+		// tile-load wait happens inside via waitForTilesLoaded so the screenshot
+		// is never taken over blank tiles.
 		pngExportTimerRef.current = setTimeout(async () => {
 			pngExportTimerRef.current = null;
 			try {
 				const { toBlob } = await import('html-to-image');
 				const mapEl = document.querySelector<HTMLElement>('.leaflet-container');
 				if (!mapEl) return;
+				map.invalidateSize({ animate: false });
+				await waitForTilesLoaded(map);
 				const blob = await toBlob(mapEl, { cacheBust: true });
 				if (!blob) return;
 				const url = URL.createObjectURL(blob);
@@ -512,7 +517,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 			} catch (err) {
 				console.error('PNG export failed:', err instanceof Error ? err.message : String(err));
 			}
-		}, 600);
+		}, 150);
 	};
 
 	useEffect(() => {
