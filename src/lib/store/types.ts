@@ -371,6 +371,10 @@ export interface MapStoreState {
 	showStaleCacheNotification: boolean;
 	setStaleCacheNotification: (show: boolean) => void;
 	initStaleCacheCheck: () => Promise<void>;
+	/** Silently re-download the active provider's cached corridor when it has
+	 *  aged past its TTL, gated on auto-sync + online + not battery-saver. Runs
+	 *  at startup and on reconnect; a no-op when any guard fails. */
+	selfHealStaleTiles: () => Promise<void>;
 
 	/** Set after the first successful manual offline download to show contextual PWA copy. */
 	pwaInstallTrigger: 'offlineDownload' | null;

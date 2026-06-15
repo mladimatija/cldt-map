@@ -5,13 +5,7 @@ import { useTranslations } from 'next-intl';
 import { IoRefresh } from 'react-icons/io5';
 import { Button } from '@/components/ui/Button';
 import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
-import {
-	getProviderCacheKey,
-	isCacheStale,
-	type BatteryManager,
-	type NavigatorWithBattery,
-	type NavigatorWithConnection,
-} from '@/lib/tile-cache';
+import { type BatteryManager, type NavigatorWithBattery, type NavigatorWithConnection } from '@/lib/tile-cache';
 
 interface ServiceWorkerProviderProps {
 	children: React.ReactNode;
@@ -36,13 +30,12 @@ export function ServiceWorkerProvider({ children }: ServiceWorkerProviderProps):
 	const initOfflineDetection = useMapStore((state: MapStoreState) => state.initOfflineDetection);
 	const initStaleCacheCheck = useMapStore((state: MapStoreState) => state.initStaleCacheCheck);
 	const loadImportedTracksFromStorage = useMapStore((state: MapStoreState) => state.loadImportedTracksFromStorage);
-	const autoSync = useMapStore((state: MapStoreState) => state.autoSync);
-	const loadTileCacheMeta = useMapStore((state: MapStoreState) => state.loadTileCacheMeta);
-	const startTileDownload = useMapStore((state: MapStoreState) => state.startTileDownload);
-	const baseMapProvider = useMapStore((state: MapStoreState) => state.baseMapProvider);
+	const selfHealStaleTiles = useMapStore((state: MapStoreState) => state.selfHealStaleTiles);
 	const maybeRunPredictivePrecache = useMapStore((state: MapStoreState) => state.maybeRunPredictivePrecache);
 	const handleQuotaExceeded = useMapStore((state: MapStoreState) => state.handleQuotaExceeded);
-	const enhancedTrailPoints = useStore((state: StoreState) => state.enhancedTrailPoints);
+	// Lightweight boolean (not the array) so self-heal can wait for the async GPX
+	// load without re-rendering on every trail-point change.
+	const trailReady = useStore((state: StoreState) => state.enhancedTrailPoints.length > 1);
 
 	// Only run service worker logic on the client side
 	useEffect(() => {
@@ -100,12 +93,21 @@ export function ServiceWorkerProvider({ children }: ServiceWorkerProviderProps):
 		};
 	}, []);
 
-	// Init offline detection, stale cache check, and restore imported tracks once on mount
+	// Init offline detection, stale cache check, and restore imported tracks once on mount.
 	useEffect(() => {
 		initOfflineDetection();
 		void initStaleCacheCheck();
 		void loadImportedTracksFromStorage();
 	}, [initOfflineDetection, initStaleCacheCheck, loadImportedTracksFromStorage]);
+
+	// Launch self-heal: refresh a stale offline cache for the already-online user.
+	// Gated on trailReady because the corridor GPX loads asynchronously after
+	// mount - selfHealStaleTiles needs the trail points to regenerate tile URLs.
+	// (The 'online' event below only fires on an offline->online transition.)
+	useEffect(() => {
+		if (!trailReady) return;
+		void selfHealStaleTiles();
+	}, [trailReady, selfHealStaleTiles]);
 
 	// Handle TILE_QUOTA_EXCEEDED message from a service worker
 	useEffect(() => {
@@ -125,37 +127,22 @@ export function ServiceWorkerProvider({ children }: ServiceWorkerProviderProps):
 		};
 	}, [handleQuotaExceeded]);
 
-	// Background sync: re-download tiles when coming back online (if autoSync enabled)
+	// On reconnect: self-heal a stale offline cache (auto-sync, off battery saver)
+	// and re-evaluate the predictive precache. All eligibility gating lives in the
+	// store action so the trigger here stays a thin event wire-up.
 	useEffect(() => {
 		if (typeof window === 'undefined') return;
 
 		const handleOnline = (): void => {
 			void maybeRunPredictivePrecache({ source: 'online' });
-			if (!autoSync) return;
-			if (!enhancedTrailPoints?.length) return;
-			if (!baseMapProvider) return;
-			// Load the latest meta to check staleness before syncing
-			const providerKey = getProviderCacheKey(baseMapProvider);
-			void loadTileCacheMeta(providerKey).then(() => {
-				const meta = useMapStore.getState().tileCacheMeta;
-				if (!meta || isCacheStale(meta)) {
-					void startTileDownload(enhancedTrailPoints, baseMapProvider, { source: 'autoSync' });
-				}
-			});
+			void selfHealStaleTiles();
 		};
 
 		window.addEventListener('online', handleOnline);
 		return () => {
 			window.removeEventListener('online', handleOnline);
 		};
-	}, [
-		autoSync,
-		enhancedTrailPoints,
-		baseMapProvider,
-		loadTileCacheMeta,
-		startTileDownload,
-		maybeRunPredictivePrecache,
-	]);
+	}, [maybeRunPredictivePrecache, selfHealStaleTiles]);
 
 	// Network type changes (Wi-Fi <-> cellular) trigger predictive checks
 	useEffect(() => {

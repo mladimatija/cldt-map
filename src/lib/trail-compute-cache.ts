@@ -45,7 +45,7 @@ function isComputedTrailData(data: unknown): data is ComputedTrailData {
 		d.points.length === d.enhanced.length &&
 		Array.isArray(d.elevationPoints) &&
 		!!d.metadata &&
-		typeof (d.metadata).totalDistanceM === 'number'
+		typeof d.metadata.totalDistanceM === 'number'
 	);
 }
 

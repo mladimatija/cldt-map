@@ -519,7 +519,7 @@
 		"quotaExceeded": "Spazio di archiviazione insufficiente per salvare le tessere in cache.",
 		"downloadError": "Download fallito. Riprova.",
 		"autoSync": "Sincronizzazione automatica quando online",
-		"autoSyncTooltip": "Riscarica automaticamente le tessere non aggiornate quando il dispositivo torna online.",
+		"autoSyncTooltip": "Aggiorna automaticamente le mappe offline obsolete all'avvio e quando torni online. Sospeso in modalità risparmio energetico.",
 		"predictive": {
 			"label": "Pre-cache predittivo",
 			"hint": "Carica i tile in anticipo quando il Wi-Fi è disponibile."

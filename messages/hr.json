@@ -519,7 +519,7 @@
 		"quotaExceeded": "Nema dovoljno prostora za pohranu pločica.",
 		"downloadError": "Preuzimanje nije uspjelo. Pokušajte ponovno.",
 		"autoSync": "Automatska sinkronizacija",
-		"autoSyncTooltip": "Automatski preuzima zastarjele pločice kada uređaj dođe online.",
+		"autoSyncTooltip": "Automatski osvježava zastarjele offline karte pri pokretanju i kada se vratite na mrežu. Preskače se u načinu štednje baterije.",
 		"predictive": {
 			"label": "Prediktivno pred-učitavanje",
 			"hint": "Učitaj pločice unaprijed dok je dostupan Wi-Fi."

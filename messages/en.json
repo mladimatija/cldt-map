@@ -519,7 +519,7 @@
 		"quotaExceeded": "Not enough storage space to cache tiles.",
 		"downloadError": "Download failed. Please try again.",
 		"autoSync": "Auto-sync when online",
-		"autoSyncTooltip": "Automatically re-downloads stale tiles when your device comes back online.",
+		"autoSyncTooltip": "Automatically refreshes outdated offline maps on launch and when you come back online. Skipped in battery saver mode.",
 		"predictive": {
 			"label": "Predictive pre-cache",
 			"hint": "Cache tiles ahead while on Wi-Fi."

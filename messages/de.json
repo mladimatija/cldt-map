@@ -519,7 +519,7 @@
 		"quotaExceeded": "Nicht genügend Speicherplatz zum Speichern von Kacheln.",
 		"downloadError": "Download fehlgeschlagen. Bitte erneut versuchen.",
 		"autoSync": "Automatisch synchronisieren wenn online",
-		"autoSyncTooltip": "Lädt veraltete Kacheln automatisch herunter, wenn das Gerät wieder online ist.",
+		"autoSyncTooltip": "Aktualisiert veraltete Offline-Karten automatisch beim Start und sobald Sie wieder online sind. Im Energiesparmodus ausgesetzt.",
 		"predictive": {
 			"label": "Vorausschauendes Pre-Caching",
 			"hint": "Tiles im Voraus laden, wenn WLAN verfügbar ist."
