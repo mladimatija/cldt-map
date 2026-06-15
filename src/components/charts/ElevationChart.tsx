@@ -448,7 +448,7 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 											<li>
 												{tControls.rich('helpItems.escCancelRuler', {
 													kbd: (chunks) => (
-														<kbd className="rounded border border-gray-200 bg-gray-50 px-1 py-0.5 font-mono text-[11px] text-gray-700 dark:border-[var(--border-color)] dark:bg-[var(--bg-primary)] dark:text-[var(--text-primary)]">
+														<kbd className="rounded border border-gray-200 bg-gray-50 px-1 py-0.5 font-mono text-[0.6875rem] text-gray-700 dark:border-[var(--border-color)] dark:bg-[var(--bg-primary)] dark:text-[var(--text-primary)]">
 															{chunks}
 														</kbd>
 													),

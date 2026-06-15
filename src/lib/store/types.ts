@@ -12,6 +12,7 @@ import type { WaypointCategoryId } from '../waypoint-categories';
 import type { PackList } from '../pack-csv';
 import type { PoiImage, PoisFile } from '../pois';
 import { RulerRange } from '@/lib/distance-utils';
+import type { UiTextScale } from '../ui-text-scale';
 
 export type { TrailDirection, UnitSystem };
 export type { TrackPoint } from '../gpx-parser';
@@ -306,6 +307,9 @@ export interface MapStoreState {
 	setOffRouteAlertEnabled: (enabled: boolean) => void;
 	largeTouchTargets: boolean;
 	setLargeTouchTargets: (enabled: boolean) => void;
+	/** UI text-size accessibility level; applied to the document root by ThemeProvider. Persisted. */
+	uiTextScale: UiTextScale;
+	setUiTextScale: (scale: UiTextScale) => void;
 	showSections: boolean;
 	setShowSections: (show: boolean) => void;
 	gradeTintedTrail: boolean;

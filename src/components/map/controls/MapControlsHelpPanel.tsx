@@ -13,7 +13,7 @@ import { useMapStore, type MapStoreState } from '@/lib/store';
 
 function HelpKbd({ children }: { children: React.ReactNode }): React.ReactElement {
 	return (
-		<kbd className="rounded border border-gray-200 bg-gray-50 px-1 py-0.5 font-mono text-[11px] text-gray-700 dark:border-[var(--border-color)] dark:bg-[var(--bg-primary)] dark:text-[var(--text-primary)]">
+		<kbd className="rounded border border-gray-200 bg-gray-50 px-1 py-0.5 font-mono text-[0.6875rem] text-gray-700 dark:border-[var(--border-color)] dark:bg-[var(--bg-primary)] dark:text-[var(--text-primary)]">
 			{children}
 		</kbd>
 	);
@@ -231,7 +231,7 @@ export function MapControlsHelpPanel(): React.ReactElement {
 				/>
 			</MapControlSectionCard>
 
-			<p className="m-0 border-t border-gray-200 pt-2 text-[11px] leading-snug text-gray-500 dark:border-[var(--border-color)] dark:text-[var(--text-secondary)]">
+			<p className="m-0 border-t border-gray-200 pt-2 text-[0.6875rem] leading-snug text-gray-500 dark:border-[var(--border-color)] dark:text-[var(--text-secondary)]">
 				{t('officialAppNote')}
 			</p>
 		</div>

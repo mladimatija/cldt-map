@@ -1,6 +1,7 @@
 import type { TrailDirection, UnitSystem } from './types';
 import { BaseMapProvider } from './services/base-map-provider';
 import { DEFAULT_POI_TYPES } from './poi-types';
+import { isUiTextScale, type UiTextScale } from './ui-text-scale';
 
 /**
  * Centralized application defaults.
@@ -64,6 +65,11 @@ function envBaseMapProvider(key: string, defaultVal: string): string {
 	return v;
 }
 
+function envUiTextScale(key: string): UiTextScale {
+	const v = process.env[key];
+	return isUiTextScale(v) ? v : 'default';
+}
+
 /** Default map center (Croatia) and zoom for initial load */
 export const mapDefaults = {
 	center: envMapCenter('NEXT_PUBLIC_DEFAULT_MAP_CENTER', [44.4268, 16.438]),
@@ -112,6 +118,9 @@ export const config = {
 
 	/** Large touch targets by default (accessibility) */
 	largeTouchTargets: envBool('NEXT_PUBLIC_DEFAULT_LARGE_TOUCH_TARGETS', false),
+
+	/** UI text size (accessibility): default | large | larger */
+	uiTextScale: envUiTextScale('NEXT_PUBLIC_DEFAULT_UI_TEXT_SCALE'),
 
 	/** Distance ruler enabled by default */
 	rulerEnabled: envBool('NEXT_PUBLIC_DEFAULT_RULER_ENABLED', false),

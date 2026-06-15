@@ -92,6 +92,13 @@
 		"loadingTrailData": "Učitavanje podataka staze..."
 	},
 	"mapControls": {
+		"textSize": "Veličina teksta",
+		"textSizeTooltip": "Povećava tekst aplikacije radi lakšeg čitanja. Ne mijenja veličinu karte.",
+		"textSizeOption": {
+			"default": "Zadano",
+			"large": "Veliko",
+			"larger": "Veće"
+		},
 		"preferences": "Postavke",
 		"sections": {
 			"displayDevice": "Prikaz i uređaj",

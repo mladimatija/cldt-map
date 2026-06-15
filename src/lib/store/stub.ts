@@ -141,6 +141,8 @@ export function createMapStoreStub(): MapStoreState {
 		setBatterySaverMode: noop,
 		largeTouchTargets: false,
 		setLargeTouchTargets: noop,
+		uiTextScale: 'default',
+		setUiTextScale: noop,
 		showSections: false,
 		setShowSections: noop,
 		gradeTintedTrail: false,

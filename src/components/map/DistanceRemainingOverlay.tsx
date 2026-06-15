@@ -298,7 +298,7 @@ export function DistanceRemainingOverlay(): React.ReactElement | null {
 				<span className="shrink-0">
 					{formatDistance(km, units, distancePrecision)}
 					{carryStr && (
-						<span aria-hidden="true" className="ml-1 text-[10px] text-gray-400 dark:text-[var(--text-secondary)]">
+						<span aria-hidden="true" className="ml-1 text-[0.625rem] text-gray-400 dark:text-[var(--text-secondary)]">
 							≈{carryStr}
 						</span>
 					)}
@@ -459,7 +459,7 @@ export function DistanceRemainingOverlay(): React.ReactElement | null {
 			</div>
 			{hasUpNextContent && (
 				<div className="mt-1 border-t border-gray-200 pt-1 dark:border-[var(--border-color)]">
-					<div className="m-0 text-[10px] font-medium tracking-wide text-gray-400 dark:text-[var(--text-secondary)]">
+					<div className="m-0 text-[0.625rem] font-medium tracking-wide text-gray-400 dark:text-[var(--text-secondary)]">
 						<span className="uppercase">{t('upNext')}</span>{' '}
 						<span className="inline-flex normal-case" ref={horizonSelectWrapRef}>
 							<MapControlSingleSelect<{ value: AheadHorizonKm; label: string }>
@@ -488,7 +488,7 @@ export function DistanceRemainingOverlay(): React.ReactElement | null {
 						<div className="mt-0.5">
 							<button
 								aria-expanded={upNextMoreExpanded}
-								className="text-cldt-blue flex w-full cursor-pointer items-center gap-1 rounded text-left text-[10px] hover:underline focus-visible:underline focus-visible:outline-none dark:text-[var(--text-primary)]"
+								className="text-cldt-blue flex w-full cursor-pointer items-center gap-1 rounded text-left text-[0.625rem] hover:underline focus-visible:underline focus-visible:outline-none dark:text-[var(--text-primary)]"
 								type="button"
 								onClick={() => setUpNextMoreExpanded(!upNextMoreExpanded)}
 							>
@@ -500,7 +500,7 @@ export function DistanceRemainingOverlay(): React.ReactElement | null {
 					)}
 					{aheadCorridorCount > 0 && (
 						<button
-							className="text-cldt-blue mt-1 w-full cursor-pointer rounded text-left text-[10px] hover:underline focus-visible:underline focus-visible:outline-none dark:text-[var(--text-primary)]"
+							className="text-cldt-blue mt-1 w-full cursor-pointer rounded text-left text-[0.625rem] hover:underline focus-visible:underline focus-visible:outline-none dark:text-[var(--text-primary)]"
 							type="button"
 							onClick={handleSeeAllAhead}
 						>

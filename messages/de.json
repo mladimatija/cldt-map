@@ -92,6 +92,13 @@
 		"loadingTrailData": "Trail-Daten werden geladen..."
 	},
 	"mapControls": {
+		"textSize": "Textgröße",
+		"textSizeTooltip": "Vergrößert den App-Text für bessere Lesbarkeit. Die Karte wird nicht skaliert.",
+		"textSizeOption": {
+			"default": "Standard",
+			"large": "Groß",
+			"larger": "Größer"
+		},
 		"preferences": "Einstellungen",
 		"sections": {
 			"displayDevice": "Anzeige & Gerät",

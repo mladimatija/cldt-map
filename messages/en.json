@@ -92,6 +92,13 @@
 		"loadingTrailData": "Loading trail data..."
 	},
 	"mapControls": {
+		"textSize": "Text size",
+		"textSizeTooltip": "Scales the app text larger for easier reading. Does not resize the map.",
+		"textSizeOption": {
+			"default": "Default",
+			"large": "Large",
+			"larger": "Larger"
+		},
 		"preferences": "Preferences",
 		"sections": {
 			"displayDevice": "Display & device",

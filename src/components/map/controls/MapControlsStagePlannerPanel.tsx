@@ -639,7 +639,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 									{t('tripSummaryLine', { count: stagePlan.stages.length, distance: tripTotalDistance })}
 								</p>
 								{restDayCount > 0 && (
-									<p className="m-0 mt-0.5 text-[11px] text-gray-600 dark:text-[var(--text-secondary)]">
+									<p className="m-0 mt-0.5 text-[0.6875rem] text-gray-600 dark:text-[var(--text-secondary)]">
 										<span aria-hidden>🛏️</span>{' '}
 										{t('tripRestDays', {
 											count: restDayCount,
@@ -648,7 +648,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 									</p>
 								)}
 								{planResupplyCadence && (
-									<p className="m-0 mt-0.5 text-[11px] text-gray-600 dark:text-[var(--text-secondary)]">
+									<p className="m-0 mt-0.5 text-[0.6875rem] text-gray-600 dark:text-[var(--text-secondary)]">
 										<span aria-hidden>🛒</span>{' '}
 										{t('tripFoodGap', {
 											distance: formatDistance(planResupplyCadence.maxFoodGapKm, units, distancePrecision),
@@ -658,7 +658,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 								{tripNextGroceryTown &&
 									planResupplyCadence?.kmToFirstGrocery !== null &&
 									planResupplyCadence?.kmToFirstGrocery !== undefined && (
-										<p className="m-0 text-[11px] text-gray-600 dark:text-[var(--text-secondary)]">
+										<p className="m-0 text-[0.6875rem] text-gray-600 dark:text-[var(--text-secondary)]">
 											{t('tripNextGrocery', {
 												town: tripNextGroceryTown,
 												distance: formatDistance(planResupplyCadence.kmToFirstGrocery, units, distancePrecision),
@@ -862,7 +862,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 							)}
 
 							{autoBumpNotice && (
-								<p className="text-cldt-blue dark:text-cldt-blue m-0 text-[11px]">
+								<p className="text-cldt-blue dark:text-cldt-blue m-0 text-[0.6875rem]">
 									{t('autoBumpNotice', {
 										actual: autoBumpNotice.actual,
 										requested: autoBumpNotice.requested,
@@ -953,7 +953,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 																chips.push(
 																	<span
 																		aria-label={t('stagePoiCount', { count: poiCount })}
-																		className="text-cldt-blue bg-cldt-blue/10 shrink-0 rounded-full px-1.5 py-0 text-[10px] font-medium tabular-nums"
+																		className="text-cldt-blue bg-cldt-blue/10 shrink-0 rounded-full px-1.5 py-0 text-[0.625rem] font-medium tabular-nums"
 																		key="poi"
 																		title={t('stagePoiCount', { count: poiCount })}
 																	>
@@ -968,7 +968,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 																			distance: `${toDisplay(waterGapByStage[i]).toFixed(0)} ${distanceUnitLabel}`,
 																		})}
 																		className={cn(
-																			'shrink-0 rounded-full px-1.5 py-0 text-[10px] font-medium tabular-nums',
+																			'shrink-0 rounded-full px-1.5 py-0 text-[0.625rem] font-medium tabular-nums',
 																			waterGapByStage[i] >= WATER_GAP_DANGER_KM
 																				? 'bg-cldt-red/10 text-cldt-red'
 																				: 'bg-amber-500/15 text-amber-700 dark:text-amber-400',
@@ -998,7 +998,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 																					})
 																		}
 																		className={cn(
-																			'shrink-0 rounded-full px-1.5 py-0 text-[10px] font-medium tabular-nums',
+																			'shrink-0 rounded-full px-1.5 py-0 text-[0.625rem] font-medium tabular-nums',
 																			packScenariosByStage[i].carryLiters >= CARRY_WARN_L
 																				? 'bg-amber-500/15 text-amber-700 dark:text-amber-400'
 																				: 'bg-gray-500/10 text-gray-600 dark:text-[var(--text-primary)]',
@@ -1030,7 +1030,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 																	<span
 																		aria-label={resupplyStatusLabel(resupplyStatus)}
 																		className={cn(
-																			'shrink-0 rounded-full px-1.5 py-0 text-[10px] font-medium',
+																			'shrink-0 rounded-full px-1.5 py-0 text-[0.625rem] font-medium',
 																			resupplyStatus === 'yes'
 																				? 'bg-gray-500/10 text-gray-600 dark:text-[var(--text-primary)]'
 																				: 'bg-amber-500/15 text-amber-700 dark:text-amber-400',
@@ -1080,7 +1080,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 																	{overflowCount > 0 && (
 																		<span
 																			aria-label={t('stageChipOverflow', { count: overflowCount })}
-																			className="shrink-0 rounded-full bg-gray-500/10 px-1.5 py-0 text-[10px] font-medium text-gray-600 tabular-nums dark:text-[var(--text-primary)]"
+																			className="shrink-0 rounded-full bg-gray-500/10 px-1.5 py-0 text-[0.625rem] font-medium text-gray-600 tabular-nums dark:text-[var(--text-primary)]"
 																			title={t('stageChipOverflow', { count: overflowCount })}
 																		>
 																			{t('stageChipOverflow', { count: overflowCount })}
@@ -1095,7 +1095,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 															{waterGapByStage[i] !== undefined && (
 																<p
 																	className={cn(
-																		'm-0 text-[10px]',
+																		'm-0 text-[0.625rem]',
 																		waterGapByStage[i] >= WATER_GAP_DANGER_KM
 																			? 'text-cldt-red'
 																			: waterGapByStage[i] >= WATER_GAP_WARN_KM
@@ -1111,27 +1111,27 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 															)}
 															{packScenariosByStage[i] !== undefined && (
 																<div className="m-0 flex flex-col gap-0.5 text-gray-500 dark:text-[var(--text-secondary)]">
-																	<p className="m-0 text-[10px] leading-snug">
+																	<p className="m-0 text-[0.625rem] leading-snug">
 																		<span aria-hidden>🎒</span>{' '}
 																		{t('stagePackBase', {
 																			weight: formatWeight(packScenariosByStage[i].baseKg, units),
 																		})}
 																	</p>
 																	{packScenariosByStage[i].carryLiters > 0 ? (
-																		<p className="m-0 text-[10px] leading-snug">
+																		<p className="m-0 text-[0.625rem] leading-snug">
 																			{t('stagePackLoaded', {
 																				weight: formatWeight(packScenariosByStage[i].loadedKg, units),
 																				volume: formatVolume(packScenariosByStage[i].carryLiters, units),
 																			})}
 																		</p>
 																	) : (
-																		<p className="m-0 text-[10px] leading-snug">{t('stagePackLoadedSame')}</p>
+																		<p className="m-0 text-[0.625rem] leading-snug">{t('stagePackLoadedSame')}</p>
 																	)}
 																</div>
 															)}
 															{stageResupplyDetailLines(stageCadence).map((line) => (
 																<p
-																	className="m-0 text-[10px] leading-snug text-amber-700 dark:text-amber-400"
+																	className="m-0 text-[0.625rem] leading-snug text-amber-700 dark:text-amber-400"
 																	key={line}
 																>
 																	<span aria-hidden>🛒</span> {line}
@@ -1139,7 +1139,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 															))}
 															{stagePois.length > 0 && (
 																<>
-																	<p className="m-0 text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
+																	<p className="m-0 text-[0.625rem] font-medium tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
 																		{t('stagePoisHeading', { index: i + 1 })}
 																	</p>
 																	{stagePois.map((poi) => {
@@ -1187,7 +1187,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 																					<span className="truncate font-medium text-gray-800 dark:text-[var(--text-primary)]">
 																						{name}
 																					</span>
-																					<span className="ml-auto shrink-0 text-[10px] text-gray-500 dark:text-[var(--text-secondary)]">
+																					<span className="ml-auto shrink-0 text-[0.625rem] text-gray-500 dark:text-[var(--text-secondary)]">
 																						{typeLabel}
 																					</span>
 																				</button>
@@ -1195,7 +1195,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 																		);
 																	})}
 																	<div className="flex items-center justify-between gap-2 border-t border-gray-100 pt-1 dark:border-[var(--border-color)]">
-																		<span className="text-[10px] text-gray-500 dark:text-[var(--text-secondary)]">
+																		<span className="text-[0.625rem] text-gray-500 dark:text-[var(--text-secondary)]">
 																			{tPois('exportSelectionCount', { count: stageSelectedPoiIds.size })}
 																		</span>
 																		<Button

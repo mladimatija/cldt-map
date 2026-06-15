@@ -114,12 +114,14 @@ export function MapControlsSharePanel({
 						<p className="m-0 text-xs break-all text-gray-600 dark:text-[var(--text-secondary)]">{displayUrl}</p>
 					) : null}
 					{displayUrl && !loading && !isShort ? (
-						<p className="m-0 text-[10px] leading-snug text-gray-500 dark:text-[var(--text-secondary)]">
+						<p className="m-0 text-[0.625rem] leading-snug text-gray-500 dark:text-[var(--text-secondary)]">
 							{t('shareQrLongFallback')}
 						</p>
 					) : null}
 					{isShort && !loading ? (
-						<p className="m-0 text-[10px] text-gray-500 dark:text-[var(--text-secondary)]">{t('shareQrShortNote')}</p>
+						<p className="m-0 text-[0.625rem] text-gray-500 dark:text-[var(--text-secondary)]">
+							{t('shareQrShortNote')}
+						</p>
 					) : null}
 					<Button
 						disabled={!displayUrl || loading}

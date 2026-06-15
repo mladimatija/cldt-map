@@ -955,7 +955,7 @@ export function MapControlsPoiList({
 						/>
 
 						<div className="flex flex-col gap-1">
-							<div className="flex items-center justify-between text-[10px] tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
+							<div className="flex items-center justify-between text-[0.625rem] tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
 								<span>{t('filterPresetsHeading')}</span>
 								{!savingFilterPreset && (
 									<button
@@ -1047,7 +1047,7 @@ export function MapControlsPoiList({
 									<span className="text-xs text-gray-700 dark:text-[var(--text-primary)]">
 										{t('includeRemotePoisLabel')}
 									</span>
-									<span className="text-[10px] text-gray-500 dark:text-[var(--text-secondary)]">
+									<span className="text-[0.625rem] text-gray-500 dark:text-[var(--text-secondary)]">
 										{t('includeRemotePoisHint')}
 									</span>
 								</div>
@@ -1071,7 +1071,7 @@ export function MapControlsPoiList({
 						)}
 
 						{showWaterReliabilityFilter && enabledWaterReliability.size === 0 && (
-							<p className="m-0 text-[10px] text-gray-500 dark:text-[var(--text-secondary)]">
+							<p className="m-0 text-[0.625rem] text-gray-500 dark:text-[var(--text-secondary)]">
 								{t('waterReliabilityFilterHint')}
 							</p>
 						)}
@@ -1100,13 +1100,13 @@ export function MapControlsPoiList({
 						</div>
 						{sort === 'ahead' && (
 							<div className="flex flex-wrap items-center gap-1">
-								<span className="text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
+								<span className="text-[0.625rem] font-medium tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
 									{t('aheadHorizonLabel')}
 								</span>
 								{AHEAD_HORIZON_OPTIONS.map((km) => (
 									<button
 										className={cn(
-											'focus-visible:ring-cldt-green min-h-[28px] rounded-full border px-2 py-0.5 text-[10px] font-medium tabular-nums focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:outline-none',
+											'focus-visible:ring-cldt-green min-h-[28px] rounded-full border px-2 py-0.5 text-[0.625rem] font-medium tabular-nums focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:outline-none',
 											aheadHorizonKm === km
 												? 'border-cldt-blue bg-cldt-blue text-[var(--marker-on-color)]'
 												: 'hover:border-cldt-blue border-gray-300 text-gray-600 dark:border-[var(--border-color)] dark:text-[var(--text-secondary)]',
@@ -1133,7 +1133,7 @@ export function MapControlsPoiList({
 
 						<label
 							className={cn(
-								'flex items-center gap-2 text-[10px] tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]',
+								'flex items-center gap-2 text-[0.625rem] tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]',
 								sort !== 'trail' && 'opacity-40',
 							)}
 							title={groupByDecadeLabel}
@@ -1153,7 +1153,7 @@ export function MapControlsPoiList({
 							onOpenChange={setPoiListTagsOpen}
 						>
 							<div className="flex flex-col gap-1">
-								<div className="flex items-center justify-between text-[10px] tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
+								<div className="flex items-center justify-between text-[0.625rem] tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
 									<span>{t('tagFilterHeading')}</span>
 									{enabledPoiTags.size > 0 && (
 										<button
@@ -1172,7 +1172,7 @@ export function MapControlsPoiList({
 											<button
 												aria-pressed={active}
 												className={cn(
-													'focus-visible:ring-cldt-green inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full border px-1.5 text-[10px] transition-colors focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:outline-none',
+													'focus-visible:ring-cldt-green inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full border px-1.5 text-[0.625rem] transition-colors focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:outline-none',
 													active
 														? 'border-cldt-blue bg-cldt-blue text-[var(--marker-on-color)]'
 														: 'hover:border-cldt-blue border-gray-300 text-gray-600 dark:border-[var(--border-color)] dark:text-[var(--text-secondary)]',
@@ -1216,7 +1216,7 @@ export function MapControlsPoiList({
 									if (item.type === 'header') {
 										return (
 											<div
-												className="sticky top-0 z-10 mt-1 bg-[var(--map-tooltip-bg)] px-1 py-1 text-[10px] font-medium tracking-wide text-gray-500 uppercase dark:bg-[var(--bg-primary)] dark:text-[var(--text-secondary)]"
+												className="sticky top-0 z-10 mt-1 bg-[var(--map-tooltip-bg)] px-1 py-1 text-[0.625rem] font-medium tracking-wide text-gray-500 uppercase dark:bg-[var(--bg-primary)] dark:text-[var(--text-secondary)]"
 												key={item.key}
 											>
 												{item.label} · {t('groupCount', { count: item.count })}
@@ -1238,7 +1238,7 @@ export function MapControlsPoiList({
 					>
 						<div className="flex flex-col gap-1.5">
 							<div className="flex flex-col gap-1">
-								<div className="flex items-center justify-between text-[10px] tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
+								<div className="flex items-center justify-between text-[0.625rem] tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
 									<span>{t('starCollectionHeading')}</span>
 									{!creatingStarCollection && (
 										<button

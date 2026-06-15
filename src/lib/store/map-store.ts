@@ -3,6 +3,7 @@ import type { LatLng } from 'leaflet';
 import { create, type StoreApi, type UseBoundStore } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { isAheadHorizonKm } from '../poi-ahead-corridor';
+import { isUiTextScale, type UiTextScale } from '../ui-text-scale';
 import {
 	config,
 	defaultEnabledPoiTypes,
@@ -302,6 +303,8 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					setOffRouteAlertEnabled: (enabled: boolean) => set({ offRouteAlertEnabled: enabled }),
 					largeTouchTargets: config.largeTouchTargets,
 					setLargeTouchTargets: (enabled: boolean) => set({ largeTouchTargets: enabled }),
+					uiTextScale: config.uiTextScale,
+					setUiTextScale: (scale: UiTextScale) => set({ uiTextScale: scale }),
 					showSections: config.showSections,
 					gradeTintedTrail: config.gradeTintedTrail,
 					surfaceColoured: config.surfaceColoured,
@@ -1473,6 +1476,7 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 						keepScreenOn: state.keepScreenOn,
 						offRouteAlertEnabled: state.offRouteAlertEnabled,
 						largeTouchTargets: state.largeTouchTargets,
+						uiTextScale: state.uiTextScale,
 						baseMapProvider: state.baseMapProvider,
 						autoSync: state.autoSync,
 						predictivePrecache: state.predictivePrecache,
@@ -1628,6 +1632,7 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					}
 					if (typeof merged.aheadHorizonKm === 'string') merged.aheadHorizonKm = Number(merged.aheadHorizonKm);
 					if (!isAheadHorizonKm(merged.aheadHorizonKm)) merged.aheadHorizonKm = 50;
+					if (!isUiTextScale(merged.uiTextScale)) merged.uiTextScale = 'default';
 					return merged;
 				},
 			},

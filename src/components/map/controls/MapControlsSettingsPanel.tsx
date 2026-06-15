@@ -18,6 +18,7 @@ import {
 import { parsePackCsv } from '@/lib/pack-csv';
 import { disablePushAlerts, enablePushAlerts, pushAlertsSupported } from '@/lib/push-alerts';
 import { useMapStore, type MapStoreState } from '@/lib/store';
+import { UI_TEXT_SCALES } from '@/lib/ui-text-scale';
 import {
 	IoMoonOutline,
 	IoSunnyOutline,
@@ -25,6 +26,7 @@ import {
 	IoBatteryHalfOutline,
 	IoCompassOutline,
 	IoHandLeftOutline,
+	IoTextOutline,
 	IoLayersOutline,
 	IoSettingsOutline,
 	IoAlertCircleOutline,
@@ -111,6 +113,8 @@ export function MapControlsSettingsPanel({
 	const setBatterySaverMode = useMapStore((state: MapStoreState) => state.setBatterySaverMode);
 	const largeTouchTargets = useMapStore((state: MapStoreState) => state.largeTouchTargets);
 	const setLargeTouchTargets = useMapStore((state: MapStoreState) => state.setLargeTouchTargets);
+	const uiTextScale = useMapStore((state: MapStoreState) => state.uiTextScale);
+	const setUiTextScale = useMapStore((state: MapStoreState) => state.setUiTextScale);
 	const compassEnabled = useMapStore((state: MapStoreState) => state.compassEnabled);
 	const setCompassEnabled = useMapStore((state: MapStoreState) => state.setCompassEnabled);
 	const keepScreenOn = useMapStore((state: MapStoreState) => state.keepScreenOn);
@@ -269,6 +273,30 @@ export function MapControlsSettingsPanel({
 									tooltip={t('largeTouchTargetsTooltip')}
 									onCheckedChange={(checked) => setLargeTouchTargets(checked)}
 								/>
+								<div className="flex flex-col gap-2">
+									<div className="flex items-center gap-2">
+										<IoTextOutline aria-hidden className="h-4 w-4 shrink-0 text-gray-600 dark:text-white" />
+										<span className="text-sm font-medium text-gray-700 dark:text-[var(--text-primary)]">
+											{t('textSize')}
+										</span>
+									</div>
+									<div className="grid grid-cols-3 gap-1.5">
+										{UI_TEXT_SCALES.map((scale) => (
+											<label className="flex cursor-pointer items-center gap-2" key={scale}>
+												<Radio
+													checked={uiTextScale === scale}
+													name="ui-text-scale"
+													value={scale}
+													onChange={() => setUiTextScale(scale)}
+												/>
+												<span className="text-sm text-gray-700 dark:text-[var(--text-primary)]">
+													{t(`textSizeOption.${scale}`)}
+												</span>
+											</label>
+										))}
+									</div>
+									<p className="m-0 text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('textSizeTooltip')}</p>
+								</div>
 								<SettingsToggleRow
 									checked={compassEnabled}
 									icon={<IoCompassOutline className="h-4 w-4" />}
