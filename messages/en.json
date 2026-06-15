@@ -1179,6 +1179,13 @@
 		"journalExportGpxMissing": "Import the linked GPX to export this segment."
 	},
 	"help": {
+		"startHereHeading": "Start here",
+		"start": {
+			"plan": "Plan a multi-day trip",
+			"places": "Browse places (POI)",
+			"progress": "Track your progress",
+			"offline": "Download offline maps"
+		},
 		"title": "Help",
 		"basicsHeading": "Map basics",
 		"basics": {

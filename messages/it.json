@@ -1179,6 +1179,13 @@
 		"journalExportGpxMissing": "Importa il GPX collegato per esportare questo segmento."
 	},
 	"help": {
+		"startHereHeading": "Inizia qui",
+		"start": {
+			"plan": "Pianifica un viaggio di più giorni",
+			"places": "Sfoglia i luoghi (POI)",
+			"progress": "Monitora i tuoi progressi",
+			"offline": "Scarica mappe offline"
+		},
 		"title": "Aiuto",
 		"basicsHeading": "Nozioni di base",
 		"basics": {
