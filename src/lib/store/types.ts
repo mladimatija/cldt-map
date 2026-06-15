@@ -18,25 +18,15 @@ export type { TrailDirection, UnitSystem };
 export type { TrackPoint } from '../gpx-parser';
 
 export interface LocationState {
+	/** User's location, kept in sync from the map store (the authoritative source);
+	 *  trail-slice reads it to compute the closest trail point. */
 	userLocation: { lat: number; lng: number; accuracy?: number } | null;
-	isLocating: boolean;
-	initialLocationSet: boolean;
-	permissionStatus: 'granted' | 'denied' | 'prompt' | null;
-	locationError: { code: number; message: string } | null;
-	showUserMarker: boolean;
 }
 
 export interface LocationActions {
+	/** Set the data-store copy of the user's location (also clears the cached closest
+	 *  point). Called by the map store and walk-sim to sync the location in. */
 	setUserLocation: (location: { lat: number; lng: number; accuracy?: number } | null) => void;
-	setIsLocating: (isLocating: boolean) => void;
-	setPermissionStatus: (status: 'granted' | 'denied' | 'prompt' | null) => void;
-	setLocationError: (error: { code: number; message: string } | null) => void;
-	setShowUserMarker: (show: boolean) => void;
-
-	handleLocationUpdate: (location: LatLng) => void;
-	getCurrentLocation: () => Promise<void>;
-	initLocationService: () => void;
-	requestLocationPermission: () => Promise<void>;
 }
 
 export type LocationSlice = LocationState & LocationActions;
