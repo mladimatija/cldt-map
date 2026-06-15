@@ -719,6 +719,11 @@ export interface StagePlan {
 	/** Trip start date (yyyy-mm-dd). Optional; enables per-stage weather
 	 *  forecasts for stages within the 16-day Open-Meteo horizon. */
 	startDate?: string;
+	/** Rest (zero) days as 0-based stage indices they follow: k means a rest day
+	 *  sits between stage k and stage k+1, shifting every later stage's calendar
+	 *  date by one. Repeated values model a multi-day rest. Sorted ascending.
+	 *  See lib/stage-rest-days.ts for the day-offset math. */
+	restDays?: number[];
 }
 
 export interface JournalPreview {

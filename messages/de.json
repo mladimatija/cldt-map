@@ -694,6 +694,12 @@
 		"exportReportPdfTooltip": "PDF-Abdeckungsbericht für diesen Track herunterladen."
 	},
 	"stagePlanner": {
+		"restDayLabel": "Ruhetag",
+		"addRestDay": "Ruhetag danach hinzufügen",
+		"removeRestDay": "Ruhetag entfernen",
+		"icalRestDaySummary": "Ruhetag",
+		"icalRestDayDescription": "Ruhetag nach Etappe {stage}",
+		"tripRestDays": "{count, plural, =1 {# Ruhetag} other {# Ruhetage}} · {total} Tage gesamt",
 		"presetsHeading": "Gespeicherte Pläne",
 		"saveAsPreset": "Aktuelles als Vorlage speichern",
 		"presetNameLabel": "Vorlagenname",

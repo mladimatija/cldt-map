@@ -13,6 +13,7 @@
 import { useEffect, useState } from 'react';
 import type { StagePlan } from '@/lib/store/types';
 import { findNearestPointIndex } from '@/lib/distance-utils';
+import { dayOffsetForStage } from '@/lib/stage-rest-days';
 import { FORECAST_HORIZON_DAYS, fetchStageForecasts, type DailyForecast } from '@/lib/weather';
 
 interface TrailPointLite {
@@ -53,7 +54,7 @@ export function useStageForecasts(
 	const [result, setResult] = useState<{ key: string; forecasts: (DailyForecast | null)[] } | null>(null);
 
 	const planKey = stagePlan
-		? `${stagePlan.startDate ?? ''}|${stagePlan.stages.map((s) => `${s.startKm}-${s.endKm}`).join(',')}`
+		? `${stagePlan.startDate ?? ''}|${stagePlan.stages.map((s) => `${s.startKm}-${s.endKm}`).join(',')}|${(stagePlan.restDays ?? []).join('-')}`
 		: '';
 
 	useEffect(() => {
@@ -66,7 +67,7 @@ export function useStageForecasts(
 
 		const slots: ({ lat: number; lng: number; date: string } | null)[] = stagePlan.stages.map(
 			(stage: { startKm: number; endKm: number }, i: number) => {
-				const date = addDays(stagePlan.startDate as string, i);
+				const date = addDays(stagePlan.startDate as string, dayOffsetForStage(i, stagePlan.restDays));
 				// ISO yyyy-mm-dd compares correctly as a string.
 				if (date < today || date > horizonEnd) return null;
 				const midM = ((stage.startKm + stage.endKm) / 2) * 1000;
