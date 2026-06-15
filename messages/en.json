@@ -887,6 +887,10 @@
 		"lastUpdatedDaysAgo": "{days, plural, =0 {Updated today} =1 {Updated yesterday} other {Updated # days ago}}"
 	},
 	"pois": {
+		"operatorLabel": "Operator:",
+		"reservationLabel": "Reservation:",
+		"feeLabel": "Fee",
+		"wifiLabel": "Wi-Fi",
 		"layerToggle": "Points of interest",
 		"layerToggleShort": "Show on map",
 		"layerTooltip": "Show towns, peaks, huts, food, ATMs and more along or near the trail. Per-type filters in this panel.",

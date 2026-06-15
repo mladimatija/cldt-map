@@ -29,6 +29,10 @@ export interface PopupBuildLabels {
 	phoneLabel: string;
 	capacityLabel: string;
 	seasonLabel: string;
+	operatorLabel: string;
+	reservationLabel: string;
+	feeLabel: string;
+	wifiLabel: string;
 	populationLabel: string;
 	wikipediaLoading: string;
 	wikipediaSource: string;
@@ -215,6 +219,25 @@ export function buildMetaRowsHtml(
 		lines.push(
 			`<p class="poi-popup__row"><span class="poi-popup__label">${escapeHtml(labels.seasonLabel)}</span> ${escapeHtml(poi.season)}</p>`,
 		);
+	}
+	if (poi.hutInfo) {
+		const h = poi.hutInfo;
+		if (h.operator) {
+			lines.push(
+				`<p class="poi-popup__row"><span class="poi-popup__label">${escapeHtml(labels.operatorLabel)}</span> ${escapeHtml(h.operator)}</p>`,
+			);
+		}
+		if (h.reservation) {
+			lines.push(
+				`<p class="poi-popup__row"><span class="poi-popup__label">${escapeHtml(labels.reservationLabel)}</span> ${escapeHtml(h.reservation)}</p>`,
+			);
+		}
+		const flags: string[] = [];
+		if (h.fee === 'yes') flags.push(escapeHtml(labels.feeLabel));
+		if (h.internetAccess) flags.push(escapeHtml(labels.wifiLabel));
+		if (flags.length > 0) {
+			lines.push(`<p class="poi-popup__row">${flags.join(' &middot; ')}</p>`);
+		}
 	}
 	// Drop forward-slash from the allow-list - it's never part of an ITU /
 	// E.164-shaped phone number, and removing it tightens the input shape we
