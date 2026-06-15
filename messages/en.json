@@ -66,7 +66,7 @@
 			"daylightBudget": "Daylight budget - on the trail, the distance HUD warns when you may not reach the next hut, shelter, or town before dark, comparing the day's sunset time with your ETA to the nearest place to shelter ahead",
 			"stagePlanner": "Multi-day stage planner - split any trail range into daily stages by distance or time, view per-stage elevation, ETA, water, pack, and resupply chips. Set a trip start date to show each stage's calendar date and insert rest (zero) days that shift every later date, forecast, and calendar event without changing the split. Export individual stages as GPX or FIT, all POIs as GPX, a strip-map PDF, iCal (includes rest days), or open the Trip brief",
 			"gpxImport": "GPX track import - drag and drop (or pick) a recorded GPX file to overlay your actual hike on the map; compare your track against the official trail with stats on distance, pace, elapsed time, max deviation, and % of trail covered",
-			"emergency": "Emergency 112 panel - long-press the red SOS button (bottom-right) for an offline-first centered modal with your GPS coordinates, Plus Code, trail section and km, and the bearing and distance to the nearest road access and HGSS mountain rescue station; when online, a readable address line is looked up and can be copied; copy any field to the clipboard and hand off to your phone dialer (Call 112) or maps app (Open in maps); fully offline once cached",
+			"emergency": "Emergency 112 panel - long-press the red SOS button (bottom-right) for an offline-first centered modal with your GPS coordinates, Plus Code, trail section and km, and the bearing and distance to the nearest road access and HGSS mountain rescue station; when online, a readable address line is looked up and can be copied; copy any field to the clipboard and hand off to your phone dialer (Call 112) or maps app (Open in maps); if live GPS is unavailable, it falls back to your last known position with its age; fully offline once cached",
 			"trailStyle": "Trail style - choose how the route polyline is coloured from Settings (trail appearance card): Default (single colour), Sections (A/B/C zones with boundary markers and per-section stats), Grade (Strava-style gradient tinting with five bands; warm for ascents and cool for descents in the active travel direction; colour-ramp legend in the card; recomputed when the SOBO/NOBO direction is toggled), Surface, or Difficulty (SAC)",
 			"surfaceAndSac": "Surface and difficulty colouring - tint the trail polyline (and the elevation chart's area fill) by OSM surface type (paved / unpaved / gravel / ground / rock) or by SAC hiking scale (T1 hiking through T6 difficult alpine hiking). The data is enriched monthly from OpenStreetMap by a GitHub Action; surface and SAC options stay disabled until the dataset finishes loading on first paint. Direction-aware: the dataset is keyed to SOBO km and the renderer mirrors to NOBO on the fly",
 			"distanceMarkers": "Distance markers - small km / mi labels along the trail at 100 / 50 / 25 / 10 / 5 / 1 unit intervals. Progressive disclosure by zoom level: 100 km always visible at any zoom, finer intervals reveal as you zoom in (1 km labels only at zoom 13+). Toggleable from Settings; labels follow the active unit system and current direction (SOBO/NOBO)",
@@ -1112,7 +1112,8 @@
 		"callButton": "Call 112",
 		"mapsButton": "Open my location in maps",
 		"crossroadsAt": "Crossroads at {distance} - {ref}",
-		"gpsUnavailable": "GPS unavailable - last known position used",
+		"gpsUnavailable": "GPS unavailable - showing the nearest trail point",
+		"gpsLastKnown": "GPS unavailable - showing your last known position, {age}",
 		"gpsNoPosition": "GPS unavailable - no position data",
 		"copyTooltipDefault": "Copy",
 		"copyTooltipSuccess": "Copied",
@@ -1256,7 +1257,7 @@
 		"chartHeading": "Elevation chart",
 		"gesturesHeading": "Hidden gestures",
 		"gestures": {
-			"sos": "Long-press the red SOS button for the offline emergency panel: coordinates, Plus Code, nearest road access, HGSS rescue, one-tap 112, and an online address line when available.",
+			"sos": "Long-press the red SOS button for the offline emergency panel: coordinates, Plus Code, nearest road access, HGSS rescue, one-tap 112, and an online address line when available. If GPS is unavailable it shows your last known position with its age.",
 			"gpxDrop": "Drag and drop a recorded .gpx file anywhere onto the map to overlay your hike and compare it with the official trail.",
 			"poiList": "In the places list, type a number (\"100 km\") to jump there; arrow keys navigate, S selects rows for GPX export. Save filter presets and star places into named lists (trip brief \"selected only\" uses the active list).",
 			"waypoint": "Long-press (or right-click) anywhere on the map to drop a personal waypoint with a note."

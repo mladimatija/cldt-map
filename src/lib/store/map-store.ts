@@ -16,6 +16,7 @@ import { LocationService } from '../services/location-service';
 import {
 	DEFAULT_STARRED_COLLECTION_NAME,
 	type ImportedTrack,
+	type LastKnownFix,
 	type MapStoreState,
 	type StagePlan,
 	type StoreState,
@@ -69,6 +70,26 @@ let tilePrecacheAbortController: AbortController | null = null;
 /** Last time a GPS-source predictive pre-cache check was evaluated. Module-scoped so the debounce survives selector subscriptions. */
 let lastPredictiveCheckAt = 0;
 const PREDICTIVE_GPS_DEBOUNCE_MS = 30_000;
+
+/** Persisted GPS fixes older than this are dropped on rehydration so a stale fix
+ *  from a prior trip is never presented in the emergency panel as the current
+ *  last-known position. */
+const LAST_KNOWN_FIX_MAX_AGE_MS = 30 * 24 * 60 * 60 * 1000;
+
+/** Validate a last-known GPS fix rehydrated from localStorage before it reaches the
+ *  emergency panel: tampered or corrupt values (non-finite/out-of-range coords, bad
+ *  timestamp) and fixes older than LAST_KNOWN_FIX_MAX_AGE_MS are rejected so they
+ *  cannot render as garbage coordinates or a misleadingly stale position. */
+function isValidLastKnownFix(raw: unknown): raw is LastKnownFix {
+	if (!raw || typeof raw !== 'object') return false;
+	const { lat, lng, timestamp, accuracy } = raw as Record<string, unknown>;
+	if (typeof lat !== 'number' || !Number.isFinite(lat) || lat < -90 || lat > 90) return false;
+	if (typeof lng !== 'number' || !Number.isFinite(lng) || lng < -180 || lng > 180) return false;
+	if (typeof timestamp !== 'number' || !Number.isFinite(timestamp) || timestamp <= 0) return false;
+	if (accuracy !== undefined && (typeof accuracy !== 'number' || !Number.isFinite(accuracy) || accuracy < 0))
+		return false;
+	return Date.now() - timestamp <= LAST_KNOWN_FIX_MAX_AGE_MS;
+}
 
 /** Optional Up Next row toggles: expand "More ahead" when enabling any; collapse when all off. */
 function patchOptionalUpNextToggles(
@@ -216,6 +237,7 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					setRulerRange: (range: RulerRange | null) => set({ rulerRange: range }),
 
 					userLocation: null,
+					lastKnownFix: null,
 					isLocating: false,
 					permissionStatus: null,
 					locationError: null,
@@ -784,6 +806,11 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 							},
 							setIsLocating: (isLocating) => set({ isLocating }),
 							setLocationError: (error) => set({ locationError: error }),
+							setLastKnownFix: (fix) => {
+								// Skip fake/demo fixes; only real GPS should seed the persisted last-known fix.
+								if (get().fakeUserLocationEnabled) return;
+								set({ lastKnownFix: fix });
+							},
 						});
 
 						locationService
@@ -1461,6 +1488,7 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					const demoSnapshot = state.demoModeActive ? state.demoPersistSnapshot : null;
 					return {
 						units: state.units,
+						lastKnownFix: state.lastKnownFix,
 						direction: state.direction,
 						showBoundary: state.showBoundary,
 						showTileBoundary: state.showTileBoundary,
@@ -1552,6 +1580,10 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 						...currentState,
 						...(persistedState as Partial<MapStoreState>),
 					};
+					// Reject a corrupt, out-of-range, or stale persisted last-known fix so the
+					// emergency panel never renders garbage coordinates or a months-old position.
+					const rawLastKnownFix = (persistedState as { lastKnownFix?: unknown })?.lastKnownFix;
+					merged.lastKnownFix = isValidLastKnownFix(rawLastKnownFix) ? rawLastKnownFix : null;
 					// If the user has never explicitly toggled the seasonal layer,
 					// recompute it on every hydration. Explicit env override wins
 					// unconditionally; otherwise fall back to the winter-window

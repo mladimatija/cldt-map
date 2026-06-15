@@ -9,6 +9,7 @@ import {
 	getGeolocationPermissionState,
 } from './geolocation-permission';
 import { type LocationOptions, toPositionOptions } from './location-options';
+import type { LastKnownFix } from '../store/types';
 
 type PermissionState = GeolocationPermissionState;
 
@@ -37,6 +38,7 @@ type StoreUpdater = {
 	setUserLocation?: (location: { lat: number; lng: number; accuracy?: number } | null) => void;
 	setIsLocating?: (isLocating: boolean) => void;
 	setLocationError?: (error: { code: number; message: string } | null) => void;
+	setLastKnownFix?: (fix: LastKnownFix) => void;
 };
 
 /**
@@ -72,12 +74,27 @@ export class LocationService {
 	}
 
 	/** Apply a successful location result to the store (shared by getCurrentPosition and watchPosition). */
-	private applyLocationSuccessToStore(location: { lat: number; lng: number; accuracy?: number | null }): void {
+	private applyLocationSuccessToStore(location: {
+		lat: number;
+		lng: number;
+		accuracy?: number | null;
+		timestamp?: number;
+	}): void {
 		if (this.storeUpdater.setUserLocation) {
 			this.storeUpdater.setUserLocation({
 				lat: location.lat,
 				lng: location.lng,
 				accuracy: location.accuracy ?? undefined,
+			});
+		}
+		// Persist the fix (with its GPS timestamp) so the emergency panel can show a
+		// real last-known position with its age when live GPS later drops.
+		if (typeof location.timestamp === 'number' && this.storeUpdater.setLastKnownFix) {
+			this.storeUpdater.setLastKnownFix({
+				lat: location.lat,
+				lng: location.lng,
+				accuracy: location.accuracy ?? undefined,
+				timestamp: location.timestamp,
 			});
 		}
 		if (this.storeUpdater.setPermissionStatus) {
@@ -245,6 +262,7 @@ export class LocationService {
 							lat: result.lat,
 							lng: result.lng,
 							accuracy: result.accuracy,
+							timestamp: result.timestamp,
 						});
 						resolve(result);
 					},
@@ -313,6 +331,7 @@ export class LocationService {
 						lat: result.lat,
 						lng: result.lng,
 						accuracy: result.accuracy,
+						timestamp: result.timestamp,
 					});
 					onSuccess(result);
 				},

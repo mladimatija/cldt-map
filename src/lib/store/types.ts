@@ -31,6 +31,17 @@ export interface LocationActions {
 
 export type LocationSlice = LocationState & LocationActions;
 
+/** A persisted snapshot of the last successful GPS fix, kept so the emergency
+ *  panel can show a real last-known position (with its age) when live GPS drops,
+ *  instead of degrading to the nearest trail point. */
+export interface LastKnownFix {
+	lat: number;
+	lng: number;
+	accuracy?: number;
+	/** Epoch ms of the fix (GPS position.timestamp). */
+	timestamp: number;
+}
+
 export interface ClosestPoint {
 	point: LatLng;
 	distance: number;
@@ -261,6 +272,9 @@ export interface MapStoreState {
 	setRulerRange: (range: RulerRange | null) => void;
 
 	userLocation: { lat: number; lng: number; accuracy?: number } | null;
+	/** Persisted last successful GPS fix; survives reload so the emergency panel can
+	 *  fall back to a real position with its age when live GPS is unavailable. */
+	lastKnownFix: LastKnownFix | null;
 	isLocating: boolean;
 	permissionStatus: 'granted' | 'denied' | 'prompt' | null;
 	locationError: { code: number; message: string } | null;

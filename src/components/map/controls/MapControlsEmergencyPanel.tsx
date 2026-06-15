@@ -138,6 +138,7 @@ export function MapControlsEmergencyPanel({ onClose }: MapControlsEmergencyPanel
 	const locale = useLocale();
 
 	const userLocation = useMapStore((s: MapStoreState) => s.userLocation);
+	const lastKnownFix = useMapStore((s: MapStoreState) => s.lastKnownFix);
 	const permissionStatus = useMapStore((s: MapStoreState) => s.permissionStatus);
 	const locationError = useMapStore((s: MapStoreState) => s.locationError);
 	const units = useMapStore((s: MapStoreState) => s.units);
@@ -186,15 +187,48 @@ export function MapControlsEmergencyPanel({ onClose }: MapControlsEmergencyPanel
 
 	const gpsUnavailable = !userLocation || permissionStatus !== 'granted' || locationError !== null;
 
-	const displayPosition: { lat: number; lng: number; source: 'gps' | 'closest' | null } = useMemo(() => {
+	// Three-tier position fallback: a live GPS fix, else the persisted last-known fix
+	// (with its age), else the nearest trail point. Emergencies happen where signal
+	// drops, so a real last-known position beats degrading to a trail point.
+	const displayPosition: {
+		lat: number;
+		lng: number;
+		source: 'gps' | 'lastKnown' | 'closest' | null;
+		timestamp?: number;
+	} = useMemo(() => {
 		if (userLocation) {
 			return { lat: userLocation.lat, lng: userLocation.lng, source: 'gps' };
+		}
+		if (lastKnownFix) {
+			return { lat: lastKnownFix.lat, lng: lastKnownFix.lng, source: 'lastKnown', timestamp: lastKnownFix.timestamp };
 		}
 		if (closestPoint) {
 			return { lat: closestPoint.point.lat, lng: closestPoint.point.lng, source: 'closest' };
 		}
 		return { lat: 0, lng: 0, source: null };
-	}, [userLocation, closestPoint]);
+	}, [userLocation, lastKnownFix, closestPoint]);
+
+	// Capture "now" on open and, only while a last-known fix is shown, refresh it every
+	// 30s so the age stays current - without calling Date.now() during render (which the
+	// purity lint rule disallows) and without needless re-renders for the other sources.
+	const [nowMs, setNowMs] = useState<number>(() => Date.now());
+	useEffect(() => {
+		if (displayPosition.source !== 'lastKnown') return;
+		const id = setInterval(() => setNowMs(Date.now()), 30_000);
+		return () => clearInterval(id);
+	}, [displayPosition.source]);
+
+	const relativeTimeFormat = useMemo(() => new Intl.RelativeTimeFormat(locale, { numeric: 'auto' }), [locale]);
+
+	// Localized "8 minutes ago" style age for the last-known fix; null otherwise.
+	const lastKnownAgeLabel = useMemo((): string | null => {
+		if (displayPosition.source !== 'lastKnown' || displayPosition.timestamp === undefined) return null;
+		const diffMin = Math.round((nowMs - displayPosition.timestamp) / 60_000);
+		if (Math.abs(diffMin) < 60) return relativeTimeFormat.format(-diffMin, 'minute');
+		const diffHr = Math.round(diffMin / 60);
+		if (Math.abs(diffHr) < 24) return relativeTimeFormat.format(-diffHr, 'hour');
+		return relativeTimeFormat.format(-Math.round(diffHr / 24), 'day');
+	}, [displayPosition.source, displayPosition.timestamp, nowMs, relativeTimeFormat]);
 
 	const plusCode = useMemo(
 		() => (displayPosition.source === null ? '' : olc.encode(displayPosition.lat, displayPosition.lng, 10)),
@@ -320,9 +354,18 @@ export function MapControlsEmergencyPanel({ onClose }: MapControlsEmergencyPanel
 		>
 			<div>
 				{gpsUnavailable && (
-					<div className="mb-3 flex items-start gap-2 rounded-md bg-amber-100 px-3 py-2 text-xs text-amber-900 dark:bg-amber-950 dark:text-amber-200">
+					<div
+						className="mb-3 flex items-start gap-2 rounded-md bg-amber-100 px-3 py-2 text-xs text-amber-900 dark:bg-amber-950 dark:text-amber-200"
+						role="status"
+					>
 						<IoWarningOutline aria-hidden className="mt-0.5 h-4 w-4 shrink-0" />
-						<span>{displayPosition.source === 'closest' ? t('gpsUnavailable') : t('gpsNoPosition')}</span>
+						<span>
+							{displayPosition.source === 'lastKnown' && lastKnownAgeLabel !== null
+								? t('gpsLastKnown', { age: lastKnownAgeLabel })
+								: displayPosition.source === 'closest'
+									? t('gpsUnavailable')
+									: t('gpsNoPosition')}
+						</span>
 					</div>
 				)}
 
