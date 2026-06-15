@@ -166,6 +166,25 @@ export interface PoiFilterPreset {
 	enabledPoiTags: string[];
 }
 
+/** Stage-planner inputs captured for a named what-if preset (e.g. "20 km relaxed"
+ *  vs "30 km push"). Only the inputs are stored; applying re-runs the split. */
+export interface StagePlanPresetInputs {
+	startKm: number;
+	endKm: number;
+	mode: 'kmPerDay' | 'stages';
+	kmPerDayKm: number;
+	stageCount: number;
+	balanceByEta: boolean;
+	maxHoursPerDay: number;
+	startDate?: string;
+}
+
+export interface StagePlanPreset {
+	id: string;
+	name: string;
+	inputs: StagePlanPresetInputs;
+}
+
 /** Named list of starred POI ids (trip brief "Selected only", share export). */
 export interface StarredPoiCollection {
 	id: string;
@@ -647,6 +666,10 @@ export interface MapStoreState {
 	applyPoiFilterPreset: (id: string) => void;
 	deletePoiFilterPreset: (id: string) => void;
 	renamePoiFilterPreset: (id: string, name: string) => void;
+	/** Named stage-planner what-if presets (inputs only; apply re-runs the split). */
+	stagePlanPresets: StagePlanPreset[];
+	saveStagePlanPreset: (name: string, inputs: StagePlanPresetInputs) => string | null;
+	deleteStagePlanPreset: (id: string) => void;
 	/** Named starred POI lists; stars apply to the active collection. */
 	starredPoiCollections: StarredPoiCollection[];
 	activeStarredCollectionId: string | null;

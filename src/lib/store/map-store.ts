@@ -1274,6 +1274,18 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 							poiFilterPresets: get().poiFilterPresets.map((p) => (p.id === id ? { ...p, name: trimmed } : p)),
 						});
 					},
+
+					stagePlanPresets: [],
+					saveStagePlanPreset: (name, inputs): string | null => {
+						const trimmed = name.trim();
+						if (!trimmed) return null;
+						const id = newId();
+						set({ stagePlanPresets: [...get().stagePlanPresets, { id, name: trimmed, inputs }] });
+						return id;
+					},
+					deleteStagePlanPreset: (id: string): void => {
+						set({ stagePlanPresets: get().stagePlanPresets.filter((p) => p.id !== id) });
+					},
 					starredPoiCollections: [],
 					activeStarredCollectionId: null,
 					setActiveStarredCollectionId: (id: string): void => {
@@ -1416,6 +1428,7 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 						enabledPoiTags: [...state.enabledPoiTags],
 						poiFiltersUserModified: state.poiFiltersUserModified,
 						poiFilterPresets: state.poiFilterPresets,
+						stagePlanPresets: state.stagePlanPresets,
 						starredPoiCollections: state.starredPoiCollections,
 						activeStarredCollectionId: state.activeStarredCollectionId,
 						distancePrecision: state.distancePrecision,
@@ -1518,6 +1531,19 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 								typeof (p as { name?: unknown }).name === 'string' &&
 								Array.isArray((p as { enabledPoiTypes?: unknown }).enabledPoiTypes) &&
 								Array.isArray((p as { enabledPoiTags?: unknown }).enabledPoiTags),
+						);
+					}
+
+					const rawStagePresets = (persistedState as { stagePlanPresets?: unknown })?.stagePlanPresets;
+					if (Array.isArray(rawStagePresets)) {
+						merged.stagePlanPresets = rawStagePresets.filter(
+							(p): p is NonNullable<MapStoreState['stagePlanPresets']>[number] =>
+								!!p &&
+								typeof p === 'object' &&
+								typeof (p as { id?: unknown }).id === 'string' &&
+								typeof (p as { name?: unknown }).name === 'string' &&
+								!!(p as { inputs?: unknown }).inputs &&
+								typeof (p as { inputs?: unknown }).inputs === 'object',
 						);
 					}
 

@@ -694,6 +694,13 @@
 		"exportReportPdfTooltip": "Scarica un report PDF di copertura per questa traccia."
 	},
 	"stagePlanner": {
+		"presetsHeading": "Piani salvati",
+		"saveAsPreset": "Salva come preset",
+		"presetNameLabel": "Nome preset",
+		"presetNamePlaceholder": "es. 20 km tranquillo",
+		"presetSave": "Salva",
+		"presetCancel": "Annulla",
+		"deletePreset": "Elimina preset {name}",
 		"title": "Pianificatore tappe",
 		"sections": {
 			"planSetup": "Impostazione piano",

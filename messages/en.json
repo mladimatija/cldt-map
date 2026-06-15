@@ -694,6 +694,13 @@
 		"exportReportPdfTooltip": "Download a PDF coverage report for this track."
 	},
 	"stagePlanner": {
+		"presetsHeading": "Saved plans",
+		"saveAsPreset": "Save current as preset",
+		"presetNameLabel": "Preset name",
+		"presetNamePlaceholder": "e.g. 20 km relaxed",
+		"presetSave": "Save",
+		"presetCancel": "Cancel",
+		"deletePreset": "Delete preset {name}",
 		"title": "Stage Planner",
 		"sections": {
 			"planSetup": "Plan setup",

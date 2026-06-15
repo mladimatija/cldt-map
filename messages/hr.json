@@ -694,6 +694,13 @@
 		"exportReportPdfTooltip": "Preuzmi PDF izvještaj pokrivenosti za ovu rutu."
 	},
 	"stagePlanner": {
+		"presetsHeading": "Spremljeni planovi",
+		"saveAsPreset": "Spremi trenutno kao predložak",
+		"presetNameLabel": "Naziv predloška",
+		"presetNamePlaceholder": "npr. 20 km opušteno",
+		"presetSave": "Spremi",
+		"presetCancel": "Odustani",
+		"deletePreset": "Izbriši predložak {name}",
 		"title": "Planer etapa",
 		"sections": {
 			"planSetup": "Postavke plana",

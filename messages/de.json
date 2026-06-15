@@ -694,6 +694,13 @@
 		"exportReportPdfTooltip": "PDF-Abdeckungsbericht für diesen Track herunterladen."
 	},
 	"stagePlanner": {
+		"presetsHeading": "Gespeicherte Pläne",
+		"saveAsPreset": "Aktuelles als Vorlage speichern",
+		"presetNameLabel": "Vorlagenname",
+		"presetNamePlaceholder": "z. B. 20 km entspannt",
+		"presetSave": "Speichern",
+		"presetCancel": "Abbrechen",
+		"deletePreset": "Vorlage {name} löschen",
 		"title": "Etappenplaner",
 		"sections": {
 			"planSetup": "Plan einrichten",
