@@ -1,4 +1,18 @@
 {
+	"a11y": {
+		"mapLabel": "Wanderkarte",
+		"mapInstructions": "Interaktive Wanderkarte. Mit den Pfeiltasten verschieben, mit Plus oder Minus zoomen. Mit Tab zum Streckenregler wechseln, um die Route abzufahren und die Position zu hören.",
+		"mapOrientation": "Karte fokussiert. Pfeiltasten verschieben, Plus und Minus zoomen. Mit Tab zum Streckenregler, um die Route zu erkunden.",
+		"scrubberLabel": "Strecke per Tastatur erkunden",
+		"position": "{distance}, {elevation}, {grade}",
+		"grade": {
+			"climbing": "Aufstieg",
+			"descending": "Abstieg",
+			"flat": "eben"
+		},
+		"enteringSection": "Beginn von {section}",
+		"waterAhead": "Wasser in {distance}"
+	},
 	"common": {
 		"about": "Über",
 		"backToMap": "Zurück zur Karte",

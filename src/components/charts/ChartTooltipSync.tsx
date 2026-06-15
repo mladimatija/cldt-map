@@ -66,7 +66,10 @@ export function ChartTooltipSync(props: {
 	const highlightTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 	const clearTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-	const HIGHLIGHT_DEBOUNCE_MS = 80;
+	// Trailing debounce: only push the (heavy) map highlight once the pointer
+	// settles, so a continuous hover sweep does not re-render the map marker on
+	// every move. Matches the trail scrubber's settle window.
+	const HIGHLIGHT_DEBOUNCE_MS = 120;
 	const CLEAR_DEBOUNCE_MS = 120;
 
 	useEffect(() => {

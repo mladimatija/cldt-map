@@ -1,4 +1,18 @@
 {
+	"a11y": {
+		"mapLabel": "Trail map",
+		"mapInstructions": "Interactive trail map. Press the arrow keys to pan and plus or minus to zoom. Tab to the trail scrubber to move along the route and hear your position.",
+		"mapOrientation": "Map focused. Arrow keys pan, plus and minus zoom. Tab to the trail scrubber to explore the route.",
+		"scrubberLabel": "Explore the trail by keyboard",
+		"position": "{distance}, {elevation}, {grade}",
+		"grade": {
+			"climbing": "climbing",
+			"descending": "descending",
+			"flat": "flat"
+		},
+		"enteringSection": "Entering {section}",
+		"waterAhead": "Water {distance} ahead"
+	},
 	"common": {
 		"about": "About",
 		"backToMap": "Back to Map",

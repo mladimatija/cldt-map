@@ -1,4 +1,18 @@
 {
+	"a11y": {
+		"mapLabel": "Karta staze",
+		"mapInstructions": "Interaktivna karta staze. Strelicama pomičite kartu, a tipkama plus ili minus zumirajte. Tabom dođite do klizača staze za kretanje rutom i slušanje svoje pozicije.",
+		"mapOrientation": "Karta je fokusirana. Strelice pomiču kartu, plus i minus zumiraju. Tabom dođite do klizača staze za istraživanje rute.",
+		"scrubberLabel": "Istražite stazu tipkovnicom",
+		"position": "{distance}, {elevation}, {grade}",
+		"grade": {
+			"climbing": "uspon",
+			"descending": "spust",
+			"flat": "ravno"
+		},
+		"enteringSection": "Ulazak u {section}",
+		"waterAhead": "Voda {distance} ispred"
+	},
 	"common": {
 		"about": "O projektu",
 		"backToMap": "Natrag na kartu",
