@@ -201,6 +201,7 @@ export function MapControlsHelpPanel(): React.ReactElement {
 				<HelpList
 					items={[
 						['precache', t('offline.precache')],
+						['mobileDownload', t('offline.mobileDownload')],
 						['gps', t('offline.gps')],
 						['offRouteAlert', t('offline.offRouteAlert')],
 						['pushAlerts', t('offline.pushAlerts')],
