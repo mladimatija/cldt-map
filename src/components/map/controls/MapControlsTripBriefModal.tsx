@@ -16,7 +16,7 @@ import {
 	makeDistanceLabelFn,
 	type TripBrief,
 } from '@/lib/trip-brief';
-import { dayHeader, tripBriefStringsFromMessages } from '@/lib/trip-brief-i18n';
+import { dayDateLabel, dayHeader, tripBriefStringsFromMessages } from '@/lib/trip-brief-i18n';
 import { exportTripBriefPdf } from '@/lib/trip-brief-pdf';
 import { exportTripBriefDocx } from '@/lib/trip-brief-docx';
 import { exportTripBriefHtml } from '@/lib/trip-brief-html';
@@ -113,6 +113,8 @@ export function MapControlsTripBriefModal({
 		(brief: TripBrief): TripBrief => ({
 			...brief,
 			days: brief.days.map((day) => {
+				// Rest days have no km range to draw a profile from.
+				if (day.kind === 'rest') return day;
 				const thumb = renderElevationThumbnail(enhancedTrailPoints, day.startKm, day.endKm, direction === 'NOBO');
 				return thumb ? { ...day, elevationThumb: thumb } : day;
 			}),
@@ -147,6 +149,7 @@ export function MapControlsTripBriefModal({
 			locale: locale as Locale,
 			title: trailTitle,
 			seasonalEntries,
+			...(stagePlan.startDate && { startDate: stagePlan.startDate }),
 			typeLabel: (type) => tPois(`type.${type}`, { default: type }),
 			distanceLabel: makeDistanceLabelFn(units, distancePrecision),
 			strings: documentStrings,
@@ -394,31 +397,45 @@ export function MapControlsTripBriefModal({
 						/>
 					</label>
 
-					{preparedBrief?.days.map((day, i) => (
-						<label className="mb-3 block" key={day.index}>
-							<span className="mb-1 block text-[0.625rem] font-medium tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
-								{dayHeader(day, documentStrings, preparedBrief.meta.units)}
-							</span>
-							{[day.resupplyEnteringLabel, day.resupplyCarryLabel, day.foodPackLabel]
-								.filter((line): line is string => !!line)
-								.map((line) => (
-									<p className="mb-1 text-[0.625rem] text-amber-700 dark:text-amber-400" key={line}>
-										{line}
-									</p>
-								))}
-							<textarea
-								className={NARRATIVE_TEXTAREA}
-								disabled={generating}
-								rows={4}
-								value={editDayNarratives[i] ?? ''}
-								onChange={(e) => {
-									const next = [...editDayNarratives];
-									next[i] = e.target.value;
-									setEditDayNarratives(next);
-								}}
-							/>
-						</label>
-					))}
+					{preparedBrief?.days.map((day, i) =>
+						day.kind === 'rest' ? (
+							// Rest days are not user-editable: their narrative is fixed
+							// localized copy. Render a static, read-only row so the
+							// position-aligned editDayNarratives slot is simply never touched.
+							<div className="mb-3 block" key={day.dayId}>
+								<span className="mb-1 block text-[0.625rem] font-medium tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
+									{documentStrings.restDay.heading}
+									{day.date ? ` - ${dayDateLabel(day, locale)}` : ''}
+								</span>
+								<p className="text-xs text-gray-500 italic dark:text-[var(--text-secondary)]">{day.narrative}</p>
+							</div>
+						) : (
+							<label className="mb-3 block" key={day.dayId}>
+								<span className="mb-1 block text-[0.625rem] font-medium tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
+									{day.date ? `${dayDateLabel(day, locale)} - ` : ''}
+									{dayHeader(day, documentStrings, preparedBrief.meta.units)}
+								</span>
+								{[day.resupplyEnteringLabel, day.resupplyCarryLabel, day.foodPackLabel]
+									.filter((line): line is string => !!line)
+									.map((line) => (
+										<p className="mb-1 text-[0.625rem] text-amber-700 dark:text-amber-400" key={line}>
+											{line}
+										</p>
+									))}
+								<textarea
+									className={NARRATIVE_TEXTAREA}
+									disabled={generating}
+									rows={4}
+									value={editDayNarratives[i] ?? ''}
+									onChange={(e) => {
+										const next = [...editDayNarratives];
+										next[i] = e.target.value;
+										setEditDayNarratives(next);
+									}}
+								/>
+							</label>
+						),
+					)}
 				</>
 			) : (
 				<>

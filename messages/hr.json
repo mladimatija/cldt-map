@@ -872,6 +872,10 @@
 				"NOBO": "Sjeverno (Prevlaka - Ilok)"
 			},
 			"dayHeader": "{day}. dan - {unit} {start} do {end}",
+			"restDay": {
+				"heading": "Dan odmora",
+				"body": "Planirani dan odmora - bez hodanja. Iskoristi ga za oporavak, opskrbu i istraživanje okolice."
+			},
 			"emergencyBody": {
 				"l1": "Hitno: 112",
 				"l2": "Gorska služba spašavanja (HGSS): 112 (zatraži HGSS)",

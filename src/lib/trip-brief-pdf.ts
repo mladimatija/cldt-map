@@ -36,6 +36,7 @@ import { siteMetadata } from '@/lib/metadata';
 import type { TripBrief, TripBriefDay } from '@/lib/trip-brief';
 import type { EnhancedTrailPoint } from '@/lib/store/types';
 import {
+	dayDateLabel,
 	emergencyLines,
 	dayHeader,
 	directionDisplay,
@@ -132,19 +133,25 @@ export async function exportTripBriefPdf(args: TripBriefPdfArgs): Promise<void> 
 			const day = brief.days[dayIdx];
 			if (signal?.aborted) return;
 			pdf.addPage();
-			const snapshot = await captureStageMapSnapshot(
-				map,
-				resolvedMapEl,
-				enhancedTrailPoints,
-				day.startKm,
-				day.endKm,
-				captureFilter,
-				toBlob,
-				MAP_W,
-				MAP_H,
-				signal,
-			);
-			renderDay(pdf, brief, day, snapshot, logoDataUrl);
+			if (day.kind === 'rest') {
+				// Rest days get their own page but no map snapshot - they have no
+				// km bounds to capture - and no elevation / POIs / stats.
+				renderRestDay(pdf, brief, day, logoDataUrl);
+			} else {
+				const snapshot = await captureStageMapSnapshot(
+					map,
+					resolvedMapEl,
+					enhancedTrailPoints,
+					day.startKm,
+					day.endKm,
+					captureFilter,
+					toBlob,
+					MAP_W,
+					MAP_H,
+					signal,
+				);
+				renderDay(pdf, brief, day, snapshot, logoDataUrl);
+			}
 			footer(pdf, dayIdx + 2, totalPages);
 			tick();
 		}
@@ -311,10 +318,25 @@ function renderCover(pdf: JsPDF, brief: TripBrief, logoDataUrl: string | null): 
 	pdf.setFont('NotoSans', 'normal');
 	for (const day of brief.days) {
 		if (y > PAGE_H - 30) break;
+		const dateLabel = dayDateLabel(day, meta.locale);
+		if (day.kind === 'rest') {
+			// Rest rows show the rest heading (plus date when present) and dashes
+			// for the stat columns so they don't bump the stage numbering.
+			const headerStr = dateLabel ? `${meta.strings.restDay.heading} - ${dateLabel}` : meta.strings.restDay.heading;
+			pdf.setFont('NotoSans', 'normal');
+			pdf.setTextColor(...MUTED_TEXT_RGB);
+			pdf.text(headerStr, MARGIN_X, y);
+			pdf.text('-', MARGIN_X + 100, y);
+			pdf.text('-', MARGIN_X + 140, y);
+			y += 5;
+			continue;
+		}
 		const distKm = day.endKm - day.startKm;
 		const distStr = formatKmRound(distKm, meta.units);
 		const eta = formatEta(day.etaSec);
-		const headerStr = dayHeader(day, meta.strings, meta.units);
+		const headerStr = dateLabel
+			? `${dateLabel} - ${dayHeader(day, meta.strings, meta.units)}`
+			: dayHeader(day, meta.strings, meta.units);
 		pdf.setFont('NotoSans', 'bold');
 		pdf.setTextColor(...HEADER_TEXT_RGB);
 		pdf.text(headerStr, MARGIN_X, y);
@@ -356,6 +378,16 @@ function renderDay(
 
 	// Map snapshot
 	let yCursor = HEADER_H + 4;
+
+	// Calendar date line (when the plan has a start date), above the map.
+	const dateLabel = dayDateLabel(day, meta.locale);
+	if (dateLabel) {
+		pdf.setFont('NotoSans', 'normal');
+		pdf.setTextColor(...MUTED_TEXT_RGB);
+		pdf.setFontSize(9);
+		pdf.text(dateLabel, MARGIN_X, yCursor);
+		yCursor += 5;
+	}
 	if (snapshot) {
 		pdf.addImage(snapshot, 'PNG', MARGIN_X, yCursor, MAP_W, MAP_H);
 		yCursor += MAP_H + 6;
@@ -472,6 +504,30 @@ function renderDay(
 			pdf.text(`+ ${remainder} ${meta.strings.moreLabel}`, MARGIN_X, yCursor);
 		}
 	}
+}
+
+/** Rest-day page: header band with the localized rest heading, an optional
+ *  calendar date line, then the rest-day body. No map / elevation / POIs /
+ *  stats - a rest day has no km bounds. */
+function renderRestDay(pdf: JsPDF, brief: TripBrief, day: TripBriefDay, logoDataUrl: string | null): void {
+	const { meta } = brief;
+	paintHeaderBand(pdf, meta.strings.restDay.heading, [], logoDataUrl);
+
+	let yCursor = HEADER_H + 14;
+	const dateLabel = dayDateLabel(day, meta.locale);
+	if (dateLabel) {
+		pdf.setFont('NotoSans', 'normal');
+		pdf.setTextColor(...MUTED_TEXT_RGB);
+		pdf.setFontSize(9);
+		pdf.text(dateLabel, MARGIN_X, yCursor);
+		yCursor += 7;
+	}
+
+	pdf.setFont('NotoSans', 'normal');
+	pdf.setTextColor(...BODY_TEXT_RGB);
+	pdf.setFontSize(11);
+	const wrapped = pdf.splitTextToSize(day.narrative, PAGE_W - MARGIN_X * 2) as string[];
+	pdf.text(wrapped, MARGIN_X, yCursor);
 }
 
 /** Gear checklist page: category subheads with "[ ] item" lines in two

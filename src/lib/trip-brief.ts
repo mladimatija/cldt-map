@@ -30,6 +30,13 @@ import {
 	type PoisFile,
 } from '@/lib/pois';
 import { formatDayNarrative, formatOverviewNarrative, type TripBriefStrings } from '@/lib/trip-brief-i18n';
+import {
+	dayOffsetForRestDayAfter,
+	dayOffsetForStage,
+	normalizeRestDays,
+	restDayCountAfter,
+} from '@/lib/stage-rest-days';
+import { stageCalendarDate } from '@/lib/stage-ical-export';
 import type { EnhancedTrailPoint, StagePlan, TrailDirection, UnitSystem } from '@/lib/store/types';
 import type { SeasonalStatusEntry } from '@/lib/seasonal-status';
 import type { Locale } from '@/i18n/routing';
@@ -91,6 +98,13 @@ export interface TripBriefSeasonalAlert {
 }
 
 export interface TripBriefDay {
+	/** Whether this entry is a hiking stage or a planned rest (zero) day. */
+	kind: 'stage' | 'rest';
+	/** Stable, position-independent id for React keys / HTML ids. Stage days use
+	 *  `stage-${i}`; rest days use `rest-${i}-${occ}` (anchor stage + occurrence). */
+	dayId: string;
+	/** Calendar date (yyyy-mm-dd); present only when the plan has a start date. */
+	date?: string;
 	index: number;
 	stageId?: string;
 	startKm: number;
@@ -280,7 +294,13 @@ export function assembleTripBrief(args: TripBriefAssemblyArgs): TripBrief {
 	let totalLossM = 0;
 	let totalDurationSec = 0;
 
-	const days: TripBriefDay[] = stagePlan.stages.map((stage, i) => {
+	// Rest days never repartition the trail; they only push the calendar date of
+	// every later stage and surface as their own first-class day entries. The
+	// helpers in stage-rest-days.ts are the single source of truth for the math.
+	const restDays = normalizeRestDays(stagePlan.restDays);
+
+	const days: TripBriefDay[] = [];
+	stagePlan.stages.forEach((stage, i) => {
 		const stats = computeStageStats(stage, enhancedTrailPoints, elevationPoints, walkingPaceKmh, gradeAdjustedEta);
 		// Direction-aware accounting: in NOBO, what was uphill SOBO becomes
 		// downhill and vice versa. The narrative + UI both want the values
@@ -313,7 +333,10 @@ export function assembleTripBrief(args: TripBriefAssemblyArgs): TripBrief {
 		const stageCadence = planResupplyCadence?.stages[i];
 		const resupplyLabels = stageCadence && resupplyCadenceLabels ? resupplyCadenceLabels(stageCadence, i) : undefined;
 
-		return {
+		days.push({
+			kind: 'stage',
+			dayId: `stage-${i}`,
+			...(startDate && { date: stageCalendarDate(startDate, dayOffsetForStage(i, restDays)) }),
 			index: i,
 			stageId: `stage-${i}`,
 			startKm: stage.startKm,
@@ -340,7 +363,31 @@ export function assembleTripBrief(args: TripBriefAssemblyArgs): TripBrief {
 			...(resupplyLabels?.entering && { resupplyEnteringLabel: resupplyLabels.entering }),
 			...(resupplyLabels?.carry && { resupplyCarryLabel: resupplyLabels.carry }),
 			...(resupplyLabels?.foodPack && { foodPackLabel: resupplyLabels.foodPack }),
-		};
+		});
+
+		// Emit any rest days anchored after this stage, in calendar order. They
+		// carry no distance / gain / POIs and contribute nothing to the totals;
+		// `index: i` anchors them to the stage so renderers keep stage numbering.
+		const restCount = restDayCountAfter(i, restDays);
+		for (let occ = 0; occ < restCount; occ++) {
+			days.push({
+				kind: 'rest',
+				dayId: `rest-${i}-${occ}`,
+				...(startDate && { date: stageCalendarDate(startDate, dayOffsetForRestDayAfter(i, occ, restDays)) }),
+				index: i,
+				startKm: stage.endKm,
+				endKm: stage.endKm,
+				directionStartKm: 0,
+				directionEndKm: 0,
+				distanceLabel: '',
+				gainM: 0,
+				lossM: 0,
+				etaSec: 0,
+				narrative: strings.restDay.body,
+				pois: [],
+				seasonalAlerts: [],
+			});
+		}
 	});
 
 	const overview: TripBriefOverview = {
