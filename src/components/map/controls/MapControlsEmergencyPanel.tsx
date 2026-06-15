@@ -3,11 +3,11 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { OpenLocationCode } from 'open-location-code';
-import { IoCallOutline, IoCopyOutline, IoOpenOutline, IoWarningOutline } from 'react-icons/io5';
+import { IoCallOutline, IoCheckmarkOutline, IoCopyOutline, IoOpenOutline, IoWarningOutline } from 'react-icons/io5';
 import { MAP_CONTROL_SECTION_HEADING } from './MapControlSectionCard';
 import { MapControlIconButton } from './MapControlIconButton';
+import { MapControlModalShell } from './MapControlModalShell';
 import { Button, buttonVariants } from '@/components/ui/Button';
-import { usePopoverFocusTrap } from '@/hooks';
 import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
 import { computeBearing, findNearestPointIndex, formatDistanceM } from '@/lib/distance-utils';
 import {
@@ -90,7 +90,11 @@ function CopyButton({ value, ariaLabel, field, copiedField, onCopied }: CopyButt
 			title={isCopied ? t('copyTooltipSuccess') : t('copyTooltipDefault')}
 			onClick={handleClick}
 		>
-			<IoCopyOutline aria-hidden className="h-3.5 w-3.5" />
+			{isCopied ? (
+				<IoCheckmarkOutline aria-hidden className="h-3.5 w-3.5" />
+			) : (
+				<IoCopyOutline aria-hidden className="h-3.5 w-3.5" />
+			)}
 		</MapControlIconButton>
 	);
 }
@@ -145,7 +149,6 @@ export function MapControlsEmergencyPanel({ onClose }: MapControlsEmergencyPanel
 	const [copiedField, setCopiedField] = useState<CopyField | null>(null);
 	const copyResetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 	const [addressLookup, setAddressLookup] = useState<{ key: string; line: string | null } | null>(null);
-	const cardRef = usePopoverFocusTrap(true);
 
 	useEffect(() => {
 		let cancelled = false;
@@ -164,14 +167,6 @@ export function MapControlsEmergencyPanel({ onClose }: MapControlsEmergencyPanel
 			cancelled = true;
 		};
 	}, []);
-
-	useEffect(() => {
-		const handler = (e: KeyboardEvent): void => {
-			if (e.key === 'Escape') onClose();
-		};
-		document.addEventListener('keydown', handler);
-		return () => document.removeEventListener('keydown', handler);
-	}, [onClose]);
 
 	useEffect(
 		() => () => {
@@ -314,25 +309,16 @@ export function MapControlsEmergencyPanel({ onClose }: MapControlsEmergencyPanel
 	};
 
 	return (
-		<div
-			aria-labelledby="emergency-panel-title"
-			aria-modal="true"
-			className="z-modal fixed inset-0 flex items-center justify-center bg-[var(--modal-backdrop-bg)] p-4"
-			role="dialog"
-			onClick={onClose}
+		<MapControlModalShell
+			open
+			cardClassName="max-w-sm border-l-cldt-red border-l-2"
+			showCloseButton={false}
+			title={t('title')}
+			titleClassName="text-cldt-red mb-2 text-base font-semibold"
+			titleId="emergency-panel-title"
+			onClose={onClose}
 		>
-			<div
-				className="border-l-cldt-red max-h-[85vh] w-full max-w-sm overflow-y-auto rounded border-l-2 bg-[var(--map-tooltip-bg)] p-4 shadow-xl dark:bg-[var(--bg-primary)]"
-				ref={cardRef}
-				onClick={(e) => e.stopPropagation()}
-			>
-				<h3
-					className="text-cldt-red mb-2 text-base font-semibold dark:text-[var(--text-primary)]"
-					id="emergency-panel-title"
-				>
-					{t('title')}
-				</h3>
-
+			<div>
 				{gpsUnavailable && (
 					<div className="mb-3 flex items-start gap-2 rounded-md bg-amber-100 px-3 py-2 text-xs text-amber-900 dark:bg-amber-950 dark:text-amber-200">
 						<IoWarningOutline aria-hidden className="mt-0.5 h-4 w-4 shrink-0" />
@@ -361,7 +347,7 @@ export function MapControlsEmergencyPanel({ onClose }: MapControlsEmergencyPanel
 									</p>
 								) : null}
 								{addressLine ? (
-									<div className="flex items-start justify-between gap-2">
+									<div className="flex items-center justify-between gap-2">
 										<span className="min-w-0 text-sm">
 											<span className="text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('address')}: </span>
 											{addressLine}
@@ -518,6 +504,6 @@ export function MapControlsEmergencyPanel({ onClose }: MapControlsEmergencyPanel
 					</Button>
 				</div>
 			</div>
-		</div>
+		</MapControlModalShell>
 	);
 }
