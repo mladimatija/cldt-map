@@ -33,6 +33,7 @@ import {
 	isProviderCacheable,
 	isCacheStale,
 	estimateStorage,
+	requestPersistentStorage,
 	runPredictivePrecache,
 	abortPredictivePrecache,
 	resetPredictivePrecacheBuckets,
@@ -395,6 +396,9 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 							set({ tileCacheError: 'quota_exceeded' });
 							return;
 						}
+						// User-initiated download: request durable storage so the browser does not
+						// evict the corridor under pressure. Skip autoSync (user already opted in).
+						if (opts?.source !== 'autoSync') void requestPersistentStorage();
 						const urls = generateTrailTileUrls(points, urlTemplate, PRECACHE_ZOOM_MIN, PRECACHE_ZOOM_MAX);
 						const providerKey = getProviderCacheKey(providerName);
 						tilePrecacheAbortController?.abort();
@@ -496,6 +500,8 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 							set({ tileCacheError: 'quota_exceeded' });
 							return;
 						}
+						// User-initiated high-detail download: request durable storage too.
+						void requestPersistentStorage();
 
 						const slice = buildHighDetailAheadSlice({
 							points,

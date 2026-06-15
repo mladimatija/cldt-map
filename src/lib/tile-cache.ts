@@ -543,3 +543,26 @@ export async function estimateStorage(): Promise<StorageEstimate> {
 		return { available: true, usedPercent: 0, freeBytes: Number.POSITIVE_INFINITY };
 	}
 }
+
+// ── Storage persistence ───────────────────────────────────────────────────────
+
+/**
+ * Ask the browser to mark our origin storage as persistent so the tile cache
+ * (potentially gigabytes of trail tiles) is not silently evicted under storage
+ * pressure mid-trek. Without this, Cache Storage is best-effort and can be
+ * cleared by the browser at any time. Idempotent and safe to call repeatedly:
+ * if persistence is already granted we skip the request. Returns the final
+ * persisted state, or false when the API is unavailable or the request fails
+ * (e.g. Safari, which grants automatically and may not expose persist()).
+ */
+export async function requestPersistentStorage(): Promise<boolean> {
+	if (typeof navigator === 'undefined' || !('storage' in navigator)) return false;
+	const storage = navigator.storage;
+	if (typeof storage.persist !== 'function') return false;
+	try {
+		if (typeof storage.persisted === 'function' && (await storage.persisted())) return true;
+		return await storage.persist();
+	} catch {
+		return false;
+	}
+}
