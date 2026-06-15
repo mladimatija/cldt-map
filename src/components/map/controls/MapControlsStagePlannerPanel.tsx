@@ -9,6 +9,7 @@ import {
 	IoDownloadOutline,
 	IoLocationOutline,
 	IoMapOutline,
+	IoTrashOutline,
 	IoWatchOutline,
 } from 'react-icons/io5';
 import SmartTooltip from '@/components/ui/SmartTooltip';
@@ -24,13 +25,16 @@ import { Button } from '@/components/ui/Button';
 import { Radio } from '@/components/ui/Radio';
 import { Checkbox } from '@/components/ui/Checkbox';
 import { MapControlIconButton } from './MapControlIconButton';
+import { MapControlInlineNameForm } from './MapControlInlineNameForm';
 import { MapControlSectionCard } from './MapControlSectionCard';
 import { SettingsToggleRow } from './SettingsToggleRow';
+import type { StagePlanPreset, StagePlanPresetInputs } from '@/lib/store/types';
 import { MapControlsTripBriefModal } from './MapControlsTripBriefModal';
 import { cn, formatDistance, formatElevation, kmToMiles, milesToKm } from '@/lib/utils';
 import {
 	MAP_CONTROL_INPUT,
 	MAP_CONTROL_LABEL_INPUT_GRID,
+	MAP_CONTROL_LINK_BUTTON,
 	MAP_CONTROL_PANEL_WIDTH,
 	MAP_CONTROL_POPOVER,
 } from './map-controls-constants';
@@ -87,6 +91,9 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 
 	const stagePlan = useMapStore((s: MapStoreState) => s.stagePlan);
 	const setStagePlan = useMapStore((s: MapStoreState) => s.setStagePlan);
+	const stagePlanPresets = useMapStore((s: MapStoreState) => s.stagePlanPresets);
+	const saveStagePlanPreset = useMapStore((s: MapStoreState) => s.saveStagePlanPreset);
+	const deleteStagePlanPreset = useMapStore((s: MapStoreState) => s.deleteStagePlanPreset);
 	const clearStagePlan = useMapStore((s: MapStoreState) => s.clearStagePlan);
 	const stagePlannerSetupOpen = useMapStore((s: MapStoreState) => s.stagePlannerSetupOpen);
 	const setStagePlannerSetupOpen = useMapStore((s: MapStoreState) => s.setStagePlannerSetupOpen);
@@ -146,6 +153,8 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 	const [autoBumpNotice, setAutoBumpNotice] = useState<{ requested: number; actual: number } | null>(null);
 	const [activeStageIndex, setActiveStageIndex] = useState<number | null>(null);
 	const [confirmReset, setConfirmReset] = useState(false);
+	const [stagePresetName, setStagePresetName] = useState('');
+	const [isSavingStagePreset, setIsSavingStagePreset] = useState(false);
 	/** Optional trip start date (yyyy-mm-dd); enables per-stage forecasts. */
 	const [tripStartDate, setTripStartDate] = useState<string>(() => stagePlan?.startDate ?? '');
 
@@ -179,33 +188,68 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 		);
 	}, [stagePlan, enhancedTrailPoints, walkingPaceKmh, gradeAdjustedEta]);
 
-	const handleGenerate = (): void => {
+	const currentPlannerInputs = (): StagePlanPresetInputs => ({
+		startKm,
+		endKm,
+		mode,
+		kmPerDayKm,
+		stageCount,
+		balanceByEta,
+		maxHoursPerDay,
+		startDate: tripStartDate || undefined,
+	});
+
+	const runGenerate = (inputs: StagePlanPresetInputs): void => {
 		if (!enhancedTrailPoints?.length) return;
-		const safeKmPerDay = Math.max(0.1, kmPerDayKm);
-		const safeStageCount = Math.min(MAX_STAGES, Math.max(1, stageCount));
+		const safeKmPerDay = Math.max(0.1, inputs.kmPerDayKm);
+		const safeStageCount = Math.min(MAX_STAGES, Math.max(1, inputs.stageCount));
 		const requestedCount =
-			mode === 'stages'
+			inputs.mode === 'stages'
 				? safeStageCount
-				: Math.min(MAX_STAGES, Math.max(1, Math.ceil((endKm - startKm) / safeKmPerDay)));
+				: Math.min(MAX_STAGES, Math.max(1, Math.ceil((inputs.endKm - inputs.startKm) / safeKmPerDay)));
 		const minCount = computeMinStagesForCap(
 			enhancedTrailPoints,
-			startKm,
-			endKm,
+			inputs.startKm,
+			inputs.endKm,
 			walkingPaceKmh,
 			gradeAdjustedEta,
-			maxHoursPerDay,
+			inputs.maxHoursPerDay,
 		);
 		const finalCount = Math.min(MAX_STAGES, Math.max(requestedCount, minCount));
 		setAutoBumpNotice(finalCount > requestedCount ? { requested: requestedCount, actual: finalCount } : null);
-		const plan = balanceByEta
-			? splitByEta(enhancedTrailPoints, startKm, endKm, walkingPaceKmh, gradeAdjustedEta, finalCount)
-			: splitByDistance(startKm, endKm, (endKm - startKm) / finalCount);
-		setStagePlan({ ...plan, startDate: tripStartDate || undefined });
+		const plan = inputs.balanceByEta
+			? splitByEta(enhancedTrailPoints, inputs.startKm, inputs.endKm, walkingPaceKmh, gradeAdjustedEta, finalCount)
+			: splitByDistance(inputs.startKm, inputs.endKm, (inputs.endKm - inputs.startKm) / finalCount);
+		setStagePlan({ ...plan, startDate: inputs.startDate || undefined });
 		setActiveStageIndex(0);
 		setSelectedStagePoiIdsByStage(new Map());
 		setConfirmReset(false);
 		setStagePlannerSetupOpen(false);
 		setStagePlannerStagesOpen(true);
+	};
+
+	const handleGenerate = (): void => runGenerate(currentPlannerInputs());
+
+	const applyStagePreset = (preset: StagePlanPreset): void => {
+		const inp = preset.inputs;
+		setStartKm(inp.startKm);
+		setEndKm(inp.endKm);
+		setMode(inp.mode);
+		setKmPerDayKm(inp.kmPerDayKm);
+		setStageCount(inp.stageCount);
+		setBalanceByEta(inp.balanceByEta);
+		setMaxHoursPerDay(inp.maxHoursPerDay);
+		setTripStartDate(inp.startDate ?? '');
+		// Generate from the preset inputs directly (state setters are async).
+		runGenerate(inp);
+	};
+
+	const handleSaveStagePreset = (): void => {
+		const id = saveStagePlanPreset(stagePresetName, currentPlannerInputs());
+		if (id) {
+			setStagePresetName('');
+			setIsSavingStagePreset(false);
+		}
 	};
 
 	const handleStageClick = (index: number): void => {
@@ -695,6 +739,54 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 							<Button variant="mapControlOutline" onClick={handleGenerate}>
 								{t('generatePlan')}
 							</Button>
+
+							<div className="flex flex-col gap-1.5 border-t border-gray-100 pt-2 dark:border-[var(--border-color)]">
+								<span className="text-xs font-medium text-gray-600 dark:text-[var(--text-secondary)]">
+									{t('presetsHeading')}
+								</span>
+								{stagePlanPresets.length > 0 && (
+									<div className="flex flex-col gap-1">
+										{stagePlanPresets.map((preset) => (
+											<div className="flex items-center gap-1" key={preset.id}>
+												<button
+													className={cn(MAP_CONTROL_LINK_BUTTON, 'min-w-0 flex-1 truncate')}
+													title={preset.name}
+													type="button"
+													onClick={() => applyStagePreset(preset)}
+												>
+													{preset.name}
+												</button>
+												<MapControlIconButton
+													aria-label={t('deletePreset', { name: preset.name })}
+													title={t('deletePreset', { name: preset.name })}
+													onClick={() => deleteStagePlanPreset(preset.id)}
+												>
+													<IoTrashOutline aria-hidden className="h-3.5 w-3.5" />
+												</MapControlIconButton>
+											</div>
+										))}
+									</div>
+								)}
+								{isSavingStagePreset ? (
+									<MapControlInlineNameForm
+										ariaLabel={t('presetNameLabel')}
+										cancelLabel={t('presetCancel')}
+										confirmLabel={t('presetSave')}
+										placeholder={t('presetNamePlaceholder')}
+										value={stagePresetName}
+										onCancel={() => {
+											setIsSavingStagePreset(false);
+											setStagePresetName('');
+										}}
+										onChange={setStagePresetName}
+										onConfirm={handleSaveStagePreset}
+									/>
+								) : (
+									<Button size="sm" variant="mapControlOutlineSecondary" onClick={() => setIsSavingStagePreset(true)}>
+										{t('saveAsPreset')}
+									</Button>
+								)}
+							</div>
 
 							{trailAnchor && (
 								<Button
