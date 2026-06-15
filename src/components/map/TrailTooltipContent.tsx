@@ -9,7 +9,7 @@ import React from 'react';
 import { Button } from '@/components/ui/Button';
 import { HourlyWeatherStrip } from './HourlyWeatherStrip';
 import { WindCompass } from './WindCompass';
-import { openCoordinatesInMaps } from '@/lib/utils';
+import { cn, openCoordinatesInMaps } from '@/lib/utils';
 import type { HourlyStripData } from '@/lib/weather';
 
 export interface TrailTooltipData {
@@ -43,6 +43,8 @@ export interface TrailTooltipWeather {
 	wind: string;
 	sunrise: string;
 	sunset: string;
+	/** Optional cold/heat exposure advisory (pre-localized); null hides the chip. */
+	exposure?: { text: string; tone: 'cold' | 'heat' } | null;
 }
 
 /** All label strings - callers are responsible for including trailing punctuation (e.g. ":"). */
@@ -185,6 +187,18 @@ export function TrailTooltipContent({
 							<div>
 								<span className="font-medium">{labels.wind}</span> {weather.wind}
 							</div>
+							{weather.exposure && (
+								<div
+									className={cn(
+										'mt-1 rounded px-1.5 py-0.5 text-xs font-medium',
+										weather.exposure.tone === 'cold'
+											? 'bg-blue-100 text-blue-900 dark:bg-blue-950 dark:text-blue-200'
+											: 'bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-200',
+									)}
+								>
+									{weather.exposure.text}
+								</div>
+							)}
 							{windCompass && (
 								<div className="mt-1">
 									<WindCompass label={windCompass.label} relativeAngle={windCompass.relativeAngle} />

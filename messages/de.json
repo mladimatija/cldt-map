@@ -581,6 +581,12 @@
 		"moreInfo": "Mehr Informationen"
 	},
 	"weather": {
+		"exposure": {
+			"coldWarning": "Kalt: hohes Unterkühlungsrisiko - warm anziehen, Aufenthalt begrenzen",
+			"coldCaution": "Kalt: warm anziehen, auf Windchill achten",
+			"heatCaution": "Hitze: trinken und Tempo drosseln",
+			"heatWarning": "Hitze: hohes Risiko - im Schatten rasten, viel trinken"
+		},
 		"loading": "Wetter wird geladen…",
 		"temperature": "Temperatur",
 		"feelsLike": "Gefühlt",

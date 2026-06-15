@@ -581,6 +581,12 @@
 		"moreInfo": "Ulteriori informazioni"
 	},
 	"weather": {
+		"exposure": {
+			"coldWarning": "Freddo: alto rischio di ipotermia - vestirsi a strati, limitare l'esposizione",
+			"coldCaution": "Freddo: vestirsi caldi, attenzione al vento",
+			"heatCaution": "Caldo: idratarsi e moderare il passo",
+			"heatWarning": "Caldo: alto rischio - riposare all'ombra, bere spesso"
+		},
 		"loading": "Caricamento meteo…",
 		"temperature": "Temperatura",
 		"feelsLike": "Percepita",
