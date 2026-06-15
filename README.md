@@ -304,7 +304,7 @@ src/
 │   ├── api-defense.ts    # Per-IP rate limiting + upstream size caps for the server routes
 │   ├── distance-utils.ts # ETA, grade-adjusted pace, nearest-point search, ruler formatting
 │   ├── spatial-grid.ts   # Uniform-grid nearest-point lookups (GPS fixes, track coverage)
-│   ├── trail-compute.ts / trail-compute-client.ts # Trail enhancement, offloaded to a Web Worker
+│   ├── trail-compute.ts / trail-compute-client.ts / trail-compute-cache.ts # Trail enhancement (Web Worker), result cached in localforage for instant repeat loads
 │   ├── gpx-parser.ts / gpx-cache.ts / gpx-export.ts # GPX parse, fetch+cache, build/download (shared downloadBlob)
 │   ├── imported-tracks.ts / import-coverage-report.ts # Imported-track storage + coverage CSV/PDF report
 │   ├── pois.ts / poi-types.ts / poi-prefetch.ts / poi-proximity.ts / poi-ahead-corridor.ts / poi-popup-builders.ts # POI dataset (per-type split loader), prefetch, proximity, corridor
