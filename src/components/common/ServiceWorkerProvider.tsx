@@ -17,6 +17,12 @@ interface ServiceWorkerProviderProps {
 	children: React.ReactNode;
 }
 
+/** Auto-enable battery saver at or below this charge level while discharging.
+ *  Applied at most once per low-battery episode so it never fights a user who
+ *  turns it back off, and it never auto-disables. Feature-detected (no-op where
+ *  the Battery Status API is unavailable, e.g. Safari/Firefox). */
+const AUTO_BATTERY_SAVER_LEVEL = 0.2;
+
 /**
  * Provider that manages service worker registration and updates
  */
@@ -25,6 +31,7 @@ export function ServiceWorkerProvider({ children }: ServiceWorkerProviderProps):
 	const [updateAvailable, setUpdateAvailable] = useState(false);
 	const registrationRef = useRef<ServiceWorkerRegistration | null>(null);
 	const refreshingRef = useRef(false);
+	const autoBatterySaverAppliedRef = useRef(false);
 
 	const initOfflineDetection = useMapStore((state: MapStoreState) => state.initOfflineDetection);
 	const initStaleCacheCheck = useMapStore((state: MapStoreState) => state.initStaleCacheCheck);
@@ -164,7 +171,8 @@ export function ServiceWorkerProvider({ children }: ServiceWorkerProviderProps):
 		};
 	}, [maybeRunPredictivePrecache]);
 
-	// Battery level / charging state changes trigger predictive checks.
+	// Battery level / charging state changes trigger predictive checks and, when
+	// the device gets low while discharging, auto-enable battery saver once.
 	// Battery values are read locally only and never transmitted (privacy: the API
 	// is deprecated/restricted in some browsers, treated as unavailable in those).
 	useEffect(() => {
@@ -172,13 +180,29 @@ export function ServiceWorkerProvider({ children }: ServiceWorkerProviderProps):
 		const navWithBattery = navigator as NavigatorWithBattery;
 		if (typeof navWithBattery.getBattery !== 'function') return;
 		let battery: BatteryManager | null = null;
+		const maybeAutoBatterySaver = (b: BatteryManager): void => {
+			const low = b.level <= AUTO_BATTERY_SAVER_LEVEL && !b.charging;
+			if (!low) {
+				// Reset the episode so the next dip can re-apply (and respect a user
+				// who manually turned it off above the threshold).
+				autoBatterySaverAppliedRef.current = false;
+				return;
+			}
+			if (autoBatterySaverAppliedRef.current) return;
+			autoBatterySaverAppliedRef.current = true;
+			if (!useMapStore.getState().batterySaverMode) {
+				useMapStore.getState().setBatterySaverMode(true);
+			}
+		};
 		const handler = (): void => {
 			void maybeRunPredictivePrecache({ source: 'battery' });
+			if (battery) maybeAutoBatterySaver(battery);
 		};
 		navWithBattery
 			.getBattery()
 			.then((b) => {
 				battery = b;
+				maybeAutoBatterySaver(b);
 				b.addEventListener('levelchange', handler);
 				b.addEventListener('chargingchange', handler);
 			})
