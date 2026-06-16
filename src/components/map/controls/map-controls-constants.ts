@@ -24,6 +24,16 @@ export const MAP_CONTROL_LABEL_INPUT_GRID = 'grid grid-cols-[minmax(0,1fr)_6rem_
 export const MAP_CONTROL_LINK_BUTTON =
 	'text-cldt-blue hover:text-cldt-green focus-visible:ring-cldt-green cursor-pointer rounded border-0 bg-transparent p-1 text-left text-xs outline-none focus-visible:ring-2 focus-visible:ring-offset-1';
 
+/** Compact inline text link that underlines on hover/focus (e.g. POI-list "Save
+ *  preset", "Clear tags", "New list"). Compose layout (truncate/text-left) via cn(). */
+export const MAP_CONTROL_INLINE_LINK =
+	'text-cldt-blue focus-visible:ring-cldt-green rounded hover:underline focus-visible:underline focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:outline-none';
+
+/** Small always-underlined footnote link with a top margin (e.g. "Configure in
+ *  Imports", "Open the help panel"). */
+export const MAP_CONTROL_FOOTNOTE_LINK =
+	'text-cldt-blue focus-visible:ring-cldt-green mt-1 cursor-pointer rounded border-0 bg-transparent p-0 text-left text-xs underline outline-none focus-visible:ring-2 focus-visible:ring-offset-1';
+
 /** Section divider: top border + padding between modal/panel sections. */
 export const MAP_CONTROL_SECTION_DIVIDER = 'border-t border-gray-200 pt-3 dark:border-[var(--border-color)]';
 

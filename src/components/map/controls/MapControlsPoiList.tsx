@@ -45,7 +45,12 @@ import { haversineDistanceM } from '@/lib/haversine';
 import { buildGpxWaypointXml, downloadGpxFile, type GpxWaypoint } from '@/lib/gpx-export';
 import { Button } from '@/components/ui/Button';
 import { Checkbox } from '@/components/ui/Checkbox';
-import { MAP_CONTROL_INPUT, MAP_CONTROL_PANEL_WIDTH, MAP_CONTROL_POPOVER } from './map-controls-constants';
+import {
+	MAP_CONTROL_INLINE_LINK,
+	MAP_CONTROL_INPUT,
+	MAP_CONTROL_PANEL_WIDTH,
+	MAP_CONTROL_POPOVER,
+} from './map-controls-constants';
 import { MapControlIconButton } from './MapControlIconButton';
 import { MapControlSectionCard } from './MapControlSectionCard';
 import { MapControlMultiSelect, MapControlSelectColorDotLabel, MapControlSingleSelect } from './MapControlSelect';
@@ -958,11 +963,7 @@ export function MapControlsPoiList({
 							<div className="flex items-center justify-between text-[0.625rem] tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
 								<span>{t('filterPresetsHeading')}</span>
 								{!savingFilterPreset && (
-									<button
-										className="text-cldt-blue focus-visible:ring-cldt-green rounded hover:underline focus-visible:underline focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:outline-none"
-										type="button"
-										onClick={() => setSavingFilterPreset(true)}
-									>
+									<button className={MAP_CONTROL_INLINE_LINK} type="button" onClick={() => setSavingFilterPreset(true)}>
 										{t('filterPresetsSave')}
 									</button>
 								)}
@@ -1156,11 +1157,7 @@ export function MapControlsPoiList({
 								<div className="flex items-center justify-between text-[0.625rem] tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
 									<span>{t('tagFilterHeading')}</span>
 									{enabledPoiTags.size > 0 && (
-										<button
-											className="text-cldt-blue focus-visible:ring-cldt-green rounded hover:underline focus-visible:underline focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:outline-none"
-											type="button"
-											onClick={clearPoiTags}
-										>
+										<button className={MAP_CONTROL_INLINE_LINK} type="button" onClick={clearPoiTags}>
 											{t('tagFilterClear')}
 										</button>
 									)}
@@ -1242,7 +1239,7 @@ export function MapControlsPoiList({
 									<span>{t('starCollectionHeading')}</span>
 									{!creatingStarCollection && (
 										<button
-											className="text-cldt-blue focus-visible:ring-cldt-green rounded hover:underline focus-visible:underline focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:outline-none"
+											className={MAP_CONTROL_INLINE_LINK}
 											type="button"
 											onClick={() => setCreatingStarCollection(true)}
 										>

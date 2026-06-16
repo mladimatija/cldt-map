@@ -33,6 +33,7 @@ import type { StagePlanPreset, StagePlanPresetInputs } from '@/lib/store/types';
 import { MapControlsTripBriefModal } from './MapControlsTripBriefModal';
 import { cn, formatDistance, formatElevation, kmToMiles, milesToKm } from '@/lib/utils';
 import {
+	MAP_CONTROL_FOOTNOTE_LINK,
 	MAP_CONTROL_INPUT,
 	MAP_CONTROL_LABEL_INPUT_GRID,
 	MAP_CONTROL_LINK_BUTTON,
@@ -872,11 +873,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 								</p>
 							)}
 
-							<button
-								className="text-cldt-blue focus-visible:ring-cldt-green mt-1 cursor-pointer rounded border-0 bg-transparent p-0 text-left text-xs underline outline-none focus-visible:ring-2 focus-visible:ring-offset-1"
-								type="button"
-								onClick={openHelpToPlanning}
-							>
+							<button className={MAP_CONTROL_FOOTNOTE_LINK} type="button" onClick={openHelpToPlanning}>
 								{t('planningHelp')}
 							</button>
 						</MapControlSectionCard>

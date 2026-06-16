@@ -43,7 +43,12 @@ import { computeTrackStats, trackBounds, trackOnTrailKms } from '@/lib/imported-
 import SmartTooltip from '@/components/ui/SmartTooltip';
 import { Button } from '@/components/ui/Button';
 import { Checkbox } from '@/components/ui/Checkbox';
-import { MAP_CONTROL_PANEL_WIDTH, MAP_CONTROL_POPOVER, MAP_CONTROL_SECTION_DIVIDER } from './map-controls-constants';
+import {
+	MAP_CONTROL_FOOTNOTE_LINK,
+	MAP_CONTROL_PANEL_WIDTH,
+	MAP_CONTROL_POPOVER,
+	MAP_CONTROL_SECTION_DIVIDER,
+} from './map-controls-constants';
 import { MapControlMultiSelect, MapControlSelectColorDotLabel } from './MapControlSelect';
 import { MapControlIconButton } from './MapControlIconButton';
 import { JournalSection } from './JournalSection';
@@ -531,11 +536,7 @@ export function MapControlsProgressPanel(): React.ReactElement | null {
 						) : (
 							<p className="m-0 text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('noTracks')}</p>
 						)}
-						<button
-							className="text-cldt-blue focus-visible:ring-cldt-green mt-1 cursor-pointer rounded border-0 bg-transparent p-0 text-left text-xs underline outline-none focus-visible:ring-2 focus-visible:ring-offset-1"
-							type="button"
-							onClick={openSettingsToImports}
-						>
+						<button className={MAP_CONTROL_FOOTNOTE_LINK} type="button" onClick={openSettingsToImports}>
 							{t('manageTracksInSettings')}
 						</button>
 					</MapControlSectionCard>

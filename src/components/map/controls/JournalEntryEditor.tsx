@@ -13,6 +13,10 @@ import { MapControlSectionCard } from './MapControlSectionCard';
 import { JournalTrackAttachControls, type JournalAttachState } from './JournalTrackAttachControls';
 import { buildJournalPreview } from '@/lib/journal-track-link';
 
+/** Shared styling for the top-right focus-editor toggle icon buttons. */
+const FOCUS_TOGGLE_BUTTON =
+	'hover:text-cldt-blue focus-visible:ring-cldt-green absolute top-1 right-1 flex h-7 w-7 cursor-pointer items-center justify-center rounded border-0 bg-transparent text-gray-500 outline-none focus-visible:ring-2 dark:text-[var(--text-secondary)]';
+
 interface JournalEntryEditorProps {
 	entry: JournalEntry;
 	rulerKms: { lo: number; hi: number } | null;
@@ -148,7 +152,7 @@ export function JournalEntryEditor({
 					{!readOnly && !focusMode && (
 						<button
 							aria-label={t('focusEditor')}
-							className="hover:text-cldt-blue focus-visible:ring-cldt-green absolute top-1 right-1 flex h-7 w-7 cursor-pointer items-center justify-center rounded border-0 bg-transparent text-gray-500 outline-none focus-visible:ring-2 dark:text-[var(--text-secondary)]"
+							className={FOCUS_TOGGLE_BUTTON}
 							title={t('focusEditor')}
 							type="button"
 							onClick={() => setFocusMode(true)}
@@ -159,7 +163,7 @@ export function JournalEntryEditor({
 					{focusMode && (
 						<button
 							aria-label={t('focusEditorClose')}
-							className="hover:text-cldt-blue focus-visible:ring-cldt-green absolute top-1 right-1 flex h-7 w-7 cursor-pointer items-center justify-center rounded border-0 bg-transparent text-gray-500 outline-none focus-visible:ring-2 dark:text-[var(--text-secondary)]"
+							className={FOCUS_TOGGLE_BUTTON}
 							title={t('focusEditorClose')}
 							type="button"
 							onClick={() => setFocusMode(false)}
