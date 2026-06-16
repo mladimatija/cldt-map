@@ -89,8 +89,14 @@ export function JournalSection({ embedded = false }: JournalSectionProps): React
 		() => [...journalEntries].sort((a, b) => b.date.localeCompare(a.date) || b.createdAt.localeCompare(a.createdAt)),
 		[journalEntries],
 	);
-	const hasTrackEntries = useMemo(() => journalEntries.some((entry) => entry.trackLink), [journalEntries]);
-	const showExportBundle = journalEntries.length > 0 && hasTrackEntries;
+	// Only offer the bundle when at least one entry links to a track that is
+	// actually on this device. A missing track has no geometry to export, so
+	// the zip would contain only the Markdown the plain Export already provides.
+	const hasExportableTrackEntry = useMemo(
+		() => journalEntries.some((entry) => resolveTrackLink(entry, importedTracks).status === 'ok'),
+		[journalEntries, importedTracks],
+	);
+	const showExportBundle = hasExportableTrackEntry;
 
 	const resetCompose = (): void => {
 		setEntryDate(todayIsoDate());
