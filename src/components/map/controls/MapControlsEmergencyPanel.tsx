@@ -5,7 +5,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { OpenLocationCode } from 'open-location-code';
 import { IoCallOutline, IoCheckmarkOutline, IoCopyOutline, IoOpenOutline, IoWarningOutline } from 'react-icons/io5';
 import { MAP_CONTROL_SECTION_HEADING } from './MapControlSectionCard';
-import { MAP_CONTROL_SECTION_DIVIDER as SECTION_DIVIDER } from './map-controls-constants';
+import { MAP_CONTROL_SECTION_DIVIDER } from './map-controls-constants';
 import { MapControlIconButton } from './MapControlIconButton';
 import { MapControlModalShell } from './MapControlModalShell';
 import { EmergencySosCard } from './EmergencySosCard';
@@ -440,7 +440,7 @@ export function MapControlsEmergencyPanel({ onClose }: MapControlsEmergencyPanel
 						)}
 					</section>
 
-					<section className={cn('flex flex-col gap-1.5', SECTION_DIVIDER)}>
+					<section className={cn('flex flex-col gap-1.5', MAP_CONTROL_SECTION_DIVIDER)}>
 						<h4 className={MAP_CONTROL_SECTION_HEADING}>{t('nearestRoad')}</h4>
 						{nearestRoad && roadCompass ? (
 							<div className="flex items-center justify-between gap-2">
@@ -456,7 +456,7 @@ export function MapControlsEmergencyPanel({ onClose }: MapControlsEmergencyPanel
 						)}
 					</section>
 
-					<section className={cn('flex flex-col gap-1.5', SECTION_DIVIDER)}>
+					<section className={cn('flex flex-col gap-1.5', MAP_CONTROL_SECTION_DIVIDER)}>
 						<h4 className={MAP_CONTROL_SECTION_HEADING}>{t('nearestRescue')}</h4>
 						{nearestHgss && hgssCompass ? (
 							<div className="flex flex-col gap-1.5">
@@ -507,7 +507,7 @@ export function MapControlsEmergencyPanel({ onClose }: MapControlsEmergencyPanel
 
 					<EmergencySosCard />
 
-					<details className={cn('flex flex-col', SECTION_DIVIDER)}>
+					<details className={cn('flex flex-col', MAP_CONTROL_SECTION_DIVIDER)}>
 						<summary
 							className={cn(
 								MAP_CONTROL_SECTION_HEADING,

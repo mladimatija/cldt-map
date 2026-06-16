@@ -10,9 +10,7 @@ import { resolveShareUrlForCopy } from '@/lib/share-shortener-client';
 import { isPngExportDisabled } from '@/lib/export-utils';
 import { usePopoverFocusTrap } from '@/hooks';
 import { MapControlIconButton } from './MapControlIconButton';
-import { MAP_CONTROL_PANEL_WIDTH, MAP_CONTROL_POPOVER } from './map-controls-constants';
-
-const SECTION_DIVIDER = 'border-t border-gray-200 pt-3 dark:border-[var(--border-color)]';
+import { MAP_CONTROL_PANEL_WIDTH, MAP_CONTROL_POPOVER, MAP_CONTROL_SECTION_DIVIDER } from './map-controls-constants';
 
 const ShareQrLoader: React.FC<{ label?: string }> = ({ label }) => (
 	<div
@@ -134,7 +132,7 @@ export function MapControlsSharePanel({
 				</>
 			) : null}
 
-			<div className={showShareSection ? SECTION_DIVIDER : undefined}>
+			<div className={showShareSection ? MAP_CONTROL_SECTION_DIVIDER : undefined}>
 				{showShareSection ? (
 					<h4 className="mb-1 text-sm font-medium text-gray-700 dark:text-[var(--text-primary)]">{tExport('title')}</h4>
 				) : (

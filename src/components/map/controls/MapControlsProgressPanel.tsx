@@ -43,7 +43,7 @@ import { computeTrackStats, trackBounds, trackOnTrailKms } from '@/lib/imported-
 import SmartTooltip from '@/components/ui/SmartTooltip';
 import { Button } from '@/components/ui/Button';
 import { Checkbox } from '@/components/ui/Checkbox';
-import { MAP_CONTROL_PANEL_WIDTH, MAP_CONTROL_POPOVER } from './map-controls-constants';
+import { MAP_CONTROL_PANEL_WIDTH, MAP_CONTROL_POPOVER, MAP_CONTROL_SECTION_DIVIDER } from './map-controls-constants';
 import { MapControlMultiSelect, MapControlSelectColorDotLabel } from './MapControlSelect';
 import { MapControlIconButton } from './MapControlIconButton';
 import { JournalSection } from './JournalSection';
@@ -714,7 +714,7 @@ export function MapControlsProgressPanel(): React.ReactElement | null {
 						<JournalSection embedded />
 					</MapControlSectionCard>
 
-					<div className="border-t border-gray-200 pt-3 dark:border-[var(--border-color)]">
+					<div className={MAP_CONTROL_SECTION_DIVIDER}>
 						{!confirmClear ? (
 							<Button
 								className="w-full"
