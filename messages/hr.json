@@ -64,7 +64,7 @@
 			"radar": "Preklopni sloj radara padalina - animirani RainViewer radar u ploči Alati (ikona ključa); prošli i prognozirani kadrovi, kontrole reproduciranja i legenda boja",
 			"sunsetPosition": "Pozicija zalaska/izlaska sunca - prikazuje gdje ćete biti na stazi u trenutku zalaska i izlaska sunca prema trenutnom tempu; markeri na poliliniji",
 			"daylightBudget": "Procjena dnevnog svjetla - na stazi te HUD s udaljenostima upozorava kad možda nećeš stići do sljedećeg doma, skloništa ili mjesta prije mraka, uspoređujući vrijeme zalaska sunca s procjenom dolaska do najbližeg odredišta ispred",
-			"stagePlanner": "Planer višednevnih etapa - podijelite bilo koji dio staze na dnevne etape prema udaljenosti ili vremenu, pregledajte nadmorsku visinu, ETA, vodu, težinu ruksaka i čipove opskrbe po etapi. Postavite datum početka putovanja da prikažete datum svake etape i umetnite dane odmora (nulte dane) koji pomiču svaki kasniji datum, prognozu i kalendarski događaj bez mijenjanja podjele. Izvezite pojedine etape kao GPX ili FIT, sve POI-jeve kao GPX, PDF karte etapa, iCal (uključuje dane odmora) ili otvorite Trip brief",
+			"stagePlanner": "Planer višednevnih etapa - podijelite bilo koji dio staze na dnevne etape prema udaljenosti ili vremenu, pregledajte nadmorsku visinu, ETA, vodu, težinu ruksaka i čipove opskrbe po etapi. Postavite datum početka putovanja da prikažete datum svake etape i umetnite dane odmora (nulte dane) koji pomiču svaki kasniji datum, prognozu i kalendarski događaj bez mijenjanja podjele. Izvezite pojedine etape kao GPX ili FIT, sve POI-jeve kao GPX, PDF karte etapa, iCal (uključuje dane odmora) ili otvorite Trip brief; oznaka prenoćišta na kraju etape navodi najbliži dom, sklonište ili grad za spavanje, s vrstom i udaljenošću od kraja etape u proširenom prikazu",
 			"gpxImport": "Uvoz GPX rute - povuci i ispusti (ili odaberi) snimljenu GPX datoteku i usporedi svoju rutu sa službenom stazom; statistike o udaljenosti, tempu, ukupnom i vremenu kretanja, maksimalnom odstupanju i pokrivenosti staze",
 			"emergency": "Hitna ploča 112 - dugim pritiskom crvenog SOS gumba (donji desni kut) otvara se offline-first centrirani modal s tvojim GPS koordinatama, Plus kodom, etapom i kilometrom staze te smjerom i udaljenošću do najbližeg pristupa cesti i HGSS stanice; kad si online, traži se čitljiva adresa koju možeš kopirati; kopiraj svako polje i pokreni biranje (Nazovi 112) ili karte (Otvori u kartama); ako GPS nije dostupan, vraća se na posljednji poznati položaj i koliko je star; uključuje opcionalnu medicinsku/kontaktnu karticu na uređaju i skriptu \"što reći na 112\"; radi potpuno offline jednom kad se podaci spreme u predmemoriju; položaj prikazuje i kao MGRS / UTM / DMS mrežne reference (MGRS izravno radi usklađenosti s HGSS-om / SAR-om, UTM i DMS u sklopivom retku)",
 			"trailStyle": "Stil staze - odaberi kako će ruta biti obojana u Postavkama (kartica Izgled staze): Zadano (jedna boja), Dionice (zone A/B/C s graničnim oznakama i statistikom po dionici), Nagib (gradijentno bojanje u pet pojaseva, topli tonovi za uspone i hladni za silazne dijelove u trenutnom smjeru hodanja; legenda u kartici; ponovno se izračunava pri promjeni smjera SOBO/NOBO), Podloga ili Težina (SAC)",
@@ -817,7 +817,11 @@
 		"tripNextGrocery": "Sljedeća opskrba namirnicama: {town} ({distance})",
 		"stageFoodEntering": "Ulazite s {stages} etapa / {distance} od zadnje opskrbe namirnicama",
 		"stageFoodCarry": "Ponesite hranu {distance} do {town}",
-		"stageFoodPackDays": "Potrošni materijal u ruksaku: ~{days} dana pri {rate}"
+		"stageFoodPackDays": "Potrošni materijal u ruksaku: ~{days} dana pri {rate}",
+		"stageSleepAria": "Prenoćište: {name}",
+		"stageSleepAt": "{name} ({type}) - na kraju etape",
+		"stageSleepAway": "{name} ({type}) - {distance} od kraja etape",
+		"stageSleepOffTrail": "{distance} od staze"
 	},
 	"tripBrief": {
 		"defaultTitle": "CLDT plan putovanja",

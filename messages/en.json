@@ -64,7 +64,7 @@
 			"radar": "Precipitation radar overlay - animated RainViewer radar in the Tools panel (wrench icon); past and nowcast frames, play/pause controls, and colour legend",
 			"sunsetPosition": "Sunset/sunrise position - projects where you will be on the trail at sunset and sunrise based on your current pace; toggleable markers on the polyline",
 			"daylightBudget": "Daylight budget - on the trail, the distance HUD warns when you may not reach the next hut, shelter, or town before dark, comparing the day's sunset time with your ETA to the nearest place to shelter ahead",
-			"stagePlanner": "Multi-day stage planner - split any trail range into daily stages by distance or time, view per-stage elevation, ETA, water, pack, and resupply chips. Set a trip start date to show each stage's calendar date and insert rest (zero) days that shift every later date, forecast, and calendar event without changing the split. Export individual stages as GPX or FIT, all POIs as GPX, a strip-map PDF, iCal (includes rest days), or open the Trip brief",
+			"stagePlanner": "Multi-day stage planner - split any trail range into daily stages by distance or time, view per-stage elevation, ETA, water, pack, and resupply chips. Set a trip start date to show each stage's calendar date and insert rest (zero) days that shift every later date, forecast, and calendar event without changing the split. Export individual stages as GPX or FIT, all POIs as GPX, a strip-map PDF, iCal (includes rest days), or open the Trip brief; a stage-end accommodation chip names the nearest hut, shelter, or town to sleep at, with its type and distance from the stage boundary in the expanded detail",
 			"gpxImport": "GPX track import - drag and drop (or pick) a recorded GPX file to overlay your actual hike on the map; compare your track against the official trail with stats on distance, pace, elapsed time, max deviation, and % of trail covered",
 			"emergency": "Emergency 112 panel - long-press the red SOS button (bottom-right) for an offline-first centered modal with your GPS coordinates, Plus Code, trail section and km, and the bearing and distance to the nearest road access and HGSS mountain rescue station; when online, a readable address line is looked up and can be copied; copy any field to the clipboard and hand off to your phone dialer (Call 112) or maps app (Open in maps); if live GPS is unavailable, it falls back to your last known position with its age; includes an optional on-device medical/contact card and a \"what to tell 112\" script; fully offline once cached; relays your position as MGRS / UTM / DMS grid references too (MGRS inline for HGSS / SAR interoperability, UTM and DMS under a collapsible row)",
 			"trailStyle": "Trail style - choose how the route polyline is coloured from Settings (trail appearance card): Default (single colour), Sections (A/B/C zones with boundary markers and per-section stats), Grade (Strava-style gradient tinting with five bands; warm for ascents and cool for descents in the active travel direction; colour-ramp legend in the card; recomputed when the SOBO/NOBO direction is toggled), Surface, or Difficulty (SAC)",
@@ -817,7 +817,11 @@
 		"tripNextGrocery": "Next grocery resupply: {town} ({distance})",
 		"stageFoodEntering": "Entering with {stages} stages / {distance} since last grocery",
 		"stageFoodCarry": "Carry food {distance} to {town}",
-		"stageFoodPackDays": "Consumables in pack: ~{days} days at {rate}"
+		"stageFoodPackDays": "Consumables in pack: ~{days} days at {rate}",
+		"stageSleepAria": "Overnight: {name}",
+		"stageSleepAt": "{name} ({type}) - at the stage end",
+		"stageSleepAway": "{name} ({type}) - {distance} from the stage end",
+		"stageSleepOffTrail": "{distance} off trail"
 	},
 	"tripBrief": {
 		"defaultTitle": "CLDT Trip Plan",

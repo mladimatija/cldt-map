@@ -64,7 +64,7 @@
 			"radar": "Niederschlagsradar-Overlay - animierter RainViewer-Radar im Werkzeuge-Panel (Schraubenschlüssel); vergangene und vorhergesagte Frames, Wiedergabesteuerung und Farblegende",
 			"sunsetPosition": "Sonnenuntergang/Sonnenaufgang-Position - zeigt, wo du bei Sonnenuntergang und Sonnenaufgang auf dem Weg sein wirst; umschaltbare Markierungen auf der Strecke",
 			"daylightBudget": "Tageslicht-Budget - unterwegs warnt das Distanz-HUD, wenn du die nächste Hütte, Schutzhütte oder Ortschaft womöglich nicht vor Einbruch der Dunkelheit erreichst, durch Vergleich der Sonnenuntergangszeit mit deiner Ankunftszeit am nächsten Ziel voraus",
-			"stagePlanner": "Mehrtages-Etappenplaner - teile beliebige Streckenabschnitte nach Distanz oder Zeit in Tagesetappen auf, zeige Höhe, ETA, Wasser-, Pack- und Versorgungs-Chips je Etappe. Lege ein Startdatum fest, um das Kalenderdatum jeder Etappe anzuzeigen, und füge Ruhetage (Nulltage) ein, die jedes spätere Datum, jede Prognose und jeden Kalendereintrag verschieben, ohne die Aufteilung zu ändern. Exportiere einzelne Etappen als GPX oder FIT, alle POIs als GPX, ein Etappenkarten-PDF, iCal (inklusive Ruhetage) oder öffne den Trip Brief",
+			"stagePlanner": "Mehrtages-Etappenplaner - teile beliebige Streckenabschnitte nach Distanz oder Zeit in Tagesetappen auf, zeige Höhe, ETA, Wasser-, Pack- und Versorgungs-Chips je Etappe. Lege ein Startdatum fest, um das Kalenderdatum jeder Etappe anzuzeigen, und füge Ruhetage (Nulltage) ein, die jedes spätere Datum, jede Prognose und jeden Kalendereintrag verschieben, ohne die Aufteilung zu ändern. Exportiere einzelne Etappen als GPX oder FIT, alle POIs als GPX, ein Etappenkarten-PDF, iCal (inklusive Ruhetage) oder öffne den Trip Brief; ein Übernachtungs-Chip am Etappenende nennt die nächste Hütte, Schutzhütte oder Ortschaft zum Übernachten, mit Typ und Entfernung zum Etappenende in der Detailansicht",
 			"gpxImport": "GPX-Track-Import - ziehe eine aufgezeichnete GPX-Datei auf die Karte (oder wähle sie aus) und vergleiche deine Route mit dem offiziellen Weg; Statistiken zu Distanz, Tempo, Gesamtzeit, Gehzeit, max. Abweichung und Streckenabdeckung",
 			"emergency": "Notfallpanel 112 - langes Drücken des roten SOS-Buttons (unten rechts) öffnet ein offline-first zentriertes Modal mit deinen GPS-Koordinaten, Plus Code, Etappe und Kilometer auf dem Weg sowie Richtung und Entfernung zur nächsten Straßenanbindung und HGSS-Bergrettungsstation; online wird eine lesbare Adresse nachgeschlagen und kann kopiert werden; jedes Feld in die Zwischenablage kopieren und an die Telefon-App (112 anrufen) oder Karten-App (In Karten öffnen) übergeben; wenn kein GPS verfügbar ist, greift es auf deine letzte bekannte Position mit ihrem Alter zurück; enthält eine optionale medizinische/Kontakt-Karte auf dem Gerät und einen 112-Leitfaden; vollständig offline, sobald die Daten im Cache sind; gibt deine Position auch als MGRS- / UTM- / DMS-Gitterreferenzen aus (MGRS direkt sichtbar für die Interoperabilität mit HGSS / SAR, UTM und DMS in einer ausklappbaren Zeile)",
 			"trailStyle": "Wegstil - wähle in den Einstellungen (Karte Wegoptik), wie die Route eingefärbt wird: Standard (eine Farbe), Abschnitte (Zonen A/B/C mit Grenzmarkern und Statistik pro Abschnitt), Steigung (Gradienten-Färbung in fünf Stufen, warme Töne für Anstiege und kühle für Abstiege in der aktuellen Gehrichtung; Farblegende in der Karte; wird beim Wechsel der SOBO/NOBO-Richtung neu berechnet), Untergrund oder Schwierigkeit (SAC)",
@@ -817,7 +817,11 @@
 		"tripNextGrocery": "Nächste Lebensmittelversorgung: {town} ({distance})",
 		"stageFoodEntering": "Start mit {stages} Etappen / {distance} seit letzter Lebensmittelversorgung",
 		"stageFoodCarry": "Essen {distance} bis {town} mitnehmen",
-		"stageFoodPackDays": "Verbrauchsgüter im Rucksack: ~{days} Tage bei {rate}"
+		"stageFoodPackDays": "Verbrauchsgüter im Rucksack: ~{days} Tage bei {rate}",
+		"stageSleepAria": "Übernachtung: {name}",
+		"stageSleepAt": "{name} ({type}) - am Etappenende",
+		"stageSleepAway": "{name} ({type}) - {distance} vom Etappenende",
+		"stageSleepOffTrail": "{distance} abseits des Wegs"
 	},
 	"tripBrief": {
 		"defaultTitle": "CLDT Reiseplan",

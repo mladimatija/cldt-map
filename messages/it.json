@@ -64,7 +64,7 @@
 			"radar": "Overlay radar precipitazioni - radar RainViewer animato nel pannello Strumenti (icona chiave inglese); frame passati e previsionali, controlli play/pausa e legenda colori",
 			"sunsetPosition": "Posizione tramonto/alba - mostra dove ti troverai sul sentiero al tramonto e all'alba in base al tuo ritmo attuale; indicatori attivabili sulla linea",
 			"daylightBudget": "Budget di luce diurna - sul sentiero l'HUD delle distanze avvisa quando potresti non raggiungere il prossimo rifugio, riparo o paese prima del buio, confrontando l'orario del tramonto con il tuo tempo di arrivo al luogo più vicino davanti",
-			"stagePlanner": "Pianificatore tappe multi-giorno - suddividi qualsiasi tratto del sentiero in tappe giornaliere per distanza o tempo, visualizza dislivello, ETA, acqua, zaino e chip rifornimento per tappa. Imposta una data di inizio per mostrare la data di ogni tappa e inserisci giorni di riposo (giorni zero) che spostano ogni data, previsione ed evento di calendario successivi senza cambiare la suddivisione. Esporta singole tappe come GPX o FIT, tutti i POI come GPX, un PDF tappe in mappa, iCal (include i giorni di riposo) o apri il Trip brief",
+			"stagePlanner": "Pianificatore tappe multi-giorno - suddividi qualsiasi tratto del sentiero in tappe giornaliere per distanza o tempo, visualizza dislivello, ETA, acqua, zaino e chip rifornimento per tappa. Imposta una data di inizio per mostrare la data di ogni tappa e inserisci giorni di riposo (giorni zero) che spostano ogni data, previsione ed evento di calendario successivi senza cambiare la suddivisione. Esporta singole tappe come GPX o FIT, tutti i POI come GPX, un PDF tappe in mappa, iCal (include i giorni di riposo) o apri il Trip brief; un indicatore di pernottamento a fine tappa indica il rifugio, ricovero o paese più vicino dove dormire, con tipo e distanza dalla fine della tappa nel dettaglio",
 			"gpxImport": "Importazione tracce GPX - trascina (o seleziona) un file GPX registrato per sovrapporre la tua escursione alla mappa ufficiale; statistiche su distanza, passo, tempo totale, tempo in movimento, deviazione massima e copertura del percorso",
 			"emergency": "Pannello di emergenza 112 - tieni premuto il pulsante SOS rosso (in basso a destra) per aprire un modal centrato offline-first con coordinate GPS, Plus Code, tratta e km del percorso, direzione e distanza al più vicino accesso stradale e alla stazione di soccorso alpino HGSS; online viene cercato un indirizzo leggibile da copiare; copia ogni campo negli appunti e passa al dialer (Chiama 112) o alle mappe (Apri nelle mappe); se il GPS non è disponibile, ripiega sull'ultima posizione nota con la sua età; include una scheda medica/contatti opzionale sul dispositivo e una guida \"cosa dire al 112\"; funziona completamente offline una volta in cache; comunica la tua posizione anche come riferimenti di griglia MGRS / UTM / DMS (MGRS in primo piano per l'interoperabilità con HGSS / SAR, UTM e DMS in una riga comprimibile)",
 			"trailStyle": "Stile del percorso - scegli in Impostazioni (scheda Aspetto del sentiero) come colorare la polilinea: Predefinito (un solo colore), Tratte (zone A/B/C con marker di confine e statistiche per tratta), Pendenza (colorazione a cinque bande in stile Strava, toni caldi per le salite e freddi per le discese nella direzione di marcia attiva; legenda del colore nella scheda; ricalcolata al cambio di direzione SOBO/NOBO), Fondo o Difficoltà (SAC)",
@@ -817,7 +817,11 @@
 		"tripNextGrocery": "Prossimo rifornimento alimentari: {town} ({distance})",
 		"stageFoodEntering": "Entri con {stages} tappe / {distance} dall'ultimo rifornimento alimentari",
 		"stageFoodCarry": "Porta cibo per {distance} fino a {town}",
-		"stageFoodPackDays": "Consumabili nello zaino: ~{days} giorni a {rate}"
+		"stageFoodPackDays": "Consumabili nello zaino: ~{days} giorni a {rate}",
+		"stageSleepAria": "Pernottamento: {name}",
+		"stageSleepAt": "{name} ({type}) - a fine tappa",
+		"stageSleepAway": "{name} ({type}) - {distance} dalla fine della tappa",
+		"stageSleepOffTrail": "{distance} fuori sentiero"
 	},
 	"tripBrief": {
 		"defaultTitle": "Piano di viaggio CLDT",

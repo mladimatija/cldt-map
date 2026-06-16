@@ -22,6 +22,11 @@ import {
 	STAGE_POI_OFFTRAIL_KM,
 	type Poi,
 } from '@/lib/pois';
+import {
+	filterOvernightCandidates,
+	findStageEndAccommodation,
+	type StageEndAccommodation,
+} from '@/lib/stage-accommodation';
 import { Button } from '@/components/ui/Button';
 import { Radio } from '@/components/ui/Radio';
 import { Checkbox } from '@/components/ui/Checkbox';
@@ -503,6 +508,16 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 		return stagePlan.stages.map((s) => longestDryStretchKm(s.startKm, s.endKm, waterSourceKms));
 	}, [stagePlan, waterSourceKms]);
 
+	/** Nearest place to sleep at each stage boundary (hut / shelter / town /
+	 *  settlement). Like the dry-stretch stat, it reads the full POI dataset
+	 *  rather than the layer-visibility-filtered subset, so hiding hut markers on
+	 *  the map never hides the "where do I sleep tonight?" answer. */
+	const overnightPois = useMemo((): Poi[] => filterOvernightCandidates(poisFile?.pois ?? []), [poisFile]);
+	const accommodationByStage = useMemo((): (StageEndAccommodation | null)[] => {
+		if (!stagePlan) return [];
+		return stagePlan.stages.map((s) => findStageEndAccommodation(s.endKm, overnightPois));
+	}, [stagePlan, overnightPois]);
+
 	/** Full-plan food resupply cadence from enrichment data (ignores POI layer visibility). */
 	const planResupplyCadence = useMemo(() => {
 		if (!stagePlan || !poisFile?.pois?.length) return null;
@@ -958,6 +973,22 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 																	</span>,
 																);
 															}
+															const sleepAcc = accommodationByStage[i];
+															if (sleepAcc) {
+																const accName = poiDisplayName(sleepAcc.poi, locale);
+																const accAria = t('stageSleepAria', { name: accName });
+																chips.push(
+																	<span
+																		aria-label={accAria}
+																		className="inline-flex max-w-[7rem] shrink-0 items-center gap-0.5 rounded-full bg-indigo-500/10 px-1.5 py-0 text-[0.625rem] font-medium text-indigo-700 dark:text-indigo-300"
+																		key="sleep"
+																		title={accAria}
+																	>
+																		<span aria-hidden>🛏️</span>
+																		<span className="truncate">{accName}</span>
+																	</span>,
+																);
+															}
 															if (waterGapByStage[i] !== undefined && waterGapByStage[i] >= WATER_GAP_WARN_KM) {
 																chips.push(
 																	<span
@@ -1089,6 +1120,31 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 													</button>
 													{isActive && (
 														<div className="flex flex-col gap-1 border-t border-gray-100 px-2 py-1.5 pl-3 dark:border-[var(--border-color)]">
+															{(() => {
+																const acc = accommodationByStage[i];
+																if (!acc) return null;
+																const accName = poiDisplayName(acc.poi, locale);
+																const typeLabel = tPois(`type.${acc.poi.type}`, { default: acc.poi.type });
+																const absKm = Math.abs(acc.alongKm);
+																const line =
+																	absKm < 0.1
+																		? t('stageSleepAt', { name: accName, type: typeLabel })
+																		: t('stageSleepAway', {
+																				name: accName,
+																				type: typeLabel,
+																				distance: `${toDisplay(absKm).toFixed(1)} ${distanceUnitLabel}`,
+																			});
+																const offTrail =
+																	acc.offTrailKm >= 0.2
+																		? ` · ${t('stageSleepOffTrail', { distance: `${toDisplay(acc.offTrailKm).toFixed(1)} ${distanceUnitLabel}` })}`
+																		: '';
+																return (
+																	<p className="m-0 text-[0.625rem] leading-snug text-gray-500 dark:text-[var(--text-secondary)]">
+																		<span aria-hidden>🛏️</span> {line}
+																		{offTrail}
+																	</p>
+																);
+															})()}
 															{waterGapByStage[i] !== undefined && (
 																<p
 																	className={cn(
