@@ -81,7 +81,7 @@
 			"waypointsJournal": "Eigene Wegpunkte & Reisetagebuch - langes Drücken auf die Karte für persönliche Marker mit Notizen; datierte Einträge können eine Lineal-Strecke anhängen oder ein importiertes GPX-Segment verknüpfen (Kartenvorschau, Ansehen und Overflow-Menü für Auf Karte anzeigen / GPX / Zip-Paket). Heute eintragen füllt mit einem Tipp einen Eintrag mit deinem aktuellen Kilometer, der Höhe und dem Abschnitt vor. Markdown und Share-URLs übernehmen Track-Referenzen; alles bleibt auf dem Gerät",
 			"resupply": "Versorgungs-Infos - Geschäfte, Apotheken, Geldautomaten, Post und Bus aus OpenStreetMap in Orts-Popups, mit Versorgungs-Chips pro Etappe im Planer",
 			"pushAlerts": "Warnungs-Benachrichtigungen - optionale Browser-Pushes bei neuen saisonalen Warnungen oder Hinweisen zum Wegzustand, auch bei geschlossener App; kein Konto nötig",
-			"accessibility": "Barrierefreiheit - große Touch-Ziele und eine anpassbare UI-Textgröße (Standard / Groß / Größer), die Bedienfelder und Overlays vergrößert, ohne die Karte zu skalieren. Die Karte ist eine beschriftete, per Tastatur fokussierbare Region (Pfeiltasten schwenken, +/- zoomt) mit einer Orientierungsmeldung für Screenreader beim Fokus und einem Tastatur-Streckenregler über dem Höhenprofil, der Distanz, Höhe, Steigung, Abschnittsgrenzen und das nächste nutzbare Wasser voraus über eine Live-Region ansagt"
+			"accessibility": "Barrierefreiheit - große Touch-Ziele und eine anpassbare UI-Textgröße (Standard / Groß / Größer), die Bedienfelder und Overlays vergrößert, ohne die Karte zu skalieren. Die Karte ist eine beschriftete, per Tastatur fokussierbare Region (Pfeiltasten schwenken, +/- zoomt) mit einer Orientierungsmeldung für Screenreader beim Fokus und einem Tastatur-Streckenregler über dem Höhenprofil, der Distanz, Höhe, Steigung, Abschnittsgrenzen und das nächste nutzbare Wasser voraus über eine Live-Region ansagt. Das Höhenprofil wird als beschriftete Figur mit einer Stichprobentabelle aus Distanz/Höhe bereitgestellt, und die farbigen Wegstile zeigen eine beschriftete Legende, sodass Bedeutung nicht allein durch Farbe vermittelt wird"
 		},
 		"dataAttribution": "Daten & Urheberrecht",
 		"dataAttributionDesc": "Trail-Daten werden von der Udruga Long Distance Trail Hrvatska (LDTH) bereitgestellt. Kartenkacheln kommen von OpenStreetMap, OpenTopoMap, OpenHikingMap (openmaps.fr), Waymarked Trails, CyclOSM und anderen Anbietern. Kroatische topografische Karten stammen vom Staatlichen Geodätischen Amt (DGU). Wetterdaten kommen von DHMZ (Kroatischer Wetterdienst) und Open-Meteo. Radarkacheln werden von RainViewer bereitgestellt. Daten zum saisonalen Wegzustand, Gefahrenwarnungen sowie Standorte der Bergwacht-Stationen stammen von HGSS (Kroatische Bergrettung), HPS (Kroatischer Bergsteigerverband) und den Verwaltungen der Nationalparks (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) sowie Naturpark Velebit. Die auf dieser Seite angezeigten Daten entsprechen möglicherweise nicht dem aktuellen Stand. Im Zweifelsfall bitte immer die offiziellen Quellen prüfen.",
@@ -369,6 +369,9 @@
 		"loss": "Abstieg",
 		"distanceLabel": "Entfernung",
 		"elevationLabel": "Höhe",
+		"srProfileCaption": "Höhenprofil, {direction}. Gesamtdistanz {distance}, Aufstieg {gain}, Abstieg {loss}, höchster Punkt {high}, niedrigster Punkt {low}.",
+		"srTableCaption": "Höhe nach Distanz entlang des Wegs abgetastet",
+		"legendLabel": "Legende des Wegstils",
 		"rulerSegment": "Abschnitt",
 		"rulerHikingTime": "Gesch. Zeit",
 		"rulerSection": "Sektion",

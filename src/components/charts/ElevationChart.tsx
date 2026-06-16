@@ -316,6 +316,68 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 		return { highestPoint: high, lowestPoint: low };
 	}, [chartData]);
 
+	// Sampled rows for the screen-reader data table - the visual chart is
+	// aria-hidden, so this captioned table is how assistive tech reads the
+	// profile. ~24 evenly spaced points keeps it scannable; the last point is
+	// always included so the table reaches the trail end.
+	const srSamples = useMemo((): ElevationPoint[] => {
+		if (chartData.length === 0) return [];
+		const step = Math.max(1, Math.ceil(chartData.length / 24));
+		const rows: ElevationPoint[] = [];
+		for (let i = 0; i < chartData.length; i += step) rows.push(chartData[i]);
+		const last = chartData[chartData.length - 1];
+		if (rows[rows.length - 1] !== last) rows.push(last);
+		return rows;
+	}, [chartData]);
+
+	// Labeled, non-color legend for the active colour fill mode (WCAG 1.4.1):
+	// the chart conveys grade/surface/SAC by colour alone, so list each bucket
+	// present in the data with both a swatch and a text label. Reuses the trail
+	// style labels already shown in the settings panel.
+	const chartLegendItems = useMemo((): { color: string; label: string }[] => {
+		// The legend only renders in the expanded chart, so skip the bucket scan
+		// (up to ~500 points x several elev_* keys) while collapsed.
+		if (!fillMode || !isExpanded) return [];
+		const present = new Set<string>();
+		for (const p of enrichedChartData) {
+			// enrichedChartData carries per-bucket `elev_${key}` fields beyond the
+			// static ElevationPoint shape; Object.entries reaches them at runtime.
+			for (const [k, v] of Object.entries(p)) {
+				if (v !== undefined && k.startsWith('elev_')) present.add(k.slice(5));
+			}
+		}
+		if (fillMode === 'surface') {
+			return SURFACE_BUCKETS.filter((b) => present.has(b)).map((b) => ({
+				color: SURFACE_COLORS[b],
+				label: tControls(`layers.trailStyle.surfaceBuckets.${b}`),
+			}));
+		}
+		if (fillMode === 'sac') {
+			return SAC_BUCKETS.filter((b) => present.has(b)).map((b) => ({
+				color: SAC_COLORS[b],
+				label: tControls(`layers.trailStyle.sacBuckets.${b}`),
+			}));
+		}
+		if (fillMode === 'sections') {
+			return SECTION_BUCKETS.filter((b) => present.has(b)).map((b) => ({
+				color: SECTION_COLOR_BY_KEY[b],
+				label: tTrail(b),
+			}));
+		}
+		// grade: bucket keys are g{band}_{asc|desc}; show each band present (either sign).
+		const bandKeys = ['legendFlat', 'legendModerate', 'legendSteep', 'legendVerySteep', 'legendExtreme'] as const;
+		const items: { color: string; label: string }[] = [];
+		for (let band = 0; band <= 4; band++) {
+			if (present.has(`g${band}_asc`) || present.has(`g${band}_desc`)) {
+				items.push({
+					color: gradeColorForKey(`g${band}_asc`),
+					label: tControls(`layers.trailStyle.${bandKeys[band]}`),
+				});
+			}
+		}
+		return items;
+	}, [fillMode, isExpanded, enrichedChartData, tControls, tTrail]);
+
 	if (chartData.length === 0) {
 		const emptyMessage = gpxLoadFailed ? tCommon('failedToLoadTrail') : gpxLoaded ? t('noData') : t('loading');
 		return (
@@ -531,6 +593,38 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 						{t('loss')}: {formatElevation(elevationLoss, units)}
 					</span>
 				</div>
+
+				{/* Screen-reader accessible alternative to the (aria-hidden) visual
+				    chart: a captioned figure with a sampled distance/elevation table. */}
+				<figure className="sr-only m-0">
+					<figcaption>
+						{t('srProfileCaption', {
+							direction: directionText,
+							distance: formatDistance(totalDistance, units, distancePrecision),
+							gain: formatElevation(elevationGain, units),
+							loss: formatElevation(elevationLoss, units),
+							high: formatElevation(highestPoint, units),
+							low: formatElevation(lowestPoint, units),
+						})}
+					</figcaption>
+					<table>
+						<caption>{t('srTableCaption')}</caption>
+						<thead>
+							<tr>
+								<th scope="col">{t('distanceLabel')}</th>
+								<th scope="col">{t('elevationLabel')}</th>
+							</tr>
+						</thead>
+						<tbody>
+							{srSamples.map((p) => (
+								<tr key={p.distance}>
+									<td>{formatDistance(p.distance, units, distancePrecision)}</td>
+									<td>{formatElevation(p.elevation, units)}</td>
+								</tr>
+							))}
+						</tbody>
+					</table>
+				</figure>
 				{rulerStats && (
 					<div
 						className="mb-2 flex flex-wrap items-center gap-x-4 gap-y-0.5 rounded bg-[var(--cldt-green)]/10 px-2 py-1 text-xs text-[color:var(--cldt-green)] sm:text-sm dark:bg-[var(--cldt-green)]/15"
@@ -570,9 +664,9 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 				)}
 				{isExpanded && (
 					<div
+						aria-hidden="true"
 						className={`min-h-[200px] flex-1${rulerRange ? 'print:hidden' : ''}`}
 						ref={chartAreaRef}
-						role="presentation"
 						onMouseDownCapture={handleChartMouseDownCapture}
 						onTouchStartCapture={stopMapInteractionTouch}
 					>
@@ -728,6 +822,24 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 							</AreaChart>
 						</ResponsiveContainer>
 					</div>
+				)}
+				{isExpanded && fillMode && chartLegendItems.length > 0 && (
+					<ul
+						aria-label={t('legendLabel')}
+						className="mt-1 flex flex-wrap gap-x-3 gap-y-0.5 text-[0.6875rem] text-gray-600 dark:text-[var(--text-secondary)]"
+					>
+						{chartLegendItems.map((item) => (
+							<li className="flex items-center gap-1" key={item.label}>
+								<span
+									aria-hidden
+									className="inline-block h-2 w-4 shrink-0 rounded-sm"
+									style={{ backgroundColor: item.color }}
+								/>
+								{item.label}
+							</li>
+						))}
+						{fillMode === 'grade' && <li className="italic opacity-75">{tControls('layers.trailStyle.legendNote')}</li>}
+					</ul>
 				)}
 			</div>
 			<GpxDownloadModal

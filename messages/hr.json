@@ -81,7 +81,7 @@
 			"waypointsJournal": "Vlastite točke i dnevnik puta - dugi pritisak na kartu za osobne oznake s bilješkama; zapisi dnevnika mogu priložiti dionicu ravnalom ili povezati uvezeni GPX segment (pregled na karti, Pogledaj i izbornik više radnji za prikaz na karti / GPX / zip paket). Jednim dodirom Zabilježi danas ispunjava zapis trenutnim kilometrom, visinom i dionicom. Markdown i poveznice za dijeljenje zadržavaju reference na trag; sve ostaje na uređaju",
 			"resupply": "Vodiči za opskrbu - trgovine, ljekarne, bankomati, pošta i autobus iz OpenStreetMapa u prozorima gradova, s oznakama opskrbe po etapi u planeru",
 			"pushAlerts": "Obavijesti o upozorenjima - neobavezne push obavijesti preglednika kad se objavi novo sezonsko upozorenje ili obavijest o stanju staze, čak i kad je aplikacija zatvorena; bez računa",
-			"accessibility": "Pristupačnost - velike dodirne mete i prilagodljiva veličina teksta sučelja (zadano / veliko / veće) koja povećava upravljačke ploče i slojeve bez mijenjanja veličine karte. Karta je označeno područje s mogućnošću fokusiranja tipkovnicom (strelice pomiču, +/- zumira), s porukom za orijentaciju čitača zaslona pri fokusu i klizačem staze iznad grafa visine koji najavljuje udaljenost, visinu, nagib, granice dionica i najbliži upotrebljiv izvor vode ispred putem žive regije"
+			"accessibility": "Pristupačnost - velike dodirne mete i prilagodljiva veličina teksta sučelja (zadano / veliko / veće) koja povećava upravljačke ploče i slojeve bez mijenjanja veličine karte. Karta je označeno područje s mogućnošću fokusiranja tipkovnicom (strelice pomiču, +/- zumira), s porukom za orijentaciju čitača zaslona pri fokusu i klizačem staze iznad grafa visine koji najavljuje udaljenost, visinu, nagib, granice dionica i najbliži upotrebljiv izvor vode ispred putem žive regije. Visinski profil dostupan je kao figura s naslovom i tablicom uzoraka udaljenosti/visine, a obojeni stilovi staze prikazuju označenu legendu pa značenje ne prenosi samo boja"
 		},
 		"dataAttribution": "Podaci i atribucija",
 		"dataAttributionDesc": "Podatke o stazi pruža organizacija Udruga Long Distance Trail Hrvatska (LDTH). Karte dolaze od OpenStreetMap, OpenTopoMap, OpenHikingMap (openmaps.fr), Waymarked Trails, CyclOSM i drugih pružatelja. Hrvatske topografske karte su od Državne geodetske uprave (DGU). Meteorološki podaci dolaze od DHMZ-a (Državni hidrometeorološki zavod) i Open-Meteo. Radarske pločice osigurava RainViewer. Podaci o sezonskom stanju puta, upozorenja o opasnostima i podaci o stanicama gorske službe spašavanja preuzeti su od HGSS-a (Hrvatska gorska služba spašavanja), HPS-a (Hrvatski planinarski savez) te uprava nacionalnih parkova (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) i Parka prirode Velebit. Podaci prikazani na ovoj stranici možda ne odražavaju najnovije stanje. U slučaju sumnje, uvijek provjerite službene izvore.",
@@ -369,6 +369,9 @@
 		"loss": "Spust",
 		"distanceLabel": "Udaljenost",
 		"elevationLabel": "Nadmorska visina",
+		"srProfileCaption": "Visinski profil, {direction}. Ukupna udaljenost {distance}, uspon {gain}, spust {loss}, najviša točka {high}, najniža točka {low}.",
+		"srTableCaption": "Visina uzorkovana po udaljenosti duž staze",
+		"legendLabel": "Legenda stila staze",
 		"rulerSegment": "Segment",
 		"rulerHikingTime": "Procijenjeno vrijeme",
 		"rulerSection": "Dionica",
