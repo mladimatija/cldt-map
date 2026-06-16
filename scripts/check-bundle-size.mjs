@@ -17,7 +17,7 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
 const FIRST_LOAD_BUDGET_KB = 550; // measured 446 KB raw on 2026-06-10
-const TOTAL_BUDGET_KB = 5000; // measured 4204 KB raw on 2026-06-10
+const TOTAL_BUDGET_KB = 5300; // measured 5032 KB raw on 2026-06-16 (lazy FIT SDK + recharts/jspdf chunks)
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const nextDir = path.join(projectRoot, '.next');
