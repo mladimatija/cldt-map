@@ -172,6 +172,13 @@ export const config = {
 
 	/** Predictively pre-cache tiles near the user's position by default. */
 	predictivePrecache: envBool('NEXT_PUBLIC_DEFAULT_PREDICTIVE_PRECACHE', false),
+
+	/** Curator email for the POI "Report an issue" link. Empty (default) hides
+	 *  the link; when set, popups offer a prefilled, account-free mailto so a
+	 *  hiker can flag a wrong/closed/dry place. Trimmed here; final anti-injection
+	 *  shape validation happens at the point of use in `buildReportLinkHtml`.
+	 *  Never sent automatically (the user sends from their own mail client). */
+	curatorReportEmail: (process.env.NEXT_PUBLIC_CURATOR_REPORT_EMAIL ?? '').trim(),
 } as const;
 
 /** Number of days after which a tile cache is considered stale (overridable via env). */

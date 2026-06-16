@@ -16,7 +16,8 @@ import {
 } from '@/lib/utils';
 import { usePathname, useRouter } from '@/i18n/navigation';
 import { wirePopupShareButton } from '@/lib/share-link-copy';
-import { newId } from '@/lib/user-waypoints';
+import { newId, todayIsoDate } from '@/lib/user-waypoints';
+import { config } from '@/lib/config';
 import { poiTypeToSuggestedWaypointCategory } from '@/lib/waypoint-categories';
 import { fetchWikipediaSummary, truncateExtract } from '@/lib/wikipedia';
 import {
@@ -212,6 +213,11 @@ export function PoiMarkers(): null {
 				bus: t('resupply.bus'),
 				fuel: t('resupply.fuel'),
 			},
+			reportAction: t('report.action'),
+			// Raw templates: the builder substitutes {name}/{id}/{coords}/{date}
+			// itself (it runs outside React), so t() would error on the variables.
+			reportSubject: t.raw('report.subject'),
+			reportBody: t.raw('report.body'),
 		};
 
 		/** Re-render markers for the current zoom. Above CLUSTER_MAX_ZOOM we
@@ -307,6 +313,11 @@ export function PoiMarkers(): null {
 							// render path, so subscription-based hooks are not available.
 							isStarred: getActiveStarredPoiIds(useMapStore.getState()).has(poi.id),
 							waterLog: useMapStore.getState().poiWaterLog[poi.id],
+							reportEmail: config.curatorReportEmail || undefined,
+							// Stamped when the popup opens (this factory is Leaflet's lazy
+							// content callback, not React render), so the report mail carries
+							// the day the hiker actually noticed the issue.
+							today: todayIsoDate(),
 						}),
 					{
 						closeButton: true,

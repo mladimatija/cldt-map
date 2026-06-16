@@ -23,6 +23,10 @@ export interface PopupBuildArgs {
 	isStarred: boolean;
 	/** Personal water-status observation for this POI (water type only). */
 	waterLog?: WaterLogEntry;
+	/** Curator email for the "Report an issue" link; empty/unset hides it. */
+	reportEmail?: string;
+	/** Today's date (YYYY-MM-DD) stamped into the report mail body. */
+	today?: string;
 }
 
 /** Labels for the personal water-status log block. Subset of PopupBuildLabels
@@ -81,6 +85,12 @@ export interface PopupBuildLabels extends WaterLogPopupLabels {
 	resupplyVerify: string;
 	resupplyKinds: Record<'grocery' | 'bakery' | 'pharmacy' | 'atm' | 'post' | 'bus' | 'fuel', string>;
 	resupplyMore: string;
+	/** "Report an issue" link text. */
+	reportAction: string;
+	/** Mail subject template; substitutes {name}. */
+	reportSubject: string;
+	/** Mail body template; substitutes {name}, {id}, {coords}, {date}. */
+	reportBody: string;
 }
 
 /** Builds the gallery or legacy single-image HTML block. Returns empty string
@@ -368,6 +378,40 @@ export function buildTitleRowHtml(
 	);
 }
 
+/** Conservative email shape for the curator report address. Restricts the
+ *  local/domain charset (no `?`/`&`/`#`/space) so a misconfigured value can
+ *  never inject extra mailto headers into the link. */
+const REPORT_EMAIL_RE = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+/** Builds the low-prominence "Report an issue" link: a `mailto:` to the curator
+ *  prefilled with the place name, id, coordinates, and date, plus a free-text
+ *  prompt the hiker completes in their own mail client (account-free, one-way,
+ *  user-sent). Returns an empty string when no valid curator email is set. */
+export function buildReportLinkHtml(poi: Poi, displayName: string, args: PopupBuildArgs): string {
+	const email = args.reportEmail?.trim();
+	if (!email || !REPORT_EMAIL_RE.test(email)) return '';
+	const { labels } = args;
+	// Replacer-function substitution (literal, all occurrences): a POI name or
+	// id containing a `$` cannot trigger String.replace's `$`-pattern handling,
+	// and a locale that repeats a token still gets every copy filled.
+	const tokens: Record<string, string> = {
+		name: displayName,
+		id: poi.id,
+		coords: `${poi.lat.toFixed(5)}, ${poi.lng.toFixed(5)}`,
+		date: args.today ?? '',
+	};
+	const fill = (template: string): string =>
+		template.replace(/\{(name|id|coords|date)\}/g, (_, key: string) => tokens[key]);
+	const subject = fill(labels.reportSubject);
+	const body = fill(labels.reportBody);
+	const href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+	return (
+		`<p class="poi-popup__report-row">` +
+		`<a class="poi-popup__report" href="${escapeHtml(href)}">${escapeHtml(labels.reportAction)}</a>` +
+		`</p>`
+	);
+}
+
 /** Builds the action rows: Open in Maps + Share on the first line, Add as
  *  waypoint centred on the second. Buttons are wired imperatively in
  *  PoiMarkers after the popup opens. */
@@ -411,7 +455,8 @@ export function buildPopupHtml(poi: Poi, displayName: string, typeLabel: string,
 		buildGalleryHtml(poi, displayName, labels) +
 		buildTitleRowHtml(poi, displayName, typeLabel, labels, isStarred) +
 		buildMetaRowsHtml(poi, args, trailDistanceLabel, onTrail, offTrailLabel) +
-		buildActionsHtml(poi, labels)
+		buildActionsHtml(poi, labels) +
+		buildReportLinkHtml(poi, displayName, args)
 	);
 }
 

@@ -357,6 +357,31 @@
 	background: var(--poi-color-water-nonpotable);
 }
 
+/* Low-prominence "Report an issue" link below the action buttons. Opens a
+   prefilled mailto to the curator (account-free, user-sent). Only rendered when
+   NEXT_PUBLIC_CURATOR_REPORT_EMAIL is configured. */
+.poi-popup__report-row {
+	margin: 6px 0 0;
+	text-align: center;
+}
+.poi-popup__report {
+	font-size: 11px;
+	color: var(--text-secondary, #64748b);
+	text-decoration: underline;
+	text-underline-offset: 2px;
+	cursor: pointer;
+	/* Colour fade only (not motion), so no prefers-reduced-motion carve-out. */
+	transition: color 200ms;
+}
+.poi-popup__report:hover {
+	color: var(--cldt-blue, #00a6c7);
+}
+.poi-popup__report:focus-visible {
+	outline: 2px solid var(--cldt-green);
+	outline-offset: 2px;
+	border-radius: 4px;
+}
+
 /* Wikipedia / curated thumbnail at the top of the POI popup. Capped so it
    doesn't blow out popup width on portrait images, and rounded to match the
    map-tooltip vocabulary. */
