@@ -11,6 +11,7 @@ import type { Poi } from '@/lib/pois';
 import { formatDistance, isSafeUrl } from '@/lib/utils';
 import { formatIsoDate } from '@/lib/date-format';
 import { escapeHtml } from '@/components/map/poi-marker-utils';
+import { WATER_STATUS_OPTIONS, type WaterLogEntry, type WaterStatus } from '@/lib/water-log';
 
 export interface PopupBuildArgs {
 	direction: TrailDirection;
@@ -20,9 +21,22 @@ export interface PopupBuildArgs {
 	locale: string;
 	labels: PopupBuildLabels;
 	isStarred: boolean;
+	/** Personal water-status observation for this POI (water type only). */
+	waterLog?: WaterLogEntry;
 }
 
-export interface PopupBuildLabels {
+/** Labels for the personal water-status log block. Subset of PopupBuildLabels
+ *  so the marker layer can re-render the block on its own after a click. */
+export interface WaterLogPopupLabels {
+	waterLogPrompt: string;
+	waterLogYouFound: string;
+	waterLogFlowing: string;
+	waterLogLow: string;
+	waterLogDry: string;
+	waterLogClearLabel: string;
+}
+
+export interface PopupBuildLabels extends WaterLogPopupLabels {
 	distanceLabel: string;
 	offTrailLabel: string;
 	elevationLabel: string;
@@ -59,6 +73,8 @@ export interface PopupBuildLabels {
 	waterNotPotable: string;
 	/** Prefix for the OSM check_date shown next to the water badge. */
 	waterCheckedLabel: string;
+	// Personal water-status log labels are inherited from WaterLogPopupLabels so
+	// the marker layer can re-render that block with the same subset of labels.
 	/** Resupply section heading + per-kind labels + empty/verify hints. */
 	resupplyHeading: string;
 	resupplyNone: string;
@@ -113,6 +129,44 @@ export function buildGalleryHtml(
 	return lines.join('');
 }
 
+function waterStatusLabel(status: WaterStatus, labels: WaterLogPopupLabels): string {
+	return status === 'flowing' ? labels.waterLogFlowing : status === 'low' ? labels.waterLogLow : labels.waterLogDry;
+}
+
+/** Builds the inner HTML of the personal water-status log block: the user's
+ *  own observation line (when present) plus the Flowing / Low / Dry logging
+ *  buttons. Re-rendered in place by the marker layer after each click, so it
+ *  is kept as a standalone pure builder. */
+export function buildWaterLogInnerHtml(
+	entry: WaterLogEntry | undefined,
+	labels: WaterLogPopupLabels,
+	locale: string,
+): string {
+	const lines: string[] = [];
+	if (entry) {
+		lines.push(
+			`<p class="poi-popup__row poi-popup__water-log-mine">` +
+				`<span class="poi-popup__row--muted">${escapeHtml(labels.waterLogYouFound)}</span>` +
+				` <span class="poi-popup__water poi-popup__water--log-${entry.status}">${escapeHtml(waterStatusLabel(entry.status, labels))}</span>` +
+				` <span class="poi-popup__row--muted">${escapeHtml(formatIsoDate(entry.date, locale))}</span>` +
+				` <button type="button" class="poi-popup__water-log-clear" data-poi-water-log-clear aria-label="${escapeHtml(labels.waterLogClearLabel)}" title="${escapeHtml(labels.waterLogClearLabel)}">&times;</button>` +
+				`</p>`,
+		);
+	}
+	const buttons = WATER_STATUS_OPTIONS.map((s) => {
+		const active = entry?.status === s;
+		return (
+			`<button type="button" class="poi-popup__water-log-btn poi-popup__water-log-btn--${s}${active ? ' poi-popup__water-log-btn--active' : ''}"` +
+			` data-water-status="${s}" aria-pressed="${active ? 'true' : 'false'}">${escapeHtml(waterStatusLabel(s, labels))}</button>`
+		);
+	}).join('');
+	lines.push(
+		`<p class="poi-popup__row poi-popup__row--muted poi-popup__water-log-prompt">${escapeHtml(labels.waterLogPrompt)}</p>`,
+		`<div class="poi-popup__water-log-actions">${buttons}</div>`,
+	);
+	return lines.join('');
+}
+
 /** Builds the metadata rows (position, elevation, population, season, phone,
  *  URL, Wikipedia, provenance) that appear below the title. */
 export function buildMetaRowsHtml(
@@ -163,6 +217,16 @@ export function buildMetaRowsHtml(
 			: '';
 		lines.push(
 			`<p class="poi-popup__row"><span class="poi-popup__water poi-popup__water--${chipModifier}">${escapeHtml(relLabel)}</span>${checked}</p>`,
+		);
+	}
+
+	// Personal water-status log: shown for every water POI (including legacy
+	// rows that predate the OSM water-intelligence pass), right below the static
+	// reliability class. The marker layer wires the buttons after popup open and
+	// re-renders this container in place on each click.
+	if (poi.type === 'water') {
+		lines.push(
+			`<div class="poi-popup__water-log" data-poi-water-log="${escapeHtml(poi.id)}">${buildWaterLogInnerHtml(args.waterLog, labels, locale)}</div>`,
 		);
 	}
 

@@ -26,7 +26,13 @@ import {
 	buildIcon,
 	clusterPois,
 } from '@/components/map/poi-marker-utils';
-import { buildPopupHtml, type PopupBuildLabels } from '@/components/map/poi-popup-builders';
+import {
+	buildPopupHtml,
+	buildWaterLogInnerHtml,
+	type PopupBuildLabels,
+	type WaterLogPopupLabels,
+} from '@/components/map/poi-popup-builders';
+import { isWaterStatus } from '@/lib/water-log';
 
 const POI_PANE = 'poiMarkerPane';
 const POI_TOOLTIP_PANE = 'poiTooltipPane';
@@ -185,6 +191,12 @@ export function PoiMarkers(): null {
 			waterUnverified: t('water.unverified'),
 			waterNotPotable: t('water.not_potable'),
 			waterCheckedLabel: t('water.checked'),
+			waterLogPrompt: t('waterLog.prompt'),
+			waterLogYouFound: t('waterLog.youFound'),
+			waterLogFlowing: t('waterLog.flowing'),
+			waterLogLow: t('waterLog.low'),
+			waterLogDry: t('waterLog.dry'),
+			waterLogClearLabel: t('waterLog.clear'),
 			resupplyHeading: t('resupply.heading'),
 			resupplyNone: t('resupply.none'),
 			// Raw templates: the popup builder substitutes {date}/{count} itself
@@ -294,6 +306,7 @@ export function PoiMarkers(): null {
 							// factory runs lazily at popup-open time, outside the React
 							// render path, so subscription-based hooks are not available.
 							isStarred: getActiveStarredPoiIds(useMapStore.getState()).has(poi.id),
+							waterLog: useMapStore.getState().poiWaterLog[poi.id],
 						}),
 					{
 						closeButton: true,
@@ -320,6 +333,7 @@ export function PoiMarkers(): null {
 					}
 					wireGalleryButtons(marker, poi, openLightbox);
 					wireOpenInMapsButton(marker, poi);
+					wireWaterLogButtons(marker, poi, popupLabels, locale);
 					wireAddAsWaypointButton(marker, poi, poiDisplayName(poi, locale));
 					wireShareButton(marker, poi, popupLabels.shareLink);
 					wireStarButton(marker, poi, {
@@ -554,6 +568,46 @@ function wireOpenInMapsButton(marker: L.Marker, poi: Poi): void {
 	btn.addEventListener('click', (e) => {
 		e.preventDefault();
 		openCoordinatesInMaps(poi.lat, poi.lng);
+	});
+}
+
+/**
+ * Wires the personal water-status log inside an open water-POI popup. A single
+ * delegated click listener on the container handles the Flowing / Low / Dry
+ * buttons (store `setPoiWaterStatus` with today's date) and the clear button
+ * (`clearPoiWaterStatus`), then re-renders the container's inner HTML from the
+ * shared builder so the observation line and active button state stay in sync.
+ * No-op on non-water POIs.
+ *
+ * Unlike wireStarButton, this needs no store subscription: the popup is the
+ * sole mutator of a POI's water-log entry, so re-rendering synchronously after
+ * its own click is enough (starred collections can change from other surfaces).
+ */
+function wireWaterLogButtons(marker: L.Marker, poi: Poi, labels: WaterLogPopupLabels, locale: string): void {
+	if (poi.type !== 'water') return;
+	const popup = marker.getPopup();
+	if (!popup) return;
+	const el = popup.getElement();
+	if (!el) return;
+	const container = el.querySelector<HTMLElement>(`[data-poi-water-log="${cssEscape(poi.id)}"]`);
+	if (!container || container.dataset.wired === '1') return;
+	container.dataset.wired = '1';
+	const render = (): void => {
+		container.innerHTML = buildWaterLogInnerHtml(useMapStore.getState().poiWaterLog[poi.id], labels, locale);
+		popup.update();
+	};
+	container.addEventListener('click', (e) => {
+		const target = (e.target as HTMLElement | null)?.closest('[data-water-status],[data-poi-water-log-clear]');
+		if (!target) return;
+		e.preventDefault();
+		const status = target.getAttribute('data-water-status');
+		const store = useMapStore.getState();
+		if (status !== null && isWaterStatus(status)) {
+			store.setPoiWaterStatus(poi.id, status);
+		} else {
+			store.clearPoiWaterStatus(poi.id);
+		}
+		render();
 	});
 }
 

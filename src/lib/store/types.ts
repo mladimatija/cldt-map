@@ -8,6 +8,7 @@ import type { TrailOsmTagsFile } from '../trail-osm-tags';
 import type { MineAreasFile } from '../mine-areas';
 import type { CompletionInterval } from '../completion';
 import type { JournalEntry, UserWaypoint } from '../user-waypoints';
+import type { WaterLogEntry, WaterStatus } from '../water-log';
 import type { WaypointCategoryId } from '../waypoint-categories';
 import type { PackList } from '../pack-csv';
 import type { PoiImage, PoisFile } from '../pois';
@@ -496,6 +497,15 @@ export interface MapStoreState {
 	/** Ephemeral journal segment preview on the map. Session-only. */
 	journalPreview: JournalPreview | null;
 	setJournalPreview: (preview: JournalPreview | null) => void;
+
+	/** Personal water-status log: the latest on-device observation per water POI
+	 *  id ("flowing"/"low"/"dry" + date). Never uploaded; shown in the water POI
+	 *  popup above the static OSM reliability class. Persisted. */
+	poiWaterLog: Record<string, WaterLogEntry>;
+	/** Record (or overwrite) today's observation for a water POI. */
+	setPoiWaterStatus: (poiId: string, status: WaterStatus) => void;
+	/** Remove the personal observation for a water POI. */
+	clearPoiWaterStatus: (poiId: string) => void;
 
 	gradeAdjustedEta: boolean;
 	setGradeAdjustedEta: (enabled: boolean) => void;

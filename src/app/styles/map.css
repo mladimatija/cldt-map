@@ -269,6 +269,94 @@
 	background: var(--poi-color-water-nonpotable);
 }
 
+/* Personal water-status log (water POIs only). The hiker's own dated
+   observation sits just below the static OSM reliability chip; the
+   Flowing/Low/Dry buttons record today's status and the active one is tinted
+   by severity. Colour is supplementary - every state keeps its text label, so
+   meaning is never colour-only (WCAG 1.4.1). */
+.poi-popup__water-log {
+	margin-top: 6px;
+}
+.poi-popup__water-log-mine {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 4px;
+}
+.poi-popup__water--log-flowing {
+	background: var(--poi-color-water);
+}
+.poi-popup__water--log-low {
+	background: var(--poi-color-water-seasonal);
+}
+.poi-popup__water--log-dry {
+	background: var(--poi-color-water-nonpotable);
+}
+.poi-popup__water-log-clear {
+	margin-left: auto;
+	background: transparent;
+	border: 0;
+	padding: 0 4px;
+	font-size: 15px;
+	line-height: 1;
+	color: var(--text-secondary, #64748b);
+	cursor: pointer;
+}
+.poi-popup__water-log-clear:hover {
+	color: var(--cldt-red, #dc2626);
+}
+.poi-popup__water-log-clear:focus-visible {
+	outline: 2px solid var(--cldt-green);
+	outline-offset: 2px;
+	border-radius: 4px;
+}
+.poi-popup__water-log-prompt {
+	margin: 4px 0 2px;
+}
+.poi-popup__water-log-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+}
+.poi-popup__water-log-btn {
+	border-radius: 6px;
+	border: 1px solid var(--cldt-blue-border-alpha, #80d3df);
+	background: transparent;
+	color: var(--cldt-blue, #0369a1);
+	font-size: 12px;
+	font-weight: 500;
+	padding: 4px 10px;
+	cursor: pointer;
+	transition:
+		filter 100ms ease-out,
+		background-color 100ms ease-out,
+		border-color 100ms ease-out;
+}
+.poi-popup__water-log-btn:not(.poi-popup__water-log-btn--active):hover {
+	background: var(--cldt-blue-surface, #ebf8fb);
+	border-color: var(--cldt-blue, #0369a1);
+}
+.poi-popup__water-log-btn:focus-visible {
+	outline: 2px solid var(--cldt-green);
+	outline-offset: 2px;
+}
+.poi-popup__water-log-btn--active {
+	color: var(--marker-on-color);
+	border-color: transparent;
+}
+.poi-popup__water-log-btn--active:hover {
+	filter: brightness(1.08);
+}
+.poi-popup__water-log-btn--flowing.poi-popup__water-log-btn--active {
+	background: var(--poi-color-water);
+}
+.poi-popup__water-log-btn--low.poi-popup__water-log-btn--active {
+	background: var(--poi-color-water-seasonal);
+}
+.poi-popup__water-log-btn--dry.poi-popup__water-log-btn--active {
+	background: var(--poi-color-water-nonpotable);
+}
+
 /* Wikipedia / curated thumbnail at the top of the POI popup. Capped so it
    doesn't blow out popup width on portrait images, and rounded to match the
    map-tooltip vocabulary. */
@@ -1233,7 +1321,9 @@
 		transform: none;
 	}
 	.poi-popup__open-maps,
-	.poi-popup__share {
+	.poi-popup__share,
+	.poi-popup__water-log-btn,
+	.poi-popup__water-log-clear {
 		transition: none;
 	}
 	.sos-pulse-ring {

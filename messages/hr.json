@@ -73,7 +73,7 @@
 			"pois": "Točke interesa, popis i pretraga - oko 7.700 mjesta uz stazu (gradovi, naselja, vrhovi, vidikovci, planinarski domovi, skloništa, prehrana i bankomati) unutar granica Hrvatske. Filtri po tipu u ploči popisa mjesta; filtri po oznakama, spremljeni preseti filtera, više imenovanih lista označenih mjesta i prekidač za udaljene POI-jeve u bočnoj ploči popisa. Markeri se grupiraju na razini države, a razdvajaju kako zumiraš. Skočni prozori prikazuju galeriju slika s Wikimedia Commonsa (s autorstvom i licencom; pritisni bilo koju sličicu za fullscreen lightbox s tipkovničkom navigacijom), sažetak s Wikipedije koji se pojavljuje odmah (pripremljen za poznata mjesta, lijeno učitan za ostala), podnožje s izvorom podataka i datumom posljednje provjere, te gumb 'Kopiraj poveznicu'. Popis se sortira po kilometraži, imenu, udaljenosti od staze ili 'Blizu mene'; opcionalno grupiranje po 50 km dijeli dugi popis u poglavlja sa zalijepljenim zaglavljima; potpuna tipkovnička navigacija. Planer etapa pokazuje koliko mjesta upada u svaku dnevnu etapu, nabraja ih u redoslijedu hoda i može izvesti sve POI-jeve cijelog plana u jednu GPX datoteku. Uvezeni GPX tragovi mogu prikazati POI-jeve kraj kojih si prošao unutar 500 m, redoslijedom hoda. Pretraži po imenu (s dijakritičkim znakovima) ili po kilometraži. Predmemorirana preuzimanja koridora skidaju POI sličice i sažetke s Wikipedije za potpune skočne prozore i offline. Skup podataka osvježava se mjesečno iz OpenStreetMapa, Wikidata, Wikimedia Commonsa i HPS direktorija; obogaćivanje je otporno na pogreške pa pojedinačni problem kod jednog izvora ne može tiho degradirati skup",
 			"tripBrief": "Izvoz vodiča za putovanje - PDF (za ispis), DOCX (za uređivanje) ili samostalna HTML stranica generiran iz tvojeg višednevnog plana etapa. Svaka stranica jednog dana ima sliku karte, kratki opis, mjesta uz put (ime, tip, kilometraža, fotografije, sažetak s Wikipedije) i sva sezonska upozorenja koja zahvaćaju taj dan. Planirani dani odmora (nulti dani) također se ispisuju kao vlastite datirane stranice. Stražnja stranica okuplja smjernice za hitne situacije: poziv 112, format zahtjeva za HGSS i osnovnu opremu. Lokalizirano na en / hr / de / it. Opcionalna AI naracija dana (generirana iz činjenica samog plana, samo online, s napomenom o točnosti); predložak ostaje zadan i automatska zamjena",
 			"offRouteAlert": "Upozorenje o skretanju s rute - opcionalno upozorenje (zadano isključeno) kad se udaljiš više od 200 m od staze: traka s udaljenošću i smjerom natrag, uz vibraciju. Aktivira se tek kad te GPS smjesti na stazu, pa šuti drugdje u Hrvatskoj, i samo se deaktivira kad stvarno odeš (autobus, taksi, kraj dana)",
-			"waterIntelligence": "Pametne informacije o vodi - svako mjesto s vodom nosi klasu pouzdanosti iz OSM oznaka: pouzdana slavina, sezonska (moguće presušena), neprovjereni izvor (pročistiti prije pića) ili nije za piće. Klasa boji marker, prikazuje se kao oznaka u prozorima i popisima, a planer etapa označava dane čija najdulja dionica bez upotrebljive vode prelazi 15 / 25 km",
+			"waterIntelligence": "Pametne informacije o vodi - svako mjesto s vodom nosi klasu pouzdanosti iz OSM oznaka: pouzdana slavina, sezonska (moguće presušena), neprovjereni izvor (pročistiti prije pića) ili nije za piće. Klasa boji marker, prikazuje se kao oznaka u prozorima i popisima, a planer etapa označava dane čija najdulja dionica bez upotrebljive vode prelazi 15 / 25 km; dodirni Teče / Slabo / Suho u skočnom prozoru izvora vode da zabilježiš datiranu opservaciju na uređaju o tome što si zatekao, prikazanu iznad službene klase i nikad poslanu drugdje",
 			"completionTracking": "Praćenje prijeđenih dionica - označi prehodane dionice iz GPS-a, ravnala, cijelih dionica A/B/C ili uvezenog GPX-a. Ploča napretka (kvačica) koristi grupirane kartice, ljepljivi animirani sažetak i sklopive odjeljke za točke i dnevnik; prijeđene dionice crtaju se zeleno na karti",
 			"helpPanel": "Pomoć u aplikaciji - gumb ? otvara šest sklopivih tematskih odjeljaka (osnove karte, profil visine, skrivene geste, alati za planiranje, offline ponašanje, demo šetnja); osnove i demo otvoreni su po zadanim postavkama; stanje odjeljaka ostaje između sesija",
 			"upNext": "Prikaz \"Slijedi\" - najbliži izvor vode, sklonište i grad ispred vas, s udaljenostima, izravno u panelu udaljenosti. Opcionalni redovi za hranu, bankomat, vidikovac i ljekarnu u Postavkama.",
@@ -1085,6 +1085,14 @@
 			"post": "Pošta",
 			"bus": "Autobus",
 			"fuel": "Benzinska postaja"
+		},
+		"waterLog": {
+			"prompt": "Zabilježi što si zatekao:",
+			"youFound": "Zabilježeno:",
+			"flowing": "Teče",
+			"low": "Slabo",
+			"dry": "Suho",
+			"clear": "Ukloni svoju bilješku o vodi"
 		}
 	},
 	"poiDisclaimer": {

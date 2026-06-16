@@ -66,6 +66,7 @@ import {
 	type SeasonalStatusFile,
 } from '../seasonal-status';
 import { newId, type JournalEntry } from '@/lib/user-waypoints';
+import { sanitizeWaterLog, waterLogToday, type WaterLogEntry, type WaterStatus } from '../water-log';
 
 /** Module-level abort controller for tile downloads - one download at a time. */
 let tilePrecacheAbortController: AbortController | null = null;
@@ -1053,6 +1054,20 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 						});
 					},
 
+					poiWaterLog: {},
+					setPoiWaterStatus: (poiId: string, status: WaterStatus): void => {
+						const entry: WaterLogEntry = { status, date: waterLogToday() };
+						set((s) => ({ poiWaterLog: { ...s.poiWaterLog, [poiId]: entry } }));
+					},
+					clearPoiWaterStatus: (poiId: string): void => {
+						set((s) => {
+							if (!(poiId in s.poiWaterLog)) return {};
+							const next = { ...s.poiWaterLog };
+							delete next[poiId];
+							return { poiWaterLog: next };
+						});
+					},
+
 					gradeAdjustedEta: config.gradeAdjustedEta,
 					setGradeAdjustedEta: (enabled: boolean): void => {
 						set({ gradeAdjustedEta: enabled });
@@ -1606,6 +1621,7 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 						lastWaypointCategory: state.lastWaypointCategory,
 						hiddenWaypointCategories: [...state.hiddenWaypointCategories],
 						journalEntries: demoSnapshot ? demoSnapshot.journalEntries : state.journalEntries,
+						poiWaterLog: state.poiWaterLog,
 						gradeAdjustedEta: state.gradeAdjustedEta,
 						sunsetProjection: state.sunsetProjection,
 						stagePlan: state.stagePlan,
@@ -1658,6 +1674,9 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					merged.lastKnownFix = isValidLastKnownFix(rawLastKnownFix) ? rawLastKnownFix : null;
 					// Sanitize the rehydrated SOS card to known string fields only.
 					merged.sosCard = sanitizeSosCard((persistedState as { sosCard?: unknown })?.sosCard);
+					// Drop any malformed personal water-log entries so a corrupt
+					// localStorage value can never render garbage in a popup.
+					merged.poiWaterLog = sanitizeWaterLog((persistedState as { poiWaterLog?: unknown })?.poiWaterLog);
 					// If the user has never explicitly toggled the seasonal layer,
 					// recompute it on every hydration. Explicit env override wins
 					// unconditionally; otherwise fall back to the winter-window
