@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useRef, useState } from 'react';
-import { IoArchiveOutline, IoCloudUploadOutline, IoLinkOutline, IoUnlinkOutline } from 'react-icons/io5';
+import { IoCloudUploadOutline, IoLinkOutline, IoUnlinkOutline } from 'react-icons/io5';
 import { useTranslations } from 'next-intl';
 import { importGpxFileAsTrack } from '@/lib/imported-tracks';
 import {
@@ -33,8 +33,6 @@ interface JournalTrackAttachControlsProps {
 	attachRuler: boolean;
 	onAttachRulerChange: (checked: boolean) => void;
 	onPreview: (preview: JournalAttachState) => void;
-	onExportBundle?: () => void;
-	showExportBundle?: boolean;
 	readOnly?: boolean;
 }
 
@@ -45,8 +43,6 @@ export function JournalTrackAttachControls({
 	attachRuler,
 	onAttachRulerChange,
 	onPreview,
-	onExportBundle,
-	showExportBundle = false,
 	readOnly = false,
 }: JournalTrackAttachControlsProps): React.ReactNode {
 	const t = useTranslations('progress');
@@ -232,17 +228,6 @@ export function JournalTrackAttachControls({
 							{stretchRange && <p className="m-0">{t('journalTrailLine', { range: stretchRange })}</p>}
 						</div>
 					)}
-					{showExportBundle && onExportBundle && (
-						<div className="flex flex-row flex-wrap items-center gap-1.5 pl-4">
-							<MapControlIconButton
-								aria-label={t('journalExportBundle')}
-								variant="mapControlOutlineSecondary"
-								onClick={onExportBundle}
-							>
-								<IoArchiveOutline aria-hidden className="h-3.5 w-3.5" />
-							</MapControlIconButton>
-						</div>
-					)}
 				</div>
 			) : (
 				<>
@@ -276,15 +261,6 @@ export function JournalTrackAttachControls({
 						>
 							<IoCloudUploadOutline aria-hidden className="h-3.5 w-3.5" />
 						</MapControlIconButton>
-						{showExportBundle && onExportBundle && (
-							<MapControlIconButton
-								aria-label={t('journalExportBundle')}
-								variant="mapControlOutlineSecondary"
-								onClick={onExportBundle}
-							>
-								<IoArchiveOutline aria-hidden className="h-3.5 w-3.5" />
-							</MapControlIconButton>
-						)}
 					</div>
 				</>
 			)}

@@ -275,11 +275,9 @@ export function JournalSection({ embedded = false }: JournalSectionProps): React
 					<JournalTrackAttachControls
 						attachRuler={attachRuler}
 						rulerKms={rulerKms}
-						showExportBundle={showExportBundle}
 						value={attachState}
 						onAttachRulerChange={handleAttachRulerChange}
 						onChange={handleAttachChange}
-						onExportBundle={handleExportBundle}
 						onPreview={(next) => pushPreview(next, null)}
 					/>
 				</MapControlSectionCard>
