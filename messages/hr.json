@@ -78,7 +78,7 @@
 			"helpPanel": "Pomoć u aplikaciji - gumb ? otvara šest sklopivih tematskih odjeljaka (osnove karte, profil visine, skrivene geste, alati za planiranje, offline ponašanje, demo šetnja); osnove i demo otvoreni su po zadanim postavkama; stanje odjeljaka ostaje između sesija",
 			"upNext": "Prikaz \"Slijedi\" - najbliži izvor vode, sklonište i grad ispred vas, s udaljenostima, izravno u panelu udaljenosti. Opcionalni redovi za hranu, bankomat, vidikovac i ljekarnu u Postavkama.",
 			"packWeight": "Težina ruksaka i nošenje vode - preporuke \"ponesite do X L\" po etapi iz vaše osnovne težine i potrošnje, metrički ili imperijalno",
-			"waypointsJournal": "Vlastite točke i dnevnik puta - dugi pritisak na kartu za osobne oznake s bilješkama; zapisi dnevnika mogu priložiti dionicu ravnalom ili povezati uvezeni GPX segment (pregled na karti, Pogledaj i izbornik više radnji za prikaz na karti / GPX / zip paket). Markdown i poveznice za dijeljenje zadržavaju reference na trag; sve ostaje na uređaju",
+			"waypointsJournal": "Vlastite točke i dnevnik puta - dugi pritisak na kartu za osobne oznake s bilješkama; zapisi dnevnika mogu priložiti dionicu ravnalom ili povezati uvezeni GPX segment (pregled na karti, Pogledaj i izbornik više radnji za prikaz na karti / GPX / zip paket). Jednim dodirom Zabilježi danas ispunjava zapis trenutnim kilometrom, visinom i dionicom. Markdown i poveznice za dijeljenje zadržavaju reference na trag; sve ostaje na uređaju",
 			"resupply": "Vodiči za opskrbu - trgovine, ljekarne, bankomati, pošta i autobus iz OpenStreetMapa u prozorima gradova, s oznakama opskrbe po etapi u planeru",
 			"pushAlerts": "Obavijesti o upozorenjima - neobavezne push obavijesti preglednika kad se objavi novo sezonsko upozorenje ili obavijest o stanju staze, čak i kad je aplikacija zatvorena; bez računa",
 			"accessibility": "Pristupačnost - velike dodirne mete i prilagodljiva veličina teksta sučelja (zadano / veliko / veće) koja povećava upravljačke ploče i slojeve bez mijenjanja veličine karte. Karta je označeno područje s mogućnošću fokusiranja tipkovnicom (strelice pomiču, +/- zumira), s porukom za orijentaciju čitača zaslona pri fokusu i klizačem staze iznad grafa visine koji najavljuje udaljenost, visinu, nagib, granice dionica i najbliži upotrebljiv izvor vode ispred putem žive regije"
@@ -1225,6 +1225,7 @@
 		"entryPlaceholder": "Kakav je bio dan?",
 		"attachRuler": "Priloži odabir ravnala ({range})",
 		"addEntry": "Dodaj zapis",
+		"logToday": "Zabilježi danas",
 		"exportJournal": "Izvezi (.md)",
 		"importJournal": "Uvezi (.md)",
 		"importJournalError": "Nije moguće pročitati zapise dnevnika iz te datoteke.",
@@ -1296,7 +1297,7 @@
 			"planner": "Gumb s kalendarom dijeli bilo koji raspon staze na dnevne etape s visinom, ETA-om, vodom i vremenom po danu.",
 			"tripBrief": "Unutar planera, \"Vodič za putovanje\" izvozi cijeli plan s kartama i uputama za hitne slučajeve kao PDF za ispis, DOCX za uređivanje ili samostalnu HTML stranicu. Dani odmora ispisuju se kao vlastite datirane stranice, jednako kao u planeru i kalendarskom izvozu.",
 			"progress": "Gumb s kvačicom prati koje si dionice prehodao - automatski iz GPS-a, iz odabira ravnalom ili iz uvezene rute. Ploča grupira Tvoj napredak, Iz GPX-a, točke i dnevnik u kartice s ljepljivim animiranim sažetkom.",
-			"journal": "U odjeljku dnevnika poveži uvezeni GPX segment sa zapisom po datumu (ikona poveznice), pregledaj ga na karti, otvori Pogledaj za samo čitanje ili koristi izbornik više radnji za izvoz GPX-a, zip paketa ili uklanjanje poveznice. Markdown uvoz/izvoz čuva metapodatke dionice i traga u HTML komentarima; poveznice za dijeljenje prenose reference na trag kad je uključeno stanje putovanja.",
+			"journal": "U odjeljku dnevnika poveži uvezeni GPX segment sa zapisom po datumu (ikona poveznice), pregledaj ga na karti, otvori Pogledaj za samo čitanje ili koristi izbornik više radnji za izvoz GPX-a, zip paketa ili uklanjanje poveznice. Markdown uvoz/izvoz čuva metapodatke dionice i traga u HTML komentarima; poveznice za dijeljenje prenose reference na trag kad je uključeno stanje putovanja. Gumb Zabilježi danas (kad je GPS na stazi) jednim dodirom otvara novi zapis ispunjen današnjim datumom te trenutnim kilometrom, visinom i dionicom.",
 			"packWeight": "Postavite težinu ruksaka u postavkama za preporuke nošenja vode po etapi i procjene vremena prilagođene težini; uvezite LighterPack/Packstack CSV za automatsko popunjavanje.",
 			"resupply": "Prozori gradova prikazuju obližnje trgovine i usluge; oznaka košarice u planeru etapa upozorava kad etapa nema opskrbu namirnicama."
 		},

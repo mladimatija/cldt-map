@@ -78,7 +78,7 @@
 			"helpPanel": "In-App-Hilfe - der ?-Button öffnet sechs einklappbare Themenbereiche (Kartengrundlagen, Höhenprofil, versteckte Gesten, Planungswerkzeuge, Offline-Verhalten, Demo-Wanderung); Grundlagen und Demo standardmäßig offen; Bereichszustand bleibt über Sitzungen erhalten",
 			"upNext": "\"Als Nächstes\"-Ansicht - die nächste Wasserstelle, Schutzhütte und der nächste Ort vor Ihnen, mit Entfernungen, direkt im Distanzpanel. Optionale Zeilen für Essen, Geldautomat, Aussichtspunkt und Apotheke in den Einstellungen.",
 			"packWeight": "Rucksackgewicht & Wassertransport - Empfehlungen \"bis zu X L mitnehmen\" pro Etappe aus Basisgewicht und Verbrauch, metrisch oder imperial",
-			"waypointsJournal": "Eigene Wegpunkte & Reisetagebuch - langes Drücken auf die Karte für persönliche Marker mit Notizen; datierte Einträge können eine Lineal-Strecke anhängen oder ein importiertes GPX-Segment verknüpfen (Kartenvorschau, Ansehen und Overflow-Menü für Auf Karte anzeigen / GPX / Zip-Paket). Markdown und Share-URLs übernehmen Track-Referenzen; alles bleibt auf dem Gerät",
+			"waypointsJournal": "Eigene Wegpunkte & Reisetagebuch - langes Drücken auf die Karte für persönliche Marker mit Notizen; datierte Einträge können eine Lineal-Strecke anhängen oder ein importiertes GPX-Segment verknüpfen (Kartenvorschau, Ansehen und Overflow-Menü für Auf Karte anzeigen / GPX / Zip-Paket). Heute eintragen füllt mit einem Tipp einen Eintrag mit deinem aktuellen Kilometer, der Höhe und dem Abschnitt vor. Markdown und Share-URLs übernehmen Track-Referenzen; alles bleibt auf dem Gerät",
 			"resupply": "Versorgungs-Infos - Geschäfte, Apotheken, Geldautomaten, Post und Bus aus OpenStreetMap in Orts-Popups, mit Versorgungs-Chips pro Etappe im Planer",
 			"pushAlerts": "Warnungs-Benachrichtigungen - optionale Browser-Pushes bei neuen saisonalen Warnungen oder Hinweisen zum Wegzustand, auch bei geschlossener App; kein Konto nötig",
 			"accessibility": "Barrierefreiheit - große Touch-Ziele und eine anpassbare UI-Textgröße (Standard / Groß / Größer), die Bedienfelder und Overlays vergrößert, ohne die Karte zu skalieren. Die Karte ist eine beschriftete, per Tastatur fokussierbare Region (Pfeiltasten schwenken, +/- zoomt) mit einer Orientierungsmeldung für Screenreader beim Fokus und einem Tastatur-Streckenregler über dem Höhenprofil, der Distanz, Höhe, Steigung, Abschnittsgrenzen und das nächste nutzbare Wasser voraus über eine Live-Region ansagt"
@@ -1225,6 +1225,7 @@
 		"entryPlaceholder": "Wie war der Tag?",
 		"attachRuler": "Lineal-Auswahl anhängen ({range})",
 		"addEntry": "Eintrag hinzufügen",
+		"logToday": "Heute eintragen",
 		"exportJournal": "Exportieren (.md)",
 		"importJournal": "Importieren (.md)",
 		"importJournalError": "Tagebucheinträge konnten aus dieser Datei nicht gelesen werden.",
@@ -1296,7 +1297,7 @@
 			"planner": "Der Kalender-Button teilt jeden Trail-Abschnitt in Tagesetappen mit Höhe, Gehzeit, Wasser und Wetter pro Tag.",
 			"tripBrief": "Im Planer exportiert \"Trip brief\" den ganzen Plan mit Karten und Notfallinfos als druckbares PDF, editierbares DOCX oder eigenständige HTML-Seite. Ruhetage werden als eigene datierte Seiten gedruckt, passend zum Planer und Kalenderexport.",
 			"progress": "Der Häkchen-Button verfolgt, welche Abschnitte du gewandert bist - automatisch per GPS, aus der Lineal-Auswahl oder aus einem importierten Track. Das Panel gruppiert Dein Fortschritt, Aus GPX, Wegpunkte und Tagebuch in Karten mit einer sticky animierten Zusammenfassung.",
-			"journal": "Im Tagebuch-Bereich verknüpfe ein importiertes GPX-Segment mit einem datierten Eintrag (Link-Icon), sieh es auf der Karte vor, nutze Ansehen für schreibgeschützte Einträge oder das Overflow-Menü zum GPX-/Zip-Export oder zum Entfernen der Verknüpfung. Markdown-Import/-Export bewahrt Strecken- und Track-Metadaten in HTML-Kommentaren; Share-URLs übernehmen Track-Referenzen, wenn Reisezustand enthalten ist.",
+			"journal": "Im Tagebuch-Bereich verknüpfe ein importiertes GPX-Segment mit einem datierten Eintrag (Link-Icon), sieh es auf der Karte vor, nutze Ansehen für schreibgeschützte Einträge oder das Overflow-Menü zum GPX-/Zip-Export oder zum Entfernen der Verknüpfung. Markdown-Import/-Export bewahrt Strecken- und Track-Metadaten in HTML-Kommentaren; Share-URLs übernehmen Track-Referenzen, wenn Reisezustand enthalten ist. Eine Schaltfläche Heute eintragen (bei GPS auf dem Weg) öffnet mit einem Tipp einen neuen Eintrag mit dem heutigen Datum und deinem aktuellen Kilometer, der Höhe und dem Abschnitt.",
 			"packWeight": "Rucksackgewicht in den Einstellungen setzen für Wassertransport-Empfehlungen pro Etappe und gewichtsangepasste Zeitschätzungen; LighterPack/Packstack-CSV importieren zum automatischen Ausfüllen.",
 			"resupply": "Orts-Popups listen Geschäfte und Dienste in der Nähe; ein Einkaufswagen-Chip im Etappenplaner warnt, wenn eine Etappe keine Lebensmittelversorgung hat."
 		},

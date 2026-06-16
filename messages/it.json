@@ -78,7 +78,7 @@
 			"helpPanel": "Aiuto in-app - il pulsante ? apre sei sezioni argomento pieghevoli (nozioni di base della mappa, profilo altimetrico, gesti nascosti, strumenti di pianificazione, comportamento offline, escursione demo); base e demo aperte per impostazione predefinita; lo stato delle sezioni persiste tra le sessioni",
 			"upNext": "Vista \"A seguire\" - la fonte d'acqua, il rifugio e la città più vicini davanti a te, con le distanze, direttamente nel pannello distanze. Righe opzionali per cibo, bancomat, belvedere e farmacia nelle Impostazioni.",
 			"packWeight": "Peso dello zaino e acqua da portare - suggerimenti \"porta fino a X L\" per tappa dal peso base e dal consumo, in unità metriche o imperiali",
-			"waypointsJournal": "Punti personali e diario di viaggio - tieni premuto sulla mappa per segnaposti con note; le voci datate possono allegare un tratto del righello o collegare un segmento GPX importato (anteprima sulla mappa, Visualizza e menu overflow per mostra sulla mappa / GPX / pacchetto zip). Markdown e link di condivisione conservano i riferimenti alla traccia; tutto resta sul dispositivo",
+			"waypointsJournal": "Punti personali e diario di viaggio - tieni premuto sulla mappa per segnaposti con note; le voci datate possono allegare un tratto del righello o collegare un segmento GPX importato (anteprima sulla mappa, Visualizza e menu overflow per mostra sulla mappa / GPX / pacchetto zip). Un tocco su Registra oggi precompila una voce con il tuo km, quota e sezione attuali. Markdown e link di condivisione conservano i riferimenti alla traccia; tutto resta sul dispositivo",
 			"resupply": "Guide al rifornimento - negozi, farmacie, bancomat, posta e autobus da OpenStreetMap nei popup delle città, con indicatori di rifornimento per tappa nel planner",
 			"pushAlerts": "Notifiche di avviso - push opzionali del browser quando viene pubblicato un nuovo avviso stagionale o una notifica sulle condizioni del sentiero, anche ad app chiusa; nessun account",
 			"accessibility": "Accessibilità - bersagli touch grandi e una dimensione del testo dell'interfaccia regolabile (predefinita / grande / più grande) che ingrandisce i pannelli di controllo e gli overlay senza ridimensionare la mappa. La mappa è una regione etichettata e focalizzabile da tastiera (le frecce spostano, +/- zooma) con un messaggio di orientamento per screen reader al focus e un cursore del sentiero sopra il grafico del dislivello che annuncia distanza, quota, pendenza, confini di sezione e la sorgente d'acqua utilizzabile più vicina davanti tramite una live region"
@@ -1225,6 +1225,7 @@
 		"entryPlaceholder": "Com’è andata la giornata?",
 		"attachRuler": "Allega selezione del righello ({range})",
 		"addEntry": "Aggiungi voce",
+		"logToday": "Registra oggi",
 		"exportJournal": "Esporta (.md)",
 		"importJournal": "Importa (.md)",
 		"importJournalError": "Impossibile leggere le voci del diario da quel file.",
@@ -1296,7 +1297,7 @@
 			"planner": "Il pulsante calendario divide qualsiasi tratto in tappe giornaliere con dislivello, tempi, acqua e meteo per giorno.",
 			"tripBrief": "Nel pianificatore, \"Trip brief\" esporta l'intero piano con mappe e info di emergenza come PDF stampabile, DOCX modificabile o pagina HTML autonoma. I giorni di riposo vengono stampati come pagine datate a sé, come nel pianificatore e nell'esportazione del calendario.",
 			"progress": "Il pulsante con la spunta traccia i tratti percorsi - automaticamente dal GPS, dalla selezione del righello o da una traccia importata. Il pannello raggruppa Il tuo progresso, Da GPX, waypoint e diario in schede con un riepilogo animato fisso.",
-			"journal": "Nella sezione diario, collega un segmento GPX importato a una voce datata (icona collegamento), visualizzalo in anteprima sulla mappa, usa Visualizza per le voci in sola lettura o il menu overflow per esportare GPX, un pacchetto zip o rimuovere il collegamento. Import/export Markdown conserva metadati di tratto e traccia in commenti HTML; i link di condivisione includono i riferimenti alla traccia quando lo stato del viaggio è presente.",
+			"journal": "Nella sezione diario, collega un segmento GPX importato a una voce datata (icona collegamento), visualizzalo in anteprima sulla mappa, usa Visualizza per le voci in sola lettura o il menu overflow per esportare GPX, un pacchetto zip o rimuovere il collegamento. Import/export Markdown conserva metadati di tratto e traccia in commenti HTML; i link di condivisione includono i riferimenti alla traccia quando lo stato del viaggio è presente. Un pulsante Registra oggi (con GPS sul sentiero) apre con un tocco una nuova voce precompilata con la data odierna e il tuo km, quota e sezione attuali.",
 			"packWeight": "Imposta il peso dello zaino nelle impostazioni per suggerimenti sull’acqua per tappa e stime dei tempi adattate al peso; importa un CSV LighterPack/Packstack per compilarlo automaticamente.",
 			"resupply": "I popup delle città elencano negozi e servizi vicini; un indicatore carrello nel planner avvisa quando una tappa non ha rifornimento alimentari."
 		},

@@ -11,6 +11,7 @@ import {
 	IoDocumentTextOutline,
 	IoEyeOutline,
 	IoMapOutline,
+	IoTodayOutline,
 } from 'react-icons/io5';
 import { useTranslations } from 'next-intl';
 import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
@@ -23,7 +24,9 @@ import {
 } from '@/lib/journal-track-link';
 import { downloadTextFile, journalToMarkdown, newId, todayIsoDate, type JournalEntry } from '@/lib/user-waypoints';
 import { parseJournalMarkdown, parsedJournalToEntries } from '@/lib/user-waypoint-import';
-import { cn, formatDistance } from '@/lib/utils';
+import { findNearestPointIndex } from '@/lib/distance-utils';
+import { TRAIL_OFF_TRAIL_THRESHOLD_M } from '@/lib/config';
+import { cn, formatDistance, formatElevation } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
 import { MAP_CONTROL_INPUT } from './map-controls-constants';
 import { MapControlIconButton } from './MapControlIconButton';
@@ -39,6 +42,7 @@ interface JournalSectionProps {
 
 export function JournalSection({ embedded = false }: JournalSectionProps): React.ReactElement {
 	const t = useTranslations('progress');
+	const tTrail = useTranslations('trailRoute');
 	const map = useMap();
 
 	const units = useMapStore((s: MapStoreState) => s.units);
@@ -55,7 +59,14 @@ export function JournalSection({ embedded = false }: JournalSectionProps): React
 	const setJournalHighlightEntryId = useMapStore((s: MapStoreState) => s.setJournalHighlightEntryId);
 
 	const enhancedTrailPoints = useStore((s: StoreState) => s.enhancedTrailPoints);
+	const closestPoint = useStore((s: StoreState) => s.closestPoint);
 	const totalKm = useStore((s: StoreState) => s.trailMetadata.totalDistance);
+
+	// A non-null closestPoint only means "some GPS fix exists" - it is set even
+	// kilometres off-route. "Log today" snapshots the current trail km/section,
+	// so gate it on the shared on-trail derivation (matches useTrailSunWeather /
+	// the daylight chip) rather than bare truthiness.
+	const isOnTrail = !!closestPoint && closestPoint.distance <= TRAIL_OFF_TRAIL_THRESHOLD_M;
 
 	const [entryDate, setEntryDate] = useState(todayIsoDate);
 	const [entryText, setEntryText] = useState('');
@@ -240,6 +251,25 @@ export function JournalSection({ embedded = false }: JournalSectionProps): React
 		setComposeOpen(true);
 	};
 
+	// One-tap end-of-day capture: open the composer prefilled with today's date
+	// (resetCompose default) and a current-position snapshot - trail km,
+	// elevation, and section - so a nightly entry is a single tap instead of a
+	// multi-field form. Shown only when an on-trail GPS fix is available.
+	const openLogToday = (): void => {
+		resetCompose();
+		if (isOnTrail && closestPoint) {
+			const ep =
+				enhancedTrailPoints.length > 0
+					? enhancedTrailPoints[findNearestPointIndex(enhancedTrailPoints, closestPoint.distanceFromStart)]
+					: undefined;
+			const parts = [fmtDisplayKm(closestPoint.distanceFromStart / 1000)];
+			if (ep && Number.isFinite(ep.elevation)) parts.push(formatElevation(ep.elevation, units));
+			if (ep?.sectionName) parts.push(tTrail(ep.sectionName));
+			setEntryText(`${parts.join(' · ')}\n`);
+		}
+		setComposeOpen(true);
+	};
+
 	const closeCompose = (): void => {
 		setComposeOpen(false);
 		setJournalPreview(null);
@@ -313,9 +343,17 @@ export function JournalSection({ embedded = false }: JournalSectionProps): React
 					</p>
 				) : null}
 
-				<MapControlIconButton aria-label={t('addEntry')} variant="mapControlOutline" onClick={openCompose}>
-					<IoAddOutline aria-hidden className="h-3.5 w-3.5" />
-				</MapControlIconButton>
+				<div className="flex flex-wrap items-center gap-1.5">
+					<MapControlIconButton aria-label={t('addEntry')} variant="mapControlOutline" onClick={openCompose}>
+						<IoAddOutline aria-hidden className="h-3.5 w-3.5" />
+					</MapControlIconButton>
+					{isOnTrail && (
+						<Button size="sm" variant="mapControlOutline" onClick={openLogToday}>
+							<IoTodayOutline aria-hidden className="mr-1 h-3.5 w-3.5" />
+							{t('logToday')}
+						</Button>
+					)}
+				</div>
 
 				{journalSorted.length === 0 ? (
 					<p className="m-0 text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('noEntries')}</p>
