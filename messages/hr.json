@@ -66,7 +66,7 @@
 			"daylightBudget": "Procjena dnevnog svjetla - na stazi te HUD s udaljenostima upozorava kad možda nećeš stići do sljedećeg doma, skloništa ili mjesta prije mraka, uspoređujući vrijeme zalaska sunca s procjenom dolaska do najbližeg odredišta ispred",
 			"stagePlanner": "Planer višednevnih etapa - podijelite bilo koji dio staze na dnevne etape prema udaljenosti ili vremenu, pregledajte nadmorsku visinu, ETA, vodu, težinu ruksaka i čipove opskrbe po etapi. Postavite datum početka putovanja da prikažete datum svake etape i umetnite dane odmora (nulte dane) koji pomiču svaki kasniji datum, prognozu i kalendarski događaj bez mijenjanja podjele. Izvezite pojedine etape kao GPX ili FIT, sve POI-jeve kao GPX, PDF karte etapa, iCal (uključuje dane odmora) ili otvorite Trip brief",
 			"gpxImport": "Uvoz GPX rute - povuci i ispusti (ili odaberi) snimljenu GPX datoteku i usporedi svoju rutu sa službenom stazom; statistike o udaljenosti, tempu, ukupnom i vremenu kretanja, maksimalnom odstupanju i pokrivenosti staze",
-			"emergency": "Hitna ploča 112 - dugim pritiskom crvenog SOS gumba (donji desni kut) otvara se offline-first centrirani modal s tvojim GPS koordinatama, Plus kodom, etapom i kilometrom staze te smjerom i udaljenošću do najbližeg pristupa cesti i HGSS stanice; kad si online, traži se čitljiva adresa koju možeš kopirati; kopiraj svako polje i pokreni biranje (Nazovi 112) ili karte (Otvori u kartama); ako GPS nije dostupan, vraća se na posljednji poznati položaj i koliko je star; uključuje opcionalnu medicinsku/kontaktnu karticu na uređaju i skriptu \"što reći na 112\"; radi potpuno offline jednom kad se podaci spreme u predmemoriju",
+			"emergency": "Hitna ploča 112 - dugim pritiskom crvenog SOS gumba (donji desni kut) otvara se offline-first centrirani modal s tvojim GPS koordinatama, Plus kodom, etapom i kilometrom staze te smjerom i udaljenošću do najbližeg pristupa cesti i HGSS stanice; kad si online, traži se čitljiva adresa koju možeš kopirati; kopiraj svako polje i pokreni biranje (Nazovi 112) ili karte (Otvori u kartama); ako GPS nije dostupan, vraća se na posljednji poznati položaj i koliko je star; uključuje opcionalnu medicinsku/kontaktnu karticu na uređaju i skriptu \"što reći na 112\"; radi potpuno offline jednom kad se podaci spreme u predmemoriju; položaj prikazuje i kao MGRS / UTM / DMS mrežne reference (MGRS izravno radi usklađenosti s HGSS-om / SAR-om, UTM i DMS u sklopivom retku)",
 			"trailStyle": "Stil staze - odaberi kako će ruta biti obojana u Postavkama (kartica Izgled staze): Zadano (jedna boja), Dionice (zone A/B/C s graničnim oznakama i statistikom po dionici), Nagib (gradijentno bojanje u pet pojaseva, topli tonovi za uspone i hladni za silazne dijelove u trenutnom smjeru hodanja; legenda u kartici; ponovno se izračunava pri promjeni smjera SOBO/NOBO), Podloga ili Težina (SAC)",
 			"surfaceAndSac": "Bojanje po podlozi i težini - oboji liniju staze (i pozadinu grafa nadmorske visine) prema OSM tipu podloge (asfalt / neasfaltirano / šljunak / tlo / stijena) ili SAC ljestvici planinarenja (T1 planinarenje do T6 teško alpinističko). Podatke jednom mjesečno osvježava GitHub Action iz OpenStreetMapa; opcije Podloga i Težina ostaju onemogućene dok se skup ne učita pri prvom prikazu. Smjer-svjestan: skup je vezan uz SOBO km, a renderer ih u hodu zrcali na NOBO",
 			"distanceMarkers": "Oznake kilometara - male oznake km / mi duž staze na intervalima 100 / 50 / 25 / 10 / 5 / 1. Progresivni prikaz prema razini zumiranja: 100 km uvijek vidljivo na bilo kojem zumu, finiji intervali pojavljuju se dok zumirate (oznake od 1 km tek na zumu 13+). Uključivo iz Postavki; oznake slijede aktivni sustav jedinica i trenutni smjer (SOBO/NOBO)",
@@ -1128,7 +1128,10 @@
 			"plusCode": "Kopiraj Plus kod",
 			"section": "Kopiraj etapu i km",
 			"address": "Kopiraj adresu",
-			"all": "Kopiraj sve hitne podatke"
+			"all": "Kopiraj sve hitne podatke",
+			"mgrs": "Kopiraj MGRS koordinatu",
+			"utm": "Kopiraj UTM koordinatu",
+			"dms": "Kopiraj DMS koordinatu"
 		},
 		"callStation": "Nazovi {name}",
 		"openStationPage": "Otvori stranicu za {name}",
@@ -1174,7 +1177,11 @@
 			"unclassified": "Neklasificirana cesta",
 			"residential": "Stambena ulica",
 			"road": "Cesta"
-		}
+		},
+		"mgrs": "MGRS",
+		"utm": "UTM",
+		"dms": "DMS",
+		"otherFormats": "Drugi formati koordinata"
 	},
 	"mineAreas": {
 		"layerLabel": "Minski sumnjiva područja",
@@ -1290,7 +1297,7 @@
 		"chartHeading": "Profil visine",
 		"gesturesHeading": "Skrivene geste",
 		"gestures": {
-			"sos": "Dugo pritisni crveni SOS gumb za offline ploču za hitne slučajeve: koordinate, Plus kod, najbliži prilaz cestom, HGSS, poziv 112 jednim dodirom i adresa kad si online. Ako GPS nije dostupan, prikazuje posljednji poznati položaj i koliko je star. Sadrži i opcionalnu medicinsku/kontaktnu karticu na uređaju i skriptu \"što reći na 112\".",
+			"sos": "Dugo pritisni crveni SOS gumb za offline ploču za hitne slučajeve: koordinate, Plus kod, najbliži prilaz cestom, HGSS, poziv 112 jednim dodirom i adresa kad si online. Ako GPS nije dostupan, prikazuje posljednji poznati položaj i koliko je star. Sadrži i opcionalnu medicinsku/kontaktnu karticu na uređaju i skriptu \"što reći na 112\". Položaj prikazuje i u MGRS, UTM i DMS formatu za gorsku službu spašavanja.",
 			"gpxDrop": "Povuci i ispusti snimljenu .gpx datoteku bilo gdje na kartu da preklopiš svoju rutu i usporediš je sa službenom stazom.",
 			"poiList": "U popisu mjesta upiši broj (\"100 km\") za skok; strelice navigiraju, S označava retke za GPX. Spremi presete filtera i označi mjesta u imenovane liste (\"samo odabrano\" u vodiču koristi aktivnu listu).",
 			"waypoint": "Dugo pritisnite (ili desni klik) bilo gdje na karti za osobnu točku s bilješkom."

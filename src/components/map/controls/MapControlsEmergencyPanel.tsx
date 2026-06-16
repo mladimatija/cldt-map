@@ -20,6 +20,7 @@ import {
 	type RoadAccessEntry,
 } from '@/lib/emergency-data';
 import { fetchReverseGeocodeAddress } from '@/lib/reverse-geocode-client';
+import { formatDms, formatMgrs, formatUtm } from '@/lib/coordinate-formats';
 import { cn, isSafeUrl } from '@/lib/utils';
 
 const COPY_RESET_MS = 1500;
@@ -40,7 +41,7 @@ interface NearestHgss {
 	bearingDeg: number;
 }
 
-type CopyField = 'coords' | 'plusCode' | 'section' | 'address' | 'all';
+type CopyField = 'coords' | 'plusCode' | 'mgrs' | 'utm' | 'dms' | 'section' | 'address' | 'all';
 
 async function copyTextToClipboard(text: string): Promise<boolean> {
 	try {
@@ -241,6 +242,23 @@ export function MapControlsEmergencyPanel({ onClose }: MapControlsEmergencyPanel
 		[displayPosition],
 	);
 
+	// SAR-grid formats. MGRS is the grid HGSS / NATO-aligned rescuers most often
+	// work in, so it is shown inline next to the Plus Code; UTM and DMS are
+	// tucked into a collapsible row to keep the panel uncluttered. All are
+	// null outside the UTM latitude range (never the case in Croatia).
+	const mgrsString = useMemo(
+		() => (displayPosition.source === null ? null : formatMgrs(displayPosition.lat, displayPosition.lng)),
+		[displayPosition],
+	);
+	const utmString = useMemo(
+		() => (displayPosition.source === null ? null : formatUtm(displayPosition.lat, displayPosition.lng)),
+		[displayPosition],
+	);
+	const dmsString = useMemo(
+		() => (displayPosition.source === null ? null : formatDms(displayPosition.lat, displayPosition.lng)),
+		[displayPosition],
+	);
+
 	const sectionInfo = useMemo<{ sectionName: string | null; km: number | null }>(() => {
 		if (!closestPoint || !enhancedTrailPoints || enhancedTrailPoints.length === 0) {
 			return { sectionName: null, km: null };
@@ -321,6 +339,7 @@ export function MapControlsEmergencyPanel({ onClose }: MapControlsEmergencyPanel
 		if (coordsString) lines.push(`${t('position')}: ${coordsString}`);
 		if (addressLine) lines.push(`${t('address')}: ${addressLine}`);
 		if (plusCode) lines.push(`${t('plusCode')}: ${plusCode}`);
+		if (mgrsString) lines.push(`${t('mgrs')}: ${mgrsString}`);
 		if (sectionString) lines.push(`${t('section')}: ${sectionString}`);
 		if (roadLabel && roadCompass) {
 			lines.push(`${t('nearestRoad')}: ${roadLabel} (${t(`compass.${roadCompass}`)})`);
@@ -333,7 +352,19 @@ export function MapControlsEmergencyPanel({ onClose }: MapControlsEmergencyPanel
 			}
 		}
 		return lines.join('\n');
-	}, [coordsString, addressLine, plusCode, sectionString, roadLabel, roadCompass, nearestHgss, hgssCompass, units, t]);
+	}, [
+		coordsString,
+		addressLine,
+		plusCode,
+		mgrsString,
+		sectionString,
+		roadLabel,
+		roadCompass,
+		nearestHgss,
+		hgssCompass,
+		units,
+		t,
+	]);
 
 	const handleCopyAll = (): void => {
 		if (!copyAllText) return;
@@ -419,6 +450,21 @@ export function MapControlsEmergencyPanel({ onClose }: MapControlsEmergencyPanel
 										/>
 									</div>
 								) : null}
+								{mgrsString ? (
+									<div className="flex items-center justify-between gap-2">
+										<span className="min-w-0 text-sm">
+											<span className="text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('mgrs')}: </span>
+											<span className="font-mono text-sm">{mgrsString}</span>
+										</span>
+										<CopyButton
+											ariaLabel={t('copyAriaLabel.mgrs')}
+											copiedField={copiedField}
+											field="mgrs"
+											value={mgrsString}
+											onCopied={handleCopied}
+										/>
+									</div>
+								) : null}
 								{sectionString ? (
 									<div className="flex items-center justify-between gap-2">
 										<span className="min-w-0 text-sm">
@@ -433,6 +479,41 @@ export function MapControlsEmergencyPanel({ onClose }: MapControlsEmergencyPanel
 											onCopied={handleCopied}
 										/>
 									</div>
+								) : null}
+								{utmString && dmsString ? (
+									<details className="mt-0.5">
+										<summary className="focus-visible:ring-cldt-green cursor-pointer rounded text-xs text-gray-500 outline-none focus-visible:ring-1 focus-visible:ring-offset-1 dark:text-[var(--text-secondary)]">
+											{t('otherFormats')}
+										</summary>
+										<div className="mt-1 flex flex-col gap-1.5">
+											<div className="flex items-center justify-between gap-2">
+												<span className="min-w-0 text-sm">
+													<span className="text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('utm')}: </span>
+													<span className="font-mono text-sm">{utmString}</span>
+												</span>
+												<CopyButton
+													ariaLabel={t('copyAriaLabel.utm')}
+													copiedField={copiedField}
+													field="utm"
+													value={utmString}
+													onCopied={handleCopied}
+												/>
+											</div>
+											<div className="flex items-center justify-between gap-2">
+												<span className="min-w-0 text-sm">
+													<span className="text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('dms')}: </span>
+													<span className="font-mono text-sm">{dmsString}</span>
+												</span>
+												<CopyButton
+													ariaLabel={t('copyAriaLabel.dms')}
+													copiedField={copiedField}
+													field="dms"
+													value={dmsString}
+													onCopied={handleCopied}
+												/>
+											</div>
+										</div>
+									</details>
 								) : null}
 							</>
 						) : (

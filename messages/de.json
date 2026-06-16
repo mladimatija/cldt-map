@@ -66,7 +66,7 @@
 			"daylightBudget": "Tageslicht-Budget - unterwegs warnt das Distanz-HUD, wenn du die nächste Hütte, Schutzhütte oder Ortschaft womöglich nicht vor Einbruch der Dunkelheit erreichst, durch Vergleich der Sonnenuntergangszeit mit deiner Ankunftszeit am nächsten Ziel voraus",
 			"stagePlanner": "Mehrtages-Etappenplaner - teile beliebige Streckenabschnitte nach Distanz oder Zeit in Tagesetappen auf, zeige Höhe, ETA, Wasser-, Pack- und Versorgungs-Chips je Etappe. Lege ein Startdatum fest, um das Kalenderdatum jeder Etappe anzuzeigen, und füge Ruhetage (Nulltage) ein, die jedes spätere Datum, jede Prognose und jeden Kalendereintrag verschieben, ohne die Aufteilung zu ändern. Exportiere einzelne Etappen als GPX oder FIT, alle POIs als GPX, ein Etappenkarten-PDF, iCal (inklusive Ruhetage) oder öffne den Trip Brief",
 			"gpxImport": "GPX-Track-Import - ziehe eine aufgezeichnete GPX-Datei auf die Karte (oder wähle sie aus) und vergleiche deine Route mit dem offiziellen Weg; Statistiken zu Distanz, Tempo, Gesamtzeit, Gehzeit, max. Abweichung und Streckenabdeckung",
-			"emergency": "Notfallpanel 112 - langes Drücken des roten SOS-Buttons (unten rechts) öffnet ein offline-first zentriertes Modal mit deinen GPS-Koordinaten, Plus Code, Etappe und Kilometer auf dem Weg sowie Richtung und Entfernung zur nächsten Straßenanbindung und HGSS-Bergrettungsstation; online wird eine lesbare Adresse nachgeschlagen und kann kopiert werden; jedes Feld in die Zwischenablage kopieren und an die Telefon-App (112 anrufen) oder Karten-App (In Karten öffnen) übergeben; wenn kein GPS verfügbar ist, greift es auf deine letzte bekannte Position mit ihrem Alter zurück; enthält eine optionale medizinische/Kontakt-Karte auf dem Gerät und einen 112-Leitfaden; vollständig offline, sobald die Daten im Cache sind",
+			"emergency": "Notfallpanel 112 - langes Drücken des roten SOS-Buttons (unten rechts) öffnet ein offline-first zentriertes Modal mit deinen GPS-Koordinaten, Plus Code, Etappe und Kilometer auf dem Weg sowie Richtung und Entfernung zur nächsten Straßenanbindung und HGSS-Bergrettungsstation; online wird eine lesbare Adresse nachgeschlagen und kann kopiert werden; jedes Feld in die Zwischenablage kopieren und an die Telefon-App (112 anrufen) oder Karten-App (In Karten öffnen) übergeben; wenn kein GPS verfügbar ist, greift es auf deine letzte bekannte Position mit ihrem Alter zurück; enthält eine optionale medizinische/Kontakt-Karte auf dem Gerät und einen 112-Leitfaden; vollständig offline, sobald die Daten im Cache sind; gibt deine Position auch als MGRS- / UTM- / DMS-Gitterreferenzen aus (MGRS direkt sichtbar für die Interoperabilität mit HGSS / SAR, UTM und DMS in einer ausklappbaren Zeile)",
 			"trailStyle": "Wegstil - wähle in den Einstellungen (Karte Wegoptik), wie die Route eingefärbt wird: Standard (eine Farbe), Abschnitte (Zonen A/B/C mit Grenzmarkern und Statistik pro Abschnitt), Steigung (Gradienten-Färbung in fünf Stufen, warme Töne für Anstiege und kühle für Abstiege in der aktuellen Gehrichtung; Farblegende in der Karte; wird beim Wechsel der SOBO/NOBO-Richtung neu berechnet), Untergrund oder Schwierigkeit (SAC)",
 			"surfaceAndSac": "Untergrund- und Schwierigkeitsfärbung - färbt die Trail-Linie (und die Flächenfüllung des Höhenprofils) nach OSM-Untergrundtyp (befestigt / unbefestigt / Schotter / Erde / Fels) oder nach SAC-Wanderskala (T1 Wandern bis T6 schwieriges Alpinwandern). Die Daten werden monatlich von einer GitHub-Action aus OpenStreetMap angereichert; die Optionen Untergrund und Schwierigkeit bleiben deaktiviert, bis der Datensatz beim ersten Rendern geladen ist. Richtungsbewusst: der Datensatz ist nach SOBO km indiziert und der Renderer spiegelt ihn live nach NOBO",
 			"distanceMarkers": "Distanzmarkierungen - kleine km/mi-Beschriftungen entlang des Trails im Abstand von 100 / 50 / 25 / 10 / 5 / 1 Einheiten. Progressive Anzeige je nach Zoomstufe: 100 km sind bei jedem Zoom sichtbar, feinere Abstände erscheinen beim Hineinzoomen (1-km-Beschriftungen erst ab Zoom 13+). In den Einstellungen umschaltbar; Beschriftungen folgen dem aktiven Einheitensystem und der aktuellen Richtung (SOBO/NOBO)",
@@ -1128,7 +1128,10 @@
 			"plusCode": "Plus Code kopieren",
 			"section": "Etappe und km kopieren",
 			"address": "Adresse kopieren",
-			"all": "Alle Notfallinfos kopieren"
+			"all": "Alle Notfallinfos kopieren",
+			"mgrs": "MGRS-Koordinate kopieren",
+			"utm": "UTM-Koordinate kopieren",
+			"dms": "DMS-Koordinate kopieren"
 		},
 		"callStation": "{name} anrufen",
 		"openStationPage": "Seite für {name} öffnen",
@@ -1174,7 +1177,11 @@
 			"unclassified": "Unklassifizierte Straße",
 			"residential": "Wohnstraße",
 			"road": "Straße"
-		}
+		},
+		"mgrs": "MGRS",
+		"utm": "UTM",
+		"dms": "DMS",
+		"otherFormats": "Andere Koordinatenformate"
 	},
 	"mineAreas": {
 		"layerLabel": "Minenverdächtige Gebiete",
@@ -1290,7 +1297,7 @@
 		"chartHeading": "Höhenprofil",
 		"gesturesHeading": "Versteckte Gesten",
 		"gestures": {
-			"sos": "Halte den roten SOS-Button gedrückt für das Offline-Notfallpanel: Koordinaten, Plus Code, nächste Straßenanbindung, HGSS-Bergrettung, 112 mit einem Tipp und online eine Adresszeile. Wenn kein GPS verfügbar ist, zeigt es deine letzte bekannte Position mit ihrem Alter. Es enthält auch eine optionale medizinische/Kontakt-Karte auf dem Gerät und einen 112-Leitfaden.",
+			"sos": "Halte den roten SOS-Button gedrückt für das Offline-Notfallpanel: Koordinaten, Plus Code, nächste Straßenanbindung, HGSS-Bergrettung, 112 mit einem Tipp und online eine Adresszeile. Wenn kein GPS verfügbar ist, zeigt es deine letzte bekannte Position mit ihrem Alter. Es enthält auch eine optionale medizinische/Kontakt-Karte auf dem Gerät und einen 112-Leitfaden. Sie gibt deine Position auch in MGRS, UTM und DMS für die Bergrettung aus.",
 			"gpxDrop": "Ziehe eine aufgezeichnete .gpx-Datei irgendwo auf die Karte, um deine Wanderung zu überlagern und mit dem offiziellen Trail zu vergleichen.",
 			"poiList": "In der Ortsliste eine Zahl tippen (\"100 km\") springt dorthin; Pfeiltasten navigieren, S wählt Zeilen für den GPX-Export. Filter-Presets speichern und Orte in benannte Listen markieren (Trip-Brief \"nur Auswahl\" nutzt die aktive Liste).",
 			"waypoint": "Lange drücken (oder Rechtsklick) irgendwo auf der Karte für einen persönlichen Wegpunkt mit Notiz."
