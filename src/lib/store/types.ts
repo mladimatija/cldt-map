@@ -380,6 +380,12 @@ export interface MapStoreState {
 	tileCacheDone: number;
 	tileCacheTotal: number;
 	tileCacheError: string | null;
+	/** Tiles the last completed download could not fetch (network failures).
+	 *  "N tiles failed - retry" panel row; reset when a new
+	 *  download starts. Session-only (not persisted). */
+	tileCacheFailed: number;
+	/** URLs of the failed tiles, so a retry re-fetches only the misses. */
+	tileCacheFailedUrls: string[];
 	tileCacheMeta: TileCacheMeta | null;
 	autoSync: boolean;
 	predictivePrecache: boolean;
@@ -400,6 +406,8 @@ export interface MapStoreState {
 		opts?: { source?: 'manual' | 'autoSync' },
 	) => Promise<void>;
 	cancelTileDownload: () => void;
+	/** Re-fetch only the tiles that failed in the last download. */
+	retryFailedTiles: () => Promise<void>;
 	clearTileCacheForProvider: (providerKey?: string) => Promise<void>;
 	loadTileCacheMeta: (providerKey: string) => Promise<void>;
 	setAutoSync: (enabled: boolean) => void;

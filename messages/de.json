@@ -558,6 +558,8 @@
 		"zoomRange": "Zoom {min}-{max}",
 		"zoomRangeWithHighDetail": "Zoom {min}-{max} (inkl. hohe Detailstufe voraus)",
 		"estimatedTiles": "~{count} Kacheln zum Herunterladen",
+		"tilesFailed": "{count, plural, one {# Kachel konnte nicht geladen werden} other {# Kacheln konnten nicht geladen werden}}",
+		"retryFailed": "Erneut versuchen",
 		"today": "heute",
 		"yesterday": "gestern",
 		"daysAgo": "vor {days} Tagen",
@@ -1300,7 +1302,7 @@
 		},
 		"offlineHeading": "Offline",
 		"offline": {
-			"precache": "Das Cache-Panel lädt den Trail-Korridor vor (Kacheln, Orte, Fotos) für die Nutzung ohne Empfang und synchronisiert über WLAN. Das Caching ist auf Kroatien beschränkt, sodass nur der Korridor innerhalb der Grenze gespeichert wird - Kacheln außerhalb des Landes werden nie geladen, was den Speicher in Schach hält.",
+			"precache": "Das Cache-Panel lädt den Trail-Korridor vor (Kacheln, Orte, Fotos) für die Nutzung ohne Empfang und synchronisiert über WLAN. Das Caching ist auf Kroatien beschränkt, sodass nur der Korridor innerhalb der Grenze gespeichert wird - Kacheln außerhalb des Landes werden nie geladen, was den Speicher in Schach hält. Falls einige Kacheln bei schwacher Verbindung fehlschlagen, zeigt das Panel an, wie viele fehlen, und lässt Sie nur diese erneut laden.",
 			"gps": "GPS, Notfallpanel und dein Fortschritt funktionieren vollständig offline, sobald der Korridor gespeichert ist.",
 			"offRouteAlert": "Aktiviere den Routenabweichungs-Alarm in den Einstellungen (standardmäßig aus) für Banner und Vibration, wenn du mehr als ~200 m vom Trail abkommst, mit Distanz und Richtung zurück. Schärft sich erst, wenn GPS bestätigt, dass du auf dem Trail bist; bleibt zu Hause oder in der Fahrt stumm und entschärft sich, wenn du das Trail-Gebiet verlässt.",
 			"daylight": "Unterwegs zeigt das Distanz-HUD eine Tageslicht-Anzeige, wenn du die nächste Hütte, Schutzhütte oder Ortschaft womöglich nicht vor Einbruch der Dunkelheit erreichst - sie vergleicht die Sonnenuntergangszeit (eine kurze Online-Wetterabfrage) mit deiner Ankunftszeit am nächsten Ziel voraus (gelb wenn es knapp wird, rot wenn du nach Einbruch der Dunkelheit ankämst).",

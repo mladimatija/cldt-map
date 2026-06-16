@@ -412,6 +412,8 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					tileCacheDone: 0,
 					tileCacheTotal: 0,
 					tileCacheError: null,
+					tileCacheFailed: 0,
+					tileCacheFailedUrls: [],
 					tileCacheMeta: null,
 					autoSync: config.autoSync,
 					predictivePrecache: config.predictivePrecache,
@@ -445,7 +447,14 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 						tilePrecacheAbortController?.abort();
 						const controller = new AbortController();
 						tilePrecacheAbortController = controller;
-						set({ tileCacheDownloading: true, tileCacheDone: 0, tileCacheTotal: urls.length, tileCacheError: null });
+						set({
+							tileCacheDownloading: true,
+							tileCacheDone: 0,
+							tileCacheTotal: urls.length,
+							tileCacheError: null,
+							tileCacheFailed: 0,
+							tileCacheFailedUrls: [],
+						});
 						const result = await precacheTiles(
 							urls,
 							(done, total) => set({ tileCacheDone: done, tileCacheTotal: total }),
@@ -473,6 +482,8 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 							set({
 								tileCacheMeta: meta,
 								tileCacheDownloading: false,
+								tileCacheFailed: result.failed,
+								tileCacheFailedUrls: result.failedUrls,
 								// A freshly cached corridor is never stale - dismiss the nag for
 								// both the manual "Re-download" path and the silent self-heal.
 								showStaleCacheNotification: false,
@@ -493,6 +504,38 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 						tilePrecacheAbortController?.abort();
 						tilePrecacheAbortController = null;
 						set({ tileCacheDownloading: false });
+					},
+
+					retryFailedTiles: async () => {
+						if (typeof window === 'undefined') return;
+						const failed = get().tileCacheFailedUrls;
+						if (failed.length === 0 || get().tileCacheDownloading) return;
+						tilePrecacheAbortController?.abort();
+						const controller = new AbortController();
+						tilePrecacheAbortController = controller;
+						set({
+							tileCacheDownloading: true,
+							tileCacheDone: 0,
+							tileCacheTotal: failed.length,
+							tileCacheError: null,
+						});
+						// Re-fetch only the misses; the live cache-count effect re-queries
+						// the real Cache Storage size once downloading flips back to false.
+						const result = await precacheTiles(
+							failed,
+							(done, total) => set({ tileCacheDone: done, tileCacheTotal: total }),
+							controller.signal,
+						);
+						tilePrecacheAbortController = null;
+						if (!result.cancelled) {
+							set({
+								tileCacheDownloading: false,
+								tileCacheFailed: result.failed,
+								tileCacheFailedUrls: result.failedUrls,
+							});
+						} else {
+							set({ tileCacheDownloading: false });
+						}
 					},
 
 					clearTileCacheForProvider: async (providerKey?: string) => {
@@ -560,7 +603,14 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 						tilePrecacheAbortController?.abort();
 						const controller = new AbortController();
 						tilePrecacheAbortController = controller;
-						set({ tileCacheDownloading: true, tileCacheDone: 0, tileCacheTotal: urls.length, tileCacheError: null });
+						set({
+							tileCacheDownloading: true,
+							tileCacheDone: 0,
+							tileCacheTotal: urls.length,
+							tileCacheError: null,
+							tileCacheFailed: 0,
+							tileCacheFailedUrls: [],
+						});
 						const result = await precacheTiles(
 							urls,
 							(done, total) => set({ tileCacheDone: done, tileCacheTotal: total }),
@@ -581,6 +631,8 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 							set({
 								tileCacheMeta: meta,
 								tileCacheDownloading: false,
+								tileCacheFailed: result.failed,
+								tileCacheFailedUrls: result.failedUrls,
 								...(result.done > 0 ? { tileDownloadCompleteToast: true } : {}),
 							});
 						} else {

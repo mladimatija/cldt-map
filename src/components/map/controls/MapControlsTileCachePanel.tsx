@@ -55,6 +55,7 @@ export function MapControlsTileCachePanel({ embedded = false }: MapControlsTileC
 	const tileCacheDone = useMapStore((s: MapStoreState) => s.tileCacheDone);
 	const tileCacheTotal = useMapStore((s: MapStoreState) => s.tileCacheTotal);
 	const tileCacheError = useMapStore((s: MapStoreState) => s.tileCacheError);
+	const tileCacheFailed = useMapStore((s: MapStoreState) => s.tileCacheFailed);
 	const tileCacheMeta = useMapStore((s: MapStoreState) => s.tileCacheMeta);
 	const autoSync = useMapStore((s: MapStoreState) => s.autoSync);
 	const predictivePrecache = useMapStore((s: MapStoreState) => s.predictivePrecache);
@@ -66,6 +67,7 @@ export function MapControlsTileCachePanel({ embedded = false }: MapControlsTileC
 	const gpxLoaded = useMapStore((s: MapStoreState) => s.gpxLoaded);
 	const startTileDownload = useMapStore((s: MapStoreState) => s.startTileDownload);
 	const cancelTileDownload = useMapStore((s: MapStoreState) => s.cancelTileDownload);
+	const retryFailedTiles = useMapStore((s: MapStoreState) => s.retryFailedTiles);
 	const clearTileCacheForProvider = useMapStore((s: MapStoreState) => s.clearTileCacheForProvider);
 	const loadTileCacheMeta = useMapStore((s: MapStoreState) => s.loadTileCacheMeta);
 	const setAutoSync = useMapStore((s: MapStoreState) => s.setAutoSync);
@@ -262,6 +264,27 @@ export function MapControlsTileCachePanel({ embedded = false }: MapControlsTileC
 									? t('providerNotCacheable')
 									: t('downloadError')}
 						</p>
+					)}
+
+					{/* Partial failure: some tiles could not be fetched (flaky wifi).
+					    Surface the honest miss count and offer a targeted retry instead
+					    of silently reporting the download as complete. */}
+					{!tileCacheDownloading && tileCacheFailed > 0 && (
+						<div className="space-y-1.5 rounded-md border border-amber-300 bg-amber-50 p-2 dark:border-amber-500/40 dark:bg-amber-500/10">
+							<div className="flex items-start gap-1 text-xs text-amber-700 dark:text-amber-300">
+								<IoWarningOutline aria-hidden className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+								<span role="status">{t('tilesFailed', { count: tileCacheFailed })}</span>
+							</div>
+							<Button
+								className="h-8 text-xs"
+								size="sm"
+								variant="mapControlOutline"
+								onClick={() => void retryFailedTiles()}
+							>
+								<IoRefreshOutline aria-hidden className="mr-1 h-3 w-3" />
+								{t('retryFailed')}
+							</Button>
+						</div>
 					)}
 
 					{/* Downloading: progress bar */}

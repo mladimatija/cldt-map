@@ -558,6 +558,8 @@
 		"zoomRange": "Zoom {min}-{max}",
 		"zoomRangeWithHighDetail": "Zoom {min}-{max} (uključuje visoku razlučivost unaprijed)",
 		"estimatedTiles": "~{count} pločica za preuzimanje",
+		"tilesFailed": "{count, plural, one {# pločica nije preuzeta} few {# pločice nisu preuzete} other {# pločica nije preuzeto}}",
+		"retryFailed": "Pokušaj ponovno",
 		"today": "danas",
 		"yesterday": "jučer",
 		"daysAgo": "prije {days} dana",
@@ -1300,7 +1302,7 @@
 		},
 		"offlineHeading": "Offline",
 		"offline": {
-			"precache": "Ploča predmemorije unaprijed preuzima koridor staze (pločice, mjesta, fotografije) za korištenje bez signala i sinkronizira se na Wi-Fi mreži. Predmemoriranje je ograničeno na Hrvatsku pa se sprema samo koridor unutar granice - pločice izvan zemlje nikad se ne preuzimaju, što drži pohranu pod kontrolom.",
+			"precache": "Ploča predmemorije unaprijed preuzima koridor staze (pločice, mjesta, fotografije) za korištenje bez signala i sinkronizira se na Wi-Fi mreži. Predmemoriranje je ograničeno na Hrvatsku pa se sprema samo koridor unutar granice - pločice izvan zemlje nikad se ne preuzimaju, što drži pohranu pod kontrolom. Ako neke pločice ne uspiju na slaboj vezi, ploča prikazuje koliko ih nedostaje i omogućuje da ponovno preuzmete samo njih.",
 			"gps": "GPS, ploča za hitne slučajeve i tvoj napredak rade potpuno offline čim je koridor spremljen.",
 			"offRouteAlert": "Uključi upozorenje o skretanju u Postavkama (zadano isključeno) za traku i vibraciju kad skreneš više od ~200 m s rute, s udaljenošću i smjerom natrag. Aktivira se tek kad GPS potvrdi da si na ruti; šuti kod kuće ili u vožnji i deaktivira se kad napustiš područje staze.",
 			"daylight": "Na stazi HUD s udaljenostima prikazuje oznaku dnevnog svjetla kad možda nećeš stići do sljedećeg doma, skloništa ili mjesta prije mraka - uspoređuje vrijeme zalaska sunca (kratko mrežno dohvaćanje vremena) s procjenom dolaska do najbližeg odredišta ispred (žuto kad je blizu, crveno kad bi stigao nakon mraka).",

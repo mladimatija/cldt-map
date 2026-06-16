@@ -558,6 +558,8 @@
 		"zoomRange": "Zoom {min}-{max}",
 		"zoomRangeWithHighDetail": "Zoom {min}-{max} (include alto dettaglio avanti)",
 		"estimatedTiles": "~{count} tessere da scaricare",
+		"tilesFailed": "{count, plural, one {# tessera non scaricata} other {# tessere non scaricate}}",
+		"retryFailed": "Riprova",
 		"today": "oggi",
 		"yesterday": "ieri",
 		"daysAgo": "{days} giorni fa",
@@ -1300,7 +1302,7 @@
 		},
 		"offlineHeading": "Offline",
 		"offline": {
-			"precache": "Il pannello cache pre-scarica il corridoio del sentiero (tile, luoghi, foto) per usarlo senza segnale e si risincronizza sul Wi-Fi. Il caching è limitato alla Croazia, quindi viene salvato solo il corridoio entro il confine - le tile fuori dal paese non vengono mai scaricate, mantenendo lo spazio sotto controllo.",
+			"precache": "Il pannello cache pre-scarica il corridoio del sentiero (tile, luoghi, foto) per usarlo senza segnale e si risincronizza sul Wi-Fi. Il caching è limitato alla Croazia, quindi viene salvato solo il corridoio entro il confine - le tile fuori dal paese non vengono mai scaricate, mantenendo lo spazio sotto controllo. Se alcune tile falliscono con una connessione debole, il pannello mostra quante mancano e consente di riscaricare solo quelle.",
 			"gps": "GPS, pannello di emergenza e progresso funzionano completamente offline una volta salvato il corridoio.",
 			"offRouteAlert": "Attiva l'avviso fuori percorso in Impostazioni (disattivato di default) per banner e vibrazione quando ti allontani più di ~200 m dal sentiero, con distanza e direzione di ritorno. Si arma solo dopo che il GPS conferma che sei sul sentiero; resta muto a casa o in auto e si disarma quando lasci l'area del sentiero.",
 			"daylight": "Sul sentiero l'HUD delle distanze mostra un indicatore di luce diurna quando potresti non raggiungere il prossimo rifugio, riparo o paese prima del buio - confronta l'orario del tramonto (una rapida ricerca meteo online) con il tuo tempo di arrivo al luogo più vicino davanti (ambra quando è al limite, rosso quando arriveresti dopo il buio).",

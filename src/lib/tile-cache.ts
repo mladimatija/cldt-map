@@ -47,8 +47,15 @@ export interface TileCacheMeta {
 }
 
 export interface PrecacheResult {
+	/** Tiles that fetched without a network-level error. */
 	done: number;
 	total: number;
+	/** Tiles that failed to fetch (offline / DNS / connection reset). With
+	 *  mode:'no-cors' only network-level failures are observable - HTTP error
+	 *  statuses resolve as opaque responses and cannot be distinguished. */
+	failed: number;
+	/** URLs of the failed tiles, so the caller can retry only those. */
+	failedUrls: string[];
 	cancelled: boolean;
 }
 
@@ -257,23 +264,33 @@ export async function precacheTiles(
 	signal: AbortSignal,
 ): Promise<PrecacheResult> {
 	const total = urls.length;
-	let done = 0;
+	let succeeded = 0;
+	let processed = 0;
+	const failedUrls: string[] = [];
 
 	for (let i = 0; i < urls.length; i += PRECACHE_BATCH_SIZE) {
 		if (signal.aborted) {
-			return { done, total, cancelled: true };
+			return { done: succeeded, total, failed: failedUrls.length, failedUrls, cancelled: true };
 		}
 
 		const batch = urls.slice(i, i + PRECACHE_BATCH_SIZE);
 
-		await Promise.allSettled(batch.map((url) => fetch(url, { mode: 'no-cors', signal }).catch(() => null)));
+		// A rejected fetch is a real network-level failure (offline, DNS,
+		// connection reset) - exactly the flaky trailhead-wifi case that used to
+		// be swallowed and reported as success. Count it and keep the URL so the
+		// caller can retry just the misses instead of re-downloading everything.
+		const settled = await Promise.allSettled(batch.map((url) => fetch(url, { mode: 'no-cors', signal })));
+		settled.forEach((res, idx) => {
+			if (res.status === 'fulfilled') succeeded++;
+			else failedUrls.push(batch[idx]);
+		});
 
-		done = Math.min(i + PRECACHE_BATCH_SIZE, total);
-		onProgress(done, total);
+		processed = Math.min(i + PRECACHE_BATCH_SIZE, total);
+		onProgress(processed, total);
 	}
 
 	onProgress(total, total);
-	return { done: total, total, cancelled: false };
+	return { done: succeeded, total, failed: failedUrls.length, failedUrls, cancelled: false };
 }
 
 /** Minimal trail-point shape used in ahead slices and predictive precache.

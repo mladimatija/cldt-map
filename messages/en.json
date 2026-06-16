@@ -558,6 +558,8 @@
 		"zoomRange": "Zoom {min}-{max}",
 		"zoomRangeWithHighDetail": "Zoom {min}-{max} (includes high detail ahead)",
 		"estimatedTiles": "~{count} tiles to download",
+		"tilesFailed": "{count, plural, one {# tile failed to download} other {# tiles failed to download}}",
+		"retryFailed": "Retry",
 		"today": "today",
 		"yesterday": "yesterday",
 		"daysAgo": "{days} days ago",
@@ -1300,7 +1302,7 @@
 		},
 		"offlineHeading": "Offline",
 		"offline": {
-			"precache": "The cache panel pre-downloads the trail corridor (tiles, places, photos) for use without signal, and re-syncs on Wi-Fi. Caching is clipped to Croatia, so only the corridor inside the border is stored - tiles outside the country are never downloaded, keeping storage in check.",
+			"precache": "The cache panel pre-downloads the trail corridor (tiles, places, photos) for use without signal, and re-syncs on Wi-Fi. Caching is clipped to Croatia, so only the corridor inside the border is stored - tiles outside the country are never downloaded, keeping storage in check. If some tiles fail on a weak connection, the panel shows how many missed and lets you retry just those.",
 			"gps": "GPS, the emergency panel, and your progress keep working fully offline once the corridor is cached.",
 			"offRouteAlert": "Enable the off-route alert in Settings (off by default) for a banner and vibration when you drift more than ~200 m from the trail, with distance and bearing back. Arms only after GPS confirms you are on the trail; stays silent at home or while driving, and disarms when you leave the trail area.",
 			"daylight": "On the trail, the distance HUD shows a daylight chip when you might not reach the next hut, shelter, or town before dark - it compares the day's sunset time (a quick online weather lookup) with your ETA to the nearest place ahead (amber when it is close, red when you would arrive after dark).",
