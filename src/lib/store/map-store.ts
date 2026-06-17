@@ -67,6 +67,7 @@ import {
 } from '../seasonal-status';
 import { newId, type JournalEntry } from '@/lib/user-waypoints';
 import { sanitizeWaterLog, waterLogToday, type WaterLogEntry, type WaterStatus } from '../water-log';
+import { normalizePoiNote, sanitizePoiNotes } from '../poi-notes';
 
 /** Module-level abort controller for tile downloads - one download at a time. */
 let tilePrecacheAbortController: AbortController | null = null;
@@ -1076,6 +1077,28 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 						});
 					},
 
+					poiNotes: {},
+					setPoiNote: (poiId: string, text: string): void => {
+						const normalized = normalizePoiNote(text);
+						set((s) => {
+							if (!normalized) {
+								if (!(poiId in s.poiNotes)) return {};
+								const next = { ...s.poiNotes };
+								delete next[poiId];
+								return { poiNotes: next };
+							}
+							return { poiNotes: { ...s.poiNotes, [poiId]: normalized } };
+						});
+					},
+					clearPoiNote: (poiId: string): void => {
+						set((s) => {
+							if (!(poiId in s.poiNotes)) return {};
+							const next = { ...s.poiNotes };
+							delete next[poiId];
+							return { poiNotes: next };
+						});
+					},
+
 					gradeAdjustedEta: config.gradeAdjustedEta,
 					setGradeAdjustedEta: (enabled: boolean): void => {
 						set({ gradeAdjustedEta: enabled });
@@ -1632,6 +1655,7 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 						hiddenWaypointCategories: [...state.hiddenWaypointCategories],
 						journalEntries: demoSnapshot ? demoSnapshot.journalEntries : state.journalEntries,
 						poiWaterLog: state.poiWaterLog,
+						poiNotes: state.poiNotes,
 						gradeAdjustedEta: state.gradeAdjustedEta,
 						sunsetProjection: state.sunsetProjection,
 						stagePlan: state.stagePlan,
@@ -1687,6 +1711,8 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					// Drop any malformed personal water-log entries so a corrupt
 					// localStorage value can never render garbage in a popup.
 					merged.poiWaterLog = sanitizeWaterLog((persistedState as { poiWaterLog?: unknown })?.poiWaterLog);
+					// Drop malformed/oversized personal POI notes on rehydrate.
+					merged.poiNotes = sanitizePoiNotes((persistedState as { poiNotes?: unknown })?.poiNotes);
 					// Clamp a persisted pace factor back into range (guards a hand-edited
 					// or out-of-range value from skewing every ETA).
 					merged.paceFactor = clampPaceFactor((persistedState as { paceFactor?: unknown })?.paceFactor as number);

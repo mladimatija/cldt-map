@@ -12,6 +12,7 @@ import { formatDistance, isSafeUrl } from '@/lib/utils';
 import { formatIsoDate } from '@/lib/date-format';
 import { escapeHtml } from '@/components/map/poi-marker-utils';
 import { WATER_STATUS_OPTIONS, type WaterLogEntry, type WaterStatus } from '@/lib/water-log';
+import { POI_NOTE_MAX_LENGTH } from '@/lib/poi-notes';
 
 export interface PopupBuildArgs {
 	direction: TrailDirection;
@@ -27,6 +28,8 @@ export interface PopupBuildArgs {
 	reportEmail?: string;
 	/** Today's date (YYYY-MM-DD) stamped into the report mail body. */
 	today?: string;
+	/** The hiker's personal on-device note for this POI, if any. */
+	poiNote?: string;
 }
 
 /** Labels for the personal water-status log block. Subset of PopupBuildLabels
@@ -40,7 +43,19 @@ export interface WaterLogPopupLabels {
 	waterLogClearLabel: string;
 }
 
-export interface PopupBuildLabels extends WaterLogPopupLabels {
+/** Labels for the personal POI note block. Subset of PopupBuildLabels so the
+ *  marker layer can re-render the block in place across view/edit states. */
+export interface PoiNotePopupLabels {
+	noteAdd: string;
+	noteEdit: string;
+	noteClear: string;
+	noteSave: string;
+	noteCancel: string;
+	notePlaceholder: string;
+	noteAriaLabel: string;
+}
+
+export interface PopupBuildLabels extends WaterLogPopupLabels, PoiNotePopupLabels {
 	distanceLabel: string;
 	offTrailLabel: string;
 	elevationLabel: string;
@@ -175,6 +190,32 @@ export function buildWaterLogInnerHtml(
 		`<div class="poi-popup__water-log-actions">${buttons}</div>`,
 	);
 	return lines.join('');
+}
+
+/** Builds the inner HTML of the personal POI-note block across its three
+ *  states: empty (an "add a note" link), view (the note text + edit/clear), and
+ *  edit (a prefilled textarea + save/cancel). The marker layer re-renders this
+ *  in place on each state transition, so it is a standalone pure builder. */
+export function buildPoiNoteInnerHtml(note: string | undefined, editing: boolean, labels: PoiNotePopupLabels): string {
+	if (editing) {
+		return (
+			`<textarea class="poi-popup__input poi-popup__note-input" data-poi-note-input rows="3" maxlength="${POI_NOTE_MAX_LENGTH}" placeholder="${escapeHtml(labels.notePlaceholder)}" aria-label="${escapeHtml(labels.noteAriaLabel)}">${escapeHtml(note ?? '')}</textarea>` +
+			`<div class="poi-popup__note-actions">` +
+			`<button type="button" class="poi-popup__open-maps" data-poi-note-action="save">${escapeHtml(labels.noteSave)}</button>` +
+			`<button type="button" class="poi-popup__share" data-poi-note-action="cancel">${escapeHtml(labels.noteCancel)}</button>` +
+			`</div>`
+		);
+	}
+	if (note) {
+		return (
+			`<p class="poi-popup__note-text">${escapeHtml(note)}</p>` +
+			`<div class="poi-popup__note-actions">` +
+			`<button type="button" class="poi-popup__note-link" data-poi-note-action="edit">${escapeHtml(labels.noteEdit)}</button>` +
+			`<button type="button" class="poi-popup__note-link poi-popup__note-link--danger" data-poi-note-action="clear">${escapeHtml(labels.noteClear)}</button>` +
+			`</div>`
+		);
+	}
+	return `<button type="button" class="poi-popup__note-link" data-poi-note-action="add">${escapeHtml(labels.noteAdd)}</button>`;
 }
 
 /** Builds the metadata rows (position, elevation, population, season, phone,
@@ -358,6 +399,11 @@ export function buildMetaRowsHtml(
 			: '';
 		lines.push(`<p class="poi-popup__provenance">${escapeHtml(sourceLabel)}${verified}</p>`);
 	}
+	// Personal note (any POI type). The marker layer wires the add/edit/clear/
+	// save lifecycle and re-renders this container in place across states.
+	lines.push(
+		`<div class="poi-popup__note" data-poi-note="${escapeHtml(poi.id)}">${buildPoiNoteInnerHtml(args.poiNote, false, labels)}</div>`,
+	);
 	return lines.join('');
 }
 

@@ -517,6 +517,14 @@ export interface MapStoreState {
 	/** Remove the personal observation for a water POI. */
 	clearPoiWaterStatus: (poiId: string) => void;
 
+	/** Personal free-text notes per curated POI id (on-device only, never
+	 *  uploaded). Shown/edited in the POI popup. Persisted. */
+	poiNotes: Record<string, string>;
+	/** Set (or, when the text is empty after trim, remove) a POI's note. */
+	setPoiNote: (poiId: string, text: string) => void;
+	/** Remove a POI's note. */
+	clearPoiNote: (poiId: string) => void;
+
 	gradeAdjustedEta: boolean;
 	setGradeAdjustedEta: (enabled: boolean) => void;
 

@@ -357,6 +357,53 @@
 	background: var(--poi-color-water-nonpotable);
 }
 
+/* Personal POI note block (any POI type). Three states: an "add a note" link,
+   the saved note text + edit/clear links, and an editing textarea + save/cancel
+   (which reuse the .poi-popup__open-maps / .poi-popup__share button styles). */
+.poi-popup__note {
+	margin-top: 6px;
+}
+.poi-popup__note-text {
+	margin: 0 0 4px;
+	white-space: pre-wrap;
+	overflow-wrap: anywhere;
+	font-size: 13px;
+	color: var(--text-primary, #1f2937);
+}
+.poi-popup__note-input {
+	width: 100%;
+	box-sizing: border-box;
+}
+.poi-popup__note-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	margin-top: 4px;
+}
+.poi-popup__note-link {
+	background: transparent;
+	border: 0;
+	padding: 0;
+	font-size: 11px;
+	color: var(--text-secondary, #64748b);
+	text-decoration: underline;
+	text-underline-offset: 2px;
+	cursor: pointer;
+	/* Colour fade only (not motion), so no prefers-reduced-motion carve-out. */
+	transition: color 200ms;
+}
+.poi-popup__note-link:hover {
+	color: var(--cldt-blue, #00a6c7);
+}
+.poi-popup__note-link:focus-visible {
+	outline: 2px solid var(--cldt-green);
+	outline-offset: 2px;
+	border-radius: 4px;
+}
+.poi-popup__note-link--danger:hover {
+	color: var(--cldt-red, #dc2626);
+}
+
 /* Low-prominence "Report an issue" link below the action buttons. Opens a
    prefilled mailto to the curator (account-free, user-sent). Only rendered when
    NEXT_PUBLIC_CURATOR_REPORT_EMAIL is configured. */

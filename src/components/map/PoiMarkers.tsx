@@ -29,7 +29,9 @@ import {
 } from '@/components/map/poi-marker-utils';
 import {
 	buildPopupHtml,
+	buildPoiNoteInnerHtml,
 	buildWaterLogInnerHtml,
+	type PoiNotePopupLabels,
 	type PopupBuildLabels,
 	type WaterLogPopupLabels,
 } from '@/components/map/poi-popup-builders';
@@ -198,6 +200,13 @@ export function PoiMarkers(): null {
 			waterLogLow: t('waterLog.low'),
 			waterLogDry: t('waterLog.dry'),
 			waterLogClearLabel: t('waterLog.clear'),
+			noteAdd: t('note.add'),
+			noteEdit: t('note.edit'),
+			noteClear: t('note.clear'),
+			noteSave: t('note.save'),
+			noteCancel: t('note.cancel'),
+			notePlaceholder: t('note.placeholder'),
+			noteAriaLabel: t('note.ariaLabel'),
 			resupplyHeading: t('resupply.heading'),
 			resupplyNone: t('resupply.none'),
 			// Raw templates: the popup builder substitutes {date}/{count} itself
@@ -313,6 +322,7 @@ export function PoiMarkers(): null {
 							// render path, so subscription-based hooks are not available.
 							isStarred: getActiveStarredPoiIds(useMapStore.getState()).has(poi.id),
 							waterLog: useMapStore.getState().poiWaterLog[poi.id],
+							poiNote: useMapStore.getState().poiNotes[poi.id],
 							reportEmail: config.curatorReportEmail || undefined,
 							// Stamped when the popup opens (this factory is Leaflet's lazy
 							// content callback, not React render), so the report mail carries
@@ -345,6 +355,7 @@ export function PoiMarkers(): null {
 					wireGalleryButtons(marker, poi, openLightbox);
 					wireOpenInMapsButton(marker, poi);
 					wireWaterLogButtons(marker, poi, popupLabels, locale);
+					wirePoiNoteButtons(marker, poi, popupLabels);
 					wireAddAsWaypointButton(marker, poi, poiDisplayName(poi, locale));
 					wireShareButton(marker, poi, popupLabels.shareLink);
 					wireStarButton(marker, poi, {
@@ -617,6 +628,53 @@ function wireWaterLogButtons(marker: L.Marker, poi: Poi, labels: WaterLogPopupLa
 			store.setPoiWaterStatus(poi.id, status);
 		} else {
 			store.clearPoiWaterStatus(poi.id);
+		}
+		render();
+	});
+}
+
+/**
+ * Wires the personal POI-note block (any POI type). One delegated click listener
+ * on the container drives the add/edit/clear/save/cancel lifecycle: editing
+ * state is a local flag, and the container's inner HTML is re-rendered from the
+ * shared builder on each transition (only on explicit transitions, so typing in
+ * the textarea is never interrupted). Save reads the textarea value before the
+ * re-render; an empty value removes the note via the store's setPoiNote.
+ *
+ * Like wireWaterLogButtons, no store subscription is needed: the popup is the
+ * sole mutator of a POI's note.
+ */
+function wirePoiNoteButtons(marker: L.Marker, poi: Poi, labels: PoiNotePopupLabels): void {
+	const popup = marker.getPopup();
+	if (!popup) return;
+	const el = popup.getElement();
+	if (!el) return;
+	const container = el.querySelector<HTMLElement>(`[data-poi-note="${cssEscape(poi.id)}"]`);
+	if (!container || container.dataset.wired === '1') return;
+	container.dataset.wired = '1';
+	let editing = false;
+	const render = (): void => {
+		container.innerHTML = buildPoiNoteInnerHtml(useMapStore.getState().poiNotes[poi.id], editing, labels);
+		if (editing) container.querySelector<HTMLTextAreaElement>('[data-poi-note-input]')?.focus();
+		popup.update();
+	};
+	container.addEventListener('click', (e) => {
+		const target = (e.target as HTMLElement | null)?.closest('[data-poi-note-action]');
+		if (!target) return;
+		e.preventDefault();
+		const action = target.getAttribute('data-poi-note-action');
+		const store = useMapStore.getState();
+		if (action === 'add' || action === 'edit') {
+			editing = true;
+		} else if (action === 'cancel') {
+			editing = false;
+		} else if (action === 'clear') {
+			store.clearPoiNote(poi.id);
+			editing = false;
+		} else if (action === 'save') {
+			const textarea = container.querySelector<HTMLTextAreaElement>('[data-poi-note-input]');
+			store.setPoiNote(poi.id, textarea?.value ?? '');
+			editing = false;
 		}
 		render();
 	});
