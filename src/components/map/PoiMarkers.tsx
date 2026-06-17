@@ -557,9 +557,11 @@ async function hydrateWikipediaSnippet(marker: L.Marker, poi: Poi, sourceLabel: 
 		}
 	}
 
-	// Leaflet sizes popups at bind time; ask it to recompute now that we
-	// added content so it doesn't end up scrollable / cut off.
-	popup.update();
+	// Leaflet sizes popups at bind time; reflow now that we added content so it
+	// doesn't end up scrollable / cut off. Reflow (not popup.update()) because
+	// update() would re-run the content factory and discard the snippet we just
+	// injected here.
+	reflowPopupContent(popup);
 }
 
 /** Escapes a string for safe use in a CSS attribute selector. Uses the
@@ -569,6 +571,33 @@ function cssEscape(s: string): string {
 	// CSS.escape handles all special characters including ], ^, $, *, ~, |,
 	// whitespace, and anything else that would break an attribute selector.
 	return (CSS as { escape: (v: string) => string }).escape(s);
+}
+
+/**
+ * Re-measures and re-anchors an OPEN popup after its inner HTML was edited in
+ * place, WITHOUT rebuilding its content. Leaflet's public `popup.update()`
+ * re-invokes the bound content factory (markers bind a `() => buildPopupHtml`
+ * function, and Leaflet calls function content on every update), which would wipe
+ * the targeted in-place edit, the delegated click listeners wired on popupopen,
+ * and any transient UI state (e.g. the note editor's open/closed mode). This
+ * mirrors Leaflet's own DivOverlay.update() - size, position, pan - minus that
+ * content rebuild. Underscore internals are used because Leaflet exposes no
+ * public reflow-only method; guarded with optional calls and pinned to 1.9.4.
+ */
+function reflowPopupContent(popup: L.Popup): void {
+	const internals = popup as unknown as {
+		_map?: unknown;
+		_container?: HTMLElement;
+		_updateLayout?: () => void;
+		_updatePosition?: () => void;
+		_adjustPan?: () => void;
+	};
+	if (!internals._map || !internals._container) return;
+	internals._container.style.visibility = 'hidden';
+	internals._updateLayout?.();
+	internals._updatePosition?.();
+	internals._container.style.visibility = '';
+	internals._adjustPan?.();
 }
 
 /**
@@ -616,12 +645,17 @@ function wireWaterLogButtons(marker: L.Marker, poi: Poi, labels: WaterLogPopupLa
 	container.dataset.wired = '1';
 	const render = (): void => {
 		container.innerHTML = buildWaterLogInnerHtml(useMapStore.getState().poiWaterLog[poi.id], labels, locale);
-		popup.update();
+		reflowPopupContent(popup);
 	};
 	container.addEventListener('click', (e) => {
 		const target = (e.target as HTMLElement | null)?.closest('[data-water-status],[data-poi-water-log-clear]');
 		if (!target) return;
+		// render() below swaps container.innerHTML, detaching this target before
+		// Leaflet's map-level click handler can read the popup's click-disable flag
+		// off it - which would otherwise be treated as a map click and close the
+		// popup. Stop the click here so it never reaches the map.
 		e.preventDefault();
+		e.stopPropagation();
 		const status = target.getAttribute('data-water-status');
 		const store = useMapStore.getState();
 		if (status !== null && isWaterStatus(status)) {
@@ -656,12 +690,17 @@ function wirePoiNoteButtons(marker: L.Marker, poi: Poi, labels: PoiNotePopupLabe
 	const render = (): void => {
 		container.innerHTML = buildPoiNoteInnerHtml(useMapStore.getState().poiNotes[poi.id], editing, labels);
 		if (editing) container.querySelector<HTMLTextAreaElement>('[data-poi-note-input]')?.focus();
-		popup.update();
+		reflowPopupContent(popup);
 	};
 	container.addEventListener('click', (e) => {
 		const target = (e.target as HTMLElement | null)?.closest('[data-poi-note-action]');
 		if (!target) return;
+		// render() below swaps container.innerHTML, detaching this target before
+		// Leaflet's map-level click handler can read the popup's click-disable flag
+		// off it - which would otherwise be treated as a map click and close the
+		// popup. Stop the click here so it never reaches the map.
 		e.preventDefault();
+		e.stopPropagation();
 		const action = target.getAttribute('data-poi-note-action');
 		const store = useMapStore.getState();
 		if (action === 'add' || action === 'edit') {
