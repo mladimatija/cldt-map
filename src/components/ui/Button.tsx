@@ -52,10 +52,13 @@ const buttonVariants = cva(
 				mapOption: `${MAP_OPTION_GRID} border-l-4 border-l-transparent ${MAP_OPTION_LEFT_ACCENT}`,
 				/** Base map selector list option (selected). */
 				mapOptionActive: `${MAP_OPTION_GRID} border-l-4 border-l-cldt-green bg-cldt-light-blue dark:bg-cldt-light-blue/30`,
-				/** Map controls: outline primary action (e.g., Copy link, Go). */
-				mapControlOutline: `map-control-btn-outline dark:bg-transparent dark:text-white dark:hover:text-cldt-green text-cldt-blue ${CLDT_HOVER_FOCUS} focus-visible:ring-cldt-green ${BORDER_WHITE} text-sm transition-all focus-visible:ring-1`,
-				/** Map controls: outline secondary action (e.g., Cancel). */
-				mapControlOutlineSecondary: `focus-visible:ring-1 text-sm ${SECONDARY_OUTLINE_BASE}`,
+				/** Map controls: outline primary action (e.g., Copy link, Go). Self-padded
+				 *  (px-3 py-1.5) so it never renders flush when used without a `size` prop;
+				 *  callers that pass `size` or padding utilities override via tailwind-merge. */
+				mapControlOutline: `map-control-btn-outline px-3 py-1.5 dark:bg-transparent dark:text-white dark:hover:text-cldt-green text-cldt-blue ${CLDT_HOVER_FOCUS} focus-visible:ring-cldt-green ${BORDER_WHITE} text-sm transition-all focus-visible:ring-1`,
+				/** Map controls: outline secondary action (e.g., Cancel). Self-padded to
+				 *  match `mapControlOutline`; overridable by `size` or padding utilities. */
+				mapControlOutlineSecondary: `px-3 py-1.5 focus-visible:ring-1 text-sm ${SECONDARY_OUTLINE_BASE}`,
 				/** Buttons inside map tooltips/banners (primary). */
 				mapTooltipPrimary: `!text-cldt-blue ${CLDT_HOVER_FOCUS} ${BORDER_WHITE} px-4 py-2 font-medium transition-all`,
 				/** Buttons inside map tooltips/banners (secondary). */
