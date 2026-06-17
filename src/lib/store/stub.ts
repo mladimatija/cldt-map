@@ -151,6 +151,8 @@ export function createMapStoreStub(): MapStoreState {
 		setOpenPanel: noop,
 		togglePanel: noop,
 		closePanel: noop,
+		onboardingSeen: false,
+		markOnboardingSeen: noop,
 		requestRawGpxData: noopNull,
 		processTrailData: () => {},
 

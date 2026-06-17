@@ -105,6 +105,7 @@ export default function AboutPage(): React.ReactNode {
 							<li className="mb-2">{t('mapFeaturesList.waypointsJournal')}</li>
 							<li className="mb-2">{t('mapFeaturesList.resupply')}</li>
 							<li className="mb-2">{t('mapFeaturesList.pushAlerts')}</li>
+							<li className="mb-2">{t('mapFeaturesList.welcomeCard')}</li>
 							<li className="mb-2">{t('mapFeaturesList.helpPanel')}</li>
 							<li className="mb-2">{t('mapFeaturesList.accessibility')}</li>
 						</ul>

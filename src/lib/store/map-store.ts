@@ -395,6 +395,9 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					togglePanel: (id: string) => set((s: MapStoreState) => ({ openPanel: s.openPanel === id ? null : id })),
 					closePanel: () => set({ openPanel: null }),
 
+					onboardingSeen: false,
+					markOnboardingSeen: () => set({ onboardingSeen: true }),
+
 					// ── Offline / tile cache ───────────────────────────────────────────
 					isOffline: false,
 					setIsOffline: (offline: boolean) => set({ isOffline: offline }),
@@ -1614,6 +1617,7 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 						offlineHighDetailAheadEnabled: state.offlineHighDetailAheadEnabled,
 						walkingPaceKmh: state.walkingPaceKmh,
 						paceFactor: state.paceFactor,
+						onboardingSeen: state.onboardingSeen,
 						packBaseWeightKg: state.packBaseWeightKg,
 						waterConsumptionLph: state.waterConsumptionLph,
 						foodConsumptionKgPerDay: state.foodConsumptionKgPerDay,

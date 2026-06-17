@@ -2,6 +2,7 @@
 import { setRequestLocale, getTranslations } from 'next-intl/server';
 import { Layout } from '@/components/layout/Layout';
 import MapWrapper from '@/components/map/MapWrapper';
+import OnboardingWelcomeCard from '@/components/common/OnboardingWelcomeCard';
 import { siteMetadata } from '@/lib/metadata';
 
 type Props = {
@@ -17,6 +18,7 @@ export default async function HomePage({ params }: Props): Promise<React.ReactEl
 		<Layout>
 			<h1 className="sr-only">{t('srTitle', { companyName: siteMetadata.companyName })}</h1>
 			<MapWrapper locale={locale} />
+			<OnboardingWelcomeCard />
 		</Layout>
 	);
 }

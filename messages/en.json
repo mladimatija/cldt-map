@@ -81,7 +81,8 @@
 			"waypointsJournal": "Custom waypoints & trip journal - long-press the map for personal markers with notes; dated journal entries can attach a ruler stretch or link an imported GPX segment (map preview, View and overflow menu for show on map / GPX / zip bundle). A one-tap Log today pre-fills a dated entry with your current km, elevation, and section. Markdown and share URLs round-trip track refs; all stored on your device",
 			"resupply": "Town resupply guides - shops, pharmacies, ATMs, post and bus info from OpenStreetMap in town popups, with per-stage resupply chips in the planner",
 			"pushAlerts": "Trail alert notifications - optional browser push when a new seasonal warning or trail condition notice is published, even with the app closed; no account needed",
-			"accessibility": "Accessibility - large touch targets and an adjustable UI text size (Default / Large / Larger) that scales the control panels and overlays without resizing the map. The map is a labelled, keyboard-focusable region (arrow keys pan, +/- zoom) with a screen-reader orientation message on focus, and a keyboard trail scrubber above the elevation chart that announces distance, elevation, grade, section boundaries, and the nearest usable water ahead through a live region. The elevation profile is exposed as a captioned figure with a sampled distance/elevation table, and the colour trail styles show a labelled legend so meaning is not carried by colour alone"
+			"accessibility": "Accessibility - large touch targets and an adjustable UI text size (Default / Large / Larger) that scales the control panels and overlays without resizing the map. The map is a labelled, keyboard-focusable region (arrow keys pan, +/- zoom) with a screen-reader orientation message on focus, and a keyboard trail scrubber above the elevation chart that announces distance, elevation, grade, section boundaries, and the nearest usable water ahead through a live region. The elevation profile is exposed as a captioned figure with a sampled distance/elevation table, and the colour trail styles show a labelled legend so meaning is not carried by colour alone",
+			"welcomeCard": "First-run welcome - a one-time, dismissible card on your first visit introduces the app and offers quick launchers into the main panels plus a link to the live demo; shown once, never during a demo, fully keyboard-accessible"
 		},
 		"dataAttribution": "Data & attribution",
 		"dataAttributionDesc": "Trail data is provided by the Udruga Long Distance Trail Hrvatska (LDTH) organization. Map tiles come from OpenStreetMap, OpenTopoMap, OpenHikingMap (openmaps.fr), CyclOSM, Waymarked Trails, and other providers. Croatian topographic maps are from the State Geodetic Administration (DGU). Weather data comes from DHMZ (Croatian Met Service) and Open-Meteo. Radar tiles are provided by RainViewer. Seasonal trail status, hazard warnings, and mountain rescue station data are sourced from HGSS (Croatian Mountain Rescue Service), HPS (Croatian Mountaineering Federation), and the national park authorities (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) together with Park prirode Velebit. Data displayed on this site may not reflect the latest conditions. When in doubt, always verify with the official sources.",
@@ -1370,5 +1371,18 @@
 		"mapLayersHeading": "Show on map",
 		"mapLayersPlaceholder": "Choose categories",
 		"hiddenOnMap": "hidden on map"
+	},
+	"onboarding": {
+		"title": "Welcome to the CLDT map",
+		"body": "An offline-first map and trail data-book for the 2,200 km Croatian Long Distance Trail. Everything you add stays on your device - no account, nothing uploaded.",
+		"launch": {
+			"plan": "Plan your days",
+			"places": "Browse places & water",
+			"offline": "Download offline maps",
+			"help": "Tips & gestures"
+		},
+		"demo": "Watch the live demo",
+		"gotIt": "Got it",
+		"dismiss": "Close"
 	}
 }

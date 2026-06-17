@@ -81,7 +81,8 @@
 			"waypointsJournal": "Punti personali e diario di viaggio - tieni premuto sulla mappa per segnaposti con note; le voci datate possono allegare un tratto del righello o collegare un segmento GPX importato (anteprima sulla mappa, Visualizza e menu overflow per mostra sulla mappa / GPX / pacchetto zip). Un tocco su Registra oggi precompila una voce con il tuo km, quota e sezione attuali. Markdown e link di condivisione conservano i riferimenti alla traccia; tutto resta sul dispositivo",
 			"resupply": "Guide al rifornimento - negozi, farmacie, bancomat, posta e autobus da OpenStreetMap nei popup delle città, con indicatori di rifornimento per tappa nel planner",
 			"pushAlerts": "Notifiche di avviso - push opzionali del browser quando viene pubblicato un nuovo avviso stagionale o una notifica sulle condizioni del sentiero, anche ad app chiusa; nessun account",
-			"accessibility": "Accessibilità - bersagli touch grandi e una dimensione del testo dell'interfaccia regolabile (predefinita / grande / più grande) che ingrandisce i pannelli di controllo e gli overlay senza ridimensionare la mappa. La mappa è una regione etichettata e focalizzabile da tastiera (le frecce spostano, +/- zooma) con un messaggio di orientamento per screen reader al focus e un cursore del sentiero sopra il grafico del dislivello che annuncia distanza, quota, pendenza, confini di sezione e la sorgente d'acqua utilizzabile più vicina davanti tramite una live region. Il profilo altimetrico è esposto come figura con didascalia e una tabella campionata distanza/altitudine, e gli stili colorati del sentiero mostrano una legenda etichettata così il significato non è veicolato dal solo colore"
+			"accessibility": "Accessibilità - bersagli touch grandi e una dimensione del testo dell'interfaccia regolabile (predefinita / grande / più grande) che ingrandisce i pannelli di controllo e gli overlay senza ridimensionare la mappa. La mappa è una regione etichettata e focalizzabile da tastiera (le frecce spostano, +/- zooma) con un messaggio di orientamento per screen reader al focus e un cursore del sentiero sopra il grafico del dislivello che annuncia distanza, quota, pendenza, confini di sezione e la sorgente d'acqua utilizzabile più vicina davanti tramite una live region. Il profilo altimetrico è esposto come figura con didascalia e una tabella campionata distanza/altitudine, e gli stili colorati del sentiero mostrano una legenda etichettata così il significato non è veicolato dal solo colore",
+			"welcomeCard": "Benvenuto al primo avvio - una scheda monouso e chiudibile alla prima visita presenta l'app e offre scorciatoie verso i pannelli principali e un link alla demo dal vivo; mostrata una volta, mai durante una demo, completamente accessibile da tastiera"
 		},
 		"dataAttribution": "Dati e attribuzioni",
 		"dataAttributionDesc": "I dati del sentiero sono forniti dall'organizzazione Udruga Long Distance Trail Hrvatska (LDTH). Le tessere mappa provengono da OpenStreetMap, OpenTopoMap, OpenHikingMap (openmaps.fr), Waymarked Trails, CyclOSM e altri provider. Le mappe topografiche croate provengono dall'Amministrazione Geodetica Statale (DGU). I dati meteo provengono da DHMZ (Servizio Meteorologico Croato) e Open-Meteo. Le tessere radar sono fornite da RainViewer. Stato stagionale del sentiero, avvisi di pericolo e dati delle stazioni di soccorso alpino provengono da HGSS (Servizio croato di soccorso in montagna), HPS (Federazione croata di alpinismo) e dalle autorità dei parchi nazionali (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) e Parco naturale Velebit. I dati visualizzati su questo sito potrebbero non riflettere le condizioni più recenti. In caso di dubbio, verificare sempre le fonti ufficiali.",
@@ -1370,5 +1371,18 @@
 		"mapLayersHeading": "Mostra sulla mappa",
 		"mapLayersPlaceholder": "Scegli categorie",
 		"hiddenOnMap": "nascosto sulla mappa"
+	},
+	"onboarding": {
+		"title": "Benvenuto sulla mappa CLDT",
+		"body": "Una mappa offline-first e una guida per i 2.200 km del Sentiero a Lunga Percorrenza Croato. Tutto ciò che aggiungi resta sul tuo dispositivo - nessun account, niente viene caricato.",
+		"launch": {
+			"plan": "Pianifica le tappe",
+			"places": "Esplora luoghi e acqua",
+			"offline": "Scarica mappe offline",
+			"help": "Consigli e gesti"
+		},
+		"demo": "Guarda la demo dal vivo",
+		"gotIt": "Ho capito",
+		"dismiss": "Chiudi"
 	}
 }

@@ -372,6 +372,11 @@ export interface MapStoreState {
 	togglePanel: (id: string) => void;
 	closePanel: () => void;
 
+	/** True once the first-run welcome card has been dismissed or acted on.
+	 *  Persisted so the card shows only on the very first visit. */
+	onboardingSeen: boolean;
+	markOnboardingSeen: () => void;
+
 	// ── Offline / tile cache ─────────────────────────────────────────────────
 	isOffline: boolean;
 	setIsOffline: (offline: boolean) => void;
