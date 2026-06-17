@@ -190,6 +190,8 @@ export function createMapStoreStub(): MapStoreState {
 		clearTileDownloadCompleteToast: noop,
 		walkingPaceKmh: 4,
 		setWalkingPaceKmh: noop,
+		paceFactor: 1,
+		setPaceFactor: noop,
 		packBaseWeightKg: null,
 		setPackBaseWeightKg: noop,
 		waterConsumptionLph: 0.6,

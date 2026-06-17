@@ -10,6 +10,9 @@ import {
 	displayToLph,
 	kgToDisplay,
 	lphToDisplay,
+	PACE_FACTOR_DEFAULT,
+	PACE_FACTOR_MAX,
+	PACE_FACTOR_MIN,
 	PACK_ETA_REFERENCE_KG,
 	formatWeight,
 	volumeUnitLabel,
@@ -144,6 +147,8 @@ export function MapControlsSettingsPanel({
 	const setShowDistanceMarkers = useMapStore((state: MapStoreState) => state.setShowDistanceMarkers);
 	const walkingPaceKmh = useMapStore((state: MapStoreState) => state.walkingPaceKmh);
 	const setWalkingPaceKmh = useMapStore((state: MapStoreState) => state.setWalkingPaceKmh);
+	const paceFactor = useMapStore((state: MapStoreState) => state.paceFactor);
+	const setPaceFactor = useMapStore((state: MapStoreState) => state.setPaceFactor);
 	const gradeAdjustedEta = useMapStore((state: MapStoreState) => state.gradeAdjustedEta);
 	const setGradeAdjustedEta = useMapStore((state: MapStoreState) => state.setGradeAdjustedEta);
 	const sunsetProjection = useMapStore((state: MapStoreState) => state.sunsetProjection);
@@ -539,6 +544,7 @@ export function MapControlsSettingsPanel({
 										)}
 									</div>
 									<input
+										aria-valuetext={formatPace(walkingPaceKmh, units)}
 										className="precision-slider w-full min-w-0"
 										id="walking-pace-slider"
 										max={10}
@@ -553,6 +559,46 @@ export function MapControlsSettingsPanel({
 											min: formatPace(1, units),
 											max: formatPace(10, units),
 											default: formatPace(4, units),
+										})}
+									</p>
+								</div>
+
+								<div className="flex flex-col gap-1">
+									<div className="flex items-center gap-2">
+										<label
+											className="text-sm text-gray-700 dark:text-[var(--text-primary)]"
+											htmlFor="pace-factor-slider"
+										>
+											{t('paceFactor')}
+										</label>
+										<span className="text-cldt-blue ml-auto shrink-0 text-sm font-semibold tabular-nums">
+											{`${Math.round(paceFactor * 100)}%`}
+										</span>
+										{paceFactor !== PACE_FACTOR_DEFAULT && (
+											<MapControlIconButton
+												aria-label={t('paceFactorReset')}
+												variant="mapControlOutlineSecondary"
+												onClick={() => setPaceFactor(PACE_FACTOR_DEFAULT)}
+											>
+												<IoRefreshOutline aria-hidden className="h-3.5 w-3.5" />
+											</MapControlIconButton>
+										)}
+									</div>
+									<input
+										aria-valuetext={`${Math.round(paceFactor * 100)}%`}
+										className="precision-slider w-full min-w-0"
+										id="pace-factor-slider"
+										max={PACE_FACTOR_MAX}
+										min={PACE_FACTOR_MIN}
+										step={0.05}
+										type="range"
+										value={paceFactor}
+										onChange={(e) => setPaceFactor(Number(e.target.value))}
+									/>
+									<p className="m-0 text-xs text-gray-500 dark:text-[var(--text-secondary)]">
+										{t('paceFactorHint', {
+											min: `${Math.round(PACE_FACTOR_MIN * 100)}%`,
+											max: `${Math.round(PACE_FACTOR_MAX * 100)}%`,
 										})}
 									</p>
 								</div>

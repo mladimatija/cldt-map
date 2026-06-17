@@ -47,7 +47,7 @@
 			"trail": "Klicke auf die Route oder das Höhenprofil, um Entfernung und Höhe an jedem Punkt anzuzeigen",
 			"elevation": "Höhenprofil-Diagramm; Hover zeigt den Punkt auf der Karte, Klick fixiert einen Punkt; bei aktivem Trail-Stil Untergrund oder SAC zeigt der Hover-Tooltip auch das OSM-Untergrund- oder Schwierigkeitslabel an diesem km",
 			"ruler": "Entfernungslineal zum Messen von Streckenabschnitten",
-			"distanceEtaOverlay": "Entfernungs- und ETA-Overlay - Live-HUD mit zurückgelegter und verbleibender Distanz, verbleibendem Höhengewinn/-verlust und ETA bis Trailende oder aktivem Linealabschnitt",
+			"distanceEtaOverlay": "Entfernungs- und ETA-Overlay - Live-HUD mit zurückgelegter und verbleibender Distanz, verbleibendem Höhengewinn/-verlust und ETA bis Trailende oder aktivem Linealabschnitt; eine persönliche Tempoanpassung in den Einstellungen (70-140%) skaliert jede ETA auf dein echtes Tempo",
 			"layers": "Mehrere Kartenebenen (Standard, Topo, Wandern, Satellit, Gelände, Radfahren, Kroatien Topo, Dunkel), plus optionales Waymarked-Trails-Overlay mit OSM-Wanderrouten (Einstellungen, nur online)",
 			"location": "Optionale Standortverfolgung zur Anzeige der Position auf dem Trail",
 			"share": "Links tragen deine vollständige Kartenansicht - Position, Richtung, Einheiten, Ebenen, Linealbereich, Etappenplan, Wegpunkte und Tagebuch. Ein Symbolleisten-Button für Teilen und Export: QR-Code und Link kopieren bei GPS oder Pin, plus Druck/PNG-Export; Beschriftung passt sich an (Teilen & exportieren vs. Drucken & exportieren). Kompakte Kurzlinks (/s/'{'code'}') wenn online und in Einstellungen aktiviert",
@@ -297,7 +297,10 @@
 		"waymarkedLabel": "Overlay markierter Wanderwege",
 		"waymarkedHint": "Zeichnet OSM-Wanderrouten (Waymarked Trails) über die Basiskarte. Nur online.",
 		"shareShortLinksLabel": "Kurzlinks zum Teilen verwenden",
-		"shareShortLinksHint": "Kopiert einen kompakten Link mit derselben Kartenansicht. Zum Erstellen ist eine Internetverbindung nötig."
+		"shareShortLinksHint": "Kopiert einen kompakten Link mit derselben Kartenansicht. Zum Erstellen ist eine Internetverbindung nötig.",
+		"paceFactor": "Persönliche Tempoanpassung",
+		"paceFactorHint": "Skaliert jede ETA auf dein echtes Tempo. {min} - {max}; 100% behält dein eingestelltes Tempo, höher ist schneller, niedriger ist langsamer",
+		"paceFactorReset": "Tempoanpassung auf Standard zurücksetzen"
 	},
 	"baseMapSelector": {
 		"standard": "Standard",

@@ -2,6 +2,7 @@ import type { TrailDirection, UnitSystem } from './types';
 import { BaseMapProvider } from './services/base-map-provider';
 import { DEFAULT_POI_TYPES } from './poi-types';
 import { isUiTextScale, type UiTextScale } from './ui-text-scale';
+import { clampPaceFactor } from './pack-weight';
 
 /**
  * Centralized application defaults.
@@ -147,6 +148,10 @@ export const config = {
 
 	/** Walking pace in km/h used for passage-time estimates. */
 	walkingPaceKmh: envFloat('NEXT_PUBLIC_DEFAULT_WALKING_PACE_KMH', 4),
+
+	/** Personal pace adjustment factor (1 = no change, >1 = faster, <1 = slower).
+	 *  Scales every ETA; clamped to the valid range. */
+	paceFactor: clampPaceFactor(envFloat('NEXT_PUBLIC_DEFAULT_PACE_FACTOR', 1)),
 
 	/** Apply Tobler-style grade adjustment to ETA estimates by default. */
 	gradeAdjustedEta: envBool('NEXT_PUBLIC_DEFAULT_GRADE_ADJUSTED_ETA', true),

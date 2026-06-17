@@ -435,6 +435,11 @@ export interface MapStoreState {
 	walkingPaceKmh: number;
 	setWalkingPaceKmh: (pace: number) => void;
 
+	/** Personal pace adjustment factor (1 = no change). Scales every ETA via
+	 *  the shared pace chokepoint; clamped to the valid range. Persisted. */
+	paceFactor: number;
+	setPaceFactor: (factor: number) => void;
+
 	/** Pack base weight in kg (canonical metric; converted at the UI
 	 *  boundary). Null disables every pack-weight surface. Persisted. */
 	packBaseWeightKg: number | null;

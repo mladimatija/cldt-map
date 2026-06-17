@@ -47,7 +47,7 @@
 			"trail": "Click the route or elevation chart to see distance and elevation at any point",
 			"elevation": "Elevation profile chart; hover to preview on the map, click to pin a point; with Surface or SAC trail style active, the hover tooltip also shows the OSM surface or difficulty label at that km",
 			"ruler": "Distance ruler to measure segments between two points",
-			"distanceEtaOverlay": "Distance & ETA overlay - live HUD chip with distance traveled and remaining, elevation gain/loss remaining, and ETA to trail end or the active ruler section",
+			"distanceEtaOverlay": "Distance & ETA overlay - live HUD chip with distance traveled and remaining, elevation gain/loss remaining, and ETA to trail end or the active ruler section; a personal pace adjustment in Settings (70-140%) scales every ETA to match your real pace",
 			"layers": "Multiple map layers (standard, topo, hiking, satellite, terrain, cycling, Croatia Topo, dark), plus an optional Waymarked Trails overlay of OSM hiking routes (Settings toggle, online only)",
 			"location": "Optional location tracking to see your position on the trail",
 			"share": "Share links carry your full map view - position, direction, units, layers, ruler range, stage plan, waypoints, and journal. One toolbar button covers share and export: QR code and copy link when GPS or a pin is available, plus print/PNG export; toolbar label adapts (Share & export map vs Print & export map). Compact short links (/s/'{'code'}') apply when online and enabled in Settings",
@@ -297,7 +297,10 @@
 		"waymarkedLabel": "Marked hiking routes overlay",
 		"waymarkedHint": "Draws OSM hiking route relations (Waymarked Trails) over the base map. Online only.",
 		"shareShortLinksLabel": "Use short share links",
-		"shareShortLinksHint": "Copies a compact link that opens the same map view. Requires an internet connection to create."
+		"shareShortLinksHint": "Copies a compact link that opens the same map view. Requires an internet connection to create.",
+		"paceFactor": "Personal pace adjustment",
+		"paceFactorHint": "Scales every ETA to match your real pace. {min} - {max}; 100% keeps your set pace, higher is faster, lower is slower",
+		"paceFactorReset": "Reset pace adjustment to default"
 	},
 	"baseMapSelector": {
 		"standard": "Standard",

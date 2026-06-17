@@ -141,7 +141,32 @@ export function packEtaMultiplier(baseKg: number | null, enabled: boolean): numb
 	return 1 + (baseKg - PACK_ETA_REFERENCE_KG) * PACK_ETA_PENALTY_PER_KG;
 }
 
-/** Effective pace after the optional pack penalty; identity when disabled. */
-export function effectivePaceKmh(paceKmh: number, baseKg: number | null, enabled: boolean): number {
-	return paceKmh / packEtaMultiplier(baseKg, enabled);
+/** Personal pace adjustment: a multiplier on the nominal pace so every ETA can
+ *  match the actual hiker (1 = no change, >1 = faster, <1 = slower). It is a
+ *  distinct knob from the nominal km/h and orthogonal to the pack penalty
+ *  (fitness, not load), so the two compose without double-counting. This is
+ *  also the seam a future auto-calibration from a recorded track would fill. */
+export const PACE_FACTOR_DEFAULT = 1;
+export const PACE_FACTOR_MIN = 0.7;
+export const PACE_FACTOR_MAX = 1.4;
+
+/** Clamps an arbitrary (possibly persisted or env) factor into the valid range;
+ *  falls back to the default for non-finite input. */
+export function clampPaceFactor(value: number): number {
+	if (!Number.isFinite(value)) return PACE_FACTOR_DEFAULT;
+	return Math.min(PACE_FACTOR_MAX, Math.max(PACE_FACTOR_MIN, value));
+}
+
+/** Effective pace: nominal pace scaled by the personal pace factor, then the
+ *  optional pack penalty. Identity at factor 1 with the penalty disabled.
+ *  Assumes a caller-clamped `paceFactor` - clamping is enforced at the config,
+ *  store-setter, and rehydrate-merge boundaries, so this hot ETA path stays a
+ *  pure multiply. */
+export function effectivePaceKmh(
+	paceKmh: number,
+	baseKg: number | null,
+	enabled: boolean,
+	paceFactor: number = PACE_FACTOR_DEFAULT,
+): number {
+	return (paceKmh * paceFactor) / packEtaMultiplier(baseKg, enabled);
 }

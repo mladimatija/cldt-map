@@ -15,11 +15,12 @@ export function usePackAdjustedPaceKmh(): number {
 	const walkingPaceKmh = useMapStore((s: MapStoreState) => s.walkingPaceKmh);
 	const packBaseWeightKg = useMapStore((s: MapStoreState) => s.packBaseWeightKg);
 	const packEtaAdjust = useMapStore((s: MapStoreState) => s.packEtaAdjust);
-	return effectivePaceKmh(walkingPaceKmh, packBaseWeightKg, packEtaAdjust);
+	const paceFactor = useMapStore((s: MapStoreState) => s.paceFactor);
+	return effectivePaceKmh(walkingPaceKmh, packBaseWeightKg, packEtaAdjust, paceFactor);
 }
 
 /** Non-hook variant for event handlers and Leaflet callbacks that read the
  *  store via getState(). */
 export function packAdjustedPaceKmhFromState(state: MapStoreState): number {
-	return effectivePaceKmh(state.walkingPaceKmh, state.packBaseWeightKg, state.packEtaAdjust);
+	return effectivePaceKmh(state.walkingPaceKmh, state.packBaseWeightKg, state.packEtaAdjust, state.paceFactor);
 }

@@ -56,7 +56,7 @@ import { loadImportedTracks, persistImportedTrackPatch, removeImportedTrack } fr
 import { loadPois } from '@/lib/pois';
 import { prefetchPoiAssets, prefetchPoisAlongSlice } from '@/lib/poi-prefetch';
 import { addInterval, removeInterval, type CompletionInterval } from '../completion';
-import { DEFAULT_WATER_CONSUMPTION_LPH } from '../pack-weight';
+import { clampPaceFactor, DEFAULT_WATER_CONSUMPTION_LPH } from '../pack-weight';
 import { DEFAULT_FOOD_CONSUMPTION_KG_PER_DAY } from '../resupply-cadence';
 import { normalizeWaypointCategory, type WaypointCategoryId } from '../waypoint-categories';
 import {
@@ -926,6 +926,11 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 						set({ walkingPaceKmh: pace });
 					},
 
+					paceFactor: config.paceFactor,
+					setPaceFactor: (factor: number): void => {
+						set({ paceFactor: clampPaceFactor(factor) });
+					},
+
 					packBaseWeightKg: null,
 					setPackBaseWeightKg: (kg: number | null): void => {
 						set({ packBaseWeightKg: kg });
@@ -1608,6 +1613,7 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 						predictivePrecache: state.predictivePrecache,
 						offlineHighDetailAheadEnabled: state.offlineHighDetailAheadEnabled,
 						walkingPaceKmh: state.walkingPaceKmh,
+						paceFactor: state.paceFactor,
 						packBaseWeightKg: state.packBaseWeightKg,
 						waterConsumptionLph: state.waterConsumptionLph,
 						foodConsumptionKgPerDay: state.foodConsumptionKgPerDay,
@@ -1677,6 +1683,9 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					// Drop any malformed personal water-log entries so a corrupt
 					// localStorage value can never render garbage in a popup.
 					merged.poiWaterLog = sanitizeWaterLog((persistedState as { poiWaterLog?: unknown })?.poiWaterLog);
+					// Clamp a persisted pace factor back into range (guards a hand-edited
+					// or out-of-range value from skewing every ETA).
+					merged.paceFactor = clampPaceFactor((persistedState as { paceFactor?: unknown })?.paceFactor as number);
 					// If the user has never explicitly toggled the seasonal layer,
 					// recompute it on every hydration. Explicit env override wins
 					// unconditionally; otherwise fall back to the winter-window

@@ -47,7 +47,7 @@
 			"trail": "Kliknite rutu ili grafikon nadmorske visine za prikaz udaljenosti i nadmorske visine u bilo kojoj točki",
 			"elevation": "Grafikon profila nadmorske visine; prelazak mišem za pregled na karti, klik za prikvačivanje točke; kad je aktivan stil staze Površina ili SAC, hover tooltip također prikazuje OSM oznaku površine ili težine na tom km",
 			"ruler": "Ravnalo za mjerenje udaljenosti između dvije točke",
-			"distanceEtaOverlay": "Preklop udaljenosti i ETA - živi HUD s pređenom i preostalom udaljenošću, preostalim usponom/spustom i ETA do kraja staze ili aktivnog odsječka ravnala",
+			"distanceEtaOverlay": "Preklop udaljenosti i ETA - živi HUD s pređenom i preostalom udaljenošću, preostalim usponom/spustom i ETA do kraja staze ili aktivnog odsječka ravnala; osobna prilagodba tempa u postavkama (70-140%) skalira svaku procjenu vremena prema tvom stvarnom tempu",
 			"layers": "Više slojeva karte (standardna, topo, planinarska, satelit, teren, bicikl, Hrvatska Topo, tamna), plus opcionalni Waymarked Trails sloj OSM planinarskih ruta (prekidač u Postavkama, samo online)",
 			"location": "Opcionalno praćenje lokacije za prikaz vaše pozicije na stazi",
 			"share": "Poveznice dijele cijeli prikaz karte - poziciju, smjer, jedinice, slojeve, raspon ravnala, plan etapa, waypointe i dnevnik. Jedan gumb na alatnoj traci pokriva dijeljenje i izvoz: QR kod i kopiranje poveznice kad je dostupan GPS ili prikvačena točka, plus ispis/PNG izvoz; oznaka gumba se prilagođava (Podijeli i izvezi kartu ili Ispis i izvoz karte). Kratke poveznice (/s/'{'code'}') kad ste online i uključene u Postavkama",
@@ -297,7 +297,10 @@
 		"waymarkedLabel": "Sloj markiranih planinarskih ruta",
 		"waymarkedHint": "Iscrtava OSM planinarske rute (Waymarked Trails) preko osnovne karte. Samo online.",
 		"shareShortLinksLabel": "Koristi kratke poveznice za dijeljenje",
-		"shareShortLinksHint": "Kopira kratku poveznicu koja otvara isti prikaz karte. Za stvaranje poveznice potrebna je internetska veza."
+		"shareShortLinksHint": "Kopira kratku poveznicu koja otvara isti prikaz karte. Za stvaranje poveznice potrebna je internetska veza.",
+		"paceFactor": "Osobna prilagodba tempa",
+		"paceFactorHint": "Skalira svaku procjenu vremena prema tvom stvarnom tempu. {min} - {max}; 100% zadržava postavljeni tempo, više je brže, manje je sporije",
+		"paceFactorReset": "Vrati prilagodbu tempa na zadano"
 	},
 	"baseMapSelector": {
 		"standard": "Standardna",

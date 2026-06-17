@@ -47,7 +47,7 @@
 			"trail": "Clicca sul percorso o sul profilo altimetrico per vedere distanza e altitudine in qualsiasi punto",
 			"elevation": "Grafico del profilo altimetrico; passa il mouse per visualizzare il punto sulla mappa, clicca per fissarlo; con stile sentiero Superficie o SAC attivo, il tooltip al passaggio del mouse mostra anche l'etichetta OSM di superficie o difficoltà a quel km",
 			"ruler": "Righello per misurare segmenti tra due punti",
-			"distanceEtaOverlay": "Overlay distanza ed ETA - HUD in tempo reale con distanza percorsa e rimanente, dislivello rimanente ed ETA alla fine del sentiero o al segmento attivo del righello",
+			"distanceEtaOverlay": "Overlay distanza ed ETA - HUD in tempo reale con distanza percorsa e rimanente, dislivello rimanente ed ETA alla fine del sentiero o al segmento attivo del righello; una regolazione personale del passo nelle impostazioni (70-140%) adatta ogni stima dei tempi al tuo passo reale",
 			"layers": "Più livelli mappa (standard, topo, escursionismo, satellite, terreno, ciclismo, Croazia Topo, scuro), più overlay opzionale Waymarked Trails con relazioni OSM (interruttore in Impostazioni, solo online)",
 			"location": "Tracciamento opzionale della posizione per vedere dove ti trovi sul sentiero",
 			"share": "I link condividono l'intera vista mappa - posizione, direzione, unità, livelli, intervallo righello, piano tappe, waypoint e diario. Un solo pulsante nella barra copre condivisione ed esportazione: codice QR e copia link con GPS o punto fissato, più stampa/esportazione PNG; l'etichetta si adatta (Condividi ed esporta mappa o Stampa ed esporta mappa). Link brevi compatti (/s/'{'code'}') se online e attivati in Impostazioni",
@@ -297,7 +297,10 @@
 		"waymarkedLabel": "Overlay sentieri segnalati",
 		"waymarkedHint": "Disegna le rotte escursionistiche OSM (Waymarked Trails) sopra la mappa di base. Solo online.",
 		"shareShortLinksLabel": "Usa link brevi per la condivisione",
-		"shareShortLinksHint": "Copia un link compatto che apre la stessa vista mappa. Serve una connessione internet per crearlo."
+		"shareShortLinksHint": "Copia un link compatto che apre la stessa vista mappa. Serve una connessione internet per crearlo.",
+		"paceFactor": "Regolazione personale del passo",
+		"paceFactorHint": "Adatta ogni stima dei tempi al tuo passo reale. {min} - {max}; 100% mantiene il passo impostato, più alto è più veloce, più basso è più lento",
+		"paceFactorReset": "Reimposta la regolazione del passo al valore predefinito"
 	},
 	"baseMapSelector": {
 		"standard": "Standard",
