@@ -9,6 +9,7 @@ import type { MineAreasFile } from '../mine-areas';
 import type { CompletionInterval } from '../completion';
 import type { JournalEntry, UserWaypoint } from '../user-waypoints';
 import type { WaterLogEntry, WaterStatus } from '../water-log';
+import type { NavTarget } from '../nav-target';
 import type { WaypointCategoryId } from '../waypoint-categories';
 import type { PackList } from '../pack-csv';
 import type { PoiImage, PoisFile } from '../pois';
@@ -524,6 +525,15 @@ export interface MapStoreState {
 	setPoiNote: (poiId: string, text: string) => void;
 	/** Remove a POI's note. */
 	clearPoiNote: (poiId: string) => void;
+
+	/** The POI/waypoint the user pinned to navigate toward; the live HUD shows
+	 *  the straight-line distance and compass bearing to it (no routing).
+	 *  Persisted so a mid-hike reload keeps the target. */
+	navTarget: NavTarget | null;
+	/** Pin (or replace) the navigation target. */
+	setNavTarget: (target: NavTarget) => void;
+	/** Clear the navigation target and dismiss the HUD. */
+	clearNavTarget: () => void;
 
 	gradeAdjustedEta: boolean;
 	setGradeAdjustedEta: (enabled: boolean) => void;

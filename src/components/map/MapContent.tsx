@@ -52,6 +52,10 @@ const DistanceRemainingOverlay = dynamic(
 	() => import('@/components/map/DistanceRemainingOverlay').then((m) => ({ default: m.DistanceRemainingOverlay })),
 	{ ssr: false },
 );
+const NavTargetOverlay = dynamic(
+	() => import('@/components/map/NavTargetOverlay').then((m) => ({ default: m.NavTargetOverlay })),
+	{ ssr: false },
+);
 const NoticeMarkers = dynamic(
 	() => import('@/components/map/NoticeMarkers').then((m) => ({ default: m.NoticeMarkers })),
 	{ ssr: false },
@@ -213,6 +217,7 @@ export default function MapContent(): React.ReactElement {
 			<TileDownloadCompleteToast />
 			<GpxImportDropzone />
 			<DistanceRemainingOverlay />
+			<NavTargetOverlay />
 			<ShareUrlHandler />
 			<BaseMapSelector />
 			<RadarOverlay />

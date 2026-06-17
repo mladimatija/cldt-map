@@ -197,7 +197,22 @@ export function UserWaypointMarkers(): null {
 			shareBtn.className = 'poi-popup__share';
 			shareBtn.dataset.waypointShare = wp.id;
 
-			buttonRow.append(deleteBtn, saveBtn, shareBtn);
+			const navBtn = document.createElement('button');
+			navBtn.type = 'button';
+			navBtn.textContent = tPois('navigateHere');
+			navBtn.className = 'poi-popup__share poi-popup__nav-target';
+			navBtn.addEventListener('click', () => {
+				useMapStore.getState().setNavTarget({
+					id: wp.id,
+					lat: wp.lat,
+					lng: wp.lng,
+					name: nameInput.value.trim() || wp.name,
+					source: 'waypoint',
+				});
+				markers.get(wp.id)?.closePopup();
+			});
+
+			buttonRow.append(deleteBtn, saveBtn, shareBtn, navBtn);
 			root.append(nameInput, chipsHost, noteArea, metaLine, buttonRow);
 			return root;
 		}

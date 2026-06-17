@@ -68,6 +68,7 @@ import {
 import { newId, type JournalEntry } from '@/lib/user-waypoints';
 import { sanitizeWaterLog, waterLogToday, type WaterLogEntry, type WaterStatus } from '../water-log';
 import { normalizePoiNote, sanitizePoiNotes } from '../poi-notes';
+import { sanitizeNavTarget, type NavTarget } from '../nav-target';
 
 /** Module-level abort controller for tile downloads - one download at a time. */
 let tilePrecacheAbortController: AbortController | null = null;
@@ -1099,6 +1100,15 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 						});
 					},
 
+					navTarget: null,
+					setNavTarget: (target: NavTarget): void => {
+						const clean = sanitizeNavTarget(target);
+						if (clean) set({ navTarget: clean });
+					},
+					clearNavTarget: (): void => {
+						set({ navTarget: null });
+					},
+
 					gradeAdjustedEta: config.gradeAdjustedEta,
 					setGradeAdjustedEta: (enabled: boolean): void => {
 						set({ gradeAdjustedEta: enabled });
@@ -1656,6 +1666,7 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 						journalEntries: demoSnapshot ? demoSnapshot.journalEntries : state.journalEntries,
 						poiWaterLog: state.poiWaterLog,
 						poiNotes: state.poiNotes,
+						navTarget: state.navTarget,
 						gradeAdjustedEta: state.gradeAdjustedEta,
 						sunsetProjection: state.sunsetProjection,
 						stagePlan: state.stagePlan,
@@ -1713,6 +1724,8 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					merged.poiWaterLog = sanitizeWaterLog((persistedState as { poiWaterLog?: unknown })?.poiWaterLog);
 					// Drop malformed/oversized personal POI notes on rehydrate.
 					merged.poiNotes = sanitizePoiNotes((persistedState as { poiNotes?: unknown })?.poiNotes);
+					// Reject a corrupt persisted nav target so the HUD never renders garbage coords.
+					merged.navTarget = sanitizeNavTarget((persistedState as { navTarget?: unknown })?.navTarget);
 					// Clamp a persisted pace factor back into range (guards a hand-edited
 					// or out-of-range value from skewing every ETA).
 					merged.paceFactor = clampPaceFactor((persistedState as { paceFactor?: unknown })?.paceFactor as number);

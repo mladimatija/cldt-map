@@ -77,6 +77,7 @@ export default function AboutPage(): React.ReactNode {
 							<li className="mb-2">{t('mapFeaturesList.printExport')}</li>
 							<li className="mb-2">{t('mapFeaturesList.layers')}</li>
 							<li className="mb-2">{t('mapFeaturesList.location')}</li>
+							<li className="mb-2">{t('mapFeaturesList.navTargetHud')}</li>
 							<li className="mb-2">{t('mapFeaturesList.share')}</li>
 							<li className="mb-2">{t('mapFeaturesList.units')}</li>
 							<li className="mb-2">{t('mapFeaturesList.darkMode')}</li>

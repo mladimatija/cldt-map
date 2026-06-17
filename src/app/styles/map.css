@@ -494,7 +494,8 @@
 	display: grid;
 	grid-template-columns: auto auto;
 }
-.poi-popup__add-waypoint {
+.poi-popup__add-waypoint,
+.poi-popup__nav-target {
 	grid-column: 1 / -1;
 	justify-self: center;
 }

@@ -180,6 +180,7 @@ export function PoiMarkers(): null {
 			shareFailed: t('shareFailed'),
 			openInMaps: t('openInMaps'),
 			addAsWaypoint: t('addAsWaypoint'),
+			navigateHere: t('navigateHere'),
 			publicTransportEscape: t.raw('publicTransportEscape'),
 			starAddLabel: t('starAdd', { name: '' }).replace(/\s+/g, ' ').trim(),
 			starRemoveLabel: t('starRemove', { name: '' }).replace(/\s+/g, ' ').trim(),
@@ -356,7 +357,8 @@ export function PoiMarkers(): null {
 					wireOpenInMapsButton(marker, poi);
 					wireWaterLogButtons(marker, poi, popupLabels, locale);
 					wirePoiNoteButtons(marker, poi, popupLabels);
-					wireAddAsWaypointButton(marker, poi, poiDisplayName(poi, locale));
+					wireAddAsWaypointButton(marker, poi, displayName);
+					wireNavTargetButton(marker, poi, displayName);
 					wireShareButton(marker, poi, popupLabels.shareLink);
 					wireStarButton(marker, poi, {
 						starAddLabel: poiLabels.starAddLabel,
@@ -799,6 +801,33 @@ function wireAddAsWaypointButton(marker: L.Marker, poi: Poi, displayName: string
 			trailKm: poi.trailKm,
 		});
 		state.requestOpenWaypoint(id);
+		marker.closePopup();
+	});
+}
+
+/**
+ * Wires the "Navigate here" button inside an open POI popup. Click pins the POI
+ * as the live navigation target (`setNavTarget`) so the NavTargetOverlay HUD
+ * shows the straight-line distance + bearing to it, then closes the popup.
+ */
+function wireNavTargetButton(marker: L.Marker, poi: Poi, displayName: string): void {
+	const popup = marker.getPopup();
+	if (!popup) return;
+	const el = popup.getElement();
+	if (!el) return;
+	const btn = el.querySelector<HTMLButtonElement>(`[data-poi-nav-target="${cssEscape(poi.id)}"]`);
+	if (!btn) return;
+	if (btn.dataset.wired === '1') return;
+	btn.dataset.wired = '1';
+	btn.addEventListener('click', (e) => {
+		e.preventDefault();
+		useMapStore.getState().setNavTarget({
+			id: poi.id,
+			lat: poi.lat,
+			lng: poi.lng,
+			name: displayName,
+			source: 'poi',
+		});
 		marker.closePopup();
 	});
 }

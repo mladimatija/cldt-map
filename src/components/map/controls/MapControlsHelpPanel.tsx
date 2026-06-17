@@ -204,6 +204,7 @@ export function MapControlsHelpPanel(): React.ReactElement {
 						['mobileDownload', t('offline.mobileDownload')],
 						['gps', t('offline.gps')],
 						['offRouteAlert', t('offline.offRouteAlert')],
+						['navTarget', t('offline.navTarget')],
 						['daylight', t('offline.daylight')],
 						['pushAlerts', t('offline.pushAlerts')],
 					]}

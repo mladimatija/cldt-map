@@ -82,7 +82,8 @@
 			"resupply": "Versorgungs-Infos - Geschäfte, Apotheken, Geldautomaten, Post und Bus aus OpenStreetMap in Orts-Popups, mit Versorgungs-Chips pro Etappe im Planer",
 			"pushAlerts": "Warnungs-Benachrichtigungen - optionale Browser-Pushes bei neuen saisonalen Warnungen oder Hinweisen zum Wegzustand, auch bei geschlossener App; kein Konto nötig",
 			"accessibility": "Barrierefreiheit - große Touch-Ziele und eine anpassbare UI-Textgröße (Standard / Groß / Größer), die Bedienfelder und Overlays vergrößert, ohne die Karte zu skalieren. Die Karte ist eine beschriftete, per Tastatur fokussierbare Region (Pfeiltasten schwenken, +/- zoomt) mit einer Orientierungsmeldung für Screenreader beim Fokus und einem Tastatur-Streckenregler über dem Höhenprofil, der Distanz, Höhe, Steigung, Abschnittsgrenzen und das nächste nutzbare Wasser voraus über eine Live-Region ansagt. Das Höhenprofil wird als beschriftete Figur mit einer Stichprobentabelle aus Distanz/Höhe bereitgestellt, und die farbigen Wegstile zeigen eine beschriftete Legende, sodass Bedeutung nicht allein durch Farbe vermittelt wird",
-			"welcomeCard": "Willkommen beim ersten Start - eine einmalige, schließbare Karte beim ersten Besuch stellt die App vor und bietet schnelle Einstiege in die Hauptpanels sowie einen Link zur Live-Demo; einmal gezeigt, nie während einer Demo, voll tastaturzugänglich"
+			"welcomeCard": "Willkommen beim ersten Start - eine einmalige, schließbare Karte beim ersten Besuch stellt die App vor und bietet schnelle Einstiege in die Hauptpanels sowie einen Link zur Live-Demo; einmal gezeigt, nie während einer Demo, voll tastaturzugänglich",
+			"navTargetHud": "Zum Ziel navigieren - markiere einen POI oder Wegpunkt als Ziel über \"Hierhin navigieren\"; ein HUD oben links zeigt die Luftlinien-Entfernung und einen Kompasspfeil dorthin (keine Abbiegehinweise)"
 		},
 		"dataAttribution": "Daten & Urheberrecht",
 		"dataAttributionDesc": "Trail-Daten werden von der Udruga Long Distance Trail Hrvatska (LDTH) bereitgestellt. Kartenkacheln kommen von OpenStreetMap, OpenTopoMap, OpenHikingMap (openmaps.fr), Waymarked Trails, CyclOSM und anderen Anbietern. Kroatische topografische Karten stammen vom Staatlichen Geodätischen Amt (DGU). Wetterdaten kommen von DHMZ (Kroatischer Wetterdienst) und Open-Meteo. Radarkacheln werden von RainViewer bereitgestellt. Daten zum saisonalen Wegzustand, Gefahrenwarnungen sowie Standorte der Bergwacht-Stationen stammen von HGSS (Kroatische Bergrettung), HPS (Kroatischer Bergsteigerverband) und den Verwaltungen der Nationalparks (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) sowie Naturpark Velebit. Die auf dieser Seite angezeigten Daten entsprechen möglicherweise nicht dem aktuellen Stand. Im Zweifelsfall bitte immer die offiziellen Quellen prüfen.",
@@ -1115,7 +1116,8 @@
 			"cancel": "Abbrechen",
 			"placeholder": "Deine private Notiz (bleibt auf diesem Gerät)",
 			"ariaLabel": "Persönliche Notiz für diesen Ort"
-		}
+		},
+		"navigateHere": "Hierhin navigieren"
 	},
 	"poiDisclaimer": {
 		"title": "Über diese Orte",
@@ -1348,7 +1350,8 @@
 			"offRouteAlert": "Aktiviere den Routenabweichungs-Alarm in den Einstellungen (standardmäßig aus) für Banner und Vibration, wenn du mehr als ~200 m vom Trail abkommst, mit Distanz und Richtung zurück. Schärft sich erst, wenn GPS bestätigt, dass du auf dem Trail bist; bleibt zu Hause oder in der Fahrt stumm und entschärft sich, wenn du das Trail-Gebiet verlässt.",
 			"daylight": "Unterwegs zeigt das Distanz-HUD eine Tageslicht-Anzeige, wenn du die nächste Hütte, Schutzhütte oder Ortschaft womöglich nicht vor Einbruch der Dunkelheit erreichst - sie vergleicht die Sonnenuntergangszeit (eine kurze Online-Wetterabfrage) mit deiner Ankunftszeit am nächsten Ziel voraus (gelb wenn es knapp wird, rot wenn du nach Einbruch der Dunkelheit ankämst).",
 			"pushAlerts": "Warnungs-Benachrichtigungen in den Einstellungen aktivieren, um bei neuen saisonalen Warnungen oder Hinweisen zum Wegzustand eine Push-Nachricht zu erhalten.",
-			"mobileDownload": "Auf dem Handy warnt ein gestarteter Offline-Download zuerst, dass er viel Speicherplatz und mobile Daten verbrauchen kann, und fragt dann nach Bestätigung - so löst du nie versehentlich einen Download von mehreren Gigabyte aus."
+			"mobileDownload": "Auf dem Handy warnt ein gestarteter Offline-Download zuerst, dass er viel Speicherplatz und mobile Daten verbrauchen kann, und fragt dann nach Bestätigung - so löst du nie versehentlich einen Download von mehreren Gigabyte aus.",
+			"navTarget": "Markiere einen Ort mit \"Hierhin navigieren\" im Popup, um die Luftlinien-Entfernung und einen Kompasspfeil dorthin zu sehen (keine Navigation); tippe auf das X zum Beenden."
 		},
 		"officialAppNote": "FarOut ist die offizielle CLDT-App. Diese Karte ist ein unabhängiges Projekt nur für Forschungs- und Bildungszwecke - prüfen Sie kritische Informationen anhand offizieller Quellen.",
 		"demoHeading": "Demo-Wanderung",
@@ -1393,5 +1396,11 @@
 		"demo": "Live-Demo ansehen",
 		"gotIt": "Verstanden",
 		"dismiss": "Schließen"
+	},
+	"navTarget": {
+		"srHeading": "Richtung {compass}, {distance} bis {name}",
+		"srWaiting": "Navigation zu {name}, warte auf GPS-Signal",
+		"waitingForGps": "Warte auf GPS",
+		"clear": "Navigationsziel entfernen"
 	}
 }

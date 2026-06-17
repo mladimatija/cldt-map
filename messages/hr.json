@@ -82,7 +82,8 @@
 			"resupply": "Vodiči za opskrbu - trgovine, ljekarne, bankomati, pošta i autobus iz OpenStreetMapa u prozorima gradova, s oznakama opskrbe po etapi u planeru",
 			"pushAlerts": "Obavijesti o upozorenjima - neobavezne push obavijesti preglednika kad se objavi novo sezonsko upozorenje ili obavijest o stanju staze, čak i kad je aplikacija zatvorena; bez računa",
 			"accessibility": "Pristupačnost - velike dodirne mete i prilagodljiva veličina teksta sučelja (zadano / veliko / veće) koja povećava upravljačke ploče i slojeve bez mijenjanja veličine karte. Karta je označeno područje s mogućnošću fokusiranja tipkovnicom (strelice pomiču, +/- zumira), s porukom za orijentaciju čitača zaslona pri fokusu i klizačem staze iznad grafa visine koji najavljuje udaljenost, visinu, nagib, granice dionica i najbliži upotrebljiv izvor vode ispred putem žive regije. Visinski profil dostupan je kao figura s naslovom i tablicom uzoraka udaljenosti/visine, a obojeni stilovi staze prikazuju označenu legendu pa značenje ne prenosi samo boja",
-			"welcomeCard": "Dobrodošlica pri prvom pokretanju - jednokratna kartica koja se može odbaciti pri prvom posjetu predstavlja aplikaciju i nudi brze prečace do glavnih ploča te poveznicu na demo uživo; prikazuje se jednom, nikad tijekom demoa, potpuno dostupna tipkovnicom"
+			"welcomeCard": "Dobrodošlica pri prvom pokretanju - jednokratna kartica koja se može odbaciti pri prvom posjetu predstavlja aplikaciju i nudi brze prečace do glavnih ploča te poveznicu na demo uživo; prikazuje se jednom, nikad tijekom demoa, potpuno dostupna tipkovnicom",
+			"navTargetHud": "Navigacija do cilja - prikvačite POI ili međutočku kao cilj putem \"Navigiraj ovamo\"; HUD u gornjem lijevom kutu prikazuje udaljenost u zračnoj liniji i strelicu smjera prema njemu (nije navigacija skretanje po skretanje)"
 		},
 		"dataAttribution": "Podaci i atribucija",
 		"dataAttributionDesc": "Podatke o stazi pruža organizacija Udruga Long Distance Trail Hrvatska (LDTH). Karte dolaze od OpenStreetMap, OpenTopoMap, OpenHikingMap (openmaps.fr), Waymarked Trails, CyclOSM i drugih pružatelja. Hrvatske topografske karte su od Državne geodetske uprave (DGU). Meteorološki podaci dolaze od DHMZ-a (Državni hidrometeorološki zavod) i Open-Meteo. Radarske pločice osigurava RainViewer. Podaci o sezonskom stanju puta, upozorenja o opasnostima i podaci o stanicama gorske službe spašavanja preuzeti su od HGSS-a (Hrvatska gorska služba spašavanja), HPS-a (Hrvatski planinarski savez) te uprava nacionalnih parkova (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) i Parka prirode Velebit. Podaci prikazani na ovoj stranici možda ne odražavaju najnovije stanje. U slučaju sumnje, uvijek provjerite službene izvore.",
@@ -1115,7 +1116,8 @@
 			"cancel": "Odustani",
 			"placeholder": "Tvoja privatna bilješka (ostaje na ovom uređaju)",
 			"ariaLabel": "Osobna bilješka za ovo mjesto"
-		}
+		},
+		"navigateHere": "Navigiraj ovamo"
 	},
 	"poiDisclaimer": {
 		"title": "O ovim mjestima",
@@ -1348,7 +1350,8 @@
 			"offRouteAlert": "Uključi upozorenje o skretanju u Postavkama (zadano isključeno) za traku i vibraciju kad skreneš više od ~200 m s rute, s udaljenošću i smjerom natrag. Aktivira se tek kad GPS potvrdi da si na ruti; šuti kod kuće ili u vožnji i deaktivira se kad napustiš područje staze.",
 			"daylight": "Na stazi HUD s udaljenostima prikazuje oznaku dnevnog svjetla kad možda nećeš stići do sljedećeg doma, skloništa ili mjesta prije mraka - uspoređuje vrijeme zalaska sunca (kratko mrežno dohvaćanje vremena) s procjenom dolaska do najbližeg odredišta ispred (žuto kad je blizu, crveno kad bi stigao nakon mraka).",
 			"pushAlerts": "Uključite obavijesti o upozorenjima u postavkama za push poruku kad se objavi novo sezonsko upozorenje ili obavijest o stanju staze.",
-			"mobileDownload": "Na telefonu pokretanje offline preuzimanja prvo upozorava da može potrošiti puno prostora i mobilnih podataka, a zatim traži potvrdu - tako slučajno ne pokrenete preuzimanje od više gigabajta."
+			"mobileDownload": "Na telefonu pokretanje offline preuzimanja prvo upozorava da može potrošiti puno prostora i mobilnih podataka, a zatim traži potvrdu - tako slučajno ne pokrenete preuzimanje od više gigabajta.",
+			"navTarget": "Prikvačite mjesto pomoću \"Navigiraj ovamo\" u skočnom prozoru za prikaz udaljenosti u zračnoj liniji i strelice smjera prema njemu (nije navigacija); dodirnite X za prekid."
 		},
 		"officialAppNote": "FarOut je službena CLDT aplikacija. Ova karta je neovisan projekt isključivo za istraživačke i edukativne svrhe - ključne informacije provjerite u službenim izvorima.",
 		"demoHeading": "Demo hodnja",
@@ -1393,5 +1396,11 @@
 		"demo": "Pogledaj demo uživo",
 		"gotIt": "U redu",
 		"dismiss": "Zatvori"
+	},
+	"navTarget": {
+		"srHeading": "Smjer {compass}, {distance} do {name}",
+		"srWaiting": "Navigacija do {name}, čekanje GPS signala",
+		"waitingForGps": "Čekanje GPS-a",
+		"clear": "Ukloni odredište navigacije"
 	}
 }

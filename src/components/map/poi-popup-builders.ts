@@ -75,6 +75,7 @@ export interface PopupBuildLabels extends WaterLogPopupLabels, PoiNotePopupLabel
 	shareFailed: string;
 	openInMaps: string;
 	addAsWaypoint: string;
+	navigateHere: string;
 	publicTransportEscape: string;
 	starAddLabel: string;
 	starRemoveLabel: string;
@@ -467,6 +468,7 @@ export function buildActionsHtml(poi: Poi, labels: PopupBuildLabels): string {
 		`<button type="button" class="poi-popup__open-maps" data-poi-open-maps="${escapeHtml(poi.id)}">${escapeHtml(labels.openInMaps)}</button>` +
 		`<button type="button" class="poi-popup__share" data-poi-share="${escapeHtml(poi.id)}">${escapeHtml(labels.shareLink)}</button>` +
 		`<button type="button" class="poi-popup__share poi-popup__add-waypoint" data-poi-add-waypoint="${escapeHtml(poi.id)}">${escapeHtml(labels.addAsWaypoint)}</button>` +
+		`<button type="button" class="poi-popup__share poi-popup__nav-target" data-poi-nav-target="${escapeHtml(poi.id)}">${escapeHtml(labels.navigateHere)}</button>` +
 		`</div>`
 	);
 }

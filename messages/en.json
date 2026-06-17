@@ -82,7 +82,8 @@
 			"resupply": "Town resupply guides - shops, pharmacies, ATMs, post and bus info from OpenStreetMap in town popups, with per-stage resupply chips in the planner",
 			"pushAlerts": "Trail alert notifications - optional browser push when a new seasonal warning or trail condition notice is published, even with the app closed; no account needed",
 			"accessibility": "Accessibility - large touch targets and an adjustable UI text size (Default / Large / Larger) that scales the control panels and overlays without resizing the map. The map is a labelled, keyboard-focusable region (arrow keys pan, +/- zoom) with a screen-reader orientation message on focus, and a keyboard trail scrubber above the elevation chart that announces distance, elevation, grade, section boundaries, and the nearest usable water ahead through a live region. The elevation profile is exposed as a captioned figure with a sampled distance/elevation table, and the colour trail styles show a labelled legend so meaning is not carried by colour alone",
-			"welcomeCard": "First-run welcome - a one-time, dismissible card on your first visit introduces the app and offers quick launchers into the main panels plus a link to the live demo; shown once, never during a demo, fully keyboard-accessible"
+			"welcomeCard": "First-run welcome - a one-time, dismissible card on your first visit introduces the app and offers quick launchers into the main panels plus a link to the live demo; shown once, never during a demo, fully keyboard-accessible",
+			"navTargetHud": "Navigate to a target - pin a POI or waypoint as a target via \"Navigate here\"; a top-left HUD shows the live straight-line distance and a compass-bearing arrow to it (not turn-by-turn routing)"
 		},
 		"dataAttribution": "Data & attribution",
 		"dataAttributionDesc": "Trail data is provided by the Udruga Long Distance Trail Hrvatska (LDTH) organization. Map tiles come from OpenStreetMap, OpenTopoMap, OpenHikingMap (openmaps.fr), CyclOSM, Waymarked Trails, and other providers. Croatian topographic maps are from the State Geodetic Administration (DGU). Weather data comes from DHMZ (Croatian Met Service) and Open-Meteo. Radar tiles are provided by RainViewer. Seasonal trail status, hazard warnings, and mountain rescue station data are sourced from HGSS (Croatian Mountain Rescue Service), HPS (Croatian Mountaineering Federation), and the national park authorities (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) together with Park prirode Velebit. Data displayed on this site may not reflect the latest conditions. When in doubt, always verify with the official sources.",
@@ -1115,7 +1116,8 @@
 			"cancel": "Cancel",
 			"placeholder": "Your private note (stays on this device)",
 			"ariaLabel": "Personal note for this place"
-		}
+		},
+		"navigateHere": "Navigate here"
 	},
 	"poiDisclaimer": {
 		"title": "About these places",
@@ -1348,7 +1350,8 @@
 			"offRouteAlert": "Enable the off-route alert in Settings (off by default) for a banner and vibration when you drift more than ~200 m from the trail, with distance and bearing back. Arms only after GPS confirms you are on the trail; stays silent at home or while driving, and disarms when you leave the trail area.",
 			"daylight": "On the trail, the distance HUD shows a daylight chip when you might not reach the next hut, shelter, or town before dark - it compares the day's sunset time (a quick online weather lookup) with your ETA to the nearest place ahead (amber when it is close, red when you would arrive after dark).",
 			"pushAlerts": "Enable trail alert notifications in Settings to get a push when a new seasonal warning or trail condition notice is published.",
-			"mobileDownload": "On a phone, starting an offline download first warns that it can use a lot of storage and mobile data, then asks you to confirm - so you never trigger a multi-gigabyte download by accident."
+			"mobileDownload": "On a phone, starting an offline download first warns that it can use a lot of storage and mobile data, then asks you to confirm - so you never trigger a multi-gigabyte download by accident.",
+			"navTarget": "Pin a place with \"Navigate here\" in its popup to get a live straight-line distance and a compass-bearing arrow toward it (not routing); tap the X to stop."
 		},
 		"officialAppNote": "FarOut is the official CLDT app. This map is an independent project for research and educational purposes only - verify critical information with official sources.",
 		"demoHeading": "Demo hike",
@@ -1393,5 +1396,11 @@
 		"demo": "Watch the live demo",
 		"gotIt": "Got it",
 		"dismiss": "Close"
+	},
+	"navTarget": {
+		"srHeading": "Heading {compass}, {distance} to {name}",
+		"srWaiting": "Navigating to {name}, waiting for GPS signal",
+		"waitingForGps": "Waiting for GPS",
+		"clear": "Clear navigation target"
 	}
 }
