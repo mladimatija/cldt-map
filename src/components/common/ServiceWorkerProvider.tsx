@@ -48,15 +48,23 @@ export function ServiceWorkerProvider({ children }: ServiceWorkerProviderProps):
 
 		const handleUpdateReady = (reg: ServiceWorkerRegistration): void => {
 			registrationRef.current = reg;
-			if (reg.waiting) setUpdateAvailable(true);
+			// Only prompt for an *update* when a controller already runs this page.
+			// On a first install the SW's install handler calls skipWaiting(), so
+			// the new worker flickers through the `waiting` state (briefly making
+			// reg.waiting truthy) before it activates. Without this controller gate
+			// that flicker shows a bogus "new version available" prompt to first-time
+			// visitors, who have no prior version to update from.
+			if (reg.waiting && navigator.serviceWorker.controller) setUpdateAvailable(true);
 		};
 
 		const listenForInstall = (reg: ServiceWorkerRegistration): void => {
 			const installing = reg.installing;
 			if (!installing) return;
 			installing.addEventListener('statechange', () => {
-				// "installed" means it's in waiting if there's an existing controller.
-				if (installing.state === 'installed') {
+				// "installed" with an existing controller means a new version is now
+				// waiting. With no controller this is the first install (nothing to
+				// update from), so skip it - handleUpdateReady re-checks the controller.
+				if (installing.state === 'installed' && navigator.serviceWorker.controller) {
 					handleUpdateReady(reg);
 				}
 			});
