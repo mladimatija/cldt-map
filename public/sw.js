@@ -196,7 +196,11 @@ async function tileShouldBeCached(url, providerKey) {
 // ── Lifecycle ────────────────────────────────────────────────────────────────
 
 self.addEventListener('install', (event) => {
-    self.skipWaiting();
+    // Intentionally NOT calling self.skipWaiting() here. A new worker must park in
+    // the `waiting` state so ServiceWorkerProvider can surface the "Update now"
+    // prompt and let the user choose when to switch; skipWaiting runs only in
+    // response to the user's SKIP_WAITING message below. (A first install still
+    // activates immediately - there is no controller for it to wait behind.)
     event.waitUntil(
         caches.open(CACHE_NAME).then((cache) => {
             return Promise.allSettled(CORE_ASSETS.map((url) => cache.add(url).catch(() => {
