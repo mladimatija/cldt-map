@@ -25,6 +25,10 @@ import { cn, isSafeUrl } from '@/lib/utils';
 
 const COPY_RESET_MS = 1500;
 
+/** Offline first-aid topics, rendered in order under the "First aid" section.
+ *  Each key maps to `emergency.firstAid.topics.<key>` (title + steps array). */
+const FIRST_AID_TOPICS = ['bleeding', 'fracture', 'hypothermia', 'heat', 'snakebite', 'anaphylaxis'] as const;
+
 interface MapControlsEmergencyPanelProps {
 	onClose: () => void;
 }
@@ -606,6 +610,37 @@ export function MapControlsEmergencyPanel({ onClose }: MapControlsEmergencyPanel
 								<li>{t('script.point4')}</li>
 								<li>{t('script.point5')}</li>
 							</ul>
+						</div>
+					</details>
+
+					<details className={cn('flex flex-col', MAP_CONTROL_SECTION_DIVIDER)}>
+						<summary
+							className={cn(
+								MAP_CONTROL_SECTION_HEADING,
+								'focus-visible:ring-cldt-green cursor-pointer rounded outline-none focus-visible:ring-1 focus-visible:ring-offset-1',
+							)}
+						>
+							{t('firstAid.heading')}
+						</summary>
+						<div className="mt-1.5 flex flex-col gap-1.5 text-xs text-gray-600 dark:text-[var(--text-primary)]">
+							<p className="m-0 rounded border border-amber-300 bg-amber-50 p-1.5 text-amber-700 dark:border-amber-500/40 dark:bg-amber-500/10 dark:text-amber-300">
+								{t('firstAid.disclaimer')}
+							</p>
+							{FIRST_AID_TOPICS.map((topic) => (
+								<details
+									className="rounded border border-gray-200 px-1.5 py-1 dark:border-[var(--border-color)]"
+									key={topic}
+								>
+									<summary className="focus-visible:ring-cldt-green cursor-pointer rounded font-medium outline-none focus-visible:ring-1 focus-visible:ring-offset-1">
+										{t(`firstAid.topics.${topic}.title`)}
+									</summary>
+									<ol className="m-0 mt-1 flex list-decimal flex-col gap-0.5 pl-4">
+										{(t.raw(`firstAid.topics.${topic}.steps`) as string[]).map((step) => (
+											<li key={step}>{step}</li>
+										))}
+									</ol>
+								</details>
+							))}
 						</div>
 					</details>
 				</div>

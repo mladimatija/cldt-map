@@ -84,7 +84,8 @@
 			"accessibility": "Accessibility - large touch targets and an adjustable UI text size (Default / Large / Larger) that scales the control panels and overlays without resizing the map. The map is a labelled, keyboard-focusable region (arrow keys pan, +/- zoom) with a screen-reader orientation message on focus, and a keyboard trail scrubber above the elevation chart that announces distance, elevation, grade, section boundaries, and the nearest usable water ahead through a live region. The elevation profile is exposed as a captioned figure with a sampled distance/elevation table, and the colour trail styles show a labelled legend so meaning is not carried by colour alone",
 			"welcomeCard": "First-run welcome - a one-time, dismissible card on your first visit introduces the app and offers quick launchers into the main panels plus a link to the live demo; shown once, never during a demo, fully keyboard-accessible",
 			"navTargetHud": "Navigate to a target - pin a POI or waypoint as a target via \"Navigate here\"; a top-left HUD shows the live straight-line distance and a compass-bearing arrow to it (not turn-by-turn routing)",
-			"offlineReadiness": "Offline readiness - a one-glance badge at the top of the offline-maps panel: ready / almost ready / not ready, summarizing your cached corridor, durable storage, and app version"
+			"offlineReadiness": "Offline readiness - a one-glance badge at the top of the offline-maps panel: ready / almost ready / not ready, summarizing your cached corridor, durable storage, and app version",
+			"firstAid": "First aid reference - a collapsible offline section in the 112 panel with conservative what-to-do reminders for six backcountry situations (bleeding, fractures, hypothermia, heat, snake bite, allergic reaction), behind a \"not a substitute for trained care\" disclaimer"
 		},
 		"dataAttribution": "Data & attribution",
 		"dataAttributionDesc": "Trail data is provided by the Udruga Long Distance Trail Hrvatska (LDTH) organization. Map tiles come from OpenStreetMap, OpenTopoMap, OpenHikingMap (openmaps.fr), CyclOSM, Waymarked Trails, and other providers. Croatian topographic maps are from the State Geodetic Administration (DGU). Weather data comes from DHMZ (Croatian Met Service) and Open-Meteo. Radar tiles are provided by RainViewer. Seasonal trail status, hazard warnings, and mountain rescue station data are sourced from HGSS (Croatian Mountain Rescue Service), HPS (Croatian Mountaineering Federation), and the national park authorities (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) together with Park prirode Velebit. Data displayed on this site may not reflect the latest conditions. When in doubt, always verify with the official sources.",
@@ -1232,7 +1233,70 @@
 		"mgrs": "MGRS",
 		"utm": "UTM",
 		"dms": "DMS",
-		"otherFormats": "Other coordinate formats"
+		"otherFormats": "Other coordinate formats",
+		"firstAid": {
+			"heading": "First aid",
+			"disclaimer": "General first-aid reminders only - not a substitute for trained medical care. When in doubt, call 112 first. Get proper training before you need this.",
+			"topics": {
+				"bleeding": {
+					"title": "Severe bleeding",
+					"steps": [
+						"Press firmly on the wound with a clean cloth or your hand and keep the pressure on.",
+						"Do not remove a soaked dressing; add more on top and keep pressing.",
+						"If you can, raise the injured part above heart level.",
+						"If a limb is bleeding life-threateningly and will not stop, apply a tourniquet above the wound and note the time.",
+						"Call 112 and keep the person warm and still."
+					]
+				},
+				"fracture": {
+					"title": "Sprain or suspected fracture",
+					"steps": [
+						"Do not try to straighten or push back a deformed limb.",
+						"Rest and immobilize the injury; if you must move, pad and splint it in the position found.",
+						"Apply something cold (not directly on the skin) to reduce swelling.",
+						"Keep weight off the injury and check that fingers or toes stay warm and pink.",
+						"For a serious or open fracture, call 112."
+					]
+				},
+				"hypothermia": {
+					"title": "Hypothermia (too cold)",
+					"steps": [
+						"Get the person out of wind and rain and insulate them from the ground.",
+						"Replace wet clothing with dry layers; cover the head and neck.",
+						"Give warm, sweet drinks only if the person is fully awake and can swallow.",
+						"Warm the core gradually; do not rub the skin or give alcohol.",
+						"If shivering stops, consciousness drops, or it is severe, call 112."
+					]
+				},
+				"heat": {
+					"title": "Heat exhaustion or heatstroke",
+					"steps": [
+						"Move into shade and stop activity; loosen clothing.",
+						"Sip water or an electrolyte drink if the person is alert.",
+						"Cool the skin with water and fanning; focus on the neck, armpits, and groin.",
+						"Heatstroke (confusion, hot dry skin, collapse) is life-threatening - call 112 and cool aggressively."
+					]
+				},
+				"snakebite": {
+					"title": "Snake bite",
+					"steps": [
+						"Move away from the snake; stay calm and limit movement.",
+						"Keep the bitten limb still and below heart level; remove rings and tight items.",
+						"Do not cut, suck, apply a tourniquet, or ice the bite.",
+						"Note the time and any swelling; call 112 and get to a hospital - the nose-horned viper found in Croatia needs medical care."
+					]
+				},
+				"anaphylaxis": {
+					"title": "Severe allergic reaction",
+					"steps": [
+						"Watch for swelling of the face or throat, trouble breathing, or a spreading rash after a sting, food, or bite.",
+						"If the person has an adrenaline auto-injector (EpiPen), help them use it in the outer thigh.",
+						"Call 112 at once; a second dose may be needed after 5-15 minutes if there is no improvement.",
+						"Keep them sitting up if breathing is hard, or lying with legs raised if faint."
+					]
+				}
+			}
+		}
 	},
 	"mineAreas": {
 		"layerLabel": "Mine-suspected areas",
@@ -1371,7 +1435,8 @@
 			"pushAlerts": "Enable trail alert notifications in Settings to get a push when a new seasonal warning or trail condition notice is published.",
 			"mobileDownload": "On a phone, starting an offline download first warns that it can use a lot of storage and mobile data, then asks you to confirm - so you never trigger a multi-gigabyte download by accident.",
 			"navTarget": "Pin a place with \"Navigate here\" in its popup to get a live straight-line distance and a compass-bearing arrow toward it (not routing); tap the X to stop.",
-			"cacheHealth": "The top of the offline-maps panel shows a ready / almost ready / not ready badge so you can confirm at a glance that your corridor is cached and current, storage is durable, and the app is up to date before heading out of signal."
+			"cacheHealth": "The top of the offline-maps panel shows a ready / almost ready / not ready badge so you can confirm at a glance that your corridor is cached and current, storage is durable, and the app is up to date before heading out of signal.",
+			"firstAid": "Open the red 112 panel and expand \"First aid\" for offline, step-by-step reminders for six common backcountry emergencies. It is general guidance only - not a substitute for trained medical care, and it always points back to calling 112."
 		},
 		"officialAppNote": "FarOut is the official CLDT app. This map is an independent project for research and educational purposes only - verify critical information with official sources.",
 		"demoHeading": "Demo hike",

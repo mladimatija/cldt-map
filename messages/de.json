@@ -84,7 +84,8 @@
 			"accessibility": "Barrierefreiheit - große Touch-Ziele und eine anpassbare UI-Textgröße (Standard / Groß / Größer), die Bedienfelder und Overlays vergrößert, ohne die Karte zu skalieren. Die Karte ist eine beschriftete, per Tastatur fokussierbare Region (Pfeiltasten schwenken, +/- zoomt) mit einer Orientierungsmeldung für Screenreader beim Fokus und einem Tastatur-Streckenregler über dem Höhenprofil, der Distanz, Höhe, Steigung, Abschnittsgrenzen und das nächste nutzbare Wasser voraus über eine Live-Region ansagt. Das Höhenprofil wird als beschriftete Figur mit einer Stichprobentabelle aus Distanz/Höhe bereitgestellt, und die farbigen Wegstile zeigen eine beschriftete Legende, sodass Bedeutung nicht allein durch Farbe vermittelt wird",
 			"welcomeCard": "Willkommen beim ersten Start - eine einmalige, schließbare Karte beim ersten Besuch stellt die App vor und bietet schnelle Einstiege in die Hauptpanels sowie einen Link zur Live-Demo; einmal gezeigt, nie während einer Demo, voll tastaturzugänglich",
 			"navTargetHud": "Zum Ziel navigieren - markiere einen POI oder Wegpunkt als Ziel über \"Hierhin navigieren\"; ein HUD oben links zeigt die Luftlinien-Entfernung und einen Kompasspfeil dorthin (keine Abbiegehinweise)",
-			"offlineReadiness": "Offline-Bereitschaft - eine Statusanzeige oben im Offline-Karten-Bereich auf einen Blick: bereit / fast bereit / nicht bereit, fasst gespeicherten Korridor, dauerhaften Speicher und App-Version zusammen"
+			"offlineReadiness": "Offline-Bereitschaft - eine Statusanzeige oben im Offline-Karten-Bereich auf einen Blick: bereit / fast bereit / nicht bereit, fasst gespeicherten Korridor, dauerhaften Speicher und App-Version zusammen",
+			"firstAid": "Erste-Hilfe-Referenz - ein aufklappbarer Offline-Abschnitt im 112-Panel mit umsichtigen Was-tun-Hinweisen für sechs Outdoor-Situationen (Blutung, Brüche, Unterkühlung, Hitze, Schlangenbiss, allergische Reaktion), mit dem Hinweis, dass dies keine ausgebildete Versorgung ersetzt"
 		},
 		"dataAttribution": "Daten & Urheberrecht",
 		"dataAttributionDesc": "Trail-Daten werden von der Udruga Long Distance Trail Hrvatska (LDTH) bereitgestellt. Kartenkacheln kommen von OpenStreetMap, OpenTopoMap, OpenHikingMap (openmaps.fr), Waymarked Trails, CyclOSM und anderen Anbietern. Kroatische topografische Karten stammen vom Staatlichen Geodätischen Amt (DGU). Wetterdaten kommen von DHMZ (Kroatischer Wetterdienst) und Open-Meteo. Radarkacheln werden von RainViewer bereitgestellt. Daten zum saisonalen Wegzustand, Gefahrenwarnungen sowie Standorte der Bergwacht-Stationen stammen von HGSS (Kroatische Bergrettung), HPS (Kroatischer Bergsteigerverband) und den Verwaltungen der Nationalparks (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) sowie Naturpark Velebit. Die auf dieser Seite angezeigten Daten entsprechen möglicherweise nicht dem aktuellen Stand. Im Zweifelsfall bitte immer die offiziellen Quellen prüfen.",
@@ -1232,7 +1233,70 @@
 		"mgrs": "MGRS",
 		"utm": "UTM",
 		"dms": "DMS",
-		"otherFormats": "Andere Koordinatenformate"
+		"otherFormats": "Andere Koordinatenformate",
+		"firstAid": {
+			"heading": "Erste Hilfe",
+			"disclaimer": "Nur allgemeine Erste-Hilfe-Hinweise - kein Ersatz für ausgebildete medizinische Versorgung. Im Zweifel zuerst 112 anrufen. Lass dich ausbilden, bevor du es brauchst.",
+			"topics": {
+				"bleeding": {
+					"title": "Starke Blutung",
+					"steps": [
+						"Drücke fest mit einem sauberen Tuch oder der Hand auf die Wunde und halte den Druck.",
+						"Entferne einen durchgebluteten Verband nicht; lege mehr darüber und drücke weiter.",
+						"Hebe den verletzten Teil wenn möglich über Herzhöhe.",
+						"Wenn eine lebensbedrohliche Blutung an einer Gliedmaße nicht aufhört, lege oberhalb der Wunde ein Tourniquet an und notiere die Zeit.",
+						"Rufe 112 und halte die Person warm und ruhig."
+					]
+				},
+				"fracture": {
+					"title": "Verstauchung oder möglicher Bruch",
+					"steps": [
+						"Versuche nicht, eine verformte Gliedmaße zu richten oder zurückzudrücken.",
+						"Ruhig halten und ruhigstellen; wenn du dich bewegen musst, in der vorgefundenen Stellung polstern und schienen.",
+						"Etwas Kühles (nicht direkt auf die Haut) gegen die Schwellung auflegen.",
+						"Die Verletzung nicht belasten und prüfen, ob Finger oder Zehen warm und rosig bleiben.",
+						"Bei schwerem oder offenem Bruch 112 rufen."
+					]
+				},
+				"hypothermia": {
+					"title": "Unterkühlung (zu kalt)",
+					"steps": [
+						"Bring die Person aus Wind und Regen und isoliere sie vom Boden.",
+						"Ersetze nasse Kleidung durch trockene Schichten; bedecke Kopf und Hals.",
+						"Gib warme, gesüßte Getränke nur, wenn die Person voll wach ist und schlucken kann.",
+						"Wärme den Körper langsam; reibe die Haut nicht und gib keinen Alkohol.",
+						"Wenn das Zittern aufhört, das Bewusstsein nachlässt oder es schwer ist, rufe 112."
+					]
+				},
+				"heat": {
+					"title": "Hitzeerschöpfung oder Hitzschlag",
+					"steps": [
+						"Geh in den Schatten und beende die Anstrengung; lockere die Kleidung.",
+						"Trinke schluckweise Wasser oder ein Elektrolytgetränk, wenn die Person ansprechbar ist.",
+						"Kühle die Haut mit Wasser und Fächeln; konzentriere dich auf Hals, Achseln und Leisten.",
+						"Hitzschlag (Verwirrtheit, heiße trockene Haut, Kollaps) ist lebensbedrohlich - rufe 112 und kühle energisch."
+					]
+				},
+				"snakebite": {
+					"title": "Schlangenbiss",
+					"steps": [
+						"Entferne dich von der Schlange; bleib ruhig und bewege dich wenig.",
+						"Halte die gebissene Gliedmaße ruhig und unter Herzhöhe; entferne Ringe und enge Gegenstände.",
+						"Nicht schneiden, aussaugen, abbinden oder kühlen.",
+						"Notiere Zeit und Schwellung; rufe 112 und fahre ins Krankenhaus - der Biss der in Kroatien vorkommenden Hornotter braucht ärztliche Behandlung."
+					]
+				},
+				"anaphylaxis": {
+					"title": "Schwere allergische Reaktion",
+					"steps": [
+						"Achte auf Schwellung von Gesicht oder Hals, Atemnot oder einen sich ausbreitenden Ausschlag nach Stich, Nahrung oder Biss.",
+						"Hat die Person einen Adrenalin-Autoinjektor (EpiPen), hilf ihr, ihn in den äußeren Oberschenkel zu setzen.",
+						"Rufe sofort 112; nach 5-15 Minuten ohne Besserung kann eine zweite Dosis nötig sein.",
+						"Lass sie aufrecht sitzen bei Atemnot, oder liegen mit erhöhten Beinen bei Schwäche."
+					]
+				}
+			}
+		}
 	},
 	"mineAreas": {
 		"layerLabel": "Minenverdächtige Gebiete",
@@ -1371,7 +1435,8 @@
 			"pushAlerts": "Warnungs-Benachrichtigungen in den Einstellungen aktivieren, um bei neuen saisonalen Warnungen oder Hinweisen zum Wegzustand eine Push-Nachricht zu erhalten.",
 			"mobileDownload": "Auf dem Handy warnt ein gestarteter Offline-Download zuerst, dass er viel Speicherplatz und mobile Daten verbrauchen kann, und fragt dann nach Bestätigung - so löst du nie versehentlich einen Download von mehreren Gigabyte aus.",
 			"navTarget": "Markiere einen Ort mit \"Hierhin navigieren\" im Popup, um die Luftlinien-Entfernung und einen Kompasspfeil dorthin zu sehen (keine Navigation); tippe auf das X zum Beenden.",
-			"cacheHealth": "Oben im Offline-Karten-Bereich zeigt eine Anzeige bereit / fast bereit / nicht bereit, damit du auf einen Blick prüfen kannst, ob dein Korridor gespeichert und aktuell ist, der Speicher dauerhaft und die App aktuell, bevor du den Empfangsbereich verlässt."
+			"cacheHealth": "Oben im Offline-Karten-Bereich zeigt eine Anzeige bereit / fast bereit / nicht bereit, damit du auf einen Blick prüfen kannst, ob dein Korridor gespeichert und aktuell ist, der Speicher dauerhaft und die App aktuell, bevor du den Empfangsbereich verlässt.",
+			"firstAid": "Öffne das rote 112-Panel und klappe \"Erste Hilfe\" auf für Offline-Schritt-für-Schritt-Hinweise zu sechs häufigen Outdoor-Notfällen. Es sind nur allgemeine Hinweise - kein Ersatz für ausgebildete medizinische Versorgung, und sie verweisen immer auf den Anruf bei 112."
 		},
 		"officialAppNote": "FarOut ist die offizielle CLDT-App. Diese Karte ist ein unabhängiges Projekt nur für Forschungs- und Bildungszwecke - prüfen Sie kritische Informationen anhand offizieller Quellen.",
 		"demoHeading": "Demo-Wanderung",

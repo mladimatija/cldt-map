@@ -84,7 +84,8 @@
 			"accessibility": "Pristupačnost - velike dodirne mete i prilagodljiva veličina teksta sučelja (zadano / veliko / veće) koja povećava upravljačke ploče i slojeve bez mijenjanja veličine karte. Karta je označeno područje s mogućnošću fokusiranja tipkovnicom (strelice pomiču, +/- zumira), s porukom za orijentaciju čitača zaslona pri fokusu i klizačem staze iznad grafa visine koji najavljuje udaljenost, visinu, nagib, granice dionica i najbliži upotrebljiv izvor vode ispred putem žive regije. Visinski profil dostupan je kao figura s naslovom i tablicom uzoraka udaljenosti/visine, a obojeni stilovi staze prikazuju označenu legendu pa značenje ne prenosi samo boja",
 			"welcomeCard": "Dobrodošlica pri prvom pokretanju - jednokratna kartica koja se može odbaciti pri prvom posjetu predstavlja aplikaciju i nudi brze prečace do glavnih ploča te poveznicu na demo uživo; prikazuje se jednom, nikad tijekom demoa, potpuno dostupna tipkovnicom",
 			"navTargetHud": "Navigacija do cilja - prikvačite POI ili međutočku kao cilj putem \"Navigiraj ovamo\"; HUD u gornjem lijevom kutu prikazuje udaljenost u zračnoj liniji i strelicu smjera prema njemu (nije navigacija skretanje po skretanje)",
-			"offlineReadiness": "Spremnost za offline - značka na vrhu ploče offline karata na prvi pogled: spremno / gotovo spremno / nije spremno, sažima spremljeni koridor, trajnu pohranu i verziju aplikacije"
+			"offlineReadiness": "Spremnost za offline - značka na vrhu ploče offline karata na prvi pogled: spremno / gotovo spremno / nije spremno, sažima spremljeni koridor, trajnu pohranu i verziju aplikacije",
+			"firstAid": "Vodič za prvu pomoć - sklopiva offline sekcija u 112 panelu s opreznim podsjetnicima što učiniti za šest situacija u prirodi (krvarenje, prijelomi, pothlađenost, vrućina, ugriz zmije, alergijska reakcija), uz napomenu da ne zamjenjuje obučenu skrb"
 		},
 		"dataAttribution": "Podaci i atribucija",
 		"dataAttributionDesc": "Podatke o stazi pruža organizacija Udruga Long Distance Trail Hrvatska (LDTH). Karte dolaze od OpenStreetMap, OpenTopoMap, OpenHikingMap (openmaps.fr), Waymarked Trails, CyclOSM i drugih pružatelja. Hrvatske topografske karte su od Državne geodetske uprave (DGU). Meteorološki podaci dolaze od DHMZ-a (Državni hidrometeorološki zavod) i Open-Meteo. Radarske pločice osigurava RainViewer. Podaci o sezonskom stanju puta, upozorenja o opasnostima i podaci o stanicama gorske službe spašavanja preuzeti su od HGSS-a (Hrvatska gorska služba spašavanja), HPS-a (Hrvatski planinarski savez) te uprava nacionalnih parkova (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) i Parka prirode Velebit. Podaci prikazani na ovoj stranici možda ne odražavaju najnovije stanje. U slučaju sumnje, uvijek provjerite službene izvore.",
@@ -1232,7 +1233,70 @@
 		"mgrs": "MGRS",
 		"utm": "UTM",
 		"dms": "DMS",
-		"otherFormats": "Drugi formati koordinata"
+		"otherFormats": "Drugi formati koordinata",
+		"firstAid": {
+			"heading": "Prva pomoć",
+			"disclaimer": "Samo opći podsjetnici za prvu pomoć - ne zamjenjuju obučenu medicinsku skrb. Kad ste u nedoumici, prvo nazovite 112. Educirajte se prije nego što vam zatreba.",
+			"topics": {
+				"bleeding": {
+					"title": "Jako krvarenje",
+					"steps": [
+						"Čvrsto pritisnite ranu čistom krpom ili rukom i držite pritisak.",
+						"Ne uklanjajte natopljeni zavoj; stavite još preko njega i nastavite pritiskati.",
+						"Ako možete, podignite ozlijeđeni dio iznad razine srca.",
+						"Ako krvarenje na udu ne prestaje i opasno je po život, stavite podvezu iznad rane i zabilježite vrijeme.",
+						"Nazovite 112 te osobu držite na toplom i mirnom."
+					]
+				},
+				"fracture": {
+					"title": "Uganuće ili mogući prijelom",
+					"steps": [
+						"Ne pokušavajte ispraviti ili namjestiti deformirani ud.",
+						"Mirujte i imobilizirajte ozljedu; ako se morate kretati, učvrstite je udlagom u zatečenom položaju.",
+						"Stavite nešto hladno (ne izravno na kožu) da smanjite oticanje.",
+						"Ne opterećujte ozljedu i provjerite ostaju li prsti topli i ružičasti.",
+						"Za ozbiljan ili otvoreni prijelom nazovite 112."
+					]
+				},
+				"hypothermia": {
+					"title": "Pothlađenost (prehladno)",
+					"steps": [
+						"Sklonite osobu od vjetra i kiše te je izolirajte od tla.",
+						"Zamijenite mokru odjeću suhim slojevima; pokrijte glavu i vrat.",
+						"Dajte topli, zaslađeni napitak samo ako je osoba potpuno budna i može gutati.",
+						"Postupno grijte tijelo; ne trljajte kožu i ne dajte alkohol.",
+						"Ako drhtanje prestane, svijest oslabi ili je stanje teško, nazovite 112."
+					]
+				},
+				"heat": {
+					"title": "Toplinska iscrpljenost ili toplinski udar",
+					"steps": [
+						"Premjestite se u hlad i prekinite aktivnost; olabavite odjeću.",
+						"Pijte vodu ili elektrolitski napitak gutljajima ako je osoba pri svijesti.",
+						"Hladite kožu vodom i lepezanjem; usredotočite se na vrat, pazuhe i prepone.",
+						"Toplinski udar (zbunjenost, vruća suha koža, kolaps) opasan je po život - nazovite 112 i snažno hladite."
+					]
+				},
+				"snakebite": {
+					"title": "Ugriz zmije",
+					"steps": [
+						"Udaljite se od zmije; ostanite mirni i ograničite kretanje.",
+						"Držite ugrizeni ud mirno i ispod razine srca; skinite prstenje i tijesne predmete.",
+						"Ne režite, ne isisavajte, ne stavljajte podvezu i ne hladite ugriz.",
+						"Zabilježite vrijeme i oticanje; nazovite 112 i otiđite u bolnicu - ugriz poskoka u Hrvatskoj zahtijeva liječničku pomoć."
+					]
+				},
+				"anaphylaxis": {
+					"title": "Teška alergijska reakcija",
+					"steps": [
+						"Pazite na oticanje lica ili grla, otežano disanje ili šireći osip nakon uboda, hrane ili ugriza.",
+						"Ako osoba ima autoinjektor adrenalina (EpiPen), pomozite joj da ga primijeni u vanjsku stranu bedra.",
+						"Odmah nazovite 112; druga doza može biti potrebna nakon 5-15 minuta ako nema poboljšanja.",
+						"Držite osobu uspravno ako teško diše, ili položenu s podignutim nogama ako joj je slabo."
+					]
+				}
+			}
+		}
 	},
 	"mineAreas": {
 		"layerLabel": "Minski sumnjiva područja",
@@ -1371,7 +1435,8 @@
 			"pushAlerts": "Uključite obavijesti o upozorenjima u postavkama za push poruku kad se objavi novo sezonsko upozorenje ili obavijest o stanju staze.",
 			"mobileDownload": "Na telefonu pokretanje offline preuzimanja prvo upozorava da može potrošiti puno prostora i mobilnih podataka, a zatim traži potvrdu - tako slučajno ne pokrenete preuzimanje od više gigabajta.",
 			"navTarget": "Prikvačite mjesto pomoću \"Navigiraj ovamo\" u skočnom prozoru za prikaz udaljenosti u zračnoj liniji i strelice smjera prema njemu (nije navigacija); dodirnite X za prekid.",
-			"cacheHealth": "Vrh ploče offline karata prikazuje značku spremno / gotovo spremno / nije spremno kako biste na prvi pogled potvrdili da je koridor spremljen i ažuran, pohrana trajna i aplikacija ažurna prije odlaska izvan signala."
+			"cacheHealth": "Vrh ploče offline karata prikazuje značku spremno / gotovo spremno / nije spremno kako biste na prvi pogled potvrdili da je koridor spremljen i ažuran, pohrana trajna i aplikacija ažurna prije odlaska izvan signala.",
+			"firstAid": "Otvorite crveni 112 panel i proširite \"Prva pomoć\" za offline podsjetnike korak po korak za šest čestih hitnih situacija u prirodi. To su samo opće upute - ne zamjenjuju obučenu medicinsku skrb i uvijek upućuju na poziv 112."
 		},
 		"officialAppNote": "FarOut je službena CLDT aplikacija. Ova karta je neovisan projekt isključivo za istraživačke i edukativne svrhe - ključne informacije provjerite u službenim izvorima.",
 		"demoHeading": "Demo hodnja",

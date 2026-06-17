@@ -84,7 +84,8 @@
 			"accessibility": "Accessibilità - bersagli touch grandi e una dimensione del testo dell'interfaccia regolabile (predefinita / grande / più grande) che ingrandisce i pannelli di controllo e gli overlay senza ridimensionare la mappa. La mappa è una regione etichettata e focalizzabile da tastiera (le frecce spostano, +/- zooma) con un messaggio di orientamento per screen reader al focus e un cursore del sentiero sopra il grafico del dislivello che annuncia distanza, quota, pendenza, confini di sezione e la sorgente d'acqua utilizzabile più vicina davanti tramite una live region. Il profilo altimetrico è esposto come figura con didascalia e una tabella campionata distanza/altitudine, e gli stili colorati del sentiero mostrano una legenda etichettata così il significato non è veicolato dal solo colore",
 			"welcomeCard": "Benvenuto al primo avvio - una scheda monouso e chiudibile alla prima visita presenta l'app e offre scorciatoie verso i pannelli principali e un link alla demo dal vivo; mostrata una volta, mai durante una demo, completamente accessibile da tastiera",
 			"navTargetHud": "Naviga verso un obiettivo - fissa un POI o un waypoint come obiettivo tramite \"Naviga qui\"; un HUD in alto a sinistra mostra la distanza in linea retta e una freccia di rilevamento verso di esso (non navigazione svolta per svolta)",
-			"offlineReadiness": "Pronto per offline - un indicatore a colpo d'occhio in cima al pannello delle mappe offline: pronto / quasi pronto / non pronto, riassume il corridoio salvato, l'archiviazione permanente e la versione dell'app"
+			"offlineReadiness": "Pronto per offline - un indicatore a colpo d'occhio in cima al pannello delle mappe offline: pronto / quasi pronto / non pronto, riassume il corridoio salvato, l'archiviazione permanente e la versione dell'app",
+			"firstAid": "Guida di primo soccorso - una sezione offline a scomparsa nel pannello 112 con promemoria prudenti su cosa fare per sei situazioni outdoor (emorragia, fratture, ipotermia, calore, morso di serpente, reazione allergica), con l'avviso che non sostituisce cure qualificate"
 		},
 		"dataAttribution": "Dati e attribuzioni",
 		"dataAttributionDesc": "I dati del sentiero sono forniti dall'organizzazione Udruga Long Distance Trail Hrvatska (LDTH). Le tessere mappa provengono da OpenStreetMap, OpenTopoMap, OpenHikingMap (openmaps.fr), Waymarked Trails, CyclOSM e altri provider. Le mappe topografiche croate provengono dall'Amministrazione Geodetica Statale (DGU). I dati meteo provengono da DHMZ (Servizio Meteorologico Croato) e Open-Meteo. Le tessere radar sono fornite da RainViewer. Stato stagionale del sentiero, avvisi di pericolo e dati delle stazioni di soccorso alpino provengono da HGSS (Servizio croato di soccorso in montagna), HPS (Federazione croata di alpinismo) e dalle autorità dei parchi nazionali (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) e Parco naturale Velebit. I dati visualizzati su questo sito potrebbero non riflettere le condizioni più recenti. In caso di dubbio, verificare sempre le fonti ufficiali.",
@@ -1232,7 +1233,70 @@
 		"mgrs": "MGRS",
 		"utm": "UTM",
 		"dms": "DMS",
-		"otherFormats": "Altri formati di coordinate"
+		"otherFormats": "Altri formati di coordinate",
+		"firstAid": {
+			"heading": "Primo soccorso",
+			"disclaimer": "Solo promemoria generali di primo soccorso - non sostituiscono cure mediche qualificate. Nel dubbio, chiama prima il 112. Formati prima di averne bisogno.",
+			"topics": {
+				"bleeding": {
+					"title": "Emorragia grave",
+					"steps": [
+						"Premi con forza sulla ferita con un panno pulito o la mano e mantieni la pressione.",
+						"Non rimuovere una medicazione imbevuta; aggiungine altra sopra e continua a premere.",
+						"Se puoi, solleva la parte ferita sopra il livello del cuore.",
+						"Se un arto sanguina in modo letale e non si ferma, applica un laccio emostatico sopra la ferita e annota l'ora.",
+						"Chiama il 112 e tieni la persona al caldo e ferma."
+					]
+				},
+				"fracture": {
+					"title": "Distorsione o sospetta frattura",
+					"steps": [
+						"Non cercare di raddrizzare o rimettere a posto un arto deformato.",
+						"Riposo e immobilizzazione; se devi muoverti, imbottisci e steccala nella posizione trovata.",
+						"Applica qualcosa di freddo (non a diretto contatto con la pelle) per ridurre il gonfiore.",
+						"Non caricare la lesione e controlla che le dita di mani o piedi restino calde e rosee.",
+						"Per una frattura grave o esposta chiama il 112."
+					]
+				},
+				"hypothermia": {
+					"title": "Ipotermia (troppo freddo)",
+					"steps": [
+						"Sposta la persona al riparo da vento e pioggia e isolala dal terreno.",
+						"Sostituisci gli indumenti bagnati con strati asciutti; copri testa e collo.",
+						"Dai bevande calde e zuccherate solo se la persona è del tutto sveglia e in grado di deglutire.",
+						"Riscalda il corpo gradualmente; non strofinare la pelle e non dare alcol.",
+						"Se i brividi cessano, la coscienza cala o il caso è grave, chiama il 112."
+					]
+				},
+				"heat": {
+					"title": "Esaurimento da calore o colpo di calore",
+					"steps": [
+						"Spostati all'ombra e interrompi l'attività; allenta gli indumenti.",
+						"Bevi acqua o una bevanda con elettroliti a piccoli sorsi se la persona è vigile.",
+						"Raffredda la pelle con acqua e ventilazione; concentrati su collo, ascelle e inguine.",
+						"Il colpo di calore (confusione, pelle calda e secca, collasso) è letale - chiama il 112 e raffredda energicamente."
+					]
+				},
+				"snakebite": {
+					"title": "Morso di serpente",
+					"steps": [
+						"Allontanati dal serpente; resta calmo e limita i movimenti.",
+						"Tieni l'arto morso fermo e sotto il livello del cuore; togli anelli e oggetti stretti.",
+						"Non incidere, succhiare, applicare lacci o ghiaccio sul morso.",
+						"Annota l'ora e il gonfiore; chiama il 112 e va in ospedale - il morso della vipera dal corno presente in Croazia richiede cure mediche."
+					]
+				},
+				"anaphylaxis": {
+					"title": "Reazione allergica grave",
+					"steps": [
+						"Cerca gonfiore del viso o della gola, difficoltà a respirare o un'eruzione che si diffonde dopo puntura, cibo o morso.",
+						"Se la persona ha un autoiniettore di adrenalina (EpiPen), aiutala a usarlo nella coscia esterna.",
+						"Chiama subito il 112; una seconda dose può servire dopo 5-15 minuti se non migliora.",
+						"Tienila seduta se respira a fatica, o sdraiata con le gambe sollevate se si sente svenire."
+					]
+				}
+			}
+		}
 	},
 	"mineAreas": {
 		"layerLabel": "Aree sospette di mine",
@@ -1371,7 +1435,8 @@
 			"pushAlerts": "Attiva le notifiche di avviso nelle impostazioni per ricevere un push quando viene pubblicato un nuovo avviso stagionale o una notifica sulle condizioni del sentiero.",
 			"mobileDownload": "Su un telefono, l'avvio di un download offline avverte prima che può usare molto spazio e dati mobili, poi chiede conferma - così non avvii mai per sbaglio un download di diversi gigabyte.",
 			"navTarget": "Fissa un luogo con \"Naviga qui\" nel suo popup per vedere la distanza in linea retta e una freccia di rilevamento verso di esso (non navigazione); tocca la X per interrompere.",
-			"cacheHealth": "In cima al pannello delle mappe offline un indicatore pronto / quasi pronto / non pronto ti permette di verificare a colpo d'occhio che il corridoio sia salvato e aggiornato, l'archiviazione permanente e l'app aggiornata prima di uscire dalla copertura."
+			"cacheHealth": "In cima al pannello delle mappe offline un indicatore pronto / quasi pronto / non pronto ti permette di verificare a colpo d'occhio che il corridoio sia salvato e aggiornato, l'archiviazione permanente e l'app aggiornata prima di uscire dalla copertura.",
+			"firstAid": "Apri il pannello rosso 112 ed espandi \"Primo soccorso\" per promemoria offline passo dopo passo per sei emergenze outdoor comuni. Sono solo indicazioni generali - non sostituiscono cure mediche qualificate, e rimandano sempre alla chiamata al 112."
 		},
 		"officialAppNote": "FarOut è l’app ufficiale del CLDT. Questa mappa è un progetto indipendente solo per scopi di ricerca ed educativi - verifica le informazioni critiche con le fonti ufficiali.",
 		"demoHeading": "Escursione demo",

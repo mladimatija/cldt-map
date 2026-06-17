@@ -206,6 +206,7 @@ export function MapControlsHelpPanel(): React.ReactElement {
 						['gps', t('offline.gps')],
 						['offRouteAlert', t('offline.offRouteAlert')],
 						['navTarget', t('offline.navTarget')],
+						['firstAid', t('offline.firstAid')],
 						['daylight', t('offline.daylight')],
 						['pushAlerts', t('offline.pushAlerts')],
 					]}
