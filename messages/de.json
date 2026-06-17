@@ -1320,9 +1320,9 @@
 		"basicsHeading": "Kartengrundlagen",
 		"basics": {
 			"layers": "Der Ebenen-Button (oben rechts) wechselt Basiskarten und Overlays wie Unwetter. Radar, Kachel-Zuschnitt und Kartenfarb-Anpassung liegen im Werkzeuge-Panel (Schraubenschlüssel in der Steuerleiste).",
-			"trail": "Tippe auf die Trail-Linie, Orts-Marker oder saisonale Warn-Chips für Details; Popups verlinken zu Fotos, Wikipedia und Teilen.",
+			"trail": "Tippe auf die Trail-Linie, Orts-Marker oder saisonale Warn-Chips für Details; Popups verlinken zu Fotos, Wikipedia und Teilen. Wasser-Popups erlauben, den Zustand zu notieren (fließt/wenig/trocken); jedes POI-Popup speichert eine private Notiz auf dem Gerät und - wenn eine Kurator-E-Mail konfiguriert ist - einen Link Problem melden.",
 			"share": "Ein Symbolleisten-Button für Teilen und Export. Bei GPS oder angeheftetem Trail-Punkt heißt die Beschriftung Teilen & exportieren und das Panel zeigt QR-Code (vom anderen Telefon scannen), Link kopieren und Druck/PNG-Export. Sonst heißt die Beschriftung Drucken & exportieren und nur der Export erscheint. Schließen über Symbolleisten-Umschalter, Klick außerhalb oder Escape (kein Schließen-Fuß). Kurzlinks wenn online und in Einstellungen aktiviert.",
-			"settings": "Das Zahnrad öffnet die Einstellungen mit acht Bereichskarten (Anzeige und Gerät, Wegoptik, Karten-Overlays, Gehen und ETA, Pack und Tempo, Benachrichtigungen und Teilen, Offline-Karten, Importe). Einheiten, Richtung (SOBO/NOBO) und Distanzgenauigkeit bleiben in der Symbolleiste als Sitzungssteuerungen."
+			"settings": "Das Zahnrad öffnet die Einstellungen mit acht Bereichskarten (Anzeige und Gerät, Wegoptik, Karten-Overlays, Gehen und ETA, Pack und Tempo, Benachrichtigungen und Teilen, Offline-Karten, Importe). Einheiten, Richtung (SOBO/NOBO) und Distanzgenauigkeit bleiben in der Symbolleiste als Sitzungssteuerungen. Die Karte Gehen & ETA hat zudem eine persönliche Tempoanpassung (70-140%), die jede ETA an dein echtes Tempo anpasst."
 		},
 		"chartHeading": "Höhenprofil",
 		"gesturesHeading": "Versteckte Gesten",
@@ -1334,7 +1334,7 @@
 		},
 		"planningHeading": "Planungswerkzeuge",
 		"planning": {
-			"planner": "Der Kalender-Button teilt jeden Trail-Abschnitt in Tagesetappen mit Höhe, Gehzeit, Wasser und Wetter pro Tag.",
+			"planner": "Der Kalender-Button teilt jeden Trail-Abschnitt in Tagesetappen mit Höhe, Gehzeit, Wasser und Wetter pro Tag. Jede Etappe zeigt zudem die nächste Hütte, Schutzhütte oder Ortschaft zum Übernachten (Bett-Chip).",
 			"tripBrief": "Im Planer exportiert \"Trip brief\" den ganzen Plan mit Karten und Notfallinfos als druckbares PDF, editierbares DOCX oder eigenständige HTML-Seite. Ruhetage werden als eigene datierte Seiten gedruckt, passend zum Planer und Kalenderexport.",
 			"progress": "Der Häkchen-Button verfolgt, welche Abschnitte du gewandert bist - automatisch per GPS, aus der Lineal-Auswahl oder aus einem importierten Track. Das Panel gruppiert Dein Fortschritt, Aus GPX, Wegpunkte und Tagebuch in Karten mit einer sticky animierten Zusammenfassung.",
 			"journal": "Im Tagebuch-Bereich verknüpfe ein importiertes GPX-Segment mit einem datierten Eintrag (Link-Icon), sieh es auf der Karte vor, nutze Ansehen für schreibgeschützte Einträge oder das Overflow-Menü zum GPX-/Zip-Export oder zum Entfernen der Verknüpfung. Markdown-Import/-Export bewahrt Strecken- und Track-Metadaten in HTML-Kommentaren; Share-URLs übernehmen Track-Referenzen, wenn Reisezustand enthalten ist. Eine Schaltfläche Heute eintragen (bei GPS auf dem Weg) öffnet mit einem Tipp einen neuen Eintrag mit dem heutigen Datum und deinem aktuellen Kilometer, der Höhe und dem Abschnitt.",

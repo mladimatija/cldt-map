@@ -1320,8 +1320,8 @@
 		"basicsHeading": "Map basics",
 		"basics": {
 			"layers": "The layers button (top right) switches base maps and overlays such as severe weather. Radar, tile clipping, and map colour adjust live in the Tools panel (wrench icon on the control rail).",
-			"trail": "Tap the trail line, POI markers, or seasonal warning chips for details; popups link onward to photos, Wikipedia, and sharing.",
-			"settings": "The gear opens Settings with eight section cards (display and device, trail appearance, map overlays, walking and ETA, pack and pace, notifications and sharing, offline maps, imports). Units, direction (SOBO/NOBO), and distance precision stay on the toolbar as session controls.",
+			"trail": "Tap the trail line, POI markers, or seasonal warning chips for details; popups link onward to photos, Wikipedia, and sharing. Water popups let you log what you found (flowing/low/dry); any POI popup keeps a private on-device note, and - when a curator email is configured - a Report an issue link.",
+			"settings": "The gear opens Settings with eight section cards (display and device, trail appearance, map overlays, walking and ETA, pack and pace, notifications and sharing, offline maps, imports). Units, direction (SOBO/NOBO), and distance precision stay on the toolbar as session controls. The Walking & ETA card also has a personal pace adjustment (70-140%) that scales every ETA to your real pace.",
 			"share": "One toolbar button covers share and export. When GPS or a pinned trail point is available, the label reads Share & export map and the panel shows a QR code (scan from another phone), copy link, and print/PNG export. Otherwise the label reads Print & export map and only export appears. Dismiss via the toolbar toggle, outside click, or Escape (no footer Close). Short links apply when online and enabled in Settings."
 		},
 		"chartHeading": "Elevation chart",
@@ -1334,7 +1334,7 @@
 		},
 		"planningHeading": "Planning tools",
 		"planning": {
-			"planner": "The calendar button splits any trail range into daily stages with elevation, ETA, water, and weather per day.",
+			"planner": "The calendar button splits any trail range into daily stages with elevation, ETA, water, and weather per day. Each stage also shows the nearest hut, shelter, or town to sleep at (bed chip).",
 			"tripBrief": "Inside the planner, \"Trip brief\" exports the whole plan with maps and emergency info as a printable PDF, an editable DOCX, or a self-contained HTML page. Rest days print as their own dated pages, matching the planner and calendar export.",
 			"progress": "The checkmark button tracks which stretches you have hiked - automatically from GPS, from the ruler selection, or from an imported track. The panel groups Your progress, From GPX, waypoints, and journal in cards with a sticky animated summary.",
 			"journal": "In the journal section, link an imported GPX segment to a dated entry (link icon), preview it on the map, View read-only entries, or use the overflow menu to export GPX, a zip bundle, or remove the link. Markdown import/export preserves range and track metadata in HTML comments; share URLs carry track refs when trip state is included. A one-tap Log today button (shown when GPS is on-trail) opens a new entry pre-filled with today's date and your current km, elevation, and section.",

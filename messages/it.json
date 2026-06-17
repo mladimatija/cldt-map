@@ -1320,9 +1320,9 @@
 		"basicsHeading": "Nozioni di base",
 		"basics": {
 			"layers": "Il pulsante livelli (in alto a destra) cambia mappe di base e overlay come maltempo. Radar, ritaglio tessere e regolazione colore mappa sono nel pannello Strumenti (icona chiave inglese nella barra comandi).",
-			"trail": "Tocca la linea del sentiero, i marker dei luoghi o i chip di avviso stagionale per i dettagli; i popup portano a foto, Wikipedia e condivisione.",
+			"trail": "Tocca la linea del sentiero, i marker dei luoghi o i chip di avviso stagionale per i dettagli; i popup portano a foto, Wikipedia e condivisione. I popup dell'acqua permettono di registrare lo stato (scorre/scarsa/asciutta); ogni popup POI conserva una nota privata sul dispositivo e - quando è configurata un'email del curatore - un link Segnala un problema.",
 			"share": "Un solo pulsante nella barra copre condivisione ed esportazione. Con GPS o un punto fissato sul sentiero, l'etichetta è Condividi ed esporta mappa e il pannello mostra codice QR (scansiona da un altro telefono), copia link e stampa/esportazione PNG. Altrimenti l'etichetta è Stampa ed esporta mappa e compare solo l'esportazione. Chiudi con l'interruttore nella barra, clic fuori o Escape (nessun Chiudi nel piè di pagina). Link brevi se online e attivati in Impostazioni.",
-			"settings": "L'ingranaggio apre Impostazioni con otto schede (display e dispositivo, aspetto del sentiero, overlay mappa, camminata e ETA, zaino e passo, notifiche e condivisione, mappe offline, importazioni). Unità, direzione (SOBO/NOBO) e precisione distanza restano nella barra degli strumenti come controlli di sessione."
+			"settings": "L'ingranaggio apre Impostazioni con otto schede (display e dispositivo, aspetto del sentiero, overlay mappa, camminata e ETA, zaino e passo, notifiche e condivisione, mappe offline, importazioni). Unità, direzione (SOBO/NOBO) e precisione distanza restano nella barra degli strumenti come controlli di sessione. La scheda Camminata ed ETA ha anche una regolazione personale del passo (70-140%) che adatta ogni stima al tuo passo reale."
 		},
 		"chartHeading": "Profilo altimetrico",
 		"gesturesHeading": "Gesti nascosti",
@@ -1334,7 +1334,7 @@
 		},
 		"planningHeading": "Strumenti di pianificazione",
 		"planning": {
-			"planner": "Il pulsante calendario divide qualsiasi tratto in tappe giornaliere con dislivello, tempi, acqua e meteo per giorno.",
+			"planner": "Il pulsante calendario divide qualsiasi tratto in tappe giornaliere con dislivello, tempi, acqua e meteo per giorno. Ogni tappa mostra anche il rifugio, ricovero o paese più vicino dove dormire (indicatore letto).",
 			"tripBrief": "Nel pianificatore, \"Trip brief\" esporta l'intero piano con mappe e info di emergenza come PDF stampabile, DOCX modificabile o pagina HTML autonoma. I giorni di riposo vengono stampati come pagine datate a sé, come nel pianificatore e nell'esportazione del calendario.",
 			"progress": "Il pulsante con la spunta traccia i tratti percorsi - automaticamente dal GPS, dalla selezione del righello o da una traccia importata. Il pannello raggruppa Il tuo progresso, Da GPX, waypoint e diario in schede con un riepilogo animato fisso.",
 			"journal": "Nella sezione diario, collega un segmento GPX importato a una voce datata (icona collegamento), visualizzalo in anteprima sulla mappa, usa Visualizza per le voci in sola lettura o il menu overflow per esportare GPX, un pacchetto zip o rimuovere il collegamento. Import/export Markdown conserva metadati di tratto e traccia in commenti HTML; i link di condivisione includono i riferimenti alla traccia quando lo stato del viaggio è presente. Un pulsante Registra oggi (con GPS sul sentiero) apre con un tocco una nuova voce precompilata con la data odierna e il tuo km, quota e sezione attuali.",

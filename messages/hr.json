@@ -1320,9 +1320,9 @@
 		"basicsHeading": "Osnove karte",
 		"basics": {
 			"layers": "Gumb slojeva (gore desno) mijenja podloge i preklope poput opasnog vremena. Radar, obrezivanje pločica i prilagodba boje karte nalaze se u ploči Alati (ikona ključa na alatnoj traci).",
-			"trail": "Dodirni liniju staze, markere mjesta ili sezonske oznake upozorenja za detalje; skočni prozori vode dalje na fotografije, Wikipediju i dijeljenje.",
+			"trail": "Dodirni liniju staze, markere mjesta ili sezonske oznake upozorenja za detalje; skočni prozori vode dalje na fotografije, Wikipediju i dijeljenje. Skočni prozori za vodu omogućuju bilježenje stanja (teče/slabo/suho); svaki POI skočni prozor čuva privatnu bilješku na uređaju, a - kad je postavljena e-pošta urednika - poveznicu Prijavi pogrešku.",
 			"share": "Jedan gumb na alatnoj traci pokriva dijeljenje i izvoz. Kad je dostupan GPS ili prikvačena točka na stazi, oznaka glasi Podijeli i izvezi kartu, a ploča prikazuje QR kod (skeniraj s drugog telefona), kopiranje poveznice i ispis/PNG izvoz. Inače oznaka glasi Ispis i izvoz karte i vidljiv je samo izvoz. Zatvori prekidačem na traci, klikom izvan ploče ili Escape (nema gumba Zatvori u podnožju). Kratke poveznice kad ste online i uključene u Postavkama.",
-			"settings": "Zupčanik otvara Postavke s osam kartica (prikaz i uređaj, izgled staze, preklozi karte, hodanje i ETA, ruksak i tempo, obavijesti i dijeljenje, offline karte, uvozi). Jedinice, smjer (SOBO/NOBO) i preciznost udaljenosti ostaju na alatnoj traci kao kontrole sesije."
+			"settings": "Zupčanik otvara Postavke s osam kartica (prikaz i uređaj, izgled staze, preklozi karte, hodanje i ETA, ruksak i tempo, obavijesti i dijeljenje, offline karte, uvozi). Jedinice, smjer (SOBO/NOBO) i preciznost udaljenosti ostaju na alatnoj traci kao kontrole sesije. Kartica Hodanje i ETA ima i osobnu prilagodbu tempa (70-140%) koja skalira svaku procjenu prema tvom stvarnom tempu."
 		},
 		"chartHeading": "Profil visine",
 		"gesturesHeading": "Skrivene geste",
@@ -1334,7 +1334,7 @@
 		},
 		"planningHeading": "Alati za planiranje",
 		"planning": {
-			"planner": "Gumb s kalendarom dijeli bilo koji raspon staze na dnevne etape s visinom, ETA-om, vodom i vremenom po danu.",
+			"planner": "Gumb s kalendarom dijeli bilo koji raspon staze na dnevne etape s visinom, ETA-om, vodom i vremenom po danu. Svaka etapa prikazuje i najbliži dom, sklonište ili grad za spavanje (oznaka kreveta).",
 			"tripBrief": "Unutar planera, \"Vodič za putovanje\" izvozi cijeli plan s kartama i uputama za hitne slučajeve kao PDF za ispis, DOCX za uređivanje ili samostalnu HTML stranicu. Dani odmora ispisuju se kao vlastite datirane stranice, jednako kao u planeru i kalendarskom izvozu.",
 			"progress": "Gumb s kvačicom prati koje si dionice prehodao - automatski iz GPS-a, iz odabira ravnalom ili iz uvezene rute. Ploča grupira Tvoj napredak, Iz GPX-a, točke i dnevnik u kartice s ljepljivim animiranim sažetkom.",
 			"journal": "U odjeljku dnevnika poveži uvezeni GPX segment sa zapisom po datumu (ikona poveznice), pregledaj ga na karti, otvori Pogledaj za samo čitanje ili koristi izbornik više radnji za izvoz GPX-a, zip paketa ili uklanjanje poveznice. Markdown uvoz/izvoz čuva metapodatke dionice i traga u HTML komentarima; poveznice za dijeljenje prenose reference na trag kad je uključeno stanje putovanja. Gumb Zabilježi danas (kad je GPS na stazi) jednim dodirom otvara novi zapis ispunjen današnjim datumom te trenutnim kilometrom, visinom i dionicom.",
