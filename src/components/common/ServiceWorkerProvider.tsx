@@ -6,6 +6,7 @@ import { IoRefresh } from 'react-icons/io5';
 import { Button } from '@/components/ui/Button';
 import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
 import { type BatteryManager, type NavigatorWithBattery, type NavigatorWithConnection } from '@/lib/tile-cache';
+import { isAppUpdateWaiting } from '@/lib/sw-update';
 
 interface ServiceWorkerProviderProps {
 	children: React.ReactNode;
@@ -48,13 +49,11 @@ export function ServiceWorkerProvider({ children }: ServiceWorkerProviderProps):
 
 		const handleUpdateReady = (reg: ServiceWorkerRegistration): void => {
 			registrationRef.current = reg;
-			// Only prompt for an *update* when a controller already runs this page.
-			// On a first install the SW's install handler calls skipWaiting(), so
-			// the new worker flickers through the `waiting` state (briefly making
-			// reg.waiting truthy) before it activates. Without this controller gate
-			// that flicker shows a bogus "new version available" prompt to first-time
-			// visitors, who have no prior version to update from.
-			if (reg.waiting && navigator.serviceWorker.controller) setUpdateAvailable(true);
+			// `isAppUpdateWaiting` carries the controller gate: on a first install the
+			// SW (which calls skipWaiting()) flickers through `waiting` with no
+			// controller, which must not show a bogus "new version available" prompt
+			// to first-time visitors. Shared with the offline-readiness readout.
+			if (isAppUpdateWaiting(reg)) setUpdateAvailable(true);
 		};
 
 		const listenForInstall = (reg: ServiceWorkerRegistration): void => {

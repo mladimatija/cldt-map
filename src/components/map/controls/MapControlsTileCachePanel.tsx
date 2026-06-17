@@ -26,6 +26,7 @@ import { tileCacheTtlDays, TRAIL_OFF_TRAIL_THRESHOLD_M } from '@/lib/config';
 import { formatDistance, isMobile } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
 import { SettingsToggleRow } from './SettingsToggleRow';
+import { CacheHealthStatus } from './CacheHealthStatus';
 import {
 	IoCloudDownloadOutline,
 	IoTrashOutline,
@@ -255,6 +256,8 @@ export function MapControlsTileCachePanel({ embedded = false }: MapControlsTileC
 
 			{cacheable && gpxLoaded && (
 				<div className="space-y-2">
+					{/* One-glance offline-readiness summary above the detailed rows. */}
+					<CacheHealthStatus />
 					{/* Error state */}
 					{tileCacheError && !tileCacheDownloading && (
 						<p className="text-cldt-red text-xs">

@@ -583,3 +583,19 @@ export async function requestPersistentStorage(): Promise<boolean> {
 		return false;
 	}
 }
+
+/**
+ * Read-only check of whether the browser has already granted durable
+ * (persisted) storage, without requesting it. Returns null when the Storage API
+ * or persisted() is unavailable (e.g. older Safari) so callers can render an
+ * "unknown / best-effort" state rather than a definite "no". Keeps all
+ * navigator.storage access in this module alongside requestPersistentStorage.
+ */
+export async function isStoragePersisted(): Promise<boolean | null> {
+	if (typeof navigator === 'undefined' || typeof navigator.storage?.persisted !== 'function') return null;
+	try {
+		return await navigator.storage.persisted();
+	} catch {
+		return null;
+	}
+}

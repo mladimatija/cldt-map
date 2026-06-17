@@ -202,6 +202,7 @@ export function MapControlsHelpPanel(): React.ReactElement {
 					items={[
 						['precache', t('offline.precache')],
 						['mobileDownload', t('offline.mobileDownload')],
+						['cacheHealth', t('offline.cacheHealth')],
 						['gps', t('offline.gps')],
 						['offRouteAlert', t('offline.offRouteAlert')],
 						['navTarget', t('offline.navTarget')],

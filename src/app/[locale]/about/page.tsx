@@ -82,6 +82,7 @@ export default function AboutPage(): React.ReactNode {
 							<li className="mb-2">{t('mapFeaturesList.units')}</li>
 							<li className="mb-2">{t('mapFeaturesList.darkMode')}</li>
 							<li className="mb-2">{t('mapFeaturesList.offlineMaps')}</li>
+							<li className="mb-2">{t('mapFeaturesList.offlineReadiness')}</li>
 							<li className="mb-2">{t('mapFeaturesList.weather')}</li>
 							<li className="mb-2">{t('mapFeaturesList.trailNotices')}</li>
 							<li className="mb-2">{t('mapFeaturesList.seasonalStatus')}</li>
