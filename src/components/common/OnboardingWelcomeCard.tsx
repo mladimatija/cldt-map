@@ -3,13 +3,6 @@
 /**
  * First-run welcome card (onboarding Layer 1).
  *
- * A one-time, dismissible card shown on the very first map visit. It gives a
- * dense feature-rich app a "zero-setup" entry point: a one-line framing plus a
- * few launchers into the highest-value panels and a link to the live demo, so
- * a new user finds the core 20% without hunting the control rail. Shown once
- * (a persisted `onboardingSeen` flag), never during a demo session, and
- * account-free / analytics-free in keeping with the privacy-first positioning.
- *
  * Accessibility, focus trap, Escape / backdrop / corner-X dismiss all come from
  * the shared MapControlModalShell.
  */
@@ -50,6 +43,7 @@ export default function OnboardingWelcomeCard(): React.ReactElement | null {
 	const onboardingSeen = useMapStore((s: MapStoreState) => s.onboardingSeen);
 	const markOnboardingSeen = useMapStore((s: MapStoreState) => s.markOnboardingSeen);
 	const setOpenPanel = useMapStore((s: MapStoreState) => s.setOpenPanel);
+	const startTour = useMapStore((s: MapStoreState) => s.startTour);
 	const demoModeActive = useMapStore((s: MapStoreState) => s.demoModeActive);
 
 	const isClient = useIsClient();
@@ -95,9 +89,21 @@ export default function OnboardingWelcomeCard(): React.ReactElement | null {
 					<IoPlayCircleOutline aria-hidden className="h-4 w-4 shrink-0" />
 					{t('demo')}
 				</Link>
-				<Button className="min-h-[44px]" variant="mapControlOutline" onClick={markOnboardingSeen}>
-					{t('gotIt')}
-				</Button>
+				<div className="flex items-center gap-2">
+					<Button className="min-h-[44px]" variant="mapControlOutlineSecondary" onClick={markOnboardingSeen}>
+						{t('gotIt')}
+					</Button>
+					<Button
+						className="min-h-[44px]"
+						variant="mapControlOutline"
+						onClick={() => {
+							markOnboardingSeen();
+							startTour();
+						}}
+					>
+						{t('takeTour')}
+					</Button>
+				</div>
 			</div>
 		</MapControlModalShell>
 	);

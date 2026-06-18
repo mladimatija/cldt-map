@@ -2,7 +2,7 @@
 
 import React, { useEffect } from 'react';
 import { useTranslations } from 'next-intl';
-import { IoArrowForwardOutline } from 'react-icons/io5';
+import { IoArrowForwardOutline, IoCompassOutline } from 'react-icons/io5';
 import { Link } from '@/i18n/navigation';
 import { MAP_CONTROL_LINK_BUTTON, MAP_CONTROL_PANEL_WIDTH, MAP_CONTROL_POPOVER } from './map-controls-constants';
 import { MapControlSectionCard } from './MapControlSectionCard';
@@ -58,6 +58,7 @@ export function MapControlsHelpPanel(): React.ReactElement {
 	const helpScrollTarget = useMapStore((state: MapStoreState) => state.helpScrollTarget);
 	const clearHelpScrollTarget = useMapStore((state: MapStoreState) => state.clearHelpScrollTarget);
 	const setOpenPanel = useMapStore((state: MapStoreState) => state.setOpenPanel);
+	const startTour = useMapStore((state: MapStoreState) => state.startTour);
 
 	// "Start here" launcher: deep-link into the most useful panels (mutual
 	// exclusion in the store closes help and opens the target).
@@ -105,6 +106,14 @@ export function MapControlsHelpPanel(): React.ReactElement {
 							{t(`start.${key}`)}
 						</button>
 					))}
+					<button
+						className={cn(MAP_CONTROL_LINK_BUTTON, 'flex w-full items-center gap-2')}
+						type="button"
+						onClick={startTour}
+					>
+						<IoCompassOutline aria-hidden className="h-3.5 w-3.5 shrink-0" />
+						{t('startTourLink')}
+					</button>
 				</div>
 			</MapControlSectionCard>
 

@@ -86,7 +86,8 @@
 			"navTargetHud": "Naviga verso un obiettivo - fissa un POI o un waypoint come obiettivo tramite \"Naviga qui\"; un HUD in alto a sinistra mostra la distanza in linea retta e una freccia di rilevamento verso di esso (non navigazione svolta per svolta)",
 			"offlineReadiness": "Pronto per offline - un indicatore a colpo d'occhio in cima al pannello delle mappe offline: pronto / quasi pronto / non pronto, riassume il corridoio salvato, l'archiviazione permanente e la versione dell'app",
 			"firstAid": "Guida di primo soccorso - una sezione offline a scomparsa nel pannello 112 con promemoria prudenti su cosa fare per sei situazioni outdoor (emorragia, fratture, ipotermia, calore, morso di serpente, reazione allergica), con l'avviso che non sostituisce cure qualificate",
-			"terrainOverlays": "Overlay del terreno - attiva ombreggiatura del rilievo (Esri) e curve di livello (OpenTopoMap) in modo indipendente e sovrapponile a qualsiasi base, anche al satellite, per leggere il terreno (gratis, senza chiave API, solo online)"
+			"terrainOverlays": "Overlay del terreno - attiva ombreggiatura del rilievo (Esri) e curve di livello (OpenTopoMap) in modo indipendente e sovrapponile a qualsiasi base, anche al satellite, per leggere il terreno (gratis, senza chiave API, solo online)",
+			"guidedTour": "Tour guidato - un tour facoltativo a evidenziazioni (dalla scheda di benvenuto o dal pannello Aiuto) che mette in risalto i controlli principali uno per uno con Indietro/Avanti/Salta"
 		},
 		"dataAttribution": "Dati e attribuzioni",
 		"dataAttributionDesc": "I dati del sentiero sono forniti dall'organizzazione Udruga Long Distance Trail Hrvatska (LDTH). Le tessere mappa provengono da OpenStreetMap, OpenTopoMap, OpenHikingMap (openmaps.fr), Waymarked Trails, CyclOSM e altri provider. Le mappe topografiche croate provengono dall'Amministrazione Geodetica Statale (DGU). I dati meteo provengono da DHMZ (Servizio Meteorologico Croato) e Open-Meteo. Le tessere radar sono fornite da RainViewer. Stato stagionale del sentiero, avvisi di pericolo e dati delle stazioni di soccorso alpino provengono da HGSS (Servizio croato di soccorso in montagna), HPS (Federazione croata di alpinismo) e dalle autorità dei parchi nazionali (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) e Parco naturale Velebit. I dati visualizzati su questo sito potrebbero non riflettere le condizioni più recenti. In caso di dubbio, verificare sempre le fonti ufficiali.",
@@ -1449,7 +1450,8 @@
 		"officialAppNote": "FarOut è l’app ufficiale del CLDT. Questa mappa è un progetto indipendente solo per scopi di ricerca ed educativi - verifica le informazioni critiche con le fonti ufficiali.",
 		"demoHeading": "Escursione demo",
 		"demoDesc": "Prova un'escursione simulata a metà sentiero con waypoint e progresso di esempio - senza GPS.",
-		"demoLink": "Prova escursione demo"
+		"demoLink": "Prova escursione demo",
+		"startTourLink": "Avvia il tour guidato"
 	},
 	"waypoints": {
 		"defaultName": "Punto",
@@ -1488,12 +1490,39 @@
 		},
 		"demo": "Guarda la demo dal vivo",
 		"gotIt": "Ho capito",
-		"dismiss": "Chiudi"
+		"dismiss": "Chiudi",
+		"takeTour": "Fai un tour veloce"
 	},
 	"navTarget": {
 		"srHeading": "Direzione {compass}, {distance} a {name}",
 		"srWaiting": "Navigazione verso {name}, attesa segnale GPS",
 		"waitingForGps": "In attesa del GPS",
 		"clear": "Rimuovi destinazione di navigazione"
+	},
+	"tour": {
+		"label": "Tour guidato",
+		"counter": "{step} di {total}",
+		"next": "Avanti",
+		"back": "Indietro",
+		"done": "Fatto",
+		"skip": "Salta",
+		"steps": {
+			"planner": {
+				"title": "Pianifica i giorni",
+				"body": "Apri il pianificatore di tappe per dividere il sentiero in giorni con date, orari di arrivo e dove dormire."
+			},
+			"offline": {
+				"title": "Vai offline",
+				"body": "Nelle Impostazioni scarica il corridoio del sentiero perché la mappa funzioni senza segnale, e imposta passo e unità."
+			},
+			"help": {
+				"title": "Aiuto e demo",
+				"body": "Apri Aiuto per guide e gesti, o prova la demo dal vivo per vedere le funzioni GPS senza essere sul sentiero."
+			},
+			"sos": {
+				"title": "Emergenza",
+				"body": "Tieni premuto il pulsante SOS rosso per informazioni di emergenza offline, le coordinate esatte e una scorciatoia per chiamare il 112."
+			}
+		}
 	}
 }

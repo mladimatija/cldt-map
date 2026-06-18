@@ -86,7 +86,8 @@
 			"navTargetHud": "Zum Ziel navigieren - markiere einen POI oder Wegpunkt als Ziel über \"Hierhin navigieren\"; ein HUD oben links zeigt die Luftlinien-Entfernung und einen Kompasspfeil dorthin (keine Abbiegehinweise)",
 			"offlineReadiness": "Offline-Bereitschaft - eine Statusanzeige oben im Offline-Karten-Bereich auf einen Blick: bereit / fast bereit / nicht bereit, fasst gespeicherten Korridor, dauerhaften Speicher und App-Version zusammen",
 			"firstAid": "Erste-Hilfe-Referenz - ein aufklappbarer Offline-Abschnitt im 112-Panel mit umsichtigen Was-tun-Hinweisen für sechs Outdoor-Situationen (Blutung, Brüche, Unterkühlung, Hitze, Schlangenbiss, allergische Reaktion), mit dem Hinweis, dass dies keine ausgebildete Versorgung ersetzt",
-			"terrainOverlays": "Gelände-Overlays - Schummerung (Esri) und Höhenlinien (OpenTopoMap) unabhängig ein-/ausschalten und über jede Grundkarte legen, auch über Satellit, um das Gelände zu lesen (kostenlos, ohne API-Schlüssel, nur online)"
+			"terrainOverlays": "Gelände-Overlays - Schummerung (Esri) und Höhenlinien (OpenTopoMap) unabhängig ein-/ausschalten und über jede Grundkarte legen, auch über Satellit, um das Gelände zu lesen (kostenlos, ohne API-Schlüssel, nur online)",
+			"guidedTour": "Geführte Tour - eine optionale Coachmark-Tour (über die Willkommenskarte oder die Hilfe), die die wichtigsten Bedienelemente einzeln hervorhebt, mit Zurück/Weiter/Überspringen"
 		},
 		"dataAttribution": "Daten & Urheberrecht",
 		"dataAttributionDesc": "Trail-Daten werden von der Udruga Long Distance Trail Hrvatska (LDTH) bereitgestellt. Kartenkacheln kommen von OpenStreetMap, OpenTopoMap, OpenHikingMap (openmaps.fr), Waymarked Trails, CyclOSM und anderen Anbietern. Kroatische topografische Karten stammen vom Staatlichen Geodätischen Amt (DGU). Wetterdaten kommen von DHMZ (Kroatischer Wetterdienst) und Open-Meteo. Radarkacheln werden von RainViewer bereitgestellt. Daten zum saisonalen Wegzustand, Gefahrenwarnungen sowie Standorte der Bergwacht-Stationen stammen von HGSS (Kroatische Bergrettung), HPS (Kroatischer Bergsteigerverband) und den Verwaltungen der Nationalparks (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) sowie Naturpark Velebit. Die auf dieser Seite angezeigten Daten entsprechen möglicherweise nicht dem aktuellen Stand. Im Zweifelsfall bitte immer die offiziellen Quellen prüfen.",
@@ -1449,7 +1450,8 @@
 		"officialAppNote": "FarOut ist die offizielle CLDT-App. Diese Karte ist ein unabhängiges Projekt nur für Forschungs- und Bildungszwecke - prüfen Sie kritische Informationen anhand offizieller Quellen.",
 		"demoHeading": "Demo-Wanderung",
 		"demoDesc": "Probieren Sie eine simulierte Wanderung auf halber Strecke mit Beispiel-Wegpunkten und Fortschritt - ohne GPS.",
-		"demoLink": "Demo-Wanderung ausprobieren"
+		"demoLink": "Demo-Wanderung ausprobieren",
+		"startTourLink": "Geführte Tour starten"
 	},
 	"waypoints": {
 		"defaultName": "Wegpunkt",
@@ -1488,12 +1490,39 @@
 		},
 		"demo": "Live-Demo ansehen",
 		"gotIt": "Verstanden",
-		"dismiss": "Schließen"
+		"dismiss": "Schließen",
+		"takeTour": "Kurze Tour starten"
 	},
 	"navTarget": {
 		"srHeading": "Richtung {compass}, {distance} bis {name}",
 		"srWaiting": "Navigation zu {name}, warte auf GPS-Signal",
 		"waitingForGps": "Warte auf GPS",
 		"clear": "Navigationsziel entfernen"
+	},
+	"tour": {
+		"label": "Geführte Tour",
+		"counter": "{step} von {total}",
+		"next": "Weiter",
+		"back": "Zurück",
+		"done": "Fertig",
+		"skip": "Überspringen",
+		"steps": {
+			"planner": {
+				"title": "Plane deine Tage",
+				"body": "Öffne den Etappenplaner, um den Weg in Tage mit Daten, Ankunftszeiten und Übernachtung aufzuteilen."
+			},
+			"offline": {
+				"title": "Offline gehen",
+				"body": "Lade in den Einstellungen den Wegkorridor herunter, damit die Karte ohne Signal funktioniert, und stelle Tempo und Einheiten ein."
+			},
+			"help": {
+				"title": "Hilfe und Demo",
+				"body": "Öffne die Hilfe für Anleitungen und Gesten oder probiere die Live-Demo, um GPS-Funktionen ohne Wanderung zu sehen."
+			},
+			"sos": {
+				"title": "Notfall",
+				"body": "Halte den roten SOS-Knopf für Offline-Notfallinfos, deine genauen Koordinaten und einen 112-Anruf-Shortcut."
+			}
+		}
 	}
 }

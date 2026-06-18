@@ -866,7 +866,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 					onToggle={settingsPanel.toggle}
 				/>
 
-				<div className="relative inline-block w-10 shrink-0" ref={stagePlannerRef}>
+				<div className="relative inline-block w-10 shrink-0" data-tour="planner" ref={stagePlannerRef}>
 					<MapControlsButton
 						active={stagePlannerPanel.isOpen}
 						ariaLabel={stagePlannerPanel.isOpen ? t('stagePlannerHide') : t('stagePlannerShow')}
@@ -890,7 +890,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 					{progressPanel.isOpen && <MapControlsProgressPanel />}
 				</div>
 
-				<div className="relative inline-block w-10 shrink-0" ref={helpRef}>
+				<div className="relative inline-block w-10 shrink-0" data-tour="help" ref={helpRef}>
 					<MapControlsButton
 						active={helpPanel.isOpen}
 						ariaLabel={helpPanel.isOpen ? t('helpHide') : t('helpShow')}

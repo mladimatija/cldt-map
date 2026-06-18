@@ -86,7 +86,8 @@
 			"navTargetHud": "Navigacija do cilja - prikvačite POI ili međutočku kao cilj putem \"Navigiraj ovamo\"; HUD u gornjem lijevom kutu prikazuje udaljenost u zračnoj liniji i strelicu smjera prema njemu (nije navigacija skretanje po skretanje)",
 			"offlineReadiness": "Spremnost za offline - značka na vrhu ploče offline karata na prvi pogled: spremno / gotovo spremno / nije spremno, sažima spremljeni koridor, trajnu pohranu i verziju aplikacije",
 			"firstAid": "Vodič za prvu pomoć - sklopiva offline sekcija u 112 panelu s opreznim podsjetnicima što učiniti za šest situacija u prirodi (krvarenje, prijelomi, pothlađenost, vrućina, ugriz zmije, alergijska reakcija), uz napomenu da ne zamjenjuje obučenu skrb",
-			"terrainOverlays": "Slojevi terena - neovisno uključite sjenčanje reljefa (Esri) i izohipse (OpenTopoMap) i složite ih preko bilo koje podloge, uključujući satelit, za čitanje terena (besplatno, bez API ključa, samo online)"
+			"terrainOverlays": "Slojevi terena - neovisno uključite sjenčanje reljefa (Esri) i izohipse (OpenTopoMap) i složite ih preko bilo koje podloge, uključujući satelit, za čitanje terena (besplatno, bez API ključa, samo online)",
+			"guidedTour": "Vođeni obilazak - opcionalni obilazak s naglascima (iz uvodne kartice ili Pomoći) koji jedan po jedan istakne ključne kontrole s gumbima Natrag/Dalje/Preskoči"
 		},
 		"dataAttribution": "Podaci i atribucija",
 		"dataAttributionDesc": "Podatke o stazi pruža organizacija Udruga Long Distance Trail Hrvatska (LDTH). Karte dolaze od OpenStreetMap, OpenTopoMap, OpenHikingMap (openmaps.fr), Waymarked Trails, CyclOSM i drugih pružatelja. Hrvatske topografske karte su od Državne geodetske uprave (DGU). Meteorološki podaci dolaze od DHMZ-a (Državni hidrometeorološki zavod) i Open-Meteo. Radarske pločice osigurava RainViewer. Podaci o sezonskom stanju puta, upozorenja o opasnostima i podaci o stanicama gorske službe spašavanja preuzeti su od HGSS-a (Hrvatska gorska služba spašavanja), HPS-a (Hrvatski planinarski savez) te uprava nacionalnih parkova (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) i Parka prirode Velebit. Podaci prikazani na ovoj stranici možda ne odražavaju najnovije stanje. U slučaju sumnje, uvijek provjerite službene izvore.",
@@ -1449,7 +1450,8 @@
 		"officialAppNote": "FarOut je službena CLDT aplikacija. Ova karta je neovisan projekt isključivo za istraživačke i edukativne svrhe - ključne informacije provjerite u službenim izvorima.",
 		"demoHeading": "Demo hodnja",
 		"demoDesc": "Isprobajte simuliranu hodnju sredinom staze s uzorcima točaka i napretka - bez GPS-a.",
-		"demoLink": "Isprobaj demo hodnju"
+		"demoLink": "Isprobaj demo hodnju",
+		"startTourLink": "Pokreni vođeni obilazak"
 	},
 	"waypoints": {
 		"defaultName": "Točka",
@@ -1488,12 +1490,39 @@
 		},
 		"demo": "Pogledaj demo uživo",
 		"gotIt": "U redu",
-		"dismiss": "Zatvori"
+		"dismiss": "Zatvori",
+		"takeTour": "Kreni u brzi obilazak"
 	},
 	"navTarget": {
 		"srHeading": "Smjer {compass}, {distance} do {name}",
 		"srWaiting": "Navigacija do {name}, čekanje GPS signala",
 		"waitingForGps": "Čekanje GPS-a",
 		"clear": "Ukloni odredište navigacije"
+	},
+	"tour": {
+		"label": "Vođeni obilazak",
+		"counter": "{step} od {total}",
+		"next": "Dalje",
+		"back": "Natrag",
+		"done": "Gotovo",
+		"skip": "Preskoči",
+		"steps": {
+			"planner": {
+				"title": "Planirajte dane",
+				"body": "Otvorite planer etapa da podijelite stazu na dane s datumima, procjenama dolaska i mjestom za spavanje."
+			},
+			"offline": {
+				"title": "Radite bez mreže",
+				"body": "U Postavkama preuzmite koridor staze da karta radi bez signala te postavite tempo i mjerne jedinice."
+			},
+			"help": {
+				"title": "Pomoć i demo",
+				"body": "Otvorite Pomoć za vodiče i geste ili isprobajte demo da vidite GPS značajke bez odlaska na stazu."
+			},
+			"sos": {
+				"title": "Hitni slučaj",
+				"body": "Držite crveni SOS gumb za offline hitne informacije, točne koordinate i prečac za poziv 112."
+			}
+		}
 	}
 }

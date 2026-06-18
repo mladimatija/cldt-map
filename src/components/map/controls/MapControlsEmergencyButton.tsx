@@ -110,6 +110,7 @@ export function MapControlsEmergencyButton({ onOpen, expanded }: MapControlsEmer
 				aria-expanded={expanded}
 				aria-label={t('buttonAriaLabel')}
 				className="bg-cldt-red hover:bg-cldt-red/90 focus-visible:ring-cldt-green focus-visible:ring-offset-cldt-red relative flex h-12 w-12 shrink-0 cursor-pointer items-center justify-center rounded-full text-white shadow-md transition-all outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+				data-tour="sos"
 				type="button"
 				onContextMenu={(e) => e.preventDefault()}
 				onKeyDown={handleKeyDown}

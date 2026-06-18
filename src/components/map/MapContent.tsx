@@ -56,6 +56,10 @@ const NavTargetOverlay = dynamic(
 	() => import('@/components/map/NavTargetOverlay').then((m) => ({ default: m.NavTargetOverlay })),
 	{ ssr: false },
 );
+const CoachmarkTour = dynamic(
+	() => import('@/components/map/CoachmarkTour').then((m) => ({ default: m.CoachmarkTour })),
+	{ ssr: false },
+);
 const NoticeMarkers = dynamic(
 	() => import('@/components/map/NoticeMarkers').then((m) => ({ default: m.NoticeMarkers })),
 	{ ssr: false },
@@ -131,6 +135,7 @@ export default function MapContent(): React.ReactElement {
 	const userLocation = useMapStore((state: MapStoreState) => state.userLocation);
 	const fakeUserLocationEnabled = useMapStore((state: MapStoreState) => state.fakeUserLocationEnabled);
 	const gpxLoaded = useMapStore((state: MapStoreState) => state.gpxLoaded);
+	const tourActive = useMapStore((state: MapStoreState) => state.tourActive);
 	const permissionStatus = useMapStore((state: MapStoreState) => state.permissionStatus);
 	const initLocationService = useMapStore((state: MapStoreState) => state.initLocationService);
 	const requestLocationPermission = useMapStore((state: MapStoreState) => state.requestLocationPermission);
@@ -222,6 +227,7 @@ export default function MapContent(): React.ReactElement {
 			<GpxImportDropzone />
 			<DistanceRemainingOverlay />
 			<NavTargetOverlay />
+			{tourActive && <CoachmarkTour />}
 			<ShareUrlHandler />
 			<BaseMapSelector />
 			<RadarOverlay />

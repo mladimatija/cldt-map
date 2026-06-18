@@ -29,9 +29,13 @@
 	--z-modal: 300;
 	--z-toast: 400;
 	--z-banner: 500;
+	--z-coachmark: 550;
 	--z-lightbox: 600;
 
 	--min-touch-target: 44px;
+
+	/* Dimming scrim shared by the coachmark tour spotlight + fallback overlay. */
+	--color-scrim: rgba(15, 23, 42, 0.55);
 
 	/* POI cluster surface colors (opaque, computed over white #ffffff). */
 	--poi-cluster-bg: #2980af;

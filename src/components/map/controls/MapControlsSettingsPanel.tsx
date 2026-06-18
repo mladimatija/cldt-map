@@ -236,7 +236,7 @@ export function MapControlsSettingsPanel({
 	const sectionExpandLabel = tProgress('expandSection');
 
 	return (
-		<div className="relative inline-block w-10 shrink-0" ref={containerRef}>
+		<div className="relative inline-block w-10 shrink-0" data-tour="offline" ref={containerRef}>
 			{isExpanded && (
 				<div
 					aria-labelledby="settings-panel-title"

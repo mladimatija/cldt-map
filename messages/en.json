@@ -86,7 +86,8 @@
 			"navTargetHud": "Navigate to a target - pin a POI or waypoint as a target via \"Navigate here\"; a top-left HUD shows the live straight-line distance and a compass-bearing arrow to it (not turn-by-turn routing)",
 			"offlineReadiness": "Offline readiness - a one-glance badge at the top of the offline-maps panel: ready / almost ready / not ready, summarizing your cached corridor, durable storage, and app version",
 			"firstAid": "First aid reference - a collapsible offline section in the 112 panel with conservative what-to-do reminders for six backcountry situations (bleeding, fractures, hypothermia, heat, snake bite, allergic reaction), behind a \"not a substitute for trained care\" disclaimer",
-			"terrainOverlays": "Terrain overlays - toggle hillshade relief (Esri) and contour lines (OpenTopoMap) independently and stack them over any base map, including satellite, to read the terrain (free, no API key, online only)"
+			"terrainOverlays": "Terrain overlays - toggle hillshade relief (Esri) and contour lines (OpenTopoMap) independently and stack them over any base map, including satellite, to read the terrain (free, no API key, online only)",
+			"guidedTour": "Guided tour - an opt-in coachmark tour (from the welcome card or the Help panel) that spotlights the key controls one by one with Back/Next/Skip"
 		},
 		"dataAttribution": "Data & attribution",
 		"dataAttributionDesc": "Trail data is provided by the Udruga Long Distance Trail Hrvatska (LDTH) organization. Map tiles come from OpenStreetMap, OpenTopoMap, OpenHikingMap (openmaps.fr), CyclOSM, Waymarked Trails, and other providers. Croatian topographic maps are from the State Geodetic Administration (DGU). Weather data comes from DHMZ (Croatian Met Service) and Open-Meteo. Radar tiles are provided by RainViewer. Seasonal trail status, hazard warnings, and mountain rescue station data are sourced from HGSS (Croatian Mountain Rescue Service), HPS (Croatian Mountaineering Federation), and the national park authorities (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) together with Park prirode Velebit. Data displayed on this site may not reflect the latest conditions. When in doubt, always verify with the official sources.",
@@ -1449,7 +1450,8 @@
 		"officialAppNote": "FarOut is the official CLDT app. This map is an independent project for research and educational purposes only - verify critical information with official sources.",
 		"demoHeading": "Demo hike",
 		"demoDesc": "Try a simulated mid-trail hike with sample waypoints and progress - no GPS needed.",
-		"demoLink": "Try demo hike"
+		"demoLink": "Try demo hike",
+		"startTourLink": "Take the guided tour"
 	},
 	"waypoints": {
 		"defaultName": "Waypoint",
@@ -1488,12 +1490,39 @@
 		},
 		"demo": "Watch the live demo",
 		"gotIt": "Got it",
-		"dismiss": "Close"
+		"dismiss": "Close",
+		"takeTour": "Take a quick tour"
 	},
 	"navTarget": {
 		"srHeading": "Heading {compass}, {distance} to {name}",
 		"srWaiting": "Navigating to {name}, waiting for GPS signal",
 		"waitingForGps": "Waiting for GPS",
 		"clear": "Clear navigation target"
+	},
+	"tour": {
+		"label": "Guided tour",
+		"counter": "{step} of {total}",
+		"next": "Next",
+		"back": "Back",
+		"done": "Done",
+		"skip": "Skip",
+		"steps": {
+			"planner": {
+				"title": "Plan your days",
+				"body": "Open the stage planner to split the trail into days with dates, ETAs, and where to sleep."
+			},
+			"offline": {
+				"title": "Go offline",
+				"body": "In Settings, download the trail corridor so the map works with no signal, and set your pace and units."
+			},
+			"help": {
+				"title": "Help and demo",
+				"body": "Open Help for guides and gestures, or try the live demo to see GPS features without being on the trail."
+			},
+			"sos": {
+				"title": "Emergency",
+				"body": "Hold the red SOS button for offline emergency info, your exact coordinates, and a 112 call shortcut."
+			}
+		}
 	}
 }

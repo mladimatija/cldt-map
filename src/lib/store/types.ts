@@ -378,6 +378,13 @@ export interface MapStoreState {
 	onboardingSeen: boolean;
 	markOnboardingSeen: () => void;
 
+	/** Whether the in-context coachmark tour (onboarding Layer 2) is running.
+	 *  Session-only/transient (never persisted): the tour is opt-in from the
+	 *  welcome card or the help panel, not auto-shown. */
+	tourActive: boolean;
+	startTour: () => void;
+	endTour: () => void;
+
 	// ── Offline / tile cache ─────────────────────────────────────────────────
 	isOffline: boolean;
 	setIsOffline: (offline: boolean) => void;

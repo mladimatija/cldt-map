@@ -400,6 +400,10 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					onboardingSeen: false,
 					markOnboardingSeen: () => set({ onboardingSeen: true }),
 
+					tourActive: false,
+					startTour: () => set({ tourActive: true, openPanel: null }),
+					endTour: () => set({ tourActive: false }),
+
 					// ── Offline / tile cache ───────────────────────────────────────────
 					isOffline: false,
 					setIsOffline: (offline: boolean) => set({ isOffline: offline }),
