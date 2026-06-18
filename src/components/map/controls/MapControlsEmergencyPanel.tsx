@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import dynamic from 'next/dynamic';
 import { useLocale, useTranslations } from 'next-intl';
 import { OpenLocationCode } from 'open-location-code';
 import { IoCallOutline, IoCheckmarkOutline, IoCopyOutline, IoOpenOutline, IoWarningOutline } from 'react-icons/io5';
@@ -25,6 +26,22 @@ import { cn, isSafeUrl } from '@/lib/utils';
 
 const COPY_RESET_MS = 1500;
 
+/** Edge length (px) of the SOS position QR; sized to fit the narrow modal. */
+const SOS_QR_SIZE = 180;
+
+/** Lazy QR generator (react-qr-code) - client-only and fully offline, so the
+ *  geo: position QR works with no signal. Same library/pattern as the share QR. */
+const QrCode = dynamic(() => import('react-qr-code'), {
+	ssr: false,
+	loading: () => (
+		<div
+			aria-hidden="true"
+			className="animate-pulse rounded bg-gray-100 dark:bg-[var(--bg-secondary)]"
+			style={{ width: SOS_QR_SIZE, height: SOS_QR_SIZE }}
+		/>
+	),
+});
+
 /** Offline first-aid topics, rendered in order under the "First aid" section.
  *  Each key maps to `emergency.firstAid.topics.<key>` (title + steps array). */
 const FIRST_AID_TOPICS = ['bleeding', 'fracture', 'hypothermia', 'heat', 'snakebite', 'anaphylaxis'] as const;
@@ -45,7 +62,7 @@ interface NearestHgss {
 	bearingDeg: number;
 }
 
-type CopyField = 'coords' | 'plusCode' | 'mgrs' | 'utm' | 'dms' | 'section' | 'address' | 'all';
+type CopyField = 'coords' | 'plusCode' | 'mgrs' | 'utm' | 'dms' | 'section' | 'address' | 'all' | 'geo';
 
 async function copyTextToClipboard(text: string): Promise<boolean> {
 	try {
@@ -246,6 +263,16 @@ export function MapControlsEmergencyPanel({ onClose }: MapControlsEmergencyPanel
 		[displayPosition],
 	);
 
+	// RFC 5870 geo: URI for the position QR. 6 decimals (~0.1 m) - intentionally
+	// one more than the 5-decimal on-screen coords / aria-label, so the scanned
+	// point is as precise as possible (do not "align" the two). A generic QR
+	// scanner opens this in whatever maps app the device has, no app/account needed.
+	const geoUri = useMemo(
+		() =>
+			displayPosition.source === null ? '' : `geo:${displayPosition.lat.toFixed(6)},${displayPosition.lng.toFixed(6)}`,
+		[displayPosition],
+	);
+
 	// SAR-grid formats. MGRS is the grid HGSS / NATO-aligned rescuers most often
 	// work in, so it is shown inline next to the Plus Code; UTM and DMS are
 	// tucked into a collapsible row to keep the panel uncluttered. All are
@@ -374,6 +401,15 @@ export function MapControlsEmergencyPanel({ onClose }: MapControlsEmergencyPanel
 		if (!copyAllText) return;
 		void copyTextToClipboard(copyAllText).then((ok) => {
 			if (ok) handleCopied('all');
+		});
+	};
+
+	// Fallback for the QR: copy the raw geo: URI for manual entry (e.g. when a
+	// rescuer's scanner fails or for a screen-reader workflow).
+	const handleCopyGeo = (): void => {
+		if (!geoUri) return;
+		void copyTextToClipboard(geoUri).then((ok) => {
+			if (ok) handleCopied('geo');
 		});
 	};
 
@@ -519,6 +555,31 @@ export function MapControlsEmergencyPanel({ onClose }: MapControlsEmergencyPanel
 										</div>
 									</details>
 								) : null}
+								<details className="mt-0.5">
+									<summary className="focus-visible:ring-cldt-green cursor-pointer rounded text-xs text-gray-500 outline-none focus-visible:ring-1 focus-visible:ring-offset-1 dark:text-[var(--text-secondary)]">
+										{t('qr.heading')}
+									</summary>
+									<div className="mt-1.5 flex flex-col items-center gap-1.5">
+										<div
+											aria-label={t('qr.ariaLabel', { coords: coordsString })}
+											className="rounded border border-gray-200 bg-white p-2 dark:border-[var(--border-color)]"
+											role="img"
+										>
+											<QrCode level="M" size={SOS_QR_SIZE} value={geoUri} />
+										</div>
+										<p className="m-0 text-center text-xs text-gray-500 dark:text-[var(--text-secondary)]">
+											{t('qr.scanHint')}
+										</p>
+										<Button
+											className={cn(copiedField === 'geo' && 'text-cldt-green')}
+											size="sm"
+											variant="mapControlOutlineSecondary"
+											onClick={handleCopyGeo}
+										>
+											{copiedField === 'geo' ? t('copyTooltipSuccess') : t('qr.copyGeoLink')}
+										</Button>
+									</div>
+								</details>
 							</>
 						) : (
 							<span className="text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('gpsNoPosition')}</span>

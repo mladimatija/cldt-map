@@ -87,7 +87,8 @@
 			"offlineReadiness": "Offline readiness - a one-glance badge at the top of the offline-maps panel: ready / almost ready / not ready, summarizing your cached corridor, durable storage, and app version",
 			"firstAid": "First aid reference - a collapsible offline section in the 112 panel with conservative what-to-do reminders for six backcountry situations (bleeding, fractures, hypothermia, heat, snake bite, allergic reaction), behind a \"not a substitute for trained care\" disclaimer",
 			"terrainOverlays": "Terrain overlays - toggle hillshade relief (Esri) and contour lines (OpenTopoMap) independently and stack them over any base map, including satellite, to read the terrain (free, no API key, online only)",
-			"guidedTour": "Guided tour - an opt-in coachmark tour (from the welcome card or the Help panel) that spotlights the key controls one by one with Back/Next/Skip"
+			"guidedTour": "Guided tour - an opt-in coachmark tour (from the welcome card or the Help panel) that spotlights the key controls one by one with Back/Next/Skip",
+			"sosQr": "Position QR code - the 112 panel can show a QR of your current location as a geo: link that any phone camera or maps app scans to open it (fully offline, no app needed), with a copy-link fallback"
 		},
 		"dataAttribution": "Data & attribution",
 		"dataAttributionDesc": "Trail data is provided by the Udruga Long Distance Trail Hrvatska (LDTH) organization. Map tiles come from OpenStreetMap, OpenTopoMap, OpenHikingMap (openmaps.fr), CyclOSM, Waymarked Trails, and other providers. Croatian topographic maps are from the State Geodetic Administration (DGU). Weather data comes from DHMZ (Croatian Met Service) and Open-Meteo. Radar tiles are provided by RainViewer. Seasonal trail status, hazard warnings, and mountain rescue station data are sourced from HGSS (Croatian Mountain Rescue Service), HPS (Croatian Mountaineering Federation), and the national park authorities (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) together with Park prirode Velebit. Data displayed on this site may not reflect the latest conditions. When in doubt, always verify with the official sources.",
@@ -1304,6 +1305,12 @@
 					]
 				}
 			}
+		},
+		"qr": {
+			"heading": "Position QR code",
+			"scanHint": "Scan with any maps app to open this location",
+			"ariaLabel": "QR code for your position {coords} - scan with a maps app to open it",
+			"copyGeoLink": "Copy geo: link"
 		}
 	},
 	"mineAreas": {
@@ -1445,7 +1452,8 @@
 			"mobileDownload": "On a phone, starting an offline download first warns that it can use a lot of storage and mobile data, then asks you to confirm - so you never trigger a multi-gigabyte download by accident.",
 			"navTarget": "Pin a place with \"Navigate here\" in its popup to get a live straight-line distance and a compass-bearing arrow toward it (not routing); tap the X to stop.",
 			"cacheHealth": "The top of the offline-maps panel shows a ready / almost ready / not ready badge so you can confirm at a glance that your corridor is cached and current, storage is durable, and the app is up to date before heading out of signal.",
-			"firstAid": "Open the red 112 panel and expand \"First aid\" for offline, step-by-step reminders for six common backcountry emergencies. It is general guidance only - not a substitute for trained medical care, and it always points back to calling 112."
+			"firstAid": "Open the red 112 panel and expand \"First aid\" for offline, step-by-step reminders for six common backcountry emergencies. It is general guidance only - not a substitute for trained medical care, and it always points back to calling 112.",
+			"sosQr": "In the red 112 panel, expand \"Position QR code\" to show a scannable QR of your coordinates. A rescuer or bystander can scan it with any phone camera to open your location in their maps app - no app or account, generated offline. Use \"Copy geo: link\" if scanning fails."
 		},
 		"officialAppNote": "FarOut is the official CLDT app. This map is an independent project for research and educational purposes only - verify critical information with official sources.",
 		"demoHeading": "Demo hike",

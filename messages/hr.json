@@ -87,7 +87,8 @@
 			"offlineReadiness": "Spremnost za offline - značka na vrhu ploče offline karata na prvi pogled: spremno / gotovo spremno / nije spremno, sažima spremljeni koridor, trajnu pohranu i verziju aplikacije",
 			"firstAid": "Vodič za prvu pomoć - sklopiva offline sekcija u 112 panelu s opreznim podsjetnicima što učiniti za šest situacija u prirodi (krvarenje, prijelomi, pothlađenost, vrućina, ugriz zmije, alergijska reakcija), uz napomenu da ne zamjenjuje obučenu skrb",
 			"terrainOverlays": "Slojevi terena - neovisno uključite sjenčanje reljefa (Esri) i izohipse (OpenTopoMap) i složite ih preko bilo koje podloge, uključujući satelit, za čitanje terena (besplatno, bez API ključa, samo online)",
-			"guidedTour": "Vođeni obilazak - opcionalni obilazak s naglascima (iz uvodne kartice ili Pomoći) koji jedan po jedan istakne ključne kontrole s gumbima Natrag/Dalje/Preskoči"
+			"guidedTour": "Vođeni obilazak - opcionalni obilazak s naglascima (iz uvodne kartice ili Pomoći) koji jedan po jedan istakne ključne kontrole s gumbima Natrag/Dalje/Preskoči",
+			"sosQr": "QR kod položaja - 112 panel može prikazati QR vaše trenutne lokacije kao geo: poveznicu koju bilo koja kamera ili aplikacija za karte skenira da je otvori (potpuno offline, bez aplikacije), uz mogućnost kopiranja poveznice"
 		},
 		"dataAttribution": "Podaci i atribucija",
 		"dataAttributionDesc": "Podatke o stazi pruža organizacija Udruga Long Distance Trail Hrvatska (LDTH). Karte dolaze od OpenStreetMap, OpenTopoMap, OpenHikingMap (openmaps.fr), Waymarked Trails, CyclOSM i drugih pružatelja. Hrvatske topografske karte su od Državne geodetske uprave (DGU). Meteorološki podaci dolaze od DHMZ-a (Državni hidrometeorološki zavod) i Open-Meteo. Radarske pločice osigurava RainViewer. Podaci o sezonskom stanju puta, upozorenja o opasnostima i podaci o stanicama gorske službe spašavanja preuzeti su od HGSS-a (Hrvatska gorska služba spašavanja), HPS-a (Hrvatski planinarski savez) te uprava nacionalnih parkova (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) i Parka prirode Velebit. Podaci prikazani na ovoj stranici možda ne odražavaju najnovije stanje. U slučaju sumnje, uvijek provjerite službene izvore.",
@@ -1304,6 +1305,12 @@
 					]
 				}
 			}
+		},
+		"qr": {
+			"heading": "QR kod položaja",
+			"scanHint": "Skenirajte bilo kojom aplikacijom za karte da otvorite ovu lokaciju",
+			"ariaLabel": "QR kod vašeg položaja {coords} - skenirajte aplikacijom za karte da ga otvorite",
+			"copyGeoLink": "Kopiraj geo: poveznicu"
 		}
 	},
 	"mineAreas": {
@@ -1445,7 +1452,8 @@
 			"mobileDownload": "Na telefonu pokretanje offline preuzimanja prvo upozorava da može potrošiti puno prostora i mobilnih podataka, a zatim traži potvrdu - tako slučajno ne pokrenete preuzimanje od više gigabajta.",
 			"navTarget": "Prikvačite mjesto pomoću \"Navigiraj ovamo\" u skočnom prozoru za prikaz udaljenosti u zračnoj liniji i strelice smjera prema njemu (nije navigacija); dodirnite X za prekid.",
 			"cacheHealth": "Vrh ploče offline karata prikazuje značku spremno / gotovo spremno / nije spremno kako biste na prvi pogled potvrdili da je koridor spremljen i ažuran, pohrana trajna i aplikacija ažurna prije odlaska izvan signala.",
-			"firstAid": "Otvorite crveni 112 panel i proširite \"Prva pomoć\" za offline podsjetnike korak po korak za šest čestih hitnih situacija u prirodi. To su samo opće upute - ne zamjenjuju obučenu medicinsku skrb i uvijek upućuju na poziv 112."
+			"firstAid": "Otvorite crveni 112 panel i proširite \"Prva pomoć\" za offline podsjetnike korak po korak za šest čestih hitnih situacija u prirodi. To su samo opće upute - ne zamjenjuju obučenu medicinsku skrb i uvijek upućuju na poziv 112.",
+			"sosQr": "U crvenom 112 panelu proširite \"QR kod položaja\" za prikaz QR-a vaših koordinata. Spasilac ili prolaznik može ga skenirati bilo kojom kamerom da otvori vašu lokaciju u svojoj aplikaciji za karte - bez aplikacije ili računa, generirano offline. Koristite \"Kopiraj geo: poveznicu\" ako skeniranje ne uspije."
 		},
 		"officialAppNote": "FarOut je službena CLDT aplikacija. Ova karta je neovisan projekt isključivo za istraživačke i edukativne svrhe - ključne informacije provjerite u službenim izvorima.",
 		"demoHeading": "Demo hodnja",

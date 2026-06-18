@@ -87,7 +87,8 @@
 			"offlineReadiness": "Offline-Bereitschaft - eine Statusanzeige oben im Offline-Karten-Bereich auf einen Blick: bereit / fast bereit / nicht bereit, fasst gespeicherten Korridor, dauerhaften Speicher und App-Version zusammen",
 			"firstAid": "Erste-Hilfe-Referenz - ein aufklappbarer Offline-Abschnitt im 112-Panel mit umsichtigen Was-tun-Hinweisen für sechs Outdoor-Situationen (Blutung, Brüche, Unterkühlung, Hitze, Schlangenbiss, allergische Reaktion), mit dem Hinweis, dass dies keine ausgebildete Versorgung ersetzt",
 			"terrainOverlays": "Gelände-Overlays - Schummerung (Esri) und Höhenlinien (OpenTopoMap) unabhängig ein-/ausschalten und über jede Grundkarte legen, auch über Satellit, um das Gelände zu lesen (kostenlos, ohne API-Schlüssel, nur online)",
-			"guidedTour": "Geführte Tour - eine optionale Coachmark-Tour (über die Willkommenskarte oder die Hilfe), die die wichtigsten Bedienelemente einzeln hervorhebt, mit Zurück/Weiter/Überspringen"
+			"guidedTour": "Geführte Tour - eine optionale Coachmark-Tour (über die Willkommenskarte oder die Hilfe), die die wichtigsten Bedienelemente einzeln hervorhebt, mit Zurück/Weiter/Überspringen",
+			"sosQr": "Standort-QR-Code - das 112-Panel kann einen QR-Code deines aktuellen Standorts als geo:-Link anzeigen, den jede Handykamera oder Karten-App scannt, um ihn zu öffnen (komplett offline, ohne App), mit Link-Kopier-Fallback"
 		},
 		"dataAttribution": "Daten & Urheberrecht",
 		"dataAttributionDesc": "Trail-Daten werden von der Udruga Long Distance Trail Hrvatska (LDTH) bereitgestellt. Kartenkacheln kommen von OpenStreetMap, OpenTopoMap, OpenHikingMap (openmaps.fr), Waymarked Trails, CyclOSM und anderen Anbietern. Kroatische topografische Karten stammen vom Staatlichen Geodätischen Amt (DGU). Wetterdaten kommen von DHMZ (Kroatischer Wetterdienst) und Open-Meteo. Radarkacheln werden von RainViewer bereitgestellt. Daten zum saisonalen Wegzustand, Gefahrenwarnungen sowie Standorte der Bergwacht-Stationen stammen von HGSS (Kroatische Bergrettung), HPS (Kroatischer Bergsteigerverband) und den Verwaltungen der Nationalparks (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) sowie Naturpark Velebit. Die auf dieser Seite angezeigten Daten entsprechen möglicherweise nicht dem aktuellen Stand. Im Zweifelsfall bitte immer die offiziellen Quellen prüfen.",
@@ -1304,6 +1305,12 @@
 					]
 				}
 			}
+		},
+		"qr": {
+			"heading": "Standort-QR-Code",
+			"scanHint": "Mit einer beliebigen Karten-App scannen, um diesen Ort zu öffnen",
+			"ariaLabel": "QR-Code für deinen Standort {coords} - mit einer Karten-App scannen, um ihn zu öffnen",
+			"copyGeoLink": "geo:-Link kopieren"
 		}
 	},
 	"mineAreas": {
@@ -1445,7 +1452,8 @@
 			"mobileDownload": "Auf dem Handy warnt ein gestarteter Offline-Download zuerst, dass er viel Speicherplatz und mobile Daten verbrauchen kann, und fragt dann nach Bestätigung - so löst du nie versehentlich einen Download von mehreren Gigabyte aus.",
 			"navTarget": "Markiere einen Ort mit \"Hierhin navigieren\" im Popup, um die Luftlinien-Entfernung und einen Kompasspfeil dorthin zu sehen (keine Navigation); tippe auf das X zum Beenden.",
 			"cacheHealth": "Oben im Offline-Karten-Bereich zeigt eine Anzeige bereit / fast bereit / nicht bereit, damit du auf einen Blick prüfen kannst, ob dein Korridor gespeichert und aktuell ist, der Speicher dauerhaft und die App aktuell, bevor du den Empfangsbereich verlässt.",
-			"firstAid": "Öffne das rote 112-Panel und klappe \"Erste Hilfe\" auf für Offline-Schritt-für-Schritt-Hinweise zu sechs häufigen Outdoor-Notfällen. Es sind nur allgemeine Hinweise - kein Ersatz für ausgebildete medizinische Versorgung, und sie verweisen immer auf den Anruf bei 112."
+			"firstAid": "Öffne das rote 112-Panel und klappe \"Erste Hilfe\" auf für Offline-Schritt-für-Schritt-Hinweise zu sechs häufigen Outdoor-Notfällen. Es sind nur allgemeine Hinweise - kein Ersatz für ausgebildete medizinische Versorgung, und sie verweisen immer auf den Anruf bei 112.",
+			"sosQr": "Klappe im roten 112-Panel \"Standort-QR-Code\" auf, um einen scannbaren QR-Code deiner Koordinaten zu zeigen. Ein Retter oder Passant kann ihn mit jeder Handykamera scannen, um deinen Standort in seiner Karten-App zu öffnen - ohne App oder Konto, offline erzeugt. Nutze \"geo:-Link kopieren\", falls das Scannen fehlschlägt."
 		},
 		"officialAppNote": "FarOut ist die offizielle CLDT-App. Diese Karte ist ein unabhängiges Projekt nur für Forschungs- und Bildungszwecke - prüfen Sie kritische Informationen anhand offizieller Quellen.",
 		"demoHeading": "Demo-Wanderung",
