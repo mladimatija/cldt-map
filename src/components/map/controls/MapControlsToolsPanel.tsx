@@ -2,9 +2,10 @@
 
 import React from 'react';
 import { useTranslations } from 'next-intl';
-import { IoGridOutline, IoRainyOutline } from 'react-icons/io5';
+import { IoGridOutline, IoRainyOutline, IoTriangleOutline, IoMapOutline } from 'react-icons/io5';
 import { Button } from '@/components/ui/Button';
 import { usePopoverFocusTrap } from '@/hooks';
+import { useMapStore, type MapStoreState } from '@/lib/store';
 import { cn } from '@/lib/utils';
 import { MAP_CONTROL_PANEL_WIDTH, MAP_CONTROL_POPOVER } from './map-controls-constants';
 import { MapControlSectionCard } from './MapControlSectionCard';
@@ -54,7 +55,7 @@ interface MapControlsToolsPanelProps {
 	setColorSettings: React.Dispatch<React.SetStateAction<ColorSettings>>;
 }
 
-/** Secondary map tools: tile clipping, color adjust, radar overlay. */
+/** Secondary map tools: tile clipping, color adjust, radar overlay, terrain overlays (hillshade + contour). */
 export function MapControlsToolsPanel({
 	showTilesBoundary,
 	onToggleTilesBoundary,
@@ -65,6 +66,13 @@ export function MapControlsToolsPanel({
 }: MapControlsToolsPanelProps): React.ReactElement {
 	const t = useTranslations('mapControls');
 	const popoverRef = usePopoverFocusTrap(true);
+	// These two overlays are pure persisted store booleans consumed by the
+	// store-reading TerrainOverlays layer, so they are read here directly rather
+	// than threaded as props like the radar/tile-boundary toggles.
+	const hillshadeOverlay = useMapStore((s: MapStoreState) => s.hillshadeOverlayEnabled);
+	const setHillshadeOverlay = useMapStore((s: MapStoreState) => s.setHillshadeOverlayEnabled);
+	const contourOverlay = useMapStore((s: MapStoreState) => s.contourOverlayEnabled);
+	const setContourOverlay = useMapStore((s: MapStoreState) => s.setContourOverlayEnabled);
 
 	return (
 		<div
@@ -102,6 +110,20 @@ export function MapControlsToolsPanel({
 								icon={<IoRainyOutline aria-hidden className="h-4 w-4" />}
 								label={showRadarOverlay ? t('radarDisable') : t('radarEnable')}
 								onCheckedChange={() => onToggleRadarOverlay()}
+							/>
+							<SettingsToggleRow
+								checked={hillshadeOverlay}
+								hint={t('hillshadeHint')}
+								icon={<IoTriangleOutline aria-hidden className="h-4 w-4" />}
+								label={hillshadeOverlay ? t('hillshadeDisable') : t('hillshadeEnable')}
+								onCheckedChange={() => setHillshadeOverlay(!hillshadeOverlay)}
+							/>
+							<SettingsToggleRow
+								checked={contourOverlay}
+								hint={t('contourHint')}
+								icon={<IoMapOutline aria-hidden className="h-4 w-4" />}
+								label={contourOverlay ? t('contourDisable') : t('contourEnable')}
+								onCheckedChange={() => setContourOverlay(!contourOverlay)}
 							/>
 						</div>
 					</MapControlSectionCard>

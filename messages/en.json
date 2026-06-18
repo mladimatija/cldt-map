@@ -85,7 +85,8 @@
 			"welcomeCard": "First-run welcome - a one-time, dismissible card on your first visit introduces the app and offers quick launchers into the main panels plus a link to the live demo; shown once, never during a demo, fully keyboard-accessible",
 			"navTargetHud": "Navigate to a target - pin a POI or waypoint as a target via \"Navigate here\"; a top-left HUD shows the live straight-line distance and a compass-bearing arrow to it (not turn-by-turn routing)",
 			"offlineReadiness": "Offline readiness - a one-glance badge at the top of the offline-maps panel: ready / almost ready / not ready, summarizing your cached corridor, durable storage, and app version",
-			"firstAid": "First aid reference - a collapsible offline section in the 112 panel with conservative what-to-do reminders for six backcountry situations (bleeding, fractures, hypothermia, heat, snake bite, allergic reaction), behind a \"not a substitute for trained care\" disclaimer"
+			"firstAid": "First aid reference - a collapsible offline section in the 112 panel with conservative what-to-do reminders for six backcountry situations (bleeding, fractures, hypothermia, heat, snake bite, allergic reaction), behind a \"not a substitute for trained care\" disclaimer",
+			"terrainOverlays": "Terrain overlays - toggle hillshade relief (Esri) and contour lines (OpenTopoMap) independently and stack them over any base map, including satellite, to read the terrain (free, no API key, online only)"
 		},
 		"dataAttribution": "Data & attribution",
 		"dataAttributionDesc": "Trail data is provided by the Udruga Long Distance Trail Hrvatska (LDTH) organization. Map tiles come from OpenStreetMap, OpenTopoMap, OpenHikingMap (openmaps.fr), CyclOSM, Waymarked Trails, and other providers. Croatian topographic maps are from the State Geodetic Administration (DGU). Weather data comes from DHMZ (Croatian Met Service) and Open-Meteo. Radar tiles are provided by RainViewer. Seasonal trail status, hazard warnings, and mountain rescue station data are sourced from HGSS (Croatian Mountain Rescue Service), HPS (Croatian Mountaineering Federation), and the national park authorities (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) together with Park prirode Velebit. Data displayed on this site may not reflect the latest conditions. When in doubt, always verify with the official sources.",
@@ -304,7 +305,13 @@
 		"shareShortLinksHint": "Copies a compact link that opens the same map view. Requires an internet connection to create.",
 		"paceFactor": "Personal pace adjustment",
 		"paceFactorHint": "Scales every ETA to match your real pace. {min} - {max}; 100% keeps your set pace, higher is faster, lower is slower",
-		"paceFactorReset": "Reset pace adjustment to default"
+		"paceFactorReset": "Reset pace adjustment to default",
+		"hillshadeEnable": "Show hillshade",
+		"hillshadeDisable": "Hide hillshade",
+		"hillshadeHint": "Relief shading over any base map",
+		"contourEnable": "Show contour lines",
+		"contourDisable": "Hide contour lines",
+		"contourHint": "Elevation contours (OpenTopoMap); best over satellite or plain bases"
 	},
 	"baseMapSelector": {
 		"standard": "Standard",
@@ -1407,7 +1414,8 @@
 			"layers": "The layers button (top right) switches base maps and overlays such as severe weather. Radar, tile clipping, and map colour adjust live in the Tools panel (wrench icon on the control rail).",
 			"trail": "Tap the trail line, POI markers, or seasonal warning chips for details; popups link onward to photos, Wikipedia, and sharing. Water popups let you log what you found (flowing/low/dry); any POI popup keeps a private on-device note, and - when a curator email is configured - a Report an issue link.",
 			"settings": "The gear opens Settings with eight section cards (display and device, trail appearance, map overlays, walking and ETA, pack and pace, notifications and sharing, offline maps, imports). Units, direction (SOBO/NOBO), and distance precision stay on the toolbar as session controls. The Walking & ETA card also has a personal pace adjustment (70-140%) that scales every ETA to your real pace.",
-			"share": "One toolbar button covers share and export. When GPS or a pinned trail point is available, the label reads Share & export map and the panel shows a QR code (scan from another phone), copy link, and print/PNG export. Otherwise the label reads Print & export map and only export appears. Dismiss via the toolbar toggle, outside click, or Escape (no footer Close). Short links apply when online and enabled in Settings."
+			"share": "One toolbar button covers share and export. When GPS or a pinned trail point is available, the label reads Share & export map and the panel shows a QR code (scan from another phone), copy link, and print/PNG export. Otherwise the label reads Print & export map and only export appears. Dismiss via the toolbar toggle, outside click, or Escape (no footer Close). Short links apply when online and enabled in Settings.",
+			"terrainOverlays": "In the Tools panel (wrench), turn on Hillshade and/or Contour lines to overlay terrain relief and elevation contours on top of any base map - especially useful over satellite. They need a connection and are not part of the offline download."
 		},
 		"chartHeading": "Elevation chart",
 		"gesturesHeading": "Hidden gestures",

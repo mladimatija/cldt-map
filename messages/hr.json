@@ -85,7 +85,8 @@
 			"welcomeCard": "Dobrodošlica pri prvom pokretanju - jednokratna kartica koja se može odbaciti pri prvom posjetu predstavlja aplikaciju i nudi brze prečace do glavnih ploča te poveznicu na demo uživo; prikazuje se jednom, nikad tijekom demoa, potpuno dostupna tipkovnicom",
 			"navTargetHud": "Navigacija do cilja - prikvačite POI ili međutočku kao cilj putem \"Navigiraj ovamo\"; HUD u gornjem lijevom kutu prikazuje udaljenost u zračnoj liniji i strelicu smjera prema njemu (nije navigacija skretanje po skretanje)",
 			"offlineReadiness": "Spremnost za offline - značka na vrhu ploče offline karata na prvi pogled: spremno / gotovo spremno / nije spremno, sažima spremljeni koridor, trajnu pohranu i verziju aplikacije",
-			"firstAid": "Vodič za prvu pomoć - sklopiva offline sekcija u 112 panelu s opreznim podsjetnicima što učiniti za šest situacija u prirodi (krvarenje, prijelomi, pothlađenost, vrućina, ugriz zmije, alergijska reakcija), uz napomenu da ne zamjenjuje obučenu skrb"
+			"firstAid": "Vodič za prvu pomoć - sklopiva offline sekcija u 112 panelu s opreznim podsjetnicima što učiniti za šest situacija u prirodi (krvarenje, prijelomi, pothlađenost, vrućina, ugriz zmije, alergijska reakcija), uz napomenu da ne zamjenjuje obučenu skrb",
+			"terrainOverlays": "Slojevi terena - neovisno uključite sjenčanje reljefa (Esri) i izohipse (OpenTopoMap) i složite ih preko bilo koje podloge, uključujući satelit, za čitanje terena (besplatno, bez API ključa, samo online)"
 		},
 		"dataAttribution": "Podaci i atribucija",
 		"dataAttributionDesc": "Podatke o stazi pruža organizacija Udruga Long Distance Trail Hrvatska (LDTH). Karte dolaze od OpenStreetMap, OpenTopoMap, OpenHikingMap (openmaps.fr), Waymarked Trails, CyclOSM i drugih pružatelja. Hrvatske topografske karte su od Državne geodetske uprave (DGU). Meteorološki podaci dolaze od DHMZ-a (Državni hidrometeorološki zavod) i Open-Meteo. Radarske pločice osigurava RainViewer. Podaci o sezonskom stanju puta, upozorenja o opasnostima i podaci o stanicama gorske službe spašavanja preuzeti su od HGSS-a (Hrvatska gorska služba spašavanja), HPS-a (Hrvatski planinarski savez) te uprava nacionalnih parkova (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) i Parka prirode Velebit. Podaci prikazani na ovoj stranici možda ne odražavaju najnovije stanje. U slučaju sumnje, uvijek provjerite službene izvore.",
@@ -304,7 +305,13 @@
 		"shareShortLinksHint": "Kopira kratku poveznicu koja otvara isti prikaz karte. Za stvaranje poveznice potrebna je internetska veza.",
 		"paceFactor": "Osobna prilagodba tempa",
 		"paceFactorHint": "Skalira svaku procjenu vremena prema tvom stvarnom tempu. {min} - {max}; 100% zadržava postavljeni tempo, više je brže, manje je sporije",
-		"paceFactorReset": "Vrati prilagodbu tempa na zadano"
+		"paceFactorReset": "Vrati prilagodbu tempa na zadano",
+		"hillshadeEnable": "Prikaži sjenčanje reljefa",
+		"hillshadeDisable": "Sakrij sjenčanje reljefa",
+		"hillshadeHint": "Sjenčanje reljefa preko bilo koje podloge",
+		"contourEnable": "Prikaži izohipse",
+		"contourDisable": "Sakrij izohipse",
+		"contourHint": "Visinske izohipse (OpenTopoMap); najbolje preko satelita ili jednostavnih podloga"
 	},
 	"baseMapSelector": {
 		"standard": "Standardna",
@@ -1407,7 +1414,8 @@
 			"layers": "Gumb slojeva (gore desno) mijenja podloge i preklope poput opasnog vremena. Radar, obrezivanje pločica i prilagodba boje karte nalaze se u ploči Alati (ikona ključa na alatnoj traci).",
 			"trail": "Dodirni liniju staze, markere mjesta ili sezonske oznake upozorenja za detalje; skočni prozori vode dalje na fotografije, Wikipediju i dijeljenje. Skočni prozori za vodu omogućuju bilježenje stanja (teče/slabo/suho); svaki POI skočni prozor čuva privatnu bilješku na uređaju, a - kad je postavljena e-pošta urednika - poveznicu Prijavi pogrešku.",
 			"share": "Jedan gumb na alatnoj traci pokriva dijeljenje i izvoz. Kad je dostupan GPS ili prikvačena točka na stazi, oznaka glasi Podijeli i izvezi kartu, a ploča prikazuje QR kod (skeniraj s drugog telefona), kopiranje poveznice i ispis/PNG izvoz. Inače oznaka glasi Ispis i izvoz karte i vidljiv je samo izvoz. Zatvori prekidačem na traci, klikom izvan ploče ili Escape (nema gumba Zatvori u podnožju). Kratke poveznice kad ste online i uključene u Postavkama.",
-			"settings": "Zupčanik otvara Postavke s osam kartica (prikaz i uređaj, izgled staze, preklozi karte, hodanje i ETA, ruksak i tempo, obavijesti i dijeljenje, offline karte, uvozi). Jedinice, smjer (SOBO/NOBO) i preciznost udaljenosti ostaju na alatnoj traci kao kontrole sesije. Kartica Hodanje i ETA ima i osobnu prilagodbu tempa (70-140%) koja skalira svaku procjenu prema tvom stvarnom tempu."
+			"settings": "Zupčanik otvara Postavke s osam kartica (prikaz i uređaj, izgled staze, preklozi karte, hodanje i ETA, ruksak i tempo, obavijesti i dijeljenje, offline karte, uvozi). Jedinice, smjer (SOBO/NOBO) i preciznost udaljenosti ostaju na alatnoj traci kao kontrole sesije. Kartica Hodanje i ETA ima i osobnu prilagodbu tempa (70-140%) koja skalira svaku procjenu prema tvom stvarnom tempu.",
+			"terrainOverlays": "U ploči Alati (ključ) uključite Sjenčanje reljefa i/ili Izohipse da preko bilo koje podloge prikažete reljef i visinske izohipse - osobito korisno preko satelita. Trebaju vezu i nisu dio offline preuzimanja."
 		},
 		"chartHeading": "Profil visine",
 		"gesturesHeading": "Skrivene geste",

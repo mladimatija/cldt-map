@@ -964,6 +964,14 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					setWaymarkedTrailsOverlay: (enabled: boolean): void => {
 						set({ waymarkedTrailsOverlay: enabled });
 					},
+					hillshadeOverlayEnabled: false,
+					setHillshadeOverlayEnabled: (enabled: boolean): void => {
+						set({ hillshadeOverlayEnabled: enabled });
+					},
+					contourOverlayEnabled: false,
+					setContourOverlayEnabled: (enabled: boolean): void => {
+						set({ contourOverlayEnabled: enabled });
+					},
 					shareShortLinks: config.shareShortLinks,
 					setShareShortLinks: (enabled: boolean): void => {
 						set({ shareShortLinks: enabled });
@@ -1658,6 +1666,8 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 						packGearList: state.packGearList,
 						pushAlertsEnabled: state.pushAlertsEnabled,
 						waymarkedTrailsOverlay: state.waymarkedTrailsOverlay,
+						hillshadeOverlayEnabled: state.hillshadeOverlayEnabled,
+						contourOverlayEnabled: state.contourOverlayEnabled,
 						shareShortLinks: state.shareShortLinks,
 						includeRemotePois: state.includeRemotePois,
 						userWaypoints: demoSnapshot ? demoSnapshot.userWaypoints : state.userWaypoints,

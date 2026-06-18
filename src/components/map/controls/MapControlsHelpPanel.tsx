@@ -119,6 +119,7 @@ export function MapControlsHelpPanel(): React.ReactElement {
 				<HelpList
 					items={[
 						['layers', t('basics.layers')],
+						['terrainOverlays', t('basics.terrainOverlays')],
 						['trail', t('basics.trail')],
 						['share', t('basics.share')],
 						['settings', t('basics.settings')],

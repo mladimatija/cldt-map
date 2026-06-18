@@ -85,7 +85,8 @@
 			"welcomeCard": "Willkommen beim ersten Start - eine einmalige, schließbare Karte beim ersten Besuch stellt die App vor und bietet schnelle Einstiege in die Hauptpanels sowie einen Link zur Live-Demo; einmal gezeigt, nie während einer Demo, voll tastaturzugänglich",
 			"navTargetHud": "Zum Ziel navigieren - markiere einen POI oder Wegpunkt als Ziel über \"Hierhin navigieren\"; ein HUD oben links zeigt die Luftlinien-Entfernung und einen Kompasspfeil dorthin (keine Abbiegehinweise)",
 			"offlineReadiness": "Offline-Bereitschaft - eine Statusanzeige oben im Offline-Karten-Bereich auf einen Blick: bereit / fast bereit / nicht bereit, fasst gespeicherten Korridor, dauerhaften Speicher und App-Version zusammen",
-			"firstAid": "Erste-Hilfe-Referenz - ein aufklappbarer Offline-Abschnitt im 112-Panel mit umsichtigen Was-tun-Hinweisen für sechs Outdoor-Situationen (Blutung, Brüche, Unterkühlung, Hitze, Schlangenbiss, allergische Reaktion), mit dem Hinweis, dass dies keine ausgebildete Versorgung ersetzt"
+			"firstAid": "Erste-Hilfe-Referenz - ein aufklappbarer Offline-Abschnitt im 112-Panel mit umsichtigen Was-tun-Hinweisen für sechs Outdoor-Situationen (Blutung, Brüche, Unterkühlung, Hitze, Schlangenbiss, allergische Reaktion), mit dem Hinweis, dass dies keine ausgebildete Versorgung ersetzt",
+			"terrainOverlays": "Gelände-Overlays - Schummerung (Esri) und Höhenlinien (OpenTopoMap) unabhängig ein-/ausschalten und über jede Grundkarte legen, auch über Satellit, um das Gelände zu lesen (kostenlos, ohne API-Schlüssel, nur online)"
 		},
 		"dataAttribution": "Daten & Urheberrecht",
 		"dataAttributionDesc": "Trail-Daten werden von der Udruga Long Distance Trail Hrvatska (LDTH) bereitgestellt. Kartenkacheln kommen von OpenStreetMap, OpenTopoMap, OpenHikingMap (openmaps.fr), Waymarked Trails, CyclOSM und anderen Anbietern. Kroatische topografische Karten stammen vom Staatlichen Geodätischen Amt (DGU). Wetterdaten kommen von DHMZ (Kroatischer Wetterdienst) und Open-Meteo. Radarkacheln werden von RainViewer bereitgestellt. Daten zum saisonalen Wegzustand, Gefahrenwarnungen sowie Standorte der Bergwacht-Stationen stammen von HGSS (Kroatische Bergrettung), HPS (Kroatischer Bergsteigerverband) und den Verwaltungen der Nationalparks (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) sowie Naturpark Velebit. Die auf dieser Seite angezeigten Daten entsprechen möglicherweise nicht dem aktuellen Stand. Im Zweifelsfall bitte immer die offiziellen Quellen prüfen.",
@@ -304,7 +305,13 @@
 		"shareShortLinksHint": "Kopiert einen kompakten Link mit derselben Kartenansicht. Zum Erstellen ist eine Internetverbindung nötig.",
 		"paceFactor": "Persönliche Tempoanpassung",
 		"paceFactorHint": "Skaliert jede ETA auf dein echtes Tempo. {min} - {max}; 100% behält dein eingestelltes Tempo, höher ist schneller, niedriger ist langsamer",
-		"paceFactorReset": "Tempoanpassung auf Standard zurücksetzen"
+		"paceFactorReset": "Tempoanpassung auf Standard zurücksetzen",
+		"hillshadeEnable": "Schummerung anzeigen",
+		"hillshadeDisable": "Schummerung ausblenden",
+		"hillshadeHint": "Reliefschattierung über jeder Grundkarte",
+		"contourEnable": "Höhenlinien anzeigen",
+		"contourDisable": "Höhenlinien ausblenden",
+		"contourHint": "Höhenlinien (OpenTopoMap); am besten über Satellit oder einfachen Karten"
 	},
 	"baseMapSelector": {
 		"standard": "Standard",
@@ -1407,7 +1414,8 @@
 			"layers": "Der Ebenen-Button (oben rechts) wechselt Basiskarten und Overlays wie Unwetter. Radar, Kachel-Zuschnitt und Kartenfarb-Anpassung liegen im Werkzeuge-Panel (Schraubenschlüssel in der Steuerleiste).",
 			"trail": "Tippe auf die Trail-Linie, Orts-Marker oder saisonale Warn-Chips für Details; Popups verlinken zu Fotos, Wikipedia und Teilen. Wasser-Popups erlauben, den Zustand zu notieren (fließt/wenig/trocken); jedes POI-Popup speichert eine private Notiz auf dem Gerät und - wenn eine Kurator-E-Mail konfiguriert ist - einen Link Problem melden.",
 			"share": "Ein Symbolleisten-Button für Teilen und Export. Bei GPS oder angeheftetem Trail-Punkt heißt die Beschriftung Teilen & exportieren und das Panel zeigt QR-Code (vom anderen Telefon scannen), Link kopieren und Druck/PNG-Export. Sonst heißt die Beschriftung Drucken & exportieren und nur der Export erscheint. Schließen über Symbolleisten-Umschalter, Klick außerhalb oder Escape (kein Schließen-Fuß). Kurzlinks wenn online und in Einstellungen aktiviert.",
-			"settings": "Das Zahnrad öffnet die Einstellungen mit acht Bereichskarten (Anzeige und Gerät, Wegoptik, Karten-Overlays, Gehen und ETA, Pack und Tempo, Benachrichtigungen und Teilen, Offline-Karten, Importe). Einheiten, Richtung (SOBO/NOBO) und Distanzgenauigkeit bleiben in der Symbolleiste als Sitzungssteuerungen. Die Karte Gehen & ETA hat zudem eine persönliche Tempoanpassung (70-140%), die jede ETA an dein echtes Tempo anpasst."
+			"settings": "Das Zahnrad öffnet die Einstellungen mit acht Bereichskarten (Anzeige und Gerät, Wegoptik, Karten-Overlays, Gehen und ETA, Pack und Tempo, Benachrichtigungen und Teilen, Offline-Karten, Importe). Einheiten, Richtung (SOBO/NOBO) und Distanzgenauigkeit bleiben in der Symbolleiste als Sitzungssteuerungen. Die Karte Gehen & ETA hat zudem eine persönliche Tempoanpassung (70-140%), die jede ETA an dein echtes Tempo anpasst.",
+			"terrainOverlays": "Schalte im Werkzeug-Panel (Schraubenschlüssel) Schummerung und/oder Höhenlinien ein, um Reliefschattierung und Höhenlinien über jede Grundkarte zu legen - besonders nützlich über Satellit. Sie brauchen eine Verbindung und sind nicht Teil des Offline-Downloads."
 		},
 		"chartHeading": "Höhenprofil",
 		"gesturesHeading": "Versteckte Gesten",

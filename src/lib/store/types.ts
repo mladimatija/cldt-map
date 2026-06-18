@@ -469,6 +469,12 @@ export interface MapStoreState {
 	/** Waymarked Trails hiking-routes overlay on top of the base map. Persisted. */
 	waymarkedTrailsOverlay: boolean;
 	setWaymarkedTrailsOverlay: (enabled: boolean) => void;
+	/** Esri hillshade relief overlay, stackable over any base (incl. satellite). Persisted. */
+	hillshadeOverlayEnabled: boolean;
+	setHillshadeOverlayEnabled: (enabled: boolean) => void;
+	/** OpenTopoMap contour-lines overlay (multiply-blended over any base). Persisted. */
+	contourOverlayEnabled: boolean;
+	setContourOverlayEnabled: (enabled: boolean) => void;
 	/** Copy compact `/s/{code}` links when sharing the map or a POI. Persisted. */
 	shareShortLinks: boolean;
 	setShareShortLinks: (enabled: boolean) => void;

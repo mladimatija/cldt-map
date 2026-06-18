@@ -85,7 +85,8 @@
 			"welcomeCard": "Benvenuto al primo avvio - una scheda monouso e chiudibile alla prima visita presenta l'app e offre scorciatoie verso i pannelli principali e un link alla demo dal vivo; mostrata una volta, mai durante una demo, completamente accessibile da tastiera",
 			"navTargetHud": "Naviga verso un obiettivo - fissa un POI o un waypoint come obiettivo tramite \"Naviga qui\"; un HUD in alto a sinistra mostra la distanza in linea retta e una freccia di rilevamento verso di esso (non navigazione svolta per svolta)",
 			"offlineReadiness": "Pronto per offline - un indicatore a colpo d'occhio in cima al pannello delle mappe offline: pronto / quasi pronto / non pronto, riassume il corridoio salvato, l'archiviazione permanente e la versione dell'app",
-			"firstAid": "Guida di primo soccorso - una sezione offline a scomparsa nel pannello 112 con promemoria prudenti su cosa fare per sei situazioni outdoor (emorragia, fratture, ipotermia, calore, morso di serpente, reazione allergica), con l'avviso che non sostituisce cure qualificate"
+			"firstAid": "Guida di primo soccorso - una sezione offline a scomparsa nel pannello 112 con promemoria prudenti su cosa fare per sei situazioni outdoor (emorragia, fratture, ipotermia, calore, morso di serpente, reazione allergica), con l'avviso che non sostituisce cure qualificate",
+			"terrainOverlays": "Overlay del terreno - attiva ombreggiatura del rilievo (Esri) e curve di livello (OpenTopoMap) in modo indipendente e sovrapponile a qualsiasi base, anche al satellite, per leggere il terreno (gratis, senza chiave API, solo online)"
 		},
 		"dataAttribution": "Dati e attribuzioni",
 		"dataAttributionDesc": "I dati del sentiero sono forniti dall'organizzazione Udruga Long Distance Trail Hrvatska (LDTH). Le tessere mappa provengono da OpenStreetMap, OpenTopoMap, OpenHikingMap (openmaps.fr), Waymarked Trails, CyclOSM e altri provider. Le mappe topografiche croate provengono dall'Amministrazione Geodetica Statale (DGU). I dati meteo provengono da DHMZ (Servizio Meteorologico Croato) e Open-Meteo. Le tessere radar sono fornite da RainViewer. Stato stagionale del sentiero, avvisi di pericolo e dati delle stazioni di soccorso alpino provengono da HGSS (Servizio croato di soccorso in montagna), HPS (Federazione croata di alpinismo) e dalle autorità dei parchi nazionali (NP Plitvička jezera, NP Sjeverni Velebit, NP Paklenica, NP Krka) e Parco naturale Velebit. I dati visualizzati su questo sito potrebbero non riflettere le condizioni più recenti. In caso di dubbio, verificare sempre le fonti ufficiali.",
@@ -304,7 +305,13 @@
 		"shareShortLinksHint": "Copia un link compatto che apre la stessa vista mappa. Serve una connessione internet per crearlo.",
 		"paceFactor": "Regolazione personale del passo",
 		"paceFactorHint": "Adatta ogni stima dei tempi al tuo passo reale. {min} - {max}; 100% mantiene il passo impostato, più alto è più veloce, più basso è più lento",
-		"paceFactorReset": "Reimposta la regolazione del passo al valore predefinito"
+		"paceFactorReset": "Reimposta la regolazione del passo al valore predefinito",
+		"hillshadeEnable": "Mostra ombreggiatura",
+		"hillshadeDisable": "Nascondi ombreggiatura",
+		"hillshadeHint": "Ombreggiatura del rilievo su qualsiasi base",
+		"contourEnable": "Mostra curve di livello",
+		"contourDisable": "Nascondi curve di livello",
+		"contourHint": "Curve di livello (OpenTopoMap); meglio su satellite o basi semplici"
 	},
 	"baseMapSelector": {
 		"standard": "Standard",
@@ -1407,7 +1414,8 @@
 			"layers": "Il pulsante livelli (in alto a destra) cambia mappe di base e overlay come maltempo. Radar, ritaglio tessere e regolazione colore mappa sono nel pannello Strumenti (icona chiave inglese nella barra comandi).",
 			"trail": "Tocca la linea del sentiero, i marker dei luoghi o i chip di avviso stagionale per i dettagli; i popup portano a foto, Wikipedia e condivisione. I popup dell'acqua permettono di registrare lo stato (scorre/scarsa/asciutta); ogni popup POI conserva una nota privata sul dispositivo e - quando è configurata un'email del curatore - un link Segnala un problema.",
 			"share": "Un solo pulsante nella barra copre condivisione ed esportazione. Con GPS o un punto fissato sul sentiero, l'etichetta è Condividi ed esporta mappa e il pannello mostra codice QR (scansiona da un altro telefono), copia link e stampa/esportazione PNG. Altrimenti l'etichetta è Stampa ed esporta mappa e compare solo l'esportazione. Chiudi con l'interruttore nella barra, clic fuori o Escape (nessun Chiudi nel piè di pagina). Link brevi se online e attivati in Impostazioni.",
-			"settings": "L'ingranaggio apre Impostazioni con otto schede (display e dispositivo, aspetto del sentiero, overlay mappa, camminata e ETA, zaino e passo, notifiche e condivisione, mappe offline, importazioni). Unità, direzione (SOBO/NOBO) e precisione distanza restano nella barra degli strumenti come controlli di sessione. La scheda Camminata ed ETA ha anche una regolazione personale del passo (70-140%) che adatta ogni stima al tuo passo reale."
+			"settings": "L'ingranaggio apre Impostazioni con otto schede (display e dispositivo, aspetto del sentiero, overlay mappa, camminata e ETA, zaino e passo, notifiche e condivisione, mappe offline, importazioni). Unità, direzione (SOBO/NOBO) e precisione distanza restano nella barra degli strumenti come controlli di sessione. La scheda Camminata ed ETA ha anche una regolazione personale del passo (70-140%) che adatta ogni stima al tuo passo reale.",
+			"terrainOverlays": "Nel pannello Strumenti (chiave) attiva Ombreggiatura e/o Curve di livello per sovrapporre rilievo e curve di livello a qualsiasi base - particolarmente utile sul satellite. Richiedono una connessione e non fanno parte del download offline."
 		},
 		"chartHeading": "Profilo altimetrico",
 		"gesturesHeading": "Gesti nascosti",
