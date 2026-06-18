@@ -1245,7 +1245,7 @@
 		"otherFormats": "Andere Koordinatenformate",
 		"firstAid": {
 			"heading": "Erste Hilfe",
-			"disclaimer": "Nur allgemeine Erste-Hilfe-Hinweise - kein Ersatz für ausgebildete medizinische Versorgung. Im Zweifel zuerst 112 anrufen. Lass dich ausbilden, bevor du es brauchst.",
+			"disclaimer": "Wichtig: Dies sind allgemeine Informationen, KEINE medizinische Beratung und kein Ersatz für professionelle medizinische Versorgung oder Ausbildung. Im Notfall immer zuerst 112 anrufen. Du wanderst auf eigene Gefahr und bist für deine eigene Sicherheit verantwortlich.",
 			"topics": {
 				"bleeding": {
 					"title": "Starke Blutung",

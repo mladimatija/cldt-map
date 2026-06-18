@@ -684,8 +684,9 @@ export function MapControlsEmergencyPanel({ onClose }: MapControlsEmergencyPanel
 							{t('firstAid.heading')}
 						</summary>
 						<div className="mt-1.5 flex flex-col gap-1.5 text-xs text-gray-600 dark:text-[var(--text-primary)]">
-							<p className="m-0 rounded border border-amber-300 bg-amber-50 p-1.5 text-amber-700 dark:border-amber-500/40 dark:bg-amber-500/10 dark:text-amber-300">
-								{t('firstAid.disclaimer')}
+							<p className="m-0 flex items-start gap-1.5 rounded border border-amber-300 bg-amber-50 p-1.5 font-medium text-amber-700 dark:border-amber-500/40 dark:bg-amber-500/10 dark:text-amber-300">
+								<IoWarningOutline aria-hidden className="mt-px h-4 w-4 shrink-0" />
+								<span>{t('firstAid.disclaimer')}</span>
 							</p>
 							{FIRST_AID_TOPICS.map((topic) => (
 								<details

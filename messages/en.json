@@ -1245,7 +1245,7 @@
 		"otherFormats": "Other coordinate formats",
 		"firstAid": {
 			"heading": "First aid",
-			"disclaimer": "General first-aid reminders only - not a substitute for trained medical care. When in doubt, call 112 first. Get proper training before you need this.",
+			"disclaimer": "Important: this is general information, NOT medical advice and not a substitute for professional medical care or training. In an emergency always call 112 first. You hike at your own risk and are responsible for your own safety.",
 			"topics": {
 				"bleeding": {
 					"title": "Severe bleeding",
