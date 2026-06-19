@@ -2,7 +2,11 @@
 
 import React, { useEffect } from 'react';
 import { IoCloseOutline } from 'react-icons/io5';
-import { usePopoverFocusTrap } from '@/hooks';
+// Import the focus-trap hook directly, not via the '@/hooks' barrel: the barrel
+// re-exports useRuler/useBlockMapPropagation, which import Leaflet at module top
+// level. This shell is reachable from the server-rendered OnboardingWelcomeCard,
+// so pulling the barrel here evaluates Leaflet during SSR (window is not defined).
+import { usePopoverFocusTrap } from '@/hooks/usePopoverFocusTrap';
 import { Button } from '@/components/ui/Button';
 import { cn } from '@/lib/utils';
 

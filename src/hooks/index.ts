@@ -1,6 +1,13 @@
 /**
  * Central export point for app hooks (map store, block map propagation, site metadata).
  * Import from here for a single entry point; store hooks are also re-exported.
+ *
+ * CLIENT-ONLY: this barrel re-exports useRuler and useBlockMapPropagation, which
+ * import Leaflet at module top level (Leaflet touches `window` on evaluation). Do
+ * not import this barrel from server components or any module reachable during SSR
+ * (a 'use client' directive does not prevent server-side module evaluation). Such
+ * modules should import the specific leaflet-free hook directly, e.g.
+ * `import { usePopoverFocusTrap } from '@/hooks/usePopoverFocusTrap'`.
  */
 
 import { useMapStore } from '@/lib/store';
