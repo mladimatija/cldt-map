@@ -159,7 +159,7 @@ interface AnthropicResponse {
 }
 
 export async function POST(request: NextRequest): Promise<Response> {
-	const limited = enforceRateLimit(request, { name: 'narrative', windowMs: 600_000, max: 6 });
+	const limited = await enforceRateLimit(request, { name: 'narrative', windowMs: 600_000, max: 6 });
 	if (limited) return limited;
 
 	const apiKey = process.env.ANTHROPIC_API_KEY;

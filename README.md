@@ -235,6 +235,17 @@ Locally, plain `npm run dev` leaves all three unset; localhost is still allowed 
 
 **Security:** Only same-origin URLs whose query string contains recognised share params are accepted (no open redirects). Codes are random, not sequential.
 
+### API rate limiting
+
+The server routes (`/api/*`, the `/api/share` create endpoint, and the `/s/{code}` redirect) share a per-IP sliding-window limiter in `src/lib/api-defense.ts`. The client IP is taken from the rightmost valid `x-forwarded-for` entry (the closest trusted proxy hop), so a forged header lands a direct hit in a shared `unknown` bucket instead of spoofing a victim's.
+
+| Route / function                            | Role                                                                                                                                                                                                                                            |
+| ------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `enforceRateLimit` (all server routes)      | Per-IP sliding window backed by **Netlify Blobs** (`rate-limits` store) so the limit holds across serverless instances and cold starts; conditional-write (ETag) concurrency, fails open under contention rather than erroring a valid request. |
+| `netlify/functions/rate-limits-cleanup.mts` | Scheduled **weekly** job that deletes buckets whose metadata `expiresAt` has passed; per-read window filtering on the request path keeps live counts correct between sweeps.                                                                    |
+
+**Local development:** plain `npm run dev` does not configure Netlify Blobs, so the limiter falls back to an in-memory per-instance window (best-effort, like single-process behaviour); transient Blobs outages degrade to the same fallback. Use [`netlify dev`](https://docs.netlify.com/api-and-deploy-docs/cli/local-development/) to exercise the cross-instance limiter against a local Blobs store.
+
 ### Web push notifications (VAPID)
 
 Optional **browser push** when a new seasonal warning or trail condition notice is published, even with the app closed. End users opt in via the **Notify about trail alerts** toggle in Settings (no account). **VAPID keys are deployer/server infrastructure** - they identify your app to browser push services and are never shown to users.
@@ -314,7 +325,7 @@ src/
 │   ├── config.ts         # App defaults (env overrides)
 │   ├── ui-text-scale.ts  # UI text-size accessibility levels (default/large/larger) + root-class helper
 │   ├── trail-narration.ts # Screen-reader narration helpers (grade word, nearest usable water ahead)
-│   ├── api-defense.ts    # Per-IP rate limiting + upstream size caps for the server routes
+│   ├── api-defense.ts    # Per-IP rate limiting (Netlify Blobs, cross-instance; in-memory fallback under npm run dev) + upstream size caps
 │   ├── distance-utils.ts # ETA, grade-adjusted pace, nearest-point search, ruler formatting
 │   ├── spatial-grid.ts   # Uniform-grid nearest-point lookups (GPS fixes, track coverage)
 │   ├── trail-compute.ts / trail-compute-client.ts / trail-compute-cache.ts # Trail enhancement (Web Worker), result cached in localforage for instant repeat loads
@@ -341,7 +352,7 @@ src/
 ├── i18n/             # next-intl routing and request config
 ├── types/            # TypeScript definitions
 └── messages/         # en.json, hr.json, de.json, it.json translations
-netlify/functions/    # Scheduled jobs (seasonal/notices push, share-link cleanup) + push-subscribe
+netlify/functions/    # Scheduled jobs (seasonal/notices push, share-link + rate-limit cleanup) + push-subscribe
 ```
 
 ---

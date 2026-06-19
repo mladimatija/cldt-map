@@ -75,7 +75,7 @@ function parseStations(xml: string): Station[] {
 }
 
 export async function GET(request: NextRequest): Promise<Response> {
-	const limited = enforceRateLimit(request, { name: 'dhmz-weather', windowMs: 60_000, max: 60 });
+	const limited = await enforceRateLimit(request, { name: 'dhmz-weather', windowMs: 60_000, max: 60 });
 	if (limited) return limited;
 
 	const { searchParams } = new URL(request.url);

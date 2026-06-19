@@ -227,7 +227,7 @@ const CACHE_HEADERS = {
 };
 
 export async function GET(request: NextRequest): Promise<Response> {
-	const limited = enforceRateLimit(request, { name: 'meteoalarm', windowMs: 60_000, max: 60 });
+	const limited = await enforceRateLimit(request, { name: 'meteoalarm', windowMs: 60_000, max: 60 });
 	if (limited) return limited;
 
 	try {

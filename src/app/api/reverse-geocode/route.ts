@@ -13,7 +13,7 @@ function parseCoord(raw: string | null, min: number, max: number): number | null
 }
 
 export async function GET(request: NextRequest): Promise<Response> {
-	const limited = enforceRateLimit(request, { name: 'reverse-geocode', windowMs: 3_600_000, max: 60 });
+	const limited = await enforceRateLimit(request, { name: 'reverse-geocode', windowMs: 3_600_000, max: 60 });
 	if (limited) return limited;
 
 	const { searchParams } = new URL(request.url);

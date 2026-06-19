@@ -35,7 +35,7 @@ function sanitizeContentType(raw: string | null): string {
  */
 export async function GET(request: NextRequest): Promise<Response> {
 	try {
-		const limited = enforceRateLimit(request, { name: 'proxy', windowMs: 60_000, max: 30 });
+		const limited = await enforceRateLimit(request, { name: 'proxy', windowMs: 60_000, max: 30 });
 		if (limited) return limited;
 
 		const { searchParams } = new URL(request.url);

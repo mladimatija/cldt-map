@@ -23,7 +23,7 @@ export async function GET(request: NextRequest, context: RouteContext): Promise<
 
 	// Per-IP cap on the public redirect to blunt enumeration of random codes
 	// (each miss still hits Netlify Blobs). The create endpoint is limited too.
-	const limited = enforceRateLimit(request, { name: 'share-redirect', windowMs: 60_000, max: 60 });
+	const limited = await enforceRateLimit(request, { name: 'share-redirect', windowMs: 60_000, max: 60 });
 	if (limited) return limited;
 
 	if (!isShareShortenerConfigured()) {

@@ -17,7 +17,7 @@ export async function POST(request: NextRequest): Promise<Response> {
 		return NextResponse.json({ error: 'Share shortener unavailable' }, { status: 503 });
 	}
 
-	const limited = enforceRateLimit(request, { name: 'share-create', windowMs: 3_600_000, max: 30 });
+	const limited = await enforceRateLimit(request, { name: 'share-create', windowMs: 3_600_000, max: 30 });
 	if (limited) return limited;
 
 	let body: ShareCreateBody;
