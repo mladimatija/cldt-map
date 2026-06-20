@@ -433,9 +433,9 @@ export function PoiMarkers(): null {
 		};
 	}, [map, visiblePois, sortedVisiblePoiIds, locale, t, direction, units, totalKm, distancePrecision, openLightbox]);
 
-	/** Fly to a POI's coordinates past the cluster threshold so it gets a
-	 *  dedicated marker, then bounded-poll for the marker and open its popup.
-	 *  Shared by the deep-link consumer and the in-app open requests. */
+	/** Fly to a POI's coordinates past the cluster threshold, so it gets a
+	 *  dedicated marker, then bounded-poll for the marker, and open its popup.
+	 */
 	const flyAndOpenPoi = useCallback(
 		(target: { id: string; lat: number; lng: number }) => {
 			const targetZoom = Math.max(map.getZoom(), CLUSTER_MAX_ZOOM + 1);

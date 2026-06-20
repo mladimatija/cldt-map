@@ -203,7 +203,5 @@ export function isKnownType(t: string): t is KnownPoiType {
 }
 
 /** Off-trail cap (km) at which a POI is still considered "in" a stage or
- *  nearby window. Shared by the stage planner panel, the trip-brief assembler,
- *  and any future feature that needs the same threshold so the values stay
- *  in sync automatically. */
+ *  nearby window. */
 export const STAGE_POI_OFFTRAIL_KM = 5;

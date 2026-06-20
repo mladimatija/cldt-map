@@ -118,7 +118,7 @@ ${wpts}
 /**
  * Triggers a browser file download for arbitrary content. Revokes the object
  * URL on a short delay because Safari needs it alive until the click is
- * processed. Shared by every file-export path (GPX, journal markdown, CSV).
+ * processed. Shared by every file-export path.
  */
 export function downloadBlob(content: BlobPart, filename: string, mime: string): void {
 	const blob = new Blob([content], { type: mime });

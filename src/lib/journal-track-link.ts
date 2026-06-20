@@ -196,9 +196,8 @@ export function buildJournalTrackAttachment(
 
 /**
  * Builds the map-overlay preview for a journal entry's current attach state, or
- * null when there is nothing to show. Shared by the journal compose form and the
- * entry editor so the two cannot drift. Pass the CURRENT `attachRuler` value
- * (not a stale closure) so toggling the ruler attachment off clears the preview.
+ * null when there is nothing to show. Pass the CURRENT `attachRuler` value
+ * (not a stale closure), so toggling the ruler attachment off clears the preview.
  */
 export function buildJournalPreview(
 	state: { trackLink: JournalTrackLink | null; startKm?: number; endKm?: number },

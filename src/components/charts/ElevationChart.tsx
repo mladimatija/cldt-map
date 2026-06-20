@@ -418,7 +418,7 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 	};
 
 	/** Builds the GPX payload for the current modal mode, or null when the
-	 *  required data is not available. Shared by download and share paths. */
+	 *  required data is not available. */
 	const buildGpxPayload = (): { gpx: string; filename: string } | null => {
 		if (gpxModalMode === 'full') {
 			if (rawGpxData) {

@@ -1,6 +1,5 @@
 /**
- * Forward corridor filter for "POIs along the next N km" - shared by the POI
- * list sort mode, the Up next chip link, and the stage planner preview button.
+ * Forward corridor filter for "POIs along the next N km".
  * Anchor is GPS on-trail when available, otherwise the ruler range midpoint.
  */
 import type { ClosestPoint, TrailDirection, UnitSystem } from '@/lib/store/types';

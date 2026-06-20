@@ -48,8 +48,7 @@ export function buildExposureAdvisory(
 }
 
 /** Tooltip-ready advisory from a weather reading. `t` is a `weather`-namespace
- *  translator; the helper resolves the `exposure.*` keys. Shared by the user
- *  marker and trail-click tooltips so the call stays one line at each site. */
+ *  translator; the helper resolves the `exposure.*` keys. */
 export function tooltipExposure(
 	feelsLikeC: number,
 	windspeedKmh: number,

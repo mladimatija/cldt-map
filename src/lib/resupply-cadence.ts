@@ -135,9 +135,7 @@ export interface ResupplyCadenceLabelRenderers {
 	foodPack: (vars: { days: number; rate: string }) => string;
 }
 
-/** Builds the (up to) three resupply-cadence detail lines for a single stage.
- *  Shared by the stage planner panel and the trip-brief assembler so the branch
- *  conditions stay in one place. */
+/** Builds the (up to) three resupply-cadence detail lines for a single stage. */
 export function buildResupplyCadenceLabels(
 	cadence: StageResupplyCadence,
 	r: ResupplyCadenceLabelRenderers,
