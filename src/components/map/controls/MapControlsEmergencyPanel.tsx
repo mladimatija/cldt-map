@@ -22,7 +22,8 @@ import {
 } from '@/lib/emergency-data';
 import { fetchReverseGeocodeAddress } from '@/lib/reverse-geocode-client';
 import { formatDms, formatMgrs, formatUtm } from '@/lib/coordinate-formats';
-import { cn, isSafeUrl } from '@/lib/utils';
+import { buildCheckinNote } from '@/lib/checkin-note';
+import { cn, isSafeUrl, LINKABLE_PHONE_RE, toDialString } from '@/lib/utils';
 
 const COPY_RESET_MS = 1500;
 
@@ -62,7 +63,7 @@ interface NearestHgss {
 	bearingDeg: number;
 }
 
-type CopyField = 'coords' | 'plusCode' | 'mgrs' | 'utm' | 'dms' | 'section' | 'address' | 'all' | 'geo';
+type CopyField = 'coords' | 'plusCode' | 'mgrs' | 'utm' | 'dms' | 'section' | 'address' | 'all' | 'geo' | 'checkin';
 
 async function copyTextToClipboard(text: string): Promise<boolean> {
 	try {
@@ -161,6 +162,7 @@ export function MapControlsEmergencyPanel({ onClose }: MapControlsEmergencyPanel
 
 	const userLocation = useMapStore((s: MapStoreState) => s.userLocation);
 	const lastKnownFix = useMapStore((s: MapStoreState) => s.lastKnownFix);
+	const sosCard = useMapStore((s: MapStoreState) => s.sosCard);
 	const permissionStatus = useMapStore((s: MapStoreState) => s.permissionStatus);
 	const locationError = useMapStore((s: MapStoreState) => s.locationError);
 	const units = useMapStore((s: MapStoreState) => s.units);
@@ -217,12 +219,19 @@ export function MapControlsEmergencyPanel({ onClose }: MapControlsEmergencyPanel
 		lng: number;
 		source: 'gps' | 'lastKnown' | 'closest' | null;
 		timestamp?: number;
+		accuracy?: number;
 	} = useMemo(() => {
 		if (userLocation) {
-			return { lat: userLocation.lat, lng: userLocation.lng, source: 'gps' };
+			return { lat: userLocation.lat, lng: userLocation.lng, source: 'gps', accuracy: userLocation.accuracy };
 		}
 		if (lastKnownFix) {
-			return { lat: lastKnownFix.lat, lng: lastKnownFix.lng, source: 'lastKnown', timestamp: lastKnownFix.timestamp };
+			return {
+				lat: lastKnownFix.lat,
+				lng: lastKnownFix.lng,
+				source: 'lastKnown',
+				timestamp: lastKnownFix.timestamp,
+				accuracy: lastKnownFix.accuracy,
+			};
 		}
 		if (closestPoint) {
 			return { lat: closestPoint.point.lat, lng: closestPoint.point.lng, source: 'closest' };
@@ -262,6 +271,16 @@ export function MapControlsEmergencyPanel({ onClose }: MapControlsEmergencyPanel
 			displayPosition.source === null ? '' : `${displayPosition.lat.toFixed(5)}, ${displayPosition.lng.toFixed(5)}`,
 		[displayPosition],
 	);
+
+	// GPS fix accuracy ("+/- N m"): shown only for a real GPS / last-known fix (the
+	// nearest-trail-point fallback has no accuracy). Telling a 112 dispatcher the
+	// fix is within ~8 m vs ~600 m materially changes a search, so surface it.
+	const accuracyLabel = useMemo((): string | null => {
+		if (displayPosition.source !== 'gps' && displayPosition.source !== 'lastKnown') return null;
+		const acc = displayPosition.accuracy;
+		if (typeof acc !== 'number' || !Number.isFinite(acc) || acc <= 0) return null;
+		return `±${formatDistanceM(acc, units)}`;
+	}, [displayPosition, units]);
 
 	// RFC 5870 geo: URI for the position QR. 6 decimals (~0.1 m) - intentionally
 	// one more than the 5-decimal on-screen coords / aria-label, so the scanned
@@ -368,6 +387,7 @@ export function MapControlsEmergencyPanel({ onClose }: MapControlsEmergencyPanel
 	const copyAllText = useMemo((): string => {
 		const lines: string[] = [];
 		if (coordsString) lines.push(`${t('position')}: ${coordsString}`);
+		if (accuracyLabel) lines.push(`${t('accuracy')}: ${accuracyLabel}`);
 		if (addressLine) lines.push(`${t('address')}: ${addressLine}`);
 		if (plusCode) lines.push(`${t('plusCode')}: ${plusCode}`);
 		if (mgrsString) lines.push(`${t('mgrs')}: ${mgrsString}`);
@@ -385,6 +405,7 @@ export function MapControlsEmergencyPanel({ onClose }: MapControlsEmergencyPanel
 		return lines.join('\n');
 	}, [
 		coordsString,
+		accuracyLabel,
 		addressLine,
 		plusCode,
 		mgrsString,
@@ -412,6 +433,76 @@ export function MapControlsEmergencyPanel({ onClose }: MapControlsEmergencyPanel
 			if (ok) handleCopied('geo');
 		});
 	};
+
+	// ── Check-in message ──────────────────────────────────────────────────────
+	// A ready-to-send "I'm OK / running late" status the hiker copies or shares
+	// through their OWN channel (the app never sends or tracks it). Making the
+	// single most-recommended overdue-hiker safeguard - a check-in - one tap.
+	const [checkinStatus, setCheckinStatus] = useState<'ok' | 'late'>('ok');
+	const [checkinNote, setCheckinNote] = useState('');
+	const [canShare] = useState<boolean>(() => typeof navigator !== 'undefined' && typeof navigator.share === 'function');
+
+	const checkinTime = useMemo(
+		() => new Intl.DateTimeFormat(locale, { dateStyle: 'medium', timeStyle: 'short' }).format(nowMs),
+		[locale, nowMs],
+	);
+
+	const checkinMessage = useMemo((): string => {
+		if (!hasPosition) return '';
+		const statusLine = checkinStatus === 'ok' ? t('checkin.titleOk') : t('checkin.titleLate');
+		// Carry the fix age into the position line so a recipient knows a last-known
+		// point may be old - the same honesty the on-screen banner applies.
+		const positionValue =
+			displayPosition.source === 'lastKnown' && lastKnownAgeLabel
+				? `${coordsString} (${lastKnownAgeLabel})`
+				: coordsString;
+		return buildCheckinNote({
+			statusLine,
+			lines: [
+				{ label: t('position'), value: positionValue },
+				{ label: t('accuracy'), value: accuracyLabel ?? '' },
+				{ label: t('plusCode'), value: plusCode },
+				{ label: t('section'), value: sectionString },
+				{ label: t('checkin.timeLabel'), value: checkinTime },
+			],
+			note: checkinNote,
+		});
+	}, [
+		hasPosition,
+		checkinStatus,
+		displayPosition.source,
+		lastKnownAgeLabel,
+		coordsString,
+		accuracyLabel,
+		plusCode,
+		sectionString,
+		checkinTime,
+		checkinNote,
+		t,
+	]);
+
+	const handleCopyCheckin = (): void => {
+		if (!checkinMessage) return;
+		void copyTextToClipboard(checkinMessage).then((ok) => {
+			if (ok) handleCopied('checkin');
+		});
+	};
+
+	const handleShareCheckin = (): void => {
+		if (!checkinMessage || !canShare) return;
+		void navigator.share({ text: checkinMessage }).catch(() => {
+			/* user dismissed the share sheet or share failed - no-op */
+		});
+	};
+
+	const contactName = sosCard.emergencyContactName?.trim();
+	const contactPhone = sosCard.emergencyContactPhone?.trim();
+	// Gate the sms: link the same way the SOS card gates its tel: link (the phone is
+	// unsanitized free text), and strip the recipient to a +/digits dial string so no
+	// stray character can inject extra sms: URI parameters.
+	const checkinSmsTo = contactPhone && LINKABLE_PHONE_RE.test(contactPhone) ? toDialString(contactPhone) : '';
+	const checkinSmsHref =
+		checkinSmsTo && checkinMessage ? `sms:${checkinSmsTo}?body=${encodeURIComponent(checkinMessage)}` : undefined;
 
 	return (
 		<MapControlModalShell
@@ -455,6 +546,11 @@ export function MapControlsEmergencyPanel({ onClose }: MapControlsEmergencyPanel
 										onCopied={handleCopied}
 									/>
 								</div>
+								{accuracyLabel ? (
+									<p className="m-0 text-xs text-gray-500 dark:text-[var(--text-secondary)]">
+										{t('accuracy')}: {accuracyLabel}
+									</p>
+								) : null}
 								{addressLoading ? (
 									<p className="text-xs text-gray-500 italic dark:text-[var(--text-secondary)]">
 										{t('addressLoading')}
@@ -585,6 +681,72 @@ export function MapControlsEmergencyPanel({ onClose }: MapControlsEmergencyPanel
 							<span className="text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('gpsNoPosition')}</span>
 						)}
 					</section>
+					{hasPosition ? (
+						<section className={cn('flex flex-col gap-1.5', MAP_CONTROL_SECTION_DIVIDER)}>
+							<h4 className={MAP_CONTROL_SECTION_HEADING}>{t('checkin.heading')}</h4>
+							<fieldset className="m-0 flex gap-2 border-0 p-0">
+								<legend className="sr-only">{t('checkin.statusLegend')}</legend>
+								{(['ok', 'late'] as const).map((s) => (
+									<label
+										className={cn(
+											'focus-within:ring-cldt-green inline-flex cursor-pointer items-center rounded border px-2 py-1 text-xs focus-within:ring-1 focus-within:ring-offset-1',
+											checkinStatus === s
+												? 'border-cldt-blue bg-cldt-blue/10 text-cldt-blue font-medium'
+												: 'border-gray-200 text-gray-600 dark:border-[var(--border-color)] dark:text-[var(--text-secondary)]',
+										)}
+										key={s}
+									>
+										<input
+											checked={checkinStatus === s}
+											className="sr-only"
+											name="checkin-status"
+											type="radio"
+											onChange={() => setCheckinStatus(s)}
+										/>
+										{s === 'ok' ? t('checkin.statusOk') : t('checkin.statusLate')}
+									</label>
+								))}
+							</fieldset>
+							<label className="flex flex-col gap-1 text-xs text-gray-500 dark:text-[var(--text-secondary)]">
+								{t('checkin.noteLabel')}
+								<textarea
+									className="focus-visible:ring-cldt-green w-full resize-none rounded border border-gray-200 bg-white px-2 py-1 text-sm text-gray-700 outline-none focus-visible:ring-1 dark:border-[var(--border-color)] dark:bg-[var(--bg-primary)] dark:text-[var(--text-primary)]"
+									maxLength={300}
+									placeholder={t('checkin.notePlaceholder')}
+									rows={2}
+									value={checkinNote}
+									onChange={(e) => setCheckinNote(e.target.value)}
+								/>
+							</label>
+							<p className="m-0 max-h-32 overflow-y-auto rounded bg-gray-50 p-2 text-xs whitespace-pre-wrap text-gray-600 dark:bg-[var(--bg-secondary)] dark:text-[var(--text-primary)]">
+								{checkinMessage}
+							</p>
+							<div className="flex flex-wrap gap-2">
+								<Button
+									className={cn(copiedField === 'checkin' && 'text-cldt-green')}
+									size="sm"
+									variant="mapControlOutlineSecondary"
+									onClick={handleCopyCheckin}
+								>
+									{copiedField === 'checkin' ? t('copyTooltipSuccess') : t('checkin.copy')}
+								</Button>
+								{canShare ? (
+									<Button size="sm" variant="mapControlOutlineSecondary" onClick={handleShareCheckin}>
+										{t('checkin.share')}
+									</Button>
+								) : null}
+								{checkinSmsHref ? (
+									<a
+										className={cn(buttonVariants({ variant: 'mapControlOutlineSecondary', size: 'sm' }))}
+										href={checkinSmsHref}
+									>
+										{t('checkin.textContact', { name: contactName || contactPhone || '' })}
+									</a>
+								) : null}
+							</div>
+							<p className="m-0 text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('checkin.selfSendNote')}</p>
+						</section>
+					) : null}
 
 					<section className={cn('flex flex-col gap-1.5', MAP_CONTROL_SECTION_DIVIDER)}>
 						<h4 className={MAP_CONTROL_SECTION_HEADING}>{t('nearestRoad')}</h4>
@@ -625,7 +787,7 @@ export function MapControlsEmergencyPanel({ onClose }: MapControlsEmergencyPanel
 											<a
 												aria-label={t('callStation', { name: nearestHgss.entry.name })}
 												className="text-cldt-blue hover:text-cldt-green focus-visible:text-cldt-green focus-visible:ring-cldt-green inline-flex items-center gap-1 outline-none focus-visible:ring-1 focus-visible:ring-offset-1"
-												href={`tel:${nearestHgss.entry.phone}`}
+												href={`tel:${toDialString(nearestHgss.entry.phone)}`}
 											>
 												<IoCallOutline aria-hidden className="h-3.5 w-3.5" />
 												<span className="font-mono text-sm">{formatPhoneDisplay(nearestHgss.entry.phone)}</span>

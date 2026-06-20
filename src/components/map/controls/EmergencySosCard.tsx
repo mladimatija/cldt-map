@@ -6,15 +6,12 @@ import { IoAddOutline } from 'react-icons/io5';
 import { useMapStore, type MapStoreState } from '@/lib/store';
 import { SOS_CARD_FIELDS, SOS_CARD_FIELD_MAX_LEN, type SosCard } from '@/lib/store/types';
 import { Button } from '@/components/ui/Button';
-import { cn } from '@/lib/utils';
+import { cn, LINKABLE_PHONE_RE, toDialString } from '@/lib/utils';
 import { MAP_CONTROL_SECTION_HEADING } from './MapControlSectionCard';
 import { MAP_CONTROL_INPUT, MAP_CONTROL_LINK_BUTTON, MAP_CONTROL_SECTION_DIVIDER } from './map-controls-constants';
 
 /** Fields entered as a multi-line textarea (free text) rather than a single input. */
 const MULTILINE_FIELDS = new Set<keyof SosCard>(['allergies', 'conditions', 'medications', 'notes']);
-
-/** Phone shapes safe to turn into a tel: link (mirrors the POI popup / HGSS guard). */
-const LINKABLE_PHONE_RE = /^\+?[\d\s().,-]{1,30}$/;
 
 /** Read-only tel: link styling, matching the HGSS rescue link incl. its focus ring. */
 const READONLY_LINK_CLASS =
@@ -110,7 +107,7 @@ export function EmergencySosCard(): React.ReactElement {
 								</dt>
 								<dd className="m-0 min-w-0 break-words">
 									{isLinkablePhone ? (
-										<a className={READONLY_LINK_CLASS} href={`tel:${value}`}>
+										<a className={READONLY_LINK_CLASS} href={`tel:${toDialString(value)}`}>
 											{value}
 										</a>
 									) : (

@@ -26,6 +26,13 @@ const SeasonalStatusBanner = dynamic(
 	() => import('@/components/map/SeasonalStatusBanner').then((m) => ({ default: m.SeasonalStatusBanner })),
 	{ ssr: false },
 );
+const SeasonalStatusFreshnessBanner = dynamic(
+	() =>
+		import('@/components/map/SeasonalStatusFreshnessBanner').then((m) => ({
+			default: m.SeasonalStatusFreshnessBanner,
+		})),
+	{ ssr: false },
+);
 const SeasonalStatusModal = dynamic(
 	() => import('@/components/map/SeasonalStatusModal').then((m) => ({ default: m.SeasonalStatusModal })),
 	{ ssr: false },
@@ -124,6 +131,7 @@ export default function MapWrapper(_props?: MapWrapperProps): ReactElement {
 			<OffRouteAlertBanner />
 			<SevereWeatherBanner />
 			<SeasonalStatusBanner />
+			<SeasonalStatusFreshnessBanner />
 			<div className="relative min-h-0 flex-1 bg-white" ref={mapContainerRef}>
 				<Map defaultBaseMap={config.baseMapProvider} zoomSnap={0} />
 			</div>

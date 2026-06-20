@@ -218,6 +218,8 @@ export function MapControlsHelpPanel(): React.ReactElement {
 						['navTarget', t('offline.navTarget')],
 						['firstAid', t('offline.firstAid')],
 						['sosQr', t('offline.sosQr')],
+						['checkin', t('offline.checkin')],
+						['seasonalFreshness', t('offline.seasonalFreshness')],
 						['daylight', t('offline.daylight')],
 						['pushAlerts', t('offline.pushAlerts')],
 					]}

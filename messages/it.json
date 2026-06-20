@@ -58,7 +58,7 @@
 			"printExport": "Stampa ed esporta - nel pannello condividi, salva la vista mappa corrente come PDF o immagine PNG",
 			"weather": "Meteo attuale nella tua posizione sul sentiero - temperatura, vento, probabilità precipitazioni, alba/tramonto; previsione oraria 12 ore con barre precipitazioni e suggerimento finestra migliore (DHMZ + Open-Meteo)",
 			"trailNotices": "Avvisi regionali sulle condizioni del sentiero - banner eliminabili con avvisi sulle condizioni attuali sul percorso",
-			"seasonalStatus": "Stato stagionale del sentiero - livello mappa curato con avvisi, chiusure e condizioni stagionali da DHMZ, HGSS, HPS e parchi nazionali croati; marcatori colorati per gravità al centro di ogni tratto interessato; passa il cursore o clicca un marcatore per evidenziare il tratto e aprire un riquadro con gravità, attrezzatura consigliata e link all'avviso originale; i dati si aggiornano con `npm run update-seasonal`",
+			"seasonalStatus": "Stato stagionale del sentiero - livello mappa curato con avvisi, chiusure e condizioni stagionali da DHMZ, HGSS, HPS e parchi nazionali croati; marcatori colorati per gravità al centro di ogni tratto interessato; passa il cursore o clicca un marcatore per evidenziare il tratto e aprire un riquadro con gravità, attrezzatura consigliata e link all'avviso originale; i dati si aggiornano con `npm run update-seasonal`; un promemoria ignorabile appare quando questi dati non vengono aggiornati da settimane, così i dati obsoleti non vengono scambiati per un \"tutto a posto\"",
 			"mineAreas": "Aree con sospetta presenza di mine - poligoni ufficiali MUP/HCR vicino al sentiero con marcatori di avviso e banner GPS (non eliminabile dentro il poligono, eliminabile entro 500 m); attivo di default, completamente offline dopo la cache; solo informativo - rispetta sempre la segnaletica sul posto",
 			"severeWeather": "Allerte meteo gravi - avvisi Meteoalarm CAP per la Croazia come poligoni colorati sulla mappa con banner GPS; rosso/grave non eliminabile; dati aggiornati ogni 15 minuti",
 			"radar": "Overlay radar precipitazioni - radar RainViewer animato nel pannello Strumenti (icona chiave inglese); frame passati e previsionali, controlli play/pausa e legenda colori",
@@ -66,7 +66,7 @@
 			"daylightBudget": "Budget di luce diurna - sul sentiero l'HUD delle distanze avvisa quando potresti non raggiungere il prossimo rifugio, riparo o paese prima del buio, confrontando l'orario del tramonto con il tuo tempo di arrivo al luogo più vicino davanti",
 			"stagePlanner": "Pianificatore tappe multi-giorno - suddividi qualsiasi tratto del sentiero in tappe giornaliere per distanza o tempo, visualizza dislivello, ETA, acqua, zaino e chip rifornimento per tappa. Imposta una data di inizio per mostrare la data di ogni tappa e inserisci giorni di riposo (giorni zero) che spostano ogni data, previsione ed evento di calendario successivi senza cambiare la suddivisione. Esporta singole tappe come GPX o FIT, tutti i POI come GPX, un PDF tappe in mappa, iCal (include i giorni di riposo) o apri il Trip brief; un indicatore di pernottamento a fine tappa indica il rifugio, ricovero o paese più vicino dove dormire, con tipo e distanza dalla fine della tappa nel dettaglio",
 			"gpxImport": "Importazione tracce GPX - trascina (o seleziona) un file GPX registrato per sovrapporre la tua escursione alla mappa ufficiale; statistiche su distanza, passo, tempo totale, tempo in movimento, deviazione massima e copertura del percorso",
-			"emergency": "Pannello di emergenza 112 - tieni premuto il pulsante SOS rosso (in basso a destra) per aprire un modal centrato offline-first con coordinate GPS, Plus Code, tratta e km del percorso, direzione e distanza al più vicino accesso stradale e alla stazione di soccorso alpino HGSS; online viene cercato un indirizzo leggibile da copiare; copia ogni campo negli appunti e passa al dialer (Chiama 112) o alle mappe (Apri nelle mappe); se il GPS non è disponibile, ripiega sull'ultima posizione nota con la sua età; include una scheda medica/contatti opzionale sul dispositivo e una guida \"cosa dire al 112\"; funziona completamente offline una volta in cache; comunica la tua posizione anche come riferimenti di griglia MGRS / UTM / DMS (MGRS in primo piano per l'interoperabilità con HGSS / SAR, UTM e DMS in una riga comprimibile)",
+			"emergency": "Pannello di emergenza 112 - tieni premuto il pulsante SOS rosso (in basso a destra) per aprire un modal centrato offline-first con coordinate GPS, Plus Code, tratta e km del percorso, direzione e distanza al più vicino accesso stradale e alla stazione di soccorso alpino HGSS; online viene cercato un indirizzo leggibile da copiare; copia ogni campo negli appunti e passa al dialer (Chiama 112) o alle mappe (Apri nelle mappe); se il GPS non è disponibile, ripiega sull'ultima posizione nota con la sua età; include una scheda medica/contatti opzionale sul dispositivo e una guida \"cosa dire al 112\"; funziona completamente offline una volta in cache; comunica la tua posizione anche come riferimenti di griglia MGRS / UTM / DMS (MGRS in primo piano per l'interoperabilità con HGSS / SAR, UTM e DMS in una riga comprimibile); mostra il raggio di precisione del GPS (+/- N m) e un messaggio di check-in con un tocco (posizione, precisione, tratto, nota) che copi, condividi o invii tu stesso a un contatto - l'app non lo invia né lo traccia",
 			"trailStyle": "Stile del percorso - scegli in Impostazioni (scheda Aspetto del sentiero) come colorare la polilinea: Predefinito (un solo colore), Tratte (zone A/B/C con marker di confine e statistiche per tratta), Pendenza (colorazione a cinque bande in stile Strava, toni caldi per le salite e freddi per le discese nella direzione di marcia attiva; legenda del colore nella scheda; ricalcolata al cambio di direzione SOBO/NOBO), Fondo o Difficoltà (SAC)",
 			"surfaceAndSac": "Colorazione per fondo e difficoltà - colora la polilinea del sentiero (e il riempimento del grafico altimetrico) in base al tipo di fondo OSM (asfaltato / non asfaltato / ghiaia / terra / roccia) o alla scala escursionistica SAC (T1 escursionismo fino a T6 escursionismo alpino difficile). I dati vengono arricchiti mensilmente da una GitHub Action a partire da OpenStreetMap; le opzioni Fondo e Difficoltà restano disabilitate finché il set di dati non viene caricato al primo rendering. Consapevole della direzione: il set è indicizzato per km SOBO e il renderer lo specchia al volo per NOBO",
 			"distanceMarkers": "Indicatori di distanza - piccole etichette km/mi lungo il sentiero a intervalli di 100 / 50 / 25 / 10 / 5 / 1 unità. Visualizzazione progressiva in base al livello di zoom: 100 km sempre visibili a qualsiasi zoom, intervalli più fini compaiono man mano che ingrandisci (etichette da 1 km solo da zoom 13+). Attivabile dalle Impostazioni; le etichette seguono il sistema di unità attivo e la direzione corrente (SOBO/NOBO)",
@@ -973,7 +973,13 @@
 		"sourceLabel": "Fonte",
 		"tapForDetails": "Tocca per dettagli",
 		"chipAriaLabel": "{severity} - {source}",
-		"lastUpdatedDaysAgo": "{days, plural, =0 {Aggiornato oggi} =1 {Aggiornato ieri} other {Aggiornato # giorni fa}}"
+		"lastUpdatedDaysAgo": "{days, plural, =0 {Aggiornato oggi} =1 {Aggiornato ieri} other {Aggiornato # giorni fa}}",
+		"freshness": {
+			"label": "Aggiornamento dei dati stagionali",
+			"stale": "Le chiusure stagionali sono state aggiornate l'ultima volta il {date} e potrebbero non essere aggiornate. Verifica con {source}.",
+			"dismiss": "Chiudi",
+			"fallbackSource": "la fonte ufficiale"
+		}
 	},
 	"pois": {
 		"operatorLabel": "Gestore:",
@@ -1311,6 +1317,22 @@
 			"scanHint": "Scansiona con qualsiasi app di mappe per aprire questa posizione",
 			"ariaLabel": "Codice QR della tua posizione {coords} - scansiona con un'app di mappe per aprirlo",
 			"copyGeoLink": "Copia link geo:"
+		},
+		"accuracy": "Precisione",
+		"checkin": {
+			"heading": "Messaggio di check-in",
+			"statusLegend": "Stato",
+			"statusOk": "Sto bene",
+			"statusLate": "Sono in ritardo",
+			"noteLabel": "Aggiungi una nota (facoltativo)",
+			"notePlaceholder": "Dove sei, il tuo piano, qualcosa di utile",
+			"titleOk": "Check-in dal sentiero - sto bene.",
+			"titleLate": "Check-in dal sentiero - sono in ritardo.",
+			"timeLabel": "Ora",
+			"copy": "Copia messaggio",
+			"share": "Condividi",
+			"textContact": "Invia SMS a {name}",
+			"selfSendNote": "Sei tu a inviarlo - l'app non invia né traccia la tua posizione."
 		}
 	},
 	"mineAreas": {
@@ -1453,7 +1475,9 @@
 			"navTarget": "Fissa un luogo con \"Naviga qui\" nel suo popup per vedere la distanza in linea retta e una freccia di rilevamento verso di esso (non navigazione); tocca la X per interrompere.",
 			"cacheHealth": "In cima al pannello delle mappe offline un indicatore pronto / quasi pronto / non pronto ti permette di verificare a colpo d'occhio che il corridoio sia salvato e aggiornato, l'archiviazione permanente e l'app aggiornata prima di uscire dalla copertura.",
 			"firstAid": "Apri il pannello rosso 112 ed espandi \"Primo soccorso\" per promemoria offline passo dopo passo per sei emergenze outdoor comuni. Sono solo indicazioni generali - non sostituiscono cure mediche qualificate, e rimandano sempre alla chiamata al 112.",
-			"sosQr": "Nel pannello rosso 112 espandi \"Codice QR della posizione\" per mostrare un QR scansionabile delle tue coordinate. Un soccorritore o un passante può scansionarlo con qualsiasi fotocamera per aprire la tua posizione nella sua app di mappe - senza app o account, generato offline. Usa \"Copia link geo:\" se la scansione non riesce."
+			"sosQr": "Nel pannello rosso 112 espandi \"Codice QR della posizione\" per mostrare un QR scansionabile delle tue coordinate. Un soccorritore o un passante può scansionarlo con qualsiasi fotocamera per aprire la tua posizione nella sua app di mappe - senza app o account, generato offline. Usa \"Copia link geo:\" se la scansione non riesce.",
+			"checkin": "Nel pannello rosso 112 espandi \"Messaggio di check-in\" per creare un messaggio pronto \"Sto bene / sono in ritardo\" (la tua posizione, la sua precisione, il tratto e una nota facoltativa). Copialo, condividilo o invialo a un contatto salvato - lo invii tu stesso; l'app non invia né traccia la tua posizione.",
+			"seasonalFreshness": "Se il livello dello stato stagionale è attivo ma i dati non vengono aggiornati da oltre tre settimane, un promemoria ignorabile avverte che potrebbero non essere aggiornati - verifica con la fonte ufficiale invece di presumere che non ci siano chiusure."
 		},
 		"officialAppNote": "FarOut è l’app ufficiale del CLDT. Questa mappa è un progetto indipendente solo per scopi di ricerca ed educativi - verifica le informazioni critiche con le fonti ufficiali.",
 		"demoHeading": "Escursione demo",

@@ -66,7 +66,7 @@
 			"daylightBudget": "Procjena dnevnog svjetla - na stazi te HUD s udaljenostima upozorava kad možda nećeš stići do sljedećeg doma, skloništa ili mjesta prije mraka, uspoređujući vrijeme zalaska sunca s procjenom dolaska do najbližeg odredišta ispred",
 			"stagePlanner": "Planer višednevnih etapa - podijelite bilo koji dio staze na dnevne etape prema udaljenosti ili vremenu, pregledajte nadmorsku visinu, ETA, vodu, težinu ruksaka i čipove opskrbe po etapi. Postavite datum početka putovanja da prikažete datum svake etape i umetnite dane odmora (nulte dane) koji pomiču svaki kasniji datum, prognozu i kalendarski događaj bez mijenjanja podjele. Izvezite pojedine etape kao GPX ili FIT, sve POI-jeve kao GPX, PDF karte etapa, iCal (uključuje dane odmora) ili otvorite Trip brief; oznaka prenoćišta na kraju etape navodi najbliži dom, sklonište ili grad za spavanje, s vrstom i udaljenošću od kraja etape u proširenom prikazu",
 			"gpxImport": "Uvoz GPX rute - povuci i ispusti (ili odaberi) snimljenu GPX datoteku i usporedi svoju rutu sa službenom stazom; statistike o udaljenosti, tempu, ukupnom i vremenu kretanja, maksimalnom odstupanju i pokrivenosti staze",
-			"emergency": "Hitna ploča 112 - dugim pritiskom crvenog SOS gumba (donji desni kut) otvara se offline-first centrirani modal s tvojim GPS koordinatama, Plus kodom, etapom i kilometrom staze te smjerom i udaljenošću do najbližeg pristupa cesti i HGSS stanice; kad si online, traži se čitljiva adresa koju možeš kopirati; kopiraj svako polje i pokreni biranje (Nazovi 112) ili karte (Otvori u kartama); ako GPS nije dostupan, vraća se na posljednji poznati položaj i koliko je star; uključuje opcionalnu medicinsku/kontaktnu karticu na uređaju i skriptu \"što reći na 112\"; radi potpuno offline jednom kad se podaci spreme u predmemoriju; položaj prikazuje i kao MGRS / UTM / DMS mrežne reference (MGRS izravno radi usklađenosti s HGSS-om / SAR-om, UTM i DMS u sklopivom retku)",
+			"emergency": "Hitna ploča 112 - dugim pritiskom crvenog SOS gumba (donji desni kut) otvara se offline-first centrirani modal s tvojim GPS koordinatama, Plus kodom, etapom i kilometrom staze te smjerom i udaljenošću do najbližeg pristupa cesti i HGSS stanice; kad si online, traži se čitljiva adresa koju možeš kopirati; kopiraj svako polje i pokreni biranje (Nazovi 112) ili karte (Otvori u kartama); ako GPS nije dostupan, vraća se na posljednji poznati položaj i koliko je star; uključuje opcionalnu medicinsku/kontaktnu karticu na uređaju i skriptu \"što reći na 112\"; radi potpuno offline jednom kad se podaci spreme u predmemoriju; položaj prikazuje i kao MGRS / UTM / DMS mrežne reference (MGRS izravno radi usklađenosti s HGSS-om / SAR-om, UTM i DMS u sklopivom retku); prikazuje radijus točnosti GPS lokacije (+/- N m) i poruku za javljanje jednim dodirom (položaj, točnost, dionica, napomena) koju sami kopirate, podijelite ili pošaljete kontaktu - aplikacija je ne šalje niti prati",
 			"trailStyle": "Stil staze - odaberi kako će ruta biti obojana u Postavkama (kartica Izgled staze): Zadano (jedna boja), Dionice (zone A/B/C s graničnim oznakama i statistikom po dionici), Nagib (gradijentno bojanje u pet pojaseva, topli tonovi za uspone i hladni za silazne dijelove u trenutnom smjeru hodanja; legenda u kartici; ponovno se izračunava pri promjeni smjera SOBO/NOBO), Podloga ili Težina (SAC)",
 			"surfaceAndSac": "Bojanje po podlozi i težini - oboji liniju staze (i pozadinu grafa nadmorske visine) prema OSM tipu podloge (asfalt / neasfaltirano / šljunak / tlo / stijena) ili SAC ljestvici planinarenja (T1 planinarenje do T6 teško alpinističko). Podatke jednom mjesečno osvježava GitHub Action iz OpenStreetMapa; opcije Podloga i Težina ostaju onemogućene dok se skup ne učita pri prvom prikazu. Smjer-svjestan: skup je vezan uz SOBO km, a renderer ih u hodu zrcali na NOBO",
 			"distanceMarkers": "Oznake kilometara - male oznake km / mi duž staze na intervalima 100 / 50 / 25 / 10 / 5 / 1. Progresivni prikaz prema razini zumiranja: 100 km uvijek vidljivo na bilo kojem zumu, finiji intervali pojavljuju se dok zumirate (oznake od 1 km tek na zumu 13+). Uključivo iz Postavki; oznake slijede aktivni sustav jedinica i trenutni smjer (SOBO/NOBO)",
@@ -973,7 +973,13 @@
 		"sourceLabel": "Izvor",
 		"tapForDetails": "Dodirni za detalje",
 		"chipAriaLabel": "{severity} - {source}",
-		"lastUpdatedDaysAgo": "{days, plural, =0 {Ažurirano danas} =1 {Ažurirano jučer} few {Ažurirano prije # dana} other {Ažurirano prije # dana}}"
+		"lastUpdatedDaysAgo": "{days, plural, =0 {Ažurirano danas} =1 {Ažurirano jučer} few {Ažurirano prije # dana} other {Ažurirano prije # dana}}",
+		"freshness": {
+			"label": "Svježina sezonskih podataka",
+			"stale": "Sezonska zatvaranja zadnji put su ažurirana {date} i možda nisu aktualna. Provjerite kod izvora: {source}.",
+			"dismiss": "Odbaci",
+			"fallbackSource": "službeni izvor"
+		}
 	},
 	"pois": {
 		"operatorLabel": "Upravitelj:",
@@ -1311,6 +1317,22 @@
 			"scanHint": "Skenirajte bilo kojom aplikacijom za karte da otvorite ovu lokaciju",
 			"ariaLabel": "QR kod vašeg položaja {coords} - skenirajte aplikacijom za karte da ga otvorite",
 			"copyGeoLink": "Kopiraj geo: poveznicu"
+		},
+		"accuracy": "Točnost",
+		"checkin": {
+			"heading": "Poruka za javljanje",
+			"statusLegend": "Status",
+			"statusOk": "Dobro sam",
+			"statusLate": "Kasnim",
+			"noteLabel": "Dodaj napomenu (neobavezno)",
+			"notePlaceholder": "Gdje ste, vaš plan, bilo što korisno",
+			"titleOk": "Javljanje s puta - dobro sam.",
+			"titleLate": "Javljanje s puta - kasnim.",
+			"timeLabel": "Vrijeme",
+			"copy": "Kopiraj poruku",
+			"share": "Podijeli",
+			"textContact": "Pošalji SMS: {name}",
+			"selfSendNote": "Vi sami šaljete ovu poruku - aplikacija ne šalje niti prati vašu lokaciju."
 		}
 	},
 	"mineAreas": {
@@ -1453,7 +1475,9 @@
 			"navTarget": "Prikvačite mjesto pomoću \"Navigiraj ovamo\" u skočnom prozoru za prikaz udaljenosti u zračnoj liniji i strelice smjera prema njemu (nije navigacija); dodirnite X za prekid.",
 			"cacheHealth": "Vrh ploče offline karata prikazuje značku spremno / gotovo spremno / nije spremno kako biste na prvi pogled potvrdili da je koridor spremljen i ažuran, pohrana trajna i aplikacija ažurna prije odlaska izvan signala.",
 			"firstAid": "Otvorite crveni 112 panel i proširite \"Prva pomoć\" za offline podsjetnike korak po korak za šest čestih hitnih situacija u prirodi. To su samo opće upute - ne zamjenjuju obučenu medicinsku skrb i uvijek upućuju na poziv 112.",
-			"sosQr": "U crvenom 112 panelu proširite \"QR kod položaja\" za prikaz QR-a vaših koordinata. Spasilac ili prolaznik može ga skenirati bilo kojom kamerom da otvori vašu lokaciju u svojoj aplikaciji za karte - bez aplikacije ili računa, generirano offline. Koristite \"Kopiraj geo: poveznicu\" ako skeniranje ne uspije."
+			"sosQr": "U crvenom 112 panelu proširite \"QR kod položaja\" za prikaz QR-a vaših koordinata. Spasilac ili prolaznik može ga skenirati bilo kojom kamerom da otvori vašu lokaciju u svojoj aplikaciji za karte - bez aplikacije ili računa, generirano offline. Koristite \"Kopiraj geo: poveznicu\" ako skeniranje ne uspije.",
+			"checkin": "U crvenom 112 panelu proširite \"Poruka za javljanje\" za sastavljanje gotove poruke \"Dobro sam / kasnim\" (vaš položaj, njegova točnost, dionica i neobavezna napomena). Kopirajte je, podijelite ili pošaljite spremljenom kontaktu - vi je sami šaljete; aplikacija ne šalje niti prati vašu lokaciju.",
+			"seasonalFreshness": "Ako je sloj sezonskog statusa uključen, ali podaci nisu osvježeni više od tri tjedna, obavijest koja se može odbaciti upozorava da možda nisu aktualni - provjerite kod službenog izvora umjesto da pretpostavite da nema zatvaranja."
 		},
 		"officialAppNote": "FarOut je službena CLDT aplikacija. Ova karta je neovisan projekt isključivo za istraživačke i edukativne svrhe - ključne informacije provjerite u službenim izvorima.",
 		"demoHeading": "Demo hodnja",

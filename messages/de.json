@@ -58,7 +58,7 @@
 			"printExport": "Drucken und Exportieren - im Teilen-Panel aktuelle Kartenansicht als PDF oder PNG speichern",
 			"weather": "Aktuelles Wetter an Ihrem Trailstandort - Temperatur, Wind, Niederschlagswahrscheinlichkeit, Sonnenaufgang/-untergang; 12-Stunden-Vorhersage mit Niederschlagsbalken und Empfehlung des besten Zeitfensters (DHMZ + Open-Meteo)",
 			"trailNotices": "Regionale Trail-Zustandsbenachrichtigungen - abbaubare Banner mit Warnungen zu aktuellen Bedingungen auf dem Trail",
-			"seasonalStatus": "Saisonaler Wegzustand - kuratierte Kartenebene mit Warnungen, Sperrungen und saisonalen Bedingungen aus Quellen von DHMZ, HGSS, HPS und kroatischen Nationalparks; nach Schweregrad gefärbte Chip-Markierungen am Wegmittelpunkt jedes betroffenen Abschnitts; Hover oder Klick auf einen Chip hebt die betroffene Strecke hervor und öffnet ein Detailfenster mit Schweregrad, empfohlener Ausrüstung und Link zur Originalmeldung; Daten werden mit `npm run update-seasonal` aktualisiert",
+			"seasonalStatus": "Saisonaler Wegzustand - kuratierte Kartenebene mit Warnungen, Sperrungen und saisonalen Bedingungen aus Quellen von DHMZ, HGSS, HPS und kroatischen Nationalparks; nach Schweregrad gefärbte Chip-Markierungen am Wegmittelpunkt jedes betroffenen Abschnitts; Hover oder Klick auf einen Chip hebt die betroffene Strecke hervor und öffnet ein Detailfenster mit Schweregrad, empfohlener Ausrüstung und Link zur Originalmeldung; Daten werden mit `npm run update-seasonal` aktualisiert; ein ausblendbarer Hinweis erscheint, wenn diese Daten seit Wochen nicht aktualisiert wurden, damit veraltete Daten nicht mit einer Entwarnung verwechselt werden",
 			"mineAreas": "Minenverdachtsgebiete - offizielle MUP/HCR-Polygone am Trail mit Warn-Chips und GPS-Bannern (nicht abweisbar im Polygon, abweisbar innerhalb 500 m); standardmäßig an, vollständig offline nach dem Cachen; nur zur Information - immer Beschilderung vor Ort beachten",
 			"severeWeather": "Unwetterwarnungen - Meteoalarm-CAP-Warnungen für Kroatien als farbcodierte Kartenpolygone mit GPS-Bannern; rot/schwere Warnungen nicht abweisbar; Daten alle 15 Minuten aktualisiert",
 			"radar": "Niederschlagsradar-Overlay - animierter RainViewer-Radar im Werkzeuge-Panel (Schraubenschlüssel); vergangene und vorhergesagte Frames, Wiedergabesteuerung und Farblegende",
@@ -66,7 +66,7 @@
 			"daylightBudget": "Tageslicht-Budget - unterwegs warnt das Distanz-HUD, wenn du die nächste Hütte, Schutzhütte oder Ortschaft womöglich nicht vor Einbruch der Dunkelheit erreichst, durch Vergleich der Sonnenuntergangszeit mit deiner Ankunftszeit am nächsten Ziel voraus",
 			"stagePlanner": "Mehrtages-Etappenplaner - teile beliebige Streckenabschnitte nach Distanz oder Zeit in Tagesetappen auf, zeige Höhe, ETA, Wasser-, Pack- und Versorgungs-Chips je Etappe. Lege ein Startdatum fest, um das Kalenderdatum jeder Etappe anzuzeigen, und füge Ruhetage (Nulltage) ein, die jedes spätere Datum, jede Prognose und jeden Kalendereintrag verschieben, ohne die Aufteilung zu ändern. Exportiere einzelne Etappen als GPX oder FIT, alle POIs als GPX, ein Etappenkarten-PDF, iCal (inklusive Ruhetage) oder öffne den Trip Brief; ein Übernachtungs-Chip am Etappenende nennt die nächste Hütte, Schutzhütte oder Ortschaft zum Übernachten, mit Typ und Entfernung zum Etappenende in der Detailansicht",
 			"gpxImport": "GPX-Track-Import - ziehe eine aufgezeichnete GPX-Datei auf die Karte (oder wähle sie aus) und vergleiche deine Route mit dem offiziellen Weg; Statistiken zu Distanz, Tempo, Gesamtzeit, Gehzeit, max. Abweichung und Streckenabdeckung",
-			"emergency": "Notfallpanel 112 - langes Drücken des roten SOS-Buttons (unten rechts) öffnet ein offline-first zentriertes Modal mit deinen GPS-Koordinaten, Plus Code, Etappe und Kilometer auf dem Weg sowie Richtung und Entfernung zur nächsten Straßenanbindung und HGSS-Bergrettungsstation; online wird eine lesbare Adresse nachgeschlagen und kann kopiert werden; jedes Feld in die Zwischenablage kopieren und an die Telefon-App (112 anrufen) oder Karten-App (In Karten öffnen) übergeben; wenn kein GPS verfügbar ist, greift es auf deine letzte bekannte Position mit ihrem Alter zurück; enthält eine optionale medizinische/Kontakt-Karte auf dem Gerät und einen 112-Leitfaden; vollständig offline, sobald die Daten im Cache sind; gibt deine Position auch als MGRS- / UTM- / DMS-Gitterreferenzen aus (MGRS direkt sichtbar für die Interoperabilität mit HGSS / SAR, UTM und DMS in einer ausklappbaren Zeile)",
+			"emergency": "Notfallpanel 112 - langes Drücken des roten SOS-Buttons (unten rechts) öffnet ein offline-first zentriertes Modal mit deinen GPS-Koordinaten, Plus Code, Etappe und Kilometer auf dem Weg sowie Richtung und Entfernung zur nächsten Straßenanbindung und HGSS-Bergrettungsstation; online wird eine lesbare Adresse nachgeschlagen und kann kopiert werden; jedes Feld in die Zwischenablage kopieren und an die Telefon-App (112 anrufen) oder Karten-App (In Karten öffnen) übergeben; wenn kein GPS verfügbar ist, greift es auf deine letzte bekannte Position mit ihrem Alter zurück; enthält eine optionale medizinische/Kontakt-Karte auf dem Gerät und einen 112-Leitfaden; vollständig offline, sobald die Daten im Cache sind; gibt deine Position auch als MGRS- / UTM- / DMS-Gitterreferenzen aus (MGRS direkt sichtbar für die Interoperabilität mit HGSS / SAR, UTM und DMS in einer ausklappbaren Zeile); zeigt den Genauigkeitsradius des GPS-Fixes (+/- N m) und eine Check-in-Nachricht mit einem Tipp (Position, Genauigkeit, Abschnitt, Notiz), die du selbst kopierst, teilst oder an einen Kontakt sendest - die App sendet oder verfolgt sie nicht",
 			"trailStyle": "Wegstil - wähle in den Einstellungen (Karte Wegoptik), wie die Route eingefärbt wird: Standard (eine Farbe), Abschnitte (Zonen A/B/C mit Grenzmarkern und Statistik pro Abschnitt), Steigung (Gradienten-Färbung in fünf Stufen, warme Töne für Anstiege und kühle für Abstiege in der aktuellen Gehrichtung; Farblegende in der Karte; wird beim Wechsel der SOBO/NOBO-Richtung neu berechnet), Untergrund oder Schwierigkeit (SAC)",
 			"surfaceAndSac": "Untergrund- und Schwierigkeitsfärbung - färbt die Trail-Linie (und die Flächenfüllung des Höhenprofils) nach OSM-Untergrundtyp (befestigt / unbefestigt / Schotter / Erde / Fels) oder nach SAC-Wanderskala (T1 Wandern bis T6 schwieriges Alpinwandern). Die Daten werden monatlich von einer GitHub-Action aus OpenStreetMap angereichert; die Optionen Untergrund und Schwierigkeit bleiben deaktiviert, bis der Datensatz beim ersten Rendern geladen ist. Richtungsbewusst: der Datensatz ist nach SOBO km indiziert und der Renderer spiegelt ihn live nach NOBO",
 			"distanceMarkers": "Distanzmarkierungen - kleine km/mi-Beschriftungen entlang des Trails im Abstand von 100 / 50 / 25 / 10 / 5 / 1 Einheiten. Progressive Anzeige je nach Zoomstufe: 100 km sind bei jedem Zoom sichtbar, feinere Abstände erscheinen beim Hineinzoomen (1-km-Beschriftungen erst ab Zoom 13+). In den Einstellungen umschaltbar; Beschriftungen folgen dem aktiven Einheitensystem und der aktuellen Richtung (SOBO/NOBO)",
@@ -973,7 +973,13 @@
 		"sourceLabel": "Quelle",
 		"tapForDetails": "Für Details tippen",
 		"chipAriaLabel": "{severity} - {source}",
-		"lastUpdatedDaysAgo": "{days, plural, =0 {Heute aktualisiert} =1 {Gestern aktualisiert} other {Vor # Tagen aktualisiert}}"
+		"lastUpdatedDaysAgo": "{days, plural, =0 {Heute aktualisiert} =1 {Gestern aktualisiert} other {Vor # Tagen aktualisiert}}",
+		"freshness": {
+			"label": "Aktualität der Saisondaten",
+			"stale": "Saisonale Sperrungen wurden zuletzt am {date} aktualisiert und sind möglicherweise nicht mehr aktuell. Bitte mit {source} abgleichen.",
+			"dismiss": "Schließen",
+			"fallbackSource": "der offiziellen Quelle"
+		}
 	},
 	"pois": {
 		"operatorLabel": "Betreiber:",
@@ -1311,6 +1317,22 @@
 			"scanHint": "Mit einer beliebigen Karten-App scannen, um diesen Ort zu öffnen",
 			"ariaLabel": "QR-Code für deinen Standort {coords} - mit einer Karten-App scannen, um ihn zu öffnen",
 			"copyGeoLink": "geo:-Link kopieren"
+		},
+		"accuracy": "Genauigkeit",
+		"checkin": {
+			"heading": "Check-in-Nachricht",
+			"statusLegend": "Status",
+			"statusOk": "Mir geht es gut",
+			"statusLate": "Ich verspäte mich",
+			"noteLabel": "Notiz hinzufügen (optional)",
+			"notePlaceholder": "Wo du bist, dein Plan, alles Nützliche",
+			"titleOk": "Trail-Check-in - mir geht es gut.",
+			"titleLate": "Trail-Check-in - ich verspäte mich.",
+			"timeLabel": "Zeit",
+			"copy": "Nachricht kopieren",
+			"share": "Teilen",
+			"textContact": "SMS an {name}",
+			"selfSendNote": "Du sendest dies selbst - die App sendet oder verfolgt deinen Standort nicht."
 		}
 	},
 	"mineAreas": {
@@ -1453,7 +1475,9 @@
 			"navTarget": "Markiere einen Ort mit \"Hierhin navigieren\" im Popup, um die Luftlinien-Entfernung und einen Kompasspfeil dorthin zu sehen (keine Navigation); tippe auf das X zum Beenden.",
 			"cacheHealth": "Oben im Offline-Karten-Bereich zeigt eine Anzeige bereit / fast bereit / nicht bereit, damit du auf einen Blick prüfen kannst, ob dein Korridor gespeichert und aktuell ist, der Speicher dauerhaft und die App aktuell, bevor du den Empfangsbereich verlässt.",
 			"firstAid": "Öffne das rote 112-Panel und klappe \"Erste Hilfe\" auf für Offline-Schritt-für-Schritt-Hinweise zu sechs häufigen Outdoor-Notfällen. Es sind nur allgemeine Hinweise - kein Ersatz für ausgebildete medizinische Versorgung, und sie verweisen immer auf den Anruf bei 112.",
-			"sosQr": "Klappe im roten 112-Panel \"Standort-QR-Code\" auf, um einen scannbaren QR-Code deiner Koordinaten zu zeigen. Ein Retter oder Passant kann ihn mit jeder Handykamera scannen, um deinen Standort in seiner Karten-App zu öffnen - ohne App oder Konto, offline erzeugt. Nutze \"geo:-Link kopieren\", falls das Scannen fehlschlägt."
+			"sosQr": "Klappe im roten 112-Panel \"Standort-QR-Code\" auf, um einen scannbaren QR-Code deiner Koordinaten zu zeigen. Ein Retter oder Passant kann ihn mit jeder Handykamera scannen, um deinen Standort in seiner Karten-App zu öffnen - ohne App oder Konto, offline erzeugt. Nutze \"geo:-Link kopieren\", falls das Scannen fehlschlägt.",
+			"checkin": "Klappe im roten 112-Panel \"Check-in-Nachricht\" auf, um eine sendefertige \"Mir geht es gut / verspäte mich\"-Nachricht zu erstellen (deine Position, ihre Genauigkeit, der Abschnitt und eine optionale Notiz). Kopiere, teile oder sende sie an einen gespeicherten Kontakt - du sendest sie selbst; die App sendet oder verfolgt deinen Standort nicht.",
+			"seasonalFreshness": "Wenn die Saisonstatus-Ebene aktiv ist, ihre Daten aber seit über drei Wochen nicht aktualisiert wurden, warnt ein ausblendbarer Hinweis, dass sie veraltet sein könnten - gleiche mit der offiziellen Quelle ab, statt anzunehmen, dass es keine Sperrungen gibt."
 		},
 		"officialAppNote": "FarOut ist die offizielle CLDT-App. Diese Karte ist ein unabhängiges Projekt nur für Forschungs- und Bildungszwecke - prüfen Sie kritische Informationen anhand offizieller Quellen.",
 		"demoHeading": "Demo-Wanderung",
