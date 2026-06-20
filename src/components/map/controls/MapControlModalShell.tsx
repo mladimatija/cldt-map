@@ -69,7 +69,7 @@ export function MapControlModalShell({
 		>
 			<div
 				className={cn(
-					'relative flex max-h-[90dvh] w-full max-w-lg flex-col gap-2 overflow-y-auto rounded bg-[var(--map-tooltip-bg)] p-4 shadow-xl dark:bg-[var(--bg-primary)]',
+					'relative flex max-h-[90dvh] w-full max-w-lg flex-col gap-2 rounded bg-[var(--map-tooltip-bg)] p-4 shadow-xl dark:bg-[var(--bg-primary)]',
 					cardClassName,
 				)}
 				ref={cardRef}
@@ -100,7 +100,7 @@ export function MapControlModalShell({
 						{title}
 					</h3>
 				</div>
-				{children}
+				<div className="flex min-h-0 flex-col gap-2 overflow-y-auto">{children}</div>
 			</div>
 		</div>
 	);
