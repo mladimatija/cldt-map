@@ -1,5 +1,5 @@
 {
-	"lastUpdated": "2026-06-15",
+	"lastUpdated": "2026-06-22",
 	"source": "CLDT Seasonal Trail Status",
 	"sourceUrl": "https://cldt.hr",
 	"entries": [
@@ -10,12 +10,12 @@
 			"distanceStartKm": 1662,
 			"distanceEndKm": 1664.9,
 			"validFrom": "2026-05-12",
-			"validUntil": "2026-06-29",
+			"validUntil": "2026-07-06",
 			"note_hr": "Put Malog Princa u NP Paklenica zatvoren je do daljnjeg zbog dotrajalih elemenata osiguranja i pomagala u prolasku zahtjevnoga planinarskog puta.",
 			"note_en": "Put Malog Princa in NP Paklenica is closed until further notice due to worn safety elements and aids on this demanding trail.",
 			"source": "HPS - Planinarski putovi (vijesti)",
 			"sourceUrl": "https://www.hps.hr/novosti/planinarski-putovi/",
-			"lastUpdated": "2026-06-15"
+			"lastUpdated": "2026-06-22"
 		},
 		{
 			"id": "dinara-trails-closed-june-2026",
@@ -29,37 +29,37 @@
 			"note_en": "Temporary unavailability of hiking trails on Dinara during June 2026.",
 			"source": "HPS - Planinarski putovi (vijesti)",
 			"sourceUrl": "https://www.hps.hr/novosti/planinarski-putovi/",
-			"lastUpdated": "2026-06-15"
+			"lastUpdated": "2026-06-22"
 		},
 		{
-			"id": "velebitski-kanal-bura-2026-06-15",
+			"id": "velebitski-kanal-bura-2026-06-22",
 			"severity": "caution",
 			"season": "shoulder",
 			"distanceStartKm": 1578.5,
 			"distanceEndKm": 1686,
-			"validFrom": "2026-06-15",
-			"validUntil": "2026-06-15",
-			"note_hr": "Mjestimice pojačana do jaka bura, uglavnom na Senjskom području. Najjači udari vjetra 35-45 čvorova (65-85 km/h).",
-			"note_en": "Locally strong to gale-force bora wind, mainly in the Senj area. Peak gusts 35-45 knots (65-85 km/h).",
+			"validFrom": "2026-06-22",
+			"validUntil": "2026-06-22",
+			"note_hr": "Mjestimice jaka bura na Velebitskom kanalu. Najjači udari vjetra 35-45 čvorova (65-85 km/h).",
+			"note_en": "Locally strong bora wind in the Velebit channel area. Peak gusts 35-45 knots (65-85 km/h).",
 			"gear": "Windproof layer; extra caution on exposed ridgeline sections",
 			"source": "DHMZ - Upozorenja (vremenska)",
 			"sourceUrl": "https://meteo.hr/naslovnica-upozorenja.php?tab=upozorenja",
-			"lastUpdated": "2026-06-15"
+			"lastUpdated": "2026-06-22"
 		},
 		{
-			"id": "velebit-alan-hut-cash-only-2026",
+			"id": "kninska-regija-thunderstorms-2026-06-22",
 			"severity": "caution",
-			"season": "year-round",
-			"distanceStartKm": 1597,
-			"distanceEndKm": 1603,
-			"validFrom": "2026-06-15",
-			"validUntil": "2026-06-29",
-			"note_hr": "Na oba ulaza u NP Sjeverni Velebit (Babić Siča i Alan) plaćanje ulaznica moguće je isključivo gotovinom. Ulaznice na ulazu Alan kupuju se kod dežurnog čuvara prirode. Ulaz Babić Siča radi pon-ned 8:00-16:00.",
-			"note_en": "Payment at both NP Sjeverni Velebit entrances (Babić Siča and Alan) is possible in cash only. Tickets at the Alan entrance are purchased from the duty nature warden. Babić Siča entrance is open Mon-Sun 08:00-16:00.",
-			"gear": "Carry sufficient cash for park entry fees",
-			"source": "NP Sjeverni Velebit - Važne obavijesti",
-			"sourceUrl": "https://np-sjeverni-velebit.hr/www/hr/va%C5%BEne-obavijesti",
-			"lastUpdated": "2026-06-15"
+			"season": "summer",
+			"distanceStartKm": 1686,
+			"distanceEndKm": 1800.2,
+			"validFrom": "2026-06-22",
+			"validUntil": "2026-06-22",
+			"note_hr": "Lokalno mogući izraženiji pljuskovi praćeni grmljavinom i prolazno jakim vjetrom u Kninskoj regiji. Vjerojatnost grmljavine > 60 %.",
+			"note_en": "Locally intense showers with thunder and temporarily strong wind possible in the Knin region. Probability of thunderstorms > 60%.",
+			"gear": "Rain jacket; avoid exposed ridges and high ground during afternoon hours",
+			"source": "DHMZ - Upozorenja (vremenska)",
+			"sourceUrl": "https://meteo.hr/naslovnica-upozorenja.php?tab=upozorenja",
+			"lastUpdated": "2026-06-22"
 		}
 	]
 }
