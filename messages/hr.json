@@ -1120,7 +1120,7 @@
 		"resupply": {
 			"heading": "Opskrba",
 			"none": "U blizini nisu pronađene trgovine ni usluge (OpenStreetMap)",
-			"verify": "Iz OpenStreetMapa, {date} - provjerite na licu mjesta",
+			"verify": "Trgovine i radno vrijeme se mijenjaju - provjerite na licu mjesta",
 			"more": "+ još {count}",
 			"grocery": "Trgovina",
 			"bakery": "Pekarnica",

@@ -210,9 +210,9 @@ export function PoiMarkers(): null {
 			noteAriaLabel: t('note.ariaLabel'),
 			resupplyHeading: t('resupply.heading'),
 			resupplyNone: t('resupply.none'),
-			// Raw templates: the popup builder substitutes {date}/{count} itself
-			// (it runs outside React), so t() would error on missing variables.
-			resupplyVerify: t.raw('resupply.verify'),
+			resupplyVerify: t('resupply.verify'),
+			// Raw template: the popup builder substitutes {count} itself (it runs
+			// outside React), so t() would error on the missing variable.
 			resupplyMore: t.raw('resupply.more'),
 			resupplyKinds: {
 				grocery: t('resupply.grocery'),
@@ -356,6 +356,7 @@ export function PoiMarkers(): null {
 					wireGalleryButtons(marker, poi, openLightbox);
 					wireOpenInMapsButton(marker, poi);
 					wireWaterLogButtons(marker, poi, popupLabels, locale);
+					wireResupplyMoreButton(marker, poi);
 					wirePoiNoteButtons(marker, poi, popupLabels);
 					wireAddAsWaypointButton(marker, poi, displayName);
 					wireNavTargetButton(marker, poi, displayName);
@@ -666,6 +667,34 @@ function wireWaterLogButtons(marker: L.Marker, poi: Poi, labels: WaterLogPopupLa
 			store.clearPoiWaterStatus(poi.id);
 		}
 		render();
+	});
+}
+
+/**
+ * Wires the resupply "+ N more" toggle inside an open town/settlement popup.
+ * The builder renders the overflow places (beyond the first 6) into a `hidden`
+ * container plus a button; clicking the button reveals the container and
+ * removes the now-redundant button, then reflows the popup so it isn't cut off.
+ * No-op when the POI has no overflow (no toggle was rendered).
+ */
+function wireResupplyMoreButton(marker: L.Marker, poi: Poi): void {
+	const popup = marker.getPopup();
+	if (!popup) return;
+	const el = popup.getElement();
+	if (!el) return;
+	const btn = el.querySelector<HTMLButtonElement>(`[data-poi-resupply-more-toggle="${cssEscape(poi.id)}"]`);
+	if (!btn || btn.dataset.wired === '1') return;
+	btn.dataset.wired = '1';
+	btn.addEventListener('click', (e) => {
+		// Stop the click reaching Leaflet's map handler (which would close the
+		// popup), matching the water-log / note wiring below.
+		e.preventDefault();
+		e.stopPropagation();
+		const hidden = el.querySelector<HTMLElement>(`[data-poi-resupply-more="${cssEscape(poi.id)}"]`);
+		if (hidden) hidden.hidden = false;
+		// The button is one-shot: once expanded there's nothing left to reveal.
+		btn.closest('.poi-popup__row')?.remove();
+		reflowPopupContent(popup);
 	});
 }
 

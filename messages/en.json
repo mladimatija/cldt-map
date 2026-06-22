@@ -1120,7 +1120,7 @@
 		"resupply": {
 			"heading": "Resupply",
 			"none": "No shops or services found nearby (OpenStreetMap)",
-			"verify": "From OpenStreetMap, {date} - verify locally",
+			"verify": "Shops and hours change - verify locally",
 			"more": "+ {count} more",
 			"grocery": "Grocery",
 			"bakery": "Bakery",

@@ -98,6 +98,7 @@ export interface PopupBuildLabels extends WaterLogPopupLabels, PoiNotePopupLabel
 	/** Resupply section heading + per-kind labels + empty/verify hints. */
 	resupplyHeading: string;
 	resupplyNone: string;
+	/** "Verify locally" guidance only; source + date live in the provenance footer. */
 	resupplyVerify: string;
 	resupplyKinds: Record<'grocery' | 'bakery' | 'pharmacy' | 'atm' | 'post' | 'bus' | 'fuel', string>;
 	resupplyMore: string;
@@ -292,26 +293,36 @@ export function buildMetaRowsHtml(
 		if (poi.resupply.places.length === 0) {
 			lines.push(`<p class="poi-popup__row poi-popup__row--muted">${escapeHtml(labels.resupplyNone)}</p>`);
 		} else {
-			const shown = poi.resupply.places.slice(0, 6);
-			for (const place of shown) {
+			// Render the place row markup once; the first 6 show immediately and
+			// any overflow is emitted into a `hidden` container that the "+ N more"
+			// button reveals on click (wired in PoiMarkers after popup open).
+			const renderPlaceRow = (place: (typeof poi.resupply.places)[number]): string => {
 				const kindLabel = labels.resupplyKinds[place.kind] ?? place.kind;
 				const name = place.name ? ` ${escapeHtml(place.name)}` : '';
 				const hours = place.openingHours
 					? ` <span class="poi-popup__row--muted">(${escapeHtml(place.openingHours)})</span>`
 					: '';
+				return `<p class="poi-popup__row">· <span class="poi-popup__label">${escapeHtml(kindLabel)}</span>${name}${hours}</p>`;
+			};
+			const shown = poi.resupply.places.slice(0, 6);
+			const hidden = poi.resupply.places.slice(6);
+			for (const place of shown) {
+				lines.push(renderPlaceRow(place));
+			}
+			if (hidden.length > 0) {
 				lines.push(
-					`<p class="poi-popup__row">· <span class="poi-popup__label">${escapeHtml(kindLabel)}</span>${name}${hours}</p>`,
+					`<div class="poi-popup__resupply-more" hidden data-poi-resupply-more="${escapeHtml(poi.id)}">${hidden.map(renderPlaceRow).join('')}</div>`,
+				);
+				// A real button (not a static muted <p>) so the affordance matches
+				// its behaviour: clicking it reveals the hidden rows above.
+				lines.push(
+					`<p class="poi-popup__row"><button type="button" class="poi-popup__note-link" data-poi-resupply-more-toggle="${escapeHtml(poi.id)}">${escapeHtml(labels.resupplyMore.replace('{count}', String(hidden.length)))}</button></p>`,
 				);
 			}
-			const rest = poi.resupply.places.length - shown.length;
-			if (rest > 0) {
-				lines.push(
-					`<p class="poi-popup__row poi-popup__row--muted">${escapeHtml(labels.resupplyMore.replace('{count}', String(rest)))}</p>`,
-				);
-			}
-			lines.push(
-				`<p class="poi-popup__row poi-popup__row--muted">${escapeHtml(labels.resupplyVerify.replace('{date}', formatIsoDate(poi.resupply.updated, locale)))}</p>`,
-			);
+			// Resupply-specific guidance only. The canonical source + date line is
+			// the provenance footer below (rendered from `poi.source`), so this no
+			// longer repeats "From OpenStreetMap, <date>".
+			lines.push(`<p class="poi-popup__row poi-popup__row--muted">${escapeHtml(labels.resupplyVerify)}</p>`);
 		}
 	}
 	if (typeof poi.elevationM === 'number') {

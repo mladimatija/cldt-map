@@ -1120,7 +1120,7 @@
 		"resupply": {
 			"heading": "Versorgung",
 			"none": "Keine Geschäfte oder Dienste in der Nähe gefunden (OpenStreetMap)",
-			"verify": "Aus OpenStreetMap, {date} - vor Ort prüfen",
+			"verify": "Geschäfte und Öffnungszeiten ändern sich - vor Ort prüfen",
 			"more": "+ {count} weitere",
 			"grocery": "Lebensmittel",
 			"bakery": "Bäckerei",

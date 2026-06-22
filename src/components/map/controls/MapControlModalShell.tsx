@@ -76,18 +76,18 @@ export function MapControlModalShell({
 				style={cardStyle}
 				onClick={(e) => e.stopPropagation()}
 			>
-				<div className="relative shrink-0">
-					{showCloseButton && closeLabel ? (
-						<Button
-							aria-label={closeLabel}
-							className="absolute top-0 right-0"
-							title={closeLabel}
-							variant="closeIcon"
-							onClick={onClose}
-						>
-							<IoCloseOutline aria-hidden className="h-4 w-4" />
-						</Button>
-					) : null}
+				{showCloseButton && closeLabel ? (
+					<Button
+						aria-label={closeLabel}
+						className="absolute top-2 right-2"
+						title={closeLabel}
+						variant="closeIcon"
+						onClick={onClose}
+					>
+						<IoCloseOutline aria-hidden className="h-4 w-4" />
+					</Button>
+				) : null}
+				<div className="shrink-0">
 					<h3
 						className={cn(
 							'm-0 pr-7 text-sm font-medium text-gray-700 dark:text-[var(--text-primary)]',

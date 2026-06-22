@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useTranslations } from 'next-intl';
-import { IoArrowUp, IoLocateOutline } from 'react-icons/io5';
+import { IoArrowUp, IoCloseOutline, IoLocateOutline } from 'react-icons/io5';
 import { useMapStore, type MapStoreState } from '@/lib/store';
 import { Button } from '@/components/ui/Button';
 import { haversineDistanceM } from '@/lib/haversine';
@@ -17,9 +17,10 @@ import { bearingToCompass } from '@/lib/emergency-data';
  * points where the target lies on screen - and the localized cardinal
  * direction. Straight-line "which way + how far" only; it never routes.
  *
- * Mounted as a top-left overlay (clear of the top-right distance HUD and the
- * centre banner slot). Until a GPS fix arrives it shows a waiting state so the
- * pin is acknowledged even indoors / before permission is granted.
+ * Mounted as a top-left overlay, sitting below the brand logo (clear of the
+ * top-right distance HUD and the centre banner slot). Until a GPS fix arrives
+ * it shows a waiting state so the pin is acknowledged even indoors / before
+ * permission is granted.
  */
 export function NavTargetOverlay(): React.ReactElement | null {
 	const t = useTranslations('navTarget');
@@ -47,7 +48,7 @@ export function NavTargetOverlay(): React.ReactElement | null {
 			: t('srWaiting', { name: navTarget.name });
 
 	return (
-		<div className="z-controls absolute top-2 left-2 flex max-w-[15rem] min-w-[9rem] items-center gap-2 rounded-lg bg-white/90 px-3 py-2 text-xs font-medium text-gray-800 shadow dark:bg-[var(--bg-secondary)]/90 dark:text-[var(--text-primary)]">
+		<div className="z-controls border-cldt-blue absolute top-16 left-2 flex max-w-[15rem] min-w-[9rem] items-center gap-2 rounded-[var(--map-tooltip-radius)] border-l-4 bg-[var(--map-tooltip-bg)] py-2 pr-7 pl-3 text-xs font-medium text-[var(--map-tooltip-color)] shadow-[var(--map-tooltip-shadow)] md:top-[7.5rem]">
 			<span
 				aria-hidden="true"
 				className="bg-cldt-blue/10 text-cldt-blue dark:bg-cldt-blue/20 flex h-7 w-7 shrink-0 items-center justify-center rounded-full"
@@ -67,8 +68,8 @@ export function NavTargetOverlay(): React.ReactElement | null {
 				</span>
 			</span>
 			<span className="sr-only">{srText}</span>
-			<Button aria-label={t('clear')} variant="closeIcon" onClick={clearNavTarget}>
-				×
+			<Button aria-label={t('clear')} className="absolute top-1 right-1" variant="closeIcon" onClick={clearNavTarget}>
+				<IoCloseOutline aria-hidden className="h-4 w-4" />
 			</Button>
 		</div>
 	);

@@ -451,7 +451,9 @@
 	gap: 6px;
 	overflow-x: auto;
 	scroll-snap-type: x mandatory;
-	margin: 0 0 6px;
+	/* Top gap clears Leaflet's 24px close button (anchored top-right of the
+	   popup) so the first/peeking gallery image never sits under the X. */
+	margin: 12px 0 6px;
 	padding-bottom: 2px;
 	-webkit-overflow-scrolling: touch;
 }
@@ -649,15 +651,6 @@
 }
 .poi-lightbox__img {
 	border-radius: 4px;
-}
-.poi-lightbox__nav {
-	font-size: 28px;
-	line-height: 1;
-	width: 44px;
-	height: 44px;
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
 }
 
 /* Count-bearing cluster marker shown at zoom levels below the per-POI
@@ -858,11 +851,6 @@
 .map-tooltip.seasonal-status-popout {
 	border-left-color: var(--seasonal-accent, var(--cldt-blue)) !important;
 	max-width: 440px !important;
-}
-
-.seasonal-status-popout .user-location-close-btn {
-	top: 0;
-	right: 0;
 }
 
 .leaflet-control {
