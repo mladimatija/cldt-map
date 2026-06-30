@@ -1,5 +1,5 @@
 {
-	"lastUpdated": "2026-06-22",
+	"lastUpdated": "2026-06-29",
 	"source": "CLDT Seasonal Trail Status",
 	"sourceUrl": "https://cldt.hr",
 	"entries": [
@@ -10,12 +10,12 @@
 			"distanceStartKm": 1662,
 			"distanceEndKm": 1664.9,
 			"validFrom": "2026-05-12",
-			"validUntil": "2026-07-06",
+			"validUntil": "2026-07-13",
 			"note_hr": "Put Malog Princa u NP Paklenica zatvoren je do daljnjeg zbog dotrajalih elemenata osiguranja i pomagala u prolasku zahtjevnoga planinarskog puta.",
 			"note_en": "Put Malog Princa in NP Paklenica is closed until further notice due to worn safety elements and aids on this demanding trail.",
 			"source": "HPS - Planinarski putovi (vijesti)",
 			"sourceUrl": "https://www.hps.hr/novosti/planinarski-putovi/",
-			"lastUpdated": "2026-06-22"
+			"lastUpdated": "2026-06-29"
 		},
 		{
 			"id": "dinara-trails-closed-june-2026",
@@ -29,37 +29,95 @@
 			"note_en": "Temporary unavailability of hiking trails on Dinara during June 2026.",
 			"source": "HPS - Planinarski putovi (vijesti)",
 			"sourceUrl": "https://www.hps.hr/novosti/planinarski-putovi/",
-			"lastUpdated": "2026-06-22"
+			"lastUpdated": "2026-06-29"
 		},
 		{
-			"id": "velebitski-kanal-bura-2026-06-22",
-			"severity": "caution",
-			"season": "shoulder",
+			"id": "risnjak-vilje-trail-closed-2026",
+			"severity": "closed_recommended",
+			"season": "summer",
+			"distanceStartKm": 1073.3,
+			"distanceEndKm": 1074.9,
+			"validFrom": "2026-06-26",
+			"validUntil": "2026-07-13",
+			"note_hr": "U NP Risnjak od 26. lipnja 2026. zatvara se planinarski ulaz Vilje te planinarska staza Vilje - Risnjak (dio staze 108).",
+			"note_en": "In NP Risnjak, the Vilje mountain entrance and the Vilje - Risnjak trail (part of trail 108) are closed from 26 June 2026.",
+			"source": "HPS - Planinarski putovi (vijesti)",
+			"sourceUrl": "https://www.hps.hr/novosti/planinarski-putovi/",
+			"lastUpdated": "2026-06-29"
+		},
+		{
+			"id": "gospicka-regija-thunderstorms-2026-06-29",
+			"severity": "closed_recommended",
+			"season": "summer",
 			"distanceStartKm": 1578.5,
 			"distanceEndKm": 1686,
-			"validFrom": "2026-06-22",
-			"validUntil": "2026-06-22",
-			"note_hr": "Mjestimice jaka bura na Velebitskom kanalu. Najjači udari vjetra 35-45 čvorova (65-85 km/h).",
-			"note_en": "Locally strong bora wind in the Velebit channel area. Peak gusts 35-45 knots (65-85 km/h).",
-			"gear": "Windproof layer; extra caution on exposed ridgeline sections",
+			"validFrom": "2026-06-29",
+			"validUntil": "2026-06-29",
+			"note_hr": "Lokalno su mogući izraženiji pljuskovi praćeni grmljavinom i prolazno jakim, na udare i olujnim vjetrom. Moguća je obilnija oborina u kratkom vremenskom razdoblju, osobito u Lici. Najjači udari vjetra > 55 km/h; Količina oborine 30-60 mm; Vjerojatnost grmljavine > 60 %.",
+			"note_en": "Locally intense showers with thunder and temporarily strong to stormy wind gusts are possible. Heavy rainfall in a short period is possible, especially in Lika. Peak gusts > 55 km/h; rainfall 30-60 mm; probability of thunderstorms > 60%.",
+			"gear": "Rain jacket; avoid exposed ridgeline and high ground especially between 12:00 and 20:00",
 			"source": "DHMZ - Upozorenja (vremenska)",
 			"sourceUrl": "https://meteo.hr/naslovnica-upozorenja.php?tab=upozorenja",
-			"lastUpdated": "2026-06-22"
+			"lastUpdated": "2026-06-29"
 		},
 		{
-			"id": "kninska-regija-thunderstorms-2026-06-22",
+			"id": "gospicka-regija-heatwave-2026-06-29",
 			"severity": "caution",
 			"season": "summer",
-			"distanceStartKm": 1686,
-			"distanceEndKm": 1800.2,
-			"validFrom": "2026-06-22",
-			"validUntil": "2026-06-22",
-			"note_hr": "Lokalno mogući izraženiji pljuskovi praćeni grmljavinom i prolazno jakim vjetrom u Kninskoj regiji. Vjerojatnost grmljavine > 60 %.",
-			"note_en": "Locally intense showers with thunder and temporarily strong wind possible in the Knin region. Probability of thunderstorms > 60%.",
-			"gear": "Rain jacket; avoid exposed ridges and high ground during afternoon hours",
+			"distanceStartKm": 1578.5,
+			"distanceEndKm": 1686,
+			"validFrom": "2026-06-29",
+			"validUntil": "2026-06-29",
+			"note_hr": "Toplinski val. Maksimalna temperatura > 33 °C; Minimalna temperatura > 16 °C. Budite spremni na pojavu zdravstvenog rizika zbog vrućine i visokih temperatura kod osjetljive populacije.",
+			"note_en": "Heat wave. Maximum temperature > 33°C; minimum temperature > 16°C. Be prepared for health risks due to heat and high temperatures, especially among vulnerable individuals.",
+			"gear": "Sunscreen, minimum 2 L water per person, electrolytes; avoid hiking midday on exposed terrain",
 			"source": "DHMZ - Upozorenja (vremenska)",
 			"sourceUrl": "https://meteo.hr/naslovnica-upozorenja.php?tab=upozorenja",
-			"lastUpdated": "2026-06-22"
+			"lastUpdated": "2026-06-29"
+		},
+		{
+			"id": "velebitski-kanal-bura-2026-06-29",
+			"severity": "closed_recommended",
+			"season": "summer",
+			"distanceStartKm": 1578.5,
+			"distanceEndKm": 1686,
+			"validFrom": "2026-06-29",
+			"validUntil": "2026-06-29",
+			"note_hr": "Pojačana, mjestimice jaka bura na Velebitskom kanalu. Najjači udari vjetra 35-45 čvorova (65-85 km/h). Očekuju se lokalno opasne brzine vjetra koje uzrokuju valove rizične za manja plovila.",
+			"note_en": "Strong and locally very strong bora wind in the Velebit channel. Peak gusts 35-45 knots (65-85 km/h). Locally dangerous wind speeds expected, creating waves hazardous to smaller vessels.",
+			"gear": "Windproof layer; extra caution on exposed western Velebit sections; no sea crossings with small craft",
+			"source": "DHMZ - Upozorenja (vremenska)",
+			"sourceUrl": "https://meteo.hr/naslovnica-upozorenja.php?tab=upozorenja",
+			"lastUpdated": "2026-06-29"
+		},
+		{
+			"id": "rjecka-regija-heatwave-2026-06-29",
+			"severity": "caution",
+			"season": "summer",
+			"distanceStartKm": 1073.3,
+			"distanceEndKm": 1416.3,
+			"validFrom": "2026-06-29",
+			"validUntil": "2026-06-29",
+			"note_hr": "Toplinski val u Riječkoj regiji. Maksimalna temperatura > 37 °C; Minimalna temperatura > 26 °C. Stupanj pripravnosti: Crveno.",
+			"note_en": "Heat wave in the Rijeka region (Kvarner / Gorski kotar / Učka / Risnjak). Maximum temperature > 37°C; minimum temperature > 26°C. Readiness level: Red.",
+			"gear": "Sunscreen, minimum 2 L water per person, electrolytes; avoid hiking midday on exposed terrain; plan hut stops for shade",
+			"source": "DHMZ - Upozorenja (vremenska)",
+			"sourceUrl": "https://meteo.hr/naslovnica-upozorenja.php?tab=upozorenja",
+			"lastUpdated": "2026-06-29"
+		},
+		{
+			"id": "velebit-alan-hut-accommodation-2025",
+			"severity": "caution",
+			"season": "year-round",
+			"distanceStartKm": 1597,
+			"distanceEndKm": 1603,
+			"validFrom": "2025-09-19",
+			"validUntil": "2026-07-13",
+			"note_hr": "Planinarski dom Alan od 19. rujna 2025. ponovno pruža mogućnost noćenja. Kuća i dalje nudi usluge prehrane (po dogovoru) kao i ponudu pića, napitaka i opskrbu vodom.",
+			"note_en": "Planinarski dom Alan has resumed overnight accommodation from 19 September 2025. The hut continues to offer meals (by arrangement) as well as drinks, beverages and water supply.",
+			"source": "HPS - Planinarski objekti (vijesti)",
+			"sourceUrl": "https://www.hps.hr/novosti/objekti/",
+			"lastUpdated": "2026-06-29"
 		}
 	]
 }

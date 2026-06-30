@@ -352,14 +352,7 @@ export function openCoordinatesInMaps(lat: number, lng: number): void {
 
 /** Short keys for base map used in share URLs (e.g. standard, topo, croatiaTopo, darkMap) */
 export type ShareBaseMapKey =
-	| 'standard'
-	| 'topo'
-	| 'satellite'
-	| 'terrain'
-	| 'cycling'
-	| 'openHikingMap'
-	| 'croatiaTopo'
-	| 'darkMap';
+	'standard' | 'topo' | 'satellite' | 'terrain' | 'cycling' | 'openHikingMap' | 'croatiaTopo' | 'darkMap';
 
 /** Mutually exclusive trail rendering modes encoded in share URLs. */
 export type ShareTrailStyle = 'default' | 'sections' | 'grade' | 'surface' | 'sac';
