@@ -46,8 +46,7 @@ function parseDistanceQuery(
 }
 
 export type PoiListGroupedItem =
-	| { type: 'header'; key: string; label: string; count: number }
-	| { type: 'poi'; key: string; poi: Poi; idx: number };
+	{ type: 'header'; key: string; label: string; count: number } | { type: 'poi'; key: string; poi: Poi; idx: number };
 
 export interface UsePoiListRowsArgs {
 	pois: Poi[] | null;
