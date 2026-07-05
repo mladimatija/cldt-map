@@ -1,7 +1,10 @@
 'use client';
 
-import React, { useEffect, useRef, useState, type RefObject } from 'react';
-import { useTranslations } from 'next-intl';
+import React, { useCallback, useEffect, useMemo, useRef, useState, type RefObject } from 'react';
+import { useLocale, useTranslations } from 'next-intl';
+import { usePathname, useRouter } from '@/i18n/navigation';
+import { routing, type Locale } from '@/i18n/routing';
+import { useClientLocale } from '@/components/providers/ClientIntlProvider';
 import { usePopoverFocusTrap } from '@/hooks';
 import SmartTooltip from '@/components/ui/SmartTooltip';
 import { formatPace } from '@/lib/distance-utils';
@@ -23,6 +26,7 @@ import { disablePushAlerts, enablePushAlerts, pushAlertsSupported } from '@/lib/
 import { useMapStore, type MapStoreState } from '@/lib/store';
 import { UI_TEXT_SCALES } from '@/lib/ui-text-scale';
 import {
+	IoLanguageOutline,
 	IoMoonOutline,
 	IoSunnyOutline,
 	IoTrailSignOutline,
@@ -60,6 +64,7 @@ import { SAC_BUCKETS, SURFACE_BUCKETS } from '@/components/charts/elevation-char
 import { requestCompassPermission } from '@/hooks/useCompassHeading';
 import { Radio } from '@/components/ui/Radio';
 import { MapControlSectionCard } from './MapControlSectionCard';
+import { MapControlSingleSelect } from './MapControlSelect';
 import { MapControlIconButton } from './MapControlIconButton';
 import { SettingsToggleRow } from './SettingsToggleRow';
 
@@ -72,6 +77,8 @@ interface MapControlsSettingsPanelProps {
 const LEGEND_PANEL =
 	'rounded border border-gray-100 bg-gray-50 p-2 text-xs text-gray-600 dark:border-[var(--border-color)] dark:bg-[var(--bg-hover)] dark:text-[var(--text-secondary)]';
 
+type LanguageOption = { value: Locale; label: string };
+
 /** Settings popover: dark mode, battery saver, large touch targets, show sections. */
 export function MapControlsSettingsPanel({
 	containerRef,
@@ -83,6 +90,11 @@ export function MapControlsSettingsPanel({
 	const tWeather = useTranslations('severeWeather');
 	const tMineAreas = useTranslations('mineAreas');
 	const tSeasonal = useTranslations('seasonalStatus');
+	const tFooter = useTranslations('footer');
+	const activeLocale = useLocale() as Locale;
+	const pathname = usePathname();
+	const router = useRouter();
+	const { setLocale } = useClientLocale();
 	const popoverRef = usePopoverFocusTrap(isExpanded);
 	const settingsScrollTarget = useMapStore((state: MapStoreState) => state.settingsScrollTarget);
 	const clearSettingsScrollTarget = useMapStore((state: MapStoreState) => state.clearSettingsScrollTarget);
@@ -232,6 +244,23 @@ export function MapControlsSettingsPanel({
 					: 'default';
 	const osmReady = Boolean(trailOsmTagsFile?.runs?.length);
 
+	const languageOptions = useMemo<LanguageOption[]>(
+		() => routing.locales.map((loc) => ({ value: loc, label: tFooter(loc) })),
+		[tFooter],
+	);
+	const selectedLanguage = useMemo(
+		() => languageOptions.find((o) => o.value === activeLocale) ?? null,
+		[languageOptions, activeLocale],
+	);
+	const handleLanguageChange = useCallback(
+		(opt: LanguageOption | null): void => {
+			if (!opt) return;
+			setLocale(opt.value);
+			router.push(pathname, { locale: opt.value });
+		},
+		[setLocale, router, pathname],
+	);
+
 	const sectionCollapseLabel = tProgress('collapseSection');
 	const sectionExpandLabel = tProgress('expandSection');
 
@@ -258,6 +287,21 @@ export function MapControlsSettingsPanel({
 					<div className="-mr-1 min-h-0 flex-1 overflow-y-auto pr-1">
 						<div className="flex flex-col gap-2">
 							<MapControlSectionCard title={t('sections.displayDevice')}>
+								<div className="flex flex-col gap-2">
+									<div className="flex items-center gap-2">
+										<IoLanguageOutline aria-hidden className="h-4 w-4 shrink-0 text-gray-600 dark:text-white" />
+										<span className="text-sm font-medium text-gray-700 dark:text-[var(--text-primary)]">
+											{tFooter('language')}
+										</span>
+									</div>
+									<MapControlSingleSelect<LanguageOption>
+										aria-label={tFooter('language')}
+										instanceId="settings-language"
+										options={languageOptions}
+										value={selectedLanguage}
+										onChange={handleLanguageChange}
+									/>
+								</div>
 								<SettingsToggleRow
 									checked={darkMode}
 									icon={<IoMoonOutline className="h-4 w-4" />}
