@@ -1108,7 +1108,8 @@
 			"cafe": "Cafe / pub",
 			"food": "Food",
 			"atm": "ATM / bank",
-			"water": "Water source"
+			"water": "Water source",
+			"crag": "Climbing crag"
 		},
 		"water": {
 			"reliable": "Reliable water",

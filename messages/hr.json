@@ -1108,7 +1108,8 @@
 			"cafe": "Kafić / pub",
 			"food": "Hrana",
 			"atm": "Bankomat",
-			"water": "Izvor vode"
+			"water": "Izvor vode",
+			"crag": "Penjalište"
 		},
 		"water": {
 			"reliable": "Pouzdana voda",

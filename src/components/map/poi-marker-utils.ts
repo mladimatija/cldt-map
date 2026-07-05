@@ -42,6 +42,7 @@ export const TYPE_SIZE: Record<string, number> = {
 	food: 13,
 	atm: 13,
 	water: 14,
+	crag: 14,
 };
 
 /** Per-type fill colours, resolved via CSS custom properties defined in
@@ -60,6 +61,7 @@ export const TYPE_COLOR: Record<string, string> = {
 	food: 'var(--poi-color-food)',
 	atm: 'var(--poi-color-atm)',
 	water: 'var(--poi-color-water)',
+	crag: 'var(--poi-color-crag)',
 };
 
 /** Escape HTML special characters for use in element text or attribute

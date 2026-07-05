@@ -29,7 +29,11 @@ export type KnownPoiType =
 	/** Drinking water: OSM amenity=drinking_water plus natural=spring. Rows
 	 *  appear once the next scheduled enrichment run executes; until then the
 	 *  type renders as an empty layer. */
-	| 'water';
+	| 'water'
+	/** Climbing crag / sport-climbing site (OSM sport=climbing). Opt-in and
+	 *  off by default; renders as an empty layer until an enrichment run
+	 *  (`POI_TYPES=crag npm run enrich-pois`) populates it. */
+	| 'crag';
 
 /** Canonical list of all known POI type values. Used as the single source
  *  of truth for default-enabled type sets in config.ts and stub.ts. */
@@ -45,6 +49,7 @@ export const KNOWN_POI_TYPES: readonly KnownPoiType[] = [
 	'food',
 	'atm',
 	'water',
+	'crag',
 ] as const;
 
 /** Default POI type set for new users. */
@@ -193,7 +198,7 @@ export interface PoisFile {
  *  uses this grouping. */
 export const POI_TYPE_GROUPS: readonly { id: string; types: readonly KnownPoiType[] }[] = [
 	{ id: 'places', types: ['town', 'settlement'] },
-	{ id: 'landscape', types: ['peak', 'viewpoint'] },
+	{ id: 'landscape', types: ['peak', 'viewpoint', 'crag'] },
 	{ id: 'stay', types: ['hut', 'shelter'] },
 	{ id: 'services', types: ['restaurant', 'cafe', 'atm', 'water'] },
 ];

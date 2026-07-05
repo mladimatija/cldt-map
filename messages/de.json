@@ -1108,7 +1108,8 @@
 			"cafe": "Café / Kneipe",
 			"food": "Verpflegung",
 			"atm": "Geldautomat / Bank",
-			"water": "Wasserstelle"
+			"water": "Wasserstelle",
+			"crag": "Kletterfels"
 		},
 		"water": {
 			"reliable": "Zuverlässige Wasserstelle",

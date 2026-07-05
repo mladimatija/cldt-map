@@ -28,6 +28,7 @@ const KNOWN_POI_TYPES = [
 	'food',
 	'atm',
 	'water',
+	'crag',
 ];
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');

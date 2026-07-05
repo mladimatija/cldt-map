@@ -1108,7 +1108,8 @@
 			"cafe": "Caffè / pub",
 			"food": "Cibo",
 			"atm": "Bancomat / banca",
-			"water": "Punto d'acqua"
+			"water": "Punto d'acqua",
+			"crag": "Falesia"
 		},
 		"water": {
 			"reliable": "Acqua affidabile",

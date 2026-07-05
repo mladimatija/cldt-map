@@ -119,6 +119,10 @@ const TYPE_CONFIGS: TypeConfig[] = [
 	{ type: 'settlement', overpassSelectors: [{ key: 'place', values: ['village', 'hamlet'] }], maxDistanceKm: 1.5 },
 	{ type: 'peak', overpassSelectors: [{ key: 'natural', values: ['peak'] }], maxDistanceKm: 10 },
 	{ type: 'viewpoint', overpassSelectors: [{ key: 'tourism', values: ['viewpoint'] }], maxDistanceKm: 6 },
+	// Climbing crags (penjalista). Opt-in / off by default; world-class Paklenica
+	// (Anica kuk) sits directly on the corridor. sport=climbing is the standard
+	// OSM tag for a climbing site.
+	{ type: 'crag', overpassSelectors: [{ key: 'sport', values: ['climbing'] }], maxDistanceKm: 5 },
 	{ type: 'hut', overpassSelectors: [{ key: 'tourism', values: ['alpine_hut', 'wilderness_hut'] }], maxDistanceKm: 15 },
 	{ type: 'shelter', overpassSelectors: [{ key: 'amenity', values: ['shelter'] }], maxDistanceKm: 15 },
 	{

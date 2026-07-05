@@ -135,6 +135,15 @@ export const TIER_RULES: Record<string, TierRule> = {
 		allowPublicTransportEscape: true,
 		notabilityOverride: true,
 	},
+	crag: {
+		// Reached by an approach path like a peak, not a road; keep named crags
+		// only to drop the many unnamed climbing nodes. 5 km hard cap matches
+		// TYPE_CONFIGS in enrich-pois.ts.
+		maxOffTrailKm: 5,
+		requirePathWithinM: 200,
+		requireNamed: true,
+		notabilityOverride: true,
+	},
 	hut: {
 		maxOffTrailKm: 15,
 		notabilityOverride: 'always',
