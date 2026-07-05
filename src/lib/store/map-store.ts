@@ -1276,6 +1276,14 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					setHelpPanelDemoOpen: (open: boolean): void => {
 						set({ helpPanelDemoOpen: open });
 					},
+					helpPanelPrehikeOpen: false,
+					setHelpPanelPrehikeOpen: (open: boolean): void => {
+						set({ helpPanelPrehikeOpen: open });
+					},
+					prehikeChecklist: {},
+					togglePrehikeChecklistItem: (key: string): void => {
+						set((s) => ({ prehikeChecklist: { ...s.prehikeChecklist, [key]: !s.prehikeChecklist[key] } }));
+					},
 					poiListFiltersOpen: true,
 					setPoiListFiltersOpen: (open: boolean): void => {
 						set({ poiListFiltersOpen: open });
@@ -1710,6 +1718,8 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 						helpPanelPlanningOpen: state.helpPanelPlanningOpen,
 						helpPanelOfflineOpen: state.helpPanelOfflineOpen,
 						helpPanelDemoOpen: state.helpPanelDemoOpen,
+						helpPanelPrehikeOpen: state.helpPanelPrehikeOpen,
+						prehikeChecklist: state.prehikeChecklist,
 						poiListFiltersOpen: state.poiListFiltersOpen,
 						poiListSortOpen: state.poiListSortOpen,
 						poiListTagsOpen: state.poiListTagsOpen,
@@ -1740,6 +1750,27 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					merged.poiNotes = sanitizePoiNotes((persistedState as { poiNotes?: unknown })?.poiNotes);
 					// Reject a corrupt persisted nav target so the HUD never renders garbage coords.
 					merged.navTarget = sanitizeNavTarget((persistedState as { navTarget?: unknown })?.navTarget);
+					// Drop pre-hike checklist entries that are not booleans or whose key is
+					// not a known checklist item, so a hand-edited or renamed key can never
+					// accumulate orphaned entries in localStorage. Keep the key set in sync
+					// with PREHIKE_ITEMS in MapControlsHelpPanel.tsx.
+					const KNOWN_PREHIKE_KEYS = new Set([
+						'closures',
+						'offline',
+						'medical',
+						'checkin',
+						'tellSomeone',
+						'gear',
+						'markedTrails',
+					]);
+					const rawPrehike = (persistedState as { prehikeChecklist?: unknown })?.prehikeChecklist;
+					const cleanPrehike: Record<string, boolean> = {};
+					if (rawPrehike && typeof rawPrehike === 'object' && !Array.isArray(rawPrehike)) {
+						for (const [k, v] of Object.entries(rawPrehike as Record<string, unknown>)) {
+							if (typeof v === 'boolean' && KNOWN_PREHIKE_KEYS.has(k)) cleanPrehike[k] = v;
+						}
+					}
+					merged.prehikeChecklist = cleanPrehike;
 					// Clamp a persisted pace factor back into range (guards a hand-edited
 					// or out-of-range value from skewing every ETA).
 					merged.paceFactor = clampPaceFactor((persistedState as { paceFactor?: unknown })?.paceFactor as number);

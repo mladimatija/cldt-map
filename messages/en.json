@@ -1483,7 +1483,19 @@
 		"demoHeading": "Demo hike",
 		"demoDesc": "Try a simulated mid-trail hike with sample waypoints and progress - no GPS needed.",
 		"demoLink": "Try demo hike",
-		"startTourLink": "Take the guided tour"
+		"startTourLink": "Take the guided tour",
+		"prehikeHeading": "Before you set off",
+		"prehikeIntro": "HGSS pre-hike checklist - tick each item as you go. It stays on your device.",
+		"prehike": {
+			"closures": "Check current closures and seasonal warnings",
+			"offline": "Download offline maps for your route",
+			"medical": "Fill your emergency contact and medical card",
+			"checkin": "Know how to send a check-in or call 112",
+			"tellSomeone": "Tell someone your route and expected return time",
+			"gear": "Pack water, proper footwear, and a first-aid kit",
+			"markedTrails": "Stay on marked trails and turn back if in doubt"
+		},
+		"prehikeAttribution": "Advice from HGSS and HPS."
 	},
 	"waypoints": {
 		"defaultName": "Waypoint",

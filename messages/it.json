@@ -1483,7 +1483,19 @@
 		"demoHeading": "Escursione demo",
 		"demoDesc": "Prova un'escursione simulata a metà sentiero con waypoint e progresso di esempio - senza GPS.",
 		"demoLink": "Prova escursione demo",
-		"startTourLink": "Avvia il tour guidato"
+		"startTourLink": "Avvia il tour guidato",
+		"prehikeHeading": "Prima di partire",
+		"prehikeIntro": "Lista di controllo HGSS prima dell'escursione - spunta ogni voce. Resta sul tuo dispositivo.",
+		"prehike": {
+			"closures": "Controlla chiusure e avvisi stagionali attuali",
+			"offline": "Scarica le mappe offline per il tuo percorso",
+			"medical": "Compila la scheda con contatto di emergenza e dati medici",
+			"checkin": "Sappi come inviare un check-in o chiamare il 112",
+			"tellSomeone": "Di' a qualcuno il tuo percorso e l'ora di rientro prevista",
+			"gear": "Porta acqua, calzature adeguate e un kit di primo soccorso",
+			"markedTrails": "Resta sui sentieri segnalati e torna indietro nel dubbio"
+		},
+		"prehikeAttribution": "Consigli di HGSS e HPS."
 	},
 	"waypoints": {
 		"defaultName": "Punto",

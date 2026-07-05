@@ -632,6 +632,12 @@ export interface MapStoreState {
 	/** Help panel: Demo hike section expanded. Persisted. */
 	helpPanelDemoOpen: boolean;
 	setHelpPanelDemoOpen: (open: boolean) => void;
+	/** Help panel: Before you set off (pre-hike checklist) section expanded. Persisted. */
+	helpPanelPrehikeOpen: boolean;
+	setHelpPanelPrehikeOpen: (open: boolean) => void;
+	/** Help panel pre-hike checklist tick state (item key -> checked). On-device only. Persisted. */
+	prehikeChecklist: Record<string, boolean>;
+	togglePrehikeChecklistItem: (key: string) => void;
 	/** POI list panel: Filters section expanded. Persisted. */
 	poiListFiltersOpen: boolean;
 	setPoiListFiltersOpen: (open: boolean) => void;

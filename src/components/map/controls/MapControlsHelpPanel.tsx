@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { IoArrowForwardOutline, IoCompassOutline } from 'react-icons/io5';
 import { Link } from '@/i18n/navigation';
@@ -8,8 +8,27 @@ import { MAP_CONTROL_LINK_BUTTON, MAP_CONTROL_PANEL_WIDTH, MAP_CONTROL_POPOVER }
 import { MapControlSectionCard } from './MapControlSectionCard';
 import { usePopoverFocusTrap } from '@/hooks';
 import { cn } from '@/lib/utils';
+import { Checkbox } from '@/components/ui/Checkbox';
 import { INLINE_LINK_CLASS } from '@/components/ui/ExternalLink';
 import { useMapStore, type MapStoreState } from '@/lib/store';
+
+/** Secondary muted body text shared by the pre-hike intro and advice rows. */
+const PREHIKE_SECONDARY_TEXT = 'text-xs leading-snug text-gray-600 dark:text-[var(--text-secondary)]';
+
+/** HGSS pre-hike readiness checklist item descriptors. Rows with a `panel`
+ *  deep-link into that already-shipped panel (panel mutual exclusion closes
+ *  help on the way); advice-only rows carry no panel. Static shape lives at
+ *  module scope; the component derives the click handler and reads tick state
+ *  from the store. Tick state is persisted on-device only - nothing is uploaded. */
+const PREHIKE_ITEMS: { key: string; panel?: string }[] = [
+	{ key: 'closures', panel: 'settings' },
+	{ key: 'offline', panel: 'settings' },
+	{ key: 'medical', panel: 'emergency' },
+	{ key: 'checkin', panel: 'emergency' },
+	{ key: 'tellSomeone' },
+	{ key: 'gear' },
+	{ key: 'markedTrails' },
+];
 
 function HelpKbd({ children }: { children: React.ReactNode }): React.ReactElement {
 	return (
@@ -59,6 +78,10 @@ export function MapControlsHelpPanel(): React.ReactElement {
 	const clearHelpScrollTarget = useMapStore((state: MapStoreState) => state.clearHelpScrollTarget);
 	const setOpenPanel = useMapStore((state: MapStoreState) => state.setOpenPanel);
 	const startTour = useMapStore((state: MapStoreState) => state.startTour);
+	const helpPanelPrehikeOpen = useMapStore((state: MapStoreState) => state.helpPanelPrehikeOpen);
+	const setHelpPanelPrehikeOpen = useMapStore((state: MapStoreState) => state.setHelpPanelPrehikeOpen);
+	const prehikeChecklist = useMapStore((state: MapStoreState) => state.prehikeChecklist);
+	const togglePrehikeChecklistItem = useMapStore((state: MapStoreState) => state.togglePrehikeChecklistItem);
 
 	// "Start here" launcher: deep-link into the most useful panels (mutual
 	// exclusion in the store closes help and opens the target).
@@ -68,6 +91,13 @@ export function MapControlsHelpPanel(): React.ReactElement {
 		{ key: 'progress', panel: 'progress' },
 		{ key: 'offline', panel: 'settings' },
 	] as const;
+
+	const handlePrehikeOpen = useCallback(
+		(panel?: string): void => {
+			if (panel) setOpenPanel(panel);
+		},
+		[setOpenPanel],
+	);
 
 	const sectionCollapseLabel = tProgress('collapseSection');
 
@@ -115,6 +145,52 @@ export function MapControlsHelpPanel(): React.ReactElement {
 						{t('startTourLink')}
 					</button>
 				</div>
+			</MapControlSectionCard>
+
+			<MapControlSectionCard
+				collapsible
+				collapseLabel={sectionCollapseLabel}
+				expandLabel={sectionExpandLabel}
+				open={helpPanelPrehikeOpen}
+				title={t('prehikeHeading')}
+				onOpenChange={setHelpPanelPrehikeOpen}
+			>
+				<p className={cn('m-0', PREHIKE_SECONDARY_TEXT)}>{t('prehikeIntro')}</p>
+				<ul className="m-0 flex list-none flex-col gap-1.5 p-0">
+					{PREHIKE_ITEMS.map(({ key, panel }) => {
+						const checked = !!prehikeChecklist[key];
+						const label = t(`prehike.${key}`);
+						return (
+							<li key={key}>
+								{panel ? (
+									<div className="flex items-center gap-2">
+										<Checkbox
+											aria-label={label}
+											checked={checked}
+											onCheckedChange={() => togglePrehikeChecklistItem(key)}
+										/>
+										<button
+											className={cn(MAP_CONTROL_LINK_BUTTON, 'flex flex-1 items-center gap-1.5 text-left')}
+											type="button"
+											onClick={() => handlePrehikeOpen(panel)}
+										>
+											<span className="flex-1">{label}</span>
+											<IoArrowForwardOutline aria-hidden className="h-3.5 w-3.5 shrink-0" />
+										</button>
+									</div>
+								) : (
+									<label className="flex cursor-pointer items-center gap-2">
+										<Checkbox checked={checked} onCheckedChange={() => togglePrehikeChecklistItem(key)} />
+										<span className={PREHIKE_SECONDARY_TEXT}>{label}</span>
+									</label>
+								)}
+							</li>
+						);
+					})}
+				</ul>
+				<p className="m-0 text-[0.6875rem] leading-snug text-gray-500 italic dark:text-[var(--text-secondary)]">
+					{t('prehikeAttribution')}
+				</p>
 			</MapControlSectionCard>
 
 			<MapControlSectionCard

@@ -1483,7 +1483,19 @@
 		"demoHeading": "Demo-Wanderung",
 		"demoDesc": "Probieren Sie eine simulierte Wanderung auf halber Strecke mit Beispiel-Wegpunkten und Fortschritt - ohne GPS.",
 		"demoLink": "Demo-Wanderung ausprobieren",
-		"startTourLink": "Geführte Tour starten"
+		"startTourLink": "Geführte Tour starten",
+		"prehikeHeading": "Bevor du losgehst",
+		"prehikeIntro": "HGSS-Checkliste vor der Tour - hake jeden Punkt ab. Sie bleibt auf deinem Gerät.",
+		"prehike": {
+			"closures": "Aktuelle Sperrungen und saisonale Warnungen prüfen",
+			"offline": "Offline-Karten für deine Route herunterladen",
+			"medical": "Notfallkontakt- und Medizinkarte ausfüllen",
+			"checkin": "Wissen, wie man eine Check-in-Nachricht sendet oder 112 anruft",
+			"tellSomeone": "Jemandem deine Route und die erwartete Rückkehrzeit mitteilen",
+			"gear": "Wasser, festes Schuhwerk und ein Erste-Hilfe-Set einpacken",
+			"markedTrails": "Auf markierten Wegen bleiben und im Zweifel umkehren"
+		},
+		"prehikeAttribution": "Empfehlungen von HGSS und HPS."
 	},
 	"waypoints": {
 		"defaultName": "Wegpunkt",

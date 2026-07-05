@@ -1483,7 +1483,19 @@
 		"demoHeading": "Demo hodnja",
 		"demoDesc": "Isprobajte simuliranu hodnju sredinom staze s uzorcima točaka i napretka - bez GPS-a.",
 		"demoLink": "Isprobaj demo hodnju",
-		"startTourLink": "Pokreni vođeni obilazak"
+		"startTourLink": "Pokreni vođeni obilazak",
+		"prehikeHeading": "Prije polaska",
+		"prehikeIntro": "HGSS lista za provjeru prije polaska - označite svaku stavku. Ostaje na vašem uređaju.",
+		"prehike": {
+			"closures": "Provjerite trenutačna zatvaranja i sezonska upozorenja",
+			"offline": "Preuzmite offline karte za svoju rutu",
+			"medical": "Ispunite karticu s kontaktom za hitne slučajeve i medicinskim podacima",
+			"checkin": "Znajte kako poslati javljanje ili nazvati 112",
+			"tellSomeone": "Recite nekome svoju rutu i očekivano vrijeme povratka",
+			"gear": "Ponesite vodu, prikladnu obuću i pribor za prvu pomoć",
+			"markedTrails": "Krećite se označenim stazama i vratite se ako niste sigurni"
+		},
+		"prehikeAttribution": "Savjeti HGSS-a i HPS-a."
 	},
 	"waypoints": {
 		"defaultName": "Točka",
