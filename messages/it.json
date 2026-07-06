@@ -841,6 +841,7 @@
 		"stagePoiCount": "{count, plural, =1 {# luogo lungo il percorso} other {# luoghi lungo il percorso}}",
 		"stageChipOverflow": "+{count}",
 		"stagePoisHeading": "Luoghi nella tappa {index}",
+		"stageElevationProfileAlt": "Profilo altimetrico per la tappa {index}, dislivello positivo {gain}, negativo {loss}",
 		"tripBriefOpen": "Brief del viaggio...",
 		"tripBriefOpenTooltip": "Apri la finestra di esportazione del brief (PDF stampabile o DOCX modificabile con piano tappe, luoghi e contatti di emergenza).",
 		"reset": "Azzera piano",

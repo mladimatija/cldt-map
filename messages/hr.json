@@ -841,6 +841,7 @@
 		"stagePoiCount": "{count, plural, =1 {# mjesto na putu} few {# mjesta na putu} other {# mjesta na putu}}",
 		"stageChipOverflow": "+{count}",
 		"stagePoisHeading": "Mjesta na etapi {index}",
+		"stageElevationProfileAlt": "Visinski profil za etapu {index}, uspon {gain}, spust {loss}",
 		"tripBriefOpen": "Vodič za putovanje...",
 		"tripBriefOpenTooltip": "Otvori dijalog za izvoz vodiča (PDF za ispis ili DOCX za uređivanje s planom etapa, mjestima i hitnim kontaktima).",
 		"reset": "Resetiraj plan",

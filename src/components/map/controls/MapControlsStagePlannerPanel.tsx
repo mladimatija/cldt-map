@@ -124,6 +124,7 @@ import {
 import { formatShortWeekdayDate } from '@/lib/date-format';
 import { TRAIL_OFF_TRAIL_THRESHOLD_M } from '@/lib/config';
 import { resolveTrailAnchor, formatAheadHorizon } from '@/lib/poi-ahead-corridor';
+import { renderElevationThumbnail } from '@/lib/elevation-thumbnail';
 
 const MAX_STAGES = 200;
 const COLLAPSED_STAGE_CHIP_LIMIT = 3;
@@ -526,6 +527,18 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 			.slice(Math.min(startIdx, endIdx), Math.max(startIdx, endIdx) + 1)
 			.map((p) => [p.lat, p.lng]);
 	}, [activeStageIndex, stagePlan, enhancedTrailPoints]);
+
+	/** Elevation-profile thumbnail (PNG data URL) for the expanded stage only.
+	 *  renderElevationThumbnail slices enhancedTrailPoints to the stage's km
+	 *  window and reverses for NOBO, so the profile reads left-to-right in the
+	 *  walking direction - same call the trip brief uses per day. Computed only
+	 *  for the active stage (a canvas draw), so collapsed stages never render one. */
+	const activeStageElevationThumb = useMemo((): string | null => {
+		if (activeStageIndex === null || !stagePlan || !enhancedTrailPoints?.length) return null;
+		const stage = stagePlan.stages[activeStageIndex];
+		if (!stage) return null;
+		return renderElevationThumbnail(enhancedTrailPoints, stage.startKm, stage.endKm, isNobo);
+	}, [activeStageIndex, stagePlan, enhancedTrailPoints, isNobo]);
 
 	const distanceUnitLabel = isImperial ? 'mi' : 'km';
 	const valueUnitLabel = mode === 'stages' ? t('modeStages') : `${distanceUnitLabel}/day`;
@@ -1267,6 +1280,22 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 													</button>
 													{isActive && (
 														<div className="flex flex-col gap-1 border-t border-gray-100 px-2 py-1.5 pl-3 dark:border-[var(--border-color)]">
+															{activeStageElevationThumb && stats && (
+																// The renderer emits a white, print-sized PNG data URL; scale it
+																// down responsively and sit it on a bordered light card so it reads
+																// in dark mode too. Only the expanded stage draws a canvas. A raw
+																// <img> is the right fit for a client-generated data URL.
+																// eslint-disable-next-line @next/next/no-img-element
+																<img
+																	alt={t('stageElevationProfileAlt', {
+																		index: i + 1,
+																		gain: formatElevation(isNobo ? stats.lossM : stats.gainM, units),
+																		loss: formatElevation(isNobo ? stats.gainM : stats.lossM, units),
+																	})}
+																	className="h-auto w-full rounded border border-gray-200 bg-white dark:border-[var(--border-color)]"
+																	src={activeStageElevationThumb}
+																/>
+															)}
 															{(() => {
 																const acc = accommodationByStage[i];
 																if (!acc) return null;

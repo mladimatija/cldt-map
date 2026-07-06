@@ -841,6 +841,7 @@
 		"stagePoiCount": "{count, plural, =1 {# place along the way} other {# places along the way}}",
 		"stageChipOverflow": "+{count}",
 		"stagePoisHeading": "Places in stage {index}",
+		"stageElevationProfileAlt": "Elevation profile for stage {index}, ascent {gain}, descent {loss}",
 		"tripBriefOpen": "Trip brief...",
 		"tripBriefOpenTooltip": "Open the trip brief export dialog (printable PDF or editable DOCX with the stage plan, places, and emergency contacts).",
 		"reset": "Reset plan",

@@ -841,6 +841,7 @@
 		"stagePoiCount": "{count, plural, =1 {# Ort am Weg} other {# Orte am Weg}}",
 		"stageChipOverflow": "+{count}",
 		"stagePoisHeading": "Orte in Etappe {index}",
+		"stageElevationProfileAlt": "Höhenprofil für Etappe {index}, Aufstieg {gain}, Abstieg {loss}",
 		"tripBriefOpen": "Trip-Brief...",
 		"tripBriefOpenTooltip": "Öffne den Trip-Brief-Export-Dialog (druckbares PDF oder editierbares DOCX mit Etappenplan, Orten und Notfallkontakten).",
 		"reset": "Plan zurücksetzen",
