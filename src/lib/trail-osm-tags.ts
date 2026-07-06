@@ -97,6 +97,38 @@ export function bucketSac(value: SacScale | null | undefined): SacBucket {
 	return value ?? 'untagged';
 }
 
+/** SAC scale severity order, easiest (T1) to hardest (T6); array index = rank. */
+export const SAC_SCALE_ORDER: readonly SacScale[] = [
+	'hiking',
+	'mountain_hiking',
+	'demanding_mountain_hiking',
+	'alpine_hiking',
+	'demanding_alpine_hiking',
+	'difficult_alpine_hiking',
+];
+
+/**
+ * Highest-severity sac_scale tagged across runs overlapping [fromKm, toKm]
+ * (SOBO km, order-independent). Returns null when no overlapping run carries a
+ * sac_scale tag - callers use that to omit the difficulty line entirely.
+ */
+export function sacMaxForKmRange(runs: TrailOsmTagRun[], fromKm: number, toKm: number): SacScale | null {
+	const lo = Math.min(fromKm, toKm);
+	const hi = Math.max(fromKm, toKm);
+	let maxRank = -1;
+	let result: SacScale | null = null;
+	for (const run of runs) {
+		if (!run.sac_scale) continue;
+		if (Math.min(run.toKm, hi) <= Math.max(run.fromKm, lo)) continue;
+		const rank = SAC_SCALE_ORDER.indexOf(run.sac_scale);
+		if (rank > maxRank) {
+			maxRank = rank;
+			result = run.sac_scale;
+		}
+	}
+	return result;
+}
+
 let cachedPromise: Promise<TrailOsmTagsFile | null> | null = null;
 
 /**

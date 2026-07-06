@@ -641,6 +641,25 @@
 		"filenameFullTrail": "cldt-cijela-staza.gpx",
 		"filenameSegment": "cldt-segment.gpx"
 	},
+	"gpx": {
+		"segmentName": "CLDT segment",
+		"stageName": "CLDT etapa {index}",
+		"fullTrailName": "Croatian Long Distance Trail",
+		"fullTrailDesc": "Cijela CLDT ruta izvezena iz CLDT Map (map.cldt.hr)",
+		"descDistance": "Udaljenost: {value}",
+		"descAscent": "Uspon: {value}",
+		"descDescent": "Spust: {value}",
+		"descHikingTime": "Vrijeme hoda: {value}",
+		"descSacMax": "SAC maks {value}",
+		"descSurface": "Podloga: {value}",
+		"surface": {
+			"paved": "Asfalt",
+			"unpaved": "Neasfaltirano",
+			"gravel": "Šljunak",
+			"ground": "Zemlja",
+			"rock": "Stijena"
+		}
+	},
 	"mapExport": {
 		"title": "Izvoz / Ispis",
 		"hint": "Obje opcije snimaju trenutni prikaz karte. Pomaknite i zumirajte područje koje želite prije izvoza.",

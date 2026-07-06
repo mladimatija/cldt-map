@@ -21,7 +21,7 @@ import {
 import { formatElevation, formatDistance } from '@/lib/utils';
 import { computeEta, findNearestPointIndex } from '@/lib/distance-utils';
 import { useStore, useMapStore, type StoreState, type MapStoreState } from '@/lib/store';
-import { SAC_COLORS, SURFACE_COLORS } from '@/components/map/trail-route-constants';
+import { SAC_BUCKET_SHORT_LABELS, SAC_COLORS, SURFACE_COLORS } from '@/components/map/trail-route-constants';
 import { TRAIL_SECTIONS } from '@/lib/trail-sections';
 import {
 	GRADE_BUCKETS,
@@ -44,7 +44,17 @@ import { useTranslations } from 'next-intl';
 import { Tooltip } from '@/components/ui/Tooltip';
 import { Button } from '@/components/ui/Button';
 import { GpxDownloadModal } from '@/components/map/GpxDownloadModal';
-import { buildGpxXml, downloadGpxFile, extractGpxSegment, shareGpxFile } from '@/lib/gpx-export';
+import {
+	buildGpxXml,
+	downloadGpxFile,
+	extractGpxSegment,
+	injectGpxMetadata,
+	shareGpxFile,
+	type GpxDocMeta,
+} from '@/lib/gpx-export';
+import { sacMaxForKmRange } from '@/lib/trail-osm-tags';
+import { dominantSurfaceForKmRange } from '@/lib/surface-section-stats';
+import { siteMetadata } from '@/lib/metadata';
 
 export { SAC_BUCKETS, SURFACE_BUCKETS } from './elevation-chart-shared';
 
@@ -58,6 +68,7 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 	const tControls = useTranslations('mapControls');
 	const tTrail = useTranslations('trailRoute');
 	const tGpx = useTranslations('gpxDownload');
+	const tGpxMeta = useTranslations('gpx');
 	const [chartData, setChartData] = useState<ElevationPoint[]>([]);
 	const [userProgress, setUserProgress] = useState<number | null>(null);
 	const [isExpanded, setIsExpanded] = useState<boolean>(false);
@@ -420,16 +431,61 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 
 	/** Builds the GPX payload for the current modal mode, or null when the
 	 *  required data is not available. */
+	/** Document-level metadata for the ruler-segment export: route stats from the
+	 *  already-computed rulerStats plus SAC/surface difficulty over the segment's
+	 *  SOBO km range. Gain/loss are taken straight from rulerStats so the export
+	 *  matches the ruler HUD for the current direction. SAC/surface are only added
+	 *  when the OSM tag dataset is loaded. */
+	const buildSegmentMeta = (): GpxDocMeta | undefined => {
+		if (!rulerStats || !rulerRange) return undefined;
+		const parts: string[] = [
+			tGpxMeta('descDistance', { value: formatDistance(rulerStats.distanceKm, units, distancePrecision) }),
+			tGpxMeta('descAscent', { value: formatElevation(rulerStats.gain, units) }),
+			tGpxMeta('descDescent', { value: formatElevation(rulerStats.loss, units) }),
+			tGpxMeta('descHikingTime', { value: formatHikingTime(rulerStats.hikingTimeMin) }),
+		];
+		const runs = trailOsmTagsFile?.runs;
+		if (runs?.length) {
+			// rulerRange endpoints are direction-relative (chart km); map to SOBO km
+			// to line up with the SOBO-keyed OSM tag runs.
+			const kmA = rulerRange.distanceFromStartA / 1000;
+			const kmB = rulerRange.distanceFromStartB / 1000;
+			const soboA = direction === 'SOBO' ? kmA : Math.max(0, totalDistance - kmA);
+			const soboB = direction === 'SOBO' ? kmB : Math.max(0, totalDistance - kmB);
+			const sac = sacMaxForKmRange(runs, soboA, soboB);
+			if (sac) parts.push(tGpxMeta('descSacMax', { value: SAC_BUCKET_SHORT_LABELS[sac] }));
+			const surface = dominantSurfaceForKmRange(runs, soboA, soboB);
+			if (surface) parts.push(tGpxMeta('descSurface', { value: tGpxMeta(`surface.${surface}`) }));
+		}
+		const statsLine = parts.join(' · ');
+		return {
+			name: tGpxMeta('segmentName'),
+			desc: statsLine,
+			trackDesc: statsLine,
+			time: new Date().toISOString(),
+			link: siteMetadata.url,
+		};
+	};
+
 	const buildGpxPayload = (): { gpx: string; filename: string } | null => {
 		if (gpxModalMode === 'full') {
+			// Full-trail export carries metadata only (name/desc/time/link); there is
+			// no single per-range stat block, so no ETA/SAC/surface here.
+			const fullMeta: GpxDocMeta = {
+				name: tGpxMeta('fullTrailName'),
+				desc: tGpxMeta('fullTrailDesc'),
+				time: new Date().toISOString(),
+				link: siteMetadata.url,
+			};
 			if (rawGpxData) {
-				return { gpx: rawGpxData, filename: tGpx('filenameFullTrail') };
+				return { gpx: injectGpxMetadata(rawGpxData, fullMeta), filename: tGpx('filenameFullTrail') };
 			}
 			if (enhancedTrailPoints?.length) {
 				return {
 					gpx: buildGpxXml(
 						enhancedTrailPoints.map((p) => ({ lat: p.lat, lng: p.lng, elevation: p.elevation })),
 						'Croatian Long Distance Trail',
+						fullMeta,
 					),
 					filename: tGpx('filenameFullTrail'),
 				};
@@ -444,9 +500,10 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 			);
 			if (segment.length < 2) return null;
 			const filename = tGpx('filenameSegment');
+			const meta = buildSegmentMeta();
 			if (rawGpxData) {
 				return {
-					gpx: extractGpxSegment(rawGpxData, segment[0].index, segment[segment.length - 1].index, filename),
+					gpx: extractGpxSegment(rawGpxData, segment[0].index, segment[segment.length - 1].index, filename, meta),
 					filename,
 				};
 			}
@@ -454,6 +511,7 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 				gpx: buildGpxXml(
 					segment.map((p) => ({ lat: p.lat, lng: p.lng, elevation: p.elevation })),
 					filename,
+					meta,
 				),
 				filename,
 			};

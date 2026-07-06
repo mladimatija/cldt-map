@@ -15,8 +15,42 @@ function escapeXml(s: string): string {
 		.replace(/'/g, '&apos;');
 }
 
+/**
+ * Optional GPX document metadata. All strings are already formatted and
+ * translated by the caller - this module stays app-agnostic (no i18n, no
+ * formatters). `trackDesc` renders as `<trk><desc>`; the rest render inside a
+ * `<metadata>` block.
+ */
+export interface GpxDocMeta {
+	name?: string;
+	desc?: string;
+	link?: string;
+	time?: string;
+	trackDesc?: string;
+}
+
+/**
+ * Renders a GPX 1.1 `<metadata>` block from the provided fields. Element order
+ * follows the GPX 1.1 schema (name, desc, link, time) so the output validates.
+ * Returns an empty string when no metadata fields are set.
+ */
+function buildMetadataBlock(meta: GpxDocMeta): string {
+	const lines: string[] = [];
+	if (meta.name) lines.push(`\t\t<name>${escapeXml(meta.name)}</name>`);
+	if (meta.desc) lines.push(`\t\t<desc>${escapeXml(meta.desc)}</desc>`);
+	if (meta.link) lines.push(`\t\t<link href="${escapeXml(meta.link)}" />`);
+	if (meta.time) lines.push(`\t\t<time>${escapeXml(meta.time)}</time>`);
+	if (lines.length === 0) return '';
+	return `\t<metadata>\n${lines.join('\n')}\n\t</metadata>\n`;
+}
+
+/** `<trk><desc>` line (leading newline included) or '' when unset. */
+function trackDescLine(meta?: GpxDocMeta): string {
+	return meta?.trackDesc ? `\n\t\t<desc>${escapeXml(meta.trackDesc)}</desc>` : '';
+}
+
 /** Builds a minimal GPX 1.1 XML string from an array of track points. */
-export function buildGpxXml(points: GpxExportPoint[], trackName: string): string {
+export function buildGpxXml(points: GpxExportPoint[], trackName: string, meta?: GpxDocMeta): string {
 	const trackPoints = points
 		.map((p) => {
 			const ele = p.elevation !== undefined ? `\n\t\t\t<ele>${p.elevation.toFixed(1)}</ele>` : '';
@@ -24,15 +58,37 @@ export function buildGpxXml(points: GpxExportPoint[], trackName: string): string
 		})
 		.join('\n');
 
+	const metadataBlock = meta ? buildMetadataBlock(meta) : '';
+
 	return `<?xml version="1.0" encoding="UTF-8"?>
 <gpx version="1.1" creator="CLDT Map - map.cldt.hr" xmlns="http://www.topografix.com/GPX/1/1">
-\t<trk>
-\t\t<name>${escapeXml(trackName)}</name>
+${metadataBlock}\t<trk>
+\t\t<name>${escapeXml(trackName)}</name>${trackDescLine(meta)}
 \t\t<trkseg>
 ${trackPoints}
 \t\t</trkseg>
 \t</trk>
 </gpx>`;
+}
+
+/**
+ * Splices a `<metadata>` block into an existing GPX document immediately after
+ * the opening `<gpx ...>` tag. Used by the full-trail export, which passes the
+ * upstream GPX through verbatim apart from this injection. Returns the input
+ * unchanged when the open tag can't be located, when meta yields no fields, or
+ * when the document already carries a `<metadata>` element (a second one would
+ * be schema-invalid).
+ */
+export function injectGpxMetadata(rawXml: string, meta: GpxDocMeta): string {
+	const block = buildMetadataBlock(meta);
+	if (!block) return rawXml;
+	if (/<metadata[\s>]/.test(rawXml)) return rawXml;
+	const openMatch = rawXml.match(/<gpx\b[^>]*>/);
+	if (openMatch?.index === undefined) return rawXml;
+	const insertAt = openMatch.index + openMatch[0].length;
+	// `block` ends with a newline; drop it so the following content keeps its
+	// original leading newline instead of gaining a blank line.
+	return `${rawXml.slice(0, insertAt)}\n${block.replace(/\n$/, '')}${rawXml.slice(insertAt)}`;
 }
 
 /**
@@ -42,7 +98,13 @@ ${trackPoints}
  * Uses string splitting on `<trkpt` to avoid a full DOM parse - the raw GPX
  * from the proxy is well-formed and consistent, so this is both fast and safe.
  */
-export function extractGpxSegment(rawGpxXml: string, startIndex: number, endIndex: number, trackName: string): string {
+export function extractGpxSegment(
+	rawGpxXml: string,
+	startIndex: number,
+	endIndex: number,
+	trackName: string,
+	meta?: GpxDocMeta,
+): string {
 	// parts[0] = content before the first <trkpt
 	// parts[i+1] = content starting after the i-th '<trkpt' opening tag token
 	const parts = rawGpxXml.split('<trkpt');
@@ -57,11 +119,12 @@ export function extractGpxSegment(rawGpxXml: string, startIndex: number, endInde
 	}
 
 	const trackPoints = segmentParts.map((s) => '\t\t\t<trkpt' + s).join('');
+	const metadataBlock = meta ? buildMetadataBlock(meta) : '';
 
 	return `<?xml version="1.0" encoding="UTF-8"?>
 <gpx version="1.1" creator="CLDT Map - map.cldt.hr" xmlns="http://www.topografix.com/GPX/1/1">
-\t<trk>
-\t\t<name>${escapeXml(trackName)}</name>
+${metadataBlock}\t<trk>
+\t\t<name>${escapeXml(trackName)}</name>${trackDescLine(meta)}
 \t\t<trkseg>
 ${trackPoints}\t\t</trkseg>
 \t</trk>

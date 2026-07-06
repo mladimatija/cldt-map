@@ -43,6 +43,37 @@ export function computeSurfaceBreakdownBySection(
 	});
 }
 
+/**
+ * Dominant surface bucket by tagged km across runs overlapping [fromKm, toKm]
+ * (SOBO km, order-independent). 'unknown' is excluded so untagged stretches
+ * never win. Returns null when no overlapping run has a recognized surface -
+ * callers use that to omit the surface line entirely. Overlap math mirrors
+ * computeSurfaceBreakdownBySection.
+ */
+export function dominantSurfaceForKmRange(runs: TrailOsmTagRun[], fromKm: number, toKm: number): SurfaceBucket | null {
+	const lo = Math.min(fromKm, toKm);
+	const hi = Math.max(fromKm, toKm);
+	const kmByBucket = emptyBuckets();
+	for (const run of runs) {
+		if (run.toKm <= run.fromKm) continue;
+		const overlapStart = Math.max(run.fromKm, lo);
+		const overlapEnd = Math.min(run.toKm, hi);
+		if (overlapEnd > overlapStart) {
+			kmByBucket[bucketSurface(run.surface)] += overlapEnd - overlapStart;
+		}
+	}
+	let best: SurfaceBucket | null = null;
+	let bestKm = 0;
+	for (const bucket of SURFACE_BUCKETS) {
+		if (bucket === 'unknown') continue;
+		if (kmByBucket[bucket] > bestKm) {
+			bestKm = kmByBucket[bucket];
+			best = bucket;
+		}
+	}
+	return best;
+}
+
 /** Percentage rows for one section, sorted descending, omitting empty buckets. */
 export function surfaceMixForSection(breakdowns: SectionSurfaceBreakdown[], sectionIndex: number): SurfaceMixEntry[] {
 	const section = breakdowns[sectionIndex];

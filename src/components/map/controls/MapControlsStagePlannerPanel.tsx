@@ -79,7 +79,11 @@ import {
 	WATER_GAP_DANGER_KM,
 	WATER_GAP_WARN_KM,
 } from '@/lib/water-intelligence';
-import { buildGpxXml, buildGpxWaypointXml, downloadGpxFile, type GpxWaypoint } from '@/lib/gpx-export';
+import { buildGpxXml, buildGpxWaypointXml, downloadGpxFile, type GpxDocMeta, type GpxWaypoint } from '@/lib/gpx-export';
+import { sacMaxForKmRange } from '@/lib/trail-osm-tags';
+import { dominantSurfaceForKmRange } from '@/lib/surface-section-stats';
+import { SAC_BUCKET_SHORT_LABELS } from '@/components/map/trail-route-constants';
+import { siteMetadata } from '@/lib/metadata';
 import { buildFitCourseBytes, downloadFitFile } from '@/lib/fit-export';
 import { exportStripMapPdf, pointsToBounds } from '@/lib/export-utils';
 import {
@@ -107,6 +111,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 	const tProgress = useTranslations('progress');
 	const tPois = useTranslations('pois');
 	const tWeather = useTranslations('weather');
+	const tGpxMeta = useTranslations('gpx');
 	const locale = useLocale();
 
 	const stagePlan = useMapStore((s: MapStoreState) => s.stagePlan);
@@ -137,6 +142,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 	const rulerRange = useMapStore((s: MapStoreState) => s.rulerRange);
 	const aheadHorizonKm = useMapStore((s: MapStoreState) => s.aheadHorizonKm);
 	const distancePrecision = useMapStore((s: MapStoreState) => s.distancePrecision);
+	const trailOsmTagsFile = useMapStore((s: MapStoreState) => s.trailOsmTagsFile);
 	const requestPoiListAhead = useMapStore((s: MapStoreState) => s.requestPoiListAhead);
 	const openHelpToPlanning = useMapStore((s: MapStoreState) => s.openHelpToPlanning);
 
@@ -318,6 +324,41 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 		map.fitBounds(pointsToBounds(pts), { padding: [50, 50] });
 	};
 
+	/** Document-level metadata for a stage GPX export: stage stats with the same
+	 *  isNobo ascent/descent swap handleFitExport applies, plus SAC/surface
+	 *  difficulty over the stage's SOBO km window. SAC/surface are added only when
+	 *  the OSM tag dataset is loaded, so the export stays valid without it. */
+	const buildStageMeta = (
+		stage: { startKm: number; endKm: number },
+		stats: { distanceM: number; gainM: number; lossM: number; etaSec: number },
+		index: number,
+	): GpxDocMeta => {
+		const ascentM = isNobo ? stats.lossM : stats.gainM;
+		const descentM = isNobo ? stats.gainM : stats.lossM;
+		const parts: string[] = [
+			tGpxMeta('descDistance', { value: formatDistance(stats.distanceM / 1000, units, distancePrecision) }),
+			tGpxMeta('descAscent', { value: formatElevation(ascentM, units) }),
+			tGpxMeta('descDescent', { value: formatElevation(descentM, units) }),
+			tGpxMeta('descHikingTime', { value: formatEta(stats.etaSec) }),
+		];
+		const runs = trailOsmTagsFile?.runs;
+		if (runs?.length) {
+			// stage.startKm/endKm are already SOBO km - the OSM runs share that frame.
+			const sac = sacMaxForKmRange(runs, stage.startKm, stage.endKm);
+			if (sac) parts.push(tGpxMeta('descSacMax', { value: SAC_BUCKET_SHORT_LABELS[sac] }));
+			const surface = dominantSurfaceForKmRange(runs, stage.startKm, stage.endKm);
+			if (surface) parts.push(tGpxMeta('descSurface', { value: tGpxMeta(`surface.${surface}`) }));
+		}
+		const statsLine = parts.join(' · ');
+		return {
+			name: tGpxMeta('stageName', { index: index + 1 }),
+			desc: statsLine,
+			trackDesc: statsLine,
+			time: new Date().toISOString(),
+			link: siteMetadata.url,
+		};
+	};
+
 	const handleGpxExport = (): void => {
 		if (activeStageIndex === null || !stagePlan || !enhancedTrailPoints?.length) return;
 		const stage = stagePlan.stages[activeStageIndex];
@@ -325,9 +366,12 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 		const endIdx = findNearestPointIndex(enhancedTrailPoints, stage.endKm * 1000);
 		let pts = enhancedTrailPoints.slice(Math.min(startIdx, endIdx), Math.max(startIdx, endIdx) + 1);
 		if (isNobo) pts = [...pts].reverse();
+		const stats = stageStats[activeStageIndex];
+		const meta = stats ? buildStageMeta(stage, stats, activeStageIndex) : undefined;
 		const gpx = buildGpxXml(
 			pts.map((p) => ({ lat: p.lat, lng: p.lng, elevation: p.elevation })),
 			`CLDT Stage ${activeStageIndex + 1}`,
+			meta,
 		);
 		downloadGpxFile(gpx, `cldt-stage-${activeStageIndex + 1}.gpx`);
 	};

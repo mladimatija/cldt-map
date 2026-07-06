@@ -641,6 +641,25 @@
 		"filenameFullTrail": "cldt-full-trail.gpx",
 		"filenameSegment": "cldt-segment.gpx"
 	},
+	"gpx": {
+		"segmentName": "CLDT segment",
+		"stageName": "CLDT Stage {index}",
+		"fullTrailName": "Croatian Long Distance Trail",
+		"fullTrailDesc": "Full CLDT route exported from CLDT Map (map.cldt.hr)",
+		"descDistance": "Distance: {value}",
+		"descAscent": "Ascent: {value}",
+		"descDescent": "Descent: {value}",
+		"descHikingTime": "Hiking time: {value}",
+		"descSacMax": "SAC max {value}",
+		"descSurface": "Surface: {value}",
+		"surface": {
+			"paved": "Paved",
+			"unpaved": "Unpaved",
+			"gravel": "Gravel",
+			"ground": "Ground",
+			"rock": "Rock"
+		}
+	},
 	"mapExport": {
 		"title": "Export / Print",
 		"hint": "Both options capture your current map view. Pan and zoom to frame the area you want before exporting.",
