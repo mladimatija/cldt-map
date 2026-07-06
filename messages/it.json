@@ -185,6 +185,15 @@
 					"demanding_alpine_hiking": "Escursionismo alpino impegnativo",
 					"difficult_alpine_hiking": "Escursionismo alpino difficile",
 					"untagged": "Non classificato"
+				},
+				"sacExplainerToggle": "Cosa significano i gradi di difficoltà?",
+				"sacDescriptions": {
+					"hiking": "Sentieri ben puliti, piani o poco inclinati, senza esposizione o rischio di caduta; bastano le scarpe da ginnastica e non serve orientarsi.",
+					"mountain_hiking": "Un sentiero continuo, a tratti ripido, dove una caduta è possibile; servono scarpe da trekking, un po' di passo sicuro e un orientamento di base.",
+					"demanding_mountain_hiking": "Terreno in parte esposto con brevi e facili arrampicate dove le mani aiutano l'equilibrio e i tratti esposti possono avere catene; servono buon passo sicuro e scarponi da trekking.",
+					"alpine_hiking": "A tratti senza sentiero, con terreno esposto e facile arrampicata; servono scarponi robusti, dimestichezza con l'esposizione e capacità di valutare terreno e meteo.",
+					"demanding_alpine_hiking": "Spesso senza sentiero, con terreno esposto e ripido e facili tratti di arrampicata; scarponi da alta montagna ed esperienza alpina reale sono indispensabili.",
+					"difficult_alpine_hiking": "Per lo più senza sentiero e molto esposto, con tratti di arrampicata; è indispensabile un'eccellente esperienza alpinistica e di arrampicata."
 				}
 			}
 		},

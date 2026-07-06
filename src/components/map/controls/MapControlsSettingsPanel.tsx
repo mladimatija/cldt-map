@@ -61,6 +61,7 @@ import {
 import { MapControlsTileCachePanel } from './MapControlsTileCachePanel';
 import { MapControlsImportsPanel } from './MapControlsImportsPanel';
 import { SAC_BUCKETS, SURFACE_BUCKETS } from '@/components/charts/elevation-chart-shared';
+import { SacScaleExplainer } from '@/components/charts/SacScaleExplainer';
 import { requestCompassPermission } from '@/hooks/useCompassHeading';
 import { Radio } from '@/components/ui/Radio';
 import { MapControlSectionCard } from './MapControlSectionCard';
@@ -528,6 +529,7 @@ export function MapControlsSettingsPanel({
 												</span>
 											</div>
 										))}
+										<SacScaleExplainer />
 									</div>
 								)}
 

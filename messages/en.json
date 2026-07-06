@@ -185,6 +185,15 @@
 					"demanding_alpine_hiking": "Demanding alpine hiking",
 					"difficult_alpine_hiking": "Difficult alpine hiking",
 					"untagged": "Untagged"
+				},
+				"sacExplainerToggle": "What do the difficulty grades mean?",
+				"sacDescriptions": {
+					"hiking": "Well-cleared paths, flat or gently graded, with no exposure or fall risk; trainers are fine and no route-finding is needed.",
+					"mountain_hiking": "A continuous path that is sometimes steep and where a fall is possible; trekking shoes, some sure-footedness, and basic orientation help.",
+					"demanding_mountain_hiking": "Partly exposed terrain with short, easy scrambling where hands may aid balance and exposed spots can have chains; good sure-footedness and trekking boots are needed.",
+					"alpine_hiking": "Sometimes pathless, with exposed terrain and easy scrambling; solid boots, comfort with exposure, and terrain and weather judgement are required.",
+					"demanding_alpine_hiking": "Often pathless, with exposed, steep ground and easy climbing sections; mountaineering boots and real alpine experience are essential.",
+					"difficult_alpine_hiking": "Mostly pathless and very exposed, with climbing pitches; excellent alpine and climbing experience is essential."
 				}
 			}
 		},

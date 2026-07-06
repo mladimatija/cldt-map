@@ -185,6 +185,15 @@
 					"demanding_alpine_hiking": "Anspruchsvolles Alpinwandern",
 					"difficult_alpine_hiking": "Schwieriges Alpinwandern",
 					"untagged": "Nicht klassifiziert"
+				},
+				"sacExplainerToggle": "Was bedeuten die Schwierigkeitsgrade?",
+				"sacDescriptions": {
+					"hiking": "Gut geräumte, flache oder leicht ansteigende Wege ohne Absturzgefahr; Turnschuhe genügen und es ist keine Orientierung nötig.",
+					"mountain_hiking": "Ein durchgehender, teils steiler Weg, auf dem ein Sturz möglich ist; Trekkingschuhe, etwas Trittsicherheit und grundlegende Orientierung sind hilfreich.",
+					"demanding_mountain_hiking": "Teilweise ausgesetztes Gelände mit kurzen, leichten Kletterstellen, wo die Hände dem Gleichgewicht dienen und ausgesetzte Stellen Ketten haben können; gute Trittsicherheit und Trekkingstiefel sind nötig.",
+					"alpine_hiking": "Teils weglos, mit ausgesetztem Gelände und leichter Kletterei; feste Stiefel, Sicherheit in der Ausgesetztheit sowie Gelände- und Wetterbeurteilung sind erforderlich.",
+					"demanding_alpine_hiking": "Oft weglos, mit ausgesetztem, steilem Gelände und leichten Kletterpassagen; Bergstiefel und echte alpine Erfahrung sind unerlässlich.",
+					"difficult_alpine_hiking": "Meist weglos und sehr ausgesetzt, mit Kletterpassagen; ausgezeichnete alpine und klettertechnische Erfahrung ist unerlässlich."
 				}
 			}
 		},

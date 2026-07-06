@@ -36,6 +36,7 @@ import {
 	type PinnedPoint,
 } from './elevation-chart-shared';
 import { ChartTooltipSync } from './ChartTooltipSync';
+import { SacScaleExplainer } from './SacScaleExplainer';
 import { useElevationChartRulerDrag } from '@/hooks/useElevationChartRulerDrag';
 import { MdKeyboardArrowUp, MdKeyboardArrowDown } from 'react-icons/md';
 import { IoDownloadOutline, IoHelpCircleOutline } from 'react-icons/io5';
@@ -840,6 +841,11 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 						))}
 						{fillMode === 'grade' && <li className="italic opacity-75">{tControls('layers.trailStyle.legendNote')}</li>}
 					</ul>
+				)}
+				{isExpanded && fillMode === 'sac' && (
+					<div className="mt-1 text-[0.6875rem] text-gray-600 dark:text-[var(--text-secondary)]">
+						<SacScaleExplainer />
+					</div>
 				)}
 			</div>
 			<GpxDownloadModal

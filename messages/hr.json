@@ -185,6 +185,15 @@
 					"demanding_alpine_hiking": "Zahtjevno alpinističko planinarenje",
 					"difficult_alpine_hiking": "Teško alpinističko planinarenje",
 					"untagged": "Neoznačeno"
+				},
+				"sacExplainerToggle": "Što znače stupnjevi težine?",
+				"sacDescriptions": {
+					"hiking": "Dobro očišćene staze, ravne ili blago nagnute, bez izloženosti i opasnosti od pada; tenisice su dovoljne i nije potrebno snalaženje na terenu.",
+					"mountain_hiking": "Kontinuirana staza koja je ponekad strma i na kojoj je pad moguć; potrebne su planinarske cipele, nešto sigurnog koraka i osnovna orijentacija.",
+					"demanding_mountain_hiking": "Djelomično izložen teren s kratkim, laganim penjanjem gdje ruke pomažu u ravnoteži, a izložena mjesta mogu imati lance; potrebni su siguran korak i planinarske cipele.",
+					"alpine_hiking": "Ponekad bez staze, s izloženim terenom i laganim penjanjem; potrebne su čvrste cipele, sigurnost pri izloženosti te procjena terena i vremena.",
+					"demanding_alpine_hiking": "Često bez staze, s izloženim, strmim terenom i laganim dionicama penjanja; nužne su visokoplaninarske cipele i pravo alpinističko iskustvo.",
+					"difficult_alpine_hiking": "Uglavnom bez staze i vrlo izloženo, s dionicama penjanja; nužno je izvrsno alpinističko i penjačko iskustvo."
 				}
 			}
 		},
