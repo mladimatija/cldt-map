@@ -50,6 +50,13 @@ export const mapControlSelectMenuStyles = {
 		...base,
 		zIndex: 'calc(var(--z-map-overlay) + 1)',
 	}),
+	// Applied only when a select passes menuPortalTarget (e.g. a select inside a
+	// useBlockMapPropagation panel whose overflow/stacking would clip an inline
+	// menu). Harmless for inline selects: react-select never invokes it then.
+	menuPortal: (base: Record<string, unknown>) => ({
+		...base,
+		zIndex: 'calc(var(--z-map-overlay) + 1)',
+	}),
 };
 
 /** Inline text-style single-select for the Up Next horizon distance (10px header). */

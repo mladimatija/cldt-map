@@ -244,6 +244,8 @@ export function MapControlsSettingsPanel({
 					: 'default';
 	const osmReady = Boolean(trailOsmTagsFile?.runs?.length);
 
+	const languageSelectWrapRef = useRef<HTMLDivElement>(null);
+	const [languageMenuOpen, setLanguageMenuOpen] = useState(false);
 	const languageOptions = useMemo<LanguageOption[]>(
 		() => routing.locales.map((loc) => ({ value: loc, label: tFooter(loc) })),
 		[tFooter],
@@ -257,9 +259,30 @@ export function MapControlsSettingsPanel({
 			if (!opt) return;
 			setLocale(opt.value);
 			router.push(pathname, { locale: opt.value });
+			setLanguageMenuOpen(false);
 		},
 		[setLocale, router, pathname],
 	);
+	// Leaflet's disableClickPropagation on this panel swallows the control's
+	// pointerdown before react-select sees it, so toggle the menu natively and
+	// portal it to document.body so the options stay clickable outside the
+	// panel's overflow/stacking. The panel's outside-click close ignores the
+	// portalled menu - see usePanelListeners.
+	useEffect(() => {
+		const wrap = languageSelectWrapRef.current;
+		if (!wrap) return;
+		const onControlPointerDown = (e: MouseEvent | TouchEvent): void => {
+			if (!(e.target as Element).closest('.map-control-select__control')) return;
+			e.stopPropagation();
+			setLanguageMenuOpen((open) => !open);
+		};
+		wrap.addEventListener('mousedown', onControlPointerDown);
+		wrap.addEventListener('touchstart', onControlPointerDown, { passive: true });
+		return () => {
+			wrap.removeEventListener('mousedown', onControlPointerDown);
+			wrap.removeEventListener('touchstart', onControlPointerDown);
+		};
+	}, [isExpanded]);
 
 	const sectionCollapseLabel = tProgress('collapseSection');
 	const sectionExpandLabel = tProgress('expandSection');
@@ -294,13 +317,19 @@ export function MapControlsSettingsPanel({
 											{tFooter('language')}
 										</span>
 									</div>
-									<MapControlSingleSelect<LanguageOption>
-										aria-label={tFooter('language')}
-										instanceId="settings-language"
-										options={languageOptions}
-										value={selectedLanguage}
-										onChange={handleLanguageChange}
-									/>
+									<div ref={languageSelectWrapRef}>
+										<MapControlSingleSelect<LanguageOption>
+											aria-label={tFooter('language')}
+											instanceId="settings-language"
+											menuIsOpen={languageMenuOpen}
+											menuPortalTarget={typeof document === 'undefined' ? null : document.body}
+											options={languageOptions}
+											value={selectedLanguage}
+											onChange={handleLanguageChange}
+											onMenuClose={() => setLanguageMenuOpen(false)}
+											onMenuOpen={() => setLanguageMenuOpen(true)}
+										/>
+									</div>
 								</div>
 								<SettingsToggleRow
 									checked={darkMode}

@@ -99,6 +99,11 @@ export function usePanelListeners(): void {
 	useEffect(() => {
 		if (!openPanel) return;
 		const handleMousedown = (e: MouseEvent): void => {
+			// A react-select menu portalled out of a panel (menuPortalTarget, e.g. the
+			// settings language switcher) renders at document.body, so it is not
+			// contained by the panel ref; treat clicks inside it as inside the panel so
+			// choosing an option does not close the panel before onChange runs.
+			if ((e.target as Element | null)?.closest?.('.map-control-select__menu-portal')) return;
 			const ref = panelRefs.get(openPanel);
 			if (ref?.current && !ref.current.contains(e.target as Node)) {
 				closePanel();
