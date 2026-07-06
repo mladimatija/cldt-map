@@ -31,6 +31,7 @@ import {
 	mapControlSelectInlineHorizonStyles,
 } from '@/components/map/controls/map-control-select-styles';
 import { isUsableWaterSource, WATER_COLOR } from '@/lib/water-intelligence';
+import { hasTrailJunctions, junctionColor, junctionsAhead } from '@/lib/trail-junctions';
 import { poiHasResupplyKind } from '@/lib/resupply-cadence';
 import { formatVolume, waterCarryLiters } from '@/lib/pack-weight';
 import { formatDistance, formatElevation } from '@/lib/utils';
@@ -38,6 +39,9 @@ import { formatSunTime, isoLocalToUtcMs } from '@/lib/weather';
 
 /** Nearest POI rows shown before the "More ahead" collapse. */
 const UP_NEXT_VISIBLE_COUNT = 5;
+
+/** Nearest marked-trail junction rows shown when the connecting-trails section is expanded. */
+const JUNCTIONS_AHEAD_VISIBLE_COUNT = 8;
 
 /** Categories shown in the up-next data-book strip. Core rows are always
  *  candidates; optional rows need a Settings toggle. Display order is by
@@ -147,6 +151,7 @@ export function DistanceRemainingOverlay(): React.ReactElement | null {
 
 	const t = useTranslations('distanceOverlay');
 	const tPois = useTranslations('pois');
+	const tJunctions = useTranslations('trailJunctions');
 
 	function etaAriaLabel(seconds: number): string {
 		const totalMinutes = Math.round(seconds / 60);
@@ -172,6 +177,9 @@ export function DistanceRemainingOverlay(): React.ReactElement | null {
 	const upNextShowPharmacy = useMapStore((state: MapStoreState) => state.upNextShowPharmacy);
 	const upNextMoreExpanded = useMapStore((state: MapStoreState) => state.upNextMoreExpanded);
 	const setUpNextMoreExpanded = useMapStore((state: MapStoreState) => state.setUpNextMoreExpanded);
+	const trailJunctionsFile = useMapStore((state: MapStoreState) => state.trailJunctionsFile);
+	const junctionsAheadExpanded = useMapStore((state: MapStoreState) => state.junctionsAheadExpanded);
+	const setJunctionsAheadExpanded = useMapStore((state: MapStoreState) => state.setJunctionsAheadExpanded);
 	const packBaseWeightKg = useMapStore((state: MapStoreState) => state.packBaseWeightKg);
 	const waterConsumptionLph = useMapStore((state: MapStoreState) => state.waterConsumptionLph);
 	const enabledPoiTypes = useMapStore((state: MapStoreState) => state.enabledPoiTypes);
@@ -284,6 +292,14 @@ export function DistanceRemainingOverlay(): React.ReactElement | null {
 			includeRemotePois,
 		}).length;
 	}, [trailAnchor, poisFile, aheadHorizonKm, direction, enabledPoiTypes, enabledPoiTags, includeRemotePois]);
+
+	/** Marked-trail junctions (OSM route relations branching off the CLDT) ahead
+	 *  within the same forward corridor as Up Next. Empty until junction data is
+	 *  enriched, so the whole section stays hidden while the feature is dormant. */
+	const junctionsAheadList = useMemo(() => {
+		if (!trailAnchor || !hasTrailJunctions(trailJunctionsFile)) return [];
+		return junctionsAhead(trailJunctionsFile.junctions, trailAnchor.soboKm, aheadHorizonKm, direction);
+	}, [trailAnchor, trailJunctionsFile, aheadHorizonKm, direction]);
 
 	/** Open the POI popup; if its marker layer is toggled off, enable the
 	 *  layer first so the pending-open request has a marker to land on. */
@@ -626,6 +642,45 @@ export function DistanceRemainingOverlay(): React.ReactElement | null {
 						>
 							{t('upNextSeeAll', { count: aheadCorridorCount })}
 						</button>
+					)}
+				</div>
+			)}
+			{junctionsAheadList.length > 0 && (
+				<div className="mt-1 border-t border-gray-200 pt-1 dark:border-[var(--border-color)]">
+					<button
+						aria-expanded={junctionsAheadExpanded}
+						className="flex w-full cursor-pointer items-center gap-1 rounded text-left text-[0.625rem] font-medium tracking-wide text-gray-400 hover:text-gray-600 focus-visible:outline-none dark:text-[var(--text-secondary)] dark:hover:text-[var(--text-primary)]"
+						type="button"
+						onClick={() => setJunctionsAheadExpanded(!junctionsAheadExpanded)}
+					>
+						<span aria-hidden="true">{junctionsAheadExpanded ? '▾' : '▸'}</span>
+						<span className="uppercase">{tJunctions('sectionTitle')}</span>
+						<span className="normal-case">({junctionsAheadList.length})</span>
+					</button>
+					{junctionsAheadExpanded && (
+						<div className="mt-0.5 flex flex-col gap-0.5">
+							{junctionsAheadList.slice(0, JUNCTIONS_AHEAD_VISIBLE_COUNT).map(({ junction, aheadKm }) => {
+								const label = junction.name || junction.ref || tJunctions('layerLabel');
+								return (
+									<div
+										className="flex items-center justify-between gap-3"
+										key={`${junction.trailKm}-${junction.name ?? junction.ref ?? ''}`}
+									>
+										<span className="flex min-w-0 items-center gap-1.5 text-gray-500 dark:text-[var(--text-secondary)]">
+											<span
+												aria-hidden="true"
+												className="size-2 shrink-0 rounded-full"
+												style={{ backgroundColor: junctionColor(junction) }}
+											/>
+											<span className="max-w-[9rem] truncate" title={label}>
+												{label}
+											</span>
+										</span>
+										<span className="shrink-0">{formatDistance(aheadKm, units, distancePrecision)}</span>
+									</div>
+								);
+							})}
+						</div>
 					)}
 				</div>
 			)}

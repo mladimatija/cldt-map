@@ -1393,6 +1393,16 @@
 		"bannerNear": "Area sospetta di mine entro {distance}. Resta sul sentiero segnato.",
 		"dismiss": "Ignora l'avviso area di mine"
 	},
+	"trailJunctions": {
+		"layerLabel": "Sentieri segnati di collegamento",
+		"layerTooltip": "Sentieri escursionistici segnati che si diramano dal CLDT, dalle relazioni di percorso di OpenStreetMap. Basato sui tag OSM name/ref/segnavia - non una consultazione ufficiale del Registar HPS. Fornito vuoto finché non vengono generati i dati sugli incroci.",
+		"sectionTitle": "Sentieri segnati di collegamento",
+		"provenance": "Dalle relazioni di percorso di OpenStreetMap",
+		"branchesOff": "Qui un sentiero segnato si dirama dal CLDT, riconosciuto dai suoi tag OpenStreetMap nome, ref e segnavia - non una consultazione ufficiale del Registar HPS.",
+		"popupNetwork": "Rete OSM: {network}",
+		"popupRef": "Ref OSM: {ref}",
+		"empty": "Nessun sentiero segnato di collegamento ancora registrato."
+	},
 	"progress": {
 		"title": "Progresso sul sentiero",
 		"yourProgressHeading": "Il tuo progresso",

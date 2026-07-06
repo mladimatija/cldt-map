@@ -1393,6 +1393,16 @@
 		"bannerNear": "Minski sumnjivo područje unutar {distance}. Ostani na markiranoj stazi.",
 		"dismiss": "Odbaci upozorenje o minski sumnjivom području"
 	},
+	"trailJunctions": {
+		"layerLabel": "Povezne markirane staze",
+		"layerTooltip": "Markirane planinarske staze koje se odvajaju od CLDT-a, iz OpenStreetMap rutnih relacija. Temeljeno na OSM oznakama name/ref/markacija - nije službeni upit u HPS Registar. Isporučuje se prazno dok se ne generiraju podaci o križanjima.",
+		"sectionTitle": "Povezne markirane staze",
+		"provenance": "Iz OpenStreetMap rutnih relacija",
+		"branchesOff": "Ovdje se markirana staza odvaja od CLDT-a, prepoznata prema OpenStreetMap oznakama imena, ref i markacije - nije službeni upit u HPS Registar.",
+		"popupNetwork": "OSM mreža: {network}",
+		"popupRef": "OSM ref: {ref}",
+		"empty": "Još nema zabilježenih poveznih markiranih staza."
+	},
 	"progress": {
 		"title": "Napredak na stazi",
 		"yourProgressHeading": "Tvoj napredak",

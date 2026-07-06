@@ -11,6 +11,7 @@ import { useMapStore, type MapStoreState } from '@/lib/store';
 import { DEFAULT_PATH_OPTIONS } from '@/components/map/trail-route-constants';
 import { useSevereWeatherFetch } from '@/hooks/useSevereWeatherFetch';
 import { useMineAreasFetch } from '@/hooks/useMineAreasFetch';
+import { useTrailJunctionsFetch } from '@/hooks/useTrailJunctionsFetch';
 import { useCompletionAutoTrack } from '@/hooks/useCompletionAutoTrack';
 import { useSeasonalStatusFetch } from '@/hooks/useSeasonalStatusFetch';
 import { useTrailOsmTagsFetch } from '@/hooks/useTrailOsmTagsFetch';
@@ -119,6 +120,10 @@ const MineAreaLayer = dynamic(
 	() => import('@/components/map/MineAreaLayer').then((m) => ({ default: m.MineAreaLayer })),
 	{ ssr: false },
 );
+const TrailJunctionLayer = dynamic(
+	() => import('@/components/map/TrailJunctionLayer').then((m) => ({ default: m.TrailJunctionLayer })),
+	{ ssr: false },
+);
 const MapKeyboardA11y = dynamic(() => import('@/components/map/MapKeyboardA11y'), { ssr: false });
 const TrailA11yLiveRegion = dynamic(
 	() => import('@/components/map/TrailA11yLiveRegion').then((m) => ({ default: m.TrailA11yLiveRegion })),
@@ -142,6 +147,7 @@ export default function MapContent(): React.ReactElement {
 
 	useSevereWeatherFetch();
 	useMineAreasFetch();
+	useTrailJunctionsFetch();
 	useCompletionAutoTrack();
 	useSeasonalStatusFetch();
 	useTrailOsmTagsFetch();
@@ -248,6 +254,7 @@ export default function MapContent(): React.ReactElement {
 			<NoticeMarkers />
 			<SevereWeatherLayer />
 			<MineAreaLayer />
+			<TrailJunctionLayer />
 			<CompletionOverlay />
 			<ProgressPreviewOverlay />
 			<JournalTrackHighlightOverlay />

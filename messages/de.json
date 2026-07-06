@@ -1393,6 +1393,16 @@
 		"bannerNear": "Minenverdächtiges Gebiet innerhalb von {distance}. Bleibe auf dem markierten Weg.",
 		"dismiss": "Minengebiet-Warnung verwerfen"
 	},
+	"trailJunctions": {
+		"layerLabel": "Anschließende markierte Wege",
+		"layerTooltip": "Markierte Wanderwege, die vom CLDT abzweigen, aus OpenStreetMap-Routenrelationen. Basierend auf OSM-Tags name/ref/Markierung - keine offizielle HPS-Registar-Abfrage. Wird leer ausgeliefert, bis Kreuzungsdaten erzeugt sind.",
+		"sectionTitle": "Anschließende markierte Wege",
+		"provenance": "Aus OpenStreetMap-Routenrelationen",
+		"branchesOff": "Hier zweigt ein markierter Weg vom CLDT ab, erkannt an seinen OpenStreetMap-Tags Name, Ref und Markierung - keine offizielle HPS-Registar-Abfrage.",
+		"popupNetwork": "OSM-Netzwerk: {network}",
+		"popupRef": "OSM-Ref: {ref}",
+		"empty": "Noch keine anschließenden markierten Wege erfasst."
+	},
 	"progress": {
 		"title": "Trail-Fortschritt",
 		"yourProgressHeading": "Dein Fortschritt",

@@ -23,6 +23,7 @@
 		"update-mine-areas": "tsx --env-file-if-exists=.env.local scripts/update-mine-areas.ts",
 		"update-seasonal": "tsx --env-file-if-exists=.env.local scripts/update-seasonal-status.ts",
 		"enrich-osm": "tsx --env-file-if-exists=.env.local scripts/enrich-trail-osm.ts",
+		"enrich-junctions": "tsx --env-file-if-exists=.env.local scripts/enrich-trail-junctions.ts",
 		"enrich-pois": "tsx --env-file-if-exists=.env.local scripts/enrich-pois.ts && node scripts/split-pois.mjs",
 		"clean-install": "rm -rf node_modules .next package-lock.json && npm install"
 	},

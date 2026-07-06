@@ -1431,6 +1431,21 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 						set({ trailOsmTagsFile: file });
 					},
 
+					// Marked-trail junctions: ships dormant (empty dataset), so the
+					// toggle stays hidden until real data is enriched and committed.
+					showTrailJunctions: config.showTrailJunctions,
+					setShowTrailJunctions: (show: boolean): void => {
+						set({ showTrailJunctions: show });
+					},
+					trailJunctionsFile: null,
+					setTrailJunctionsFile: (file): void => {
+						set({ trailJunctionsFile: file });
+					},
+					junctionsAheadExpanded: false,
+					setJunctionsAheadExpanded: (expanded: boolean): void => {
+						set({ junctionsAheadExpanded: expanded });
+					},
+
 					poisFile: null,
 					setPoisFile: (file): void => {
 						set({ poisFile: file });
@@ -1708,6 +1723,8 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 						stagePlan: state.stagePlan,
 						severeWeatherLayer: state.severeWeatherLayer,
 						mineAreasEnabled: state.mineAreasEnabled,
+						showTrailJunctions: state.showTrailJunctions,
+						junctionsAheadExpanded: state.junctionsAheadExpanded,
 						showUpNext: state.showUpNext,
 						upNextShowFood: state.upNextShowFood,
 						upNextShowAtm: state.upNextShowAtm,

@@ -172,6 +172,11 @@ export const config = {
 	 *  so users opt out rather than in. */
 	mineAreasEnabled: envBool('NEXT_PUBLIC_DEFAULT_MINE_AREAS', true),
 
+	/** Show the marked-trail junction data-book layer by default. OFF: the layer
+	 *  stays hidden until a maintainer runs `npm run enrich-junctions` and commits
+	 *  real data (the bundled dataset ships empty). */
+	showTrailJunctions: envBool('NEXT_PUBLIC_DEFAULT_TRAIL_JUNCTIONS', false),
+
 	/** Auto-sync tile cache in the background by default. */
 	autoSync: envBool('NEXT_PUBLIC_DEFAULT_AUTO_SYNC', false),
 

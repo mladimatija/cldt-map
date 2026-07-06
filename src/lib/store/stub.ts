@@ -369,6 +369,13 @@ export function createMapStoreStub(): MapStoreState {
 		trailOsmTagsFile: null,
 		setTrailOsmTagsFile: noop,
 
+		showTrailJunctions: false,
+		setShowTrailJunctions: noop,
+		trailJunctionsFile: null,
+		setTrailJunctionsFile: noop,
+		junctionsAheadExpanded: false,
+		setJunctionsAheadExpanded: noop,
+
 		poisFile: null,
 		setPoisFile: noop,
 		poisLayerEnabled: false,

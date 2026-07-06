@@ -90,6 +90,7 @@ export function MapControlsSettingsPanel({
 	const tProgress = useTranslations('progress');
 	const tWeather = useTranslations('severeWeather');
 	const tMineAreas = useTranslations('mineAreas');
+	const tTrailJunctions = useTranslations('trailJunctions');
 	const tSeasonal = useTranslations('seasonalStatus');
 	const tFooter = useTranslations('footer');
 	const activeLocale = useLocale() as Locale;
@@ -200,6 +201,9 @@ export function MapControlsSettingsPanel({
 	const mineAreasEnabled = useMapStore((state: MapStoreState) => state.mineAreasEnabled);
 	const setMineAreasEnabled = useMapStore((state: MapStoreState) => state.setMineAreasEnabled);
 	const mineAreasFile = useMapStore((state: MapStoreState) => state.mineAreasFile);
+	const showTrailJunctions = useMapStore((state: MapStoreState) => state.showTrailJunctions);
+	const setShowTrailJunctions = useMapStore((state: MapStoreState) => state.setShowTrailJunctions);
+	const trailJunctionsFile = useMapStore((state: MapStoreState) => state.trailJunctionsFile);
 	const seasonalStatusLayerEnabled = useMapStore((state: MapStoreState) => state.seasonalStatusLayerEnabled);
 	const setSeasonalStatusLayerEnabled = useMapStore((state: MapStoreState) => state.setSeasonalStatusLayerEnabled);
 	const seasonalStatusFile = useMapStore((state: MapStoreState) => state.seasonalStatusFile);
@@ -566,6 +570,16 @@ export function MapControlsSettingsPanel({
 										label={tMineAreas('layerLabel')}
 										tooltip={tMineAreas('layerTooltip')}
 										onCheckedChange={(checked) => setMineAreasEnabled(checked)}
+									/>
+								)}
+
+								{trailJunctionsFile && trailJunctionsFile.junctions.length > 0 && (
+									<SettingsToggleRow
+										checked={showTrailJunctions}
+										icon={<IoTrailSignOutline className="h-4 w-4" />}
+										label={tTrailJunctions('layerLabel')}
+										tooltip={tTrailJunctions('layerTooltip')}
+										onCheckedChange={(checked) => setShowTrailJunctions(checked)}
 									/>
 								)}
 

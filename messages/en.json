@@ -1393,6 +1393,16 @@
 		"bannerNear": "Mine-suspected area within {distance}. Stay on the marked trail.",
 		"dismiss": "Dismiss mine area warning"
 	},
+	"trailJunctions": {
+		"layerLabel": "Connecting marked trails",
+		"layerTooltip": "Marked hiking trails that branch off the CLDT, from OpenStreetMap route relations. Keyed on OSM name/ref/waymark tags - not an official HPS Registar lookup. Ships empty until junction data is generated.",
+		"sectionTitle": "Connecting marked trails",
+		"provenance": "From OpenStreetMap route relations",
+		"branchesOff": "A marked trail branches off the CLDT here, matched on its OpenStreetMap name, ref, and waymark tags - not an official HPS Registar lookup.",
+		"popupNetwork": "OSM network: {network}",
+		"popupRef": "OSM ref: {ref}",
+		"empty": "No connecting marked trails recorded yet."
+	},
 	"progress": {
 		"title": "Trail progress",
 		"yourProgressHeading": "Your progress",

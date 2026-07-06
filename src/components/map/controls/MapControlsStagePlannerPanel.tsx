@@ -96,6 +96,7 @@ import {
 } from '@/lib/water-intelligence';
 import { buildGpxXml, buildGpxWaypointXml, downloadGpxFile, type GpxDocMeta, type GpxWaypoint } from '@/lib/gpx-export';
 import { sacMaxForKmRange } from '@/lib/trail-osm-tags';
+import { hasTrailJunctions, junctionColor, type TrailJunction } from '@/lib/trail-junctions';
 import { dominantSurfaceForKmRange } from '@/lib/surface-section-stats';
 import { SAC_BUCKET_SHORT_LABELS } from '@/components/map/trail-route-constants';
 import { siteMetadata } from '@/lib/metadata';
@@ -125,6 +126,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 	const t = useTranslations('stagePlanner');
 	const tProgress = useTranslations('progress');
 	const tPois = useTranslations('pois');
+	const tJunctions = useTranslations('trailJunctions');
 	const tWeather = useTranslations('weather');
 	const tGpxMeta = useTranslations('gpx');
 	const locale = useLocale();
@@ -158,6 +160,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 	const aheadHorizonKm = useMapStore((s: MapStoreState) => s.aheadHorizonKm);
 	const distancePrecision = useMapStore((s: MapStoreState) => s.distancePrecision);
 	const trailOsmTagsFile = useMapStore((s: MapStoreState) => s.trailOsmTagsFile);
+	const trailJunctionsFile = useMapStore((s: MapStoreState) => s.trailJunctionsFile);
 	const requestPoiListAhead = useMapStore((s: MapStoreState) => s.requestPoiListAhead);
 	const openHelpToPlanning = useMapStore((s: MapStoreState) => s.openHelpToPlanning);
 	const sosCard = useMapStore((s: MapStoreState) => s.sosCard);
@@ -556,6 +559,26 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 			return visiblePois.filter((p) => p.trailKm >= lo && p.trailKm <= hi).sort((a, b) => a.trailKm - b.trailKm);
 		});
 	}, [stagePlan, visiblePois]);
+
+	/** Marked-trail junctions (OSM route relations branching off the CLDT) whose
+	 *  SOBO km falls inside each stage's [startKm, endKm] window. Empty until
+	 *  junction data is enriched, so the whole section stays hidden while the
+	 *  feature is dormant. */
+	const junctionsByStage = useMemo((): TrailJunction[][] => {
+		if (!stagePlan || !hasTrailJunctions(trailJunctionsFile)) return [];
+		return stagePlan.stages.map((stage) => {
+			const lo = Math.min(stage.startKm, stage.endKm);
+			const hi = Math.max(stage.startKm, stage.endKm);
+			return trailJunctionsFile.junctions
+				.filter((j) => j.trailKm >= lo && j.trailKm <= hi)
+				.sort((a, b) => a.trailKm - b.trailKm);
+		});
+	}, [stagePlan, trailJunctionsFile]);
+	const totalStageJunctions = useMemo(
+		() => junctionsByStage.reduce((n, list) => n + list.length, 0),
+		[junctionsByStage],
+	);
+	const [junctionsSectionOpen, setJunctionsSectionOpen] = useState(false);
 
 	/** Trail-km positions of water sources a hiker can plan around (explicitly
 	 *  non-potable excluded). Deliberately ignores the layer / type visibility
@@ -1489,6 +1512,63 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 										);
 									})}
 								</div>
+							</MapControlSectionCard>
+						)}
+
+						{stagePlan && totalStageJunctions > 0 && (
+							<MapControlSectionCard
+								collapsible
+								collapseLabel={sectionCollapseLabel}
+								expandLabel={sectionExpandLabel}
+								open={junctionsSectionOpen}
+								title={tJunctions('sectionTitle')}
+								onOpenChange={setJunctionsSectionOpen}
+							>
+								<p className="m-0 text-xs text-gray-500 dark:text-[var(--text-secondary)]">
+									{tJunctions('branchesOff')}
+								</p>
+								{junctionsByStage.map((list, i) => {
+									if (list.length === 0) return null;
+									const stage = stagePlan.stages[i];
+									const rows = isNobo ? [...list].reverse() : list;
+									return (
+										<div className="flex flex-col gap-0.5" key={`${stage.startKm}-${stage.endKm}`}>
+											<p className="m-0 text-[0.625rem] font-medium tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
+												{i + 1}. {toDisplay(stage.startKm).toFixed(0)}-{toDisplay(stage.endKm).toFixed(0)}{' '}
+												{distanceUnitLabel}
+											</p>
+											{rows.map((junction) => {
+												const label = junction.name || junction.ref || tJunctions('layerLabel');
+												return (
+													<div
+														className="flex items-center justify-between gap-2 px-0.5"
+														key={`${junction.trailKm}-${junction.name ?? junction.ref ?? ''}`}
+													>
+														<span className="flex min-w-0 items-center gap-1.5">
+															<span
+																aria-hidden
+																className="size-2 shrink-0 rounded-full"
+																style={{ backgroundColor: junctionColor(junction) }}
+															/>
+															<span
+																className="truncate text-xs text-gray-700 dark:text-[var(--text-primary)]"
+																title={label}
+															>
+																{label}
+															</span>
+														</span>
+														<span className="shrink-0 text-[0.625rem] text-gray-500 tabular-nums dark:text-[var(--text-secondary)]">
+															{formatDistance(junction.trailKm, units, distancePrecision)}
+														</span>
+													</div>
+												);
+											})}
+										</div>
+									);
+								})}
+								<p className="m-0 text-[0.625rem] text-gray-400 italic dark:text-[var(--text-secondary)]">
+									{tJunctions('provenance')}
+								</p>
 							</MapControlSectionCard>
 						)}
 

@@ -5,6 +5,7 @@ import type { TileCacheMeta } from '../tile-cache';
 import type { TrackPoint } from '../gpx-parser';
 import type { SeasonalStatusEntry, SeasonalStatusFile } from '../seasonal-status';
 import type { TrailOsmTagsFile } from '../trail-osm-tags';
+import type { TrailJunctionsFile } from '../trail-junctions';
 import type { MineAreasFile } from '../mine-areas';
 import type { CompletionInterval } from '../completion';
 import type { JournalEntry, UserWaypoint } from '../user-waypoints';
@@ -742,6 +743,19 @@ export interface MapStoreState {
 	// ── Trail OSM tag enrichment (surface, highway, SAC, MTB scale) ──
 	trailOsmTagsFile: TrailOsmTagsFile | null;
 	setTrailOsmTagsFile: (file: TrailOsmTagsFile | null) => void;
+
+	// ── Marked-trail junctions (OSM route=hiking/foot branching off the CLDT) ──
+	/** Layer toggle; persisted, defaults OFF. The layer/toggle stay hidden while
+	 *  the bundled dataset is empty (feature ships dormant). */
+	showTrailJunctions: boolean;
+	setShowTrailJunctions: (show: boolean) => void;
+	/** Bundled dataset loaded at runtime; null until fetched. NOT persisted. */
+	trailJunctionsFile: TrailJunctionsFile | null;
+	setTrailJunctionsFile: (file: TrailJunctionsFile | null) => void;
+	/** Expanded state of the "Connecting marked trails" block in the distance
+	 *  overlay; persisted (mirrors upNextMoreExpanded). */
+	junctionsAheadExpanded: boolean;
+	setJunctionsAheadExpanded: (expanded: boolean) => void;
 
 	// ── Points of Interest (towns, settlements, future categories) ──
 	poisFile: PoisFile | null;
