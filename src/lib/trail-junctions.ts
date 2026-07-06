@@ -113,6 +113,20 @@ export function junctionColor(junction: TrailJunction): string {
 	return parseOsmcSymbolColor(junction.osmcSymbol);
 }
 
+/** Display label for a junction: OSM name, else OSM ref, else the localized
+ *  fallback (the generic "junction" label). Keeps the name / ref / fallback
+ *  precedence identical across the chip marker, the up-next section, and the
+ *  stage-planner list so no surface silently omits the ref. */
+export function junctionLabel(junction: TrailJunction, fallback: string): string {
+	return junction.name || junction.ref || fallback;
+}
+
+/** Stable React key for a junction row: trail km plus name (else ref) so two
+ *  junctions snapped to the same km still get distinct keys. */
+export function junctionRowKey(junction: TrailJunction): string {
+	return `${junction.trailKm}-${junction.name ?? junction.ref ?? ''}`;
+}
+
 /** True once the bundled dataset actually carries junctions. The repo ships an
  *  empty file until `npm run enrich-junctions` is executed, so every UI surface
  *  gates on this and renders nothing while the feature is dormant. */

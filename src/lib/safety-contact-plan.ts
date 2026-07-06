@@ -45,6 +45,23 @@ export interface SafetyContactTemplates {
 	closingNoDate: string;
 }
 
+/** Builds {@link SafetyContactTemplates} from a namespace translator scoped to
+ *  `stagePlanner`, mapping the nine `safetyContact.*` message keys in one place
+ *  so the stage-planner panel and the trip-brief exporter cannot drift. */
+export function safetyContactTemplates(t: (key: string) => string): SafetyContactTemplates {
+	return {
+		heading: t('safetyContact.heading'),
+		intro: t('safetyContact.intro'),
+		dayLine: t('safetyContact.dayLine'),
+		dayLineNoDate: t('safetyContact.dayLineNoDate'),
+		sleepAnchor: t('safetyContact.sleepAnchor'),
+		noAnchor: t('safetyContact.noAnchor'),
+		restDay: t('safetyContact.restDay'),
+		closing: t('safetyContact.closing'),
+		closingNoDate: t('safetyContact.closingNoDate'),
+	};
+}
+
 /** A fixed overnight point (hut / shelter / town) at a stage boundary. */
 export interface SafetyContactAnchor {
 	name: string;

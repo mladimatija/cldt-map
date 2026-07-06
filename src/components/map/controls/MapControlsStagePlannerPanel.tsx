@@ -50,7 +50,7 @@ import {
 	buildSafetyContactPlan,
 	buildSafetyContactPlanInput,
 	DEFAULT_SAFETY_BUFFER_DAYS,
-	type SafetyContactTemplates,
+	safetyContactTemplates,
 } from '@/lib/safety-contact-plan';
 import {
 	MAP_CONTROL_FOOTNOTE_LINK,
@@ -96,7 +96,13 @@ import {
 } from '@/lib/water-intelligence';
 import { buildGpxXml, buildGpxWaypointXml, downloadGpxFile, type GpxDocMeta, type GpxWaypoint } from '@/lib/gpx-export';
 import { sacMaxForKmRange } from '@/lib/trail-osm-tags';
-import { hasTrailJunctions, junctionColor, type TrailJunction } from '@/lib/trail-junctions';
+import {
+	hasTrailJunctions,
+	junctionColor,
+	junctionLabel,
+	junctionRowKey,
+	type TrailJunction,
+} from '@/lib/trail-junctions';
 import { dominantSurfaceForKmRange } from '@/lib/surface-section-stats';
 import { SAC_BUCKET_SHORT_LABELS } from '@/components/map/trail-route-constants';
 import { siteMetadata } from '@/lib/metadata';
@@ -569,9 +575,10 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 		return stagePlan.stages.map((stage) => {
 			const lo = Math.min(stage.startKm, stage.endKm);
 			const hi = Math.max(stage.startKm, stage.endKm);
-			return trailJunctionsFile.junctions
-				.filter((j) => j.trailKm >= lo && j.trailKm <= hi)
-				.sort((a, b) => a.trailKm - b.trailKm);
+			// junctions is already globally sorted ascending by trailKm in normalize();
+			// filter() preserves that order, so no per-stage re-sort is needed (the
+			// isNobo reversal at render handles walking direction).
+			return trailJunctionsFile.junctions.filter((j) => j.trailKm >= lo && j.trailKm <= hi);
 		});
 	}, [stagePlan, trailJunctionsFile]);
 	const totalStageJunctions = useMemo(
@@ -614,17 +621,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 	 *  Nothing is uploaded or tracked. Null until the plan has at least one stage. */
 	const safetyContactPlan = useMemo(() => {
 		if (!stagePlan || stagePlan.stages.length === 0) return null;
-		const templates: SafetyContactTemplates = {
-			heading: t('safetyContact.heading'),
-			intro: t('safetyContact.intro'),
-			dayLine: t('safetyContact.dayLine'),
-			dayLineNoDate: t('safetyContact.dayLineNoDate'),
-			sleepAnchor: t('safetyContact.sleepAnchor'),
-			noAnchor: t('safetyContact.noAnchor'),
-			restDay: t('safetyContact.restDay'),
-			closing: t('safetyContact.closing'),
-			closingNoDate: t('safetyContact.closingNoDate'),
-		};
+		const templates = safetyContactTemplates(t);
 		return buildSafetyContactPlan(
 			buildSafetyContactPlanInput({ stagePlan, overnightPois, templates, locale, bufferDays: safetyBuffer }),
 		);
@@ -1507,11 +1504,11 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 												{distanceUnitLabel}
 											</p>
 											{rows.map((junction) => {
-												const label = junction.name || junction.ref || tJunctions('layerLabel');
+												const label = junctionLabel(junction, tJunctions('layerLabel'));
 												return (
 													<div
 														className="flex items-center justify-between gap-2 px-0.5"
-														key={`${junction.trailKm}-${junction.name ?? junction.ref ?? ''}`}
+														key={junctionRowKey(junction)}
 													>
 														<span className="flex min-w-0 items-center gap-1.5">
 															<span

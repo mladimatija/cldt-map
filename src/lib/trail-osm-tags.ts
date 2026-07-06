@@ -31,6 +31,18 @@ export interface TrailOsmTagsFile {
 }
 
 /**
+ * Overlap length in km between two km ranges [aFrom, aTo] and [bFrom, bTo].
+ * Returns 0 when the ranges are disjoint or either range has zero (or negative)
+ * length. Shared by the surface breakdown / dominant-surface and SAC-max range
+ * scans so the clamp-and-subtract math lives in one place.
+ */
+export function rangeOverlapKm(aFrom: number, aTo: number, bFrom: number, bTo: number): number {
+	const start = Math.max(aFrom, bFrom);
+	const end = Math.min(aTo, bTo);
+	return end > start ? end - start : 0;
+}
+
+/**
  * Coarse surface buckets mapped from the long tail of OSM surface=* values.
  * Drives the surface-color-mode palette so the legend only has 5 entries
  * rather than every conceivable surface tag.
@@ -119,7 +131,7 @@ export function sacMaxForKmRange(runs: TrailOsmTagRun[], fromKm: number, toKm: n
 	let result: SacScale | null = null;
 	for (const run of runs) {
 		if (!run.sac_scale) continue;
-		if (Math.min(run.toKm, hi) <= Math.max(run.fromKm, lo)) continue;
+		if (rangeOverlapKm(run.fromKm, run.toKm, lo, hi) <= 0) continue;
 		const rank = SAC_SCALE_ORDER.indexOf(run.sac_scale);
 		if (rank > maxRank) {
 			maxRank = rank;

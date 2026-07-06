@@ -1,5 +1,11 @@
 import { TRAIL_SECTIONS } from '@/lib/trail-sections';
-import { bucketSurface, SURFACE_BUCKETS, type SurfaceBucket, type TrailOsmTagRun } from '@/lib/trail-osm-tags';
+import {
+	bucketSurface,
+	rangeOverlapKm,
+	SURFACE_BUCKETS,
+	type SurfaceBucket,
+	type TrailOsmTagRun,
+} from '@/lib/trail-osm-tags';
 
 export interface SurfaceMixEntry {
 	bucket: SurfaceBucket;
@@ -28,11 +34,7 @@ export function computeSurfaceBreakdownBySection(
 		if (run.toKm <= run.fromKm) continue;
 		const bucket = bucketSurface(run.surface);
 		for (let si = 0; si < TRAIL_SECTIONS.length; si++) {
-			const overlapStart = Math.max(run.fromKm, TRAIL_SECTIONS[si].startKm);
-			const overlapEnd = Math.min(run.toKm, sectionEnds[si]);
-			if (overlapEnd > overlapStart) {
-				kmBySection[si][bucket] += overlapEnd - overlapStart;
-			}
+			kmBySection[si][bucket] += rangeOverlapKm(run.fromKm, run.toKm, TRAIL_SECTIONS[si].startKm, sectionEnds[si]);
 		}
 	}
 
@@ -56,11 +58,7 @@ export function dominantSurfaceForKmRange(runs: TrailOsmTagRun[], fromKm: number
 	const kmByBucket = emptyBuckets();
 	for (const run of runs) {
 		if (run.toKm <= run.fromKm) continue;
-		const overlapStart = Math.max(run.fromKm, lo);
-		const overlapEnd = Math.min(run.toKm, hi);
-		if (overlapEnd > overlapStart) {
-			kmByBucket[bucketSurface(run.surface)] += overlapEnd - overlapStart;
-		}
+		kmByBucket[bucketSurface(run.surface)] += rangeOverlapKm(run.fromKm, run.toKm, lo, hi);
 	}
 	let best: SurfaceBucket | null = null;
 	let bestKm = 0;

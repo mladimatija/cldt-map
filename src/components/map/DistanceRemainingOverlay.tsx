@@ -31,7 +31,7 @@ import {
 	mapControlSelectInlineHorizonStyles,
 } from '@/components/map/controls/map-control-select-styles';
 import { isUsableWaterSource, WATER_COLOR } from '@/lib/water-intelligence';
-import { hasTrailJunctions, junctionColor, junctionsAhead } from '@/lib/trail-junctions';
+import { hasTrailJunctions, junctionColor, junctionLabel, junctionRowKey, junctionsAhead } from '@/lib/trail-junctions';
 import { poiHasResupplyKind } from '@/lib/resupply-cadence';
 import { formatVolume, waterCarryLiters } from '@/lib/pack-weight';
 import { formatDistance, formatElevation } from '@/lib/utils';
@@ -660,12 +660,9 @@ export function DistanceRemainingOverlay(): React.ReactElement | null {
 					{junctionsAheadExpanded && (
 						<div className="mt-0.5 flex flex-col gap-0.5">
 							{junctionsAheadList.slice(0, JUNCTIONS_AHEAD_VISIBLE_COUNT).map(({ junction, aheadKm }) => {
-								const label = junction.name || junction.ref || tJunctions('layerLabel');
+								const label = junctionLabel(junction, tJunctions('layerLabel'));
 								return (
-									<div
-										className="flex items-center justify-between gap-3"
-										key={`${junction.trailKm}-${junction.name ?? junction.ref ?? ''}`}
-									>
+									<div className="flex items-center justify-between gap-3" key={junctionRowKey(junction)}>
 										<span className="flex min-w-0 items-center gap-1.5 text-gray-500 dark:text-[var(--text-secondary)]">
 											<span
 												aria-hidden="true"

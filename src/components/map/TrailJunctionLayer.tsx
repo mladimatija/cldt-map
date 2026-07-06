@@ -19,7 +19,7 @@ import L from 'leaflet';
 import { useMap } from 'react-leaflet';
 import { useLocale, useTranslations } from 'next-intl';
 import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
-import { hasTrailJunctions, junctionColor, type TrailJunction } from '@/lib/trail-junctions';
+import { hasTrailJunctions, junctionColor, junctionLabel, type TrailJunction } from '@/lib/trail-junctions';
 import { findNearestPointIndex } from '@/lib/distance-utils';
 
 /** Minimum pixel gap between two chips before the later one is dropped at the
@@ -37,9 +37,14 @@ const JUNCTION_GLYPH =
  *  background, so a white / yellow waymark chip keeps a dark glyph and a red /
  *  blue chip keeps a white one. Falls back to white for non-hex colours. */
 function contrastStroke(bgHex: string): string {
-	const m = /^#?([0-9a-f]{6})$/i.exec(bgHex.trim());
+	const m = /^#?([0-9a-f]{3}|[0-9a-f]{4}|[0-9a-f]{6}|[0-9a-f]{8})$/i.exec(bgHex.trim());
 	if (!m) return '#ffffff';
-	const n = parseInt(m[1], 16);
+	// Normalize short-form hex to 6 digits and drop any alpha byte first, so a
+	// short colour (e.g. #ff0) picks the same glyph as its full-length or named
+	// equivalent rather than falling through to the white default.
+	const hex = m[1];
+	const rgb = hex.length <= 4 ? hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2] : hex.slice(0, 6);
+	const n = parseInt(rgb, 16);
 	const r = (n >> 16) & 0xff;
 	const g = (n >> 8) & 0xff;
 	const b = n & 0xff;
@@ -151,7 +156,7 @@ export function TrailJunctionLayer(): null {
 		}
 
 		const buildPopupStrings = (junction: TrailJunction): PopupStrings => ({
-			title: junction.name || tRef.current('layerLabel'),
+			title: junctionLabel(junction, tRef.current('layerLabel')),
 			branchesOff: tRef.current('branchesOff'),
 			provenance: tRef.current('provenance'),
 			ref: junction.ref ? tRef.current('popupRef', { ref: junction.ref }) : undefined,
@@ -166,9 +171,10 @@ export function TrailJunctionLayer(): null {
 				const cp = map.latLngToContainerPoint([p.lat, p.lng]);
 				if (shown.some((s) => cp.distanceTo(s) < DECLUTTER_PX)) continue;
 				shown.push(cp);
-				const label = p.junction.name
-					? `${tRef.current('layerLabel')}: ${p.junction.name}`
-					: tRef.current('layerLabel');
+				// name / ref precedence in one place; empty fallback keeps the bare
+				// layer label when the junction has neither a name nor a ref.
+				const named = junctionLabel(p.junction, '');
+				const label = named ? `${tRef.current('layerLabel')}: ${named}` : tRef.current('layerLabel');
 				const marker = L.marker([p.lat, p.lng], {
 					icon: buildChipIcon(p.color, label),
 					keyboard: false,
@@ -189,11 +195,13 @@ export function TrailJunctionLayer(): null {
 		};
 
 		render();
+		// Only zoom changes the declutter outcome: it uses pairwise container-point
+		// gaps, which are translation-invariant, and every junction is considered
+		// regardless of viewport (no bounds culling), so a pan never adds or drops a
+		// chip. Leaflet repositions the latlng-anchored markers on pan on its own.
 		map.on('zoomend', render);
-		map.on('moveend', render);
 		return () => {
 			map.off('zoomend', render);
-			map.off('moveend', render);
 			removeGroup();
 		};
 	}, [map, enabled, file, enhancedTrailPoints, locale]);

@@ -29,7 +29,7 @@ import {
 	buildSafetyContactPlan,
 	buildSafetyContactPlanInput,
 	DEFAULT_SAFETY_BUFFER_DAYS,
-	type SafetyContactTemplates,
+	safetyContactTemplates,
 } from '@/lib/safety-contact-plan';
 import { missingGearTerms } from '@/lib/pack-csv';
 import { renderElevationThumbnail } from '@/lib/elevation-thumbnail';
@@ -143,17 +143,7 @@ export function MapControlsTripBriefModal({
 		// Safety-contact handoff lines for the emergency back page. Same
 		// stage-end accommodation anchoring as the planner; the assembler stays
 		// pure, so the accommodation math is resolved here at the call site.
-		const safetyTemplates: SafetyContactTemplates = {
-			heading: tStage('safetyContact.heading'),
-			intro: tStage('safetyContact.intro'),
-			dayLine: tStage('safetyContact.dayLine'),
-			dayLineNoDate: tStage('safetyContact.dayLineNoDate'),
-			sleepAnchor: tStage('safetyContact.sleepAnchor'),
-			noAnchor: tStage('safetyContact.noAnchor'),
-			restDay: tStage('safetyContact.restDay'),
-			closing: tStage('safetyContact.closing'),
-			closingNoDate: tStage('safetyContact.closingNoDate'),
-		};
+		const safetyTemplates = safetyContactTemplates(tStage);
 		const overnightPois = filterOvernightCandidates(poisFile?.pois ?? []);
 		const safetyPlan = buildSafetyContactPlan(
 			buildSafetyContactPlanInput({
