@@ -97,6 +97,7 @@
 		"links": "Links",
 		"officialWebsite": "Offizielle {companyName}-Website",
 		"sourceCode": "Quellcode auf GitHub",
+		"officialTrailStatus": "Offizielle Plattform für den Wegzustand (Sigurne staze, HGSS/HPS)",
 		"githubAriaLabel": "{title} auf GitHub ansehen",
 		"createdBy": "Erstellt von",
 		"visitAuthor": "{authorName}'s Website besuchen",
@@ -1021,9 +1022,8 @@
 		"lastUpdatedDaysAgo": "{days, plural, =0 {Heute aktualisiert} =1 {Gestern aktualisiert} other {Vor # Tagen aktualisiert}}",
 		"freshness": {
 			"label": "Aktualität der Saisondaten",
-			"stale": "Saisonale Sperrungen wurden zuletzt am {date} aktualisiert und sind möglicherweise nicht mehr aktuell. Bitte mit {source} abgleichen.",
-			"dismiss": "Schließen",
-			"fallbackSource": "der offiziellen Quelle"
+			"stale": "Saisonale Sperrungen wurden zuletzt am {date} aktualisiert und sind möglicherweise nicht mehr aktuell. Für Gefahren und Sperrungen ist <source>die offizielle Quelle für den Wegzustand</source> aktueller.",
+			"dismiss": "Schließen"
 		}
 	},
 	"pois": {

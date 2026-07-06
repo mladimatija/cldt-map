@@ -4,9 +4,12 @@ import React, { useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { IoWarningOutline } from 'react-icons/io5';
 import { Button } from '@/components/ui/Button';
+import { ExternalLink } from '@/components/ui/ExternalLink';
 import { useMapStore, type MapStoreState } from '@/lib/store';
 import { isFeedStale } from '@/lib/data-freshness';
 import { formatIsoDate } from '@/lib/date-format';
+import { isSafeUrl } from '@/lib/utils';
+import { SIGURNE_STAZE_URL } from '@/lib/official-sources';
 import { BANNER_REGION_CLASSES, BANNER_ROW_CLASSES } from './banner-styles';
 
 /**
@@ -34,15 +37,17 @@ export function SeasonalStatusFreshnessBanner(): React.ReactElement | null {
 		return null;
 	}
 
-	const source = file?.source?.trim() || t('freshness.fallbackSource');
-
 	return (
 		<div aria-label={t('freshness.label')} className={BANNER_REGION_CLASSES} role="region">
 			<div className="bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-200" role="status">
 				<div className={BANNER_ROW_CLASSES}>
 					<IoWarningOutline aria-hidden className="mt-0.5 h-4 w-4 shrink-0" />
 					<span className="min-w-0 flex-1 text-xs">
-						{t('freshness.stale', { date: formatIsoDate(lastUpdated, locale), source })}
+						{t.rich('freshness.stale', {
+							date: formatIsoDate(lastUpdated, locale),
+							source: (chunks) =>
+								isSafeUrl(SIGURNE_STAZE_URL) ? <ExternalLink href={SIGURNE_STAZE_URL}>{chunks}</ExternalLink> : chunks,
+						})}
 					</span>
 					<Button aria-label={t('freshness.dismiss')} variant="bannerClose" onClick={() => setDismissed(true)}>
 						×

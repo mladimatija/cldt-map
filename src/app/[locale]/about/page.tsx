@@ -9,6 +9,7 @@ import { BackToMapBar } from '@/components/layout/BackToMapBar';
 import { CONTENT_PAGE_CONTAINER } from '@/components/layout/content-page';
 import { Layout } from '@/components/layout/Layout';
 import { cn } from '@/lib/utils';
+import { SIGURNE_STAZE_URL } from '@/lib/official-sources';
 
 export default function AboutPage(): React.ReactNode {
 	const t = useTranslations('about');
@@ -137,6 +138,9 @@ export default function AboutPage(): React.ReactNode {
 								<ExternalLink aria-label={t('githubAriaLabel', { title: siteMetadata.title })} href={githubUrl}>
 									{t('sourceCode')}
 								</ExternalLink>
+							</li>
+							<li>
+								<ExternalLink href={SIGURNE_STAZE_URL}>{t('officialTrailStatus')}</ExternalLink>
 							</li>
 						</ul>
 					</article>

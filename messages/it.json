@@ -97,6 +97,7 @@
 		"links": "Link",
 		"officialWebsite": "Sito ufficiale {companyName}",
 		"sourceCode": "Codice sorgente su GitHub",
+		"officialTrailStatus": "Piattaforma ufficiale sullo stato dei sentieri (Sigurne staze, HGSS/HPS)",
 		"githubAriaLabel": "Visualizza {title} su GitHub",
 		"createdBy": "Creato da",
 		"visitAuthor": "Visita il sito di {authorName}",
@@ -1021,9 +1022,8 @@
 		"lastUpdatedDaysAgo": "{days, plural, =0 {Aggiornato oggi} =1 {Aggiornato ieri} other {Aggiornato # giorni fa}}",
 		"freshness": {
 			"label": "Aggiornamento dei dati stagionali",
-			"stale": "Le chiusure stagionali sono state aggiornate l'ultima volta il {date} e potrebbero non essere aggiornate. Verifica con {source}.",
-			"dismiss": "Chiudi",
-			"fallbackSource": "la fonte ufficiale"
+			"stale": "Le chiusure stagionali sono state aggiornate l'ultima volta il {date} e potrebbero non essere aggiornate. Per pericoli e chiusure, <source>la fonte ufficiale sullo stato dei sentieri</source> è più aggiornata.",
+			"dismiss": "Chiudi"
 		}
 	},
 	"pois": {

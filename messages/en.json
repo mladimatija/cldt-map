@@ -97,6 +97,7 @@
 		"links": "Links",
 		"officialWebsite": "Official {companyName} website",
 		"sourceCode": "Source code on GitHub",
+		"officialTrailStatus": "Official trail-status platform (Sigurne staze, HGSS/HPS)",
 		"githubAriaLabel": "View {title} on GitHub",
 		"createdBy": "Created by",
 		"visitAuthor": "Visit {authorName}'s website",
@@ -1021,9 +1022,8 @@
 		"lastUpdatedDaysAgo": "{days, plural, =0 {Updated today} =1 {Updated yesterday} other {Updated # days ago}}",
 		"freshness": {
 			"label": "Seasonal data freshness",
-			"stale": "Seasonal closures were last updated {date} and may be out of date. Cross-check {source}.",
-			"dismiss": "Dismiss",
-			"fallbackSource": "the official source"
+			"stale": "Seasonal closures were last updated {date} and may be out of date. For hazards and closures, <source>the official trail-status source</source> is more current.",
+			"dismiss": "Dismiss"
 		}
 	},
 	"pois": {

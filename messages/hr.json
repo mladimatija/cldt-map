@@ -97,6 +97,7 @@
 		"links": "Linkovi",
 		"officialWebsite": "Službena stranica {companyName}",
 		"sourceCode": "Izvorni kod na GitHubu",
+		"officialTrailStatus": "Službena platforma za stanje na stazama (Sigurne staze, HGSS/HPS)",
 		"githubAriaLabel": "Pogledaj {title} na GitHubu",
 		"createdBy": "Autor",
 		"visitAuthor": "Posjetite web stranicu {authorName}",
@@ -1021,9 +1022,8 @@
 		"lastUpdatedDaysAgo": "{days, plural, =0 {Ažurirano danas} =1 {Ažurirano jučer} few {Ažurirano prije # dana} other {Ažurirano prije # dana}}",
 		"freshness": {
 			"label": "Svježina sezonskih podataka",
-			"stale": "Sezonska zatvaranja zadnji put su ažurirana {date} i možda nisu aktualna. Provjerite kod izvora: {source}.",
-			"dismiss": "Odbaci",
-			"fallbackSource": "službeni izvor"
+			"stale": "Sezonska zatvaranja zadnji put su ažurirana {date} i možda nisu aktualna. Za opasnosti i zatvaranja aktualniji je <source>službeni izvor stanja na stazama</source>.",
+			"dismiss": "Odbaci"
 		}
 	},
 	"pois": {
