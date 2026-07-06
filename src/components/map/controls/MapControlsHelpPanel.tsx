@@ -15,16 +15,17 @@ import { useMapStore, type MapStoreState } from '@/lib/store';
 /** Secondary muted body text shared by the pre-hike intro and advice rows. */
 const PREHIKE_SECONDARY_TEXT = 'text-xs leading-snug text-gray-600 dark:text-[var(--text-secondary)]';
 
-/** HGSS pre-hike readiness checklist item descriptors. Rows with a `panel`
- *  deep-link into that already-shipped panel (panel mutual exclusion closes
- *  help on the way); advice-only rows carry no panel. Static shape lives at
- *  module scope; the component derives the click handler and reads tick state
- *  from the store. Tick state is persisted on-device only - nothing is uploaded. */
-const PREHIKE_ITEMS: { key: string; panel?: string }[] = [
-	{ key: 'closures', panel: 'settings' },
-	{ key: 'offline', panel: 'settings' },
-	{ key: 'medical', panel: 'emergency' },
-	{ key: 'checkin', panel: 'emergency' },
+/** HGSS pre-hike readiness checklist item descriptors. Rows with an `action`
+ *  deep-link into the already-shipped surface that satisfies them (the settings
+ *  overlays card for closures, the offline-maps card for offline, the emergency
+ *  panel for medical/checkin); advice-only rows carry no action. Static shape
+ *  lives at module scope; the component maps the action to a store call and
+ *  reads tick state from the store. Tick state is persisted on-device only. */
+const PREHIKE_ITEMS: { key: string; action?: 'closures' | 'offline' | 'emergency' }[] = [
+	{ key: 'closures', action: 'closures' },
+	{ key: 'offline', action: 'offline' },
+	{ key: 'medical', action: 'emergency' },
+	{ key: 'checkin', action: 'emergency' },
 	{ key: 'tellSomeone' },
 	{ key: 'gear' },
 	{ key: 'markedTrails' },
@@ -77,6 +78,8 @@ export function MapControlsHelpPanel(): React.ReactElement {
 	const helpScrollTarget = useMapStore((state: MapStoreState) => state.helpScrollTarget);
 	const clearHelpScrollTarget = useMapStore((state: MapStoreState) => state.clearHelpScrollTarget);
 	const setOpenPanel = useMapStore((state: MapStoreState) => state.setOpenPanel);
+	const openSettingsToOverlays = useMapStore((state: MapStoreState) => state.openSettingsToOverlays);
+	const openSettingsToOffline = useMapStore((state: MapStoreState) => state.openSettingsToOffline);
 	const startTour = useMapStore((state: MapStoreState) => state.startTour);
 	const helpPanelPrehikeOpen = useMapStore((state: MapStoreState) => state.helpPanelPrehikeOpen);
 	const setHelpPanelPrehikeOpen = useMapStore((state: MapStoreState) => state.setHelpPanelPrehikeOpen);
@@ -93,10 +96,12 @@ export function MapControlsHelpPanel(): React.ReactElement {
 	] as const;
 
 	const handlePrehikeOpen = useCallback(
-		(panel?: string): void => {
-			if (panel) setOpenPanel(panel);
+		(action?: 'closures' | 'offline' | 'emergency'): void => {
+			if (action === 'closures') openSettingsToOverlays();
+			else if (action === 'offline') openSettingsToOffline();
+			else if (action === 'emergency') setOpenPanel('emergency');
 		},
-		[setOpenPanel],
+		[openSettingsToOverlays, openSettingsToOffline, setOpenPanel],
 	);
 
 	const sectionCollapseLabel = tProgress('collapseSection');
@@ -157,12 +162,12 @@ export function MapControlsHelpPanel(): React.ReactElement {
 			>
 				<p className={cn('m-0', PREHIKE_SECONDARY_TEXT)}>{t('prehikeIntro')}</p>
 				<ul className="m-0 flex list-none flex-col gap-1.5 p-0">
-					{PREHIKE_ITEMS.map(({ key, panel }) => {
+					{PREHIKE_ITEMS.map(({ key, action }) => {
 						const checked = !!prehikeChecklist[key];
 						const label = t(`prehike.${key}`);
 						return (
 							<li key={key}>
-								{panel ? (
+								{action ? (
 									<div className="flex items-center gap-2">
 										<Checkbox
 											aria-label={label}
@@ -172,7 +177,7 @@ export function MapControlsHelpPanel(): React.ReactElement {
 										<button
 											className={cn(MAP_CONTROL_LINK_BUTTON, 'flex flex-1 items-center gap-1.5 text-left')}
 											type="button"
-											onClick={() => handlePrehikeOpen(panel)}
+											onClick={() => handlePrehikeOpen(action)}
 										>
 											<span className="flex-1">{label}</span>
 											<IoArrowForwardOutline aria-hidden className="h-3.5 w-3.5 shrink-0" />

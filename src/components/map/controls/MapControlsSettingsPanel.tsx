@@ -115,12 +115,21 @@ export function MapControlsSettingsPanel({
 	const offlineSectionOpen = settingsPanelOfflineOpen ?? !!tileCacheMeta;
 
 	useEffect(() => {
-		if (!isExpanded || settingsScrollTarget !== 'imports') return;
-		setSettingsPanelImportsOpen(true);
-		const el = document.getElementById('settings-imports-section');
+		if (!isExpanded || !settingsScrollTarget) return;
+		if (settingsScrollTarget === 'imports') setSettingsPanelImportsOpen(true);
+		else if (settingsScrollTarget === 'overlays') setSettingsPanelOverlaysOpen(true);
+		else if (settingsScrollTarget === 'offline') setSettingsPanelOfflineOpen(true);
+		const el = document.getElementById(`settings-${settingsScrollTarget}-section`);
 		el?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 		clearSettingsScrollTarget();
-	}, [isExpanded, settingsScrollTarget, clearSettingsScrollTarget, setSettingsPanelImportsOpen]);
+	}, [
+		isExpanded,
+		settingsScrollTarget,
+		clearSettingsScrollTarget,
+		setSettingsPanelImportsOpen,
+		setSettingsPanelOverlaysOpen,
+		setSettingsPanelOfflineOpen,
+	]);
 
 	const darkMode = useMapStore((state: MapStoreState) => state.darkMode);
 	const setDarkMode = useMapStore((state: MapStoreState) => state.setDarkMode);
@@ -535,6 +544,7 @@ export function MapControlsSettingsPanel({
 								collapsible
 								collapseLabel={sectionCollapseLabel}
 								expandLabel={sectionExpandLabel}
+								id="settings-overlays-section"
 								open={settingsPanelOverlaysOpen}
 								title={t('sections.mapOverlays')}
 								onOpenChange={setSettingsPanelOverlaysOpen}
@@ -881,6 +891,7 @@ export function MapControlsSettingsPanel({
 								collapsible
 								collapseLabel={sectionCollapseLabel}
 								expandLabel={sectionExpandLabel}
+								id="settings-offline-section"
 								open={offlineSectionOpen}
 								title={t('sections.offlineMaps')}
 								onOpenChange={(open) => setSettingsPanelOfflineOpen(open)}
@@ -892,6 +903,7 @@ export function MapControlsSettingsPanel({
 								collapsible
 								collapseLabel={sectionCollapseLabel}
 								expandLabel={sectionExpandLabel}
+								id="settings-imports-section"
 								open={settingsPanelImportsOpen}
 								title={t('sections.imports')}
 								onOpenChange={setSettingsPanelImportsOpen}

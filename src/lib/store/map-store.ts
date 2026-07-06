@@ -1324,6 +1324,20 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 							settingsPanelImportsOpen: true,
 						});
 					},
+					openSettingsToOverlays: (): void => {
+						set({
+							openPanel: 'settings',
+							settingsScrollTarget: 'overlays',
+							settingsPanelOverlaysOpen: true,
+						});
+					},
+					openSettingsToOffline: (): void => {
+						set({
+							openPanel: 'settings',
+							settingsScrollTarget: 'offline',
+							settingsPanelOfflineOpen: true,
+						});
+					},
 					clearSettingsScrollTarget: (): void => {
 						set({ settingsScrollTarget: null });
 					},

@@ -325,6 +325,8 @@ export function createMapStoreStub(): MapStoreState {
 		setStagePlannerExportOpen: noop,
 		settingsScrollTarget: null,
 		openSettingsToImports: noop,
+		openSettingsToOverlays: noop,
+		openSettingsToOffline: noop,
 		clearSettingsScrollTarget: noop,
 		helpScrollTarget: null,
 		openHelpToPlanning: noop,

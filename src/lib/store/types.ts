@@ -662,9 +662,11 @@ export interface MapStoreState {
 	/** Stage planner: Export section expanded. Persisted. */
 	stagePlannerExportOpen: boolean;
 	setStagePlannerExportOpen: (open: boolean) => void;
-	/** Session-only: scroll target when opening settings from progress panel. */
-	settingsScrollTarget: 'imports' | null;
+	/** Session-only: scroll target when opening settings from another panel. */
+	settingsScrollTarget: 'imports' | 'overlays' | 'offline' | null;
 	openSettingsToImports: () => void;
+	openSettingsToOverlays: () => void;
+	openSettingsToOffline: () => void;
 	clearSettingsScrollTarget: () => void;
 	/** Session-only: scroll target when opening help from stage planner. */
 	helpScrollTarget: 'planning' | null;
