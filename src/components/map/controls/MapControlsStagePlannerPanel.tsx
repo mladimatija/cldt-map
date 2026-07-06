@@ -95,7 +95,7 @@ import {
 	WATER_GAP_WARN_KM,
 } from '@/lib/water-intelligence';
 import { buildGpxXml, buildGpxWaypointXml, downloadGpxFile, type GpxDocMeta, type GpxWaypoint } from '@/lib/gpx-export';
-import { sacMaxForKmRange } from '@/lib/trail-osm-tags';
+import { sacMaxForKmRange, SAC_SCALE_ORDER, type SacScale } from '@/lib/trail-osm-tags';
 import {
 	hasTrailJunctions,
 	junctionColor,
@@ -104,7 +104,9 @@ import {
 	type TrailJunction,
 } from '@/lib/trail-junctions';
 import { dominantSurfaceForKmRange } from '@/lib/surface-section-stats';
-import { SAC_BUCKET_SHORT_LABELS } from '@/components/map/trail-route-constants';
+import { computeStageSacBreakdown, hasDemandingSacTerrain, type StageSacBreakdown } from '@/lib/stage-sac-stats';
+import { findToughestStretches, type ToughestStretch } from '@/lib/terrain-highlights';
+import { SAC_BUCKET_SHORT_LABELS, SAC_COLORS } from '@/components/map/trail-route-constants';
 import { siteMetadata } from '@/lib/metadata';
 import { buildFitCourseBytes, downloadFitFile } from '@/lib/fit-export';
 import { exportStripMapPdf, pointsToBounds } from '@/lib/export-utils';
@@ -540,6 +542,17 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 		return renderElevationThumbnail(enhancedTrailPoints, stage.startKm, stage.endKm, isNobo);
 	}, [activeStageIndex, stagePlan, enhancedTrailPoints, isNobo]);
 
+	/** Top grade-based crux stretches for the expanded stage only (scanning the
+	 *  enhanced points per stage is O(n), so keep it to the open one - like the
+	 *  elevation thumbnail). Grade covers the whole trail; each stretch is
+	 *  annotated with the SAC class only where the OSM data tags that sub-range. */
+	const activeStageToughestStretches = useMemo((): ToughestStretch[] => {
+		if (activeStageIndex === null || !stagePlan || !enhancedTrailPoints?.length) return [];
+		const stage = stagePlan.stages[activeStageIndex];
+		if (!stage) return [];
+		return findToughestStretches(enhancedTrailPoints, stage.startKm, stage.endKm, trailOsmTagsFile?.runs ?? [], 3);
+	}, [activeStageIndex, stagePlan, enhancedTrailPoints, trailOsmTagsFile]);
+
 	const distanceUnitLabel = isImperial ? 'mi' : 'km';
 	const valueUnitLabel = mode === 'stages' ? t('modeStages') : `${distanceUnitLabel}/day`;
 	const showMaxHoursRow = balanceByEta || mode === 'kmPerDay';
@@ -628,6 +641,15 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 		if (!stagePlan) return [];
 		return stagePlan.stages.map((s) => findStageEndAccommodation(s.endKm, overnightPois));
 	}, [stagePlan, overnightPois]);
+
+	/** Per-stage SAC hiking-scale breakdown over the stage's SOBO km window (the
+	 *  OSM runs share that frame). Empty until the OSM tag dataset is lazy-loaded,
+	 *  so the terrain chip and SAC mix stay hidden while the data is absent. */
+	const stageSacByStage = useMemo((): (StageSacBreakdown | null)[] => {
+		const runs = trailOsmTagsFile?.runs;
+		if (!stagePlan || !runs?.length) return [];
+		return stagePlan.stages.map((s) => computeStageSacBreakdown(runs, s.startKm, s.endKm));
+	}, [stagePlan, trailOsmTagsFile]);
 
 	/** Localized, on-device, account-free itinerary a hiker hands to a trusted
 	 *  contact so they can pass it to rescuers if the hiker never checks in.
@@ -1121,6 +1143,32 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 														</span>
 														{(() => {
 															const chips: React.ReactElement[] = [];
+															const sacBreakdown = stageSacByStage[i];
+															if (hasDemandingSacTerrain(sacBreakdown) && sacBreakdown?.hardestClass) {
+																const hardestClass = sacBreakdown.hardestClass;
+																const shortLabel = SAC_BUCKET_SHORT_LABELS[hardestClass];
+																const kmDisplay = toDisplay(sacBreakdown.hardestKm);
+																const kmCompact = kmDisplay < 10 ? kmDisplay.toFixed(1) : kmDisplay.toFixed(0);
+																const terrainAria = t('stageTerrainChip', {
+																	class: shortLabel,
+																	distance: formatDistance(sacBreakdown.hardestKm, units, distancePrecision),
+																});
+																chips.push(
+																	<span
+																		aria-label={terrainAria}
+																		className="inline-flex shrink-0 items-center gap-0.5 rounded-full px-1.5 py-0 text-[0.625rem] font-medium tabular-nums"
+																		key="terrain"
+																		style={{
+																			color: SAC_COLORS[hardestClass],
+																			backgroundColor: `${SAC_COLORS[hardestClass]}1a`,
+																		}}
+																		title={terrainAria}
+																	>
+																		<span aria-hidden>⛰️</span>
+																		{shortLabel} {kmCompact}
+																	</span>,
+																);
+															}
 															if (poiCount > 0) {
 																chips.push(
 																	<span
@@ -1296,6 +1344,79 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 																	src={activeStageElevationThumb}
 																/>
 															)}
+															{(() => {
+																const sacBreakdown = stageSacByStage[i];
+																const stretches = activeStageToughestStretches;
+																const sacRows =
+																	sacBreakdown && sacBreakdown.taggedKm > 0
+																		? (Object.keys(sacBreakdown.kmByClass) as SacScale[])
+																				.filter((c) => (sacBreakdown.kmByClass[c] ?? 0) > 0)
+																				.sort((a, b) => SAC_SCALE_ORDER.indexOf(a) - SAC_SCALE_ORDER.indexOf(b))
+																		: [];
+																if (sacRows.length === 0 && stretches.length === 0) return null;
+																return (
+																	<div className="flex flex-col gap-0.5">
+																		{sacRows.length > 0 && (
+																			<>
+																				<p className="m-0 text-[0.625rem] font-medium tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
+																					{t('stageTerrainHeading')}
+																				</p>
+																				<span className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
+																					{sacRows.map((c) => (
+																						<span
+																							className="inline-flex items-center gap-1 text-[0.625rem] text-gray-600 tabular-nums dark:text-[var(--text-secondary)]"
+																							key={c}
+																						>
+																							<span
+																								aria-hidden
+																								className="size-2 shrink-0 rounded-full"
+																								style={{ backgroundColor: SAC_COLORS[c] }}
+																							/>
+																							{SAC_BUCKET_SHORT_LABELS[c]}{' '}
+																							{formatDistance(
+																								sacBreakdown?.kmByClass[c] ?? 0,
+																								units,
+																								distancePrecision,
+																							)}
+																						</span>
+																					))}
+																				</span>
+																			</>
+																		)}
+																		{stretches.length > 0 && (
+																			<>
+																				<p className="m-0 mt-0.5 text-[0.625rem] font-medium tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
+																					{t('stageToughestHeading')}
+																				</p>
+																				{stretches.map((s) => {
+																					const grade = Math.round(s.avgGradePct);
+																					const reason =
+																						s.kind === 'climb'
+																							? t('stageTerrainSteepClimb', { grade })
+																							: t('stageTerrainSteepDescent', { grade });
+																					const bounds = `${toDisplay(s.fromKm).toFixed(1)}-${toDisplay(s.toKm).toFixed(1)} ${distanceUnitLabel}`;
+																					const sacNote = s.sacClass
+																						? ` · ${t('stageTerrainSacNote', { class: SAC_BUCKET_SHORT_LABELS[s.sacClass] })}`
+																						: '';
+																					return (
+																						<p
+																							className="m-0 text-[0.625rem] leading-snug text-gray-500 dark:text-[var(--text-secondary)]"
+																							key={`${s.fromKm}-${s.toKm}-${s.kind}`}
+																						>
+																							<span aria-hidden>{s.kind === 'climb' ? '↗' : '↘'}</span>{' '}
+																							<span className="tabular-nums">{bounds}</span> · {reason}
+																							{sacNote}
+																						</p>
+																					);
+																				})}
+																				<p className="m-0 text-[0.5625rem] leading-snug text-gray-400 italic dark:text-[var(--text-secondary)]">
+																					{t('stageTerrainCoverageNote')}
+																				</p>
+																			</>
+																		)}
+																	</div>
+																);
+															})()}
 															{(() => {
 																const acc = accommodationByStage[i];
 																if (!acc) return null;

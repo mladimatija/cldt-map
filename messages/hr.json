@@ -886,6 +886,13 @@
 		"stageSleepAt": "{name} ({type}) - na kraju etape",
 		"stageSleepAway": "{name} ({type}) - {distance} od kraja etape",
 		"stageSleepOffTrail": "{distance} od staze",
+		"stageTerrainChip": "Najzahtjevniji teren: SAC {class} na {distance}",
+		"stageTerrainHeading": "SAC ljestvica planinarenja",
+		"stageToughestHeading": "Najteže dionice",
+		"stageTerrainSteepClimb": "Strmi uspon, prosj. {grade}%",
+		"stageTerrainSteepDescent": "Strmi silazak, prosj. {grade}%",
+		"stageTerrainSacNote": "SAC {class}",
+		"stageTerrainCoverageNote": "Ključne dionice temelje se na nagibu (cijela staza); SAC ocjene prikazuju se samo gdje ih OSM označava.",
 		"safetyContact": {
 			"heading": "Ostavite plan osobi od povjerenja",
 			"intro": "Pošaljite ovo osobi kojoj vjerujete. Ako se ne javite, mogu ga proslijediti spašavateljima.",

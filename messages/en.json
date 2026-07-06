@@ -886,6 +886,13 @@
 		"stageSleepAt": "{name} ({type}) - at the stage end",
 		"stageSleepAway": "{name} ({type}) - {distance} from the stage end",
 		"stageSleepOffTrail": "{distance} off trail",
+		"stageTerrainChip": "Toughest terrain: SAC {class} for {distance}",
+		"stageTerrainHeading": "SAC hiking scale",
+		"stageToughestHeading": "Toughest stretches",
+		"stageTerrainSteepClimb": "Steep climb, avg {grade}%",
+		"stageTerrainSteepDescent": "Steep descent, avg {grade}%",
+		"stageTerrainSacNote": "SAC {class}",
+		"stageTerrainCoverageNote": "Cruxes are grade-based (whole trail); SAC ratings show only where OSM tags them.",
 		"safetyContact": {
 			"heading": "Leave your plan with a safety contact",
 			"intro": "Send this to someone you trust. If you do not check in, they can pass it to rescuers.",

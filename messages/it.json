@@ -886,6 +886,13 @@
 		"stageSleepAt": "{name} ({type}) - a fine tappa",
 		"stageSleepAway": "{name} ({type}) - {distance} dalla fine della tappa",
 		"stageSleepOffTrail": "{distance} fuori sentiero",
+		"stageTerrainChip": "Terreno più impegnativo: SAC {class} per {distance}",
+		"stageTerrainHeading": "Scala escursionistica SAC",
+		"stageToughestHeading": "Tratti più impegnativi",
+		"stageTerrainSteepClimb": "Salita ripida, media {grade}%",
+		"stageTerrainSteepDescent": "Discesa ripida, media {grade}%",
+		"stageTerrainSacNote": "SAC {class}",
+		"stageTerrainCoverageNote": "I tratti chiave si basano sulla pendenza (intero sentiero); le valutazioni SAC compaiono solo dove OSM le indica.",
 		"safetyContact": {
 			"heading": "Lascia il piano a un contatto di sicurezza",
 			"intro": "Invialo a qualcuno di cui ti fidi. Se non ti fai vivo, potrà passarlo ai soccorritori.",

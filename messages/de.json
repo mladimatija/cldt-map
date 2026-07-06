@@ -886,6 +886,13 @@
 		"stageSleepAt": "{name} ({type}) - am Etappenende",
 		"stageSleepAway": "{name} ({type}) - {distance} vom Etappenende",
 		"stageSleepOffTrail": "{distance} abseits des Wegs",
+		"stageTerrainChip": "Schwierigstes Gelände: SAC {class} auf {distance}",
+		"stageTerrainHeading": "SAC-Wanderskala",
+		"stageToughestHeading": "Schwierigste Abschnitte",
+		"stageTerrainSteepClimb": "Steiler Anstieg, Ø {grade}%",
+		"stageTerrainSteepDescent": "Steiler Abstieg, Ø {grade}%",
+		"stageTerrainSacNote": "SAC {class}",
+		"stageTerrainCoverageNote": "Schlüsselstellen basieren auf der Steigung (gesamter Weg); SAC-Bewertungen erscheinen nur, wo OSM sie erfasst.",
 		"safetyContact": {
 			"heading": "Hinterlege deinen Plan bei einer Vertrauensperson",
 			"intro": "Sende dies an jemanden, dem du vertraust. Wenn du dich nicht meldest, kann er ihn an die Rettung weitergeben.",
