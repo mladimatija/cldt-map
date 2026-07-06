@@ -48,8 +48,8 @@ import {
 import { copyTextToClipboard } from '@/lib/share-link-copy';
 import {
 	buildSafetyContactPlan,
+	buildSafetyContactPlanInput,
 	DEFAULT_SAFETY_BUFFER_DAYS,
-	type SafetyContactStage,
 	type SafetyContactTemplates,
 } from '@/lib/safety-contact-plan';
 import {
@@ -625,41 +625,10 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 			closing: t('safetyContact.closing'),
 			closingNoDate: t('safetyContact.closingNoDate'),
 		};
-		const stages: SafetyContactStage[] = stagePlan.stages.map((stage, i) => {
-			const acc = accommodationByStage[i];
-			const restDayLabels: string[] = [];
-			if (stagePlan.startDate) {
-				const restCount = restDayCountAfter(i, stagePlan.restDays);
-				for (let occ = 0; occ < restCount; occ++) {
-					restDayLabels.push(
-						formatShortWeekdayDate(
-							stageCalendarDate(stagePlan.startDate, dayOffsetForRestDayAfter(i, occ, stagePlan.restDays)),
-							locale,
-						),
-					);
-				}
-			}
-			return {
-				fromKm: stage.startKm,
-				toKm: stage.endKm,
-				dateLabel: stageDateLabels[i] ?? '',
-				anchor: acc ? { name: poiDisplayName(acc.poi, locale), lat: acc.poi.lat, lng: acc.poi.lng } : null,
-				restDayLabels,
-			};
-		});
-		// Deadline = last calendar day of the trip (stages + rest days) plus the
-		// session buffer, so a trailing rest day never shortens the alert window.
-		const deadlineLabel = stagePlan.startDate
-			? formatShortWeekdayDate(
-					stageCalendarDate(
-						stagePlan.startDate,
-						totalTripDays(stagePlan.stages.length, stagePlan.restDays) - 1 + safetyBuffer,
-					),
-					locale,
-				)
-			: '';
-		return buildSafetyContactPlan({ templates, stages, deadlineLabel });
-	}, [stagePlan, stageDateLabels, accommodationByStage, locale, t, safetyBuffer]);
+		return buildSafetyContactPlan(
+			buildSafetyContactPlanInput({ stagePlan, overnightPois, templates, locale, bufferDays: safetyBuffer }),
+		);
+	}, [stagePlan, overnightPois, locale, t, safetyBuffer]);
 
 	const safetyContactBody = safetyContactPlan?.body ?? '';
 

@@ -24,14 +24,11 @@ import { useActiveStarredPoiIds, usePackAdjustedPaceKmh } from '@/hooks';
 import { computeStagePackScenarios, formatVolume, formatWeight, kgToDisplay, weightUnitLabel } from '@/lib/pack-weight';
 import { buildResupplyCadenceLabels, type StageResupplyCadence } from '@/lib/resupply-cadence';
 import { poiDisplayName } from '@/lib/pois';
-import { filterOvernightCandidates, findStageEndAccommodation } from '@/lib/stage-accommodation';
-import { stageCalendarDate } from '@/lib/stage-ical-export';
-import { dayOffsetForRestDayAfter, dayOffsetForStage, restDayCountAfter, totalTripDays } from '@/lib/stage-rest-days';
-import { formatShortWeekdayDate } from '@/lib/date-format';
+import { filterOvernightCandidates } from '@/lib/stage-accommodation';
 import {
 	buildSafetyContactPlan,
+	buildSafetyContactPlanInput,
 	DEFAULT_SAFETY_BUFFER_DAYS,
-	type SafetyContactStage,
 	type SafetyContactTemplates,
 } from '@/lib/safety-contact-plan';
 import { missingGearTerms } from '@/lib/pack-csv';
@@ -158,47 +155,15 @@ export function MapControlsTripBriefModal({
 			closingNoDate: tStage('safetyContact.closingNoDate'),
 		};
 		const overnightPois = filterOvernightCandidates(poisFile?.pois ?? []);
-		const safetyStages: SafetyContactStage[] = stagePlan.stages.map((stage, i) => {
-			const acc = findStageEndAccommodation(stage.endKm, overnightPois);
-			const restDayLabels: string[] = [];
-			if (stagePlan.startDate) {
-				const restCount = restDayCountAfter(i, stagePlan.restDays);
-				for (let occ = 0; occ < restCount; occ++) {
-					restDayLabels.push(
-						formatShortWeekdayDate(
-							stageCalendarDate(stagePlan.startDate, dayOffsetForRestDayAfter(i, occ, stagePlan.restDays)),
-							locale,
-						),
-					);
-				}
-			}
-			return {
-				fromKm: stage.startKm,
-				toKm: stage.endKm,
-				dateLabel: stagePlan.startDate
-					? formatShortWeekdayDate(
-							stageCalendarDate(stagePlan.startDate, dayOffsetForStage(i, stagePlan.restDays)),
-							locale,
-						)
-					: '',
-				anchor: acc ? { name: poiDisplayName(acc.poi, locale), lat: acc.poi.lat, lng: acc.poi.lng } : null,
-				restDayLabels,
-			};
-		});
-		const safetyDeadlineLabel = stagePlan.startDate
-			? formatShortWeekdayDate(
-					stageCalendarDate(
-						stagePlan.startDate,
-						totalTripDays(stagePlan.stages.length, stagePlan.restDays) - 1 + DEFAULT_SAFETY_BUFFER_DAYS,
-					),
-					locale,
-				)
-			: '';
-		const safetyPlan = buildSafetyContactPlan({
-			templates: safetyTemplates,
-			stages: safetyStages,
-			deadlineLabel: safetyDeadlineLabel,
-		});
+		const safetyPlan = buildSafetyContactPlan(
+			buildSafetyContactPlanInput({
+				stagePlan,
+				overnightPois,
+				templates: safetyTemplates,
+				locale,
+				bufferDays: DEFAULT_SAFETY_BUFFER_DAYS,
+			}),
+		);
 
 		return assembleTripBrief({
 			stagePlan,

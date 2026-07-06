@@ -9,8 +9,17 @@
  * The builder owns the parts that must not diverge between the two call sites
  * (the stage-planner panel and the trip-brief exporters): day numbering,
  * rest-day interleaving, anchor-coordinate formatting, and the graceful
- * degradation when the plan has no start date.
+ * degradation when the plan has no start date. `buildSafetyContactPlanInput`
+ * (below) owns the matching input assembly - stage-end accommodation anchoring,
+ * rest-day dating, and the alert deadline - so that math also lives in one place.
  */
+
+import { poiDisplayName, type Poi } from '@/lib/pois';
+import { findStageEndAccommodation } from '@/lib/stage-accommodation';
+import { stageCalendarDate } from '@/lib/stage-ical-export';
+import { dayOffsetForRestDayAfter, dayOffsetForStage, restDayCountAfter, totalTripDays } from '@/lib/stage-rest-days';
+import { formatShortWeekdayDate } from '@/lib/date-format';
+import type { StagePlan } from '@/lib/store/types';
 
 /** Default number of days after the planned finish before the contact should
  *  raise the alarm. One day gives a late finish room without overreacting. */
@@ -124,4 +133,74 @@ export function buildSafetyContactPlan(input: SafetyContactPlanInput): SafetyCon
 	if (closing) groups.push(closing);
 
 	return { body: groups.join('\n\n'), lines };
+}
+
+/** Inputs for {@link buildSafetyContactPlanInput}. */
+export interface SafetyContactPlanInputOptions {
+	stagePlan: StagePlan;
+	/** Overnight candidates (huts / shelters / towns) used to anchor each stage
+	 *  end; typically `filterOvernightCandidates(poisFile.pois)`. */
+	overnightPois: Poi[];
+	/** Localized templates for the closing/day lines (from next-intl at the call site). */
+	templates: SafetyContactTemplates;
+	locale: string;
+	/** Days after the planned finish before the contact should raise the alarm
+	 *  (session buffer in the planner, {@link DEFAULT_SAFETY_BUFFER_DAYS} in the exporter). */
+	bufferDays: number;
+}
+
+/**
+ * Assembles the {@link SafetyContactPlanInput} (per-stage rows + deadline label)
+ * from a stage plan and its overnight anchors. This is the input-mapping half of
+ * the safety-contact plan that must not diverge between the stage-planner panel
+ * and the trip-brief exporter: stage-end accommodation anchoring, rest-day
+ * dating, dateLabel derivation, and the finish + buffer deadline. Kept next to
+ * {@link buildSafetyContactPlan} so both halves share one source of truth.
+ */
+export function buildSafetyContactPlanInput({
+	stagePlan,
+	overnightPois,
+	templates,
+	locale,
+	bufferDays,
+}: SafetyContactPlanInputOptions): SafetyContactPlanInput {
+	const stages: SafetyContactStage[] = stagePlan.stages.map((stage, i) => {
+		const acc = findStageEndAccommodation(stage.endKm, overnightPois);
+		const restDayLabels: string[] = [];
+		if (stagePlan.startDate) {
+			const restCount = restDayCountAfter(i, stagePlan.restDays);
+			for (let occ = 0; occ < restCount; occ++) {
+				restDayLabels.push(
+					formatShortWeekdayDate(
+						stageCalendarDate(stagePlan.startDate, dayOffsetForRestDayAfter(i, occ, stagePlan.restDays)),
+						locale,
+					),
+				);
+			}
+		}
+		return {
+			fromKm: stage.startKm,
+			toKm: stage.endKm,
+			dateLabel: stagePlan.startDate
+				? formatShortWeekdayDate(
+						stageCalendarDate(stagePlan.startDate, dayOffsetForStage(i, stagePlan.restDays)),
+						locale,
+					)
+				: '',
+			anchor: acc ? { name: poiDisplayName(acc.poi, locale), lat: acc.poi.lat, lng: acc.poi.lng } : null,
+			restDayLabels,
+		};
+	});
+	// Deadline = last calendar day of the trip (stages + rest days) plus the
+	// buffer, so a trailing rest day never shortens the alert window.
+	const deadlineLabel = stagePlan.startDate
+		? formatShortWeekdayDate(
+				stageCalendarDate(
+					stagePlan.startDate,
+					totalTripDays(stagePlan.stages.length, stagePlan.restDays) - 1 + bufferDays,
+				),
+				locale,
+			)
+		: '';
+	return { templates, stages, deadlineLabel };
 }

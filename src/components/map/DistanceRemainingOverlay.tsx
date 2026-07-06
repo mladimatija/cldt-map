@@ -649,7 +649,7 @@ export function DistanceRemainingOverlay(): React.ReactElement | null {
 				<div className="mt-1 border-t border-gray-200 pt-1 dark:border-[var(--border-color)]">
 					<button
 						aria-expanded={junctionsAheadExpanded}
-						className="flex w-full cursor-pointer items-center gap-1 rounded text-left text-[0.625rem] font-medium tracking-wide text-gray-400 hover:text-gray-600 focus-visible:outline-none dark:text-[var(--text-secondary)] dark:hover:text-[var(--text-primary)]"
+						className="flex w-full cursor-pointer items-center gap-1 rounded text-left text-[0.625rem] font-medium tracking-wide text-gray-400 hover:text-gray-600 focus-visible:underline focus-visible:outline-none dark:text-[var(--text-secondary)] dark:hover:text-[var(--text-primary)]"
 						type="button"
 						onClick={() => setJunctionsAheadExpanded(!junctionsAheadExpanded)}
 					>

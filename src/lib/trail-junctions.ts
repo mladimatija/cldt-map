@@ -87,10 +87,29 @@ export function parseOsmcSymbolColor(osmcSymbol?: string | null): string {
 	return OSMC_COLOR_HEX[leading] ?? TRAIL_JUNCTION_NEUTRAL_COLOR;
 }
 
-/** Resolves the chip colour for a junction: an explicit markColor wins,
- *  otherwise derive from osmc:symbol, otherwise the neutral colour. */
+/** Strict CSS-colour allowlist for a precomputed markColor: a hex literal
+ *  (#RGB / #RGBA / #RRGGBB / #RRGGBBAA) or one of the known OSM waymark colour
+ *  names. markColor reaches a raw-HTML style attribute in the chip DivIcon, so
+ *  it is validated here at the source: anything outside this allowlist can never
+ *  carry markup and is rejected in favour of the osmc:symbol / neutral fallback. */
+const HEX_COLOR_RE = /^#(?:[0-9a-f]{3}|[0-9a-f]{4}|[0-9a-f]{6}|[0-9a-f]{8})$/i;
+
+function sanitizeMarkColor(markColor: string): string | null {
+	const trimmed = markColor.trim();
+	if (HEX_COLOR_RE.test(trimmed)) return trimmed;
+	const hex = OSMC_COLOR_HEX[trimmed.toLowerCase()];
+	return hex ?? null;
+}
+
+/** Resolves the chip colour for a junction: a valid explicit markColor wins,
+ *  otherwise derive from osmc:symbol, otherwise the neutral colour. markColor is
+ *  allowlist-validated (strict hex or a known colour name) so it can only ever
+ *  return a safe colour token, never attacker-controlled markup. */
 export function junctionColor(junction: TrailJunction): string {
-	if (junction.markColor && typeof junction.markColor === 'string') return junction.markColor;
+	if (junction.markColor && typeof junction.markColor === 'string') {
+		const safe = sanitizeMarkColor(junction.markColor);
+		if (safe) return safe;
+	}
 	return parseOsmcSymbolColor(junction.osmcSymbol);
 }
 

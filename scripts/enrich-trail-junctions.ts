@@ -110,7 +110,6 @@ const CLDT_SELF_NAME_PATTERNS: RegExp[] = [
 	/croatian long distance trail/i,
 	/\bcldt\b/i,
 	/hrvatska planinarska obilaznica/i, // Croatian "long distance hiking loop" naming sometimes reused
-	/prijesosna transverzala/i,
 ];
 /** Name-carrying tags checked against the self-exclusion patterns. */
 const NAME_TAG_KEYS = ['name', 'name:en', 'name:hr', 'official_name', 'alt_name'] as const;
