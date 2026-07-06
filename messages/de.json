@@ -883,7 +883,23 @@
 		"stageSleepAria": "Übernachtung: {name}",
 		"stageSleepAt": "{name} ({type}) - am Etappenende",
 		"stageSleepAway": "{name} ({type}) - {distance} vom Etappenende",
-		"stageSleepOffTrail": "{distance} abseits des Wegs"
+		"stageSleepOffTrail": "{distance} abseits des Wegs",
+		"safetyContact": {
+			"heading": "Hinterlege deinen Plan bei einer Vertrauensperson",
+			"intro": "Sende dies an jemanden, dem du vertraust. Wenn du dich nicht meldest, kann er ihn an die Rettung weitergeben.",
+			"dayLine": "Tag {day} ({date}): km {from} bis {to}, Übernachtung nahe {anchor}.",
+			"dayLineNoDate": "Tag {day}: km {from} bis {to}, Übernachtung nahe {anchor}.",
+			"sleepAnchor": "{name} ({lat}, {lng})",
+			"noAnchor": "kein fester Übernachtungspunkt",
+			"restDay": "Tag {day} ({date}): Ruhetag.",
+			"closing": "Wenn du bis {date} nichts von mir gehört hast, ruf 112 an, verlange HGSS (kroatische Bergrettung) und gib ihnen diesen Plan.",
+			"closingNoDate": "Wenn du bis zu meiner geplanten Rückkehr nichts von mir gehört hast, ruf 112 an, verlange HGSS (kroatische Bergrettung) und gib ihnen diesen Plan.",
+			"bufferLabel": "Alarmpuffer (Tage nach dem Ziel)",
+			"copy": "Kopieren",
+			"share": "Teilen",
+			"text": "An Kontakt senden",
+			"notSharedNote": "Bleibt auf deinem Gerät. Du sendest es selbst; nichts wird hochgeladen."
+		}
 	},
 	"tripBrief": {
 		"defaultTitle": "CLDT Reiseplan",
@@ -927,6 +943,7 @@
 				"alerts": "Warnungen",
 				"pois": "Orte am Weg",
 				"emergency": "Notfallkontakte",
+				"safetyContact": "Für deine Vertrauensperson",
 				"generated": "Erstellt mit CLDT Map am",
 				"pack": "Rucksack",
 				"resupply": "Versorgung",

@@ -225,9 +225,18 @@ function buildEmergencySection(brief: TripBrief): string {
 	const lines = emergencyLines(meta.strings)
 		.map((line) => `<p>${escapeHtml(line)}</p>`)
 		.join('\n');
+
+	let safetyBlock = '';
+	if (meta.safetyContactLines?.length) {
+		const heading = meta.safetyContactHeading ?? meta.strings.labels.safetyContact;
+		const items = meta.safetyContactLines.map((line) => `<p>${escapeHtml(line)}</p>`).join('\n');
+		safetyBlock = `<h3>${escapeHtml(heading)}</h3>\n  ${items}`;
+	}
+
 	return `<section class="brief-section" id="emergency">
   <h2>${escapeHtml(meta.strings.labels.emergency)}</h2>
   ${lines}
+  ${safetyBlock}
 </section>`;
 }
 

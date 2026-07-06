@@ -24,6 +24,16 @@ import { useActiveStarredPoiIds, usePackAdjustedPaceKmh } from '@/hooks';
 import { computeStagePackScenarios, formatVolume, formatWeight, kgToDisplay, weightUnitLabel } from '@/lib/pack-weight';
 import { buildResupplyCadenceLabels, type StageResupplyCadence } from '@/lib/resupply-cadence';
 import { poiDisplayName } from '@/lib/pois';
+import { filterOvernightCandidates, findStageEndAccommodation } from '@/lib/stage-accommodation';
+import { stageCalendarDate } from '@/lib/stage-ical-export';
+import { dayOffsetForRestDayAfter, dayOffsetForStage, restDayCountAfter, totalTripDays } from '@/lib/stage-rest-days';
+import { formatShortWeekdayDate } from '@/lib/date-format';
+import {
+	buildSafetyContactPlan,
+	DEFAULT_SAFETY_BUFFER_DAYS,
+	type SafetyContactStage,
+	type SafetyContactTemplates,
+} from '@/lib/safety-contact-plan';
 import { missingGearTerms } from '@/lib/pack-csv';
 import { renderElevationThumbnail } from '@/lib/elevation-thumbnail';
 import { Locale } from '@/i18n/routing';
@@ -61,6 +71,7 @@ export function MapControlsTripBriefModal({
 }: MapControlsTripBriefModalProps): React.ReactElement | null {
 	const t = useTranslations('tripBrief');
 	const tPois = useTranslations('pois');
+	const tStage = useTranslations('stagePlanner');
 	const locale = useLocale();
 	const messages = useMessages();
 	const map = useMap();
@@ -132,6 +143,63 @@ export function MapControlsTripBriefModal({
 			return poi ? poiDisplayName(poi, locale) : id;
 		};
 
+		// Safety-contact handoff lines for the emergency back page. Same
+		// stage-end accommodation anchoring as the planner; the assembler stays
+		// pure, so the accommodation math is resolved here at the call site.
+		const safetyTemplates: SafetyContactTemplates = {
+			heading: tStage('safetyContact.heading'),
+			intro: tStage('safetyContact.intro'),
+			dayLine: tStage('safetyContact.dayLine'),
+			dayLineNoDate: tStage('safetyContact.dayLineNoDate'),
+			sleepAnchor: tStage('safetyContact.sleepAnchor'),
+			noAnchor: tStage('safetyContact.noAnchor'),
+			restDay: tStage('safetyContact.restDay'),
+			closing: tStage('safetyContact.closing'),
+			closingNoDate: tStage('safetyContact.closingNoDate'),
+		};
+		const overnightPois = filterOvernightCandidates(poisFile?.pois ?? []);
+		const safetyStages: SafetyContactStage[] = stagePlan.stages.map((stage, i) => {
+			const acc = findStageEndAccommodation(stage.endKm, overnightPois);
+			const restDayLabels: string[] = [];
+			if (stagePlan.startDate) {
+				const restCount = restDayCountAfter(i, stagePlan.restDays);
+				for (let occ = 0; occ < restCount; occ++) {
+					restDayLabels.push(
+						formatShortWeekdayDate(
+							stageCalendarDate(stagePlan.startDate, dayOffsetForRestDayAfter(i, occ, stagePlan.restDays)),
+							locale,
+						),
+					);
+				}
+			}
+			return {
+				fromKm: stage.startKm,
+				toKm: stage.endKm,
+				dateLabel: stagePlan.startDate
+					? formatShortWeekdayDate(
+							stageCalendarDate(stagePlan.startDate, dayOffsetForStage(i, stagePlan.restDays)),
+							locale,
+						)
+					: '',
+				anchor: acc ? { name: poiDisplayName(acc.poi, locale), lat: acc.poi.lat, lng: acc.poi.lng } : null,
+				restDayLabels,
+			};
+		});
+		const safetyDeadlineLabel = stagePlan.startDate
+			? formatShortWeekdayDate(
+					stageCalendarDate(
+						stagePlan.startDate,
+						totalTripDays(stagePlan.stages.length, stagePlan.restDays) - 1 + DEFAULT_SAFETY_BUFFER_DAYS,
+					),
+					locale,
+				)
+			: '';
+		const safetyPlan = buildSafetyContactPlan({
+			templates: safetyTemplates,
+			stages: safetyStages,
+			deadlineLabel: safetyDeadlineLabel,
+		});
+
 		return assembleTripBrief({
 			stagePlan,
 			poisFile,
@@ -153,6 +221,10 @@ export function MapControlsTripBriefModal({
 			typeLabel: (type) => tPois(`type.${type}`, { default: type }),
 			distanceLabel: makeDistanceLabelFn(units, distancePrecision),
 			strings: documentStrings,
+			...(safetyPlan.lines.length > 0 && {
+				safetyContactLines: safetyPlan.lines,
+				safetyContactHeading: documentStrings.labels.safetyContact,
+			}),
 			...(packGearList && {
 				gearChecklist: ((): NonNullable<TripBrief['meta']['gearChecklist']> => {
 					const gearStrings = seasonalEntries
@@ -236,6 +308,7 @@ export function MapControlsTripBriefModal({
 		trailTitle,
 		seasonalEntries,
 		tPois,
+		tStage,
 		distancePrecision,
 		documentStrings,
 		packGearList,

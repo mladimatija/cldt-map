@@ -35,6 +35,8 @@ export interface TripBriefStrings {
 		alerts: string;
 		pois: string;
 		emergency: string;
+		/** Back-page sub-block heading for the safety-contact handoff lines. */
+		safetyContact: string;
 		generated: string;
 		/** Cover-table label for the pack summary row. */
 		pack: string;
@@ -81,6 +83,7 @@ export function tripBriefStringsFromMessages(documentMessages: unknown): TripBri
 		typeof s.dayPoiSentence?.withPois !== 'string' ||
 		typeof s.restDay?.heading !== 'string' ||
 		typeof s.restDay?.body !== 'string' ||
+		typeof s.labels?.safetyContact !== 'string' ||
 		typeof s.emergencyBody?.l1 !== 'string'
 	) {
 		throw new Error('tripBrief.document strings missing from messages - check messages/<locale>.json');

@@ -590,6 +590,28 @@ function renderBackPage(pdf: JsPDF, brief: TripBrief, logoDataUrl: string | null
 		y += wrapped.length * 6 + 3;
 	}
 
+	// "For your safety contact" handoff sub-block (intro, per-day, call-112
+	// closing). Rendered below the standing emergency lines with the same
+	// paint helpers; capped to the page so a long plan never overflows.
+	if (meta.safetyContactLines?.length) {
+		y += 4;
+		const heading = meta.safetyContactHeading ?? meta.strings.labels.safetyContact;
+		pdf.setFont('NotoSans', 'bold');
+		pdf.setTextColor(...SECTION_BLUE_RGB);
+		pdf.setFontSize(12);
+		pdf.text(heading, MARGIN_X, y);
+		y += 7;
+		pdf.setFont('NotoSans', 'normal');
+		pdf.setTextColor(...BODY_TEXT_RGB);
+		pdf.setFontSize(10);
+		for (const line of meta.safetyContactLines) {
+			if (y > PAGE_H - 20) break;
+			const wrapped = pdf.splitTextToSize(line, PAGE_W - MARGIN_X * 2) as string[];
+			pdf.text(wrapped, MARGIN_X, y);
+			y += wrapped.length * 5 + 2;
+		}
+	}
+
 	pdf.setFontSize(9);
 	pdf.setTextColor(...FOOTER_RGB);
 	pdf.text(

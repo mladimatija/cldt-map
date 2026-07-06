@@ -883,7 +883,23 @@
 		"stageSleepAria": "Prenoćište: {name}",
 		"stageSleepAt": "{name} ({type}) - na kraju etape",
 		"stageSleepAway": "{name} ({type}) - {distance} od kraja etape",
-		"stageSleepOffTrail": "{distance} od staze"
+		"stageSleepOffTrail": "{distance} od staze",
+		"safetyContact": {
+			"heading": "Ostavite plan osobi od povjerenja",
+			"intro": "Pošaljite ovo osobi kojoj vjerujete. Ako se ne javite, mogu ga proslijediti spašavateljima.",
+			"dayLine": "Dan {day} ({date}): km {from} do {to}, spavanje blizu {anchor}.",
+			"dayLineNoDate": "Dan {day}: km {from} do {to}, spavanje blizu {anchor}.",
+			"sleepAnchor": "{name} ({lat}, {lng})",
+			"noAnchor": "nema stalnog mjesta za noćenje",
+			"restDay": "Dan {day} ({date}): dan odmora.",
+			"closing": "Ako se ne javim do {date}, nazovite 112 i tražite HGSS (Hrvatska gorska služba spašavanja) te im dajte ovaj plan.",
+			"closingNoDate": "Ako se ne javim do planiranog povratka, nazovite 112 i tražite HGSS (Hrvatska gorska služba spašavanja) te im dajte ovaj plan.",
+			"bufferLabel": "Rezerva za uzbunu (dana nakon završetka)",
+			"copy": "Kopiraj",
+			"share": "Podijeli",
+			"text": "Pošalji SMS kontaktu",
+			"notSharedNote": "Ostaje na vašem uređaju. Sami ga šaljete; ništa se ne prenosi."
+		}
 	},
 	"tripBrief": {
 		"defaultTitle": "CLDT plan putovanja",
@@ -927,6 +943,7 @@
 				"alerts": "Upozorenja",
 				"pois": "Mjesta uz put",
 				"emergency": "Hitne službe",
+				"safetyContact": "Za vašu osobu od povjerenja",
 				"generated": "Generirano u CLDT karti",
 				"pack": "Ruksak",
 				"resupply": "opskrba",

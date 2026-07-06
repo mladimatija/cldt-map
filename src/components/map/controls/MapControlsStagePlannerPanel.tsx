@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useMap, Polyline } from 'react-leaflet';
 import {
@@ -27,7 +27,7 @@ import {
 	findStageEndAccommodation,
 	type StageEndAccommodation,
 } from '@/lib/stage-accommodation';
-import { Button } from '@/components/ui/Button';
+import { Button, buttonVariants } from '@/components/ui/Button';
 import { Radio } from '@/components/ui/Radio';
 import { Checkbox } from '@/components/ui/Checkbox';
 import { MapControlIconButton } from './MapControlIconButton';
@@ -36,7 +36,22 @@ import { MapControlSectionCard } from './MapControlSectionCard';
 import { SettingsToggleRow } from './SettingsToggleRow';
 import type { StagePlanPreset, StagePlanPresetInputs } from '@/lib/store/types';
 import { MapControlsTripBriefModal } from './MapControlsTripBriefModal';
-import { cn, formatDistance, formatElevation, kmToMiles, milesToKm } from '@/lib/utils';
+import {
+	cn,
+	formatDistance,
+	formatElevation,
+	kmToMiles,
+	LINKABLE_PHONE_RE,
+	milesToKm,
+	toDialString,
+} from '@/lib/utils';
+import { copyTextToClipboard } from '@/lib/share-link-copy';
+import {
+	buildSafetyContactPlan,
+	DEFAULT_SAFETY_BUFFER_DAYS,
+	type SafetyContactStage,
+	type SafetyContactTemplates,
+} from '@/lib/safety-contact-plan';
 import {
 	MAP_CONTROL_FOOTNOTE_LINK,
 	MAP_CONTROL_INPUT,
@@ -145,6 +160,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 	const trailOsmTagsFile = useMapStore((s: MapStoreState) => s.trailOsmTagsFile);
 	const requestPoiListAhead = useMapStore((s: MapStoreState) => s.requestPoiListAhead);
 	const openHelpToPlanning = useMapStore((s: MapStoreState) => s.openHelpToPlanning);
+	const sosCard = useMapStore((s: MapStoreState) => s.sosCard);
 
 	const enhancedTrailPoints = useStore((s: StoreState) => s.enhancedTrailPoints);
 	const trailMetadata = useStore((s: StoreState) => s.trailMetadata);
@@ -194,6 +210,14 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 	};
 	const [isPdfExporting, setIsPdfExporting] = useState(false);
 	const [isTripBriefOpen, setIsTripBriefOpen] = useState(false);
+	/** Session-only alert buffer (days after the planned finish) for the
+	 *  safety-contact handoff. Intentionally not persisted to the store. */
+	const [safetyBuffer, setSafetyBuffer] = useState(DEFAULT_SAFETY_BUFFER_DAYS);
+	const [safetyCopied, setSafetyCopied] = useState(false);
+	const safetyCopyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+	const [canShareSafety] = useState<boolean>(
+		() => typeof navigator !== 'undefined' && typeof navigator.share === 'function',
+	);
 	const [pdfProgress, setPdfProgress] = useState<{ current: number; total: number } | null>(null);
 	const pdfAbortRef = useRef<AbortController | null>(null);
 	/** POI ids selected for per-stage GPX export, keyed by stage index. */
@@ -561,6 +585,96 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 		if (!stagePlan) return [];
 		return stagePlan.stages.map((s) => findStageEndAccommodation(s.endKm, overnightPois));
 	}, [stagePlan, overnightPois]);
+
+	/** Localized, on-device, account-free itinerary a hiker hands to a trusted
+	 *  contact so they can pass it to rescuers if the hiker never checks in.
+	 *  Nothing is uploaded or tracked. Null until the plan has at least one stage. */
+	const safetyContactPlan = useMemo(() => {
+		if (!stagePlan || stagePlan.stages.length === 0) return null;
+		const templates: SafetyContactTemplates = {
+			heading: t('safetyContact.heading'),
+			intro: t('safetyContact.intro'),
+			dayLine: t('safetyContact.dayLine'),
+			dayLineNoDate: t('safetyContact.dayLineNoDate'),
+			sleepAnchor: t('safetyContact.sleepAnchor'),
+			noAnchor: t('safetyContact.noAnchor'),
+			restDay: t('safetyContact.restDay'),
+			closing: t('safetyContact.closing'),
+			closingNoDate: t('safetyContact.closingNoDate'),
+		};
+		const stages: SafetyContactStage[] = stagePlan.stages.map((stage, i) => {
+			const acc = accommodationByStage[i];
+			const restDayLabels: string[] = [];
+			if (stagePlan.startDate) {
+				const restCount = restDayCountAfter(i, stagePlan.restDays);
+				for (let occ = 0; occ < restCount; occ++) {
+					restDayLabels.push(
+						formatShortWeekdayDate(
+							stageCalendarDate(stagePlan.startDate, dayOffsetForRestDayAfter(i, occ, stagePlan.restDays)),
+							locale,
+						),
+					);
+				}
+			}
+			return {
+				fromKm: stage.startKm,
+				toKm: stage.endKm,
+				dateLabel: stageDateLabels[i] ?? '',
+				anchor: acc ? { name: poiDisplayName(acc.poi, locale), lat: acc.poi.lat, lng: acc.poi.lng } : null,
+				restDayLabels,
+			};
+		});
+		// Deadline = last calendar day of the trip (stages + rest days) plus the
+		// session buffer, so a trailing rest day never shortens the alert window.
+		const deadlineLabel = stagePlan.startDate
+			? formatShortWeekdayDate(
+					stageCalendarDate(
+						stagePlan.startDate,
+						totalTripDays(stagePlan.stages.length, stagePlan.restDays) - 1 + safetyBuffer,
+					),
+					locale,
+				)
+			: '';
+		return buildSafetyContactPlan({ templates, stages, deadlineLabel });
+	}, [stagePlan, stageDateLabels, accommodationByStage, locale, t, safetyBuffer]);
+
+	const safetyContactBody = safetyContactPlan?.body ?? '';
+
+	// Gate the sms: link exactly like the emergency panel: LINKABLE_PHONE_RE on the
+	// unsanitized saved contact phone, then a +/digits dial string so no stray
+	// character can inject extra sms: URI parameters. No saved phone -> no Text button.
+	const safetyContactPhone = sosCard.emergencyContactPhone?.trim();
+	const safetySmsTo =
+		safetyContactPhone && LINKABLE_PHONE_RE.test(safetyContactPhone) ? toDialString(safetyContactPhone) : '';
+	const safetySmsHref =
+		safetySmsTo && safetyContactBody ? `sms:${safetySmsTo}?body=${encodeURIComponent(safetyContactBody)}` : undefined;
+
+	useEffect(
+		() => () => {
+			if (safetyCopyTimerRef.current !== null) clearTimeout(safetyCopyTimerRef.current);
+		},
+		[],
+	);
+
+	const handleCopySafetyContact = (): void => {
+		if (!safetyContactBody) return;
+		void copyTextToClipboard(safetyContactBody).then((ok) => {
+			if (!ok) return;
+			setSafetyCopied(true);
+			if (safetyCopyTimerRef.current !== null) clearTimeout(safetyCopyTimerRef.current);
+			safetyCopyTimerRef.current = setTimeout(() => {
+				setSafetyCopied(false);
+				safetyCopyTimerRef.current = null;
+			}, 1500);
+		});
+	};
+
+	const handleShareSafetyContact = (): void => {
+		if (!safetyContactBody || !canShareSafety) return;
+		void navigator.share({ text: safetyContactBody }).catch(() => {
+			/* user dismissed the share sheet or share failed - no-op */
+		});
+	};
 
 	/** Full-plan food resupply cadence from enrichment data (ignores POI layer visibility). */
 	const planResupplyCadence = useMemo(() => {
@@ -1475,6 +1589,64 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 										</Button>
 									</div>
 								)}
+							</MapControlSectionCard>
+						)}
+
+						{safetyContactPlan && (
+							<MapControlSectionCard title={t('safetyContact.heading')}>
+								<p className="m-0 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
+									{t('safetyContact.intro')}
+								</p>
+								<div className="flex flex-col gap-0.5">
+									<label
+										className="text-xs text-gray-600 dark:text-[var(--text-secondary)]"
+										htmlFor="safety-buffer-days"
+									>
+										{t('safetyContact.bufferLabel')}
+									</label>
+									<input
+										className={cn(MAP_CONTROL_INPUT, 'w-20 text-right tabular-nums')}
+										id="safety-buffer-days"
+										max={30}
+										min={0}
+										step={1}
+										type="number"
+										value={safetyBuffer}
+										onChange={(e) => {
+											const v = Number(e.target.value);
+											if (Number.isFinite(v) && v >= 0) setSafetyBuffer(Math.min(30, Math.round(v)));
+										}}
+									/>
+								</div>
+								<p className="m-0 max-h-32 overflow-y-auto rounded bg-gray-50 p-2 text-xs whitespace-pre-wrap text-gray-600 dark:bg-[var(--bg-secondary)] dark:text-[var(--text-primary)]">
+									{safetyContactBody}
+								</p>
+								<div className="flex flex-wrap gap-2">
+									<Button
+										className={cn(safetyCopied && 'text-cldt-green')}
+										size="sm"
+										variant="mapControlOutlineSecondary"
+										onClick={handleCopySafetyContact}
+									>
+										{t('safetyContact.copy')}
+									</Button>
+									{canShareSafety ? (
+										<Button size="sm" variant="mapControlOutlineSecondary" onClick={handleShareSafetyContact}>
+											{t('safetyContact.share')}
+										</Button>
+									) : null}
+									{safetySmsHref ? (
+										<a
+											className={cn(buttonVariants({ variant: 'mapControlOutlineSecondary', size: 'sm' }))}
+											href={safetySmsHref}
+										>
+											{t('safetyContact.text')}
+										</a>
+									) : null}
+								</div>
+								<p className="m-0 text-xs text-gray-500 dark:text-[var(--text-secondary)]">
+									{t('safetyContact.notSharedNote')}
+								</p>
 							</MapControlSectionCard>
 						)}
 					</div>

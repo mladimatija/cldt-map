@@ -64,6 +64,12 @@ export interface TripBriefMeta {
 	packSummary?: string;
 	/** Localized food resupply cadence summary for the cover table. */
 	resupplySummary?: string;
+	/** Localized "for your safety contact" section heading; falls back to
+	 *  `strings.labels.safetyContact` in the exporters when absent. */
+	safetyContactHeading?: string;
+	/** Localized safety-contact handoff lines (intro, per-day, closing) for the
+	 *  emergency back page. Built by the caller via `buildSafetyContactPlan`. */
+	safetyContactLines?: string[];
 	/** Fully resolved gear checklist page content (imported pack list);
 	 *  absent when no CSV was imported. */
 	gearChecklist?: {
@@ -207,6 +213,12 @@ export interface TripBriefAssemblyArgs {
 		nextTown?: string;
 		nextDistanceKm?: number;
 	}) => string | undefined;
+	/** Localized "for your safety contact" section heading; passed through to
+	 *  the meta so the exporters can title the back-page sub-block. */
+	safetyContactHeading?: string;
+	/** Localized safety-contact handoff lines; passed through to the meta. The
+	 *  assembler stays pure - the accommodation math lives at the call site. */
+	safetyContactLines?: string[];
 }
 
 /**
@@ -241,6 +253,8 @@ export function assembleTripBrief(args: TripBriefAssemblyArgs): TripBrief {
 		gearChecklist,
 		resupplyCadenceLabels,
 		resupplySummaryLabel,
+		safetyContactHeading,
+		safetyContactLines,
 	} = args;
 
 	const resupplyPoints =
@@ -419,6 +433,8 @@ export function assembleTripBrief(args: TripBriefAssemblyArgs): TripBrief {
 			...(packSummary && { packSummary }),
 			...(resupplySummary && { resupplySummary }),
 			...(gearChecklist && { gearChecklist }),
+			...(safetyContactHeading && { safetyContactHeading }),
+			...(safetyContactLines?.length && { safetyContactLines }),
 		},
 		overview,
 		days,

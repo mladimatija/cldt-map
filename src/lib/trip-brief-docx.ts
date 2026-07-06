@@ -308,6 +308,21 @@ export async function exportTripBriefDocx(args: TripBriefDocxArgs): Promise<void
 			out.push(new Paragraph({ children: [new TextRun({ text: line })], spacing: { after: 100 } }));
 		}
 
+		// "For your safety contact" handoff sub-block (intro, per-day, call-112
+		// closing), so the editable document carries the same overdue-hiker plan.
+		if (meta.safetyContactLines?.length) {
+			out.push(
+				new Paragraph({
+					text: meta.safetyContactHeading ?? meta.strings.labels.safetyContact,
+					heading: HeadingLevel.HEADING_2,
+					spacing: { before: 240 },
+				}),
+			);
+			for (const line of meta.safetyContactLines) {
+				out.push(new Paragraph({ children: [new TextRun({ text: line })], spacing: { after: 100 } }));
+			}
+		}
+
 		out.push(
 			new Paragraph({
 				children: [
