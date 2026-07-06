@@ -49,14 +49,21 @@ function trackDescLine(meta?: GpxDocMeta): string {
 	return meta?.trackDesc ? `\n\t\t<desc>${escapeXml(meta.trackDesc)}</desc>` : '';
 }
 
-/** Builds a minimal GPX 1.1 XML string from an array of track points. */
-export function buildGpxXml(points: GpxExportPoint[], trackName: string, meta?: GpxDocMeta): string {
-	const trackPoints = points
+/** Renders the `<trkpt>` elements (2-tab indented, newline-joined) for a track
+ *  segment. Shared by buildGpxXml and buildGpxTrackWithWaypointsXml so the track
+ *  body stays byte-for-byte identical across the plain and combined exports. */
+function renderTrackPoints(points: GpxExportPoint[]): string {
+	return points
 		.map((p) => {
 			const ele = p.elevation !== undefined ? `\n\t\t\t<ele>${p.elevation.toFixed(1)}</ele>` : '';
 			return `\t\t<trkpt lat="${p.lat.toFixed(7)}" lon="${p.lng.toFixed(7)}">${ele}\n\t\t</trkpt>`;
 		})
 		.join('\n');
+}
+
+/** Builds a minimal GPX 1.1 XML string from an array of track points. */
+export function buildGpxXml(points: GpxExportPoint[], trackName: string, meta?: GpxDocMeta): string {
+	const trackPoints = renderTrackPoints(points);
 
 	const metadataBlock = meta ? buildMetadataBlock(meta) : '';
 
@@ -148,14 +155,12 @@ export interface GpxWaypoint {
 	url?: string;
 }
 
-/**
- * Builds a GPX 1.1 document that contains only `<wpt>` elements, no tracks.
- * Output is OSMAnd / Locus / Gaia-compatible: each waypoint carries name,
- * optional elevation, type, description, and link. Use this when the user
- * has cherry-picked a set of POIs for offline import to a GPS app.
- */
-export function buildGpxWaypointXml(waypoints: GpxWaypoint[], documentName: string): string {
-	const wpts = waypoints
+/** Renders the `<wpt>` elements (1-tab indented, newline-joined) for a set of
+ *  waypoints. Shared by buildGpxWaypointXml and buildGpxTrackWithWaypointsXml so
+ *  waypoint fields (name / desc / link / type / sym / ele) render identically
+ *  whether the waypoints ship alone or alongside a track. */
+function renderWaypoints(waypoints: GpxWaypoint[]): string {
+	return waypoints
 		.map((w) => {
 			const parts: string[] = [`\t<wpt lat="${w.lat.toFixed(7)}" lon="${w.lng.toFixed(7)}">`];
 			if (w.elevation !== undefined) parts.push(`\t\t<ele>${w.elevation.toFixed(1)}</ele>`);
@@ -168,6 +173,16 @@ export function buildGpxWaypointXml(waypoints: GpxWaypoint[], documentName: stri
 			return parts.join('\n');
 		})
 		.join('\n');
+}
+
+/**
+ * Builds a GPX 1.1 document that contains only `<wpt>` elements, no tracks.
+ * Output is OSMAnd / Locus / Gaia-compatible: each waypoint carries name,
+ * optional elevation, type, description, and link. Use this when the user
+ * has cherry-picked a set of POIs for offline import to a GPS app.
+ */
+export function buildGpxWaypointXml(waypoints: GpxWaypoint[], documentName: string): string {
+	const wpts = renderWaypoints(waypoints);
 
 	return `<?xml version="1.0" encoding="UTF-8"?>
 <gpx version="1.1" creator="CLDT Map - map.cldt.hr" xmlns="http://www.topografix.com/GPX/1/1">
@@ -175,6 +190,39 @@ export function buildGpxWaypointXml(waypoints: GpxWaypoint[], documentName: stri
 \t\t<name>${escapeXml(documentName)}</name>
 \t</metadata>
 ${wpts}
+</gpx>`;
+}
+
+/**
+ * Builds a single "trip package" GPX 1.1 document that carries BOTH the line to
+ * follow and the waypoints alongside it, in schema order: `<metadata>`, then
+ * every `<wpt>`, then the `<trk>`. A hiker can hand this one file to
+ * OSMAnd / Locus / Gaia and get the track plus its safety/resupply markers.
+ *
+ * Waypoint and track rendering are shared with buildGpxWaypointXml and
+ * buildGpxXml, so name / desc / sym / ele formatting stays consistent across
+ * every export. Stays app / i18n-agnostic: the caller passes already-mapped
+ * waypoints and any pre-formatted metadata. When `waypoints` is empty the
+ * output is equivalent to a plain track export.
+ */
+export function buildGpxTrackWithWaypointsXml(
+	points: GpxExportPoint[],
+	waypoints: GpxWaypoint[],
+	trackName: string,
+	meta?: GpxDocMeta,
+): string {
+	const metadataBlock = meta ? buildMetadataBlock(meta) : '';
+	const waypointBlock = waypoints.length > 0 ? `${renderWaypoints(waypoints)}\n` : '';
+	const trackPoints = renderTrackPoints(points);
+
+	return `<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="CLDT Map - map.cldt.hr" xmlns="http://www.topografix.com/GPX/1/1">
+${metadataBlock}${waypointBlock}\t<trk>
+\t\t<name>${escapeXml(trackName)}</name>${trackDescLine(meta)}
+\t\t<trkseg>
+${trackPoints}
+\t\t</trkseg>
+\t</trk>
 </gpx>`;
 }
 

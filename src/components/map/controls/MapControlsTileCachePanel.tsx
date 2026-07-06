@@ -24,11 +24,13 @@ import {
 import { clearPoiAssetCache, getPoiAssetCount } from '@/lib/poi-prefetch';
 import { tileCacheTtlDays, TRAIL_OFF_TRAIL_THRESHOLD_M } from '@/lib/config';
 import { formatDistance, isMobile } from '@/lib/utils';
+import { downloadGpxFile } from '@/lib/gpx-export';
 import { Button } from '@/components/ui/Button';
 import { SettingsToggleRow } from './SettingsToggleRow';
 import { CacheHealthStatus } from './CacheHealthStatus';
 import {
 	IoCloudDownloadOutline,
+	IoDownloadOutline,
 	IoTrashOutline,
 	IoRefreshOutline,
 	IoWarningOutline,
@@ -49,6 +51,7 @@ interface MapControlsTileCachePanelProps {
 
 export function MapControlsTileCachePanel({ embedded = false }: MapControlsTileCachePanelProps): React.ReactElement {
 	const t = useTranslations('tileCache');
+	const tGpx = useTranslations('gpx');
 
 	// Store state
 	const baseMapProvider = useMapStore((s: MapStoreState) => s.baseMapProvider);
@@ -66,6 +69,7 @@ export function MapControlsTileCachePanel({ embedded = false }: MapControlsTileC
 	const poiPrefetchVersion = useMapStore((s: MapStoreState) => s.poiPrefetchVersion);
 	const poiPrefetchSkipped = useMapStore((s: MapStoreState) => s.poiPrefetchSkipped);
 	const gpxLoaded = useMapStore((s: MapStoreState) => s.gpxLoaded);
+	const rawGpxData = useMapStore((s: MapStoreState) => s.rawGpxData);
 	const startTileDownload = useMapStore((s: MapStoreState) => s.startTileDownload);
 	const cancelTileDownload = useMapStore((s: MapStoreState) => s.cancelTileDownload);
 	const retryFailedTiles = useMapStore((s: MapStoreState) => s.retryFailedTiles);
@@ -234,6 +238,14 @@ export function MapControlsTileCachePanel({ embedded = false }: MapControlsTileC
 		setLiveCount(0);
 	};
 
+	/** Hand the already-loaded full-trail GPX to an offline GPS app (OsmAnd /
+	 *  Locus / Gaia) from the same place the corridor tiles were cached. Downloads
+	 *  the raw track verbatim; no new persisted state, no auto-download. */
+	const handleSaveTrailGpx = useCallback((): void => {
+		if (!rawGpxData) return;
+		downloadGpxFile(rawGpxData, tGpx('filenameFullTrail'));
+	}, [rawGpxData, tGpx]);
+
 	const handleClearAll = async (): Promise<void> => {
 		setConfirmClearAll(false);
 		await clearTileCacheForProvider();
@@ -258,6 +270,20 @@ export function MapControlsTileCachePanel({ embedded = false }: MapControlsTileC
 				<div className="space-y-2">
 					{/* One-glance offline-readiness summary above the detailed rows. */}
 					<CacheHealthStatus />
+					{/* One-tap handoff of the full trail track to an offline GPS app,
+					    from the same place the hiker just cached the corridor. */}
+					{rawGpxData && (
+						<Button
+							className="h-8 w-full justify-start text-xs"
+							size="sm"
+							title={t('saveTrailGpxTooltip')}
+							variant="mapControlOutlineSecondary"
+							onClick={handleSaveTrailGpx}
+						>
+							<IoDownloadOutline aria-hidden className="mr-1.5 h-3.5 w-3.5 shrink-0" />
+							{t('saveTrailGpx')}
+						</Button>
+					)}
 					{/* Error state */}
 					{tileCacheError && !tileCacheDownloading && (
 						<p className="text-cldt-red text-xs">

@@ -10,6 +10,7 @@ import {
 	IoDownloadOutline,
 	IoLocationOutline,
 	IoMapOutline,
+	IoTrailSignOutline,
 	IoTrashOutline,
 	IoWatchOutline,
 } from 'react-icons/io5';
@@ -91,10 +92,18 @@ import { formatCompactTemp, weatherCodeToKey, weatherKeyToIcon } from '@/lib/wea
 import {
 	isUsableWaterSource,
 	longestDryStretchKm,
+	poiWaterReliability,
 	WATER_GAP_DANGER_KM,
 	WATER_GAP_WARN_KM,
 } from '@/lib/water-intelligence';
-import { buildGpxXml, buildGpxWaypointXml, downloadGpxFile, type GpxDocMeta, type GpxWaypoint } from '@/lib/gpx-export';
+import {
+	buildGpxTrackWithWaypointsXml,
+	buildGpxXml,
+	buildGpxWaypointXml,
+	downloadGpxFile,
+	type GpxDocMeta,
+	type GpxWaypoint,
+} from '@/lib/gpx-export';
 import { sacMaxForKmRange, SAC_SCALE_ORDER, type SacScale } from '@/lib/trail-osm-tags';
 import {
 	hasTrailJunctions,
@@ -130,6 +139,12 @@ import { renderElevationThumbnail } from '@/lib/elevation-thumbnail';
 
 const MAX_STAGES = 200;
 const COLLAPSED_STAGE_CHIP_LIMIT = 3;
+
+/** Curated POI types packed into the combined "trip package" GPX: the
+ *  safety / resupply markers a hiker needs alongside the line to follow.
+ *  Settlements and road-access clutter are deliberately left out; personal
+ *  notes and starred state are never read (privacy-first, curated data only). */
+const TRIP_PACKAGE_POI_TYPES: ReadonlySet<string> = new Set(['water', 'hut', 'shelter', 'town']);
 
 export function MapControlsStagePlannerPanel(): React.ReactElement {
 	const t = useTranslations('stagePlanner');
@@ -797,6 +812,64 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 		if (allStagesWaypoints.length === 0) return;
 		const xml = buildGpxWaypointXml(allStagesWaypoints, t('title'));
 		downloadGpxFile(xml, 'cldt-stages-pois.gpx');
+	};
+
+	/** Curated safety / resupply POIs (water, huts, shelters, towns) whose SOBO km
+	 *  falls inside the active stage window, mapped to the GPX waypoint shape for
+	 *  the combined trip-package export. Reads the curated dataset directly - not
+	 *  the layer-visibility subset, personal notes, or starred state - so the
+	 *  package stays privacy-first and honest even when those layers are hidden.
+	 *  Water carries its reliability class in the description; the list reads in
+	 *  walking order (NOBO reverses it) to match the track. */
+	const tripPackageWaypoints = useMemo((): GpxWaypoint[] => {
+		if (activeStageIndex === null || !stagePlan || !poisFile?.pois?.length) return [];
+		const stage = stagePlan.stages[activeStageIndex];
+		if (!stage) return [];
+		const lo = Math.min(stage.startKm, stage.endKm);
+		const hi = Math.max(stage.startKm, stage.endKm);
+		const inStage = poisFile.pois
+			.filter(
+				(p) =>
+					TRIP_PACKAGE_POI_TYPES.has(p.type) &&
+					p.trailKm >= lo &&
+					p.trailKm <= hi &&
+					p.distanceFromTrailKm <= STAGE_POI_OFFTRAIL_KM,
+			)
+			.sort((a, b) => a.trailKm - b.trailKm);
+		const ordered = isNobo ? [...inStage].reverse() : inStage;
+		return ordered.map((poi) => {
+			const reliability = poiWaterReliability(poi);
+			return {
+				lat: poi.lat,
+				lng: poi.lng,
+				name: poiDisplayName(poi, locale),
+				type: tPois(`type.${poi.type}`, { default: poi.type }),
+				elevation: typeof poi.elevationM === 'number' ? poi.elevationM : undefined,
+				description: reliability ? tPois(`water.${reliability}`) : undefined,
+			};
+		});
+	}, [activeStageIndex, stagePlan, poisFile, isNobo, locale, tPois]);
+
+	/** Combined "trip package": the active stage's track slice (same NOBO-aware
+	 *  slice the plain stage GPX uses) plus the curated safety waypoints above,
+	 *  as one well-formed GPX 1.1 file for offline GPS apps. */
+	const handleTripPackageExport = (): void => {
+		if (activeStageIndex === null || !stagePlan || !enhancedTrailPoints?.length) return;
+		const stage = stagePlan.stages[activeStageIndex];
+		const startIdx = findNearestPointIndex(enhancedTrailPoints, stage.startKm * 1000);
+		const endIdx = findNearestPointIndex(enhancedTrailPoints, stage.endKm * 1000);
+		let pts = enhancedTrailPoints.slice(Math.min(startIdx, endIdx), Math.max(startIdx, endIdx) + 1);
+		if (isNobo) pts = [...pts].reverse();
+		if (pts.length < 2) return;
+		const stats = stageStats[activeStageIndex];
+		const meta = stats ? buildStageMeta(stage, stats, activeStageIndex) : undefined;
+		const gpx = buildGpxTrackWithWaypointsXml(
+			pts.map((p) => ({ lat: p.lat, lng: p.lng, elevation: p.elevation })),
+			tripPackageWaypoints,
+			`CLDT Stage ${activeStageIndex + 1}`,
+			meta,
+		);
+		downloadGpxFile(gpx, `cldt-stage-${activeStageIndex + 1}-trip-package.gpx`);
 	};
 
 	const handlePoiClick = (poi: Poi): void => {
@@ -1729,6 +1802,17 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 											onClick={handleAllStagesPoiExport}
 										>
 											<IoLocationOutline aria-hidden className="h-3.5 w-3.5" />
+										</MapControlIconButton>
+									</SmartTooltip>
+									<SmartTooltip content={t('tripPackageExportTooltip')} position="top">
+										<MapControlIconButton
+											aria-label={t('tripPackageExport')}
+											disabled={activeStageIndex === null}
+											title={t('tripPackageExportTooltip')}
+											variant="mapControlOutline"
+											onClick={handleTripPackageExport}
+										>
+											<IoTrailSignOutline aria-hidden className="h-3.5 w-3.5" />
 										</MapControlIconButton>
 									</SmartTooltip>
 									<SmartTooltip content={t('stripMapPdfTooltip')} position="top">
