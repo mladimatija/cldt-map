@@ -36,9 +36,13 @@ export interface StageSacBreakdown {
 }
 
 /**
- * Sum tagged SAC-class km over [fromKm, toKm] (SOBO km, order-independent - the
- * OSM runs share that frame). Returns per-class km, the hardest class present,
- * and the demanding (T3+) km used to gate the terrain chip.
+ * Sum tagged SAC-class km over [fromKm, toKm] (order-independent). fromKm/toKm
+ * must be in the same km frame as `runs`: callers pass the planner's stage km,
+ * the identical window buildStageMeta feeds sacMaxForKmRange, so the SAC mix and
+ * terrain chip stay consistent with the shipped GPX SAC-max line and every
+ * sibling stage stat (POIs, water, accommodation) that keys off the same stage
+ * km. Returns per-class km, the hardest class present, and the demanding (T3+)
+ * km used to gate the terrain chip.
  */
 export function computeStageSacBreakdown(
 	runs: readonly TrailOsmTagRun[],

@@ -779,6 +779,23 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 		);
 	}, [packBaseWeightKg, waterGapByStage, walkingPaceKmh, waterConsumptionLph]);
 
+	/** Shared POI -> GPX waypoint mapping for every stage export (the all-stages
+	 *  POI list and the per-stage trip package). Builds the common
+	 *  lat/lng/name/type/elevation fields so waypoint formatting stays identical
+	 *  across exports; callers pass the per-export description/url. */
+	const poiToGpxWaypoint = useCallback(
+		(poi: Poi, extra: { description?: string; url?: string }): GpxWaypoint => ({
+			lat: poi.lat,
+			lng: poi.lng,
+			name: poiDisplayName(poi, locale),
+			type: tPois(`type.${poi.type}`, { default: poi.type }),
+			elevation: typeof poi.elevationM === 'number' ? poi.elevationM : undefined,
+			description: extra.description,
+			url: extra.url,
+		}),
+		[locale, tPois],
+	);
+
 	/** Flat, deduplicated waypoint list across every stage in the current plan.
 	 *  Dedup by id since a POI sitting at a stage boundary can legitimately
 	 *  appear in two consecutive buckets. Pre-computed via useMemo so the
@@ -792,21 +809,16 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 			for (const poi of pois) {
 				if (seen.has(poi.id)) continue;
 				seen.add(poi.id);
-				const name = poiDisplayName(poi, locale);
-				const typeLabel = tPois(`type.${poi.type}`, { default: poi.type });
-				out.push({
-					lat: poi.lat,
-					lng: poi.lng,
-					name,
-					type: typeLabel,
-					elevation: typeof poi.elevationM === 'number' ? poi.elevationM : undefined,
-					description: poi.note_en || poi.note_hr || undefined,
-					url: poi.url || undefined,
-				});
+				out.push(
+					poiToGpxWaypoint(poi, {
+						description: poi.note_en || poi.note_hr || undefined,
+						url: poi.url || undefined,
+					}),
+				);
 			}
 		}
 		return out;
-	}, [stagePlan, poisByStage, locale, tPois]);
+	}, [stagePlan, poisByStage, poiToGpxWaypoint]);
 
 	const handleAllStagesPoiExport = (): void => {
 		if (allStagesWaypoints.length === 0) return;
@@ -839,16 +851,11 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 		const ordered = isNobo ? [...inStage].reverse() : inStage;
 		return ordered.map((poi) => {
 			const reliability = poiWaterReliability(poi);
-			return {
-				lat: poi.lat,
-				lng: poi.lng,
-				name: poiDisplayName(poi, locale),
-				type: tPois(`type.${poi.type}`, { default: poi.type }),
-				elevation: typeof poi.elevationM === 'number' ? poi.elevationM : undefined,
+			return poiToGpxWaypoint(poi, {
 				description: reliability ? tPois(`water.${reliability}`) : undefined,
-			};
+			});
 		});
-	}, [activeStageIndex, stagePlan, poisFile, isNobo, locale, tPois]);
+	}, [activeStageIndex, stagePlan, poisFile, isNobo, tPois, poiToGpxWaypoint]);
 
 	/** Combined "trip package": the active stage's track slice (same NOBO-aware
 	 *  slice the plain stage GPX uses) plus the curated safety waypoints above,
@@ -1229,16 +1236,18 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 																chips.push(
 																	<span
 																		aria-label={terrainAria}
-																		className="inline-flex shrink-0 items-center gap-0.5 rounded-full px-1.5 py-0 text-[0.625rem] font-medium tabular-nums"
+																		className="inline-flex shrink-0 items-center gap-0.5 rounded-full bg-gray-500/10 px-1.5 py-0 text-[0.625rem] font-medium text-gray-600 tabular-nums dark:text-[var(--text-primary)]"
 																		key="terrain"
-																		style={{
-																			color: SAC_COLORS[hardestClass],
-																			backgroundColor: `${SAC_COLORS[hardestClass]}1a`,
-																		}}
 																		title={terrainAria}
 																	>
 																		<span aria-hidden>⛰️</span>
-																		{shortLabel} {kmCompact}
+																		{/* SAC class colour swatch keeps the pill legible in dark mode, like the expanded SAC-mix rows. */}
+																		<span
+																			aria-hidden
+																			className="size-2 shrink-0 rounded-full"
+																			style={{ backgroundColor: SAC_COLORS[hardestClass] }}
+																		/>
+																		{shortLabel} {kmCompact} {distanceUnitLabel}
 																	</span>,
 																);
 															}
