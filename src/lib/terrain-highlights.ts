@@ -79,40 +79,42 @@ export function findToughestStretches(
 	const loM = Math.min(fromKm, toKm) * 1000;
 	const hiM = Math.max(fromKm, toKm) * 1000;
 
-	// Points inside the stage window, in travel order.
+	// Points inside the stage window, in travel order. The points are sorted
+	// ascending by distanceFromStart, so stop scanning once past the window's high
+	// bound instead of walking the whole trail.
 	const slice: TerrainPoint[] = [];
 	for (const p of points) {
-		if (p.distanceFromStart >= loM && p.distanceFromStart <= hiM) slice.push(p);
+		if (p.distanceFromStart > hiM) break;
+		if (p.distanceFromStart >= loM) slice.push(p);
 	}
 	if (slice.length < 2) return [];
 
 	// Merge consecutive steep points sharing a sign (all climb or all descent)
 	// into contiguous stretches; a flat / gentle point or a sign flip ends one.
+	// gradeBand >= 2 already implies |grade| > 6% (non-zero), so no gradePct !== 0
+	// guard is needed; the sign derivation below is the single source of direction.
 	const stretches: RawStretch[] = [];
 	let current: RawStretch | null = null;
-	// Mirror of current.sign; kept in a plain variable so the merge test reads
-	// `current && currentSign === sign` (a truthiness guard plus a comparison on
-	// a separate value) instead of `current.sign`, which the optional-chain lint
-	// rule would rewrite into a form that trips a TS control-flow false positive.
-	let currentSign: 1 | -1 | 0 = 0;
 	for (let i = 0; i < slice.length; i++) {
 		const p = slice[i];
-		const steep = p.gradeBand >= CRUX_MIN_GRADE_BAND && p.gradePct !== 0;
+		const steep = p.gradeBand >= CRUX_MIN_GRADE_BAND;
 		if (!steep) {
 			if (current) stretches.push(current);
 			current = null;
-			currentSign = 0;
 			continue;
 		}
 		const sign: 1 | -1 = p.gradePct >= 0 ? 1 : -1;
-		if (current && currentSign === sign) {
+		// Merge into the open stretch when the sign matches. The `current && ...`
+		// guard narrows current to non-null inside the block; a `current?.sign`
+		// optional chain would not, so silence prefer-optional-chain here.
+		// eslint-disable-next-line @typescript-eslint/prefer-optional-chain
+		if (current && current.sign === sign) {
 			current.endIdx = i;
 			current.sumAbs += Math.abs(p.gradePct);
 			current.count += 1;
 		} else {
 			if (current) stretches.push(current);
 			current = { startIdx: i, endIdx: i, sumAbs: Math.abs(p.gradePct), count: 1, sign };
-			currentSign = sign;
 		}
 	}
 	if (current) stretches.push(current);

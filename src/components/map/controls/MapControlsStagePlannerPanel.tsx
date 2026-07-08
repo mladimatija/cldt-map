@@ -410,13 +410,25 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 		};
 	};
 
+	/** NOBO-aware enhanced-point slice within a stage's [startKm, endKm] km window,
+	 *  in travel order (reversed for NOBO) - the shared body of the three stage-track
+	 *  exporters. Each caller maps the returned points to its own export shape and
+	 *  keeps its own length guard: handleFitExport / handleTripPackageExport bail on
+	 *  a < 2-point slice, while handleGpxExport intentionally does not (its behaviour
+	 *  is preserved exactly). Returns [] only when there are no enhanced points,
+	 *  which the callers already guard against before calling. */
+	const sliceStagePoints = (stage: { startKm: number; endKm: number }): NonNullable<typeof enhancedTrailPoints> => {
+		if (!enhancedTrailPoints?.length) return [];
+		const startIdx = findNearestPointIndex(enhancedTrailPoints, stage.startKm * 1000);
+		const endIdx = findNearestPointIndex(enhancedTrailPoints, stage.endKm * 1000);
+		const pts = enhancedTrailPoints.slice(Math.min(startIdx, endIdx), Math.max(startIdx, endIdx) + 1);
+		return isNobo ? [...pts].reverse() : pts;
+	};
+
 	const handleGpxExport = (): void => {
 		if (activeStageIndex === null || !stagePlan || !enhancedTrailPoints?.length) return;
 		const stage = stagePlan.stages[activeStageIndex];
-		const startIdx = findNearestPointIndex(enhancedTrailPoints, stage.startKm * 1000);
-		const endIdx = findNearestPointIndex(enhancedTrailPoints, stage.endKm * 1000);
-		let pts = enhancedTrailPoints.slice(Math.min(startIdx, endIdx), Math.max(startIdx, endIdx) + 1);
-		if (isNobo) pts = [...pts].reverse();
+		const pts = sliceStagePoints(stage);
 		const stats = stageStats[activeStageIndex];
 		const meta = stats ? buildStageMeta(stage, stats, activeStageIndex) : undefined;
 		const gpx = buildGpxXml(
@@ -430,10 +442,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 	const handleFitExport = async (): Promise<void> => {
 		if (activeStageIndex === null || !stagePlan || !enhancedTrailPoints?.length) return;
 		const stage = stagePlan.stages[activeStageIndex];
-		const startIdx = findNearestPointIndex(enhancedTrailPoints, stage.startKm * 1000);
-		const endIdx = findNearestPointIndex(enhancedTrailPoints, stage.endKm * 1000);
-		let pts = enhancedTrailPoints.slice(Math.min(startIdx, endIdx), Math.max(startIdx, endIdx) + 1);
-		if (isNobo) pts = [...pts].reverse();
+		const pts = sliceStagePoints(stage);
 		if (pts.length < 2) return;
 		const stats = stageStats[activeStageIndex];
 		const fitBytes = await buildFitCourseBytes({
@@ -863,10 +872,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 	const handleTripPackageExport = (): void => {
 		if (activeStageIndex === null || !stagePlan || !enhancedTrailPoints?.length) return;
 		const stage = stagePlan.stages[activeStageIndex];
-		const startIdx = findNearestPointIndex(enhancedTrailPoints, stage.startKm * 1000);
-		const endIdx = findNearestPointIndex(enhancedTrailPoints, stage.endKm * 1000);
-		let pts = enhancedTrailPoints.slice(Math.min(startIdx, endIdx), Math.max(startIdx, endIdx) + 1);
-		if (isNobo) pts = [...pts].reverse();
+		const pts = sliceStagePoints(stage);
 		if (pts.length < 2) return;
 		const stats = stageStats[activeStageIndex];
 		const meta = stats ? buildStageMeta(stage, stats, activeStageIndex) : undefined;
@@ -1229,9 +1235,13 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 																const shortLabel = SAC_BUCKET_SHORT_LABELS[hardestClass];
 																const kmDisplay = toDisplay(sacBreakdown.hardestKm);
 																const kmCompact = kmDisplay < 10 ? kmDisplay.toFixed(1) : kmDisplay.toFixed(0);
+																// One distance string for both the visible chip and its aria-label so
+																// the spoken and shown distance can never round differently. Formats via
+																// toDisplay like the sibling water chip rather than formatDistance.
+																const hardestDistance = `${kmCompact} ${distanceUnitLabel}`;
 																const terrainAria = t('stageTerrainChip', {
 																	class: shortLabel,
-																	distance: formatDistance(sacBreakdown.hardestKm, units, distancePrecision),
+																	distance: hardestDistance,
 																});
 																chips.push(
 																	<span
@@ -1247,7 +1257,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 																			className="size-2 shrink-0 rounded-full"
 																			style={{ backgroundColor: SAC_COLORS[hardestClass] }}
 																		/>
-																		{shortLabel} {kmCompact} {distanceUnitLabel}
+																		{shortLabel} {hardestDistance}
 																	</span>,
 																);
 															}

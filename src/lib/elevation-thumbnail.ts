@@ -33,7 +33,13 @@ export function renderElevationThumbnail(
 	if (typeof document === 'undefined') return null;
 	const loM = Math.min(startKm, endKm) * 1000;
 	const hiM = Math.max(startKm, endKm) * 1000;
-	const slice = points.filter((p) => p.distanceFromStart >= loM && p.distanceFromStart <= hiM);
+	// points are sorted ascending by distanceFromStart, so stop scanning once past
+	// the window's high bound rather than filtering the whole array.
+	const slice: ElevationProfilePoint[] = [];
+	for (const p of points) {
+		if (p.distanceFromStart > hiM) break;
+		if (p.distanceFromStart >= loM) slice.push(p);
+	}
 	if (slice.length < 2) return null;
 	const ordered = nobo ? [...slice].reverse() : slice;
 
