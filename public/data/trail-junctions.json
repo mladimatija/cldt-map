@@ -1,6 +1,3248 @@
 {
-	"lastUpdated": "2026-07-06",
-	"totalKm": 0,
+	"lastUpdated": "2026-07-10",
+	"totalKm": 2220.8,
 	"source": "OpenStreetMap (route=hiking/foot)",
-	"junctions": []
+	"junctions": [
+		{
+			"trailKm": 0.901,
+			"proximity": "crosses",
+			"name": "ST322 Bačka Palanka - Neštin",
+			"ref": "ST322",
+			"network": "iwn",
+			"offBearingDeg": 106.7
+		},
+		{
+			"trailKm": 2.672,
+			"proximity": "crosses",
+			"name": "ST355 Vukovar - Ilok",
+			"ref": "ST355",
+			"network": "iwn",
+			"offBearingDeg": 205.9
+		},
+		{
+			"trailKm": 3.719,
+			"proximity": "crosses",
+			"name": "Planinarski put 704 Vukovo - Principovac",
+			"network": "lwn",
+			"offBearingDeg": 188.4
+		},
+		{
+			"trailKm": 4.933,
+			"proximity": "crosses",
+			"name": "Planinarski put 709 Principovac - Izvor (spojni put)",
+			"network": "lwn",
+			"offBearingDeg": 207.3
+		},
+		{
+			"trailKm": 6.997,
+			"proximity": "crosses",
+			"name": "Planinarski put 707 Lovka - Rimski bunar",
+			"network": "lwn",
+			"offBearingDeg": 13.8
+		},
+		{
+			"trailKm": 6.997,
+			"proximity": "crosses",
+			"name": "Planinarski put 714 Bapska - Skandala",
+			"network": "lwn",
+			"offBearingDeg": 194.2
+		},
+		{
+			"trailKm": 80.674,
+			"proximity": "crosses",
+			"name": "ST353 Osijek - Vukovar",
+			"ref": "ST353",
+			"network": "iwn",
+			"offBearingDeg": 12
+		},
+		{
+			"trailKm": 124.223,
+			"proximity": "crosses",
+			"name": "ST351 Mohač-Osijek",
+			"ref": "ST351",
+			"network": "iwn",
+			"offBearingDeg": 310.2
+		},
+		{
+			"trailKm": 180.631,
+			"proximity": "crosses",
+			"name": "ST820 Siklos - Osijek",
+			"ref": "ST820",
+			"network": "iwn",
+			"offBearingDeg": 202
+		},
+		{
+			"trailKm": 241.154,
+			"proximity": "crosses",
+			"name": "Marijin put M02/41 (Bokšić Lug-Našice)",
+			"ref": "M02/41",
+			"network": "iwn",
+			"osmcSymbol": "blue:white:::M:blue",
+			"offBearingDeg": 247
+		},
+		{
+			"trailKm": 243.297,
+			"proximity": "crosses",
+			"name": "Marijin put M02/42 (Našice-Čaglin)",
+			"ref": "M02/42",
+			"network": "iwn",
+			"osmcSymbol": "blue:white:::M:blue",
+			"offBearingDeg": 56
+		},
+		{
+			"trailKm": 246.196,
+			"proximity": "crosses",
+			"name": "Planinarski put 202: Našice - Kolarište",
+			"ref": "01.02.02",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 230.1
+		},
+		{
+			"trailKm": 248.532,
+			"proximity": "crosses",
+			"name": "Planinarski put 205: Stari vodovod - Križanje ispod Bedemgrada",
+			"network": "lwn",
+			"offBearingDeg": 24.5
+		},
+		{
+			"trailKm": 266.669,
+			"proximity": "crosses",
+			"name": "Planinarski put 241: Petrov vrh - Kapovac",
+			"network": "lwn",
+			"offBearingDeg": 278.6
+		},
+		{
+			"trailKm": 267.965,
+			"proximity": "crosses",
+			"name": "Planinarski put 237: Orahovičko jezero - Ružica grad - Stari grad - (x) sa SPP",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 355.1
+		},
+		{
+			"trailKm": 269.434,
+			"proximity": "crosses",
+			"name": "Šaševo - kota 676",
+			"ref": "01.02.19",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 323
+		},
+		{
+			"trailKm": 269.434,
+			"proximity": "crosses",
+			"name": "Planinarski put 219: Šaševo - Rastova kosa - Velike vincine",
+			"network": "lwn",
+			"offBearingDeg": 323
+		},
+		{
+			"trailKm": 269.456,
+			"proximity": "crosses",
+			"name": "Planinarski put 240: Javori - Tromeđa - Kapovac",
+			"network": "lwn",
+			"offBearingDeg": 211.2
+		},
+		{
+			"trailKm": 270.372,
+			"proximity": "crosses",
+			"name": "Planinarski put 221: Kutjevo - Tromeđa",
+			"ref": "01.02.21",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 206.4
+		},
+		{
+			"trailKm": 271.757,
+			"proximity": "crosses",
+			"name": "Planinarski put 218: Šaševo - vrh Javor",
+			"ref": "01.02.18",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 4.3
+		},
+		{
+			"trailKm": 276.633,
+			"proximity": "crosses",
+			"name": "Planinarski put 101: Javori - Češljakovački vis",
+			"network": "lwn",
+			"offBearingDeg": 246.3
+		},
+		{
+			"trailKm": 280.422,
+			"proximity": "crosses",
+			"name": "Planinarski put 110: Dom Lapjak - Češljakovački vis",
+			"network": "lwn",
+			"offBearingDeg": 249.6
+		},
+		{
+			"trailKm": 281.124,
+			"proximity": "crosses",
+			"name": "Spojni put tri kruške",
+			"ref": "01.01.13A",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 258.3
+		},
+		{
+			"trailKm": 281.515,
+			"proximity": "crosses",
+			"name": "Spojni put",
+			"ref": "01.01.13B",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 222.8
+		},
+		{
+			"trailKm": 282.018,
+			"proximity": "crosses",
+			"name": "Planinarski put 140: Jankovac - Tromeđa - Češljakovački vis",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 107.1
+		},
+		{
+			"trailKm": 283.153,
+			"proximity": "crosses",
+			"name": "Planinarski put 120: Jezerce - Tromeđa",
+			"ref": "01.01.20",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 250.9
+		},
+		{
+			"trailKm": 283.153,
+			"proximity": "crosses",
+			"name": "Planinarski put 121: Majerove livade - Put na Tromeđu",
+			"ref": "01.01.21",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 294.8
+		},
+		{
+			"trailKm": 284.97,
+			"proximity": "crosses",
+			"name": "Planinarski put 112: Velika - Dubočanka - Planinarski dom Jankovac",
+			"ref": "01.01.12",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 183.9
+		},
+		{
+			"trailKm": 285.204,
+			"proximity": "crosses",
+			"name": "Planinarski put 111: Dom Lapjak - Jankovac",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 297.7
+		},
+		{
+			"trailKm": 285.26,
+			"proximity": "crosses",
+			"name": "Planinarski put 132: Jungova staza",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 73.9
+		},
+		{
+			"trailKm": 285.318,
+			"proximity": "crosses",
+			"name": "Spojni put od 29 do 1",
+			"ref": "01.01.29A",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 97.9
+		},
+		{
+			"trailKm": 286.446,
+			"proximity": "crosses",
+			"name": "Spojni put od 1 do 30",
+			"ref": "01.01.30A",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 209.8
+		},
+		{
+			"trailKm": 286.517,
+			"proximity": "crosses",
+			"name": "Planinarski put 130: Put preko Sokoline",
+			"ref": "01.01.30",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 59.7
+		},
+		{
+			"trailKm": 289.593,
+			"proximity": "crosses",
+			"name": "Planinarski put 134: Izvor Kovačica - Greben Kovačica",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 98.4
+		},
+		{
+			"trailKm": 290.212,
+			"proximity": "crosses",
+			"name": "Jezerce - Nevoljaš - Anđina koliba - Vojna cesta",
+			"ref": "01.01.22",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 123.9
+		},
+		{
+			"trailKm": 290.36,
+			"proximity": "crosses",
+			"name": "Slavonski planinarski put",
+			"network": "rwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 261.5
+		},
+		{
+			"trailKm": 290.36,
+			"proximity": "crosses",
+			"name": "Planinarski put 101: Jankovac - Ivačka glava",
+			"network": "lwn",
+			"offBearingDeg": 261.5
+		},
+		{
+			"trailKm": 293.18,
+			"proximity": "crosses",
+			"name": "Planinarski put 101: Tromeđa - Ivačka glava",
+			"network": "lwn",
+			"offBearingDeg": 126.6
+		},
+		{
+			"trailKm": 293.9,
+			"proximity": "crosses",
+			"name": "Planinarski put 101: Kneževe vode - Tromeđa - vrh Papuk",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 161.3
+		},
+		{
+			"trailKm": 295.571,
+			"proximity": "crosses",
+			"name": "Planinarski put 101: Novo Zvečevo - Kneževe vode",
+			"network": "lwn",
+			"offBearingDeg": 348.6
+		},
+		{
+			"trailKm": 297.137,
+			"proximity": "crosses",
+			"name": "Planinarski put 139: Šarenglava - Gudnoga - Reitweg - Lom",
+			"network": "lwn",
+			"offBearingDeg": 44
+		},
+		{
+			"trailKm": 299.038,
+			"proximity": "crosses",
+			"name": "Planinarski put 138: Voćin - Rupnica - Točak - Lom",
+			"network": "lwn",
+			"offBearingDeg": 334.1
+		},
+		{
+			"trailKm": 306.931,
+			"proximity": "crosses",
+			"name": "Planinarski put 144: Staro Zvečevo - Velika Nedioka - Balačko brdo - Skresine",
+			"network": "lwn",
+			"offBearingDeg": 233.9
+		},
+		{
+			"trailKm": 317.611,
+			"proximity": "crosses",
+			"name": "Planinarski put 101: Novo Zvečevo - Međa",
+			"network": "lwn",
+			"offBearingDeg": 357.4
+		},
+		{
+			"trailKm": 318.344,
+			"proximity": "crosses",
+			"name": "Planinarski put 109: Međa - Vrani kamen",
+			"ref": "01.01.09",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 221.7
+		},
+		{
+			"trailKm": 319.87,
+			"proximity": "crosses",
+			"name": "Test 4",
+			"offBearingDeg": 12.5
+		},
+		{
+			"trailKm": 321.734,
+			"proximity": "crosses",
+			"name": "Veliki Ždral 2017",
+			"network": "lwn",
+			"offBearingDeg": 94.9
+		},
+		{
+			"trailKm": 321.734,
+			"proximity": "crosses",
+			"name": "Test 3",
+			"offBearingDeg": 94.9
+		},
+		{
+			"trailKm": 321.734,
+			"proximity": "crosses",
+			"name": "Veliki Ždral 2017 - alternative",
+			"network": "lwn",
+			"offBearingDeg": 94.9
+		},
+		{
+			"trailKm": 321.734,
+			"proximity": "crosses",
+			"name": "Planinarski put 101: Međa - Petrov vrh",
+			"network": "lwn",
+			"offBearingDeg": 94.9
+		},
+		{
+			"trailKm": 324.896,
+			"proximity": "crosses",
+			"name": "Test 1",
+			"offBearingDeg": 81.8
+		},
+		{
+			"trailKm": 325.606,
+			"proximity": "crosses",
+			"name": "Test 2",
+			"offBearingDeg": 66.9
+		},
+		{
+			"trailKm": 327.132,
+			"proximity": "crosses",
+			"name": "Mali Ždral 2017",
+			"network": "lwn",
+			"offBearingDeg": 252.5
+		},
+		{
+			"trailKm": 329.036,
+			"proximity": "crosses",
+			"name": "Izletište Toplica - Petrov vrh",
+			"ref": "01.01.03",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 242.9
+		},
+		{
+			"trailKm": 331.079,
+			"proximity": "crosses",
+			"name": "Spojni put između 4 i 5",
+			"ref": "01.01.04A",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 287.6
+		},
+		{
+			"trailKm": 334.385,
+			"proximity": "crosses",
+			"name": "Škodinac - Debelo brdo",
+			"ref": "01.01.05",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 220.4
+		},
+		{
+			"trailKm": 334.385,
+			"proximity": "crosses",
+			"name": "Planinarski put 105: Škodinovac - Debelo brdo",
+			"network": "lwn",
+			"offBearingDeg": 220.4
+		},
+		{
+			"trailKm": 478.999,
+			"proximity": "crosses",
+			"name": "Planinarska staza 29",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 39.8
+		},
+		{
+			"trailKm": 479.225,
+			"proximity": "crosses",
+			"name": "Planinarska staza 29b",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 123
+		},
+		{
+			"trailKm": 480.966,
+			"proximity": "crosses",
+			"name": "Planinarska staza 29c",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 17.3
+		},
+		{
+			"trailKm": 482.58,
+			"proximity": "crosses",
+			"name": "Planinarska staza 28",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 305.7
+		},
+		{
+			"trailKm": 483.924,
+			"proximity": "crosses",
+			"name": "Planinarska staza 23",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 283.9
+		},
+		{
+			"trailKm": 487.321,
+			"proximity": "crosses",
+			"name": "Planinarska staza 17d",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 154.7
+		},
+		{
+			"trailKm": 487.625,
+			"proximity": "crosses",
+			"name": "Planinarska staza 17c",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 69.4
+		},
+		{
+			"trailKm": 489.336,
+			"proximity": "crosses",
+			"name": "Poučna staza",
+			"network": "lwn",
+			"offBearingDeg": 242.9
+		},
+		{
+			"trailKm": 489.336,
+			"proximity": "crosses",
+			"name": "Planinarska staza 18",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 242.9
+		},
+		{
+			"trailKm": 489.336,
+			"proximity": "crosses",
+			"name": "Vukovec - Kalnik",
+			"offBearingDeg": 242.9
+		},
+		{
+			"trailKm": 491.021,
+			"proximity": "crosses",
+			"name": "Planinarska staza 1",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 303.4
+		},
+		{
+			"trailKm": 492.325,
+			"proximity": "crosses",
+			"name": "Planinarska staza 4",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 144.9
+		},
+		{
+			"trailKm": 495.675,
+			"proximity": "crosses",
+			"name": "Planinarska staza 3",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 17.1
+		},
+		{
+			"trailKm": 499.487,
+			"proximity": "crosses",
+			"name": "Planinarska staza 35",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 232
+		},
+		{
+			"trailKm": 501.459,
+			"proximity": "crosses",
+			"name": "Planinarska staza 27b",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 283.7
+		},
+		{
+			"trailKm": 518.891,
+			"proximity": "crosses",
+			"name": "Camino Podravina",
+			"offBearingDeg": 117.8
+		},
+		{
+			"trailKm": 585.558,
+			"proximity": "crosses",
+			"name": "Svetomartinska Mura",
+			"offBearingDeg": 169.6
+		},
+		{
+			"trailKm": 597.485,
+			"proximity": "crosses",
+			"name": "Štrigovska kružna staza - ŠKS PD Bundek Mursko Središće",
+			"ref": "ŠKS PD Bundek Mursko Središće",
+			"network": "lwn",
+			"offBearingDeg": 192.6
+		},
+		{
+			"trailKm": 598.988,
+			"proximity": "crosses",
+			"name": "Međimurski planinarski put - MPP PB BUNDEK Mursko Središće",
+			"ref": "MPP PB BUNDEK Mursko Središće",
+			"network": "lwn",
+			"offBearingDeg": 325
+		},
+		{
+			"trailKm": 770.409,
+			"proximity": "crosses",
+			"name": "Stepinčev put 7. etapa",
+			"network": "lwn",
+			"osmcSymbol": "orange:orange:white_cross",
+			"offBearingDeg": 197.5
+		},
+		{
+			"trailKm": 776.146,
+			"proximity": "crosses",
+			"name": "Planinarska staza Medvednica 47",
+			"ref": "47",
+			"network": "lwn",
+			"offBearingDeg": 61.7
+		},
+		{
+			"trailKm": 776.344,
+			"proximity": "crosses",
+			"name": "Planinarska staza Medvednica 33",
+			"ref": "33",
+			"network": "lwn",
+			"offBearingDeg": 210.2
+		},
+		{
+			"trailKm": 777.926,
+			"proximity": "crosses",
+			"name": "Planinarska staza Medvednica 28",
+			"ref": "28",
+			"network": "lwn",
+			"offBearingDeg": 220.2
+		},
+		{
+			"trailKm": 780.571,
+			"proximity": "crosses",
+			"name": "Staza 63",
+			"ref": "63",
+			"network": "lwn",
+			"offBearingDeg": 294.2
+		},
+		{
+			"trailKm": 781.302,
+			"proximity": "crosses",
+			"name": "Planinarska staza Medvednica 34",
+			"ref": "34",
+			"network": "lwn",
+			"offBearingDeg": 188
+		},
+		{
+			"trailKm": 781.998,
+			"proximity": "crosses",
+			"name": "Planinarska staza Medvednica 27",
+			"ref": "27",
+			"network": "lwn",
+			"offBearingDeg": 222
+		},
+		{
+			"trailKm": 783.478,
+			"proximity": "crosses",
+			"name": "35A",
+			"ref": "35a",
+			"network": "lwn",
+			"offBearingDeg": 266.8
+		},
+		{
+			"trailKm": 784.043,
+			"proximity": "crosses",
+			"name": "Planinarska staza Medvednica 1M",
+			"ref": "1M",
+			"network": "rwn",
+			"offBearingDeg": 210.2
+		},
+		{
+			"trailKm": 784.622,
+			"proximity": "crosses",
+			"name": "Planinarska staza Medvednica 25",
+			"ref": "25",
+			"network": "lwn",
+			"offBearingDeg": 161.2
+		},
+		{
+			"trailKm": 785.982,
+			"proximity": "crosses",
+			"name": "Staza 35",
+			"ref": "35",
+			"network": "lwn",
+			"offBearingDeg": 79.1
+		},
+		{
+			"trailKm": 787.334,
+			"proximity": "crosses",
+			"name": "Planinarska staza Medvednica 38",
+			"ref": "38",
+			"network": "lwn",
+			"offBearingDeg": 324.2
+		},
+		{
+			"trailKm": 788.714,
+			"proximity": "crosses",
+			"name": "Staza 23a",
+			"ref": "23a",
+			"offBearingDeg": 210.7
+		},
+		{
+			"trailKm": 789.538,
+			"proximity": "crosses",
+			"name": "Planinarska staza Medvednica 23",
+			"ref": "23",
+			"network": "lwn",
+			"offBearingDeg": 73.1
+		},
+		{
+			"trailKm": 789.868,
+			"proximity": "crosses",
+			"name": "Staza 69",
+			"ref": "69",
+			"network": "lwn",
+			"offBearingDeg": 91.9
+		},
+		{
+			"trailKm": 789.954,
+			"proximity": "crosses",
+			"name": "Planinarska staza Medvednica 20",
+			"ref": "20",
+			"network": "lwn",
+			"offBearingDeg": 144.8
+		},
+		{
+			"trailKm": 789.954,
+			"proximity": "crosses",
+			"name": "Planinarska staza Medvednica 22",
+			"ref": "22",
+			"network": "lwn",
+			"offBearingDeg": 144.8
+		},
+		{
+			"trailKm": 789.954,
+			"proximity": "crosses",
+			"name": "Staza 44",
+			"ref": "44",
+			"network": "lwn",
+			"offBearingDeg": 232.9
+		},
+		{
+			"trailKm": 791.452,
+			"proximity": "crosses",
+			"name": "Planinarska staza Medvednica 21",
+			"ref": "21",
+			"network": "lwn",
+			"offBearingDeg": 45.9
+		},
+		{
+			"trailKm": 792.555,
+			"proximity": "crosses",
+			"name": "Planinarska staza Medvednica 49",
+			"ref": "49",
+			"network": "lwn",
+			"offBearingDeg": 328.4
+		},
+		{
+			"trailKm": 792.555,
+			"proximity": "crosses",
+			"name": "Planinarska staza Medvednica 39",
+			"ref": "39",
+			"network": "lwn",
+			"offBearingDeg": 56.3
+		},
+		{
+			"trailKm": 792.555,
+			"proximity": "crosses",
+			"name": "Planinarska staza Medvednica 42",
+			"ref": "42",
+			"network": "lwn",
+			"offBearingDeg": 328.4
+		},
+		{
+			"trailKm": 792.861,
+			"proximity": "crosses",
+			"name": "Planinarska staza Medvednica 107",
+			"ref": "107",
+			"network": "lwn",
+			"offBearingDeg": 82.5
+		},
+		{
+			"trailKm": 793.24,
+			"proximity": "crosses",
+			"name": "Planinarska staza Medvednica 52",
+			"ref": "52",
+			"network": "lwn",
+			"offBearingDeg": 142.2
+		},
+		{
+			"trailKm": 793.24,
+			"proximity": "crosses",
+			"name": "Planinarska staza Medvednica 12",
+			"ref": "12",
+			"network": "lwn",
+			"offBearingDeg": 17
+		},
+		{
+			"trailKm": 793.497,
+			"proximity": "crosses",
+			"name": "Planinarska staza Medvednica 106",
+			"ref": "106",
+			"network": "lwn",
+			"offBearingDeg": 193.4
+		},
+		{
+			"trailKm": 794.104,
+			"proximity": "crosses",
+			"name": "Planinarska staza Medvednica 40",
+			"ref": "40",
+			"network": "lwn",
+			"offBearingDeg": 15.5
+		},
+		{
+			"trailKm": 794.444,
+			"proximity": "crosses",
+			"name": "Planinarska staza Medvednica 26",
+			"ref": "26",
+			"network": "lwn",
+			"offBearingDeg": 324
+		},
+		{
+			"trailKm": 795.494,
+			"proximity": "crosses",
+			"name": "Planinarska staza 50",
+			"ref": "50",
+			"network": "lwn",
+			"offBearingDeg": 221.3
+		},
+		{
+			"trailKm": 795.765,
+			"proximity": "crosses",
+			"name": "Planinarska staza Medvednica 41",
+			"ref": "41",
+			"network": "lwn",
+			"offBearingDeg": 61.8
+		},
+		{
+			"trailKm": 795.891,
+			"proximity": "crosses",
+			"name": "Staza 46",
+			"ref": "46",
+			"network": "lwn",
+			"offBearingDeg": 14.6
+		},
+		{
+			"trailKm": 796.505,
+			"proximity": "crosses",
+			"name": "Planinarska staza Medvednica 8",
+			"ref": "8",
+			"network": "lwn",
+			"offBearingDeg": 64.5
+		},
+		{
+			"trailKm": 797.782,
+			"proximity": "crosses",
+			"name": "Staza 68",
+			"ref": "68",
+			"network": "lwn",
+			"offBearingDeg": 283.5
+		},
+		{
+			"trailKm": 799.649,
+			"proximity": "crosses",
+			"name": "Planinarska staza Medvednica 4",
+			"ref": "4",
+			"network": "lwn",
+			"offBearingDeg": 194.1
+		},
+		{
+			"trailKm": 803.076,
+			"proximity": "crosses",
+			"name": "Planinarska staza Medvednica 6",
+			"ref": "6",
+			"network": "lwn",
+			"offBearingDeg": 241
+		},
+		{
+			"trailKm": 804.816,
+			"proximity": "crosses",
+			"name": "Vrapčanska obilaznica",
+			"network": "lwn",
+			"osmcSymbol": ":::VO:white",
+			"offBearingDeg": 241.1
+		},
+		{
+			"trailKm": 805.825,
+			"proximity": "crosses",
+			"name": "Planinarska staza Medvednica 7",
+			"ref": "7",
+			"network": "lwn",
+			"offBearingDeg": 359.8
+		},
+		{
+			"trailKm": 806.168,
+			"proximity": "crosses",
+			"name": "Staza 7A",
+			"ref": "7a",
+			"network": "lwn",
+			"offBearingDeg": 227.8
+		},
+		{
+			"trailKm": 808.023,
+			"proximity": "crosses",
+			"name": "Staza 2A",
+			"ref": "2a",
+			"network": "lwn",
+			"offBearingDeg": 144.7
+		},
+		{
+			"trailKm": 813.646,
+			"proximity": "crosses",
+			"name": "Stepinčev put 6. etapa",
+			"network": "lwn",
+			"osmcSymbol": "orange:orange:white_cross",
+			"offBearingDeg": 172.9
+		},
+		{
+			"trailKm": 813.894,
+			"proximity": "crosses",
+			"name": "Stepinčev put 5. etapa",
+			"network": "lwn",
+			"osmcSymbol": "orange:orange:white_cross",
+			"offBearingDeg": 239.6
+		},
+		{
+			"trailKm": 828.889,
+			"proximity": "crosses",
+			"name": "Samobor - Grgosova špilja",
+			"ref": "41",
+			"network": "lwn",
+			"offBearingDeg": 321.7
+		},
+		{
+			"trailKm": 828.927,
+			"proximity": "crosses",
+			"name": "Samobor - Okić",
+			"ref": "1",
+			"network": "lwn",
+			"offBearingDeg": 192.6
+		},
+		{
+			"trailKm": 830.333,
+			"proximity": "crosses",
+			"name": "Samobor - Veliki dol",
+			"ref": "21",
+			"network": "lwn",
+			"offBearingDeg": 214.8
+		},
+		{
+			"trailKm": 835.858,
+			"proximity": "crosses",
+			"name": "Smerovišće - Veliki dol",
+			"ref": "23",
+			"network": "lwn",
+			"offBearingDeg": 178.2
+		},
+		{
+			"trailKm": 836.133,
+			"proximity": "crosses",
+			"name": "Rude - Veliki Dol",
+			"ref": "26",
+			"network": "lwn",
+			"offBearingDeg": 76.7
+		},
+		{
+			"trailKm": 836.336,
+			"proximity": "crosses",
+			"name": "Veliki Dol - Oštrc",
+			"ref": "27",
+			"network": "lwn",
+			"offBearingDeg": 107.7
+		},
+		{
+			"trailKm": 836.588,
+			"proximity": "crosses",
+			"name": "Hofmanov put / Veliki dol - Oštrc",
+			"ref": "30",
+			"network": "lwn",
+			"offBearingDeg": 117.2
+		},
+		{
+			"trailKm": 836.601,
+			"proximity": "crosses",
+			"name": "Šoićeva kuća - Hofmanov put",
+			"ref": "25",
+			"network": "lwn",
+			"offBearingDeg": 201.1
+		},
+		{
+			"trailKm": 836.964,
+			"proximity": "crosses",
+			"name": "Veliki dol - Oštrc",
+			"ref": "27",
+			"network": "lwn",
+			"offBearingDeg": 53
+		},
+		{
+			"trailKm": 837.174,
+			"proximity": "near",
+			"name": "Braslovlje - Oštrc",
+			"ref": "32",
+			"network": "lwn",
+			"offBearingDeg": 75.4
+		},
+		{
+			"trailKm": 837.269,
+			"proximity": "crosses",
+			"name": "Dom Oštrc - Vrh Oštrc",
+			"ref": "05.37",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_frame:37:black",
+			"offBearingDeg": 22.3
+		},
+		{
+			"trailKm": 837.907,
+			"proximity": "crosses",
+			"name": "Prekrižje - Oštrc",
+			"ref": "33",
+			"network": "lwn",
+			"offBearingDeg": 41.1
+		},
+		{
+			"trailKm": 838.066,
+			"proximity": "crosses",
+			"name": "Šoićeva kuća - Oštrc",
+			"ref": "31",
+			"network": "lwn",
+			"offBearingDeg": 25.7
+		},
+		{
+			"trailKm": 838.925,
+			"proximity": "crosses",
+			"name": "Spojni put 33 i 36A",
+			"ref": "05.38",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_frame:33A:black",
+			"offBearingDeg": 146.7
+		},
+		{
+			"trailKm": 839.406,
+			"proximity": "crosses",
+			"name": "Preseka - Beli breg",
+			"ref": "36B",
+			"network": "lwn",
+			"offBearingDeg": 45.9
+		},
+		{
+			"trailKm": 839.602,
+			"proximity": "crosses",
+			"name": "Poljanice - Beli breg",
+			"ref": "34",
+			"network": "lwn",
+			"offBearingDeg": 145.2
+		},
+		{
+			"trailKm": 839.955,
+			"proximity": "crosses",
+			"name": "Beli breg - Velika Vrata",
+			"ref": "36A",
+			"network": "lwn",
+			"offBearingDeg": 47.7
+		},
+		{
+			"trailKm": 840.67,
+			"proximity": "crosses",
+			"name": "Sopoti - Stražnik",
+			"ref": "35",
+			"network": "lwn",
+			"offBearingDeg": 116.6
+		},
+		{
+			"trailKm": 841.526,
+			"proximity": "crosses",
+			"name": "Šoićeva kuća - Velika vrata",
+			"ref": "50A",
+			"network": "lwn",
+			"offBearingDeg": 326.7
+		},
+		{
+			"trailKm": 842.556,
+			"proximity": "crosses",
+			"name": "Jaskanski planinarski put",
+			"ref": "JPP",
+			"network": "rwn",
+			"osmcSymbol": "red:white:red_frame:JPP:black",
+			"offBearingDeg": 277.6
+		},
+		{
+			"trailKm": 842.556,
+			"proximity": "crosses",
+			"name": "Velika vrata - Pl. dom Žitnica",
+			"ref": "50",
+			"network": "lwn",
+			"offBearingDeg": 277.6
+		},
+		{
+			"trailKm": 842.82,
+			"proximity": "crosses",
+			"name": "Žitnica - Japetić",
+			"ref": "56",
+			"network": "lwn",
+			"offBearingDeg": 205
+		},
+		{
+			"trailKm": 842.82,
+			"proximity": "crosses",
+			"name": "Poučna staza Put piramide",
+			"network": "rwn",
+			"offBearingDeg": 205
+		},
+		{
+			"trailKm": 843.741,
+			"proximity": "crosses",
+			"name": "Šoićeva kuća - Japetić",
+			"ref": "48",
+			"network": "lwn",
+			"offBearingDeg": 52.3
+		},
+		{
+			"trailKm": 844.901,
+			"proximity": "crosses",
+			"name": "Spojni put 40 i 54",
+			"ref": "47A",
+			"network": "lwn",
+			"offBearingDeg": 46.3
+		},
+		{
+			"trailKm": 845.748,
+			"proximity": "crosses",
+			"name": "Dragonoš - Zečak",
+			"ref": "58",
+			"network": "lwn",
+			"offBearingDeg": 234.2
+		},
+		{
+			"trailKm": 845.858,
+			"proximity": "crosses",
+			"name": "Šoićeva kuća - Sv. Bernard",
+			"ref": "57",
+			"network": "lwn",
+			"offBearingDeg": 30.7
+		},
+		{
+			"trailKm": 847.613,
+			"proximity": "crosses",
+			"name": "Noršić Selo - Katin krč",
+			"ref": "54",
+			"network": "lwn",
+			"offBearingDeg": 343.5
+		},
+		{
+			"trailKm": 851.079,
+			"proximity": "crosses",
+			"name": "Koretići - Jarušje",
+			"ref": "52",
+			"network": "lwn",
+			"offBearingDeg": 97.1
+		},
+		{
+			"trailKm": 852.587,
+			"proximity": "crosses",
+			"name": "Šimraki - Zečak",
+			"ref": "8",
+			"network": "lwn",
+			"offBearingDeg": 182.5
+		},
+		{
+			"trailKm": 852.89,
+			"proximity": "crosses",
+			"name": "Koretići - Gornja Vas",
+			"ref": "7",
+			"network": "lwn",
+			"offBearingDeg": 246.3
+		},
+		{
+			"trailKm": 860.141,
+			"proximity": "crosses",
+			"name": "Matin most - Drašći vrh",
+			"ref": "18",
+			"network": "lwn",
+			"offBearingDeg": 163.4
+		},
+		{
+			"trailKm": 861.202,
+			"proximity": "crosses",
+			"name": "Gornja Vas - Jećmište",
+			"ref": "21",
+			"network": "lwn",
+			"offBearingDeg": 101.8
+		},
+		{
+			"trailKm": 865.509,
+			"proximity": "crosses",
+			"name": "Vodice - Ječmište",
+			"ref": "23",
+			"network": "lwn",
+			"offBearingDeg": 231.4
+		},
+		{
+			"trailKm": 865.796,
+			"proximity": "crosses",
+			"name": "Bernardići - Slap Sopot",
+			"ref": "20",
+			"network": "lwn",
+			"offBearingDeg": 189.5
+		},
+		{
+			"trailKm": 867.891,
+			"proximity": "crosses",
+			"name": "Slap Sopot - Pliješ",
+			"ref": "28",
+			"network": "lwn",
+			"offBearingDeg": 246.6
+		},
+		{
+			"trailKm": 871.169,
+			"proximity": "crosses",
+			"name": "Vodice - Maličev krč",
+			"ref": "29",
+			"network": "lwn",
+			"offBearingDeg": 255.1
+		},
+		{
+			"trailKm": 871.169,
+			"proximity": "crosses",
+			"name": "Trdinova pot",
+			"network": "rwn",
+			"osmcSymbol": "red:red_round:white_dot:T",
+			"offBearingDeg": 255.1
+		},
+		{
+			"trailKm": 873.115,
+			"proximity": "crosses",
+			"name": "European long distance path E7 - part Slovenia",
+			"ref": "E7",
+			"network": "iwn",
+			"osmcSymbol": "blue:red_round:yellow_dot",
+			"offBearingDeg": 249.2
+		},
+		{
+			"trailKm": 874.219,
+			"proximity": "crosses",
+			"name": "Odvojak na kotu 1006",
+			"ref": "30",
+			"network": "lwn",
+			"offBearingDeg": 61.3
+		},
+		{
+			"trailKm": 874.903,
+			"proximity": "crosses",
+			"name": "Sošice - Boići - Sv. Gera",
+			"ref": "26",
+			"network": "lwn",
+			"offBearingDeg": 84.2
+		},
+		{
+			"trailKm": 875.857,
+			"proximity": "near",
+			"name": "Krvavi kamen - Trdinov vrh",
+			"network": "lwn",
+			"osmcSymbol": "red:red_round:white_dot",
+			"offBearingDeg": 18.5
+		},
+		{
+			"trailKm": 876.079,
+			"proximity": "crosses",
+			"name": "Gabrje - Pl. dom pri Gospodični - Trdinov vrh",
+			"network": "lwn",
+			"osmcSymbol": "red:red_round:white_dot",
+			"offBearingDeg": 263.1
+		},
+		{
+			"trailKm": 877.417,
+			"proximity": "crosses",
+			"name": "Sekulići - Sv. Gera",
+			"ref": "32",
+			"network": "lwn",
+			"offBearingDeg": 246
+		},
+		{
+			"trailKm": 881.624,
+			"proximity": "crosses",
+			"name": "Sošice - Sekulići",
+			"ref": "31",
+			"network": "lwn",
+			"offBearingDeg": 156.9
+		},
+		{
+			"trailKm": 884.862,
+			"proximity": "near",
+			"name": "Sekulići - spoj s putem za Sošice",
+			"ref": "34",
+			"network": "lwn",
+			"offBearingDeg": 214.5
+		},
+		{
+			"trailKm": 1008.155,
+			"proximity": "crosses",
+			"name": "Od Skrada do Javorove kose",
+			"ref": "HR-G-02",
+			"network": "lwn",
+			"offBearingDeg": 267.9
+		},
+		{
+			"trailKm": 1011.335,
+			"proximity": "crosses",
+			"name": "Skradski kraj",
+			"ref": "HR-G-01",
+			"network": "lwn",
+			"offBearingDeg": 224.2
+		},
+		{
+			"trailKm": 1012.53,
+			"proximity": "crosses",
+			"name": "GPP",
+			"offBearingDeg": 191.3
+		},
+		{
+			"trailKm": 1048.44,
+			"proximity": "crosses",
+			"name": "Nacionalni park Risnjak",
+			"ref": "HR-W-03",
+			"network": "lwn",
+			"offBearingDeg": 2.8
+		},
+		{
+			"trailKm": 1048.863,
+			"proximity": "crosses",
+			"name": "Tršće - Sveta gora - Izvor Kupe - Crni Lug",
+			"ref": "HR-W-02",
+			"network": "lwn",
+			"offBearingDeg": 349.2
+		},
+		{
+			"trailKm": 1071.928,
+			"proximity": "crosses",
+			"name": "Pot prijateljstva Snežnik-Snježnik",
+			"osmcSymbol": "red:red_round:white_dot:S",
+			"offBearingDeg": 11.4
+		},
+		{
+			"trailKm": 1076.234,
+			"proximity": "crosses",
+			"name": "1102",
+			"ref": "1102",
+			"network": "lwn",
+			"offBearingDeg": 76.9
+		},
+		{
+			"trailKm": 1083.09,
+			"proximity": "crosses",
+			"name": "Istočni greben",
+			"offBearingDeg": 203.5
+		},
+		{
+			"trailKm": 1084.309,
+			"proximity": "crosses",
+			"name": "Podkilvac - Mudnaj dol - Gorničko - Hahlić",
+			"network": "lwn",
+			"offBearingDeg": 165.2
+		},
+		{
+			"trailKm": 1084.793,
+			"proximity": "near",
+			"name": "OH 10",
+			"network": "lwn",
+			"offBearingDeg": 52.7
+		},
+		{
+			"trailKm": 1085.969,
+			"proximity": "crosses",
+			"name": "OH 2",
+			"network": "lwn",
+			"offBearingDeg": 31.9
+		},
+		{
+			"trailKm": 1086.602,
+			"proximity": "crosses",
+			"name": "Planinarska staza na Hahlić",
+			"ref": "316",
+			"network": "lwk",
+			"offBearingDeg": 241.6
+		},
+		{
+			"trailKm": 1087.684,
+			"proximity": "crosses",
+			"name": "OH 8",
+			"network": "lwn",
+			"offBearingDeg": 327.5
+		},
+		{
+			"trailKm": 1111.359,
+			"proximity": "crosses",
+			"name": "Kastav - Klana",
+			"ref": "1605",
+			"network": "lwn",
+			"offBearingDeg": 39.5
+		},
+		{
+			"trailKm": 1131.636,
+			"proximity": "crosses",
+			"name": "015",
+			"ref": "015",
+			"network": "lwn",
+			"offBearingDeg": 18.1
+		},
+		{
+			"trailKm": 1133.437,
+			"proximity": "crosses",
+			"name": "023",
+			"ref": "023",
+			"network": "lwn",
+			"offBearingDeg": 114
+		},
+		{
+			"trailKm": 1135.142,
+			"proximity": "crosses",
+			"name": "312",
+			"network": "lwn",
+			"offBearingDeg": 35.3
+		},
+		{
+			"trailKm": 1135.237,
+			"proximity": "crosses",
+			"name": "313",
+			"network": "lwn",
+			"offBearingDeg": 140.1
+		},
+		{
+			"trailKm": 1136.038,
+			"proximity": "crosses",
+			"name": "312",
+			"ref": "312",
+			"network": "lwn",
+			"offBearingDeg": 271.5
+		},
+		{
+			"trailKm": 1136.082,
+			"proximity": "crosses",
+			"name": "311",
+			"network": "lwn",
+			"offBearingDeg": 265.2
+		},
+		{
+			"trailKm": 1136.082,
+			"proximity": "crosses",
+			"name": "330",
+			"ref": "330",
+			"network": "lwn",
+			"offBearingDeg": 139.5
+		},
+		{
+			"trailKm": 1136.835,
+			"proximity": "crosses",
+			"name": "310",
+			"network": "lwn",
+			"offBearingDeg": 212.2
+		},
+		{
+			"trailKm": 1138.074,
+			"proximity": "crosses",
+			"name": "300",
+			"network": "lwn",
+			"offBearingDeg": 304.1
+		},
+		{
+			"trailKm": 1140.527,
+			"proximity": "crosses",
+			"name": "215",
+			"ref": "215",
+			"network": "lwn",
+			"offBearingDeg": 252.1
+		},
+		{
+			"trailKm": 1140.527,
+			"proximity": "crosses",
+			"name": "216",
+			"ref": "216",
+			"network": "lwn",
+			"offBearingDeg": 64.3
+		},
+		{
+			"trailKm": 1140.549,
+			"proximity": "crosses",
+			"name": "203",
+			"ref": "203",
+			"network": "lwn",
+			"offBearingDeg": 126.2
+		},
+		{
+			"trailKm": 1144.192,
+			"proximity": "crosses",
+			"ref": "250",
+			"network": "lwn",
+			"offBearingDeg": 69.7
+		},
+		{
+			"trailKm": 1145.302,
+			"proximity": "crosses",
+			"ref": "202",
+			"network": "lwn",
+			"offBearingDeg": 107.3
+		},
+		{
+			"trailKm": 1145.655,
+			"proximity": "crosses",
+			"ref": "213",
+			"network": "lwn",
+			"offBearingDeg": 209.7
+		},
+		{
+			"trailKm": 1145.769,
+			"proximity": "crosses",
+			"ref": "201",
+			"network": "lwn",
+			"offBearingDeg": 180.2
+		},
+		{
+			"trailKm": 1147.138,
+			"proximity": "near",
+			"ref": "220",
+			"network": "lwn",
+			"offBearingDeg": 277.6
+		},
+		{
+			"trailKm": 1147.138,
+			"proximity": "near",
+			"ref": "211",
+			"network": "lwn",
+			"offBearingDeg": 226.6
+		},
+		{
+			"trailKm": 1149.96,
+			"proximity": "crosses",
+			"ref": "200",
+			"offBearingDeg": 247.5
+		},
+		{
+			"trailKm": 1150.147,
+			"proximity": "crosses",
+			"ref": "210",
+			"network": "lwn",
+			"offBearingDeg": 197.2
+		},
+		{
+			"trailKm": 1156.149,
+			"proximity": "crosses",
+			"ref": "106",
+			"network": "lwn",
+			"offBearingDeg": 300.3
+		},
+		{
+			"trailKm": 1160.893,
+			"proximity": "crosses",
+			"ref": "190",
+			"network": "lwn",
+			"offBearingDeg": 131.4
+		},
+		{
+			"trailKm": 1245.312,
+			"proximity": "crosses",
+			"name": "European footpath E12",
+			"ref": "E12",
+			"network": "iwn",
+			"offBearingDeg": 122.8
+		},
+		{
+			"trailKm": 1246.863,
+			"proximity": "crosses",
+			"name": "Staza Rocco",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 5.6
+		},
+		{
+			"trailKm": 1297.44,
+			"proximity": "crosses",
+			"name": "Pazin route",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 169
+		},
+		{
+			"trailKm": 1298.377,
+			"proximity": "crosses",
+			"name": "PAZINSKI KROV",
+			"ref": "713",
+			"network": "lwn",
+			"offBearingDeg": 158.9
+		},
+		{
+			"trailKm": 1359.36,
+			"proximity": "crosses",
+			"name": "Istarski Planinarski Put (IPP)",
+			"ref": "IPP",
+			"network": "rwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 175.8
+		},
+		{
+			"trailKm": 1359.36,
+			"proximity": "crosses",
+			"name": "Labinski planinarski put",
+			"ref": "LPP",
+			"network": "rwn",
+			"osmcSymbol": "red:red:white_bar:LPP:black",
+			"offBearingDeg": 175.8
+		},
+		{
+			"trailKm": 1360.743,
+			"proximity": "crosses",
+			"name": "LPP alternative between Skitača and Drenje",
+			"network": "lwn",
+			"osmcSymbol": "red:red:white_bar",
+			"offBearingDeg": 346.5
+		},
+		{
+			"trailKm": 1365.299,
+			"proximity": "crosses",
+			"name": "Sveta Marina - Drenje - Oštri",
+			"network": "lwn",
+			"osmcSymbol": "red:red:white_bar",
+			"offBearingDeg": 208.9
+		},
+		{
+			"trailKm": 1390.17,
+			"proximity": "crosses",
+			"ref": "721",
+			"network": "lwn",
+			"osmcSymbol": "red:red:white_bar",
+			"offBearingDeg": 228.8
+		},
+		{
+			"trailKm": 1391.286,
+			"proximity": "crosses",
+			"name": "Via Adriatica #1: Kamenjak => Poklon",
+			"network": "rwn",
+			"osmcSymbol": "blue:blue_round:none:VA:white",
+			"offBearingDeg": 50.7
+		},
+		{
+			"trailKm": 1399.955,
+			"proximity": "crosses",
+			"name": "Mošćenice-Kremenjak/Brgud",
+			"network": "lwn",
+			"osmcSymbol": "red:red:white_bar",
+			"offBearingDeg": 6.8
+		},
+		{
+			"trailKm": 1408.099,
+			"proximity": "crosses",
+			"name": "601",
+			"network": "lwn",
+			"offBearingDeg": 191.6
+		},
+		{
+			"trailKm": 1408.591,
+			"proximity": "crosses",
+			"name": "611",
+			"network": "lwn",
+			"offBearingDeg": 155
+		},
+		{
+			"trailKm": 1408.591,
+			"proximity": "crosses",
+			"name": "610",
+			"network": "lwn",
+			"offBearingDeg": 313.9
+		},
+		{
+			"trailKm": 1408.591,
+			"proximity": "crosses",
+			"name": "650",
+			"ref": "650",
+			"network": "lwn",
+			"offBearingDeg": 35.9
+		},
+		{
+			"trailKm": 1409.864,
+			"proximity": "crosses",
+			"name": "612",
+			"network": "lwn",
+			"offBearingDeg": 25.6
+		},
+		{
+			"trailKm": 1411.8,
+			"proximity": "crosses",
+			"name": "Opatijska Planinarska Obilaznica",
+			"ref": "OPO",
+			"network": "nwn",
+			"offBearingDeg": 220.8
+		},
+		{
+			"trailKm": 1411.8,
+			"proximity": "crosses",
+			"name": "600",
+			"network": "lwn",
+			"offBearingDeg": 220.8
+		},
+		{
+			"trailKm": 1412.505,
+			"proximity": "crosses",
+			"name": "630",
+			"ref": "630",
+			"network": "lwn",
+			"offBearingDeg": 145.9
+		},
+		{
+			"trailKm": 1412.605,
+			"proximity": "crosses",
+			"name": "Vela Učka - Poklon",
+			"network": "lwn",
+			"offBearingDeg": 236
+		},
+		{
+			"trailKm": 1412.754,
+			"proximity": "near",
+			"name": "443",
+			"ref": "443",
+			"network": "lwn",
+			"offBearingDeg": 298.2
+		},
+		{
+			"trailKm": 1412.754,
+			"proximity": "near",
+			"name": "Učka Land Art Trail",
+			"offBearingDeg": 298.2
+		},
+		{
+			"trailKm": 1412.815,
+			"proximity": "crosses",
+			"name": "401",
+			"ref": "401",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_frame:401:black",
+			"offBearingDeg": 342.2
+		},
+		{
+			"trailKm": 1413.445,
+			"proximity": "crosses",
+			"name": "484",
+			"ref": "484",
+			"network": "lwn",
+			"offBearingDeg": 238.3
+		},
+		{
+			"trailKm": 1417.012,
+			"proximity": "crosses",
+			"name": "482",
+			"ref": "482",
+			"network": "lwn",
+			"offBearingDeg": 67.7
+		},
+		{
+			"trailKm": 1420.53,
+			"proximity": "crosses",
+			"name": "481",
+			"ref": "481",
+			"network": "lwn",
+			"offBearingDeg": 108.3
+		},
+		{
+			"trailKm": 1420.842,
+			"proximity": "near",
+			"name": "Veprinac - OPO",
+			"network": "lwn",
+			"offBearingDeg": 97.9
+		},
+		{
+			"trailKm": 1420.904,
+			"proximity": "crosses",
+			"name": "077",
+			"ref": "077",
+			"network": "lwn",
+			"offBearingDeg": 225.7
+		},
+		{
+			"trailKm": 1421.778,
+			"proximity": "crosses",
+			"name": "076",
+			"ref": "076",
+			"network": "lwn",
+			"offBearingDeg": 145.2
+		},
+		{
+			"trailKm": 1421.978,
+			"proximity": "crosses",
+			"name": "072",
+			"ref": "072",
+			"network": "lwn",
+			"offBearingDeg": 323.7
+		},
+		{
+			"trailKm": 1422.377,
+			"proximity": "crosses",
+			"name": "075",
+			"ref": "075",
+			"network": "lwn",
+			"offBearingDeg": 336.7
+		},
+		{
+			"trailKm": 1425.698,
+			"proximity": "crosses",
+			"name": "071",
+			"network": "lwn",
+			"offBearingDeg": 36.5
+		},
+		{
+			"trailKm": 1426.117,
+			"proximity": "crosses",
+			"name": "034",
+			"network": "lwn",
+			"offBearingDeg": 20.4
+		},
+		{
+			"trailKm": 1426.19,
+			"proximity": "crosses",
+			"name": "Lisinski Put",
+			"network": "lwn",
+			"offBearingDeg": 95.9
+		},
+		{
+			"trailKm": 1426.19,
+			"proximity": "crosses",
+			"name": "011",
+			"network": "lwn",
+			"offBearingDeg": 95.9
+		},
+		{
+			"trailKm": 1438.571,
+			"proximity": "crosses",
+			"name": "Obilježen planinarskom stazom",
+			"network": "lwn",
+			"offBearingDeg": 138.2
+		},
+		{
+			"trailKm": 1439.085,
+			"proximity": "crosses",
+			"name": "Saršoni - Studena",
+			"ref": "1607",
+			"network": "lwn",
+			"offBearingDeg": 344.8
+		},
+		{
+			"trailKm": 1442.183,
+			"proximity": "crosses",
+			"name": "Šetnica uz Rječinu",
+			"network": "lwn",
+			"offBearingDeg": 108
+		},
+		{
+			"trailKm": 1445.318,
+			"proximity": "crosses",
+			"name": "Dražice - Podkilavac",
+			"offBearingDeg": 198.1
+		},
+		{
+			"trailKm": 1453.34,
+			"proximity": "crosses",
+			"name": "1101",
+			"ref": "1101",
+			"network": "lwn",
+			"offBearingDeg": 212.9
+		},
+		{
+			"trailKm": 1456.005,
+			"proximity": "crosses",
+			"name": "Kamenjak Put",
+			"ref": "1103",
+			"network": "lwn",
+			"offBearingDeg": 177.9
+		},
+		{
+			"trailKm": 1464.657,
+			"proximity": "crosses",
+			"name": "Gornje Jelenje - Vilje - Risnjak",
+			"ref": "108",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_frame:108:black",
+			"offBearingDeg": 154.5
+		},
+		{
+			"trailKm": 1467.764,
+			"proximity": "crosses",
+			"name": "Goranski planinarski put",
+			"ref": "GPP",
+			"network": "rwn",
+			"offBearingDeg": 339.3
+		},
+		{
+			"trailKm": 1467.764,
+			"proximity": "crosses",
+			"name": "Riječka planinarska obilaznica (RPO)",
+			"ref": "R.P.O.",
+			"network": "rwn",
+			"offBearingDeg": 339.3
+		},
+		{
+			"trailKm": 1467.764,
+			"proximity": "crosses",
+			"name": "Gornje Jelenje - Fužine",
+			"ref": "HR-W-04",
+			"network": "lwn",
+			"offBearingDeg": 339.3
+		},
+		{
+			"trailKm": 1467.764,
+			"proximity": "crosses",
+			"name": "Via Adriatica #2: Poklon => Plase",
+			"network": "rwn",
+			"osmcSymbol": "blue:blue_round:none:VA:white",
+			"offBearingDeg": 339.3
+		},
+		{
+			"trailKm": 1488.554,
+			"proximity": "crosses",
+			"name": "Fužine - Mrkopalj",
+			"ref": "HR-W-05",
+			"network": "lwn",
+			"offBearingDeg": 307.3
+		},
+		{
+			"trailKm": 1488.554,
+			"proximity": "crosses",
+			"name": "Bitoraj - Viševica",
+			"ref": "1103",
+			"network": "lwn",
+			"offBearingDeg": 307.3
+		},
+		{
+			"trailKm": 1505.48,
+			"proximity": "crosses",
+			"name": "Strogi rezervat prirode Bijele i Samarske stijene",
+			"ref": "HR-W-06",
+			"network": "lwn",
+			"offBearingDeg": 305.1
+		},
+		{
+			"trailKm": 1509.647,
+			"proximity": "crosses",
+			"name": "Samarske stijene - Bjelolasica",
+			"ref": "301",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 120.9
+		},
+		{
+			"trailKm": 1510.682,
+			"proximity": "crosses",
+			"name": "13 km - Ratkovo sklonište",
+			"ref": "302",
+			"network": "lwn",
+			"offBearingDeg": 163.1
+		},
+		{
+			"trailKm": 1511.416,
+			"proximity": "crosses",
+			"name": "Ačkova dolina",
+			"ref": "402",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 201
+		},
+		{
+			"trailKm": 1512.951,
+			"proximity": "crosses",
+			"name": "Velika vrata - Bijele stijene",
+			"ref": "403",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 105
+		},
+		{
+			"trailKm": 1517.419,
+			"proximity": "crosses",
+			"name": "Bijele stijene - Velika Javornica",
+			"ref": "404",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 178.2
+		},
+		{
+			"trailKm": 1521.417,
+			"proximity": "crosses",
+			"name": "Kapelskim planinarskim putom prema moru",
+			"ref": "HR-W-07",
+			"network": "lwn",
+			"offBearingDeg": 221.7
+		},
+		{
+			"trailKm": 1540.509,
+			"proximity": "crosses",
+			"name": "Spojni put Kapela - Velebit",
+			"ref": "HR-W-08",
+			"offBearingDeg": 221
+		},
+		{
+			"trailKm": 1554.996,
+			"proximity": "crosses",
+			"name": "Via Adriatica #3: Plase => Oltari",
+			"network": "rwn",
+			"osmcSymbol": "blue:blue_round:none:VA:white",
+			"offBearingDeg": 140.2
+		},
+		{
+			"trailKm": 1559.286,
+			"proximity": "crosses",
+			"name": "11.04 HPS",
+			"network": "Hrvatski planinarski savez",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 48.5
+		},
+		{
+			"trailKm": 1560.707,
+			"proximity": "crosses",
+			"name": "11.03 HPS",
+			"network": "Hrvatski planinarski savez",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 160.5
+		},
+		{
+			"trailKm": 1561.506,
+			"proximity": "crosses",
+			"name": "11.05 HPS",
+			"network": "Hrvatski planinarski savez",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 126.5
+		},
+		{
+			"trailKm": 1562.78,
+			"proximity": "crosses",
+			"name": "11.02a HPS",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 324.4
+		},
+		{
+			"trailKm": 1564.164,
+			"proximity": "crosses",
+			"name": "11.02 HPS",
+			"network": "Hrvatski planinarski savez",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 305.6
+		},
+		{
+			"trailKm": 1564.164,
+			"proximity": "crosses",
+			"name": "11.07 HPS",
+			"network": "Hrvatski planinarski savez",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 73.3
+		},
+		{
+			"trailKm": 1570.052,
+			"proximity": "crosses",
+			"name": "Senjsko bilo",
+			"ref": "HR-W-09",
+			"network": "lwn",
+			"offBearingDeg": 219.6
+		},
+		{
+			"trailKm": 1570.052,
+			"proximity": "crosses",
+			"name": "Žukalj - Oltare",
+			"ref": "11.08",
+			"network": "Hrvatski planinarski savez",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 219.6
+		},
+		{
+			"trailKm": 1582.788,
+			"proximity": "crosses",
+			"name": "11.23a HPS",
+			"network": "Hrvatski planinarski savez",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 193.3
+		},
+		{
+			"trailKm": 1585.091,
+			"proximity": "crosses",
+			"name": "11.24 HPS",
+			"network": "Hrvatski planinarski savez",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 60.2
+		},
+		{
+			"trailKm": 1585.368,
+			"proximity": "crosses",
+			"name": "11.27 HPS",
+			"network": "Hrvatski planinarski savez",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 244.3
+		},
+		{
+			"trailKm": 1586.085,
+			"proximity": "crosses",
+			"name": "Camino Lika",
+			"network": "rwn",
+			"osmcSymbol": "blue:blue:shell_modern",
+			"offBearingDeg": 304.1
+		},
+		{
+			"trailKm": 1586.085,
+			"proximity": "crosses",
+			"name": "Premužićeva staza",
+			"network": "rwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 304.1
+		},
+		{
+			"trailKm": 1586.085,
+			"proximity": "crosses",
+			"name": "11.23b HPS",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 304.1
+		},
+		{
+			"trailKm": 1586.085,
+			"proximity": "crosses",
+			"name": "Nacionalni park Sjeverni Velebit II - Rožanski kukovi",
+			"ref": "HR-W-11",
+			"network": "lwn",
+			"offBearingDeg": 304.1
+		},
+		{
+			"trailKm": 1586.085,
+			"proximity": "crosses",
+			"name": "Via Adriatica #4: Oltari => Baške Oštarije",
+			"network": "rwn",
+			"osmcSymbol": "blue:blue_round:none:VA:white",
+			"offBearingDeg": 304.1
+		},
+		{
+			"trailKm": 1586.417,
+			"proximity": "crosses",
+			"name": "Crikvena",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 225.8
+		},
+		{
+			"trailKm": 1587.607,
+			"proximity": "crosses",
+			"name": "Krajacev kuk",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 87.2
+		},
+		{
+			"trailKm": 1587.607,
+			"proximity": "crosses",
+			"name": "11.31 HPS",
+			"network": "Hrvatski planinarski savez",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 87.2
+		},
+		{
+			"trailKm": 1587.81,
+			"proximity": "crosses",
+			"name": "11.32 HPS",
+			"network": "Hrvatski planinarski savez",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 120.4
+		},
+		{
+			"trailKm": 1592.849,
+			"proximity": "crosses",
+			"name": "11.33 HPS",
+			"network": "Hrvatski planinarski savez",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 162.4
+		},
+		{
+			"trailKm": 1592.869,
+			"proximity": "crosses",
+			"name": "11.29 HPS",
+			"network": "Hrvatski planinarski savez",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 268.9
+		},
+		{
+			"trailKm": 1592.869,
+			"proximity": "crosses",
+			"name": "11.30 HPS",
+			"network": "Hrvatski planinarski savez",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 268.9
+		},
+		{
+			"trailKm": 1592.869,
+			"proximity": "crosses",
+			"name": "11.38 HPS",
+			"network": "Hrvatski planinarski savez",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 110.4
+		},
+		{
+			"trailKm": 1594.418,
+			"proximity": "crosses",
+			"name": "Zečjak od Premužićeve staze",
+			"ref": "12:04",
+			"network": "Hrvatski planinarski savez",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 116.8
+		},
+		{
+			"trailKm": 1603.445,
+			"proximity": "crosses",
+			"name": "Prema Šatorini od Premužićeve staze",
+			"ref": "12.07",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 113.2
+		},
+		{
+			"trailKm": 1604.187,
+			"proximity": "crosses",
+			"name": "Od Alana u srednji Velebit",
+			"ref": "HR-W-12",
+			"network": "lwn",
+			"offBearingDeg": 170.1
+		},
+		{
+			"trailKm": 1605.675,
+			"proximity": "crosses",
+			"name": "Šatorina od Mliništa preko Matijević brijega",
+			"ref": "12.10",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 225
+		},
+		{
+			"trailKm": 1607.402,
+			"proximity": "crosses",
+			"name": "Težakovačko vrelo iz Radlovca",
+			"ref": "12.12",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 183.7
+		},
+		{
+			"trailKm": 1608.996,
+			"proximity": "crosses",
+			"name": "Prema Kuginoj kući od Premužićeve staze kod livade Splovine",
+			"ref": "12.15",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 71.6
+		},
+		{
+			"trailKm": 1608.996,
+			"proximity": "crosses",
+			"name": "Od magistrale do Premužićeve staze (Splovine) preko Radlovca",
+			"ref": "12.14",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 255.2
+		},
+		{
+			"trailKm": 1612.147,
+			"proximity": "crosses",
+			"name": "Kugina kuća od Premužićeve staze kod Skorpovca",
+			"ref": "12.17",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 31.7
+		},
+		{
+			"trailKm": 1612.187,
+			"proximity": "crosses",
+			"name": "Skorpovac od Cesarice preko Pejakuše",
+			"ref": "12.08",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 268.1
+		},
+		{
+			"trailKm": 1619.822,
+			"proximity": "crosses",
+			"name": "Dabarska Kosa",
+			"ref": "12.29",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 265.9
+		},
+		{
+			"trailKm": 1619.92,
+			"proximity": "crosses",
+			"name": "Grebenski put kroz Dabarske kukove",
+			"ref": "12.33",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 115
+		},
+		{
+			"trailKm": 1620.675,
+			"proximity": "crosses",
+			"name": "Dabri i Dabarski kukovi",
+			"ref": "HR-W-13",
+			"network": "lwn",
+			"offBearingDeg": 148.6
+		},
+		{
+			"trailKm": 1621.274,
+			"proximity": "crosses",
+			"name": "Butinovača od Premužićeve staze",
+			"ref": "12.35",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 10.1
+		},
+		{
+			"trailKm": 1621.622,
+			"proximity": "crosses",
+			"name": "Prpić polje - Pržine",
+			"ref": "12.56",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 317.6
+		},
+		{
+			"trailKm": 1622.392,
+			"proximity": "crosses",
+			"name": "Basača iz smjera Badnja",
+			"ref": "12.57",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 228.4
+		},
+		{
+			"trailKm": 1622.392,
+			"proximity": "crosses",
+			"name": "Badanj iz smjera Basače",
+			"ref": "12.58",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 48.5
+		},
+		{
+			"trailKm": 1623.589,
+			"proximity": "crosses",
+			"name": "Premužićeva staza od Kubusa",
+			"ref": "12.55",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 216.6
+		},
+		{
+			"trailKm": 1624.434,
+			"proximity": "crosses",
+			"name": "Kubus - Terezijana",
+			"ref": "13.01.03A",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 130.3
+		},
+		{
+			"trailKm": 1625.014,
+			"proximity": "crosses",
+			"name": "Debela Kosa",
+			"ref": "13.01.03",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 133.1
+		},
+		{
+			"trailKm": 1626.168,
+			"proximity": "crosses",
+			"name": "Poučna staza Terezijana",
+			"network": "lwn",
+			"offBearingDeg": 90.8
+		},
+		{
+			"trailKm": 1628.028,
+			"proximity": "crosses",
+			"name": "Ždrilo - Sadikovac",
+			"ref": "13.01.06",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 140.2
+		},
+		{
+			"trailKm": 1628.584,
+			"proximity": "crosses",
+			"name": "Sladovača - Veliki Sadikovac",
+			"ref": "13.01.07",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 132
+		},
+		{
+			"trailKm": 1630.586,
+			"proximity": "crosses",
+			"name": "Južni Velebit I - do Šugarske dulibe",
+			"ref": "HR-W-14",
+			"network": "lwn",
+			"offBearingDeg": 25.2
+		},
+		{
+			"trailKm": 1630.586,
+			"proximity": "crosses",
+			"name": "Piskovita kosica - Baške oštarije",
+			"ref": "13.01.04",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 25.2
+		},
+		{
+			"trailKm": 1630.621,
+			"proximity": "crosses",
+			"name": "Cesta za Karlobag - Konjsko - Jurkove doline",
+			"ref": "13.01.02",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 271.9
+		},
+		{
+			"trailKm": 1632.475,
+			"proximity": "crosses",
+			"name": "Staza Rudelinka",
+			"ref": "13.02.02",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 192.9
+		},
+		{
+			"trailKm": 1632.501,
+			"proximity": "crosses",
+			"name": "Šugarska duliba - Piskovita kosica",
+			"ref": "13.02.05",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 132.2
+		},
+		{
+			"trailKm": 1632.732,
+			"proximity": "crosses",
+			"name": "Piskovita kosica - Konjevača sedlo",
+			"ref": "13.01.11",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 9.9
+		},
+		{
+			"trailKm": 1637.067,
+			"proximity": "crosses",
+			"name": "Ramino korito",
+			"ref": "13.02.04",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 327.8
+		},
+		{
+			"trailKm": 1638.145,
+			"proximity": "crosses",
+			"name": "Brušane - Ripište",
+			"ref": "13.02.03",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 204.2
+		},
+		{
+			"trailKm": 1640.557,
+			"proximity": "crosses",
+			"name": "Križac - Šugarska duliba",
+			"ref": "13.02.09",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 328
+		},
+		{
+			"trailKm": 1644.401,
+			"proximity": "crosses",
+			"name": "Via Adriatica #5: Baške Oštarije => Prezid",
+			"network": "rwn",
+			"osmcSymbol": "blue:blue_round:none:VA:white",
+			"offBearingDeg": 283.1
+		},
+		{
+			"trailKm": 1644.401,
+			"proximity": "crosses",
+			"name": "Južni Velebit II - do Stapa",
+			"ref": "HR-W-15",
+			"network": "lwn",
+			"offBearingDeg": 283.1
+		},
+		{
+			"trailKm": 1648.537,
+			"proximity": "crosses",
+			"name": "Stap - odvojak za Panos",
+			"ref": "13.04.01",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 212
+		},
+		{
+			"trailKm": 1649.123,
+			"proximity": "crosses",
+			"name": "Stap - Jelova Ruja",
+			"ref": "13.04.03",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 97.1
+		},
+		{
+			"trailKm": 1649.67,
+			"proximity": "crosses",
+			"name": "Kruščica - Stap",
+			"ref": "13.04.06",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 186.2
+		},
+		{
+			"trailKm": 1649.67,
+			"proximity": "crosses",
+			"name": "Ljubotić - Stap",
+			"ref": "407",
+			"network": "nwn",
+			"offBearingDeg": 186.2
+		},
+		{
+			"trailKm": 1649.67,
+			"proximity": "crosses",
+			"name": "Bristovac - Stap",
+			"offBearingDeg": 186.2
+		},
+		{
+			"trailKm": 1658.242,
+			"proximity": "crosses",
+			"name": "Šibuljina - Malo Rujno",
+			"ref": "501",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 271.3
+		},
+		{
+			"trailKm": 1658.853,
+			"proximity": "crosses",
+			"name": "Južni Velebit III - do Struga",
+			"ref": "HR-W-16",
+			"network": "lwn",
+			"offBearingDeg": 312.8
+		},
+		{
+			"trailKm": 1658.853,
+			"proximity": "crosses",
+			"name": "Stap - Veliko Rujno",
+			"ref": "414",
+			"network": "rwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 312.8
+		},
+		{
+			"trailKm": 1659.41,
+			"proximity": "crosses",
+			"name": "Rujno - Oglavinovac",
+			"ref": "13.05.05",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 60.6
+		},
+		{
+			"trailKm": 1661.286,
+			"proximity": "crosses",
+			"name": "Čavići - Veliko Rujno",
+			"ref": "503",
+			"network": "rwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 214.6
+		},
+		{
+			"trailKm": 1661.62,
+			"proximity": "crosses",
+			"name": "Bojinac, preko Velikog dolca",
+			"ref": "603",
+			"network": "lwn",
+			"offBearingDeg": 253.7
+		},
+		{
+			"trailKm": 1661.856,
+			"proximity": "crosses",
+			"name": "Milovci - Veliko Rujno",
+			"ref": "504",
+			"network": "rwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 158.7
+		},
+		{
+			"trailKm": 1661.942,
+			"proximity": "crosses",
+			"name": "Velika Paklenica - Veliko Rujno",
+			"ref": "608",
+			"network": "rwn",
+			"offBearingDeg": 123
+		},
+		{
+			"trailKm": 1663.8,
+			"proximity": "crosses",
+			"name": "Golić - Stražbenica",
+			"ref": "610",
+			"network": "lwn",
+			"offBearingDeg": 215.4
+		},
+		{
+			"trailKm": 1664.2,
+			"proximity": "crosses",
+			"name": "Dom u Velikoj Paklenici - Stražbenica",
+			"ref": "819",
+			"network": "lwn",
+			"offBearingDeg": 125.4
+		},
+		{
+			"trailKm": 1664.846,
+			"proximity": "crosses",
+			"name": "Dom u Velikoj Paklenici - Krajni brig",
+			"ref": "821",
+			"network": "lwn",
+			"offBearingDeg": 89.1
+		},
+		{
+			"trailKm": 1665.155,
+			"proximity": "crosses",
+			"name": "Veliko Rujno - Struge",
+			"ref": "607",
+			"network": "lwn",
+			"offBearingDeg": 230.1
+		},
+		{
+			"trailKm": 1666.8,
+			"proximity": "crosses",
+			"name": "Oglavinovac - Struge",
+			"ref": "701",
+			"network": "lwn",
+			"offBearingDeg": 286.6
+		},
+		{
+			"trailKm": 1667.354,
+			"proximity": "crosses",
+			"name": "Medak - Struge",
+			"ref": "13.07.13",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 1.7
+		},
+		{
+			"trailKm": 1667.93,
+			"proximity": "crosses",
+			"name": "Bunovac - Izvor Marasovac",
+			"ref": "13.07.15",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 18.1
+		},
+		{
+			"trailKm": 1669.483,
+			"proximity": "crosses",
+			"name": "Bukova staza",
+			"ref": "703",
+			"network": "lwn",
+			"offBearingDeg": 258.9
+		},
+		{
+			"trailKm": 1670.585,
+			"proximity": "crosses",
+			"name": "Struge - Vaganski vrh",
+			"ref": "13.07.02",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 268.3
+		},
+		{
+			"trailKm": 1671.366,
+			"proximity": "crosses",
+			"name": "Lipa staza",
+			"ref": "706",
+			"network": "lwn",
+			"offBearingDeg": 238.2
+		},
+		{
+			"trailKm": 1672.445,
+			"proximity": "crosses",
+			"name": "Brundo",
+			"ref": "712",
+			"network": "lwn",
+			"offBearingDeg": 232.3
+		},
+		{
+			"trailKm": 1673.458,
+			"proximity": "crosses",
+			"name": "Bunovac - Malovan",
+			"ref": "13.07.17",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 357.7
+		},
+		{
+			"trailKm": 1673.731,
+			"proximity": "crosses",
+			"name": "Nacionalni park Paklenica",
+			"ref": "HR-W-17",
+			"network": "lwn",
+			"offBearingDeg": 304.4
+		},
+		{
+			"trailKm": 1673.731,
+			"proximity": "crosses",
+			"name": "Vaganski vrh - Sveto Brdo",
+			"ref": "709",
+			"network": "lwn",
+			"offBearingDeg": 304.4
+		},
+		{
+			"trailKm": 1675.656,
+			"proximity": "crosses",
+			"name": "Bunovac - Čičina dolina",
+			"ref": "13.09.01",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 13.9
+		},
+		{
+			"trailKm": 1675.732,
+			"proximity": "crosses",
+			"name": "Ivine Vodice - Čičina dolina",
+			"ref": "902",
+			"offBearingDeg": 201.5
+		},
+		{
+			"trailKm": 1677.476,
+			"proximity": "crosses",
+			"name": "Vlaški grad - Grebensko sedlo",
+			"ref": "903",
+			"network": "lwn",
+			"offBearingDeg": 184.2
+		},
+		{
+			"trailKm": 1679.274,
+			"proximity": "crosses",
+			"name": "Dušice - Sveto Brdo",
+			"ref": "909",
+			"network": "lwn",
+			"offBearingDeg": 133.1
+		},
+		{
+			"trailKm": 1681.339,
+			"proximity": "crosses",
+			"name": "Mali Alan - Dušice",
+			"ref": "1001",
+			"network": "lwn",
+			"offBearingDeg": 87.3
+		},
+		{
+			"trailKm": 1682.966,
+			"proximity": "crosses",
+			"name": "Ivanjska lokva - Dušice",
+			"ref": "908",
+			"network": "lwn",
+			"offBearingDeg": 14.6
+		},
+		{
+			"trailKm": 1683.697,
+			"proximity": "near",
+			"name": "Libinjska kosa - Iza Čovika",
+			"ref": "906",
+			"network": "lwn",
+			"offBearingDeg": 209.8
+		},
+		{
+			"trailKm": 1685.597,
+			"proximity": "crosses",
+			"name": "Zlatino sklonište",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_circle",
+			"offBearingDeg": 205.2
+		},
+		{
+			"trailKm": 1691.711,
+			"proximity": "crosses",
+			"name": "Južni Velebit IV - Tulove grede",
+			"ref": "HR-W-18",
+			"network": "iwn",
+			"offBearingDeg": 174.6
+		},
+		{
+			"trailKm": 1691.711,
+			"proximity": "crosses",
+			"name": "1003 Libinjska kosa - Alanac",
+			"ref": "1003",
+			"network": "lwn",
+			"offBearingDeg": 174.6
+		},
+		{
+			"trailKm": 1693.368,
+			"proximity": "crosses",
+			"name": "Tulove Grede",
+			"ref": "1004",
+			"network": "lwn",
+			"offBearingDeg": 59.3
+		},
+		{
+			"trailKm": 1711.142,
+			"proximity": "crosses",
+			"name": "Crnopac",
+			"ref": "HR-W-18",
+			"network": "iwn",
+			"offBearingDeg": 171.1
+		},
+		{
+			"trailKm": 1711.142,
+			"proximity": "crosses",
+			"name": "Crnopac vrh",
+			"ref": "1101",
+			"network": "lwn",
+			"offBearingDeg": 171.1
+		},
+		{
+			"trailKm": 1712.549,
+			"proximity": "crosses",
+			"name": "Planinarsko sklonište Crnopac",
+			"ref": "1102",
+			"network": "lwn",
+			"offBearingDeg": 57.5
+		},
+		{
+			"trailKm": 1714.032,
+			"proximity": "crosses",
+			"name": "Put Malog princa",
+			"ref": "1105",
+			"network": "lwn",
+			"offBearingDeg": 105
+		},
+		{
+			"trailKm": 1714.151,
+			"proximity": "crosses",
+			"name": "Orlov kamen",
+			"ref": "1106",
+			"offBearingDeg": 262.3
+		},
+		{
+			"trailKm": 1715.029,
+			"proximity": "crosses",
+			"name": "Cesta - Sklonište - Mali Crnopac",
+			"ref": "1103",
+			"network": "rwn",
+			"offBearingDeg": 14.1
+		},
+		{
+			"trailKm": 1739.36,
+			"proximity": "crosses",
+			"name": "Gračac - Zrmanja - Krka",
+			"ref": "HR-W-20",
+			"network": "lwn",
+			"offBearingDeg": 169.2
+		},
+		{
+			"trailKm": 1747.909,
+			"proximity": "crosses",
+			"name": "Otrić - Poštak",
+			"ref": "1",
+			"network": "rwn",
+			"offBearingDeg": 277.7
+		},
+		{
+			"trailKm": 1790.452,
+			"proximity": "crosses",
+			"name": "Guge-Brezovac",
+			"offBearingDeg": 175.8
+		},
+		{
+			"trailKm": 1793.264,
+			"proximity": "crosses",
+			"name": "BREZOVAC - BADANJ",
+			"ref": "107",
+			"network": "lwn",
+			"offBearingDeg": 219.8
+		},
+		{
+			"trailKm": 1794.139,
+			"proximity": "crosses",
+			"name": "Od Knina do Brezovca",
+			"ref": "HR-W-22",
+			"network": "lwn",
+			"offBearingDeg": 287.1
+		},
+		{
+			"trailKm": 1798.963,
+			"proximity": "crosses",
+			"name": "yogurt staza Mirkovići-Dinara",
+			"offBearingDeg": 243.9
+		},
+		{
+			"trailKm": 1799.895,
+			"proximity": "crosses",
+			"name": "Glavaš-Dinara_brezovac",
+			"offBearingDeg": 295
+		},
+		{
+			"trailKm": 1799.895,
+			"proximity": "crosses",
+			"name": "Put preko vrha Dinare",
+			"ref": "HR-W-23",
+			"offBearingDeg": 295
+		},
+		{
+			"trailKm": 1800.775,
+			"proximity": "crosses",
+			"name": "Uništa-Dinara",
+			"offBearingDeg": 140.3
+		},
+		{
+			"trailKm": 1800.775,
+			"proximity": "crosses",
+			"name": "Martinove košare-Leurdovac-Dinara",
+			"offBearingDeg": 140.3
+		},
+		{
+			"trailKm": 1805.387,
+			"proximity": "crosses",
+			"name": "Glavaš-Ošjak-Dinara",
+			"network": "nwn",
+			"offBearingDeg": 335.2
+		},
+		{
+			"trailKm": 1807.308,
+			"proximity": "crosses",
+			"name": "Glavaš-Dinara",
+			"offBearingDeg": 318.1
+		},
+		{
+			"trailKm": 1813.427,
+			"proximity": "crosses",
+			"name": "Cetina put Oluje",
+			"offBearingDeg": 46
+		},
+		{
+			"trailKm": 1817.465,
+			"proximity": "crosses",
+			"name": "Put Oluje",
+			"network": "rwn",
+			"offBearingDeg": 48.1
+		},
+		{
+			"trailKm": 1817.465,
+			"proximity": "crosses",
+			"name": "Cetina-Rupe",
+			"network": "lwn",
+			"offBearingDeg": 48.1
+		},
+		{
+			"trailKm": 1827.19,
+			"proximity": "crosses",
+			"name": "Antića glavica",
+			"offBearingDeg": 283.5
+		},
+		{
+			"trailKm": 1829.153,
+			"proximity": "crosses",
+			"name": "Ježević-Crvene_grede-marin_bunar",
+			"offBearingDeg": 47.6
+		},
+		{
+			"trailKm": 1833.585,
+			"proximity": "crosses",
+			"name": "ČorinLacman_Duvjakuša",
+			"offBearingDeg": 96.7
+		},
+		{
+			"trailKm": 1835.688,
+			"proximity": "crosses",
+			"name": "sklonište \"Pume\"-Troglav",
+			"offBearingDeg": 173.2
+		},
+		{
+			"trailKm": 1835.688,
+			"proximity": "crosses",
+			"name": "Ježević - Velika Duvjakuša",
+			"network": "lwn",
+			"osmcSymbol": "red:white:red_frame:J-VD:black",
+			"offBearingDeg": 173.2
+		},
+		{
+			"trailKm": 1838.381,
+			"proximity": "crosses",
+			"name": "planinska staza na Troglav - dijelom kolskim putem",
+			"network": "lwn",
+			"offBearingDeg": 138.8
+		},
+		{
+			"trailKm": 1838.381,
+			"proximity": "crosses",
+			"name": "Velika Duvjakuša",
+			"offBearingDeg": 138.8
+		},
+		{
+			"trailKm": 1839.651,
+			"proximity": "crosses",
+			"name": "planinska staza na Troglav",
+			"network": "lwn",
+			"offBearingDeg": 141.9
+		},
+		{
+			"trailKm": 1842.781,
+			"proximity": "crosses",
+			"name": "Vjetar sa Dinare-Pume",
+			"offBearingDeg": 308.2
+		},
+		{
+			"trailKm": 1847.293,
+			"proximity": "crosses",
+			"name": "Planinska staza planinarski dom sv. Jakov planinarsko sklonište PU Dinaridi (ratnim putem)",
+			"network": "lwn",
+			"offBearingDeg": 162
+		},
+		{
+			"trailKm": 1847.293,
+			"proximity": "crosses",
+			"offBearingDeg": 162
+		},
+		{
+			"trailKm": 1849.174,
+			"proximity": "crosses",
+			"name": "Planinarska staza na Maglaj",
+			"network": "lwn",
+			"offBearingDeg": 194.9
+		},
+		{
+			"trailKm": 1849.174,
+			"proximity": "crosses",
+			"name": "Vrdovo - planinarsko sklonište PU Dinarida",
+			"network": "lwn",
+			"offBearingDeg": 194.9
+		},
+		{
+			"trailKm": 1849.174,
+			"proximity": "crosses",
+			"name": "PD Jakov",
+			"network": "lwn",
+			"offBearingDeg": 194.9
+		},
+		{
+			"trailKm": 1850.048,
+			"proximity": "crosses",
+			"name": "Planinarski put na Debelo brdo (Karaula)",
+			"network": "lwn",
+			"offBearingDeg": 313
+		},
+		{
+			"trailKm": 1851.044,
+			"proximity": "crosses",
+			"name": "Kurtagić - Vaganj - Vrdovo",
+			"network": "lwn",
+			"offBearingDeg": 12.8
+		},
+		{
+			"trailKm": 1877.498,
+			"proximity": "crosses",
+			"name": "Camino Central Dalmatia",
+			"network": "rwn",
+			"osmcSymbol": "blue:blue:shell_modern",
+			"offBearingDeg": 317.5
+		},
+		{
+			"trailKm": 1917.83,
+			"proximity": "crosses",
+			"name": "Poučna staza Leopolda Mandića",
+			"offBearingDeg": 190.8
+		},
+		{
+			"trailKm": 1921.783,
+			"proximity": "crosses",
+			"name": "Via ferrata \"Fortica\"",
+			"network": "lwn",
+			"offBearingDeg": 115.3
+		},
+		{
+			"trailKm": 1922.165,
+			"proximity": "crosses",
+			"name": "Planovo - Fortica",
+			"network": "lwn",
+			"offBearingDeg": 307.4
+		},
+		{
+			"trailKm": 1922.982,
+			"proximity": "crosses",
+			"name": "Omiš - Fortica",
+			"network": "lwn",
+			"offBearingDeg": 326.4
+		},
+		{
+			"trailKm": 1924.889,
+			"proximity": "crosses",
+			"name": "Omiš - Kula",
+			"offBearingDeg": 126
+		},
+		{
+			"trailKm": 1926.63,
+			"proximity": "crosses",
+			"network": "lwn",
+			"offBearingDeg": 107.2
+		},
+		{
+			"trailKm": 1927.539,
+			"proximity": "crosses",
+			"name": "Sv. Vid - Stupine",
+			"network": "lwn",
+			"offBearingDeg": 104.5
+		},
+		{
+			"trailKm": 1928.981,
+			"proximity": "crosses",
+			"name": "Gorica - sv. Vid",
+			"network": "lwn",
+			"offBearingDeg": 222.4
+		},
+		{
+			"trailKm": 1958.98,
+			"proximity": "crosses",
+			"network": "lwn",
+			"offBearingDeg": 256.1
+		},
+		{
+			"trailKm": 1960.163,
+			"proximity": "crosses",
+			"network": "lwn",
+			"offBearingDeg": 32.5
+		},
+		{
+			"trailKm": 1962.303,
+			"proximity": "crosses",
+			"network": "lwn",
+			"offBearingDeg": 3
+		},
+		{
+			"trailKm": 1963.195,
+			"proximity": "crosses",
+			"name": "Makarska - Vošac",
+			"network": "rwn",
+			"offBearingDeg": 30.4
+		},
+		{
+			"trailKm": 1964.105,
+			"proximity": "crosses",
+			"network": "lwn",
+			"offBearingDeg": 340.8
+		},
+		{
+			"trailKm": 1966.948,
+			"proximity": "crosses",
+			"network": "lwn",
+			"offBearingDeg": 176.8
+		},
+		{
+			"trailKm": 1966.948,
+			"proximity": "crosses",
+			"name": "Srida Selo-M-Lađena",
+			"offBearingDeg": 176.8
+		},
+		{
+			"trailKm": 1966.948,
+			"proximity": "crosses",
+			"name": "Turići-pl.dom Lađena",
+			"offBearingDeg": 176.8
+		},
+		{
+			"trailKm": 1968.596,
+			"proximity": "crosses",
+			"network": "lwn",
+			"offBearingDeg": 63.5
+		},
+		{
+			"trailKm": 1973.663,
+			"proximity": "crosses",
+			"name": "Sv.Ilija-",
+			"offBearingDeg": 295.3
+		},
+		{
+			"trailKm": 1976.491,
+			"proximity": "crosses",
+			"network": "lwn",
+			"offBearingDeg": 352.6
+		},
+		{
+			"trailKm": 1984.408,
+			"proximity": "crosses",
+			"offBearingDeg": 209.3
+		},
+		{
+			"trailKm": 2001.374,
+			"proximity": "crosses",
+			"network": "lwn",
+			"osmcSymbol": "red_circle",
+			"offBearingDeg": 209.7
+		},
+		{
+			"trailKm": 2009.105,
+			"proximity": "crosses",
+			"name": "Podaca - Viter",
+			"offBearingDeg": 2.5
+		},
+		{
+			"trailKm": 2013.875,
+			"proximity": "crosses",
+			"name": "Gradac - Sv. Ilija",
+			"offBearingDeg": 302.7
+		},
+		{
+			"trailKm": 2016.467,
+			"proximity": "crosses",
+			"name": "BPS",
+			"offBearingDeg": 355.8
+		},
+		{
+			"trailKm": 2022.113,
+			"proximity": "crosses",
+			"name": "BPS",
+			"offBearingDeg": 21.6
+		},
+		{
+			"trailKm": 2119.162,
+			"proximity": "crosses",
+			"name": "Staza starog ribara",
+			"ref": "RIB",
+			"network": "lwn",
+			"offBearingDeg": 8.1
+		},
+		{
+			"trailKm": 2120.354,
+			"proximity": "crosses",
+			"name": "Staza maslinova ulja",
+			"ref": "MAS",
+			"network": "lwn",
+			"offBearingDeg": 306.1
+		},
+		{
+			"trailKm": 2121.3,
+			"proximity": "crosses",
+			"name": "Lungomare",
+			"ref": "LUN",
+			"network": "lwn",
+			"offBearingDeg": 17.3
+		},
+		{
+			"trailKm": 2147.013,
+			"proximity": "crosses",
+			"name": "Camino Dubrovnik",
+			"network": "iwn",
+			"osmcSymbol": "blue:blue:shell_modern",
+			"offBearingDeg": 286.4
+		}
+	]
 }

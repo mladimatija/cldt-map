@@ -8,6 +8,7 @@
 
 # enrichment script cache (per-type Overpass results; safe to delete)
 /.cache/
+/.overpass-cache/
 
 # testing
 /coverage
