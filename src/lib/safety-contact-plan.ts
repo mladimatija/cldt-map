@@ -47,18 +47,24 @@ export interface SafetyContactTemplates {
 
 /** Builds {@link SafetyContactTemplates} from a namespace translator scoped to
  *  `stagePlanner`, mapping the nine `safetyContact.*` message keys in one place
- *  so the stage-planner panel and the trip-brief exporter cannot drift. */
-export function safetyContactTemplates(t: (key: string) => string): SafetyContactTemplates {
+ *  so the stage-planner panel and the trip-brief exporter cannot drift.
+ *
+ *  Uses the translator's `raw` accessor, not the formatting call: these are
+ *  literal templates whose `{day}`/`{date}`/`{anchor}` slots are filled later by
+ *  `buildSafetyContactPlan`/`fillAnchor` via string replacement. Calling `t(key)`
+ *  would make next-intl parse the ICU placeholders at lookup time and throw a
+ *  FORMATTING_ERROR because no values are supplied. */
+export function safetyContactTemplates(t: { raw: (key: string) => string }): SafetyContactTemplates {
 	return {
-		heading: t('safetyContact.heading'),
-		intro: t('safetyContact.intro'),
-		dayLine: t('safetyContact.dayLine'),
-		dayLineNoDate: t('safetyContact.dayLineNoDate'),
-		sleepAnchor: t('safetyContact.sleepAnchor'),
-		noAnchor: t('safetyContact.noAnchor'),
-		restDay: t('safetyContact.restDay'),
-		closing: t('safetyContact.closing'),
-		closingNoDate: t('safetyContact.closingNoDate'),
+		heading: t.raw('safetyContact.heading'),
+		intro: t.raw('safetyContact.intro'),
+		dayLine: t.raw('safetyContact.dayLine'),
+		dayLineNoDate: t.raw('safetyContact.dayLineNoDate'),
+		sleepAnchor: t.raw('safetyContact.sleepAnchor'),
+		noAnchor: t.raw('safetyContact.noAnchor'),
+		restDay: t.raw('safetyContact.restDay'),
+		closing: t.raw('safetyContact.closing'),
+		closingNoDate: t.raw('safetyContact.closingNoDate'),
 	};
 }
 
