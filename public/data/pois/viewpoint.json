@@ -1,5 +1,5 @@
 {
-	"lastUpdated": "2026-06-14",
+	"lastUpdated": "2026-07-11",
 	"pois": [
 		{
 			"id": "viewpoint-vukovo-8810849908",
@@ -13,7 +13,7 @@
 			"source": "osm",
 			"nearestHighwayM": 24,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-vidikovac-vina-belje-6362824343",
@@ -27,7 +27,7 @@
 			"source": "osm",
 			"nearestHighwayM": 8,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-cesljakovacki-vis-925752895",
@@ -42,7 +42,7 @@
 			"source": "osm",
 			"nearestHighwayM": 0,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-vidikovac-1036084562",
@@ -56,7 +56,7 @@
 			"source": "osm",
 			"nearestHighwayM": 29,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-podrevec-1478291606",
@@ -71,7 +71,7 @@
 			"source": "osm",
 			"nearestHighwayM": 0,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-obelisk-726812052",
@@ -85,7 +85,7 @@
 			"source": "osm",
 			"nearestHighwayM": 0,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-1-zub-727326920",
@@ -102,7 +102,7 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 664,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-3th-tooth-7551824985",
@@ -118,7 +118,7 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 679,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-4th-tooth-7551825085",
@@ -134,7 +134,7 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 682,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-5th-tooth-7551825086",
@@ -150,7 +150,7 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 708,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-6th-tooth-7551825185",
@@ -166,7 +166,7 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 758,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-vidikovac-odasiljac-837948865",
@@ -182,7 +182,7 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 738,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-sedmi-zub-7551825186",
@@ -199,7 +199,7 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 839,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-madjerkin-breg-3881578870",
@@ -214,7 +214,7 @@
 			"source": "osm",
 			"nearestHighwayM": 4,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-goricko-sviralo-8807174653",
@@ -230,7 +230,7 @@
 			"source": "osm",
 			"nearestHighwayM": 17,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-tri-zaklji-8620885468",
@@ -244,7 +244,7 @@
 			"source": "osm",
 			"nearestHighwayM": 5,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-glazareva-pecina-3840492657",
@@ -261,7 +261,7 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 612,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-vidikovac-glazareva-pecina-10794993888",
@@ -277,7 +277,7 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 616,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-filicev-dom-10574820757",
@@ -292,7 +292,7 @@
 			"source": "osm",
 			"nearestHighwayM": 5,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-piramida-ravna-gora-1251652673",
@@ -307,7 +307,7 @@
 			"source": "osm",
 			"nearestHighwayM": 4,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-vidikovac-paragliding-take-off-1251720347",
@@ -321,7 +321,7 @@
 			"source": "osm",
 			"nearestHighwayM": 1,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-dedek-i-babica-11853767169",
@@ -335,7 +335,7 @@
 			"source": "osm",
 			"nearestHighwayM": 0,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-generalski-stol-6516179917",
@@ -349,7 +349,7 @@
 			"source": "osm",
 			"nearestHighwayM": 3,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-crna-pec-2793797268",
@@ -363,7 +363,7 @@
 			"source": "osm",
 			"nearestHighwayM": 0,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-stricevo-1386029853",
@@ -377,7 +377,7 @@
 			"source": "osm",
 			"nearestHighwayM": 1,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-vidikovac-sova-2339610414",
@@ -391,7 +391,7 @@
 			"source": "osm",
 			"nearestHighwayM": 58,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-vidikovac-velka-pec-705951445",
@@ -405,7 +405,7 @@
 			"source": "osm",
 			"nearestHighwayM": 0,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-vidikovac-graficar-4994460221",
@@ -421,7 +421,7 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 84,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-vidikovac-1495010050",
@@ -437,7 +437,7 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 364,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-drazicin-kamen-3812835311",
@@ -453,7 +453,7 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 800,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-ostrc-701627282",
@@ -469,7 +469,7 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 770,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-medveja-stena-10731229920",
@@ -484,7 +484,7 @@
 			"source": "osm",
 			"nearestHighwayM": 3,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-vidikovac-3777324963",
@@ -498,7 +498,7 @@
 			"source": "osm",
 			"nearestHighwayM": 2,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-vidikovac-peric-3777332078",
@@ -514,7 +514,7 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 559,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-kavranova-stijena-4629363290",
@@ -530,7 +530,7 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 693,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-treska-8867484417",
@@ -545,7 +545,7 @@
 			"source": "osm",
 			"nearestHighwayM": 6,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-ilovnjak-8118363217",
@@ -559,7 +559,7 @@
 			"source": "osm",
 			"nearestHighwayM": 5,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-grles-6924216661",
@@ -573,7 +573,7 @@
 			"source": "osm",
 			"nearestHighwayM": 6,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-sljeme-6923994864",
@@ -587,7 +587,7 @@
 			"source": "osm",
 			"nearestHighwayM": 28,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-gora-10970425180",
@@ -601,7 +601,7 @@
 			"source": "osm",
 			"nearestHighwayM": 0,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-ipp-kt6-greben-1781313094",
@@ -617,7 +617,7 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 717,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-belvedere-oprtalj-2624401538",
@@ -631,7 +631,7 @@
 			"source": "osm",
 			"nearestHighwayM": 19,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-sveti-juraj-vrh-brda-2622164880",
@@ -645,7 +645,7 @@
 			"source": "osm",
 			"nearestHighwayM": 4,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-nigrignano-2619951321",
@@ -659,7 +659,7 @@
 			"source": "osm",
 			"nearestHighwayM": 0,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-belvedere-kriz-2657357965",
@@ -675,7 +675,7 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 675,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-panorama-motovun-3220010335",
@@ -691,7 +691,7 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 758,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-zamask-10593511974",
@@ -705,7 +705,7 @@
 			"source": "osm",
 			"nearestHighwayM": 20,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-vidikovac-2628885521",
@@ -719,7 +719,7 @@
 			"source": "osm",
 			"nearestHighwayM": 0,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-pogled-prema-jezeru-butoniga-2670447682",
@@ -733,7 +733,7 @@
 			"source": "osm",
 			"nearestHighwayM": 1,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-pogled-prema-jezeru-butoniga-3978318558",
@@ -747,7 +747,7 @@
 			"source": "osm",
 			"nearestHighwayM": 0,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-pogled-prema-pazinu-2670447681",
@@ -761,7 +761,7 @@
 			"source": "osm",
 			"nearestHighwayM": 15,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-pogled-prema-pazinu-2679501242",
@@ -775,7 +775,7 @@
 			"source": "osm",
 			"nearestHighwayM": 0,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-vidikovac-prema-pazinu-2628892172",
@@ -789,7 +789,7 @@
 			"source": "osm",
 			"nearestHighwayM": 0,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-pazin-cave-847298455",
@@ -805,7 +805,7 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 668,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-pazin-cave-847298517",
@@ -821,7 +821,7 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 706,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-pazinski-krov-2628941165",
@@ -837,7 +837,7 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 949,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-pogled-na-pazinsku-jamu-3208198926",
@@ -853,7 +853,7 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 721,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-vidikovac-pazinski-ponor-3407008293",
@@ -869,7 +869,7 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 572,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-vidikovac-pogled-prema-gradu-3415817893",
@@ -885,7 +885,7 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 510,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-pogled-na-pazinsku-jamu-3415899696",
@@ -901,7 +901,7 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 787,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-pogled-na-pazinsku-jamu-3415899996",
@@ -917,7 +917,7 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 790,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-pogled-na-pazinsku-jamu-4840591396",
@@ -933,7 +933,7 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 752,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-pogled-na-pazinsku-jamu-4840591397",
@@ -949,7 +949,7 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 787,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-pogled-prema-pazinu-2650083070",
@@ -963,7 +963,7 @@
 			"source": "osm",
 			"nearestHighwayM": 0,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-vidikovac-jelensko-6320348246",
@@ -977,7 +977,7 @@
 			"source": "osm",
 			"nearestHighwayM": 13,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-panorama-torneg-3002557732",
@@ -992,7 +992,7 @@
 			"source": "osm",
 			"nearestHighwayM": 5,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-vlidikovac-fortica-2509132895",
@@ -1008,7 +1008,7 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 237,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-kuk-9921392620",
@@ -1022,7 +1022,7 @@
 			"source": "osm",
 			"nearestHighwayM": 13,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-sea-view-255601380",
@@ -1038,7 +1038,7 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 523,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-grbac-3208092407",
@@ -1052,7 +1052,7 @@
 			"source": "osm",
 			"nearestHighwayM": 6,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-bukovo-10801239993",
@@ -1066,7 +1066,7 @@
 			"source": "osm",
 			"nearestHighwayM": 17,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-sea-view-3715467205",
@@ -1082,7 +1082,7 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 469,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-suhi-vrh-2615276068",
@@ -1096,7 +1096,7 @@
 			"source": "osm",
 			"nearestHighwayM": 0,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-plascenica-3682576925",
@@ -1110,7 +1110,7 @@
 			"source": "osm",
 			"nearestHighwayM": 1,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-kula-na-ucki-222398442",
@@ -1125,7 +1125,7 @@
 			"source": "osm",
 			"nearestHighwayM": 4,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-strazica-viewpoint-5158419273",
@@ -1139,7 +1139,7 @@
 			"source": "osm",
 			"nearestHighwayM": 0,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-upper-viewpoint-4366354557",
@@ -1154,7 +1154,7 @@
 			"source": "osm",
 			"nearestHighwayM": 0,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-lower-viewpoint-4421919399",
@@ -1169,7 +1169,7 @@
 			"source": "osm",
 			"nearestHighwayM": 0,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-little-viewpoint-4421919401",
@@ -1184,7 +1184,7 @@
 			"source": "osm",
 			"nearestHighwayM": 0,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-gavranov-greben-5140281606",
@@ -1198,7 +1198,7 @@
 			"source": "osm",
 			"nearestHighwayM": 1,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-vidikovac-4093297072",
@@ -1212,7 +1212,7 @@
 			"source": "osm",
 			"nearestHighwayM": 1,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-majkovac-7218390589",
@@ -1226,7 +1226,7 @@
 			"source": "osm",
 			"nearestHighwayM": 5,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-veprinac-801440794",
@@ -1242,7 +1242,7 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 305,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-vidikovac-2620994305",
@@ -1257,7 +1257,7 @@
 			"source": "osm",
 			"nearestHighwayM": 1,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-mala-fortica-1107647018",
@@ -1273,7 +1273,7 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 364,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-lonceva-griza-8636605794",
@@ -1291,7 +1291,7 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 425,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-vela-plis-8087134276",
@@ -1306,7 +1306,7 @@
 			"source": "osm",
 			"nearestHighwayM": 0,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-vidikovac-petuova-11240019428",
@@ -1320,7 +1320,7 @@
 			"source": "osm",
 			"nearestHighwayM": 4,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-vratnik-panoramic-view-9920120850",
@@ -1334,7 +1334,7 @@
 			"source": "osm",
 			"nearestHighwayM": 3,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-vidikovac-liskovac-9088571487",
@@ -1348,7 +1348,7 @@
 			"source": "osm",
 			"nearestHighwayM": 1,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-vucjak-1202406987",
@@ -1363,7 +1363,7 @@
 			"source": "osm",
 			"nearestHighwayM": 2,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-sunset-view-9000853773",
@@ -1377,7 +1377,7 @@
 			"source": "osm",
 			"nearestHighwayM": 4,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-cross-6596848286",
@@ -1391,7 +1391,7 @@
 			"source": "osm",
 			"nearestHighwayM": 44,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-izvor-cetine-5721917366",
@@ -1405,7 +1405,7 @@
 			"source": "osm",
 			"nearestHighwayM": 6,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-gucnica-179237978",
@@ -1419,7 +1419,7 @@
 			"source": "osm",
 			"nearestHighwayM": 11,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-bila-glavica-3560996130",
@@ -1435,7 +1435,7 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 724,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-vidilica-1206520394",
@@ -1449,7 +1449,7 @@
 			"source": "osm",
 			"nearestHighwayM": 7,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-mirabella-fort-839773043",
@@ -1465,7 +1465,7 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 271,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-visucgrad-1212185823",
@@ -1479,7 +1479,7 @@
 			"source": "osm",
 			"nearestHighwayM": 0,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-gospina-kapelica-1202821524",
@@ -1493,7 +1493,7 @@
 			"source": "osm",
 			"nearestHighwayM": 6,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-satarice-1214802504",
@@ -1508,7 +1508,7 @@
 			"source": "osm",
 			"nearestHighwayM": 0,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-vidikovac-kuzmanici-5903357645",
@@ -1522,7 +1522,7 @@
 			"source": "osm",
 			"nearestHighwayM": 10,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-biokovo-eye-5590981455",
@@ -1567,7 +1567,7 @@
 					"sourceUrl": "https://commons.wikimedia.org/wiki/File:3._SKYWALK_(BIOKOVO).jpg"
 				}
 			],
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-mandlova-ploca-1224132448",
@@ -1581,7 +1581,7 @@
 			"source": "osm",
 			"nearestHighwayM": 0,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-skywalk-7734300242",
@@ -1626,7 +1626,7 @@
 					"sourceUrl": "https://commons.wikimedia.org/wiki/File:3._SKYWALK_(BIOKOVO).jpg"
 				}
 			],
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-gora-kline-12337185847",
@@ -1642,7 +1642,7 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 975,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-vidikovac-podmarace-4443494122",
@@ -1658,7 +1658,7 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 346,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-kremenik-5687460023",
@@ -1674,7 +1674,7 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 285,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-sunset-view-6806058285",
@@ -1690,7 +1690,7 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 434,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-grgic-winery-4976357523",
@@ -1706,7 +1706,7 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 571,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-polozaj-lastva-8544221024",
@@ -1723,7 +1723,7 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 390,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-nice-view-9179813517",
@@ -1739,7 +1739,7 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 362,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-coral-beach-4883384796",
@@ -1755,7 +1755,7 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 390,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-sunset-view-12877795904",
@@ -1771,7 +1771,7 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 304,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-sunset-view-1447452992",
@@ -1787,7 +1787,7 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 356,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-old-town-and-lokrum-viewpoint-4443270890",
@@ -1803,7 +1803,7 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 148,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "viewpoint-beach-4403723492",
@@ -1819,7 +1819,7 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 865,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		}
 	]
 }

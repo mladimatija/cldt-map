@@ -1,5 +1,5 @@
 {
-	"lastUpdated": "2026-06-14",
+	"lastUpdated": "2026-07-11",
 	"pois": [
 		{
 			"id": "shelter-nadstresnica-8810849911",
@@ -13,7 +13,7 @@
 			"source": "osm",
 			"nearestHighwayM": 15,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-skoljka-559850159",
@@ -27,7 +27,7 @@
 			"source": "osm",
 			"nearestHighwayM": 8,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-paviljon-620685250",
@@ -41,7 +41,7 @@
 			"source": "osm",
 			"nearestHighwayM": 4,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-vidikovac-vina-belje-679513065",
@@ -55,7 +55,7 @@
 			"source": "osm",
 			"nearestHighwayM": 21,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-ivina-vrela-8763493774",
@@ -69,7 +69,7 @@
 			"source": "osm",
 			"nearestHighwayM": 15,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-paulinovac-8499697995",
@@ -83,7 +83,7 @@
 			"source": "osm",
 			"nearestHighwayM": 61,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-planinarska-kuca-sasevo-402824242",
@@ -97,7 +97,7 @@
 			"source": "osm",
 			"nearestHighwayM": 12,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-nadstresnica-domobranska-livada-8763476997",
@@ -111,7 +111,7 @@
 			"source": "osm",
 			"nearestHighwayM": 2,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-planinarska-kuca-jezerce-549570154",
@@ -123,10 +123,11 @@
 			"trailKm": 284.6,
 			"distanceFromTrailKm": 1.77,
 			"elevationM": 720,
+			"hutInfo": { "operator": "HGSS Požega" },
 			"source": "osm",
 			"nearestHighwayM": 26,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-planinarsko-skloniste-maliscak-927293624",
@@ -138,10 +139,11 @@
 			"trailKm": 290.7,
 			"distanceFromTrailKm": 3.6,
 			"elevationM": 740,
+			"hutInfo": { "operator": "PD Mališčak" },
 			"source": "osm",
 			"nearestHighwayM": 1,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-planinarsko-skloniste-crni-vrh-231733853",
@@ -156,7 +158,7 @@
 			"source": "osm",
 			"nearestHighwayM": 4,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-grginac-novi-799135009",
@@ -168,8 +170,9 @@
 			"trailKm": 408.6,
 			"distanceFromTrailKm": 7.54,
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-14"
+			"nearestHighwayM": 26,
+			"isReachable": true,
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-ivse-lebovica-centar-10299172529",
@@ -182,7 +185,7 @@
 			"distanceFromTrailKm": 11.1,
 			"source": "osm",
 			"isReachable": false,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-paviljon-4789977710",
@@ -196,7 +199,7 @@
 			"source": "osm",
 			"nearestHighwayM": 8,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-francekovo-skloniste-708050712",
@@ -207,10 +210,11 @@
 			"lng": 16.12624,
 			"trailKm": 744.7,
 			"distanceFromTrailKm": 0.01,
+			"hutInfo": { "operator": "HPD Ivančica" },
 			"source": "osm",
 			"nearestHighwayM": 10,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-hrvatsko-seljacko-lovacko-drustvo-vepar-cucerje-1521740448",
@@ -224,7 +228,7 @@
 			"source": "osm",
 			"nearestHighwayM": 5,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-krizna-jelva-7876524154",
@@ -238,7 +242,7 @@
 			"source": "osm",
 			"nearestHighwayM": 5,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-cortina-design-1155039694",
@@ -251,7 +255,7 @@
 			"distanceFromTrailKm": 11.6,
 			"source": "osm",
 			"isReachable": false,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-lojzekov-izvor-3453359770",
@@ -267,7 +271,7 @@
 			"source": "osm",
 			"nearestHighwayM": 6,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-cresnja-3453359769",
@@ -281,7 +285,7 @@
 			"source": "osm",
 			"nearestHighwayM": 22,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-planinarsko-skloniste-milan-9671590564",
@@ -295,7 +299,7 @@
 			"source": "osm",
 			"nearestHighwayM": 6,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-hornjak-9599354066",
@@ -309,7 +313,7 @@
 			"source": "osm",
 			"nearestHighwayM": 15,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-srnec-1239925981",
@@ -323,7 +327,7 @@
 			"source": "osm",
 			"nearestHighwayM": 1,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-skloniste-kod-kriza-1479544525",
@@ -337,7 +341,7 @@
 			"source": "osm",
 			"nearestHighwayM": 5,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-mijatovac-9612472099",
@@ -352,7 +356,7 @@
 			"source": "osm",
 			"nearestHighwayM": 5,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-njivice-868629775",
@@ -367,7 +371,7 @@
 			"source": "osm",
 			"nearestHighwayM": 8,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-samoca-730793520",
@@ -381,7 +385,7 @@
 			"source": "osm",
 			"nearestHighwayM": 2,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-adolfovac-731378446",
@@ -395,7 +399,7 @@
 			"source": "osm",
 			"nearestHighwayM": 3,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-snopljak-3453493733",
@@ -409,7 +413,7 @@
 			"source": "osm",
 			"nearestHighwayM": 7,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-china-sichuan-730416271",
@@ -422,7 +426,7 @@
 			"distanceFromTrailKm": 10.02,
 			"source": "osm",
 			"isReachable": false,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-tramvajska-cekaonica-zvijezda-375289959",
@@ -434,8 +438,9 @@
 			"trailKm": 795,
 			"distanceFromTrailKm": 7.63,
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-14"
+			"nearestHighwayM": 649,
+			"isReachable": true,
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-grajfova-kopanja-1024047210",
@@ -449,7 +454,7 @@
 			"source": "osm",
 			"nearestHighwayM": 16,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-stopuscak-1014905324",
@@ -463,7 +468,7 @@
 			"source": "osm",
 			"nearestHighwayM": 4,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-podbjelka-1759548676",
@@ -477,7 +482,7 @@
 			"source": "osm",
 			"nearestHighwayM": 20,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-ld-kuna-jablanovec-3326562388",
@@ -491,7 +496,7 @@
 			"source": "osm",
 			"nearestHighwayM": 13,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-zakicnica-1406960312",
@@ -505,7 +510,7 @@
 			"source": "osm",
 			"nearestHighwayM": 16,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-skloniste-limbus-8180280435",
@@ -516,10 +521,11 @@
 			"lng": 15.76883,
 			"trailKm": 823.5,
 			"distanceFromTrailKm": 5.48,
+			"hutInfo": { "operator": "HPD Zaprešić" },
 			"source": "osm",
-			"nearestHighwayM": 229,
+			"nearestHighwayM": 2,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-sjenica-5632938303",
@@ -533,7 +539,7 @@
 			"source": "osm",
 			"nearestHighwayM": 3,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-sjenica-1149352083",
@@ -547,7 +553,7 @@
 			"source": "osm",
 			"nearestHighwayM": 4,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-dom-snjeznik-461662860",
@@ -561,7 +567,7 @@
 			"source": "osm",
 			"nearestHighwayM": 8,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-skloniste-rebar-2161083146",
@@ -575,7 +581,7 @@
 			"source": "osm",
 			"nearestHighwayM": 10,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-kjukar-s-log-cabin-5257395021",
@@ -589,7 +595,7 @@
 			"source": "osm",
 			"nearestHighwayM": 24,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-udruga-gad-318513514",
@@ -602,7 +608,7 @@
 			"distanceFromTrailKm": 11.96,
 			"source": "osm",
 			"isReachable": false,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-skloniste-za-pastire-3777369470",
@@ -614,8 +620,9 @@
 			"trailKm": 1298.4,
 			"distanceFromTrailKm": 7.2,
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-14"
+			"nearestHighwayM": 16,
+			"isReachable": true,
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-babino-skloniste-1574552304",
@@ -629,7 +636,7 @@
 			"source": "osm",
 			"nearestHighwayM": 8,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-zvancici-1255040558",
@@ -643,7 +650,7 @@
 			"source": "osm",
 			"nearestHighwayM": 6,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-skloniste-bitorajka-498449726",
@@ -658,7 +665,7 @@
 			"source": "osm",
 			"nearestHighwayM": 12,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-kuca-kurin-1049540694",
@@ -672,7 +679,7 @@
 			"elevationM": 830,
 			"source": "osm",
 			"isReachable": false,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-kuca-janjcarica-493668410",
@@ -687,7 +694,7 @@
 			"source": "osm",
 			"nearestHighwayM": 9,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-skloniste-jakob-mihelcic-493668895",
@@ -702,7 +709,7 @@
 			"source": "osm",
 			"nearestHighwayM": 7,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-ratkovo-skloniste-498449836",
@@ -717,7 +724,7 @@
 			"source": "osm",
 			"nearestHighwayM": 4,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-skloniste-stozac-498449869",
@@ -731,7 +738,7 @@
 			"elevationM": 800,
 			"source": "osm",
 			"isReachable": false,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-planinarsko-skloniste-miroslav-hirtz-864592379",
@@ -746,7 +753,7 @@
 			"source": "osm",
 			"nearestHighwayM": 7,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-orlovo-gnijezdo-733346025",
@@ -761,7 +768,7 @@
 			"source": "osm",
 			"nearestHighwayM": 3,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-rossijeva-koliba-772443530",
@@ -776,7 +783,7 @@
 			"source": "osm",
 			"nearestHighwayM": 5,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-tadijevac-2174841374",
@@ -788,9 +795,9 @@
 			"trailKm": 1593.3,
 			"distanceFromTrailKm": 5.45,
 			"source": "osm",
-			"nearestHighwayM": 233,
+			"nearestHighwayM": 4,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-beach-shelter-365474338",
@@ -802,9 +809,9 @@
 			"trailKm": 1594.7,
 			"distanceFromTrailKm": 5.9,
 			"source": "osm",
-			"nearestHighwayM": 350,
+			"nearestHighwayM": 16,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-ogradjenica-498407121",
@@ -819,7 +826,7 @@
 			"source": "osm",
 			"nearestHighwayM": 5,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-radlovac-498407132",
@@ -834,7 +841,7 @@
 			"source": "osm",
 			"nearestHighwayM": 50,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-zdrilo-3655591763",
@@ -849,7 +856,7 @@
 			"source": "osm",
 			"nearestHighwayM": 23,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-jelova-ruja-630269550",
@@ -864,7 +871,7 @@
 			"source": "osm",
 			"nearestHighwayM": 18,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-planinarska-kuca-visocica-281604865",
@@ -879,7 +886,7 @@
 			"source": "osm",
 			"nearestHighwayM": 5,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-planinarsko-skloniste-drago-grubac-954973536",
@@ -891,10 +898,11 @@
 			"trailKm": 1802.7,
 			"distanceFromTrailKm": 0,
 			"elevationM": 1645,
+			"hutInfo": { "fee": "no", "operator": "Planinarska udruga Dinaridi" },
 			"source": "osm",
 			"nearestHighwayM": 8,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-martinove-kosare-704169272",
@@ -909,7 +917,7 @@
 			"source": "osm",
 			"nearestHighwayM": 8,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-planinarska-kuca-sveti-jure-544667369",
@@ -921,9 +929,10 @@
 			"trailKm": 1813.1,
 			"distanceFromTrailKm": 12.31,
 			"elevationM": 1119,
+			"hutInfo": { "operator": "HPD \"Zolj\" Vrlika" },
 			"source": "osm",
 			"isReachable": false,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-hrvatski-vitez-josip-goreta-588423845",
@@ -935,10 +944,11 @@
 			"trailKm": 1830.3,
 			"distanceFromTrailKm": 0.1,
 			"elevationM": 1550,
+			"hutInfo": { "operator": "PU Dinaridi" },
 			"source": "osm",
 			"nearestHighwayM": 6,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-skloniste-jankovo-brdo-5618516137",
@@ -953,7 +963,7 @@
 			"source": "osm",
 			"nearestHighwayM": 6,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-kukuzovac-6090046207",
@@ -967,7 +977,7 @@
 			"source": "osm",
 			"nearestHighwayM": 6,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-planinarsko-skloniste-sveti-mihovil-10237882997",
@@ -979,9 +989,10 @@
 			"trailKm": 1884.7,
 			"distanceFromTrailKm": 13.55,
 			"elevationM": 1340,
+			"hutInfo": { "operator": "Pl.društvo Jelinak Trilj" },
 			"source": "osm",
 			"isReachable": false,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-planinarsko-skloniste-ljubljan-2723558069",
@@ -994,7 +1005,7 @@
 			"distanceFromTrailKm": 9.46,
 			"source": "osm",
 			"isReachable": false,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-planinarsko-skloniste-hrvoje-dujmic-4602015856",
@@ -1007,8 +1018,9 @@
 			"distanceFromTrailKm": 7.03,
 			"elevationM": 872,
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-14"
+			"nearestHighwayM": 36,
+			"isReachable": true,
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-vickov-stup-4848291269",
@@ -1021,8 +1033,9 @@
 			"distanceFromTrailKm": 7.73,
 			"elevationM": 1325,
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-14"
+			"nearestHighwayM": 1,
+			"isReachable": true,
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-planinarsko-skloniste-kontejner-5191750228",
@@ -1035,9 +1048,9 @@
 			"distanceFromTrailKm": 6.24,
 			"elevationM": 980,
 			"source": "osm",
-			"nearestHighwayM": 107,
+			"nearestHighwayM": 6,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-milino-sicisce-1217328867",
@@ -1052,7 +1065,7 @@
 			"source": "osm",
 			"nearestHighwayM": 5,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-trposnjik-536744900",
@@ -1067,7 +1080,7 @@
 			"source": "osm",
 			"nearestHighwayM": 5,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-skloniste-luda-kuca-1204658673",
@@ -1079,10 +1092,11 @@
 			"trailKm": 1925.5,
 			"distanceFromTrailKm": 0.01,
 			"elevationM": 650,
+			"hutInfo": { "operator": "Planinarsko društvo Imber" },
 			"source": "osm",
 			"nearestHighwayM": 2,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-lovacko-skloniste-1211927459",
@@ -1096,7 +1110,7 @@
 			"source": "osm",
 			"nearestHighwayM": 19,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "shelter-gloriett-669520289",
@@ -1110,7 +1124,7 @@
 			"source": "osm",
 			"nearestHighwayM": 16,
 			"isReachable": false,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		}
 	]
 }

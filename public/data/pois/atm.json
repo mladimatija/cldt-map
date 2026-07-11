@@ -1,5 +1,5 @@
 {
-	"lastUpdated": "2026-06-14",
+	"lastUpdated": "2026-07-11",
 	"pois": [
 		{
 			"id": "atm-pbz-8356196501",
@@ -13,7 +13,7 @@
 			"source": "osm",
 			"nearestHighwayM": 16,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-pbz-4041107259",
@@ -27,7 +27,7 @@
 			"source": "osm",
 			"nearestHighwayM": 19,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-zagrebacka-banka-10898893067",
@@ -41,7 +41,7 @@
 			"source": "osm",
 			"nearestHighwayM": 10,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-zagrebacka-banka-294809475",
@@ -57,7 +57,7 @@
 			"source": "osm",
 			"nearestHighwayM": 12,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-hrvatska-postanska-banka-721725958",
@@ -71,7 +71,7 @@
 			"source": "osm",
 			"nearestHighwayM": 22,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-banco-popolare-364496917",
@@ -85,7 +85,7 @@
 			"source": "osm",
 			"nearestHighwayM": 9,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-erste-bank-401697673",
@@ -99,7 +99,7 @@
 			"source": "osm",
 			"nearestHighwayM": 22,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-pbz-bankomat-668640471",
@@ -113,7 +113,7 @@
 			"source": "osm",
 			"nearestHighwayM": 21,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-privredna-banka-zagreb-784135787",
@@ -127,7 +127,7 @@
 			"source": "osm",
 			"nearestHighwayM": 5,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-hpb-358444375",
@@ -141,7 +141,7 @@
 			"source": "osm",
 			"nearestHighwayM": 9,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-addiko-bank-358444376",
@@ -155,7 +155,7 @@
 			"source": "osm",
 			"nearestHighwayM": 18,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-otp-1317289144",
@@ -169,7 +169,7 @@
 			"source": "osm",
 			"nearestHighwayM": 4,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-erste-1325227224",
@@ -183,7 +183,7 @@
 			"source": "osm",
 			"nearestHighwayM": 16,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-hypo-1319870370",
@@ -197,7 +197,7 @@
 			"source": "osm",
 			"nearestHighwayM": 8,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-erste-1091360801",
@@ -211,7 +211,7 @@
 			"source": "osm",
 			"nearestHighwayM": 17,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-zaba-1091361348",
@@ -225,7 +225,7 @@
 			"source": "osm",
 			"nearestHighwayM": 20,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-otp-1091361816",
@@ -239,7 +239,7 @@
 			"source": "osm",
 			"nearestHighwayM": 22,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-pbz-1496377142",
@@ -253,7 +253,7 @@
 			"source": "osm",
 			"nearestHighwayM": 7,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-hypo-alpe-adria-bank-287625298",
@@ -267,7 +267,7 @@
 			"source": "osm",
 			"nearestHighwayM": 7,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-privredna-banka-zagreb-287625299",
@@ -281,7 +281,7 @@
 			"source": "osm",
 			"nearestHighwayM": 8,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-zagrebacka-banka-356919117",
@@ -295,7 +295,7 @@
 			"source": "osm",
 			"nearestHighwayM": 18,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-otp-bank-356919119",
@@ -309,7 +309,7 @@
 			"source": "osm",
 			"nearestHighwayM": 8,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-banka-kovanica-356919120",
@@ -323,7 +323,7 @@
 			"source": "osm",
 			"nearestHighwayM": 17,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-kreditna-banka-356919121",
@@ -337,7 +337,7 @@
 			"source": "osm",
 			"nearestHighwayM": 17,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-raiffaisen-356919123",
@@ -351,7 +351,7 @@
 			"source": "osm",
 			"nearestHighwayM": 15,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-banco-popolare-528993666",
@@ -365,7 +365,7 @@
 			"source": "osm",
 			"nearestHighwayM": 8,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-intesa-sanpaolo-587652122",
@@ -379,7 +379,7 @@
 			"source": "osm",
 			"nearestHighwayM": 21,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-kent-bank-602045230",
@@ -393,7 +393,7 @@
 			"source": "osm",
 			"nearestHighwayM": 21,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-erste-bank-609081110",
@@ -407,7 +407,7 @@
 			"source": "osm",
 			"nearestHighwayM": 7,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-erste-bank-609081302",
@@ -421,7 +421,7 @@
 			"source": "osm",
 			"nearestHighwayM": 7,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-addiko-bank-808136289",
@@ -437,7 +437,7 @@
 			"source": "osm",
 			"nearestHighwayM": 7,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-zagrebacka-banka-809690255",
@@ -451,7 +451,7 @@
 			"source": "osm",
 			"nearestHighwayM": 11,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-raiffeisen-bank-820608207",
@@ -465,7 +465,7 @@
 			"source": "osm",
 			"nearestHighwayM": 17,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-zagrebacka-banka-833076555",
@@ -479,7 +479,7 @@
 			"source": "osm",
 			"nearestHighwayM": 11,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-otp-banka-836348345",
@@ -493,7 +493,7 @@
 			"source": "osm",
 			"nearestHighwayM": 19,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-hrvatska-postanska-banka-894106796",
@@ -507,7 +507,7 @@
 			"source": "osm",
 			"nearestHighwayM": 15,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-croatia-banka-894111957",
@@ -521,7 +521,7 @@
 			"source": "osm",
 			"nearestHighwayM": 10,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-partner-banka-897345564",
@@ -535,7 +535,7 @@
 			"source": "osm",
 			"nearestHighwayM": 5,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-hrvatska-postanska-banka-906798386",
@@ -549,7 +549,7 @@
 			"source": "osm",
 			"nearestHighwayM": 7,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-hpb-906799723",
@@ -563,7 +563,7 @@
 			"source": "osm",
 			"nearestHighwayM": 4,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-pbz-907257658",
@@ -577,7 +577,7 @@
 			"source": "osm",
 			"nearestHighwayM": 10,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-centar-banka-943640526",
@@ -591,7 +591,7 @@
 			"source": "osm",
 			"nearestHighwayM": 21,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-erste-963420649",
@@ -605,7 +605,7 @@
 			"source": "osm",
 			"nearestHighwayM": 19,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-slatinska-banka-1195323084",
@@ -619,7 +619,7 @@
 			"source": "osm",
 			"nearestHighwayM": 15,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-sberbank-2606144592",
@@ -633,7 +633,7 @@
 			"source": "osm",
 			"nearestHighwayM": 23,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-hrvatska-postanska-banka-2606196374",
@@ -647,7 +647,7 @@
 			"source": "osm",
 			"nearestHighwayM": 11,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-podravska-banka-2606196378",
@@ -661,7 +661,7 @@
 			"source": "osm",
 			"nearestHighwayM": 5,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-zagrebacka-banka-2916988781",
@@ -675,7 +675,7 @@
 			"source": "osm",
 			"nearestHighwayM": 25,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-hypo-2917087367",
@@ -689,7 +689,7 @@
 			"source": "osm",
 			"nearestHighwayM": 5,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-hypo-alpe-adria-bank-10164144499",
@@ -703,7 +703,7 @@
 			"source": "osm",
 			"nearestHighwayM": 18,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-intesa-sanpaolo-75487593",
@@ -717,7 +717,7 @@
 			"source": "osm",
 			"nearestHighwayM": 20,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-raiffeisen-bank-76047734",
@@ -731,7 +731,7 @@
 			"source": "osm",
 			"nearestHighwayM": 17,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-erste-bank-76047745",
@@ -745,7 +745,7 @@
 			"source": "osm",
 			"nearestHighwayM": 10,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-hypogroup-alpe-adria-1344344438",
@@ -759,7 +759,7 @@
 			"source": "osm",
 			"nearestHighwayM": 14,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-hrvatska-postanska-banka-7124155445",
@@ -773,7 +773,7 @@
 			"source": "osm",
 			"nearestHighwayM": 16,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-hrvatska-postanska-banka-880502955",
@@ -788,7 +788,7 @@
 			"source": "osm",
 			"nearestHighwayM": 10,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-privredna-banka-zagreb-880503043",
@@ -803,7 +803,7 @@
 			"source": "osm",
 			"nearestHighwayM": 5,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-slatinska-banka-1139389060",
@@ -817,7 +817,7 @@
 			"source": "osm",
 			"nearestHighwayM": 13,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-privredna-banka-zagreb-97977663",
@@ -831,7 +831,7 @@
 			"source": "osm",
 			"nearestHighwayM": 9,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-hypo-banka-686572923",
@@ -845,7 +845,7 @@
 			"source": "osm",
 			"nearestHighwayM": 4,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-raiffeisen-686563073",
@@ -859,7 +859,7 @@
 			"source": "osm",
 			"nearestHighwayM": 21,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-pbz-686572918",
@@ -873,7 +873,7 @@
 			"source": "osm",
 			"nearestHighwayM": 8,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-otp-banka-686572919",
@@ -887,7 +887,7 @@
 			"source": "osm",
 			"nearestHighwayM": 5,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-zaba-686572920",
@@ -901,7 +901,7 @@
 			"source": "osm",
 			"nearestHighwayM": 11,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-hrvatska-postanska-banka-1135774176",
@@ -915,7 +915,7 @@
 			"source": "osm",
 			"nearestHighwayM": 11,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-pbz-884259726",
@@ -929,7 +929,7 @@
 			"source": "osm",
 			"nearestHighwayM": 13,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-hrvatska-postanska-banka-539441660",
@@ -943,7 +943,7 @@
 			"source": "osm",
 			"nearestHighwayM": 10,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-otp-banka-539441663",
@@ -957,7 +957,7 @@
 			"source": "osm",
 			"nearestHighwayM": 16,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-otp-banka-602242059",
@@ -971,7 +971,7 @@
 			"source": "osm",
 			"nearestHighwayM": 29,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-hrvatska-postanska-banka-757037698",
@@ -985,7 +985,7 @@
 			"source": "osm",
 			"nearestHighwayM": 20,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-hypo-alpe-adria-banka-539423296",
@@ -999,7 +999,7 @@
 			"source": "osm",
 			"nearestHighwayM": 6,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-raiffeisen-banka-539441638",
@@ -1013,7 +1013,7 @@
 			"source": "osm",
 			"nearestHighwayM": 18,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-hypo-alpe-adria-539441640",
@@ -1027,7 +1027,7 @@
 			"source": "osm",
 			"nearestHighwayM": 10,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-privredna-banka-zagreb-555080320",
@@ -1041,7 +1041,7 @@
 			"source": "osm",
 			"nearestHighwayM": 19,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-privredna-banka-zagreb-555080324",
@@ -1055,7 +1055,7 @@
 			"source": "osm",
 			"nearestHighwayM": 7,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-raiffeisen-bank-10268805616",
@@ -1069,7 +1069,7 @@
 			"source": "osm",
 			"nearestHighwayM": 14,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-zagrebacka-banka-5961602870",
@@ -1083,7 +1083,7 @@
 			"source": "osm",
 			"nearestHighwayM": 1,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-raiffeisenbank-5961602877",
@@ -1097,7 +1097,7 @@
 			"source": "osm",
 			"nearestHighwayM": 12,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-zagrebacka-banka-683100147",
@@ -1111,7 +1111,7 @@
 			"source": "osm",
 			"nearestHighwayM": 11,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-privredna-banka-zagreb-5961602879",
@@ -1125,7 +1125,7 @@
 			"source": "osm",
 			"nearestHighwayM": 12,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-podravska-banka-10264825896",
@@ -1139,7 +1139,7 @@
 			"source": "osm",
 			"nearestHighwayM": 12,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-privredna-banka-zagreb-4718875827",
@@ -1153,7 +1153,7 @@
 			"source": "osm",
 			"nearestHighwayM": 4,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-hpb-13513308866",
@@ -1167,7 +1167,7 @@
 			"source": "osm",
 			"nearestHighwayM": 11,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-pbz-13513308867",
@@ -1181,7 +1181,7 @@
 			"source": "osm",
 			"nearestHighwayM": 5,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-pbz-2145124604",
@@ -1196,7 +1196,7 @@
 			"source": "osm",
 			"nearestHighwayM": 15,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-banka-kovanica-13564801903",
@@ -1210,7 +1210,7 @@
 			"source": "osm",
 			"nearestHighwayM": 8,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-raiffeisen-bank-13617034581",
@@ -1225,7 +1225,7 @@
 			"source": "osm",
 			"nearestHighwayM": 25,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-hrvatska-banka-za-obnovu-i-razvitak-13651580446",
@@ -1240,7 +1240,7 @@
 			"source": "osm",
 			"nearestHighwayM": 26,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-zagrebacka-banka-483678118",
@@ -1254,7 +1254,7 @@
 			"source": "osm",
 			"nearestHighwayM": 14,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-privredna-banka-zagreb-1712544706",
@@ -1268,7 +1268,7 @@
 			"source": "osm",
 			"nearestHighwayM": 19,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-kentbank-13233284772",
@@ -1279,10 +1279,11 @@
 			"lng": 16.33887,
 			"trailKm": 627.7,
 			"distanceFromTrailKm": 1.79,
+			"phone": "+385 42 350 520",
 			"source": "osm",
 			"nearestHighwayM": 12,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-otp-banka-13233284773",
@@ -1293,10 +1294,28 @@
 			"lng": 16.33926,
 			"trailKm": 627.7,
 			"distanceFromTrailKm": 1.81,
+			"phone": "+385 72 206 024",
+			"url": "https://www.otpbanka.hr/",
 			"source": "osm",
 			"nearestHighwayM": 6,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
+		},
+		{
+			"id": "atm-hrvatska-postanska-banka-13980936402",
+			"type": "atm",
+			"name_en": "Hrvatska poštanska banka",
+			"name_hr": "Hrvatska poštanska banka",
+			"lat": 46.30925,
+			"lng": 16.3394,
+			"trailKm": 627.7,
+			"distanceFromTrailKm": 1.73,
+			"phone": "+385 42 215 320",
+			"url": "https://www.hpb.hr/",
+			"source": "osm",
+			"nearestHighwayM": 16,
+			"isReachable": true,
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-privredna-banka-zagreb-483678116",
@@ -1310,7 +1329,7 @@
 			"source": "osm",
 			"nearestHighwayM": 10,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-zagrebacka-banka-4128477385",
@@ -1324,7 +1343,7 @@
 			"source": "osm",
 			"nearestHighwayM": 7,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-samoborska-banka-805248405",
@@ -1338,7 +1357,7 @@
 			"source": "osm",
 			"nearestHighwayM": 9,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-zagrebacka-banka-podruznica-lepoglava-1291449549",
@@ -1352,7 +1371,7 @@
 			"source": "osm",
 			"nearestHighwayM": 27,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-raifeisen-2291168900",
@@ -1366,7 +1385,7 @@
 			"source": "osm",
 			"nearestHighwayM": 13,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-hpb-2291168903",
@@ -1380,7 +1399,7 @@
 			"source": "osm",
 			"nearestHighwayM": 9,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-zaba-2291168901",
@@ -1394,7 +1413,7 @@
 			"source": "osm",
 			"nearestHighwayM": 7,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-pbz-2291168902",
@@ -1408,7 +1427,7 @@
 			"source": "osm",
 			"nearestHighwayM": 18,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-zagrebacka-banka-9289706250",
@@ -1422,7 +1441,7 @@
 			"source": "osm",
 			"nearestHighwayM": 14,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-rba-2977264180",
@@ -1436,7 +1455,7 @@
 			"source": "osm",
 			"nearestHighwayM": 13,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-rba-3025596919",
@@ -1450,7 +1469,7 @@
 			"source": "osm",
 			"nearestHighwayM": 10,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-hrvatska-postanska-banka-3234868620",
@@ -1464,7 +1483,7 @@
 			"source": "osm",
 			"nearestHighwayM": 21,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-hrvatska-postanska-banka-3234868621",
@@ -1478,7 +1497,7 @@
 			"source": "osm",
 			"nearestHighwayM": 25,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-raiffeisen-bank-10237713274",
@@ -1492,7 +1511,7 @@
 			"source": "osm",
 			"nearestHighwayM": 9,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-erste-4283758889",
@@ -1506,7 +1525,7 @@
 			"source": "osm",
 			"nearestHighwayM": 12,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-zagrebacka-banka-4283759089",
@@ -1520,7 +1539,7 @@
 			"source": "osm",
 			"nearestHighwayM": 13,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-pbz-4283759090",
@@ -1534,7 +1553,7 @@
 			"source": "osm",
 			"nearestHighwayM": 12,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-samoborska-banka-7007871140",
@@ -1549,7 +1568,7 @@
 			"source": "osm",
 			"nearestHighwayM": 7,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-samoborska-banka-7026992856",
@@ -1564,7 +1583,7 @@
 			"source": "osm",
 			"nearestHighwayM": 12,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-raiffeisen-bank-297782846",
@@ -1578,7 +1597,7 @@
 			"source": "osm",
 			"nearestHighwayM": 13,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-privredna-banka-zagreb-1931360276",
@@ -1592,7 +1611,7 @@
 			"source": "osm",
 			"nearestHighwayM": 7,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-pbz-2997900026",
@@ -1606,7 +1625,7 @@
 			"source": "osm",
 			"nearestHighwayM": 3,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-erste-bank-3022109223",
@@ -1620,7 +1639,7 @@
 			"source": "osm",
 			"nearestHighwayM": 9,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-samoborska-banka-296031639",
@@ -1634,7 +1653,7 @@
 			"source": "osm",
 			"nearestHighwayM": 15,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-hrvatska-postanska-banka-678489484",
@@ -1648,7 +1667,7 @@
 			"source": "osm",
 			"nearestHighwayM": 13,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-zagrebacka-banka-2997900008",
@@ -1662,7 +1681,7 @@
 			"source": "osm",
 			"nearestHighwayM": 0,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-otp-banka-3011123796",
@@ -1676,7 +1695,7 @@
 			"source": "osm",
 			"nearestHighwayM": 5,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-zagrebacka-banka-3022110237",
@@ -1690,7 +1709,7 @@
 			"source": "osm",
 			"nearestHighwayM": 8,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-addiko-bank-3023409899",
@@ -1704,7 +1723,7 @@
 			"source": "osm",
 			"nearestHighwayM": 2,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-addiko-bank-298309840",
@@ -1718,7 +1737,7 @@
 			"source": "osm",
 			"nearestHighwayM": 9,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-ikb-3507037233",
@@ -1732,7 +1751,7 @@
 			"source": "osm",
 			"nearestHighwayM": 17,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-erste-bank-3507045042",
@@ -1746,7 +1765,7 @@
 			"source": "osm",
 			"nearestHighwayM": 15,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-ikb-umag-3087362808",
@@ -1760,7 +1779,7 @@
 			"source": "osm",
 			"nearestHighwayM": 13,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-erste-bank-229353589",
@@ -1774,7 +1793,7 @@
 			"source": "osm",
 			"nearestHighwayM": 14,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-erste-1098507319",
@@ -1788,7 +1807,7 @@
 			"source": "osm",
 			"nearestHighwayM": 11,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-privredna-banka-zagreb-2461683024",
@@ -1802,7 +1821,7 @@
 			"source": "osm",
 			"nearestHighwayM": 24,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-atm-hrvatska-postanska-banka-4395263290",
@@ -1816,7 +1835,7 @@
 			"source": "osm",
 			"nearestHighwayM": 20,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-erste-bank-6363727677",
@@ -1830,7 +1849,7 @@
 			"source": "osm",
 			"nearestHighwayM": 9,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-raiffeisen-bank-9060197727",
@@ -1844,7 +1863,7 @@
 			"source": "osm",
 			"nearestHighwayM": 11,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-i-k-b-677764502",
@@ -1858,7 +1877,7 @@
 			"source": "osm",
 			"nearestHighwayM": 8,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-istarska-kreditna-banka-7619152426",
@@ -1872,7 +1891,7 @@
 			"source": "osm",
 			"nearestHighwayM": 9,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-erste-1406288881",
@@ -1886,7 +1905,7 @@
 			"source": "osm",
 			"nearestHighwayM": 16,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-otp-banka-1808636052",
@@ -1900,7 +1919,7 @@
 			"source": "osm",
 			"nearestHighwayM": 8,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-privredna-banka-zagreb-4318518894",
@@ -1914,7 +1933,7 @@
 			"source": "osm",
 			"nearestHighwayM": 8,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-otp-banka-2162462365",
@@ -1928,7 +1947,7 @@
 			"source": "osm",
 			"nearestHighwayM": 9,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-zagrebacka-banka-1877835062",
@@ -1942,7 +1961,7 @@
 			"source": "osm",
 			"nearestHighwayM": 10,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-erste-bank-6221164076",
@@ -1956,7 +1975,7 @@
 			"source": "osm",
 			"nearestHighwayM": 8,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-otp-bank-6739895458",
@@ -1970,7 +1989,7 @@
 			"source": "osm",
 			"nearestHighwayM": 17,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-istarska-kreditna-banka-6772919286",
@@ -1984,7 +2003,7 @@
 			"source": "osm",
 			"nearestHighwayM": 15,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-pbz-8933439426",
@@ -1998,7 +2017,7 @@
 			"source": "osm",
 			"nearestHighwayM": 7,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-erste-bank-7850800266",
@@ -2012,7 +2031,7 @@
 			"source": "osm",
 			"nearestHighwayM": 2,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-erste-bank-5624597358",
@@ -2026,7 +2045,7 @@
 			"source": "osm",
 			"nearestHighwayM": 5,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-otp-5628420190",
@@ -2040,7 +2059,7 @@
 			"source": "osm",
 			"nearestHighwayM": 10,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-rba-2593891493",
@@ -2054,7 +2073,7 @@
 			"source": "osm",
 			"nearestHighwayM": 5,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-fina-10817054518",
@@ -2068,7 +2087,7 @@
 			"source": "osm",
 			"nearestHighwayM": 16,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-zagrebacka-banka-12704062469",
@@ -2084,7 +2103,7 @@
 			"source": "osm",
 			"nearestHighwayM": 14,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-istarska-10926714873",
@@ -2098,7 +2117,7 @@
 			"source": "osm",
 			"nearestHighwayM": 21,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-erste-1202270081",
@@ -2112,7 +2131,7 @@
 			"source": "osm",
 			"nearestHighwayM": 20,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-pbz-1158909469",
@@ -2126,7 +2145,7 @@
 			"source": "osm",
 			"nearestHighwayM": 18,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-pbz-3700905758",
@@ -2140,7 +2159,7 @@
 			"source": "osm",
 			"nearestHighwayM": 9,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-erste-bank-6652939860",
@@ -2154,7 +2173,7 @@
 			"source": "osm",
 			"nearestHighwayM": 9,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-otp-banka-2609288798",
@@ -2168,7 +2187,7 @@
 			"source": "osm",
 			"nearestHighwayM": 14,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-pbz-2613326469",
@@ -2182,7 +2201,7 @@
 			"source": "osm",
 			"nearestHighwayM": 17,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-zagrebacka-banka-2609288811",
@@ -2196,7 +2215,7 @@
 			"source": "osm",
 			"nearestHighwayM": 16,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-hrvatska-postanska-banka-2613326468",
@@ -2210,7 +2229,7 @@
 			"source": "osm",
 			"nearestHighwayM": 19,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-raiffeisen-rba-2787151338",
@@ -2224,7 +2243,7 @@
 			"source": "osm",
 			"nearestHighwayM": 22,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-otp-banka-1587439385",
@@ -2238,7 +2257,7 @@
 			"source": "osm",
 			"nearestHighwayM": 12,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-zagrebacka-banka-1587439470",
@@ -2252,7 +2271,7 @@
 			"source": "osm",
 			"nearestHighwayM": 18,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-pbz-1636709055",
@@ -2266,7 +2285,7 @@
 			"source": "osm",
 			"nearestHighwayM": 10,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-otp-banka-2505576776",
@@ -2280,7 +2299,7 @@
 			"source": "osm",
 			"nearestHighwayM": 12,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-zaba-934929088",
@@ -2294,7 +2313,7 @@
 			"source": "osm",
 			"nearestHighwayM": 10,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-erste-bank-934930905",
@@ -2308,7 +2327,7 @@
 			"source": "osm",
 			"nearestHighwayM": 10,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-pbz-1636731233",
@@ -2322,7 +2341,7 @@
 			"source": "osm",
 			"nearestHighwayM": 7,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-hrvatska-postanska-banka-10074477982",
@@ -2336,7 +2355,7 @@
 			"source": "osm",
 			"nearestHighwayM": 15,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-euronet-10074477984",
@@ -2350,7 +2369,7 @@
 			"source": "osm",
 			"nearestHighwayM": 6,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-euronet-10074477985",
@@ -2364,7 +2383,7 @@
 			"source": "osm",
 			"nearestHighwayM": 1,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-euronet-10074477986",
@@ -2378,7 +2397,7 @@
 			"source": "osm",
 			"nearestHighwayM": 3,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-zagrebacka-banka-5130296952",
@@ -2392,7 +2411,7 @@
 			"source": "osm",
 			"nearestHighwayM": 7,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-pbz-269030273",
@@ -2406,7 +2425,7 @@
 			"source": "osm",
 			"nearestHighwayM": 16,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-erste-bank-9393053674",
@@ -2420,7 +2439,7 @@
 			"source": "osm",
 			"nearestHighwayM": 6,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-euronet-9393053620",
@@ -2434,7 +2453,7 @@
 			"source": "osm",
 			"nearestHighwayM": 7,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-otp-banka-9393048166",
@@ -2448,7 +2467,7 @@
 			"source": "osm",
 			"nearestHighwayM": 6,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-euronet-9458865062",
@@ -2462,7 +2481,7 @@
 			"source": "osm",
 			"nearestHighwayM": 5,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-euronet-9588132541",
@@ -2476,7 +2495,7 @@
 			"source": "osm",
 			"nearestHighwayM": 4,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-zaba-2016157034",
@@ -2490,7 +2509,7 @@
 			"source": "osm",
 			"nearestHighwayM": 14,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-bankomat-hotel-labineca-2958896136",
@@ -2505,7 +2524,7 @@
 			"source": "osm",
 			"nearestHighwayM": 22,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-otpbanka-4327833462",
@@ -2519,7 +2538,7 @@
 			"source": "osm",
 			"nearestHighwayM": 11,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-otp-banka-2352496368",
@@ -2533,7 +2552,7 @@
 			"source": "osm",
 			"nearestHighwayM": 20,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-kozmo-2345953045",
@@ -2547,7 +2566,7 @@
 			"source": "osm",
 			"nearestHighwayM": 11,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-hrvatska-postanska-banka-3279478849",
@@ -2561,7 +2580,7 @@
 			"source": "osm",
 			"nearestHighwayM": 17,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-otp-bank-2435328544",
@@ -2575,7 +2594,7 @@
 			"source": "osm",
 			"nearestHighwayM": 8,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-otp-1906735489",
@@ -2589,7 +2608,7 @@
 			"source": "osm",
 			"nearestHighwayM": 14,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-euronet-4942730579",
@@ -2603,7 +2622,7 @@
 			"source": "osm",
 			"nearestHighwayM": 17,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-euronet-6875003585",
@@ -2617,7 +2636,7 @@
 			"source": "osm",
 			"nearestHighwayM": 22,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-hrvatska-postanska-banka-3279452184",
@@ -2631,7 +2650,7 @@
 			"source": "osm",
 			"nearestHighwayM": 19,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-bitcoin-atm-shitcoins-club-11543733228",
@@ -2647,7 +2666,7 @@
 			"source": "osm",
 			"nearestHighwayM": 23,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-cash-machine-5922368161",
@@ -2661,7 +2680,7 @@
 			"source": "osm",
 			"nearestHighwayM": 8,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-pbz-2860319396",
@@ -2675,7 +2694,7 @@
 			"source": "osm",
 			"nearestHighwayM": 14,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-hypo-1685756994",
@@ -2689,7 +2708,7 @@
 			"source": "osm",
 			"nearestHighwayM": 15,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-hypo-2343812798",
@@ -2703,7 +2722,7 @@
 			"source": "osm",
 			"nearestHighwayM": 14,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-otp-bank-3948672226",
@@ -2717,7 +2736,7 @@
 			"source": "osm",
 			"nearestHighwayM": 11,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-pbz-4210646290",
@@ -2731,7 +2750,7 @@
 			"source": "osm",
 			"nearestHighwayM": 13,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-zagrebacka-banka-4210662795",
@@ -2746,7 +2765,7 @@
 			"source": "osm",
 			"nearestHighwayM": 20,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-pbz-5357182339",
@@ -2760,7 +2779,7 @@
 			"source": "osm",
 			"nearestHighwayM": 11,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-raiffeisen-bank-1685754382",
@@ -2774,7 +2793,7 @@
 			"source": "osm",
 			"nearestHighwayM": 26,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-otp-bank-1685754842",
@@ -2788,7 +2807,7 @@
 			"source": "osm",
 			"nearestHighwayM": 13,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-otp-banka-2860319395",
@@ -2802,7 +2821,7 @@
 			"source": "osm",
 			"nearestHighwayM": 7,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-hrvatska-postanska-banka-3235395361",
@@ -2816,7 +2835,7 @@
 			"source": "osm",
 			"nearestHighwayM": 10,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-hrvatska-postanska-banka-3279452183",
@@ -2830,7 +2849,7 @@
 			"source": "osm",
 			"nearestHighwayM": 11,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-addiko-bank-4210579898",
@@ -2844,7 +2863,7 @@
 			"source": "osm",
 			"nearestHighwayM": 17,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-kent-bank-4210797696",
@@ -2858,7 +2877,7 @@
 			"source": "osm",
 			"nearestHighwayM": 13,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-otp-banka-4210829289",
@@ -2872,7 +2891,7 @@
 			"source": "osm",
 			"nearestHighwayM": 26,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-sberbank-5009843531",
@@ -2886,7 +2905,7 @@
 			"source": "osm",
 			"nearestHighwayM": 26,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-agram-banka-5297700791",
@@ -2900,7 +2919,7 @@
 			"source": "osm",
 			"nearestHighwayM": 20,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-erste-bank-6219286437",
@@ -2914,7 +2933,7 @@
 			"source": "osm",
 			"nearestHighwayM": 20,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-otp-banka-2505166335",
@@ -2928,7 +2947,7 @@
 			"source": "osm",
 			"nearestHighwayM": 14,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-hrvatska-postanska-banka-3279478773",
@@ -2942,7 +2961,7 @@
 			"source": "osm",
 			"nearestHighwayM": 24,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-hrvatska-postanska-banka-6350536480",
@@ -2956,7 +2975,7 @@
 			"source": "osm",
 			"nearestHighwayM": 5,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-otp-banka-8874386618",
@@ -2970,7 +2989,7 @@
 			"source": "osm",
 			"nearestHighwayM": 7,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-pbz-8883839018",
@@ -2984,7 +3003,7 @@
 			"source": "osm",
 			"nearestHighwayM": 8,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-otp-821790771",
@@ -2998,7 +3017,7 @@
 			"source": "osm",
 			"nearestHighwayM": 6,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-hrvatska-postanska-banka-1790616735",
@@ -3012,7 +3031,7 @@
 			"source": "osm",
 			"nearestHighwayM": 4,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-hrvatska-postanska-banka-3279452180",
@@ -3026,7 +3045,7 @@
 			"source": "osm",
 			"nearestHighwayM": 8,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-hrvatska-postanska-banka-3279452181",
@@ -3040,7 +3059,7 @@
 			"source": "osm",
 			"nearestHighwayM": 12,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-zagrebacka-banka-4783075471",
@@ -3054,7 +3073,7 @@
 			"source": "osm",
 			"nearestHighwayM": 6,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-euronet-5009835489",
@@ -3068,7 +3087,7 @@
 			"source": "osm",
 			"nearestHighwayM": 5,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-otp-banka-6350714728",
@@ -3082,7 +3101,7 @@
 			"source": "osm",
 			"nearestHighwayM": 9,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-pbz-3042753266",
@@ -3096,7 +3115,7 @@
 			"source": "osm",
 			"nearestHighwayM": 10,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-otp-bank-3042753285",
@@ -3110,7 +3129,7 @@
 			"source": "osm",
 			"nearestHighwayM": 7,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-euronet-4783075485",
@@ -3124,7 +3143,7 @@
 			"source": "osm",
 			"nearestHighwayM": 7,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-hrvatska-postanska-banka-680211960",
@@ -3138,7 +3157,7 @@
 			"source": "osm",
 			"nearestHighwayM": 15,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-atm-6651598839",
@@ -3152,7 +3171,7 @@
 			"source": "osm",
 			"nearestHighwayM": 8,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-privredna-banka-zagreb-1583714176",
@@ -3166,7 +3185,7 @@
 			"source": "osm",
 			"nearestHighwayM": 14,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-hrvatska-postanska-banka-3235380641",
@@ -3180,7 +3199,7 @@
 			"source": "osm",
 			"nearestHighwayM": 9,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-hrvatska-postanska-banka-3279424178",
@@ -3194,7 +3213,7 @@
 			"source": "osm",
 			"nearestHighwayM": 12,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-optbanka-239483142",
@@ -3208,7 +3227,7 @@
 			"source": "osm",
 			"nearestHighwayM": 8,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-hrvatska-postanska-banka-3279454688",
@@ -3222,7 +3241,7 @@
 			"source": "osm",
 			"nearestHighwayM": 22,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-raiffeisen-bank-11591946763",
@@ -3236,7 +3255,7 @@
 			"source": "osm",
 			"nearestHighwayM": 7,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-pbz-otp-banka-zagrebacka-11591946764",
@@ -3250,7 +3269,7 @@
 			"source": "osm",
 			"nearestHighwayM": 22,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-otp-banka-11591946765",
@@ -3264,7 +3283,7 @@
 			"source": "osm",
 			"nearestHighwayM": 28,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-erste-bank-11591946766",
@@ -3278,7 +3297,7 @@
 			"source": "osm",
 			"nearestHighwayM": 19,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-hpb-bank-11591946767",
@@ -3292,7 +3311,7 @@
 			"source": "osm",
 			"nearestHighwayM": 17,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-hrvatska-postanska-banka-2306469272",
@@ -3306,7 +3325,7 @@
 			"source": "osm",
 			"nearestHighwayM": 28,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "atm-hrvatska-postanska-banka-3235369549",
@@ -3320,7 +3339,7 @@
 			"source": "osm",
 			"nearestHighwayM": 30,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		}
 	]
 }

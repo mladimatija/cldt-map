@@ -1,5 +1,5 @@
 {
-	"lastUpdated": "2026-06-14",
+	"lastUpdated": "2026-07-11",
 	"pois": [
 		{
 			"id": "town-ilok-470922368",
@@ -17,9 +17,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 913,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Ivana" },
 					{ "kind": "grocery", "name": "Konzum" },
@@ -48,7 +48,7 @@
 			"population": 22255,
 			"url": "https://www.vukovar.hr/",
 			"source": "wikidata",
-			"image": "http://commons.wikimedia.org/wiki/Special:FilePath/Franjo%20Tu%C4%91man%20Square%2C%20Vukovar.JPG",
+			"image": "http://commons.wikimedia.org/wiki/Special:FilePath/20230429.Ansichten%20von%20Vukovar.-049.jpg",
 			"wikipedia": "https://hr.wikipedia.org/wiki/Vukovar",
 			"nearestHighwayM": 0,
 			"isReachable": true,
@@ -56,11 +56,11 @@
 			"isReachableViaPublicTransport": true,
 			"images": [
 				{
-					"url": "https://upload.wikimedia.org/wikipedia/commons/9/94/Franjo_Tu%C4%91man_Square%2C_Vukovar.JPG",
-					"thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Franjo_Tu%C4%91man_Square%2C_Vukovar.JPG/960px-Franjo_Tu%C4%91man_Square%2C_Vukovar.JPG",
-					"attribution": "Pudelek (Marcin Szala)",
-					"license": "CC BY-SA 3.0",
-					"sourceUrl": "https://commons.wikimedia.org/wiki/File:Franjo_Tu%C4%91man_Square,_Vukovar.JPG"
+					"url": "https://upload.wikimedia.org/wikipedia/commons/b/b7/20230429.Ansichten_von_Vukovar.-049.jpg",
+					"thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/20230429.Ansichten_von_Vukovar.-049.jpg/960px-20230429.Ansichten_von_Vukovar.-049.jpg",
+					"attribution": "Bybbisch94, Christian Gebhardt",
+					"license": "CC BY-SA 4.0",
+					"sourceUrl": "https://commons.wikimedia.org/wiki/File:20230429.Ansichten_von_Vukovar.-049.jpg"
 				},
 				{
 					"url": "https://upload.wikimedia.org/wikipedia/commons/8/8a/0455Aa._Dunayskaya_metrostation.jpg",
@@ -86,9 +86,9 @@
 			],
 			"summary_hr": "Vukovar je grad u Hrvatskoj, smješten na istoku Slavonije uz Dunav. Najveća je hrvatska riječna luka na Dunavu u Srijemu. Vukovar je upravno, obrazovno, gospodarsko i kulturno središte Vukovarsko-srijemske županije, a nakon Vinkovaca i drugi najveći grad te županije po broju stanovnika.",
 			"summary_en": "Vukovar is a city in Croatia, in the eastern regions of Syrmia and Slavonia. It contains Croatia's largest river port, located at the confluence of the Vuka and the Danube. Vukovar is the seat of Vukovar-Syrmia County and the second-largest city in the county after Vinkovci.",
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "GRAHOVAC d.o.o." },
 					{ "kind": "grocery", "name": "EuroSpin" },
@@ -155,9 +155,9 @@
 			],
 			"summary_hr": "Osijek je grad u istočnoj Hrvatskoj. Smješten je u ravnici na desnoj obali rijeke Drave između 16. i 24. kilometra od ušća u Dunav.",
 			"summary_en": "Osijek is the largest city and the economic and cultural hub of the eastern Croatian region of Slavonia, as well as the administrative seat of Osijek-Baranja County. It is the fourth-largest city in Croatia, with a population of 96,313 recorded in the 2021 census.",
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Vindija" },
 					{ "kind": "grocery", "name": "Konzum", "openingHours": "Mo-Sa 07:00-21:00; Su 08:00-20:00" },
@@ -190,9 +190,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 470,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Konikom" },
 					{ "kind": "grocery", "name": "Biljemerkant" },
@@ -229,9 +229,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 526,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Trgovački obrt Žužić", "openingHours": "Mo-Sa 06:40-20:00, Su 08:00-12:00" },
 					{ "kind": "grocery", "name": "Konzum", "openingHours": "Mo-Sa 07:00-20:00; Su 08:00-13:00" },
@@ -268,9 +268,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 671,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Konzum" },
 					{ "kind": "grocery", "name": "Biljemerkant" },
@@ -303,9 +303,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 556,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Čimen" },
 					{ "kind": "grocery", "name": "Perutnina Ptuj" },
@@ -338,9 +338,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 319,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "NTL minimarket", "openingHours": "Mo-Sa 06:00-20:00" },
 					{ "kind": "grocery", "name": "Ofertissima" },
@@ -373,9 +373,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 453,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Kitro", "openingHours": "Mo-Sa 07:00-20:00; Su,PH 07:00-12:00" },
 					{ "kind": "grocery", "name": "METSS", "openingHours": "Mo-Sa 07:00-19:00;Su,PH 07:00-11:00" },
@@ -408,9 +408,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 106,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery" },
 					{ "kind": "grocery", "name": "METSS", "openingHours": "Mo-Fr 07:00-14:00; Sa 07:00-12:00" },
@@ -443,9 +443,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 125,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Trgovina Krk", "openingHours": "Mo-Sa 07:00-19:00; Su off" },
 					{ "kind": "grocery", "name": "KTC", "openingHours": "Mo-Sa 07:00-21:00; Su 07:00-14:00" },
@@ -478,9 +478,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 346,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Konzum" },
 					{ "kind": "grocery", "name": "KITRO" },
@@ -491,7 +491,7 @@
 					{ "kind": "grocery", "name": "Konzum" },
 					{ "kind": "grocery", "name": "Vindija - Trgovina" },
 					{ "kind": "grocery", "name": "Spar", "openingHours": "Mo-Sa 07:00-21:00; Su 08:00-14:00" },
-					{ "kind": "grocery", "name": "Konzum", "openingHours": "Mo-Sa 07:00-20:00; Su off" },
+					{ "kind": "grocery", "name": "Konzum", "openingHours": "Mo-Sa 07:00-20:00" },
 					{ "kind": "grocery", "name": "Konzum", "openingHours": "Mo-Sa 07:00-21:00; Su 08:00-15:00" },
 					{ "kind": "grocery", "name": "Konzum", "openingHours": "Mo-Sa 07:00-21:00; Su,PH 07:00-14:00" }
 				]
@@ -513,9 +513,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 382,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "NTL" },
 					{ "kind": "grocery", "name": "Konzum" },
@@ -548,9 +548,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 507,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Konzum" },
 					{ "kind": "grocery", "name": "Plodine", "openingHours": "Mo-Su 07:00-21:00" },
@@ -583,9 +583,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 129,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Tommy", "openingHours": "Mo-Sa 07:00-21:00; Su 07:00-14:00" },
 					{ "kind": "grocery", "name": "Prehrana", "openingHours": "Mo-Sa 06:30-20:00; Su 07:00-12:00" },
@@ -618,9 +618,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 159,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Konzum" },
 					{ "kind": "bus" },
@@ -644,9 +644,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 722,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Trgovine Valentin" },
 					{ "kind": "grocery", "name": "Trgovine Valentin" },
@@ -679,9 +679,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 560,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Lidl" },
 					{ "kind": "grocery", "name": "Majstorija" },
@@ -714,9 +714,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 228,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Konzum" },
 					{ "kind": "grocery", "name": "Konzum" },
@@ -749,9 +749,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 558,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Butiga" },
 					{ "kind": "grocery", "name": "Konzum" },
@@ -784,9 +784,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 764,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Diona" },
 					{ "kind": "grocery", "name": "Diona" },
@@ -819,9 +819,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 410,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Jedinstvo" },
 					{ "kind": "grocery", "name": "Diskont" },
@@ -854,9 +854,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 271,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Konzum", "openingHours": "07:00-22:00" },
 					{ "kind": "grocery", "name": "Konzum", "openingHours": "Mo-Su 08:00-22:00 \"seasonal only\"" },
@@ -889,12 +889,11 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 235,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Stanić" },
-					{ "kind": "grocery", "name": "Vindija", "openingHours": "Mo-Fr 07:00-20:00; Sa 07:00-18:00; Su,PH off" },
 					{ "kind": "grocery", "name": "Butiga Kastav" },
 					{ "kind": "grocery", "name": "Konzum" },
 					{ "kind": "grocery", "name": "Spar", "openingHours": "Mo-Sa 07:00-21:00; Su 08:00-14:00" },
@@ -904,6 +903,7 @@
 					{ "kind": "bakery" },
 					{ "kind": "pharmacy", "name": "BIPA" },
 					{ "kind": "pharmacy", "name": "Ljekarna Kastav", "openingHours": "Mo-Fr 07:00-20:00; Sa 07:30-15:00" },
+					{ "kind": "atm" },
 					{ "kind": "atm" }
 				]
 			}
@@ -924,9 +924,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 193,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Studenac" },
 					{ "kind": "grocery", "name": "Studenac" },
@@ -959,9 +959,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 215,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Studenac" },
 					{ "kind": "grocery", "name": "Pivac" },
@@ -994,9 +994,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 96,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Tommy", "openingHours": "Mo-Sa 07:00-21:00; Su 07:00-20:00" },
 					{ "kind": "grocery", "name": "Konzum", "openingHours": "Mo-Sa 07:00-21:00" },
@@ -1033,9 +1033,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 480,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Plus" },
 					{ "kind": "grocery", "name": "Studenac" },
@@ -1068,9 +1068,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 56,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Studenac" },
 					{ "kind": "grocery", "name": "Studenac" },

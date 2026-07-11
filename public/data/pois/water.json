@@ -1,5 +1,5 @@
 {
-	"lastUpdated": "2026-06-14",
+	"lastUpdated": "2026-07-11",
 	"pois": [
 		{
 			"id": "water-drinking-water-6801516385",
@@ -14,7 +14,7 @@
 			"source": "osm",
 			"nearestHighwayM": 14,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-bunar-9147643752",
@@ -29,7 +29,7 @@
 			"source": "osm",
 			"nearestHighwayM": 6,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-6296686151",
@@ -44,7 +44,7 @@
 			"source": "osm",
 			"nearestHighwayM": 30,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-5932482099",
@@ -59,7 +59,7 @@
 			"source": "osm",
 			"nearestHighwayM": 24,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-1344344374",
@@ -74,7 +74,7 @@
 			"source": "osm",
 			"nearestHighwayM": 16,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-5717997293",
@@ -89,7 +89,7 @@
 			"source": "osm",
 			"nearestHighwayM": 3,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-izvor-dobra-voda-8763519770",
@@ -104,7 +104,7 @@
 			"source": "osm",
 			"nearestHighwayM": 13,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-izvor-7602200610",
@@ -119,7 +119,7 @@
 			"source": "osm",
 			"nearestHighwayM": 3,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-izvor-iskrica-8763580317",
@@ -134,7 +134,7 @@
 			"source": "osm",
 			"nearestHighwayM": 9,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-izvor-hercegovac-927293728",
@@ -149,7 +149,7 @@
 			"source": "osm",
 			"nearestHighwayM": 14,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-izvor-uzdisaja-8598680464",
@@ -164,7 +164,7 @@
 			"source": "osm",
 			"nearestHighwayM": 27,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-8700823869",
@@ -179,7 +179,7 @@
 			"source": "osm",
 			"nearestHighwayM": 90,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-8700823906",
@@ -194,7 +194,7 @@
 			"source": "osm",
 			"nearestHighwayM": 55,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-8700823922",
@@ -209,7 +209,7 @@
 			"source": "osm",
 			"nearestHighwayM": 26,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-8700823854",
@@ -224,7 +224,7 @@
 			"source": "osm",
 			"nearestHighwayM": 18,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-8700823863",
@@ -239,7 +239,7 @@
 			"source": "osm",
 			"nearestHighwayM": 28,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-8700823903",
@@ -254,7 +254,7 @@
 			"source": "osm",
 			"nearestHighwayM": 66,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-8700823823",
@@ -269,7 +269,7 @@
 			"source": "osm",
 			"nearestHighwayM": 129,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-8700823818",
@@ -284,7 +284,7 @@
 			"source": "osm",
 			"nearestHighwayM": 145,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-8700823850",
@@ -299,7 +299,7 @@
 			"source": "osm",
 			"nearestHighwayM": 148,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-8700824027",
@@ -314,7 +314,7 @@
 			"source": "osm",
 			"nearestHighwayM": 215,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-8700824042",
@@ -329,7 +329,7 @@
 			"source": "osm",
 			"nearestHighwayM": 88,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-8700824075",
@@ -344,7 +344,7 @@
 			"source": "osm",
 			"nearestHighwayM": 51,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-8700824120",
@@ -359,7 +359,7 @@
 			"source": "osm",
 			"nearestHighwayM": 120,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-izvor-bistra-927293717",
@@ -374,7 +374,7 @@
 			"source": "osm",
 			"nearestHighwayM": 18,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-8700824185",
@@ -389,7 +389,7 @@
 			"source": "osm",
 			"nearestHighwayM": 115,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-8700824121",
@@ -404,7 +404,7 @@
 			"source": "osm",
 			"nearestHighwayM": 51,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-8700824172",
@@ -419,7 +419,7 @@
 			"source": "osm",
 			"nearestHighwayM": 9,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-izvor-kapavac-927293712",
@@ -434,7 +434,7 @@
 			"source": "osm",
 			"nearestHighwayM": 7,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-izvor-antunovac-4039607725",
@@ -449,7 +449,7 @@
 			"source": "osm",
 			"nearestHighwayM": 4,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-izvor-jankovackog-potoka-3478109953",
@@ -464,7 +464,7 @@
 			"source": "osm",
 			"nearestHighwayM": 7,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-7107915422",
@@ -479,7 +479,7 @@
 			"source": "osm",
 			"nearestHighwayM": 5,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-knezeva-voda-4039617742",
@@ -494,7 +494,7 @@
 			"source": "osm",
 			"nearestHighwayM": 11,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-izvor-8752283126",
@@ -509,7 +509,7 @@
 			"source": "osm",
 			"nearestHighwayM": 12,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-izvor-8667833019",
@@ -524,7 +524,7 @@
 			"source": "osm",
 			"nearestHighwayM": 5,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-izvor-siroko-vrelo-8667833018",
@@ -539,7 +539,7 @@
 			"source": "osm",
 			"nearestHighwayM": 11,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-vrani-kamen-12997950842",
@@ -554,7 +554,7 @@
 			"source": "osm",
 			"nearestHighwayM": 95,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-pavlov-izvor-11185193404",
@@ -569,7 +569,7 @@
 			"source": "osm",
 			"nearestHighwayM": 133,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-vrelo-grdjevice-11327479825",
@@ -584,7 +584,7 @@
 			"source": "osm",
 			"nearestHighwayM": 179,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-11161377911",
@@ -599,7 +599,7 @@
 			"source": "osm",
 			"nearestHighwayM": 92,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-tonin-jarak-11120024389",
@@ -614,7 +614,7 @@
 			"source": "osm",
 			"nearestHighwayM": 252,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-11873125261",
@@ -629,7 +629,7 @@
 			"source": "osm",
 			"nearestHighwayM": 139,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-11169493354",
@@ -644,7 +644,7 @@
 			"source": "osm",
 			"nearestHighwayM": 86,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-vrelo-dobrovite-11169493342",
@@ -659,7 +659,7 @@
 			"source": "osm",
 			"nearestHighwayM": 142,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-izvor-busijevec-12553411875",
@@ -674,7 +674,7 @@
 			"source": "osm",
 			"nearestHighwayM": 5,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-6763548138",
@@ -689,7 +689,7 @@
 			"source": "osm",
 			"nearestHighwayM": 2,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-3754382307",
@@ -704,7 +704,7 @@
 			"source": "osm",
 			"nearestHighwayM": 9,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-4820245749",
@@ -719,7 +719,7 @@
 			"source": "osm",
 			"nearestHighwayM": 19,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-856460005",
@@ -734,7 +734,7 @@
 			"source": "osm",
 			"nearestHighwayM": 3,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-4820217335",
@@ -749,7 +749,7 @@
 			"source": "osm",
 			"nearestHighwayM": 17,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-5909212211",
@@ -764,7 +764,7 @@
 			"source": "osm",
 			"nearestHighwayM": 10,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-1399599437",
@@ -779,7 +779,7 @@
 			"source": "osm",
 			"nearestHighwayM": 24,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-1843780277",
@@ -794,7 +794,7 @@
 			"source": "osm",
 			"nearestHighwayM": 7,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-5001393642",
@@ -809,7 +809,7 @@
 			"source": "osm",
 			"nearestHighwayM": 26,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-5001393643",
@@ -824,7 +824,7 @@
 			"source": "osm",
 			"nearestHighwayM": 16,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-5001369021",
@@ -839,7 +839,7 @@
 			"source": "osm",
 			"nearestHighwayM": 6,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-5001369022",
@@ -854,7 +854,7 @@
 			"source": "osm",
 			"nearestHighwayM": 7,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-13742539422",
@@ -869,7 +869,7 @@
 			"source": "osm",
 			"nearestHighwayM": 5,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-4889468018",
@@ -884,7 +884,7 @@
 			"source": "osm",
 			"nearestHighwayM": 6,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-izvor-sutle-474790000",
@@ -899,7 +899,7 @@
 			"source": "osm",
 			"nearestHighwayM": 138,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-maksovo-vrelo-7684564805",
@@ -914,7 +914,7 @@
 			"source": "osm",
 			"nearestHighwayM": 6,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-6516179914",
@@ -929,7 +929,7 @@
 			"source": "osm",
 			"nearestHighwayM": 5,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-7431524646",
@@ -944,7 +944,7 @@
 			"source": "osm",
 			"nearestHighwayM": 17,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-mrzljak-1386029848",
@@ -960,7 +960,7 @@
 			"source": "osm",
 			"nearestHighwayM": 2,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-1199996878",
@@ -975,7 +975,7 @@
 			"source": "osm",
 			"nearestHighwayM": 8,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-4316940543",
@@ -990,7 +990,7 @@
 			"source": "osm",
 			"nearestHighwayM": 8,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-4259919179",
@@ -1005,7 +1005,7 @@
 			"source": "osm",
 			"nearestHighwayM": 6,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-rumlec-4379272008",
@@ -1020,7 +1020,7 @@
 			"source": "osm",
 			"nearestHighwayM": 48,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-mrzlak-9465280784",
@@ -1035,7 +1035,7 @@
 			"source": "osm",
 			"nearestHighwayM": 6,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-3221768499",
@@ -1050,7 +1050,7 @@
 			"source": "osm",
 			"nearestHighwayM": 38,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-10832112823",
@@ -1065,7 +1065,7 @@
 			"source": "osm",
 			"nearestHighwayM": 13,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-micino-vrelo-3177539689",
@@ -1080,7 +1080,7 @@
 			"source": "osm",
 			"nearestHighwayM": 6,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-10832150375",
@@ -1095,7 +1095,7 @@
 			"source": "osm",
 			"nearestHighwayM": 17,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-6600611608",
@@ -1110,7 +1110,7 @@
 			"source": "osm",
 			"nearestHighwayM": 32,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-5197601045",
@@ -1125,7 +1125,7 @@
 			"source": "osm",
 			"nearestHighwayM": 4,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-3918853834",
@@ -1140,7 +1140,7 @@
 			"source": "osm",
 			"nearestHighwayM": 7,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-470449730",
@@ -1155,7 +1155,7 @@
 			"source": "osm",
 			"nearestHighwayM": 12,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-470449728",
@@ -1170,7 +1170,7 @@
 			"source": "osm",
 			"nearestHighwayM": 8,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-izvor-9495009187",
@@ -1185,7 +1185,7 @@
 			"source": "osm",
 			"nearestHighwayM": 7,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-9443220756",
@@ -1200,7 +1200,7 @@
 			"source": "osm",
 			"nearestHighwayM": 3,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-mbaric-6942567347",
@@ -1215,7 +1215,7 @@
 			"source": "osm",
 			"nearestHighwayM": 10,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-jambrisakovo-vrelo-1364257336",
@@ -1230,7 +1230,7 @@
 			"source": "osm",
 			"nearestHighwayM": 5,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-7022084313",
@@ -1245,7 +1245,7 @@
 			"source": "osm",
 			"nearestHighwayM": 82,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-izvor-crvenog-kriza-7022084316",
@@ -1260,7 +1260,7 @@
 			"source": "osm",
 			"nearestHighwayM": 61,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-7022057197",
@@ -1275,7 +1275,7 @@
 			"source": "osm",
 			"nearestHighwayM": 105,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-7022057204",
@@ -1290,7 +1290,7 @@
 			"source": "osm",
 			"nearestHighwayM": 117,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-7022084303",
@@ -1305,7 +1305,7 @@
 			"source": "osm",
 			"nearestHighwayM": 48,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-6985352947",
@@ -1320,7 +1320,7 @@
 			"source": "osm",
 			"nearestHighwayM": 161,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-6985376302",
@@ -1335,7 +1335,7 @@
 			"source": "osm",
 			"nearestHighwayM": 156,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-8234980365",
@@ -1350,7 +1350,7 @@
 			"source": "osm",
 			"nearestHighwayM": 20,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-7074543905",
@@ -1365,7 +1365,7 @@
 			"source": "osm",
 			"nearestHighwayM": 7,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-2994545118",
@@ -1380,7 +1380,7 @@
 			"source": "osm",
 			"nearestHighwayM": 4,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-2994545117",
@@ -1395,7 +1395,7 @@
 			"source": "osm",
 			"nearestHighwayM": 3,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-9117316295",
@@ -1410,7 +1410,7 @@
 			"source": "osm",
 			"nearestHighwayM": 3,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-gustules-971101347",
@@ -1425,7 +1425,7 @@
 			"source": "osm",
 			"nearestHighwayM": 10,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-8158652716",
@@ -1440,7 +1440,7 @@
 			"source": "osm",
 			"nearestHighwayM": 144,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-12465079712",
@@ -1455,7 +1455,7 @@
 			"source": "osm",
 			"nearestHighwayM": 7,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-509286026",
@@ -1470,7 +1470,7 @@
 			"source": "osm",
 			"nearestHighwayM": 7,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-usivka-6332003625",
@@ -1485,7 +1485,7 @@
 			"source": "osm",
 			"nearestHighwayM": 8,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-6038626918",
@@ -1500,7 +1500,7 @@
 			"source": "osm",
 			"nearestHighwayM": 6,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-7689171624",
@@ -1515,7 +1515,7 @@
 			"source": "osm",
 			"nearestHighwayM": 5,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-obradovac-7689171625",
@@ -1531,7 +1531,7 @@
 			"source": "osm",
 			"nearestHighwayM": 5,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-6981668000",
@@ -1546,7 +1546,7 @@
 			"source": "osm",
 			"nearestHighwayM": 191,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-6981707399",
@@ -1561,7 +1561,7 @@
 			"source": "osm",
 			"nearestHighwayM": 101,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-izvor-bazgovac-10599564443",
@@ -1576,7 +1576,7 @@
 			"source": "osm",
 			"nearestHighwayM": 469,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-12772266670",
@@ -1591,7 +1591,7 @@
 			"source": "osm",
 			"nearestHighwayM": 4,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-izvor-plavanovka-12945273787",
@@ -1606,7 +1606,7 @@
 			"source": "osm",
 			"nearestHighwayM": 1,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-zeleni-vir-2194082665",
@@ -1622,7 +1622,7 @@
 			"source": "osm",
 			"nearestHighwayM": 4,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-izvor-kupice-2194085942",
@@ -1637,7 +1637,7 @@
 			"source": "osm",
 			"nearestHighwayM": 7,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-9935576732",
@@ -1652,7 +1652,7 @@
 			"source": "osm",
 			"nearestHighwayM": 10,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-5641877724",
@@ -1667,7 +1667,7 @@
 			"source": "osm",
 			"nearestHighwayM": 12,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-izvor-kupe-452504585",
@@ -1684,7 +1684,7 @@
 			"source": "osm",
 			"nearestHighwayM": 36,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-6646589287",
@@ -1699,7 +1699,7 @@
 			"source": "osm",
 			"nearestHighwayM": 8,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-trstenik-11180380514",
@@ -1714,7 +1714,7 @@
 			"source": "osm",
 			"nearestHighwayM": 16,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-izvor-vele-vode-5555956271",
@@ -1729,7 +1729,7 @@
 			"source": "osm",
 			"nearestHighwayM": 7,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-racka-mocila-5555874706",
@@ -1745,7 +1745,7 @@
 			"source": "osm",
 			"nearestHighwayM": 19,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-5555892077",
@@ -1760,7 +1760,7 @@
 			"source": "osm",
 			"nearestHighwayM": 21,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-8273974075",
@@ -1775,7 +1775,7 @@
 			"source": "osm",
 			"nearestHighwayM": 4,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-vrbanov-izvor-10539845424",
@@ -1790,7 +1790,7 @@
 			"source": "osm",
 			"nearestHighwayM": 45,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-vodica-10539849473",
@@ -1805,7 +1805,7 @@
 			"source": "osm",
 			"nearestHighwayM": 101,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-ivina-10539850039",
@@ -1820,7 +1820,7 @@
 			"source": "osm",
 			"nearestHighwayM": 13,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-belnjak-7549675028",
@@ -1835,7 +1835,7 @@
 			"source": "osm",
 			"nearestHighwayM": 163,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-vodice-2696064977",
@@ -1850,7 +1850,7 @@
 			"source": "osm",
 			"nearestHighwayM": 7,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-5939265004",
@@ -1865,7 +1865,7 @@
 			"source": "osm",
 			"nearestHighwayM": 15,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-2671966856",
@@ -1880,7 +1880,7 @@
 			"source": "osm",
 			"nearestHighwayM": 8,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-izvor-korita-2673429154",
@@ -1895,7 +1895,7 @@
 			"source": "osm",
 			"nearestHighwayM": 0,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-10970467503",
@@ -1910,7 +1910,7 @@
 			"source": "osm",
 			"nearestHighwayM": 10,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-5900805434",
@@ -1925,7 +1925,7 @@
 			"source": "osm",
 			"nearestHighwayM": 12,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-5900805433",
@@ -1940,7 +1940,7 @@
 			"source": "osm",
 			"nearestHighwayM": 10,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-5613431686",
@@ -1955,7 +1955,7 @@
 			"source": "osm",
 			"nearestHighwayM": 6,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-5900805431",
@@ -1970,7 +1970,7 @@
 			"source": "osm",
 			"nearestHighwayM": 44,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-12872702032",
@@ -1985,7 +1985,7 @@
 			"source": "osm",
 			"nearestHighwayM": 18,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-3507150958",
@@ -2000,7 +2000,7 @@
 			"source": "osm",
 			"nearestHighwayM": 4,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-slatina-1921-10272873472",
@@ -2015,7 +2015,7 @@
 			"source": "osm",
 			"nearestHighwayM": 8,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-10272876882",
@@ -2030,7 +2030,7 @@
 			"source": "osm",
 			"nearestHighwayM": 5,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-izvor-2659095208",
@@ -2045,7 +2045,7 @@
 			"source": "osm",
 			"nearestHighwayM": 7,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-7839542114",
@@ -2060,7 +2060,7 @@
 			"source": "osm",
 			"nearestHighwayM": 31,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-slavina-2622164879",
@@ -2075,7 +2075,7 @@
 			"source": "osm",
 			"nearestHighwayM": 5,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-12876771197",
@@ -2090,7 +2090,7 @@
 			"source": "osm",
 			"nearestHighwayM": 13,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-1922365756",
@@ -2105,7 +2105,7 @@
 			"source": "osm",
 			"nearestHighwayM": 4,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-7601247755",
@@ -2120,7 +2120,7 @@
 			"source": "osm",
 			"nearestHighwayM": 23,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-6926897032",
@@ -2135,7 +2135,7 @@
 			"source": "osm",
 			"nearestHighwayM": 14,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-12134169224",
@@ -2150,7 +2150,7 @@
 			"source": "osm",
 			"nearestHighwayM": 13,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-12260949783",
@@ -2165,7 +2165,7 @@
 			"source": "osm",
 			"nearestHighwayM": 48,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-9660736761",
@@ -2180,7 +2180,7 @@
 			"source": "osm",
 			"nearestHighwayM": 25,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-4942050785",
@@ -2195,7 +2195,7 @@
 			"source": "osm",
 			"nearestHighwayM": 4,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-2657357983",
@@ -2210,22 +2210,7 @@
 			"source": "osm",
 			"nearestHighwayM": 72,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
-		},
-		{
-			"id": "water-drinking-water-7637452018",
-			"type": "water",
-			"name_en": "Drinking water",
-			"name_hr": "Pitka voda",
-			"lat": 45.33147,
-			"lng": 13.8247,
-			"trailKm": 1274.7,
-			"distanceFromTrailKm": 0.1,
-			"water": { "kind": "tap", "reliability": "reliable" },
-			"source": "osm",
-			"nearestHighwayM": 6,
-			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-10593480476",
@@ -2240,7 +2225,7 @@
 			"source": "osm",
 			"nearestHighwayM": 3,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-10593523713",
@@ -2255,7 +2240,7 @@
 			"source": "osm",
 			"nearestHighwayM": 9,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-2520693881",
@@ -2270,7 +2255,7 @@
 			"source": "osm",
 			"nearestHighwayM": 5,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spina-3415899997",
@@ -2285,7 +2270,7 @@
 			"source": "osm",
 			"nearestHighwayM": 6,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-9017287341",
@@ -2300,7 +2285,7 @@
 			"source": "osm",
 			"nearestHighwayM": 4,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-sveti-anton-9543365965",
@@ -2315,7 +2300,7 @@
 			"source": "osm",
 			"nearestHighwayM": 43,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-mutvica-9543374718",
@@ -2331,7 +2316,7 @@
 			"source": "osm",
 			"nearestHighwayM": 27,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-grdak-7182642493",
@@ -2346,7 +2331,7 @@
 			"source": "osm",
 			"nearestHighwayM": 20,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-rakonik-9542804976",
@@ -2361,7 +2346,7 @@
 			"source": "osm",
 			"nearestHighwayM": 33,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-3327182688",
@@ -2376,7 +2361,7 @@
 			"source": "osm",
 			"nearestHighwayM": 12,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-scurak-2729612036",
@@ -2392,7 +2377,7 @@
 			"source": "osm",
 			"nearestHighwayM": 1,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-3741338587",
@@ -2407,7 +2392,7 @@
 			"source": "osm",
 			"nearestHighwayM": 6,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-plomin-9543419568",
@@ -2423,7 +2408,7 @@
 			"source": "osm",
 			"nearestHighwayM": 9,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-1572273397",
@@ -2438,7 +2423,7 @@
 			"source": "osm",
 			"nearestHighwayM": 8,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-kadanj-1572273394",
@@ -2453,7 +2438,7 @@
 			"source": "osm",
 			"nearestHighwayM": 27,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-2663345282",
@@ -2468,7 +2453,7 @@
 			"source": "osm",
 			"nearestHighwayM": 0,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-pod-trebisca-1574552332",
@@ -2483,7 +2468,7 @@
 			"source": "osm",
 			"nearestHighwayM": 14,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-1367564757",
@@ -2498,7 +2483,7 @@
 			"source": "osm",
 			"nearestHighwayM": 4,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-6067960439",
@@ -2513,7 +2498,7 @@
 			"source": "osm",
 			"nearestHighwayM": 10,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-7180964454",
@@ -2528,7 +2513,7 @@
 			"source": "osm",
 			"nearestHighwayM": 0,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-2552194467",
@@ -2543,7 +2528,7 @@
 			"source": "osm",
 			"nearestHighwayM": 4,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-9828988615",
@@ -2558,7 +2543,7 @@
 			"source": "osm",
 			"nearestHighwayM": 10,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-4386738167",
@@ -2573,7 +2558,7 @@
 			"source": "osm",
 			"nearestHighwayM": 8,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-12893806889",
@@ -2589,7 +2574,7 @@
 			"source": "osm",
 			"nearestHighwayM": 17,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-11688429817",
@@ -2604,7 +2589,7 @@
 			"source": "osm",
 			"nearestHighwayM": 11,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-frlanija-2835823478",
@@ -2619,7 +2604,7 @@
 			"source": "osm",
 			"nearestHighwayM": 13,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-2351384021",
@@ -2634,7 +2619,7 @@
 			"source": "osm",
 			"nearestHighwayM": 2,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-11170278137",
@@ -2649,7 +2634,7 @@
 			"source": "osm",
 			"nearestHighwayM": 4,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-5859606121",
@@ -2664,7 +2649,7 @@
 			"source": "osm",
 			"nearestHighwayM": 31,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-11173563937",
@@ -2679,7 +2664,7 @@
 			"source": "osm",
 			"nearestHighwayM": 9,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-9935594976",
@@ -2694,7 +2679,7 @@
 			"source": "osm",
 			"nearestHighwayM": 4,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-9971637861",
@@ -2709,7 +2694,7 @@
 			"source": "osm",
 			"nearestHighwayM": 3,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-6885699027",
@@ -2724,7 +2709,7 @@
 			"source": "osm",
 			"nearestHighwayM": 29,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-carsko-vrilo-4240103019",
@@ -2739,7 +2724,7 @@
 			"source": "osm",
 			"nearestHighwayM": 6,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-13481098532",
@@ -2754,7 +2739,7 @@
 			"source": "osm",
 			"nearestHighwayM": 11,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-6545209485",
@@ -2769,7 +2754,7 @@
 			"source": "osm",
 			"nearestHighwayM": 5,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-13867904463",
@@ -2784,7 +2769,7 @@
 			"source": "osm",
 			"nearestHighwayM": 25,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-rujica-10092226409",
@@ -2799,7 +2784,7 @@
 			"source": "osm",
 			"nearestHighwayM": 50,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-4235487989",
@@ -2814,7 +2799,7 @@
 			"source": "osm",
 			"nearestHighwayM": 21,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-3511257893",
@@ -2829,7 +2814,7 @@
 			"source": "osm",
 			"nearestHighwayM": 7,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-voda-stap-2371790005",
@@ -2844,7 +2829,7 @@
 			"source": "osm",
 			"nearestHighwayM": 1,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-stap-9960100693",
@@ -2859,7 +2844,7 @@
 			"source": "osm",
 			"nearestHighwayM": 3,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-6764038019",
@@ -2874,7 +2859,7 @@
 			"source": "osm",
 			"nearestHighwayM": 41,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-bobika-12996045449",
@@ -2889,7 +2874,7 @@
 			"source": "osm",
 			"nearestHighwayM": 432,
 			"isReachable": false,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-pistet-7053982208",
@@ -2903,7 +2888,7 @@
 			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
 			"isReachable": false,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-7984055050",
@@ -2918,7 +2903,7 @@
 			"source": "osm",
 			"nearestHighwayM": 28,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-1907087339",
@@ -2933,7 +2918,7 @@
 			"source": "osm",
 			"nearestHighwayM": 1,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-vrilo-kameno-7053974869",
@@ -2948,7 +2933,7 @@
 			"source": "osm",
 			"nearestHighwayM": 270,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-7053974870",
@@ -2963,7 +2948,7 @@
 			"source": "osm",
 			"nearestHighwayM": 386,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-strazbenica-7053974871",
@@ -2978,7 +2963,7 @@
 			"source": "osm",
 			"nearestHighwayM": 4,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-zanzibar-dry-in-july-8817513180",
@@ -2993,7 +2978,7 @@
 			"source": "osm",
 			"nearestHighwayM": 5,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-m-ruja-13195610325",
@@ -3008,7 +2993,7 @@
 			"source": "osm",
 			"nearestHighwayM": 11,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-marasovac-drinking-well-3722715974",
@@ -3023,7 +3008,7 @@
 			"source": "osm",
 			"nearestHighwayM": 2,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-10101966337",
@@ -3038,7 +3023,7 @@
 			"source": "osm",
 			"nearestHighwayM": 13,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-13195610320",
@@ -3053,7 +3038,7 @@
 			"source": "osm",
 			"nearestHighwayM": 12,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-7053941559",
@@ -3068,7 +3053,7 @@
 			"source": "osm",
 			"nearestHighwayM": 423,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-ivine-vodice-7053941526",
@@ -3083,7 +3068,7 @@
 			"source": "osm",
 			"nearestHighwayM": 310,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-ivine-vodice-3254171025",
@@ -3098,7 +3083,7 @@
 			"source": "osm",
 			"nearestHighwayM": 5,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-7053858217",
@@ -3113,7 +3098,7 @@
 			"source": "osm",
 			"nearestHighwayM": 31,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-donji-izvor-8881165940",
@@ -3128,7 +3113,7 @@
 			"source": "osm",
 			"nearestHighwayM": 3,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-gornji-izvor-10637479065",
@@ -3143,7 +3128,7 @@
 			"source": "osm",
 			"nearestHighwayM": 3,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-bunaric-6021800835",
@@ -3158,7 +3143,7 @@
 			"source": "osm",
 			"nearestHighwayM": 43,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-ruja-6021804467",
@@ -3173,7 +3158,7 @@
 			"source": "osm",
 			"nearestHighwayM": 4,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-izvoric-10594202202",
@@ -3188,7 +3173,7 @@
 			"source": "osm",
 			"nearestHighwayM": 33,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-12386675471",
@@ -3203,7 +3188,7 @@
 			"source": "osm",
 			"nearestHighwayM": 6,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-gusterna-6021829834",
@@ -3218,7 +3203,7 @@
 			"source": "osm",
 			"nearestHighwayM": 13,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-kapljuv-6879642446",
@@ -3233,7 +3218,7 @@
 			"source": "osm",
 			"nearestHighwayM": 32,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-ridjevac-8587328088",
@@ -3248,7 +3233,7 @@
 			"source": "osm",
 			"nearestHighwayM": 13,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-pistelj-8587328089",
@@ -3263,7 +3248,7 @@
 			"source": "osm",
 			"nearestHighwayM": 26,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-1110091357",
@@ -3278,7 +3263,7 @@
 			"source": "osm",
 			"nearestHighwayM": 3,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-12636015400",
@@ -3293,7 +3278,7 @@
 			"source": "osm",
 			"nearestHighwayM": 205,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-12985555654",
@@ -3308,7 +3293,7 @@
 			"source": "osm",
 			"nearestHighwayM": 41,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-jaza-2985734328",
@@ -3323,7 +3308,7 @@
 			"source": "osm",
 			"nearestHighwayM": 11,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-cetina-spring-1556195627",
@@ -3348,7 +3333,7 @@
 					"sourceUrl": "https://commons.wikimedia.org/wiki/File:The_Eye_of_Cetina.jpg"
 				}
 			],
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-957976026",
@@ -3363,7 +3348,7 @@
 			"source": "osm",
 			"nearestHighwayM": 6,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-trilj-744685178",
@@ -3378,7 +3363,7 @@
 			"source": "osm",
 			"nearestHighwayM": 16,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-trposnjik-8807694491",
@@ -3393,7 +3378,7 @@
 			"source": "osm",
 			"nearestHighwayM": 11,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-12288464176",
@@ -3408,7 +3393,7 @@
 			"source": "osm",
 			"nearestHighwayM": 9,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-10083553867",
@@ -3423,7 +3408,7 @@
 			"source": "osm",
 			"nearestHighwayM": 1,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-12288476422",
@@ -3438,7 +3423,7 @@
 			"source": "osm",
 			"nearestHighwayM": 15,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-4386764058",
@@ -3453,7 +3438,7 @@
 			"source": "osm",
 			"nearestHighwayM": 13,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-13723072454",
@@ -3468,7 +3453,7 @@
 			"source": "osm",
 			"nearestHighwayM": 7,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-10990075205",
@@ -3483,7 +3468,7 @@
 			"source": "osm",
 			"nearestHighwayM": 4,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-5198836839",
@@ -3498,7 +3483,7 @@
 			"source": "osm",
 			"nearestHighwayM": 6,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-pakline-1224110947",
@@ -3513,7 +3498,7 @@
 			"source": "osm",
 			"nearestHighwayM": 82,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-puit-9774673408",
@@ -3528,7 +3513,7 @@
 			"source": "osm",
 			"nearestHighwayM": 1,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-pompe-manuelle-9774699639",
@@ -3543,7 +3528,7 @@
 			"source": "osm",
 			"nearestHighwayM": 6,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-ovcena-7702798670",
@@ -3559,7 +3544,7 @@
 			"source": "osm",
 			"nearestHighwayM": 199,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-vrutak-296668543",
@@ -3574,7 +3559,7 @@
 			"source": "osm",
 			"nearestHighwayM": 8,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-2373581776",
@@ -3589,7 +3574,7 @@
 			"source": "osm",
 			"nearestHighwayM": 5,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-5838131204",
@@ -3604,7 +3589,7 @@
 			"source": "osm",
 			"nearestHighwayM": 124,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-2376436058",
@@ -3619,7 +3604,7 @@
 			"source": "osm",
 			"nearestHighwayM": 14,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-4920932030",
@@ -3634,7 +3619,7 @@
 			"source": "osm",
 			"nearestHighwayM": 6,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-10948600608",
@@ -3649,7 +3634,7 @@
 			"source": "osm",
 			"nearestHighwayM": 25,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-eau-potable-2999751154",
@@ -3665,7 +3650,7 @@
 			"source": "osm",
 			"nearestHighwayM": 13,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-velika-voda-4839983533",
@@ -3680,7 +3665,7 @@
 			"source": "osm",
 			"nearestHighwayM": 38,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-9673965103",
@@ -3695,7 +3680,7 @@
 			"source": "osm",
 			"nearestHighwayM": 4,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-4327833266",
@@ -3710,7 +3695,7 @@
 			"source": "osm",
 			"nearestHighwayM": 7,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-klokun-2286029393",
@@ -3725,7 +3710,7 @@
 			"source": "osm",
 			"nearestHighwayM": 42,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-6810857523",
@@ -3740,7 +3725,7 @@
 			"source": "osm",
 			"nearestHighwayM": 26,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-4448818627",
@@ -3755,7 +3740,7 @@
 			"source": "osm",
 			"nearestHighwayM": 6,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-4448818624",
@@ -3770,7 +3755,7 @@
 			"source": "osm",
 			"nearestHighwayM": 6,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-13283364555",
@@ -3785,7 +3770,7 @@
 			"source": "osm",
 			"nearestHighwayM": 16,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-9202575880",
@@ -3800,7 +3785,7 @@
 			"source": "osm",
 			"nearestHighwayM": 10,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-10983065351",
@@ -3815,7 +3800,7 @@
 			"source": "osm",
 			"nearestHighwayM": 21,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-12012379569",
@@ -3830,7 +3815,7 @@
 			"source": "osm",
 			"nearestHighwayM": 6,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-10779365970",
@@ -3845,7 +3830,7 @@
 			"source": "osm",
 			"nearestHighwayM": 11,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-10779365971",
@@ -3860,7 +3845,7 @@
 			"source": "osm",
 			"nearestHighwayM": 9,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-12615723484",
@@ -3875,7 +3860,7 @@
 			"source": "osm",
 			"nearestHighwayM": 29,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-4481159875",
@@ -3890,7 +3875,7 @@
 			"source": "osm",
 			"nearestHighwayM": 8,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-11068787576",
@@ -3905,7 +3890,7 @@
 			"source": "osm",
 			"nearestHighwayM": 8,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-4857054721",
@@ -3920,7 +3905,7 @@
 			"source": "osm",
 			"nearestHighwayM": 8,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-9202612069",
@@ -3935,7 +3920,7 @@
 			"source": "osm",
 			"nearestHighwayM": 2,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-6609379271",
@@ -3950,7 +3935,7 @@
 			"source": "osm",
 			"nearestHighwayM": 11,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-9221879910",
@@ -3965,7 +3950,7 @@
 			"source": "osm",
 			"nearestHighwayM": 21,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-9221829411",
@@ -3980,7 +3965,7 @@
 			"source": "osm",
 			"nearestHighwayM": 6,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-4306010895",
@@ -3995,7 +3980,7 @@
 			"source": "osm",
 			"nearestHighwayM": 5,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-4306010896",
@@ -4010,7 +3995,7 @@
 			"source": "osm",
 			"nearestHighwayM": 2,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-onofrio-s-fountain-4306027796",
@@ -4025,7 +4010,7 @@
 			"source": "osm",
 			"nearestHighwayM": 9,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-agua-4306072790",
@@ -4040,7 +4025,7 @@
 			"source": "osm",
 			"nearestHighwayM": 5,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-4306072691",
@@ -4055,7 +4040,7 @@
 			"source": "osm",
 			"nearestHighwayM": 2,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-kleiner-lowenkopfbrunnen-436979452",
@@ -4070,7 +4055,7 @@
 			"source": "osm",
 			"nearestHighwayM": 0,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-4306418017",
@@ -4085,7 +4070,7 @@
 			"source": "osm",
 			"nearestHighwayM": 4,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-izvor-vrelo-9290974037",
@@ -4100,7 +4085,7 @@
 			"source": "osm",
 			"nearestHighwayM": 15,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-bravinjac-6126847649",
@@ -4115,7 +4100,7 @@
 			"source": "osm",
 			"nearestHighwayM": 7,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-6502170433",
@@ -4130,7 +4115,7 @@
 			"source": "osm",
 			"nearestHighwayM": 2,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-9787472562",
@@ -4145,7 +4130,7 @@
 			"source": "osm",
 			"nearestHighwayM": 23,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-spring-7866357123",
@@ -4158,9 +4143,9 @@
 			"distanceFromTrailKm": 0.25,
 			"water": { "kind": "spring", "reliability": "unverified" },
 			"source": "osm",
-			"nearestHighwayM": 60,
+			"nearestHighwayM": 63,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-8732029436",
@@ -4175,7 +4160,7 @@
 			"source": "osm",
 			"nearestHighwayM": 16,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-13713140579",
@@ -4190,7 +4175,7 @@
 			"source": "osm",
 			"nearestHighwayM": 16,
 			"isReachable": false,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "water-drinking-water-5168799925",
@@ -4205,7 +4190,7 @@
 			"source": "osm",
 			"nearestHighwayM": 86,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		}
 	]
 }

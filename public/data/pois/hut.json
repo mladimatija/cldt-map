@@ -1,5 +1,5 @@
 {
-	"lastUpdated": "2026-06-14",
+	"lastUpdated": "2026-07-11",
 	"pois": [
 		{
 			"id": "hut-planinarska-kuca-borovik-8520796044",
@@ -11,11 +11,12 @@
 			"trailKm": 238.3,
 			"distanceFromTrailKm": 12.17,
 			"elevationM": 155,
+			"hutInfo": { "operator": "PD Đakovo, Đakovo" },
 			"source": "hps",
 			"isReachable": false,
 			"note_en": "Djakovo-area hut at 155 m.",
 			"note_hr": "Đakovačka okolica, 155 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarska-kuca-krndija-8499583252",
@@ -27,12 +28,13 @@
 			"trailKm": 249.3,
 			"distanceFromTrailKm": 3.96,
 			"elevationM": 274,
+			"hutInfo": { "operator": "PD Krndija, Našice" },
 			"source": "hps",
 			"nearestHighwayM": 18,
 			"isReachable": true,
 			"note_en": "Krndija hut at 274 m, near Nasice.",
 			"note_hr": "Krndija, 274 m, kod Našica.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinska-kuca-tivanovo-6885059985",
@@ -48,7 +50,7 @@
 			"isReachable": true,
 			"note_en": "Djurdjenovac-area hut at 220 m.",
 			"note_hr": "Đurđenovačka okolica, 220 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarska-kuca-mlaka-8571461474",
@@ -60,12 +62,13 @@
 			"trailKm": 262.4,
 			"distanceFromTrailKm": 2.69,
 			"elevationM": 552,
+			"hutInfo": { "operator": "HPD \"VIDIM\" Kutjevo" },
 			"source": "hps",
 			"nearestHighwayM": 8,
 			"isReachable": true,
 			"note_en": "Krndija hut at 552 m, near Kutjevo.",
 			"note_hr": "Krndija, 552 m, kod Kutjeva.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-lovacka-kuca-8643605976",
@@ -79,7 +82,7 @@
 			"source": "osm",
 			"nearestHighwayM": 30,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-lovacka-kuca-dobra-voda-8598680465",
@@ -93,7 +96,7 @@
 			"source": "osm",
 			"nearestHighwayM": 23,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarska-kuca-sasevo-402824242",
@@ -109,7 +112,7 @@
 			"isReachable": true,
 			"note_en": "Krndija hut at 415 m, near Orahovica.",
 			"note_hr": "Krndija, 415 m, kod Orahovice.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-lovacka-kuca-vodice-8605336951",
@@ -120,10 +123,11 @@
 			"lng": 17.75617,
 			"trailKm": 276.7,
 			"distanceFromTrailKm": 0.02,
+			"hutInfo": { "operator": "LD Vepar" },
 			"source": "osm",
 			"nearestHighwayM": 9,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarska-kuca-trisnjica-927293711",
@@ -135,12 +139,13 @@
 			"trailKm": 281.3,
 			"distanceFromTrailKm": 0.71,
 			"elevationM": 640,
+			"hutInfo": { "operator": "HPD Sokolovac" },
 			"source": "hps",
 			"nearestHighwayM": 4,
 			"isReachable": true,
 			"note_en": "Papuk hut at 640 m, near Pozega.",
 			"note_hr": "Papuk, 640 m, kod Požege.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarska-kuca-lapjak-188463998",
@@ -152,12 +157,13 @@
 			"trailKm": 282.5,
 			"distanceFromTrailKm": 5.34,
 			"elevationM": 335,
+			"hutInfo": { "operator": "HPD" },
 			"source": "hps",
-			"nearestHighwayM": 31,
+			"nearestHighwayM": 13,
 			"isReachable": true,
 			"note_en": "Papuk hut at 335 m.",
 			"note_hr": "Papuk, 335 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarska-kuca-jezerce-549570154",
@@ -169,12 +175,13 @@
 			"trailKm": 284.6,
 			"distanceFromTrailKm": 1.77,
 			"elevationM": 720,
+			"hutInfo": { "operator": "HGSS Požega" },
 			"source": "hps",
 			"nearestHighwayM": 26,
 			"isReachable": true,
 			"note_en": "Papuk hut at 720 m, managed by HGSS Pozega.",
 			"note_hr": "Papuk, 720 m, upravlja HGSS Požega.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarski-dom-jankovac-186925761",
@@ -186,12 +193,13 @@
 			"trailKm": 285.2,
 			"distanceFromTrailKm": 0.06,
 			"elevationM": 475,
+			"hutInfo": { "fee": "yes", "operator": "Hrvatske Šume d.o.o." },
 			"source": "hps",
 			"nearestHighwayM": 11,
 			"isReachable": true,
 			"note_en": "Papuk Nature Park hut at 475 m, near Jankovac lakes.",
 			"note_hr": "Park prirode Papuk, 475 m, kod Jankovačkih jezera.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarsko-skloniste-maliscak-927293624",
@@ -203,12 +211,13 @@
 			"trailKm": 290.7,
 			"distanceFromTrailKm": 3.6,
 			"elevationM": 740,
+			"hutInfo": { "operator": "PD Mališčak" },
 			"source": "hps",
 			"nearestHighwayM": 1,
 			"isReachable": true,
 			"note_en": "Papuk shelter at 734 m, near Velika.",
 			"note_hr": "Papuk, sklonište na 734 m, kod Velike.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-knezeva-voda-8620757469",
@@ -223,7 +232,7 @@
 			"source": "osm",
 			"nearestHighwayM": 5,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarsko-skloniste-crni-vrh-231733853",
@@ -240,7 +249,7 @@
 			"isReachable": true,
 			"note_en": "Papuk shelter at 864 m, near Daruvar.",
 			"note_hr": "Sklonište na Papuku, 864 m, kod Daruvara.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarski-dom-petrov-vrh-326019686",
@@ -256,7 +265,7 @@
 			"isReachable": true,
 			"note_en": "Papuk hut at 547 m, near Daruvar.",
 			"note_hr": "Papuk, 547 m, kod Daruvara.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-pohajdin-bunar-9132103049",
@@ -267,10 +276,11 @@
 			"lng": 16.98986,
 			"trailKm": 399.3,
 			"distanceFromTrailKm": 3.84,
+			"hutInfo": { "operator": "Hrvatske šume/GSS" },
 			"source": "osm",
 			"nearestHighwayM": 71,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-mountain-lodge-kamenitovac-326018327",
@@ -282,10 +292,11 @@
 			"trailKm": 408.6,
 			"distanceFromTrailKm": 5.77,
 			"source": "hps",
-			"isReachable": false,
+			"nearestHighwayM": 12,
+			"isReachable": true,
 			"note_en": "Bilogora hut at 242 m, near Bjelovar.",
 			"note_hr": "Bilogora, 242 m, kod Bjelovara.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-anin-vrh-8859386574",
@@ -296,12 +307,13 @@
 			"lng": 16.84687,
 			"trailKm": 437,
 			"distanceFromTrailKm": 0.02,
+			"hutInfo": { "operator": "HPD Bilo, Koprivnica" },
 			"source": "hps",
 			"nearestHighwayM": 10,
 			"isReachable": true,
 			"note_en": "Bilogora hut at 303 m.",
 			"note_hr": "Kuća na Bilogori, 303 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-lugarnica-rajcevica-8859386575",
@@ -312,10 +324,11 @@
 			"lng": 16.82538,
 			"trailKm": 439.1,
 			"distanceFromTrailKm": 0.02,
+			"hutInfo": { "operator": "Šumarija Koprivnica" },
 			"source": "osm",
 			"nearestHighwayM": 25,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarska-kuca-rudi-juric-935163227",
@@ -327,12 +340,13 @@
 			"trailKm": 458,
 			"distanceFromTrailKm": 0,
 			"elevationM": 295,
+			"hutInfo": { "operator": "HPD Bilo" },
 			"source": "hps",
 			"nearestHighwayM": 23,
 			"isReachable": true,
 			"note_en": "Bilogora hut at 295 m, near Koprivnica.",
 			"note_hr": "Bilogora, 295 m, kod Koprivnice.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarski-dom-kalnik-383847046",
@@ -348,7 +362,7 @@
 			"isReachable": true,
 			"note_en": "Kalnik hut at 480 m, near Krizevci.",
 			"note_hr": "Kalnik, 480 m, kod Križevaca.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-klet-matija-12464957537",
@@ -362,7 +376,7 @@
 			"phone": "+385915048601",
 			"source": "osm",
 			"isReachable": false,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarska-kuca-grebengrad-1057012700",
@@ -374,11 +388,12 @@
 			"trailKm": 492.4,
 			"distanceFromTrailKm": 11.63,
 			"elevationM": 490,
+			"hutInfo": { "operator": "PD Grebengrad - Novi Marof" },
 			"source": "hps",
 			"isReachable": false,
 			"note_en": "Hrvatsko zagorje hut at 490 m.",
 			"note_hr": "Hrvatsko zagorje, 490 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarska-kuca-vagon-8859544097",
@@ -389,11 +404,12 @@
 			"lng": 16.27889,
 			"trailKm": 628.7,
 			"distanceFromTrailKm": 10.23,
+			"hutInfo": { "operator": "HPD Dugi vrh, Varaždin" },
 			"source": "hps",
 			"isReachable": false,
 			"note_en": "Dugi vrh hut at 220 m, Hrvatsko zagorje.",
 			"note_hr": "Dugi vrh, 220 m, Hrvatsko zagorje.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarska-kuca-ledinec-8859544096",
@@ -405,11 +421,12 @@
 			"trailKm": 628.9,
 			"distanceFromTrailKm": 10.94,
 			"elevationM": 290,
+			"hutInfo": { "operator": "HPD Dugi vrh, Varaždin" },
 			"source": "hps",
 			"isReachable": false,
 			"note_en": "Hrvatsko zagorje hut at 290 m.",
 			"note_hr": "Hrvatsko zagorje, 290 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarski-dom-ledinec-8862661102",
@@ -425,7 +442,7 @@
 			"isReachable": false,
 			"note_en": "Hrvatsko zagorje hut at 290 m.",
 			"note_hr": "Hrvatsko zagorje, 290 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-filicev-dom-328324945",
@@ -442,7 +459,7 @@
 			"isReachable": true,
 			"note_en": "Ravna gora hut, Varazdin area, 660 m.",
 			"note_hr": "Ravna gora, varaždinski kraj, 660 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarska-kuca-pusti-duh-328324730",
@@ -459,7 +476,7 @@
 			"isReachable": true,
 			"note_en": "Ravna gora hut at 672 m, near Lepoglava.",
 			"note_hr": "Ravna gora, 672 m, kod Lepoglave.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarska-kuca-kuna-gora-1355258518",
@@ -475,7 +492,7 @@
 			"isReachable": true,
 			"note_en": "Hrvatsko zagorje hut at 380 m, near Pregrada.",
 			"note_hr": "Hrvatsko zagorje, 380 m, kod Pregrade.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-ackova-hiza-240975471",
@@ -488,12 +505,13 @@
 			"distanceFromTrailKm": 0.04,
 			"elevationM": 450,
 			"phone": "+385 915041795",
+			"hutInfo": { "operator": "Planinarsko društvo Brezovica" },
 			"source": "hps",
 			"nearestHighwayM": 14,
 			"isReachable": true,
 			"note_en": "Hrvatsko zagorje hut, 450 m.",
 			"note_hr": "Hrvatsko zagorje, 450 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarska-kuca-na-strahinjscici-216952412",
@@ -508,7 +526,7 @@
 			"source": "osm",
 			"nearestHighwayM": 9,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarski-dom-radoboj-1062744478",
@@ -519,12 +537,13 @@
 			"lng": 15.91796,
 			"trailKm": 722.8,
 			"distanceFromTrailKm": 1.01,
+			"hutInfo": { "operator": "HPD Radoboj" },
 			"source": "hps",
 			"nearestHighwayM": 15,
 			"isReachable": true,
 			"note_en": "Hrvatsko zagorje hut at 270 m.",
 			"note_hr": "Hrvatsko zagorje, 270 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarska-kuca-majer-1509133947",
@@ -536,12 +555,13 @@
 			"trailKm": 742.6,
 			"distanceFromTrailKm": 2.37,
 			"elevationM": 591,
+			"hutInfo": { "operator": "HPD \"Oštrc\" Zlatar" },
 			"source": "hps",
 			"nearestHighwayM": 10,
 			"isReachable": true,
 			"note_en": "Ostrc hut at 591 m, near Zlatar.",
 			"note_hr": "Ostrc, 591 m, kod Zlatara.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-lujcekova-hiza-1511896798",
@@ -553,11 +573,13 @@
 			"trailKm": 744.7,
 			"distanceFromTrailKm": 8.32,
 			"elevationM": 434,
+			"hutInfo": { "operator": "HPD Milengrad, Budinščina" },
 			"source": "hps",
-			"isReachable": false,
+			"nearestHighwayM": 94,
+			"isReachable": true,
 			"note_en": "Milengrad hut at 434 m, Hrvatsko zagorje.",
 			"note_hr": "Milengrad, 434 m, Hrvatsko zagorje.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarski-dom-josip-pasaric-383861919",
@@ -570,10 +592,11 @@
 			"distanceFromTrailKm": 0.01,
 			"elevationM": 1054,
 			"phone": "098 418 225",
+			"hutInfo": { "operator": "HPD Ivančica" },
 			"source": "osm",
 			"nearestHighwayM": 8,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-francekovo-skloniste-708050712",
@@ -584,10 +607,11 @@
 			"lng": 16.12624,
 			"trailKm": 744.7,
 			"distanceFromTrailKm": 0.01,
+			"hutInfo": { "operator": "HPD Ivančica" },
 			"source": "osm",
 			"nearestHighwayM": 10,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-belecgrad-714496071",
@@ -600,12 +624,13 @@
 			"distanceFromTrailKm": 0.66,
 			"elevationM": 445,
 			"url": "https://belecgrad.com/?Planinarska_ku%C4%87a",
+			"hutInfo": { "operator": "HPD \"Belecgrad\"" },
 			"source": "hps",
 			"nearestHighwayM": 16,
 			"isReachable": true,
 			"note_en": "Hrvatsko zagorje hut near medieval Belec castle, 440 m.",
 			"note_hr": "Hrvatsko zagorje, kod srednjovjekovnog grada Belca, 440 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-lovacki-dom-2971583556",
@@ -618,7 +643,7 @@
 			"distanceFromTrailKm": 8.92,
 			"source": "osm",
 			"isReachable": false,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarska-kuca-kladescica-296774060",
@@ -631,9 +656,9 @@
 			"distanceFromTrailKm": 5.15,
 			"phone": "+385 99 7821 866",
 			"source": "osm",
-			"nearestHighwayM": 260,
-			"isReachable": false,
-			"lastVerified": "2026-06-14"
+			"nearestHighwayM": 37,
+			"isReachable": true,
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarska-kuca-grohot-236108205",
@@ -649,7 +674,7 @@
 			"isReachable": true,
 			"note_en": "Medvednica eastern hut at 474 m.",
 			"note_hr": "Istočna Medvednica, 474 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarski-dom-lipa-rog-450493280",
@@ -663,12 +688,13 @@
 			"elevationM": 709,
 			"phone": "+385 98 894 653",
 			"url": "https://hpdlipa.hr/stranice.cfm?pageId=26",
+			"hutInfo": { "operator": "HPD Lipa Sesvete" },
 			"source": "hps",
 			"nearestHighwayM": 8,
 			"isReachable": true,
 			"note_en": "Medvednica eastern hut at 700 m, near Sesvete.",
 			"note_hr": "Istočna Medvednica, 700 m, kod Sesveta.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarski-dom-vugrovec-104997236",
@@ -682,10 +708,11 @@
 			"elevationM": 235,
 			"phone": "+385 1 3872 679",
 			"source": "hps",
-			"isReachable": false,
+			"nearestHighwayM": 11,
+			"isReachable": true,
 			"note_en": "Medvednica eastern hut at 235 m.",
 			"note_hr": "Istočna Medvednica, 235 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-lojzekov-izvor-3453359770",
@@ -703,7 +730,7 @@
 			"isReachable": true,
 			"note_en": "Medvednica hut at 400 m, near Donja Stubica.",
 			"note_hr": "Medvednica, 400 m, kod Donje Stubice.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-skloniste-kod-kriza-1479544525",
@@ -717,7 +744,7 @@
 			"source": "osm",
 			"nearestHighwayM": 5,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-samoca-730793520",
@@ -731,7 +758,7 @@
 			"source": "osm",
 			"nearestHighwayM": 2,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-runolist-112535698",
@@ -749,7 +776,7 @@
 			"isReachable": true,
 			"note_en": "Medvednica hut at 830 m, near Sljeme.",
 			"note_hr": "Medvednica, 830 m, blizu Sljemena.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-grofica-830667352",
@@ -765,7 +792,7 @@
 			"source": "osm",
 			"nearestHighwayM": 12,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarska-kuca-junac-545532484",
@@ -777,12 +804,13 @@
 			"trailKm": 792.5,
 			"distanceFromTrailKm": 0.02,
 			"elevationM": 968,
+			"hutInfo": { "operator": "PD Junac" },
 			"source": "hps",
 			"nearestHighwayM": 19,
 			"isReachable": true,
 			"note_en": "Medvednica hut at 968 m, near Sljeme.",
 			"note_hr": "Medvednica, 968 m, blizu Sljemena.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarska-kuca-kameni-svati-1231230055",
@@ -800,7 +828,7 @@
 			"isReachable": true,
 			"note_en": "Western Medvednica hut at 480 m, near Susedgrad.",
 			"note_hr": "Zapadna Medvednica, 480 m, kod Susedgrada.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-glavica-114512581",
@@ -817,7 +845,7 @@
 			"isReachable": true,
 			"note_en": "Medvednica hut at 420 m.",
 			"note_hr": "Medvednica, 420 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-cerinski-vir-1005067205",
@@ -830,12 +858,13 @@
 			"distanceFromTrailKm": 1.29,
 			"elevationM": 331,
 			"url": "https://ekosspiritus.hr/index.php/cerina/",
+			"hutInfo": { "operator": "HPD Sv. Patrik" },
 			"source": "hps",
 			"nearestHighwayM": 12,
 			"isReachable": true,
 			"note_en": "Samoborsko gorje hut at 331 m.",
 			"note_hr": "Samoborsko gorje, 331 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarski-dom-ivica-sudnik-139918752",
@@ -852,7 +881,7 @@
 			"isReachable": true,
 			"note_en": "Samoborsko gorje hut at 530 m.",
 			"note_hr": "Samoborsko gorje, 530 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarski-dom-dr-maks-plotnikov-683340087",
@@ -869,7 +898,7 @@
 			"isReachable": true,
 			"note_en": "Samoborsko gorje hut at 411 m, on Plesivica.",
 			"note_hr": "Samoborsko gorje, 411 m, na Plešivici.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-zeljeznicar-868084647",
@@ -887,7 +916,7 @@
 			"isReachable": true,
 			"note_en": "Samoborsko gorje hut at 691 m, on Japetic.",
 			"note_hr": "Samoborsko gorje, 691 m, na Japetiću.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-soiceva-kuca-645929211",
@@ -904,7 +933,7 @@
 			"isReachable": true,
 			"note_en": "Samoborsko gorje hut at 385 m.",
 			"note_hr": "Samoborsko gorje, 385 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarski-dom-zitnica-528112098",
@@ -917,12 +946,13 @@
 			"distanceFromTrailKm": 0.38,
 			"elevationM": 815,
 			"url": "http://www.hpd-jastrebarsko.hr/planinarski-domovi/11/Zitnica-Japetic.html",
+			"hutInfo": { "operator": "Ivica Ivanušević" },
 			"source": "hps",
 			"nearestHighwayM": 8,
 			"isReachable": true,
 			"note_en": "Plesivica hut at 815 m, Samoborsko gorje.",
 			"note_hr": "Plešivica, 815 m, Samoborsko gorje.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-sveti-bernard-645930523",
@@ -935,10 +965,11 @@
 			"distanceFromTrailKm": 0.67,
 			"elevationM": 690,
 			"url": "https://bratovstina-sv-bernarda.hr/gostinjac/",
+			"hutInfo": { "operator": "Planinarska Bratovština sv. Bernarda" },
 			"source": "osm",
 			"nearestHighwayM": 10,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-scout-321617408",
@@ -955,7 +986,7 @@
 			"isReachable": true,
 			"note_en": "Samoborsko gorje hut at 360 m.",
 			"note_hr": "Samoborsko gorje, 360 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-vodice-167991563",
@@ -968,12 +999,13 @@
 			"distanceFromTrailKm": 0.5,
 			"phone": "+385917639643",
 			"url": "https://www.pd-dubovac.hr/vodice.htm",
+			"hutInfo": { "operator": "PD Dubovac" },
 			"source": "hps",
 			"nearestHighwayM": 11,
 			"isReachable": true,
 			"note_en": "Zumberacka gora hut at 850 m.",
 			"note_hr": "Žumberačka gora, 850 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarska-kuca-boris-farkas-326018326",
@@ -985,12 +1017,13 @@
 			"trailKm": 881,
 			"distanceFromTrailKm": 0.28,
 			"elevationM": 710,
+			"hutInfo": { "operator": "PSD Trešnjevka, Zagreb" },
 			"source": "hps",
 			"nearestHighwayM": 15,
 			"isReachable": true,
 			"note_en": "Zumberacka gora hut at 710 m.",
 			"note_hr": "Žumberačka gora, 710 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarska-kuca-ivanova-hiza-1502059403",
@@ -1003,12 +1036,13 @@
 			"distanceFromTrailKm": 4.99,
 			"elevationM": 188,
 			"url": "https://www.hpd-martinscak.hr/",
+			"hutInfo": { "operator": "HPD \"Martinšćak\" Karlovac" },
 			"source": "hps",
-			"nearestHighwayM": 135,
+			"nearestHighwayM": 19,
 			"isReachable": true,
 			"note_en": "Karlovac-area hut at 188 m.",
 			"note_hr": "Karlovačka okolica, 188 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarska-kuca-zvonimir-plevnik-326018325",
@@ -1025,7 +1059,7 @@
 			"isReachable": true,
 			"note_en": "Karlovac-area hut at 190 m.",
 			"note_hr": "Karlovačka okolica, 190 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-mladen-polovic-919283624",
@@ -1041,7 +1075,7 @@
 			"isReachable": false,
 			"note_en": "Vinica hut at 309 m, near Duga Resa.",
 			"note_hr": "Vinica, 309 m, kod Duge Rese.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-kamacnik-5853233043",
@@ -1055,7 +1089,7 @@
 			"source": "osm",
 			"nearestHighwayM": 11,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarska-kuca-lazica-9201093480",
@@ -1067,12 +1101,13 @@
 			"trailKm": 992,
 			"distanceFromTrailKm": 0.2,
 			"elevationM": 666,
+			"hutInfo": { "operator": "PD \"Vršak\" Brod Moravice" },
 			"source": "hps",
 			"nearestHighwayM": 5,
 			"isReachable": true,
 			"note_en": "Northern Gorski kotar hut at 666 m, near Brod Moravice.",
 			"note_hr": "Sjeverni Gorski kotar, 666 m, kod Broda Moravica.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-lovacka-kuca-lazica-9201093479",
@@ -1088,7 +1123,7 @@
 			"isReachable": true,
 			"note_en": "Northern Gorski kotar hut at 666 m, near Brod Moravice.",
 			"note_hr": "Sjeverni Gorski kotar, 666 m, kod Broda Moravica.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-kuca-javorova-kosa-498449823",
@@ -1104,7 +1139,7 @@
 			"isReachable": true,
 			"note_en": "Ravna Gora hut at 1000 m, central Gorski kotar.",
 			"note_hr": "Ravna Gora, 1000 m, središnji Gorski kotar.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-rudetova-bajta-1249068133",
@@ -1115,12 +1150,13 @@
 			"lng": 14.92091,
 			"trailKm": 1009.6,
 			"distanceFromTrailKm": 0.02,
+			"hutInfo": { "fee": "no" },
 			"source": "hps",
 			"nearestHighwayM": 23,
 			"isReachable": true,
 			"note_en": "Skrad shelter at 1038 m, northern Gorski kotar.",
 			"note_hr": "Skrad, sklonište na 1038 m, sjeverni Gorski kotar.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-mountain-hut-frbezari-326010123",
@@ -1132,10 +1168,11 @@
 			"trailKm": 1057,
 			"distanceFromTrailKm": 6.08,
 			"source": "hps",
-			"isReachable": false,
+			"nearestHighwayM": 20,
+			"isReachable": true,
 			"note_en": "Kamenjak hut, northern Gorski kotar, 825 m.",
 			"note_hr": "Kamenjak, sjeverni Gorski kotar, 825 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-kuca-lazac-1250847245",
@@ -1149,7 +1186,7 @@
 			"source": "osm",
 			"nearestHighwayM": 47,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-schlosserov-dom-323709823",
@@ -1170,7 +1207,7 @@
 			"season": "May-Oct (closed Tue)",
 			"note_en": "Risnjak NP lodge below the summit, 1418 m. Managed by JU NP Risnjak.",
 			"note_hr": "Dom NP Risnjak ispod vrha, 1418 m. Upravlja JU NP Risnjak.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-veliki-dom-platak-308958063",
@@ -1183,10 +1220,11 @@
 			"distanceFromTrailKm": 0.26,
 			"phone": "+385 51 230 905",
 			"url": "https://www.dom-platak.com/hr/",
+			"hutInfo": { "fee": "yes", "internetAccess": "yes" },
 			"source": "osm",
 			"nearestHighwayM": 15,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarski-dom-susak-251397426",
@@ -1202,7 +1240,7 @@
 			"source": "osm",
 			"nearestHighwayM": 21,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarski-dom-hahlic-1168461972",
@@ -1215,6 +1253,7 @@
 			"distanceFromTrailKm": 0.01,
 			"elevationM": 1097,
 			"url": "http://www.plsavez.hr/info/planinarske-kuce/planinarski-dom-hahlic/",
+			"hutInfo": { "operator": "pd \"Obruč\"" },
 			"source": "hps",
 			"nearestHighwayM": 8,
 			"isReachable": true,
@@ -1223,7 +1262,7 @@
 			"season": "weekends and holidays",
 			"note_en": "Stone hut on southern slope of Obruc, 1097 m.",
 			"note_hr": "Kamena kuća na južnoj padini Obruča, 1097 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-paraviceva-miza-292735170",
@@ -1236,8 +1275,9 @@
 			"distanceFromTrailKm": 10.09,
 			"elevationM": 1125,
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-14"
+			"nearestHighwayM": 188,
+			"isReachable": true,
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-skloniste-rebar-2161083146",
@@ -1251,7 +1291,7 @@
 			"source": "osm",
 			"nearestHighwayM": 10,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-lovacka-kuca-prve-njive-423140237",
@@ -1265,7 +1305,7 @@
 			"source": "osm",
 			"nearestHighwayM": 11,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinski-dom-lisina-170478898",
@@ -1277,10 +1317,11 @@
 			"trailKm": 1127.6,
 			"distanceFromTrailKm": 0.01,
 			"url": "https://lisina-avantura-matulji.hr/",
+			"hutInfo": { "operator": "Lisina Avantura" },
 			"source": "osm",
 			"nearestHighwayM": 13,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarska-kuca-korita-2605743890",
@@ -1297,7 +1338,7 @@
 			"isReachable": true,
 			"note_en": "Ucka hut at 1010 m.",
 			"note_hr": "Učka, 1010 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarski-dom-zbevnica-567022562",
@@ -1315,7 +1356,7 @@
 			"isReachable": true,
 			"note_en": "Cicarija hut at 851 m, north Istria.",
 			"note_hr": "Ćićarija, 851 m, sjeverna Istra.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarska-kuca-skitaca-326010124",
@@ -1331,7 +1372,7 @@
 			"isReachable": true,
 			"note_en": "Labin hinterland hut at 425 m.",
 			"note_hr": "Labinska zagora, 425 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarsko-skloniste-kremenjak-847m-11027910983",
@@ -1348,7 +1389,7 @@
 			"isReachable": true,
 			"note_en": "Istria shelter at 847 m, central peninsula.",
 			"note_hr": "Sklonište u Istri, 847 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-hunters-hut-perun-1287019409",
@@ -1362,7 +1403,7 @@
 			"source": "osm",
 			"nearestHighwayM": 10,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarski-dom-poklon-440562808",
@@ -1375,11 +1416,11 @@
 			"distanceFromTrailKm": 0.02,
 			"elevationM": 922,
 			"source": "hps",
-			"nearestHighwayM": 14,
+			"nearestHighwayM": 6,
 			"isReachable": true,
 			"note_en": "Ucka Nature Park hut at 922 m, on Poklon saddle.",
 			"note_hr": "Park prirode Učka, 922 m, na sedlu Poklon.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-skloniste-bitorajka-498449726",
@@ -1396,7 +1437,7 @@
 			"isReachable": true,
 			"note_en": "Shelter on Bitoraj, southern Gorski kotar, 1303 m.",
 			"note_hr": "Sklonište na Bitoraju, južni Gorski kotar, 1303 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-vepar-236332506",
@@ -1408,8 +1449,9 @@
 			"trailKm": 1490.1,
 			"distanceFromTrailKm": 7.36,
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-14"
+			"nearestHighwayM": 549,
+			"isReachable": true,
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-vagabundina-koliba-314753348",
@@ -1423,10 +1465,11 @@
 			"elevationM": 864,
 			"url": "http://pd-vagabundina-koliba.hr/",
 			"source": "hps",
-			"isReachable": false,
+			"nearestHighwayM": 30,
+			"isReachable": true,
 			"note_en": "Privately-managed hut at 864 m, southern Gorski kotar.",
 			"note_hr": "Privatno upravljana kuća, 864 m, južni Gorski kotar.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-kuca-kurin-1049540694",
@@ -1442,7 +1485,7 @@
 			"isReachable": false,
 			"note_en": "Strilez hut at 830 m, above Crikvenica.",
 			"note_hr": "Strilež, 830 m, iznad Crikvenice.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-dom-bijele-stijene-498449746",
@@ -1459,7 +1502,7 @@
 			"isReachable": true,
 			"note_en": "Bijele stijene strict reserve, southern Gorski kotar, 875 m.",
 			"note_hr": "Strogi rezervat Bijele stijene, južni Gorski kotar, 875 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-kuca-mance-297170806",
@@ -1474,7 +1517,7 @@
 			"source": "osm",
 			"nearestHighwayM": 22,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-kuca-lokanda-276996908",
@@ -1486,8 +1529,9 @@
 			"trailKm": 1503.7,
 			"distanceFromTrailKm": 6.77,
 			"source": "osm",
-			"isReachable": false,
-			"lastVerified": "2026-06-14"
+			"nearestHighwayM": 65,
+			"isReachable": true,
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-kuca-janjcarica-493668410",
@@ -1502,7 +1546,7 @@
 			"source": "osm",
 			"nearestHighwayM": 9,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-skloniste-jakob-mihelcic-493668895",
@@ -1519,7 +1563,7 @@
 			"isReachable": true,
 			"note_en": "Bjelolasica shelter at 1460 m.",
 			"note_hr": "Bjelolasica, sklonište na 1460 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-ratkovo-skloniste-498449836",
@@ -1536,7 +1580,7 @@
 			"isReachable": true,
 			"note_en": "Bjelolasica shelter at 1174 m.",
 			"note_hr": "Bjelolasica, sklonište na 1174 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-mountain-hut-klek-498449858",
@@ -1556,7 +1600,7 @@
 			"url": "https://hpdklek.hr/hpd/",
 			"note_en": "Hut below the iconic Klek peak, 1000 m, southern Gorski kotar.",
 			"note_hr": "Kuća pod prepoznatljivim vrhom Klek, 1000 m, južni Gorski kotar.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-skloniste-stozac-498449869",
@@ -1570,7 +1614,7 @@
 			"elevationM": 800,
 			"source": "osm",
 			"isReachable": false,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarska-kuca-dragutin-hirtz-864592378",
@@ -1582,10 +1626,11 @@
 			"trailKm": 1517,
 			"distanceFromTrailKm": 0.29,
 			"elevationM": 1280,
+			"hutInfo": { "operator": "HPD Kapela" },
 			"source": "osm",
 			"nearestHighwayM": 8,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarsko-skloniste-miroslav-hirtz-864592379",
@@ -1602,7 +1647,7 @@
 			"isReachable": true,
 			"note_en": "Bjelolasica shelter at 1280 m.",
 			"note_hr": "Bjelolasica, sklonište na 1280 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-duliba-506451141",
@@ -1619,7 +1664,7 @@
 			"isReachable": true,
 			"note_en": "Zelena kuca on Bjelolasica plateau, 750 m.",
 			"note_hr": "Zelena kuća na bjelolaskom platou, 750 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-kuca-viniste-255675527",
@@ -1631,10 +1676,11 @@
 			"trailKm": 1534.5,
 			"distanceFromTrailKm": 5.84,
 			"elevationM": 300,
+			"hutInfo": { "operator": "Alpenverein Kroatien" },
 			"source": "osm",
-			"nearestHighwayM": 545,
+			"nearestHighwayM": 10,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-kuca-sijaset-498426304",
@@ -1650,7 +1696,7 @@
 			"isReachable": true,
 			"note_en": "Northern Velebit hut at 328 m.",
 			"note_hr": "Sjeverni Velebit, 328 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-kuca-oltari-498426302",
@@ -1667,7 +1713,7 @@
 			"isReachable": true,
 			"note_en": "Northern Velebit hut at 940 m, near Krasno.",
 			"note_hr": "Sjeverni Velebit, 940 m, kod Krasna.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-poljana-4298431321",
@@ -1680,7 +1726,7 @@
 			"distanceFromTrailKm": 11.13,
 			"source": "osm",
 			"isReachable": false,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-dom-zavizan-319409251",
@@ -1701,7 +1747,7 @@
 			"url": "https://www.np-sjeverni-velebit.hr/",
 			"note_en": "Premuziceva staza northern start at 1594 m; DHMZ meteorological station alongside.",
 			"note_hr": "Početak Premužićeve staze na 1594 m; uz dom je DHMZ meteorološka postaja.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-veliki-lom-496471655",
@@ -1716,7 +1762,7 @@
 			"source": "osm",
 			"nearestHighwayM": 16,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-kuca-apatisan-1008663597",
@@ -1732,7 +1778,7 @@
 			"isReachable": true,
 			"note_en": "Northern Velebit hut at 1112 m, near Krasno.",
 			"note_hr": "Sjeverni Velebit, 1112 m, kod Krasna.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-rossijeva-koliba-772443530",
@@ -1747,7 +1793,7 @@
 			"source": "osm",
 			"nearestHighwayM": 5,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-careva-kuca-496470130",
@@ -1760,11 +1806,11 @@
 			"distanceFromTrailKm": 5.34,
 			"elevationM": 1180,
 			"source": "hps",
-			"nearestHighwayM": 19,
+			"nearestHighwayM": 18,
 			"isReachable": true,
 			"note_en": "Northern Velebit hut at 1180 m.",
 			"note_hr": "Sjeverni Velebit, 1180 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarska-kuca-alan-172961401",
@@ -1785,7 +1831,7 @@
 			"season": "summer year-round, off-season by arrangement",
 			"note_en": "Saddle hut on Premuziceva staza, central Velebit, near Veliki Alan pass.",
 			"note_hr": "Sedlo na Premužićevoj stazi, središnji Velebit, blizu prijevoja Veliki Alan.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-kuca-miroslav-hirtz-498426296",
@@ -1797,9 +1843,9 @@
 			"trailKm": 1594.7,
 			"distanceFromTrailKm": 5.8,
 			"source": "osm",
-			"nearestHighwayM": 192,
+			"nearestHighwayM": 11,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-kuca-mrkviste-356949917",
@@ -1812,11 +1858,11 @@
 			"distanceFromTrailKm": 5.82,
 			"elevationM": 1276,
 			"source": "hps",
-			"nearestHighwayM": 35,
+			"nearestHighwayM": 17,
 			"isReachable": true,
 			"note_en": "Northern Velebit hut at 1276 m, on Premuziceva staza.",
 			"note_hr": "Sjeverni Velebit, 1276 m, na Premužićevoj stazi.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-ogradjenica-498407121",
@@ -1833,7 +1879,7 @@
 			"isReachable": true,
 			"note_en": "Central Velebit shelter at 1400 m.",
 			"note_hr": "Središnji Velebit, sklonište na 1400 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-radlovac-498407132",
@@ -1848,7 +1894,7 @@
 			"source": "osm",
 			"nearestHighwayM": 50,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-kugina-kuca-630697223",
@@ -1865,7 +1911,7 @@
 			"isReachable": true,
 			"note_en": "Central Velebit hut at 1180 m.",
 			"note_hr": "Središnji Velebit, 1180 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarska-kuca-kata-862m-13172480452",
@@ -1876,10 +1922,11 @@
 			"lng": 15.10967,
 			"trailKm": 1617.5,
 			"distanceFromTrailKm": 1.54,
+			"hutInfo": { "operator": "PD Bačić kuk Pula" },
 			"source": "osm",
 			"nearestHighwayM": 21,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-n-planinarska-kuca-ana-862m-13172496821",
@@ -1895,7 +1942,7 @@
 			"isReachable": true,
 			"note_en": "Central Velebit hut at 862 m.",
 			"note_hr": "Središnji Velebit, 862 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarski-dom-ravni-dabar-423350309",
@@ -1907,12 +1954,13 @@
 			"trailKm": 1619.9,
 			"distanceFromTrailKm": 0.91,
 			"elevationM": 723,
+			"hutInfo": { "operator": "Planinarsko društvo Industrogradnja" },
 			"source": "hps",
 			"nearestHighwayM": 8,
 			"isReachable": true,
 			"note_en": "Central Velebit hut at 723 m.",
 			"note_hr": "Središnji Velebit, 723 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarski-dom-prpa-8718516997",
@@ -1929,7 +1977,7 @@
 			"isReachable": true,
 			"note_en": "Central Velebit hut at 935 m, Baske Ostarije.",
 			"note_hr": "Središnji Velebit, 935 m, Baške Oštarije.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-kuca-sveti-josip-498407068",
@@ -1946,7 +1994,7 @@
 			"isReachable": true,
 			"note_en": "Visocica hut at 1124 m, central Velebit.",
 			"note_hr": "Visočica, 1124 m, središnji Velebit.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarska-kuca-vila-velebita-424037254",
@@ -1959,12 +2007,13 @@
 			"distanceFromTrailKm": 0.88,
 			"elevationM": 935,
 			"url": "https://planinarski-portal.org/planinarski-domovi/vila-velebita/",
+			"hutInfo": { "operator": "HPD Željezničar, Gospić" },
 			"source": "hps",
 			"nearestHighwayM": 22,
 			"isReachable": true,
 			"note_en": "Central Velebit hut at 935 m.",
 			"note_hr": "Središnji Velebit, 935 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-zdrilo-3655591763",
@@ -1981,7 +2030,7 @@
 			"isReachable": true,
 			"note_en": "Central Velebit shelter at 1010 m.",
 			"note_hr": "Središnji Velebit, sklonište na 1010 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-sugarska-duliba-535001257",
@@ -1993,12 +2042,13 @@
 			"trailKm": 1640.3,
 			"distanceFromTrailKm": 0.01,
 			"elevationM": 1212,
+			"hutInfo": { "fee": "no", "operator": "Planinarsko društvo Naftaplin" },
 			"source": "hps",
 			"nearestHighwayM": 8,
 			"isReachable": true,
 			"note_en": "Southern Velebit shelter at 1212 m.",
 			"note_hr": "Južni Velebit, sklonište na 1212 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-jelova-ruja-630269550",
@@ -2013,7 +2063,7 @@
 			"source": "osm",
 			"nearestHighwayM": 18,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarsko-skloniste-tatekova-koliba-498384259",
@@ -2025,12 +2075,13 @@
 			"trailKm": 1649.7,
 			"distanceFromTrailKm": 0,
 			"elevationM": 860,
+			"hutInfo": { "fee": "no", "reservation": "no", "operator": "Planinarsko društvo Paklenica" },
 			"source": "hps",
 			"nearestHighwayM": 5,
 			"isReachable": true,
 			"note_en": "Paklenica shelter at 860 m.",
 			"note_hr": "Paklenica, sklonište na 860 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarska-kuca-visocica-281604865",
@@ -2047,7 +2098,7 @@
 			"isReachable": true,
 			"note_en": "Southern Velebit hut at 1430 m, below Visocica peak.",
 			"note_hr": "Južni Velebit, 1430 m, ispod vrha Visočica.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarsko-skloniste-marko-novkovic-rudine-1377594615",
@@ -2059,10 +2110,11 @@
 			"trailKm": 1655.5,
 			"distanceFromTrailKm": 4.38,
 			"elevationM": 1295,
+			"hutInfo": { "operator": "PD Paklenica Zadar" },
 			"source": "osm",
 			"nearestHighwayM": 10,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarsko-skloniste-zavrata-2169859760",
@@ -2074,12 +2126,13 @@
 			"trailKm": 1658,
 			"distanceFromTrailKm": 1.51,
 			"elevationM": 680,
+			"hutInfo": { "fee": "no" },
 			"source": "hps",
 			"nearestHighwayM": 8,
 			"isReachable": true,
 			"note_en": "Paklenica shelter at 780 m.",
 			"note_hr": "Paklenica, sklonište na 780 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarsko-skloniste-struge-629914862",
@@ -2092,12 +2145,13 @@
 			"distanceFromTrailKm": 0.01,
 			"elevationM": 1400,
 			"url": "http://www.plsavez.hr/info/planinarske-kuce/planinarsko-skloniste-struge/",
+			"hutInfo": { "fee": "no", "operator": "Planinarsko društvo Paklenica" },
 			"source": "hps",
 			"nearestHighwayM": 14,
 			"isReachable": true,
 			"note_en": "Southern Velebit shelter at 1400 m, Paklenica NP.",
 			"note_hr": "Južni Velebit, sklonište na 1400 m, NP Paklenica.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarski-dom-paklenica-173172514",
@@ -2111,6 +2165,7 @@
 			"elevationM": 480,
 			"phone": "+385 97 755 7654",
 			"url": "https://www.pdpaklenica.hr/planinarski-dom-paklenica/info-planinarski-dom",
+			"hutInfo": { "fee": "yes", "reservation": "recommended", "operator": "Planinarsko društvo Paklenica" },
 			"source": "hps",
 			"nearestHighwayM": 11,
 			"isReachable": true,
@@ -2118,7 +2173,7 @@
 			"season": "weekends and by arrangement",
 			"note_en": "Mountain hut deep inside Velika Paklenica canyon, 480 m.",
 			"note_hr": "Planinarski dom duboko u kanjonu Velike Paklenice, 480 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarsko-skloniste-ivine-vodice-580538747",
@@ -2131,12 +2186,13 @@
 			"distanceFromTrailKm": 0.71,
 			"elevationM": 1201,
 			"url": "http://www.plsavez.hr/info/planinarske-kuce/planinarsko-skloniste-ivine-vodice/",
+			"hutInfo": { "fee": "no", "operator": "Planinarsko društvo Babulj" },
 			"source": "hps",
 			"nearestHighwayM": 7,
 			"isReachable": true,
 			"note_en": "Southern Velebit shelter at 1250 m.",
 			"note_hr": "Južni Velebit, sklonište na 1250 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarsko-skloniste-vlaski-grad-828057096",
@@ -2149,12 +2205,13 @@
 			"distanceFromTrailKm": 0.65,
 			"elevationM": 1280,
 			"url": "http://www.plsavez.hr/info/planinarske-kuce/planinarsko-skloniste-vlaski-grad/",
+			"hutInfo": { "fee": "no", "reservation": "no", "operator": "Planinarsko društvo Paklenica" },
 			"source": "hps",
 			"nearestHighwayM": 5,
 			"isReachable": true,
 			"note_en": "Southern Velebit shelter at 1280 m.",
 			"note_hr": "Južni Velebit, sklonište na 1280 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarsko-skloniste-dusice-630242490",
@@ -2167,12 +2224,13 @@
 			"distanceFromTrailKm": 0.01,
 			"elevationM": 1262,
 			"url": "http://www.plsavez.hr/info/planinarske-kuce/planinarsko-skloniste-dusice/",
+			"hutInfo": { "fee": "no", "reservation": "no", "operator": "Planinarsko društvo Belveder" },
 			"source": "hps",
 			"nearestHighwayM": 6,
 			"isReachable": true,
 			"note_en": "Southern Velebit shelter at 1262 m.",
 			"note_hr": "Južni Velebit, sklonište na 1262 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarsko-skloniste-zlatino-skloniste-500541663",
@@ -2184,12 +2242,13 @@
 			"trailKm": 1685.4,
 			"distanceFromTrailKm": 0.2,
 			"elevationM": 900,
+			"hutInfo": { "fee": "no" },
 			"source": "hps",
 			"nearestHighwayM": 5,
 			"isReachable": true,
 			"note_en": "Tulove grede shelter at 900 m, southern Velebit.",
 			"note_hr": "Tulove grede, sklonište na 900 m, južni Velebit.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarsko-skloniste-crnopac-2376607342",
@@ -2206,7 +2265,7 @@
 			"isReachable": true,
 			"note_en": "Southern Velebit shelter at 1137 m, gateway to Crnopac caves.",
 			"note_hr": "Južni Velebit, sklonište na 1137 m, ulaz u jamski sustav Crnopac.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-brezovac-512796827",
@@ -2223,7 +2282,7 @@
 			"isReachable": true,
 			"note_en": "Dinara approach hut at 1050 m, near Knin.",
 			"note_hr": "Prilaz Dinari, 1050 m, kod Knina.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-zlatko-prgin-7881769285",
@@ -2236,12 +2295,13 @@
 			"distanceFromTrailKm": 0.05,
 			"elevationM": 1543,
 			"url": "https://www.hps.hr/info/planinarske-kuce/planinarsko-skloniste-zlatko-prgin/",
+			"hutInfo": { "operator": "HPD Sv.Mihovil Šibenik" },
 			"source": "hps",
 			"nearestHighwayM": 9,
 			"isReachable": true,
 			"note_en": "Dinara shelter at 1543 m.",
 			"note_hr": "Dinara, sklonište na 1543 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarsko-skloniste-drago-grubac-954973536",
@@ -2253,10 +2313,11 @@
 			"trailKm": 1802.7,
 			"distanceFromTrailKm": 0,
 			"elevationM": 1645,
+			"hutInfo": { "fee": "no", "operator": "Planinarska udruga Dinaridi" },
 			"source": "osm",
 			"nearestHighwayM": 8,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-bili-cvitak-954935837",
@@ -2267,10 +2328,11 @@
 			"lng": 16.37519,
 			"trailKm": 1803.2,
 			"distanceFromTrailKm": 1.39,
+			"hutInfo": { "operator": "PU Dinaridi" },
 			"source": "osm",
 			"nearestHighwayM": 5,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-bivak-dinaridi-954935838",
@@ -2283,10 +2345,11 @@
 			"distanceFromTrailKm": 0.42,
 			"elevationM": 1260,
 			"phone": "+385 91 7289963",
+			"hutInfo": { "fee": "no", "reservation": "recommended", "operator": "Planinarska udruga Dinaridi" },
 			"source": "osm",
 			"nearestHighwayM": 7,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-martinove-kosare-704169272",
@@ -2301,7 +2364,7 @@
 			"source": "osm",
 			"nearestHighwayM": 8,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarska-kuca-sveti-jure-544667369",
@@ -2313,11 +2376,12 @@
 			"trailKm": 1813.1,
 			"distanceFromTrailKm": 12.31,
 			"elevationM": 1119,
+			"hutInfo": { "operator": "HPD \"Zolj\" Vrlika" },
 			"source": "hps",
 			"isReachable": false,
 			"note_en": "Svilaja hut at 1119 m, near Vrlika.",
 			"note_hr": "Svilaja, 1119 m, kod Vrlike.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-rupe-536628324",
@@ -2330,12 +2394,13 @@
 			"distanceFromTrailKm": 0.2,
 			"elevationM": 1364,
 			"url": "https://www.hps.hr/info/planinarske-kuce/planinarsko-skloniste-rupe/",
+			"hutInfo": { "fee": "no", "operator": "PU Dinaridi" },
 			"source": "hps",
 			"nearestHighwayM": 7,
 			"isReachable": true,
 			"note_en": "Dinara shelter at 1363 m.",
 			"note_hr": "Dinara, sklonište na 1363 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-hrvatski-vitez-josip-goreta-588423845",
@@ -2347,12 +2412,13 @@
 			"trailKm": 1830.3,
 			"distanceFromTrailKm": 0.1,
 			"elevationM": 1550,
+			"hutInfo": { "operator": "PU Dinaridi" },
 			"source": "hps",
 			"nearestHighwayM": 6,
 			"isReachable": true,
 			"note_en": "Dinara summit-area shelter at 1530 m.",
 			"note_hr": "Vršno područje Dinare, sklonište na 1530 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-debelasnica-534986194",
@@ -2367,7 +2433,7 @@
 			"source": "osm",
 			"nearestHighwayM": 11,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-skloniste-jankovo-brdo-5618516137",
@@ -2382,7 +2448,7 @@
 			"source": "osm",
 			"nearestHighwayM": 6,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarsko-skloniste-pume-7139936586",
@@ -2395,12 +2461,13 @@
 			"distanceFromTrailKm": 0.21,
 			"elevationM": 1630,
 			"phone": "+385 91 7289963",
+			"hutInfo": { "operator": "PU Dinaridi, Split" },
 			"source": "hps",
 			"nearestHighwayM": 4,
 			"isReachable": true,
 			"note_en": "Dinara HGSS shelter at 1630 m.",
 			"note_hr": "HGSS sklonište na Dinari, 1630 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-vjetar-s-dinare-8384936701",
@@ -2412,12 +2479,13 @@
 			"trailKm": 1842.8,
 			"distanceFromTrailKm": 0.04,
 			"elevationM": 1330,
+			"hutInfo": { "fee": "no", "operator": "Planinarsko društvo Sv. Jakov - Bitelić" },
 			"source": "hps",
 			"nearestHighwayM": 2,
 			"isReachable": true,
 			"note_en": "Dinara shelter at 1330 m.",
 			"note_hr": "Dinara, sklonište na 1330 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarska-kuca-sveti-jakov-535720919",
@@ -2430,12 +2498,13 @@
 			"distanceFromTrailKm": 0.01,
 			"elevationM": 1001,
 			"phone": "+385 95 9100777",
+			"hutInfo": { "reservation": "recommended", "operator": "PD Sveti Jakov, Gornji Bitelić" },
 			"source": "hps",
 			"nearestHighwayM": 10,
 			"isReachable": true,
 			"note_en": "Dinara hut at 1001 m, near Gornji Bitelic.",
 			"note_hr": "Dinara, 1001 m, kod Gornjeg Bitelića.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-dom-vukovic-635984100",
@@ -2451,7 +2520,7 @@
 			"isReachable": true,
 			"note_en": "Dinara-area hut at 902 m.",
 			"note_hr": "Dinarsko područje, 902 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarski-dom-orlove-stine-237067261",
@@ -2463,11 +2532,12 @@
 			"trailKm": 1866.4,
 			"distanceFromTrailKm": 12.57,
 			"elevationM": 1065,
+			"hutInfo": { "operator": "PD Svilaja" },
 			"source": "hps",
 			"isReachable": false,
 			"note_en": "Svilaja hut at 1065 m, near Sinj.",
 			"note_hr": "Svilaja, 1065 m, kod Sinja.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarska-kuca-orlovac-458958473",
@@ -2479,11 +2549,13 @@
 			"trailKm": 1876.1,
 			"distanceFromTrailKm": 7.24,
 			"elevationM": 659,
+			"hutInfo": { "operator": "HPD Kamešnica" },
 			"source": "hps",
-			"isReachable": false,
+			"nearestHighwayM": 165,
+			"isReachable": true,
 			"note_en": "Mosec hut at 659 m, Dalmatinska zagora.",
 			"note_hr": "Mosec, 659 m, Dalmatinska zagora.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarsko-skloniste-sveti-mihovil-10237882997",
@@ -2495,11 +2567,12 @@
 			"trailKm": 1884.7,
 			"distanceFromTrailKm": 13.55,
 			"elevationM": 1340,
+			"hutInfo": { "operator": "Pl.društvo Jelinak Trilj" },
 			"source": "hps",
 			"isReachable": false,
 			"note_en": "Mosec shelter at 1340 m, near Trilj.",
 			"note_hr": "Mosec, sklonište na 1340 m, kod Trilja.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-zlabina-umac-1115518009",
@@ -2512,7 +2585,7 @@
 			"distanceFromTrailKm": 14.16,
 			"source": "osm",
 			"isReachable": false,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-vila-lozusa-1097781189",
@@ -2526,7 +2599,7 @@
 			"elevationM": 810,
 			"source": "osm",
 			"isReachable": false,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-vrgocevac-8297694613",
@@ -2537,9 +2610,10 @@
 			"lng": 16.85865,
 			"trailKm": 1898.6,
 			"distanceFromTrailKm": 8.56,
+			"hutInfo": { "fee": "no" },
 			"source": "osm",
 			"isReachable": false,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarsko-skloniste-ljubljan-2723558069",
@@ -2554,7 +2628,7 @@
 			"isReachable": false,
 			"note_en": "Mosor shelter at 1080 m.",
 			"note_hr": "Mosor, sklonište na 1080 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarsko-skloniste-kontejner-5191750228",
@@ -2567,11 +2641,11 @@
 			"distanceFromTrailKm": 6.24,
 			"elevationM": 980,
 			"source": "hps",
-			"nearestHighwayM": 107,
+			"nearestHighwayM": 6,
 			"isReachable": true,
 			"note_en": "Ljuto kame shelter on Mosor at 1055 m.",
 			"note_hr": "Sklonište Ljuto kame na Mosoru, 1055 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarski-dom-umberto-girometta-155592836",
@@ -2585,10 +2659,11 @@
 			"elevationM": 868,
 			"phone": "+38598659442",
 			"source": "hps",
-			"isReachable": false,
+			"nearestHighwayM": 33,
+			"isReachable": true,
 			"note_en": "Mosor central lodge at 868 m.",
 			"note_hr": "Središnji dom na Mosoru, 868 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-lugarnica-159736204",
@@ -2600,11 +2675,12 @@
 			"trailKm": 1906.9,
 			"distanceFromTrailKm": 10.95,
 			"elevationM": 872,
+			"hutInfo": { "fee": "yes", "reservation": "required", "operator": "HPD Mosor Split" },
 			"source": "hps",
 			"isReachable": false,
 			"note_en": "Mosor hut at 872 m.",
 			"note_hr": "Mosor, 872 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-milino-sicisce-1217328867",
@@ -2619,7 +2695,7 @@
 			"source": "osm",
 			"nearestHighwayM": 5,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-trposnjik-536744900",
@@ -2636,7 +2712,7 @@
 			"isReachable": true,
 			"note_en": "Omis area hut at 970 m.",
 			"note_hr": "Omiško područje, 970 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-skloniste-luda-kuca-1204658673",
@@ -2648,12 +2724,13 @@
 			"trailKm": 1925.5,
 			"distanceFromTrailKm": 0.01,
 			"elevationM": 650,
+			"hutInfo": { "operator": "Planinarsko društvo Imber" },
 			"source": "hps",
 			"nearestHighwayM": 2,
 			"isReachable": true,
 			"note_en": "Omis hinterland hut at 650 m.",
 			"note_hr": "Omiška zagora, 650 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-lovacko-skloniste-1211927459",
@@ -2667,7 +2744,7 @@
 			"source": "osm",
 			"nearestHighwayM": 19,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinaska-kuca-bukovac-1224120318",
@@ -2683,7 +2760,7 @@
 			"isReachable": true,
 			"note_en": "Hut near Brela, Biokovo area, 1030 m.",
 			"note_hr": "Kuća kod Brela, Biokovo, 1030 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarsko-skloniste-pakline-9583603713",
@@ -2698,7 +2775,7 @@
 			"source": "osm",
 			"nearestHighwayM": 8,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-slobodan-ravlic-mountain-lodge-on-lokva-1296268839",
@@ -2714,7 +2791,7 @@
 			"isReachable": true,
 			"note_en": "Biokovo hut at 1467 m.",
 			"note_hr": "Biokovo, 1467 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-sveti-jure-mountain-lodge-34370837",
@@ -2728,7 +2805,7 @@
 			"source": "osm",
 			"nearestHighwayM": 11,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarski-dom-pod-voscem-229442461",
@@ -2742,7 +2819,7 @@
 			"source": "osm",
 			"nearestHighwayM": 30,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarski-dom-toni-roso-vosac-12161316398",
@@ -2754,12 +2831,13 @@
 			"trailKm": 1963.4,
 			"distanceFromTrailKm": 0.2,
 			"elevationM": 1421,
+			"hutInfo": { "operator": "SAK Ekstrem Makarska" },
 			"source": "hps",
 			"nearestHighwayM": 4,
 			"isReachable": true,
 			"note_en": "Biokovo hut at 1422 m.",
 			"note_hr": "Biokovo, 1422 m.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinska-kuca-pod-javorom-4354419090",
@@ -2773,7 +2851,7 @@
 			"source": "osm",
 			"nearestHighwayM": 30,
 			"isReachable": true,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-studenka-6349007812",
@@ -2786,7 +2864,7 @@
 			"distanceFromTrailKm": 11.22,
 			"source": "osm",
 			"isReachable": false,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-planinarski-dom-sveti-ilija-741719313",
@@ -2797,9 +2875,10 @@
 			"lng": 17.1516,
 			"trailKm": 2044.5,
 			"distanceFromTrailKm": 9.35,
+			"hutInfo": { "operator": "HPD \"Sveti Ilija\" Orebić" },
 			"source": "osm",
 			"isReachable": false,
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		},
 		{
 			"id": "hut-skola-kuna-konavoska-962846969",
@@ -2811,12 +2890,13 @@
 			"trailKm": 2197.3,
 			"distanceFromTrailKm": 5.1,
 			"elevationM": 726,
+			"hutInfo": { "operator": "HPD Dubrovnik" },
 			"source": "hps",
-			"nearestHighwayM": 28,
+			"nearestHighwayM": 4,
 			"isReachable": true,
 			"note_en": "Konavle hut at 721 m, above Dubrovnik.",
 			"note_hr": "Konavle, 721 m, iznad Dubrovnika.",
-			"lastVerified": "2026-06-14"
+			"lastVerified": "2026-07-11"
 		}
 	]
 }

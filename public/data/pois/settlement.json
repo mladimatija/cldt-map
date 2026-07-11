@@ -1,5 +1,5 @@
 {
-	"lastUpdated": "2026-06-14",
+	"lastUpdated": "2026-07-11",
 	"pois": [
 		{
 			"id": "settlement-bapska-732737770",
@@ -14,9 +14,9 @@
 			"source": "osm",
 			"nearestHighwayM": 10,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [{ "kind": "post", "name": "32235 Bapska", "openingHours": "Mo-Fr 11:00-14:30" }]
 			}
 		},
@@ -33,9 +33,9 @@
 			"source": "osm",
 			"nearestHighwayM": 46,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [{ "kind": "post", "name": "32237 Lovas", "openingHours": "Mo 08:00-17:00, Tu-Fr 08:00-14:30" }]
 			}
 		},
@@ -52,9 +52,9 @@
 			"source": "osm",
 			"nearestHighwayM": 20,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Boso" },
 					{ "kind": "post", "name": "32232 Sotin", "openingHours": "Mo-Fr 12:00-14:30" }
@@ -76,13 +76,14 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 48,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery" },
 					{ "kind": "grocery", "name": "Samoposluga" },
 					{ "kind": "grocery", "name": "Boso", "openingHours": "Mo-Sa 07:00-21:00" },
+					{ "kind": "bakery", "name": "Pekara ajita" },
 					{ "kind": "pharmacy" },
 					{ "kind": "post", "name": "32227 Borovo", "openingHours": "Mo 08:00-17:00, Tu-Fr 08:00-14:30" },
 					{ "kind": "bus" },
@@ -105,8 +106,8 @@
 			"source": "osm",
 			"nearestHighwayM": 7,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-tenja-303041269",
@@ -123,9 +124,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 94,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "NTL" },
 					{ "kind": "grocery", "name": "Jabuka", "openingHours": "Mo-Su 07:00-21:00" },
@@ -155,9 +156,9 @@
 			"source": "osm",
 			"nearestHighwayM": 10,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [{ "kind": "grocery", "name": "Biljemerkant", "openingHours": "Mo-Sa 06:30-20:00; Su 08:00-13:00" }]
 			}
 		},
@@ -176,9 +177,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 341,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Biljemerkant" },
 					{ "kind": "grocery", "name": "Plus Market" },
@@ -204,8 +205,8 @@
 			"source": "osm",
 			"nearestHighwayM": 29,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-popovac-474355721",
@@ -221,9 +222,9 @@
 			"source": "osm",
 			"nearestHighwayM": 5,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [{ "kind": "grocery", "name": "NTL Popovac", "openingHours": "Mo-Sa 06:30-20:00; Su 06:30-12:00" }]
 			}
 		},
@@ -240,8 +241,8 @@
 			"source": "osm",
 			"nearestHighwayM": 16,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [{ "kind": "grocery", "name": "Cuk Promet" }] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [{ "kind": "grocery", "name": "Cuk Promet" }] }
 		},
 		{
 			"id": "settlement-bistrinci-316302156",
@@ -256,8 +257,8 @@
 			"source": "osm",
 			"nearestHighwayM": 6,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-marjancaci-459166404",
@@ -272,8 +273,8 @@
 			"source": "osm",
 			"nearestHighwayM": 19,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-ivanovci-459166408",
@@ -290,8 +291,8 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 80,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [{ "kind": "bus" }, { "kind": "bus" }] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [{ "kind": "bus" }, { "kind": "bus" }] }
 		},
 		{
 			"id": "settlement-zelcin-459166411",
@@ -308,8 +309,8 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 53,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [{ "kind": "post" }, { "kind": "bus" }, { "kind": "bus" }] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [{ "kind": "post" }, { "kind": "bus" }, { "kind": "bus" }] }
 		},
 		{
 			"id": "settlement-niza-385758398",
@@ -326,9 +327,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 27,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [{ "kind": "grocery", "name": "Plus market" }, { "kind": "bus" }]
 			}
 		},
@@ -347,9 +348,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 192,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "post", "name": "31225 Breznica Našička" },
 					{ "kind": "bus", "name": "Našička Breznica" },
@@ -374,8 +375,8 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 688,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [{ "kind": "grocery", "name": "NTL" }, { "kind": "bus" }] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [{ "kind": "grocery", "name": "NTL" }, { "kind": "bus" }] }
 		},
 		{
 			"id": "settlement-markovac-nasicki-392310565",
@@ -392,9 +393,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 247,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "bus" },
 					{ "kind": "bus" },
@@ -418,9 +419,9 @@
 			"source": "osm",
 			"nearestHighwayM": 134,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "bus" },
 					{ "kind": "bus" },
@@ -441,8 +442,8 @@
 			"source": "osm",
 			"nearestHighwayM": 11,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [{ "kind": "grocery" }, { "kind": "bus" }] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [{ "kind": "grocery" }, { "kind": "bus" }] }
 		},
 		{
 			"id": "settlement-seona-1997716163",
@@ -457,8 +458,8 @@
 			"source": "osm",
 			"nearestHighwayM": 13,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-veliki-bastaji-1351571651",
@@ -473,8 +474,8 @@
 			"source": "osm",
 			"nearestHighwayM": 28,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [{ "kind": "grocery", "name": "AP CENTAR" }] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [{ "kind": "grocery", "name": "AP CENTAR" }] }
 		},
 		{
 			"id": "settlement-mali-bastaji-5382743337",
@@ -489,8 +490,8 @@
 			"source": "osm",
 			"nearestHighwayM": 23,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-korenicani-983181565",
@@ -507,24 +508,8 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 461,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
-		},
-		{
-			"id": "settlement-ribnjacka-2616034063",
-			"type": "settlement",
-			"name_en": "Ribnjačka",
-			"name_hr": "Ribnjačka",
-			"lat": 45.88975,
-			"lng": 17.08801,
-			"trailKm": 391.9,
-			"distanceFromTrailKm": 1.25,
-			"population": 154,
-			"source": "osm",
-			"nearestHighwayM": 42,
-			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-sandrovac-1352299298",
@@ -541,9 +526,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 21,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "PPK Bjelovar", "openingHours": "Mo-Sa 07:00-13:00; Su off" },
 					{ "kind": "grocery", "name": "Studenac", "openingHours": "Mo-Sa 07:00-20:00" },
@@ -569,8 +554,8 @@
 			"source": "osm",
 			"nearestHighwayM": 25,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-babotok-4457458698",
@@ -587,8 +572,8 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 30,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [{ "kind": "bus" }, { "kind": "bus" }] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [{ "kind": "bus" }, { "kind": "bus" }] }
 		},
 		{
 			"id": "settlement-jagnjedovec-2588061906",
@@ -603,8 +588,8 @@
 			"source": "osm",
 			"nearestHighwayM": 4,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-starigrad-2246190859",
@@ -621,8 +606,8 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 64,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [{ "kind": "bus" }, { "kind": "bus" }, { "kind": "bus" }] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [{ "kind": "bus" }, { "kind": "bus" }, { "kind": "bus" }] }
 		},
 		{
 			"id": "settlement-veliki-grabicani-656868693",
@@ -637,8 +622,8 @@
 			"source": "osm",
 			"nearestHighwayM": 16,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-veliki-poganac-1402433868",
@@ -653,8 +638,8 @@
 			"source": "osm",
 			"nearestHighwayM": 26,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-apatovec-624291055",
@@ -669,8 +654,8 @@
 			"source": "osm",
 			"nearestHighwayM": 13,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-kamesnica-527352475",
@@ -685,44 +670,42 @@
 			"source": "osm",
 			"nearestHighwayM": 15,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-kalnik-527352470",
 			"type": "settlement",
 			"name_en": "Kalnik",
 			"name_hr": "Kalnik",
-			"lat": 46.12785,
-			"lng": 16.46427,
+			"lat": 46.12724,
+			"lng": 16.46475,
 			"trailKm": 487,
-			"distanceFromTrailKm": 0.45,
+			"distanceFromTrailKm": 0.53,
 			"population": 325,
 			"source": "osm",
-			"nearestHighwayM": 13,
+			"nearestHighwayM": 17,
 			"isReachable": true,
-			"nearestPublicTransportM": 72,
+			"nearestPublicTransportM": 17,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [{ "kind": "bus" }] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [{ "kind": "bus" }] }
 		},
 		{
 			"id": "settlement-sopron-656867713",
 			"type": "settlement",
 			"name_en": "Šopron",
 			"name_hr": "Šopron",
-			"lat": 46.12025,
-			"lng": 16.46526,
+			"lat": 46.1195,
+			"lng": 16.46504,
 			"trailKm": 487.2,
-			"distanceFromTrailKm": 1.23,
+			"distanceFromTrailKm": 1.3,
 			"population": 162,
 			"source": "osm",
-			"nearestHighwayM": 37,
+			"nearestHighwayM": 20,
 			"isReachable": true,
-			"nearestPublicTransportM": 778,
-			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-borje-656867769",
@@ -737,8 +720,8 @@
 			"source": "osm",
 			"nearestHighwayM": 6,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-vojnovec-kalnicki-656867481",
@@ -753,8 +736,8 @@
 			"source": "osm",
 			"nearestHighwayM": 12,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-obrez-kalnicki-656867721",
@@ -769,8 +752,8 @@
 			"source": "osm",
 			"nearestHighwayM": 21,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-ljubelj-kalnicki-1376501083",
@@ -785,8 +768,8 @@
 			"source": "osm",
 			"nearestHighwayM": 32,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-slanje-766004651",
@@ -803,9 +786,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 23,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Kitro", "openingHours": "Mo-Sa 06:30-20:00; Su,PH off" },
 					{ "kind": "bus", "name": "Slanje" },
@@ -828,9 +811,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 128,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "bus", "name": "Poljanec 1" },
 					{ "kind": "bus", "name": "Poljanec 1" },
@@ -852,8 +835,8 @@
 			"source": "osm",
 			"nearestHighwayM": 23,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-kucan-ludbreski-2556102986",
@@ -868,9 +851,9 @@
 			"source": "osm",
 			"nearestHighwayM": 47,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Kitro", "openingHours": "Mo-Sa 07:00-21:00; Su,PH 07:00-13:00" },
 					{ "kind": "bus", "name": "Ludbreg 1" },
@@ -891,8 +874,8 @@
 			"source": "osm",
 			"nearestHighwayM": 7,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [{ "kind": "fuel", "name": "Benzinska pumpa Šilec" }] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [{ "kind": "fuel", "name": "Benzinska pumpa Šilec" }] }
 		},
 		{
 			"id": "settlement-obrankovec-1394563265",
@@ -909,8 +892,8 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 590,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-sveti-djurdj-766018135",
@@ -928,9 +911,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 54,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "METSS", "openingHours": "Mo-Sa 07:00-19:00; Su, PH 07:00-11:00" },
 					{ "kind": "grocery", "name": "Kitro", "openingHours": "Mo-Sa 07:00-21:00; Su, PH 07:00-13:00" },
@@ -958,9 +941,9 @@
 			"source": "osm",
 			"nearestHighwayM": 33,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [{ "kind": "grocery", "name": "CBA trgonom", "openingHours": "Mo-Fr 07:30-14:30; Sa 07:30-12:30" }]
 			}
 		},
@@ -979,9 +962,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 139,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "market Plus" },
 					{ "kind": "bus", "name": "Hrženica" },
@@ -1002,8 +985,8 @@
 			"source": "osm",
 			"nearestHighwayM": 39,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-cehovec-1193132173",
@@ -1018,8 +1001,8 @@
 			"source": "osm",
 			"nearestHighwayM": 49,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-donji-pustakovec-1157973398",
@@ -1034,8 +1017,8 @@
 			"source": "osm",
 			"nearestHighwayM": 39,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [{ "kind": "grocery", "name": "Kitro" }] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [{ "kind": "grocery", "name": "Kitro" }] }
 		},
 		{
 			"id": "settlement-palinovec-1157949815",
@@ -1050,8 +1033,8 @@
 			"source": "osm",
 			"nearestHighwayM": 46,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [{ "kind": "grocery", "name": "Metss" }] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [{ "kind": "grocery", "name": "Metss" }] }
 		},
 		{
 			"id": "settlement-donji-hrascan-1260093624",
@@ -1066,8 +1049,8 @@
 			"source": "osm",
 			"nearestHighwayM": 44,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-novakovec-1165975061",
@@ -1084,9 +1067,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 306,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Kitro", "openingHours": "Mo-Sa 06:30-19:30; Su,PH 06:30-12:30" },
 					{ "kind": "grocery", "name": "NTL", "openingHours": "Mo-Sa 06:30-19:00; Su,PH 07:00-12:00" },
@@ -1113,9 +1096,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 211,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "NTL", "openingHours": "Mo-Sa 07:00-20:00; Su,PH 7:00-13:00" },
 					{ "kind": "grocery", "name": "METSS" },
@@ -1138,8 +1121,8 @@
 			"source": "osm",
 			"nearestHighwayM": 44,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-miklavec-1260077199",
@@ -1154,9 +1137,9 @@
 			"source": "osm",
 			"nearestHighwayM": 29,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [{ "kind": "grocery", "name": "Kitro", "openingHours": "Mo-Sa 07:00-19:00; Su,PH 7:00-13:00" }]
 			}
 		},
@@ -1175,9 +1158,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 215,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "METSS", "openingHours": "Mo-Sa 07:00-19:00; Su 07:00-11:00" },
 					{ "kind": "bus", "name": "Križovec" },
@@ -1200,9 +1183,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 27,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "NTL", "openingHours": "Mo-Sa 07:00-20:00; Su 07:00-13:00" },
 					{ "kind": "bus" },
@@ -1225,9 +1208,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 278,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Trgovina KRK", "openingHours": "Mo-Sa 07:00-19:00" },
 					{ "kind": "bus", "name": "Hlapičina" },
@@ -1248,8 +1231,8 @@
 			"source": "osm",
 			"nearestHighwayM": 11,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-zabnik-1258944680",
@@ -1266,9 +1249,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 424,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery" },
 					{ "kind": "bakery", "name": "Prodavaonica br. 3", "openingHours": "Mo-Fr 05:00-18:00; Sa 05:00-14:00" },
@@ -1293,9 +1276,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 394,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "NTL", "openingHours": "Mo-Sa 07:00-20:00; Su 07:00-13:00" },
 					{ "kind": "bus", "name": "Vrhovljan" },
@@ -1320,9 +1303,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 56,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Trgovina Krk", "openingHours": "Mo-Su 07:00-19:00" },
 					{ "kind": "pharmacy", "name": "Ljekarna Počuča", "openingHours": "Mo-Sa 07:30-20:00; Su 08:00-12:00" },
@@ -1342,19 +1325,19 @@
 			"type": "settlement",
 			"name_en": "Brezovec",
 			"name_hr": "Brezovec",
-			"lat": 46.52225,
-			"lng": 16.35319,
+			"lat": 46.5223,
+			"lng": 16.35321,
 			"trailKm": 589.7,
 			"distanceFromTrailKm": 1.02,
 			"population": 197,
 			"source": "osm",
-			"nearestHighwayM": 3,
+			"nearestHighwayM": 6,
 			"isReachable": true,
-			"nearestPublicTransportM": 14,
+			"nearestPublicTransportM": 16,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "bus", "name": "Brezovec" },
 					{ "kind": "bus", "name": "Brezovec" }
@@ -1377,9 +1360,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 43,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Kitro", "openingHours": "Mo-Sa 07:00-19:00; Su 07:00-12:00" },
 					{ "kind": "bus", "name": "Jurovec" },
@@ -1402,9 +1385,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 59,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "bus", "name": "Lapšina" },
 					{ "kind": "bus", "name": "Lapšina" }
@@ -1426,9 +1409,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 177,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "bus", "name": "Čestijanec" },
 					{ "kind": "bus", "name": "Čestijanec" }
@@ -1450,9 +1433,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 417,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "bus", "name": "Jalšovec (pri Kovači)" },
 					{ "kind": "bus", "name": "Jalšovec (pri Kovači)" },
@@ -1473,9 +1456,9 @@
 			"source": "osm",
 			"nearestHighwayM": 23,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Mercator" },
 					{ "kind": "grocery", "name": "Market S" },
@@ -1506,9 +1489,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 127,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Kitro", "openingHours": "Mo-Sa 07:00-19:30; Su 07:00-12:00" },
 					{ "kind": "grocery", "name": "METSS", "openingHours": "Mo-Sa 07:00-20:00; Su 07:00-12:00" },
@@ -1538,9 +1521,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 63,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "bus", "name": "Leskovec" },
 					{ "kind": "bus", "name": "Leskovec" }
@@ -1562,9 +1545,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 784,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "bus", "name": "Železna Gora" },
 					{ "kind": "bus", "name": "Železna Gora" }
@@ -1584,8 +1567,8 @@
 			"source": "osm",
 			"nearestHighwayM": 25,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-prhovec-1197574111",
@@ -1600,9 +1583,9 @@
 			"source": "osm",
 			"nearestHighwayM": 33,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "bus", "name": "Stanetinec (Amerika)" },
 					{ "kind": "bus", "name": "Stanetinec (Amerika)" }
@@ -1625,14 +1608,13 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 124,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
-					{ "kind": "grocery", "name": "METSS", "openingHours": "Mo-Sa 07:00-19:00; Su 07:00-11:00" },
-					{ "kind": "grocery", "name": "Moj DUĆAN" },
-					{ "kind": "pharmacy", "name": "Lekarna" },
-					{ "kind": "atm" },
+					{ "kind": "grocery", "name": "Trgovina Krk", "openingHours": "Mo-Sa 07:00-20:00; Su 07:00-11:00" },
+					{ "kind": "grocery", "name": "Ordinacija dentalne medicine" },
+					{ "kind": "pharmacy", "name": "Ljekarna Čakovec" },
 					{ "kind": "bus", "name": "Gornji Mihaljevec" }
 				]
 			}
@@ -1652,8 +1634,8 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 44,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [{ "kind": "bus" }] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [{ "kind": "bus" }] }
 		},
 		{
 			"id": "settlement-trnovec-1208002107",
@@ -1670,9 +1652,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 129,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "METSS", "openingHours": "Mo-Sa 07:00-19:00; Su 07:00-11:00" },
 					{ "kind": "bus", "name": "Trnovec" },
@@ -1695,8 +1677,8 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 578,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-macinec-1197593512",
@@ -1713,14 +1695,14 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 323,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
-					{ "kind": "grocery", "name": "Kitro", "openingHours": "Mo-Sa 07:00-20:00; Su 07:00-13:00" },
-					{ "kind": "grocery", "name": "METSS", "openingHours": "Mo-Sa 07:00-19:00; Su 07:00-11:00" },
-					{ "kind": "pharmacy", "name": "Ljekarna Petek" },
-					{ "kind": "post", "name": "Poštanski ured Macinec" },
+					{ "kind": "grocery", "name": "NTL trgovina", "openingHours": "Mo-Sa 07:00-20:30; Su off" },
+					{ "kind": "pharmacy", "name": "Ljekarna Petek", "openingHours": "Mo-Fr 07:00-20:00; Sa 08:00-13:00" },
+					{ "kind": "atm", "openingHours": "24/7" },
+					{ "kind": "post", "name": "Poštanski ured Macinec", "openingHours": "We-Th 08:00-11:00" },
 					{ "kind": "bus", "name": "Macinec" }
 				]
 			}
@@ -1738,9 +1720,9 @@
 			"source": "osm",
 			"nearestHighwayM": 12,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [{ "kind": "grocery", "name": "METSS", "openingHours": "Mo-Sa 07:00-19:00; Su 07:00-11:00" }]
 			}
 		},
@@ -1759,9 +1741,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 130,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "METSS", "openingHours": "Mo-Sa 07:00-19:00; Su 07:00-11:00" },
 					{ "kind": "bus" },
@@ -1784,13 +1766,18 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 45,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Kitro", "openingHours": "Mo-Sa 07:00-19:00; Su 07:00-11:00" },
 					{ "kind": "grocery", "name": "METSS", "openingHours": "Mo-Sa 07:00-19:00; Su 07:00-11:00" },
-					{ "kind": "bakery", "name": "Slastice, kolači" },
+					{ "kind": "bakery", "name": "Slastice, kolači", "openingHours": "Mo-Sa 05:00-17:00; Su 07:00-12:00" },
+					{
+						"kind": "pharmacy",
+						"name": "Ljekarna Kaštel Farm Pušćine",
+						"openingHours": "Mo-Fr 07:00-20:00; Sa 08:00-13:00"
+					},
 					{ "kind": "bus", "name": "Pušćine" },
 					{ "kind": "bus", "name": "Pušćine" },
 					{ "kind": "bus", "name": "Pušćine 1" },
@@ -1813,12 +1800,12 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 170,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "METSS", "openingHours": "Mo-Sa 07:00-19:00; Su 07:00-11:00" },
-					{ "kind": "bakery", "name": "Pekarna Ana" },
+					{ "kind": "bakery", "name": "Pekarna Ana", "openingHours": "Mo-Sa 04:30-21:00" },
 					{ "kind": "bus", "name": "Gornji Kuršanec" },
 					{ "kind": "bus", "name": "Gornji Kuršanec" },
 					{ "kind": "fuel", "name": "Petrol", "openingHours": "24/7" }
@@ -1841,9 +1828,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 691,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "pharmacy", "name": "Ljekarna Salus" },
 					{ "kind": "post", "name": "42209 Sračinec", "openingHours": "Mo 08:00-17:00, Tu-Fr 07:30-14:00" },
@@ -1864,8 +1851,8 @@
 			"source": "osm",
 			"nearestHighwayM": 34,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-majerje-1367762714",
@@ -1880,9 +1867,9 @@
 			"source": "osm",
 			"nearestHighwayM": 45,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [{ "kind": "fuel", "name": "OMV", "openingHours": "Mo-Sa 06:00-22:00, Su 07:00-22:00" }]
 			}
 		},
@@ -1899,8 +1886,8 @@
 			"source": "osm",
 			"nearestHighwayM": 8,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-petrijanec-1367762715",
@@ -1916,8 +1903,8 @@
 			"source": "osm",
 			"nearestHighwayM": 47,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [{ "kind": "post" }] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [{ "kind": "post" }] }
 		},
 		{
 			"id": "settlement-zelendvor-1367768927",
@@ -1932,8 +1919,8 @@
 			"source": "osm",
 			"nearestHighwayM": 44,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-vinica-1152073238",
@@ -1948,9 +1935,9 @@
 			"source": "osm",
 			"nearestHighwayM": 37,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery" },
 					{ "kind": "grocery", "name": "Poljodom" },
@@ -1972,9 +1959,9 @@
 			"source": "osm",
 			"nearestHighwayM": 36,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "pharmacy" },
 					{ "kind": "atm", "name": "Zagrebačka banka" },
@@ -1995,8 +1982,8 @@
 			"source": "osm",
 			"nearestHighwayM": 13,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-pescenica-vinicka-2587370253",
@@ -2011,8 +1998,8 @@
 			"source": "osm",
 			"nearestHighwayM": 7,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-donja-voca-1152044672",
@@ -2030,9 +2017,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 108,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [{ "kind": "grocery" }, { "kind": "bus" }, { "kind": "bus" }, { "kind": "bus" }]
 			}
 		},
@@ -2049,8 +2036,8 @@
 			"source": "osm",
 			"nearestHighwayM": 13,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-slivarsko-2587336470",
@@ -2065,8 +2052,8 @@
 			"source": "osm",
 			"nearestHighwayM": 27,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-vukovoj-2587336472",
@@ -2081,8 +2068,8 @@
 			"source": "osm",
 			"nearestHighwayM": 8,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-rijeka-vocanska-2587336474",
@@ -2097,8 +2084,8 @@
 			"source": "osm",
 			"nearestHighwayM": 6,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [{ "kind": "bus" }] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [{ "kind": "bus" }] }
 		},
 		{
 			"id": "settlement-donja-visnjica-2290852864",
@@ -2113,8 +2100,8 @@
 			"source": "osm",
 			"nearestHighwayM": 20,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-gornja-visnjica-2587214396",
@@ -2129,8 +2116,8 @@
 			"source": "osm",
 			"nearestHighwayM": 37,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-bednjica-2290372499",
@@ -2145,8 +2132,8 @@
 			"source": "osm",
 			"nearestHighwayM": 25,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-jazbina-cvetlinska-2587314238",
@@ -2161,8 +2148,8 @@
 			"source": "osm",
 			"nearestHighwayM": 24,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-meljan-2587314230",
@@ -2177,8 +2164,8 @@
 			"source": "osm",
 			"nearestHighwayM": 6,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-cvetlin-2290372500",
@@ -2193,8 +2180,8 @@
 			"source": "osm",
 			"nearestHighwayM": 4,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-ples-2587314233",
@@ -2211,8 +2198,8 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 553,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [{ "kind": "bus" }] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [{ "kind": "bus" }] }
 		},
 		{
 			"id": "settlement-sinkovica-saska-2587314247",
@@ -2227,8 +2214,8 @@
 			"source": "osm",
 			"nearestHighwayM": 10,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [{ "kind": "bus" }, { "kind": "bus" }] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [{ "kind": "bus" }, { "kind": "bus" }] }
 		},
 		{
 			"id": "settlement-vranojelje-2587314231",
@@ -2243,8 +2230,8 @@
 			"source": "osm",
 			"nearestHighwayM": 4,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-gornji-macelj-474987135",
@@ -2259,8 +2246,8 @@
 			"source": "osm",
 			"nearestHighwayM": 14,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-hromec-474987133",
@@ -2277,8 +2264,8 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 199,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [{ "kind": "bus" }, { "kind": "bus" }] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [{ "kind": "bus" }, { "kind": "bus" }] }
 		},
 		{
 			"id": "settlement-hlevnica-474987128",
@@ -2293,8 +2280,8 @@
 			"source": "osm",
 			"nearestHighwayM": 12,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [{ "kind": "bus" }, { "kind": "bus" }] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [{ "kind": "bus" }, { "kind": "bus" }] }
 		},
 		{
 			"id": "settlement-gornja-plemenscina-3431568837",
@@ -2309,8 +2296,8 @@
 			"source": "osm",
 			"nearestHighwayM": 37,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-jezerisce-474987131",
@@ -2325,8 +2312,8 @@
 			"source": "osm",
 			"nearestHighwayM": 8,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-goricanovec-3384466890",
@@ -2341,8 +2328,8 @@
 			"source": "osm",
 			"nearestHighwayM": 40,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-gredenec-3436951015",
@@ -2357,8 +2344,8 @@
 			"source": "osm",
 			"nearestHighwayM": 16,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-durmanec-474961198",
@@ -2375,9 +2362,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 28,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Konzum" },
 					{ "kind": "post", "name": "49225 Đurmanec", "openingHours": "Mo 08:00-17:00, Tu-Fr 07:30-14:00" },
@@ -2399,8 +2386,8 @@
 			"source": "osm",
 			"nearestHighwayM": 43,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-benkovec-petrovski-2489159414",
@@ -2415,8 +2402,8 @@
 			"source": "osm",
 			"nearestHighwayM": 24,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-preseka-petrovska-3431562152",
@@ -2431,8 +2418,8 @@
 			"source": "osm",
 			"nearestHighwayM": 37,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-petrovsko-2486322059",
@@ -2447,9 +2434,9 @@
 			"source": "osm",
 			"nearestHighwayM": 40,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [{ "kind": "post", "name": "49234 Petrovsko", "openingHours": "Mo-Fr 07:00-10:00" }]
 			}
 		},
@@ -2468,9 +2455,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 235,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Konzum" },
 					{ "kind": "fuel", "name": "AGS Krapina" }
@@ -2490,8 +2477,8 @@
 			"source": "osm",
 			"nearestHighwayM": 3,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [{ "kind": "grocery", "name": "Strahinjčica" }] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [{ "kind": "grocery", "name": "Strahinjčica" }] }
 		},
 		{
 			"id": "settlement-ravninsko-474961199",
@@ -2506,8 +2493,8 @@
 			"source": "osm",
 			"nearestHighwayM": 35,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-strahinje-3132169149",
@@ -2522,8 +2509,8 @@
 			"source": "osm",
 			"nearestHighwayM": 44,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-radoboj-2136917418",
@@ -2540,9 +2527,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 487,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [{ "kind": "post", "name": "49232 Radoboj", "openingHours": "Mo-Fr 07:00-10:00" }, { "kind": "bus" }]
 			}
 		},
@@ -2559,8 +2546,8 @@
 			"source": "osm",
 			"nearestHighwayM": 10,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-veternica-3247067960",
@@ -2575,8 +2562,8 @@
 			"source": "osm",
 			"nearestHighwayM": 10,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [{ "kind": "grocery" }] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [{ "kind": "grocery" }] }
 		},
 		{
 			"id": "settlement-novi-golubovec-988880172",
@@ -2593,9 +2580,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 45,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{
 						"kind": "grocery",
@@ -2622,8 +2609,8 @@
 			"source": "osm",
 			"nearestHighwayM": 11,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-velika-veternicka-9420159325",
@@ -2638,8 +2625,8 @@
 			"source": "osm",
 			"nearestHighwayM": 16,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-ocura-1151992361",
@@ -2654,8 +2641,8 @@
 			"source": "osm",
 			"nearestHighwayM": 32,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [{ "kind": "bus" }, { "kind": "bus" }] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [{ "kind": "bus" }, { "kind": "bus" }] }
 		},
 		{
 			"id": "settlement-stari-golubovec-9413293735",
@@ -2670,8 +2657,8 @@
 			"source": "osm",
 			"nearestHighwayM": 24,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-gornja-selnica-1196877076",
@@ -2686,8 +2673,8 @@
 			"source": "osm",
 			"nearestHighwayM": 13,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-juranscina-6715348578",
@@ -2702,8 +2689,8 @@
 			"source": "osm",
 			"nearestHighwayM": 14,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-repno-1937030611",
@@ -2718,8 +2705,8 @@
 			"source": "osm",
 			"nearestHighwayM": 36,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-belec-1196864740",
@@ -2734,9 +2721,9 @@
 			"source": "osm",
 			"nearestHighwayM": 23,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery" },
 					{ "kind": "post", "name": "49254 Belec", "openingHours": "Mo-Fr 11:30-14:00" }
@@ -2756,8 +2743,8 @@
 			"source": "osm",
 			"nearestHighwayM": 15,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-gornja-batina-3221886738",
@@ -2772,8 +2759,8 @@
 			"source": "osm",
 			"nearestHighwayM": 16,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-turnisce-3230677464",
@@ -2788,8 +2775,8 @@
 			"source": "osm",
 			"nearestHighwayM": 16,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-lipovec-3230677463",
@@ -2806,8 +2793,8 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 601,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-poljanica-bistricka-3234306106",
@@ -2822,8 +2809,8 @@
 			"source": "osm",
 			"nearestHighwayM": 27,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-marija-bistrica-5692598473",
@@ -2840,9 +2827,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 98,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Trgostil" },
 					{ "kind": "grocery", "name": "Trgostil" },
@@ -2872,8 +2859,8 @@
 			"source": "osm",
 			"nearestHighwayM": 16,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [{ "kind": "grocery", "name": "Stacun" }] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [{ "kind": "grocery", "name": "Stacun" }] }
 		},
 		{
 			"id": "settlement-laz-stubicki-2294805209",
@@ -2888,8 +2875,8 @@
 			"source": "osm",
 			"nearestHighwayM": 11,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-sveti-matej-2295224063",
@@ -2904,8 +2891,8 @@
 			"source": "osm",
 			"nearestHighwayM": 21,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [{ "kind": "grocery" }] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [{ "kind": "grocery" }] }
 		},
 		{
 			"id": "settlement-planina-gornja-704835813",
@@ -2922,9 +2909,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 154,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "bus", "name": "Planinarska 16" },
 					{ "kind": "bus", "name": "Planinarska 16" },
@@ -2947,9 +2934,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 438,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "bus", "name": "Pri Sajiću" },
 					{ "kind": "bus", "name": "Pri Sajiću" },
@@ -2979,9 +2966,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 18,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Trgostil" },
 					{ "kind": "bakery", "name": "Pekara" },
@@ -3013,9 +3000,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 66,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Mini best" },
 					{ "kind": "grocery", "name": "Tommy" },
@@ -3047,9 +3034,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 521,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Studenac" },
 					{ "kind": "grocery", "name": "Studenac" },
@@ -3081,9 +3068,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 159,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "bus", "name": "Vrbovec Samoborski" },
 					{ "kind": "bus", "name": "Medsave - Dinamo" },
@@ -3106,9 +3093,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 218,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "bus", "name": "Vrbovec Samoborski" },
 					{ "kind": "bus", "name": "Celine - Radeki" },
@@ -3132,9 +3119,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 58,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "bus", "name": "Celine - centar" },
 					{ "kind": "bus", "name": "Celine - centar" },
@@ -3155,8 +3142,8 @@
 			"source": "osm",
 			"nearestHighwayM": 6,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-gradna-529132233",
@@ -3173,9 +3160,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 265,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Tomo" },
 					{ "kind": "bus", "name": "Gradna - kapelica" },
@@ -3197,8 +3184,8 @@
 			"source": "osm",
 			"nearestHighwayM": 10,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [{ "kind": "bus" }, { "kind": "bus" }, { "kind": "bus" }] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [{ "kind": "bus" }, { "kind": "bus" }, { "kind": "bus" }] }
 		},
 		{
 			"id": "settlement-vrhovcak-529232347",
@@ -3215,9 +3202,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 147,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Stridon" },
 					{ "kind": "bus", "name": "Cvjetno naselje" },
@@ -3245,9 +3232,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 79,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "bus", "name": "Samoborski slapovi" },
 					{ "kind": "bus" },
@@ -3278,9 +3265,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 17,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "bus", "name": "Smerovišće - Dumić" },
 					{ "kind": "bus", "name": "Smerovišće 1" },
@@ -3306,9 +3293,9 @@
 			"source": "osm",
 			"nearestHighwayM": 5,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "bus", "name": "Vikend naselje" },
 					{ "kind": "bus", "name": "Smerovišće - Belak" }
@@ -3330,9 +3317,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 89,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "bakery", "name": "Nikl" },
 					{ "kind": "bus", "name": "Manja Vas" },
@@ -3358,9 +3345,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 65,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "bus", "name": "Veliki Lipovec" },
 					{ "kind": "bus", "name": "Šoićeva kuća" },
@@ -3381,8 +3368,8 @@
 			"source": "osm",
 			"nearestHighwayM": 29,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-jezernice-10940560968",
@@ -3399,8 +3386,8 @@
 			"isReachable": true,
 			"summary_hr": "Jezernice su nenaseljeno mjesto u Republici Hrvatskoj u Zagrebačkoj županiji.",
 			"summary_en": "Jezernice may refer to:Jezernice, Czech Republic, a municipality and village in the Olomouc Region\nJezernice, Croatia, an uninhabited village in Zagreb County\nJezernice (Višegrad), a village in Bosnia and Herzegovina",
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-vrskovac-5686026438",
@@ -3415,8 +3402,8 @@
 			"source": "osm",
 			"nearestHighwayM": 13,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-kamanje-666397163",
@@ -3431,9 +3418,9 @@
 			"source": "osm",
 			"nearestHighwayM": 15,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Gavranović" },
 					{ "kind": "post", "name": "47282 Kamanje", "openingHours": "Mo-Fr 07:30-10:30" }
@@ -3453,8 +3440,8 @@
 			"source": "osm",
 			"nearestHighwayM": 23,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-sveticko-hrasce-2298052419",
@@ -3469,8 +3456,8 @@
 			"source": "osm",
 			"nearestHighwayM": 18,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-donje-stative-3190566755",
@@ -3485,8 +3472,8 @@
 			"source": "osm",
 			"nearestHighwayM": 20,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-brajakovo-brdo-1401087606",
@@ -3501,8 +3488,8 @@
 			"source": "osm",
 			"nearestHighwayM": 30,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-vinski-vrh-9773514692",
@@ -3517,9 +3504,9 @@
 			"source": "osm",
 			"nearestHighwayM": 19,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Market Vlasta" },
 					{ "kind": "pharmacy" },
@@ -3542,8 +3529,8 @@
 			"source": "osm",
 			"nearestHighwayM": 15,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-jarce-polje-1162564196",
@@ -3558,9 +3545,9 @@
 			"source": "osm",
 			"nearestHighwayM": 47,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Ivana" },
 					{ "kind": "grocery", "name": "Gavranović" }
@@ -3584,9 +3571,9 @@
 			"nearestPublicTransportM": 786,
 			"isReachableViaPublicTransport": true,
 			"summary_hr": "Završje je naselje u Hrvatskoj, nalazi se u općini Brod Moravice u Primorsko-goranskoj županiji. Prema popisu stanovništva iz 2011. godine naselje nije imalo stanovnika.",
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "post", "name": "51312 Brod Moravice", "openingHours": "Mo 08:00-17:00, Tu-Fr 08:00-15:00" }
 				]
@@ -3607,9 +3594,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 747,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery" },
 					{ "kind": "grocery", "name": "Valentin" },
@@ -3632,8 +3619,8 @@
 			"source": "osm",
 			"nearestHighwayM": 9,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-gerovo-1387946831",
@@ -3648,9 +3635,9 @@
 			"source": "osm",
 			"nearestHighwayM": 7,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Konzum" },
 					{ "kind": "post", "name": "51304 Gerovo", "openingHours": "Mo 08:00-17:00, Tu-Fr 08:00-15:00" },
@@ -3673,9 +3660,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 37,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "bus", "name": "Lisac - Kapelica" },
 					{ "kind": "bus", "name": "Lisac okretište" },
@@ -3698,9 +3685,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 56,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "bus", "name": "Škalnica A" },
 					{ "kind": "bus", "name": "Škalnica okretište" },
@@ -3723,8 +3710,8 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 337,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-ruzici-1855518226",
@@ -3741,9 +3728,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 34,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "bus", "name": "Ružići" },
 					{ "kind": "bus", "name": "Ružići" }
@@ -3765,9 +3752,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 94,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Trgovina Krk", "openingHours": "Mo-Fr 07:00-14:00; Sa 07:00-12:00" },
 					{ "kind": "bakery", "name": "Romeo" },
@@ -3796,9 +3783,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 224,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "bakery", "name": "Romeo" },
 					{ "kind": "post", "name": "51213 Jurdani", "openingHours": "Mo 08:00-17:00, Tu-Fr 08:00-15:00" },
@@ -3825,9 +3812,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 322,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "bus", "name": "Brešca" },
 					{ "kind": "bus", "name": "Brešca" },
@@ -3850,9 +3837,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 472,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "bus", "name": "Brgud 1" },
 					{ "kind": "bus", "name": "Brgud 1" }
@@ -3874,9 +3861,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 91,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "bus", "name": "Zaluki" },
 					{ "kind": "bus", "name": "Zaluki" },
@@ -3924,8 +3911,8 @@
 					"sourceUrl": "https://commons.wikimedia.org/wiki/File:Sveti_Juraj_2_-_Gro%C5%BEnjan.jpg"
 				}
 			],
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-sveti-ivan-1600494907",
@@ -3964,9 +3951,9 @@
 					"sourceUrl": "https://commons.wikimedia.org/wiki/File:Sveti_Juraj_2_-_Gro%C5%BEnjan.jpg"
 				}
 			],
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Plodine", "openingHours": "Mo-Sa 07:00-22:00" },
 					{ "kind": "atm" },
@@ -3987,8 +3974,8 @@
 			"source": "osm",
 			"nearestHighwayM": 25,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-sveti-duh-2125580587",
@@ -4028,8 +4015,8 @@
 					"sourceUrl": "https://commons.wikimedia.org/wiki/File:Sveti_Juraj_2_-_Gro%C5%BEnjan.jpg"
 				}
 			],
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [{ "kind": "bus" }, { "kind": "bus" }] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [{ "kind": "bus" }, { "kind": "bus" }] }
 		},
 		{
 			"id": "settlement-hrastici-2028071698",
@@ -4043,8 +4030,8 @@
 			"source": "wikidata",
 			"nearestHighwayM": 7,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-sveti-ivan-2121664916",
@@ -4083,8 +4070,8 @@
 					"sourceUrl": "https://commons.wikimedia.org/wiki/File:Sveti_Juraj_2_-_Gro%C5%BEnjan.jpg"
 				}
 			],
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-sveti-stjepan-8596303434",
@@ -4122,8 +4109,8 @@
 					"sourceUrl": "https://commons.wikimedia.org/wiki/File:Sveti_Juraj_2_-_Gro%C5%BEnjan.jpg"
 				}
 			],
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [{ "kind": "bus" }, { "kind": "bus" }, { "kind": "bus" }] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [{ "kind": "bus" }, { "kind": "bus" }, { "kind": "bus" }] }
 		},
 		{
 			"id": "settlement-groznjan-482838226",
@@ -4140,9 +4127,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 112,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "La Botega", "openingHours": "Mo-Sa 08:00-20:00; Su 08:00-14:00" },
 					{ "kind": "atm" },
@@ -4165,8 +4152,8 @@
 			"source": "osm",
 			"nearestHighwayM": 5,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-bibali-1781313047",
@@ -4181,8 +4168,8 @@
 			"source": "osm",
 			"nearestHighwayM": 30,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [{ "kind": "bus" }] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [{ "kind": "bus" }] }
 		},
 		{
 			"id": "settlement-kastel-2246615979",
@@ -4197,9 +4184,9 @@
 			"source": "osm",
 			"nearestHighwayM": 53,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Briciola" },
 					{ "kind": "bus", "name": "Dragonja - Dragogna" },
@@ -4220,9 +4207,9 @@
 			"source": "osm",
 			"nearestHighwayM": 32,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [{ "kind": "fuel", "name": "INA", "openingHours": "Mo-Su 06:00-22:00" }]
 			}
 		},
@@ -4239,8 +4226,8 @@
 			"source": "osm",
 			"nearestHighwayM": 40,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-valica-851969535",
@@ -4257,8 +4244,8 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 111,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [{ "kind": "atm" }, { "kind": "bus" }] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [{ "kind": "atm" }, { "kind": "bus" }] }
 		},
 		{
 			"id": "settlement-crveni-vrh-2577034114",
@@ -4273,8 +4260,8 @@
 			"source": "osm",
 			"nearestHighwayM": 22,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [{ "kind": "grocery" }, { "kind": "grocery" }] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [{ "kind": "grocery" }, { "kind": "grocery" }] }
 		},
 		{
 			"id": "settlement-savudrija-494064249",
@@ -4291,9 +4278,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 144,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [{ "kind": "grocery", "name": "Brikola", "openingHours": "seasonal" }, { "kind": "bus" }]
 			}
 		},
@@ -4312,9 +4299,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 70,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Lito market", "openingHours": "Mo-Su 08:00-21:00" },
 					{ "kind": "grocery", "openingHours": "May-Sep: 08:30-13:00" },
@@ -4346,9 +4333,9 @@
 			"source": "osm",
 			"nearestHighwayM": 25,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Lito", "openingHours": "Mo-Su 07:30-22:30" },
 					{ "kind": "grocery", "name": "Mini Market" },
@@ -4374,8 +4361,8 @@
 			"source": "osm",
 			"nearestHighwayM": 9,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-sveti-vid-2114107668",
@@ -4421,8 +4408,8 @@
 					"sourceUrl": "https://commons.wikimedia.org/wiki/File:Ena_najstarej%C5%A1ih_hi%C5%A1_v_vasi,_Sveti_Peter_1950.jpg"
 				}
 			],
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-petrovija-435186585",
@@ -4437,8 +4424,8 @@
 			"source": "osm",
 			"nearestHighwayM": 28,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-vilanija-1732982591",
@@ -4453,8 +4440,8 @@
 			"source": "osm",
 			"nearestHighwayM": 12,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-gamboci-2246560396",
@@ -4469,8 +4456,8 @@
 			"source": "osm",
 			"nearestHighwayM": 36,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-brtonigla-87267602",
@@ -4485,9 +4472,9 @@
 			"source": "osm",
 			"nearestHighwayM": 3,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Studenac" },
 					{ "kind": "bakery" },
@@ -4514,8 +4501,8 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 13,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [{ "kind": "bus" }] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [{ "kind": "bus" }] }
 		},
 		{
 			"id": "settlement-vizinada-87264687",
@@ -4567,9 +4554,9 @@
 			],
 			"summary_hr": "Vižinada je općina na zapadnom dijelu Hrvatske, na sjeverozapadu Istre.",
 			"summary_en": "Vižinada is a village and municipality in the interior of the western part of Istria, west Croatia. It is 17 kilometres (11 mi) northeast of Poreč-Parenzo at an elevation of 400 metres (1,300 ft). The economy is agriculture-based.",
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery" },
 					{ "kind": "grocery", "name": "Trgovina Krk", "openingHours": "Mo-Su 07:00-20:00;Su 07:00-13:00" },
@@ -4593,8 +4580,8 @@
 			"source": "osm",
 			"nearestHighwayM": 22,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-brig-2136327898",
@@ -4609,8 +4596,8 @@
 			"source": "osm",
 			"nearestHighwayM": 19,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-rakotule-1488325467",
@@ -4625,8 +4612,8 @@
 			"source": "osm",
 			"nearestHighwayM": 34,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-karojba-255618773",
@@ -4641,8 +4628,8 @@
 			"source": "osm",
 			"nearestHighwayM": 22,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [{ "kind": "grocery" }, { "kind": "post" }] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [{ "kind": "grocery" }, { "kind": "post" }] }
 		},
 		{
 			"id": "settlement-brkac-2116829020",
@@ -4657,8 +4644,8 @@
 			"source": "osm",
 			"nearestHighwayM": 28,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-motovun-87265200",
@@ -4675,9 +4662,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 336,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Ultra", "openingHours": "Mo-Sa 07:00-20:00; Su 07:00-14:00" },
 					{ "kind": "grocery", "name": "Mini market Motovun" },
@@ -4735,8 +4722,8 @@
 					"sourceUrl": "https://commons.wikimedia.org/wiki/File:Sveti_Juraj_2_-_Gro%C5%BEnjan.jpg"
 				}
 			],
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-grdoselo-1616140220",
@@ -4751,8 +4738,8 @@
 			"source": "osm",
 			"nearestHighwayM": 15,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-zarecje-2467970010",
@@ -4767,8 +4754,8 @@
 			"source": "osm",
 			"nearestHighwayM": 24,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-lindar-1486093186",
@@ -4783,8 +4770,8 @@
 			"source": "osm",
 			"nearestHighwayM": 12,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-sestani-2235080590",
@@ -4798,8 +4785,8 @@
 			"source": "wikidata",
 			"nearestHighwayM": 42,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-gologorica-1595570820",
@@ -4814,8 +4801,8 @@
 			"source": "osm",
 			"nearestHighwayM": 25,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-jakomici-1561420474",
@@ -4830,9 +4817,9 @@
 			"source": "osm",
 			"nearestHighwayM": 7,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [{ "kind": "post", "name": "52332 Pićan", "openingHours": "Mo-Fr 08:00-11:00" }]
 			}
 		},
@@ -4849,8 +4836,8 @@
 			"source": "osm",
 			"nearestHighwayM": 33,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-potpican-1560201030",
@@ -4865,9 +4852,9 @@
 			"source": "osm",
 			"nearestHighwayM": 7,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery" },
 					{ "kind": "post", "name": "52333 Podpićan", "openingHours": "Mo 08:00-17:00; Tu-Fr 08:00-15:00" }
@@ -4887,8 +4874,8 @@
 			"source": "osm",
 			"nearestHighwayM": 14,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [{ "kind": "grocery" }] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [{ "kind": "grocery" }] }
 		},
 		{
 			"id": "settlement-brgod-1560164067",
@@ -4903,8 +4890,8 @@
 			"source": "osm",
 			"nearestHighwayM": 16,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-kapelica-1549105529",
@@ -4919,8 +4906,26 @@
 			"source": "osm",
 			"nearestHighwayM": 21,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
+		},
+		{
+			"id": "settlement-diminici-4996473333",
+			"type": "settlement",
+			"name_en": "Diminići",
+			"name_hr": "Diminići",
+			"lat": 44.99126,
+			"lng": 14.10252,
+			"trailKm": 1350.1,
+			"distanceFromTrailKm": 0,
+			"source": "wikidata",
+			"wikipedia": "https://hr.wikipedia.org/wiki/Dimini%C4%87i",
+			"nearestHighwayM": 4,
+			"isReachable": true,
+			"summary_hr": "Diminići su naselje u Hrvatskoj u sastavu općine Raše. Nalaze se u Istarskoj županiji.",
+			"summary_en": "Diminići is a small settlement in the Labinština peninsula in Istria County, Croatia. This settlement is grouped with Kobavići and is known as Sveti Lovreč Labinski /San Lorenzo di Albona/ Sveti Lovreč Labinski. This settlement belongs to the Raša Municipality, Croatia.",
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-viskovici-1560164076",
@@ -4935,8 +4940,23 @@
 			"source": "osm",
 			"nearestHighwayM": 10,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
+		},
+		{
+			"id": "settlement-cerovica-1440378710",
+			"type": "settlement",
+			"name_en": "Cerovica",
+			"name_hr": "Cerovica",
+			"lat": 44.99147,
+			"lng": 14.15134,
+			"trailKm": 1360.1,
+			"distanceFromTrailKm": 1.03,
+			"source": "wikidata",
+			"nearestHighwayM": 6,
+			"isReachable": true,
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [{ "kind": "grocery" }] }
 		},
 		{
 			"id": "settlement-presika-1560169238",
@@ -4953,9 +4973,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 258,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{
 						"kind": "grocery",
@@ -4985,9 +5005,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 88,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Market Jedinstvo Rabac", "openingHours": "Mo-Su 7:00-21:00" },
 					{ "kind": "grocery" },
@@ -5017,8 +5037,8 @@
 			"source": "osm",
 			"nearestHighwayM": 41,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-plomin-luka-1560201027",
@@ -5035,8 +5055,8 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 550,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-plomin-255601496",
@@ -5053,9 +5073,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 8,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "post", "name": "52234 Plomin", "openingHours": "Mo-Fr 08:00-12:00" },
 					{ "kind": "bus" },
@@ -5078,8 +5098,8 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 98,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [{ "kind": "bus" }, { "kind": "bus" }] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [{ "kind": "bus" }, { "kind": "bus" }] }
 		},
 		{
 			"id": "settlement-rukavac-1855518225",
@@ -5096,9 +5116,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 77,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Konzum", "openingHours": "Mo-Sa 07:00-20:00; Su 07:00-13:00; PH off" },
 					{ "kind": "bus", "name": "Trtni - Mihelići" },
@@ -5125,9 +5145,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 110,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "bus", "name": "Bregi" },
 					{ "kind": "bus", "name": "Bregi" },
@@ -5155,9 +5175,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 72,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Konzum" },
 					{ "kind": "bus", "name": "Mihotići" },
@@ -5186,9 +5206,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 72,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Plodine", "openingHours": "Mo-Su 07:00-22:00" },
 					{ "kind": "grocery", "openingHours": "07:00 - 14:00" },
@@ -5224,9 +5244,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 11,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Plodine", "openingHours": "Mo-Su 07:00-22:00" },
 					{ "kind": "grocery", "name": "EuroSpin" },
@@ -5258,9 +5278,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 87,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Studenac" },
 					{ "kind": "bus", "name": "Jardasi B" },
@@ -5292,9 +5312,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 13,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "bus", "name": "Sroki" },
 					{ "kind": "bus", "name": "Sroki" },
@@ -5326,9 +5346,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 15,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "bus", "name": "Marčelji 1 Ilovca" },
 					{ "kind": "bus", "name": "Marčelji 3 pogled" },
@@ -5357,9 +5377,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 72,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Konzum", "openingHours": "Mo-Sa 07:00-20:00" },
 					{ "kind": "grocery", "name": "Plodine", "openingHours": "Mo-Su 07:00-22:00" },
@@ -5391,9 +5411,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 24,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "bus", "name": "Mladenići" },
 					{ "kind": "bus", "name": "Brtuni / Bujki" },
@@ -5418,9 +5438,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 25,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Butiga Saršoni" },
 					{ "kind": "grocery", "name": "studenac market" },
@@ -5452,9 +5472,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 240,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "bus", "name": "Milaši" },
 					{ "kind": "bus", "name": "Milaši" },
@@ -5478,9 +5498,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 81,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "bus", "name": "Ratulje" },
 					{ "kind": "bus", "name": "Ratulje" }
@@ -5502,9 +5522,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 40,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "bus", "name": "Lubarska B" },
 					{ "kind": "bus", "name": "Lubarska A" }
@@ -5526,9 +5546,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 75,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "bus", "name": "Jelenje" },
 					{ "kind": "bus", "name": "Jelenje" },
@@ -5554,9 +5574,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 44,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "bus", "name": "Mikeji okretište" },
 					{ "kind": "bus", "name": "Grad Grobnik" },
@@ -5588,9 +5608,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 9,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "bus", "name": "Podkilavac okretište" },
 					{ "kind": "bus", "name": "Podkilavac 3" },
@@ -5617,9 +5637,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 45,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Dražice", "openingHours": "06:00-22:00" },
 					{ "kind": "grocery" },
@@ -5651,9 +5671,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 110,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "bus", "name": "Podhum 4 vrtić" },
 					{ "kind": "bus", "name": "Podhum 4 vrtić" },
@@ -5679,9 +5699,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 45,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "bakery", "name": "Lišćevica" },
 					{ "kind": "bus", "name": "Jezero / za Podhum" },
@@ -5713,9 +5733,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 517,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery" },
 					{ "kind": "grocery", "name": "Kroatis market", "openingHours": "Mo-Sa 06:00-20:00; Su 07:00-13:00" },
@@ -5740,9 +5760,9 @@
 			"source": "wikidata",
 			"nearestHighwayM": 34,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Valentin" },
 					{ "kind": "post", "name": "51323 Lič", "openingHours": "Mo-Fr 13:00-15:00" }
@@ -5761,8 +5781,8 @@
 			"source": "wikidata",
 			"nearestHighwayM": 15,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-vrata-1305138347",
@@ -5779,9 +5799,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 215,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [{ "kind": "grocery", "name": "Gavranovic Market" }, { "kind": "bus" }, { "kind": "bus" }]
 			}
 		},
@@ -5798,8 +5818,8 @@
 			"source": "wikidata",
 			"nearestHighwayM": 49,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-oltari-2429479314",
@@ -5832,8 +5852,8 @@
 				}
 			],
 			"summary_hr": "Oltari, maleno planinsko selo na sjevernom Velebitu u Ličko-senjskoj županiji. Nalazi se na nadmorskoj visini od 940 metara, na putu što spaja Sveti Juraj i Krasno. Naselje je poznato kao ishodište za pohode na sjeverni Velebit. Blizina Zavižana. U selu se nalazi planinarska kuća Oltari.",
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-golubic-2248537482",
@@ -5848,9 +5868,9 @@
 			"source": "osm",
 			"nearestHighwayM": 53,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [{ "kind": "post", "name": "22301 Golubić", "openingHours": "Mo-Fr 11:30-15:00" }]
 			}
 		},
@@ -5868,8 +5888,8 @@
 			"nearestHighwayM": 73,
 			"isReachable": true,
 			"summary_hr": "Dola je naseljeno mjesto u općini Bileća, Republika Srpska, Bosna i Hercegovina.",
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-bajagic-531816650",
@@ -5884,8 +5904,26 @@
 			"source": "osm",
 			"nearestHighwayM": 19,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
+		},
+		{
+			"id": "settlement-gornji-baraci-9215638132",
+			"type": "settlement",
+			"name_en": "Gornji Baraći",
+			"name_hr": "Gornji Baraći",
+			"lat": 43.75118,
+			"lng": 16.67711,
+			"trailKm": 1868.7,
+			"distanceFromTrailKm": 0.74,
+			"source": "wikidata",
+			"wikipedia": "https://hr.wikipedia.org/wiki/Gornji_Rujani",
+			"nearestHighwayM": 37,
+			"isReachable": true,
+			"summary_hr": "Gornji Rujani su naseljeno mjesto u gradu Livnu, Federacija Bosne i Hercegovine, BiH.",
+			"summary_en": "Gornji Rujani is a village in the Township of Livno in Canton 10 of the Federation of Bosnia and Herzegovina, an entity of Bosnia and Herzegovina.",
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-obrovac-sinjski-500865736",
@@ -5902,9 +5940,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 26,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Studenac", "openingHours": "Mo-Sa 06:30-20:30; Su 07:00-19:00" },
 					{ "kind": "post", "name": "21241 Obrovac Sinjski", "openingHours": "Mo-Fr 10:30-12:30" },
@@ -5926,8 +5964,8 @@
 			"source": "osm",
 			"nearestHighwayM": 78,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-vedrine-892694916",
@@ -5942,9 +5980,9 @@
 			"source": "osm",
 			"nearestHighwayM": 14,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Tommy" },
 					{ "kind": "grocery", "name": "Konzum" }
@@ -5964,8 +6002,8 @@
 			"source": "osm",
 			"nearestHighwayM": 22,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-srijane-2169058997",
@@ -5980,8 +6018,8 @@
 			"source": "osm",
 			"nearestHighwayM": 34,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-gornji-dolac-2162528566",
@@ -5996,8 +6034,8 @@
 			"source": "osm",
 			"nearestHighwayM": 36,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-cisla-1585065211",
@@ -6012,8 +6050,8 @@
 			"source": "osm",
 			"nearestHighwayM": 13,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-skocibe-9552574558",
@@ -6030,8 +6068,8 @@
 			"isReachable": true,
 			"summary_hr": "Skočibe su naselje u Hrvatskoj. Nalaze se u Omišu u Splitsko-dalmatinskoj županiji. Prema popisu stanovništva iz 2011. naselje nije imalo stanovnika.",
 			"summary_en": "Skočibe is an uninhabited settlement in Croatia.",
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [{ "kind": "grocery", "name": "Studenac" }] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [{ "kind": "grocery", "name": "Studenac" }] }
 		},
 		{
 			"id": "settlement-gata-1597665187",
@@ -6046,9 +6084,9 @@
 			"source": "osm",
 			"nearestHighwayM": 8,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Studenac" },
 					{ "kind": "post", "name": "21253 Gata", "openingHours": "Mo-Fr 13:00-15:00" }
@@ -6068,8 +6106,8 @@
 			"source": "osm",
 			"nearestHighwayM": 9,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-naklice-1597680187",
@@ -6084,8 +6122,8 @@
 			"source": "osm",
 			"nearestHighwayM": 25,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-borak-2235513807",
@@ -6100,9 +6138,9 @@
 			"source": "osm",
 			"nearestHighwayM": 9,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Studenac" },
 					{ "kind": "bakery", "name": "Bimita" }
@@ -6122,9 +6160,9 @@
 			"source": "osm",
 			"nearestHighwayM": 11,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Studenac", "openingHours": "Mo-Sa 07:00-20:00; Su 07:00-19:00" },
 					{ "kind": "grocery", "name": "Studenac" },
@@ -6146,8 +6184,8 @@
 			"source": "osm",
 			"nearestHighwayM": 33,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-ruskamen-413591103",
@@ -6161,8 +6199,8 @@
 			"source": "wikidata",
 			"nearestHighwayM": 22,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [{ "kind": "grocery", "name": "Studenac" }] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [{ "kind": "grocery", "name": "Studenac" }] }
 		},
 		{
 			"id": "settlement-lokva-rogoznica-2235517736",
@@ -6177,9 +6215,9 @@
 			"source": "osm",
 			"nearestHighwayM": 7,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{
 						"kind": "post",
@@ -6204,9 +6242,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 43,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Studenac" },
 					{ "kind": "atm" },
@@ -6236,9 +6274,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 147,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{
 						"kind": "grocery",
@@ -6263,8 +6301,8 @@
 			"source": "osm",
 			"nearestHighwayM": 21,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [{ "kind": "grocery" }] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [{ "kind": "grocery" }] }
 		},
 		{
 			"id": "settlement-podgora-268414982",
@@ -6281,9 +6319,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 96,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Studenac Market" },
 					{ "kind": "grocery", "name": "Market R", "openingHours": "PH,Mo-Su 07:00-21:00" },
@@ -6324,9 +6362,9 @@
 					"sourceUrl": "https://commons.wikimedia.org/wiki/File:Hlavn%C3%AD_ulice_%C4%8Caklje.jpg"
 				}
 			],
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Studenac Market" },
 					{ "kind": "atm" },
@@ -6350,9 +6388,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 206,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Studenac" },
 					{ "kind": "grocery", "name": "Konzum", "openingHours": "Mo-Su 07:00-20:00" },
@@ -6379,9 +6417,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 297,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery" },
 					{ "kind": "grocery", "name": "Studenac" },
@@ -6412,9 +6450,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 236,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Lito Market" },
 					{ "kind": "grocery", "name": "Ribola Market 66" },
@@ -6440,9 +6478,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 260,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery" },
 					{ "kind": "grocery", "name": "Studenac", "openingHours": "Mo-Sa 06:30-22:00; Su 07:00-22:00" },
@@ -6478,9 +6516,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 157,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Adrija", "openingHours": "06:30-21:00" },
 					{ "kind": "grocery", "name": "Studenac", "openingHours": "Mo-Sa 07:00-22, Su 07:00-19:00" },
@@ -6506,9 +6544,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 186,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Studenac" },
 					{ "kind": "bus", "name": "Brist" },
@@ -6531,9 +6569,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 604,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Studenac", "openingHours": "Mo-Sa 06:30-22:00; Su 07:00-21:00" },
 					{ "kind": "grocery", "name": "Iris", "openingHours": "08:00-23:00" },
@@ -6563,8 +6601,8 @@
 			"source": "osm",
 			"nearestHighwayM": 16,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-bacina-776444087",
@@ -6579,8 +6617,8 @@
 			"source": "osm",
 			"nearestHighwayM": 8,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [{ "kind": "grocery", "name": "Šmagen" }] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [{ "kind": "grocery", "name": "Šmagen" }] }
 		},
 		{
 			"id": "settlement-trpanj-1596067685",
@@ -6595,9 +6633,9 @@
 			"source": "osm",
 			"nearestHighwayM": 20,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Studenac" },
 					{ "kind": "grocery" },
@@ -6631,9 +6669,9 @@
 			"source": "osm",
 			"nearestHighwayM": 9,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "post", "name": "20242 Oskorušno", "openingHours": "Mo-Fr 11:00-13:00" },
 					{ "kind": "post" },
@@ -6655,9 +6693,9 @@
 			"source": "osm",
 			"nearestHighwayM": 23,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Studenac" },
 					{ "kind": "post", "name": "20243 Kuna", "openingHours": "Mo-Fr 08:00-10:30" }
@@ -6679,8 +6717,8 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 114,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [{ "kind": "bus", "name": "Pijavičino" }] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [{ "kind": "bus", "name": "Pijavičino" }] }
 		},
 		{
 			"id": "settlement-trstenik-390954957",
@@ -6695,9 +6733,9 @@
 			"source": "osm",
 			"nearestHighwayM": 9,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Janjinka", "openingHours": "Mo-Su 08:00-22:00" },
 					{ "kind": "atm" },
@@ -6719,9 +6757,9 @@
 			"source": "osm",
 			"nearestHighwayM": 3,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery" },
 					{ "kind": "grocery", "name": "Studenac", "openingHours": "Mo-Sa 07:00-21:00" },
@@ -6746,9 +6784,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 702,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "bus", "name": "Dubrava" },
 					{ "kind": "bus", "name": "Dubrava" }
@@ -6770,8 +6808,8 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 586,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-ponikve-9278441916",
@@ -6820,8 +6858,8 @@
 				}
 			],
 			"summary_hr": "Ponikve su naselje u općini Ston na poluotoku Pelješcu. Dijelovi naselja su Metohija, Sparagovići i Boljenovići. Poznato je po vinogradima i maslinicima. Istoimeni nogometni klub osnovan 1979. natječe se u 2. ŽNL. Ravnatelj Andreas Chollet i veleposlanik Njemačke u Hrvatskoj Hans Peter Annen 17. svibnja 2013.",
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [{ "kind": "bus", "name": "Ponikve" }] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [{ "kind": "bus", "name": "Ponikve" }] }
 		},
 		{
 			"id": "settlement-metohija-505059042",
@@ -6836,9 +6874,9 @@
 			"source": "osm",
 			"nearestHighwayM": 39,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [{ "kind": "grocery", "name": "Studenac", "openingHours": "Su 07:00-14:00; Mo-Sa 06:30-20:00" }]
 			}
 		},
@@ -6890,9 +6928,9 @@
 				}
 			],
 			"summary_hr": "Ponikve su naselje u općini Ston na poluotoku Pelješcu. Dijelovi naselja su Metohija, Sparagovići i Boljenovići. Poznato je po vinogradima i maslinicima. Istoimeni nogometni klub osnovan 1979. natječe se u 2. ŽNL. Ravnatelj Andreas Chollet i veleposlanik Njemačke u Hrvatskoj Hans Peter Annen 17. svibnja 2013.",
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Plodine" },
 					{ "kind": "grocery", "name": "Pčelica" },
@@ -6924,9 +6962,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 187,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "atm" },
 					{ "kind": "atm" },
@@ -6950,9 +6988,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 205,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "bus", "name": "Doli" },
 					{ "kind": "bus", "name": "Doli" }
@@ -6974,9 +7012,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 352,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Mini Market Ane" },
 					{ "kind": "bus", "name": "Kručica" },
@@ -7005,9 +7043,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 11,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Studenac" },
 					{ "kind": "grocery", "name": "Lito Market", "openingHours": "Mo-Sa 07:00-20:00; Su 08:00-13:00" },
@@ -7043,9 +7081,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 195,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "bus", "name": "Banja" },
 					{ "kind": "bus", "name": "Banja" }
@@ -7067,9 +7105,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 408,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Trgovina Oraśac", "openingHours": "Mo-Sa 06:00-21:00; Su 06:30-20:00" },
 					{ "kind": "grocery", "name": "Studenac Market", "openingHours": "off" },
@@ -7097,9 +7135,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 162,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Studenac" },
 					{ "kind": "grocery", "name": "Studenac" },
@@ -7131,8 +7169,8 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 545,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [{ "kind": "bus", "name": "Osojnik" }] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [{ "kind": "bus", "name": "Osojnik" }] }
 		},
 		{
 			"id": "settlement-pobrezje-1045610715",
@@ -7147,9 +7185,9 @@
 			"source": "osm",
 			"nearestHighwayM": 9,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "bus", "name": "Vrbica" },
 					{ "kind": "bus", "name": "Lozica" }
@@ -7171,9 +7209,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 8,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Studenac" },
 					{ "kind": "grocery", "name": "Studenac", "openingHours": "Mo-Sa 06:30-21:00" },
@@ -7205,9 +7243,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 96,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Trgovina AS", "openingHours": "Mo-Sa 07:00-12:00,16:00-20:00; Su 08:00-12:00" },
 					{ "kind": "grocery", "name": "Studenac" },
@@ -7239,9 +7277,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 131,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Konzum", "openingHours": "Mo-Sa 08:00-21:00" },
 					{ "kind": "grocery", "name": "Konzum", "openingHours": "Mo-Sa 07:00-21:00; PH,Su 08:00-13:00" },
@@ -7271,9 +7309,9 @@
 			"source": "osm",
 			"nearestHighwayM": 26,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Konzum" },
 					{ "kind": "grocery", "name": "Građa" },
@@ -7298,9 +7336,9 @@
 			"source": "osm",
 			"nearestHighwayM": 27,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "atm", "name": "Addiko Bank" },
 					{ "kind": "fuel", "name": "EOL Petrol" }
@@ -7320,8 +7358,8 @@
 			"source": "osm",
 			"nearestHighwayM": 30,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-makose-1045610948",
@@ -7336,8 +7374,8 @@
 			"source": "osm",
 			"nearestHighwayM": 39,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-buici-1045611052",
@@ -7352,8 +7390,8 @@
 			"source": "osm",
 			"nearestHighwayM": 40,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-mandaljena-1048672915",
@@ -7370,9 +7408,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 583,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Lidl", "openingHours": "Mo-Su 08:00-21:00" },
 					{ "kind": "atm" },
@@ -7397,8 +7435,8 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 711,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-brasina-429485041",
@@ -7415,9 +7453,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 219,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Studenac Market" },
 					{ "kind": "grocery", "name": "Maxi Konzum", "openingHours": "Mo-Su 08:00-21:00" },
@@ -7449,9 +7487,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 214,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "atm" },
 					{ "kind": "atm" },
@@ -7476,9 +7514,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 122,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "bus", "name": "Zavrelje-Astarea" },
 					{ "kind": "bus", "name": "Zavrelje-Astarea" }
@@ -7500,9 +7538,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 106,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Studenac" },
 					{ "kind": "bus", "name": "Soline" },
@@ -7529,9 +7567,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 61,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Tommy", "openingHours": "Mo-Su 07:00-21:00" },
 					{ "kind": "bus", "name": "Obod" },
@@ -7558,13 +7596,13 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 58,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Studenac" },
 					{ "kind": "grocery", "name": "Pemo supermarket", "openingHours": "Mo-Su 07:00-21:00" },
-					{ "kind": "grocery", "name": "Konzum", "openingHours": "Mo-Su 08:00-22:00" },
+					{ "kind": "grocery", "name": "Konzum", "openingHours": "off" },
 					{ "kind": "bakery", "name": "Mlinar" },
 					{ "kind": "pharmacy" },
 					{ "kind": "atm", "name": "Privredna banka Zagreb" },
@@ -7592,9 +7630,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 161,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Studenac" },
 					{ "kind": "grocery", "name": "Pivac market" },
@@ -7621,8 +7659,8 @@
 			"source": "osm",
 			"nearestHighwayM": 9,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [{ "kind": "bus", "name": "Grušići" }, { "kind": "bus" }] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [{ "kind": "bus", "name": "Grušići" }, { "kind": "bus" }] }
 		},
 		{
 			"id": "settlement-popovici-4788382654",
@@ -7637,8 +7675,8 @@
 			"source": "osm",
 			"nearestHighwayM": 23,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-radovcici-1607979218",
@@ -7653,8 +7691,8 @@
 			"source": "osm",
 			"nearestHighwayM": 8,
 			"isReachable": true,
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-mihatovici-1607979194",
@@ -7671,9 +7709,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 501,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery" },
 					{ "kind": "grocery" },
@@ -7709,8 +7747,8 @@
 			"nearestHighwayM": 17,
 			"isReachable": true,
 			"summary_hr": "Poljice Čičevo je naseljeno mjesto u općini Ravno, Federacija Bosne i Hercegovine, BiH.",
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-donji-djurinici-1607995112",
@@ -7759,8 +7797,8 @@
 			],
 			"summary_hr": "Donji Morinj je naselje u Boki kotorskoj, u općini Kotor. Smješteno je na polovici puta koji vodi između Kotora i Herceg-Novog.",
 			"summary_en": "Donji Morinj is a village in the municipality of Kotor, Montenegro.",
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		},
 		{
 			"id": "settlement-molunat-414051856",
@@ -7777,9 +7815,9 @@
 			"isReachable": true,
 			"nearestPublicTransportM": 48,
 			"isReachableViaPublicTransport": true,
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Tommy", "openingHours": "Mo-Su 07:00-21:00" },
 					{ "kind": "atm" },
@@ -7802,9 +7840,9 @@
 			"nearestHighwayM": 65,
 			"isReachable": true,
 			"summary_hr": "Gornji Morinj je naselje u Boki kotorskoj, u općini Kotor.",
-			"lastVerified": "2026-06-14",
+			"lastVerified": "2026-07-11",
 			"resupply": {
-				"updated": "2026-06-14",
+				"updated": "2026-07-11",
 				"places": [
 					{ "kind": "grocery", "name": "Lukoil Minimarket" },
 					{ "kind": "fuel", "name": "Lukoil" }
@@ -7860,8 +7898,8 @@
 			],
 			"summary_hr": "Donji Morinj je naselje u Boki kotorskoj, u općini Kotor. Smješteno je na polovici puta koji vodi između Kotora i Herceg-Novog.",
 			"summary_en": "Donji Morinj is a village in the municipality of Kotor, Montenegro.",
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [{ "kind": "bus" }] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [{ "kind": "bus" }] }
 		},
 		{
 			"id": "settlement-gornji-kraj-1607995116",
@@ -7880,8 +7918,8 @@
 			"nearestPublicTransportM": 579,
 			"isReachableViaPublicTransport": true,
 			"summary_hr": "Gornji Morinj je naselje u Boki kotorskoj, u općini Kotor.",
-			"lastVerified": "2026-06-14",
-			"resupply": { "updated": "2026-06-14", "places": [] }
+			"lastVerified": "2026-07-11",
+			"resupply": { "updated": "2026-07-11", "places": [] }
 		}
 	]
 }
