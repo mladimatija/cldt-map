@@ -910,8 +910,7 @@
 			"bufferLabel": "Alarmpuffer (Tage nach dem Ziel)",
 			"copy": "Kopieren",
 			"share": "Teilen",
-			"text": "An Kontakt senden",
-			"notSharedNote": "Bleibt auf deinem Gerät. Du sendest es selbst; nichts wird hochgeladen."
+			"text": "An Kontakt senden"
 		}
 	},
 	"tripBrief": {

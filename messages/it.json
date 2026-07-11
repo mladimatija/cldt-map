@@ -910,8 +910,7 @@
 			"bufferLabel": "Margine di allerta (giorni dopo l'arrivo)",
 			"copy": "Copia",
 			"share": "Condividi",
-			"text": "Invia al contatto",
-			"notSharedNote": "Resta sul tuo dispositivo. Lo invii tu stesso; nulla viene caricato."
+			"text": "Invia al contatto"
 		}
 	},
 	"tripBrief": {

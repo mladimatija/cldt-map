@@ -1943,9 +1943,6 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 										</a>
 									) : null}
 								</div>
-								<p className="m-0 text-xs text-gray-500 dark:text-[var(--text-secondary)]">
-									{t('safetyContact.notSharedNote')}
-								</p>
 							</MapControlSectionCard>
 						)}
 					</div>

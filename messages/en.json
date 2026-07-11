@@ -910,8 +910,7 @@
 			"bufferLabel": "Alert buffer (days after finish)",
 			"copy": "Copy",
 			"share": "Share",
-			"text": "Text to contact",
-			"notSharedNote": "Stays on your device. You send it yourself; nothing is uploaded."
+			"text": "Text to contact"
 		}
 	},
 	"tripBrief": {

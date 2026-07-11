@@ -910,8 +910,7 @@
 			"bufferLabel": "Rezerva za uzbunu (dana nakon završetka)",
 			"copy": "Kopiraj",
 			"share": "Podijeli",
-			"text": "Pošalji SMS kontaktu",
-			"notSharedNote": "Ostaje na vašem uređaju. Sami ga šaljete; ništa se ne prenosi."
+			"text": "Pošalji SMS kontaktu"
 		}
 	},
 	"tripBrief": {
