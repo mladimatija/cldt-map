@@ -507,7 +507,7 @@ export function MapControlsEmergencyPanel({ onClose }: MapControlsEmergencyPanel
 	return (
 		<MapControlModalShell
 			open
-			cardClassName="max-w-sm border-l-cldt-red border-l-2"
+			cardClassName="max-w-md border-l-cldt-red border-l-2"
 			closeLabel={t('close')}
 			title={t('title')}
 			titleClassName="text-cldt-red mb-2 text-base font-semibold"
