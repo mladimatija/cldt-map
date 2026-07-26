@@ -31,6 +31,19 @@ export interface TrailOsmTagsFile {
 }
 
 /**
+ * True when two datasets carry the same content, so a freshly parsed object can
+ * be discarded in favour of the one already published. `lastUpdated` is stamped
+ * by the enrichment pipeline and therefore moves whenever the runs do; totalKm
+ * and run count are cheap corroboration. A hand-edited file that changed runs
+ * without touching any of the three would be treated as unchanged until the next
+ * reload, which is the right trade for a cosmetic overlay: the alternative is
+ * republishing a new identity on every tab focus and rebuilding the trail with it.
+ */
+export function isSameTrailOsmTagsDataset(a: TrailOsmTagsFile, b: TrailOsmTagsFile): boolean {
+	return a.lastUpdated === b.lastUpdated && a.totalKm === b.totalKm && a.runs.length === b.runs.length;
+}
+
+/**
  * Overlap length in km between two km ranges [aFrom, aTo] and [bFrom, bTo].
  * Returns 0 when the ranges are disjoint or either range has zero (or negative)
  * length. Shared by the surface breakdown / dominant-surface and SAC-max range

@@ -69,6 +69,7 @@ import { newId, type JournalEntry } from '@/lib/user-waypoints';
 import { sanitizeWaterLog, waterLogToday, type WaterLogEntry, type WaterStatus } from '../water-log';
 import { normalizePoiNote, sanitizePoiNotes } from '../poi-notes';
 import { sanitizeNavTarget, type NavTarget } from '../nav-target';
+import { isSameTrailOsmTagsDataset } from '../trail-osm-tags';
 
 /** Module-level abort controller for tile downloads - one download at a time. */
 let tilePrecacheAbortController: AbortController | null = null;
@@ -1428,6 +1429,13 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 
 					trailOsmTagsFile: null,
 					setTrailOsmTagsFile: (file): void => {
+						// The loader re-fetches whenever the tab becomes visible again and
+						// hands back a freshly parsed object every time. Republishing an
+						// identical dataset under a new identity invalidates every consumer
+						// keyed on this field - the trail polyline rebuild among them - so
+						// keep the existing reference when the content matches.
+						const current = get().trailOsmTagsFile;
+						if (current && file && isSameTrailOsmTagsDataset(current, file)) return;
 						set({ trailOsmTagsFile: file });
 					},
 
