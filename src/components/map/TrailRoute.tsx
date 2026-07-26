@@ -8,7 +8,14 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { createRoot, type Root } from 'react-dom/client';
 import { useMap } from 'react-leaflet';
 import L from 'leaflet';
-import { useMapStore, useStore, type EnhancedTrailPoint, type MapStoreState, type StoreState } from '@/lib/store';
+import {
+	useMapStore,
+	useStore,
+	type EnhancedTrailPoint,
+	type MapStoreState,
+	type StoreState,
+	type TrailDirection,
+} from '@/lib/store';
 import {
 	DEFAULT_PATH_OPTIONS,
 	TRAIL_EPSILON_M,
@@ -230,6 +237,110 @@ function buildGradeBandSegments(enhancedPoints: EnhancedTrailPoint[], pointLatLn
 	return runs;
 }
 
+/** Section point groups plus per-section stats for the Sections trail style. */
+interface SectionGroups {
+	/** One point list per geographic section; empty for sections the route misses. */
+	pointGroups: L.LatLng[][];
+	/** Stats for each section that produced points, in section order. */
+	stats: SectionTooltipStats[];
+	totalAscentM: number;
+	totalDescentM: number;
+}
+
+/**
+ * Buckets the route into geographic sections (A/B/C by position along the trail
+ * from the SOBO start) and accumulates each section's distance plus its ascent
+ * and descent in the direction of travel. Section boundaries are defined in
+ * along-trail km, so a NOBO traversal mirrors its cumulative distance back into
+ * that space before comparing.
+ */
+function buildSectionGroups(
+	points: L.LatLng[],
+	elevationPoints: { elevation: number }[],
+	cumDistances: number[],
+	direction: TrailDirection,
+): SectionGroups {
+	const totalDistanceM = cumDistances[cumDistances.length - 1] ?? 0;
+	const positionAlongTrailKm = (idx: number): number =>
+		direction === 'SOBO' ? cumDistances[idx] / 1000 : (totalDistanceM - cumDistances[idx]) / 1000;
+	const sectionAtIdx = (idx: number): number => {
+		const trailKm = positionAlongTrailKm(idx);
+		const found = TRAIL_SECTIONS.findIndex((s) => trailKm >= s.startKm && trailKm < s.endKm);
+		return found >= 0 ? found : TRAIL_SECTIONS.length - 1;
+	};
+
+	const pointGroups: L.LatLng[][] = TRAIL_SECTIONS.map(() => []);
+	const firstIdx: number[] = new Array(TRAIL_SECTIONS.length).fill(-1);
+	const lastIdx: number[] = new Array(TRAIL_SECTIONS.length).fill(-1);
+	const ascentM: number[] = new Array(TRAIL_SECTIONS.length).fill(0);
+	const descentM: number[] = new Array(TRAIL_SECTIONS.length).fill(0);
+
+	for (let i = 0; i < points.length; i++) {
+		const sIdx = sectionAtIdx(i);
+		pointGroups[sIdx].push(points[i]);
+		if (firstIdx[sIdx] === -1) firstIdx[sIdx] = i;
+		lastIdx[sIdx] = i;
+		// Share the boundary point with the next section so the two meet visually.
+		if (i + 1 < points.length && sectionAtIdx(i + 1) !== sIdx) {
+			pointGroups[sIdx].push(points[i + 1]);
+		}
+		// Attribute a segment's elevation change to the section its start falls in.
+		if (i > 0 && elevationPoints[i] && elevationPoints[i - 1]) {
+			const elevDiff = elevationPoints[i].elevation - elevationPoints[i - 1].elevation;
+			const prevIdx = sectionAtIdx(i - 1);
+			if (elevDiff > 0) ascentM[prevIdx] += elevDiff;
+			else descentM[prevIdx] += Math.abs(elevDiff);
+		}
+	}
+
+	const stats: SectionTooltipStats[] = [];
+	for (let si = 0; si < TRAIL_SECTIONS.length; si++) {
+		if (pointGroups[si].length === 0) continue;
+		const fi = firstIdx[si];
+		const li = lastIdx[si];
+		stats.push({
+			startDistM: fi >= 0 ? cumDistances[fi] : 0,
+			endDistM: li >= 0 ? cumDistances[li] : 0,
+			secDistM: fi >= 0 && li >= 0 ? cumDistances[li] - cumDistances[fi] : 0,
+			secAscent: ascentM[si],
+			secDescent: descentM[si],
+			sectionIndex: si,
+		});
+	}
+
+	return {
+		pointGroups,
+		stats,
+		totalAscentM: ascentM.reduce((a, b) => a + b, 0),
+		totalDescentM: descentM.reduce((a, b) => a + b, 0),
+	};
+}
+
+/**
+ * Everything the render effects need to draw the route, published once per data
+ * load. Holding it apart from the raw GPX is what lets a trail-style change
+ * redraw from memory instead of re-reading the GPX and re-hydrating the stores.
+ */
+interface TrailGeometry {
+	/** Direction-adjusted route vertices; index 0 is the current travel start. */
+	points: L.LatLng[];
+	/** Direction-adjusted elevation triples, parallel to `points`. */
+	elevationPoints: { lat: number; lng: number; elevation: number }[];
+	/** Cumulative metres from the current start, parallel to `points`. */
+	cumDistances: number[];
+	/** Enhanced points (per-vertex grade band and percent) for the Grade style. */
+	enhanced: EnhancedTrailPoint[];
+	/** False when the GPX carries no elevation data, which rules out the Grade style. */
+	hasElevation: boolean;
+	/** Direction these arrays were built for; the styles index off it, so reading
+	 *  it from the snapshot avoids mis-bucketing against a direction whose
+	 *  geometry has not landed yet. */
+	direction: TrailDirection;
+}
+
+/** Trail style actually drawn, after falling through styles whose data is missing. */
+type EffectiveTrailStyle = 'sac' | 'surface' | 'grade' | 'sections' | 'default';
+
 /** Pane for the selected trail point marker (pulsing dot); above ruler, below tooltips. */
 const TRAIL_POINT_MARKER_PANE = 'trailPointMarkerPane';
 /** Pane for the selected trail point tooltip (wide panel); above ruler and its tooltip. */
@@ -248,18 +359,8 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 	const locale = useLocale();
 	const map = useMap();
 	const routeLayerRef = useRef<L.FeatureGroup | null>(null);
-	const sectionLayersRef = useRef<L.Polyline[]>([]);
 	const sectionBoundaryMarkersRef = useRef<L.Marker[]>([]);
-	const sectionStatsRef = useRef<
-		Array<{
-			startDistM: number;
-			endDistM: number;
-			secDistM: number;
-			secAscent: number;
-			secDescent: number;
-			sectionIndex: number;
-		}>
-	>([]);
+	const sectionStatsRef = useRef<SectionTooltipStats[]>([]);
 	const markerRef = useRef<L.Marker | null>(null);
 	const tooltipRef = useRef<L.Tooltip | null>(null);
 	const tooltipRootRef = useRef<Root | null>(null);
@@ -277,7 +378,8 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 	const clearMarkerAndTooltipRef = useRef<() => void>(() => {});
 	const isTooltipPinnedByClickRef = useRef(false);
 	const lastRouteClickTimeRef = useRef(0);
-	const mapClickHandlerRef = useRef<((e: L.LeafletMouseEvent) => void) | null>(null);
+	/** Route geometry from the most recent data load; drives both render effects. */
+	const [geometry, setGeometry] = useState<TrailGeometry | null>(null);
 
 	useFitToRoute(map, routeLayerRef);
 
@@ -302,11 +404,31 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 	const surfaceColoured = useMapStore((state: MapStoreState) => state.surfaceColoured);
 	const sacColoured = useMapStore((state: MapStoreState) => state.sacColoured);
 	const trailOsmTagsFile = useMapStore((state: MapStoreState) => state.trailOsmTagsFile);
-	// `null` when neither Surface nor SAC is active, so an async OSM data load
-	// does not re-trigger the trail-loading effect when no visible bucket branch
-	// would consume `tagRuns`.
-	const activeOsmTagsFile = surfaceColoured || sacColoured ? trailOsmTagsFile : null;
 	const walkingPaceKmh = usePackAdjustedPaceKmh();
+
+	const tagRuns = trailOsmTagsFile?.runs ?? null;
+	const hasTagRuns = tagRuns !== null && tagRuns.length > 0;
+	// Style priority: sac > surface > grade > sections > default. Surface and SAC
+	// need the OSM tag dataset and Grade needs elevation; a selection whose data is
+	// missing falls through to the next style rather than rendering nothing.
+	// Deriving one value keeps the render effects off the four raw flags, so a
+	// selection that changes nothing visible (picking Surface with no tag data)
+	// no longer redraws.
+	const effectiveTrailStyle: EffectiveTrailStyle =
+		sacColoured && hasTagRuns
+			? 'sac'
+			: surfaceColoured && hasTagRuns
+				? 'surface'
+				: gradeTintedTrail && (geometry?.hasElevation ?? false)
+					? 'grade'
+					: showSections
+						? 'sections'
+						: 'default';
+	// Only the two OSM-tag styles read the dataset, so gate the render effect's
+	// dependency on it: tag data arriving under any other style must not redraw.
+	const styleTagRuns = effectiveTrailStyle === 'sac' || effectiveTrailStyle === 'surface' ? tagRuns : null;
+	// The start flag would sit on top of the coloured layer it is meant to show off.
+	const startFlagVisible = effectiveTrailStyle === 'default';
 
 	const highlightedPoint = useStore((state: StoreState) => state.highlightedTrailPoint);
 	const tooltipPinnedFromShare = useStore((state: StoreState) => state.tooltipPinnedFromShare);
@@ -315,7 +437,6 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 	const trailMetadata = useStore((state: StoreState) => state.trailMetadata);
 
 	const setRawGpxData = useMapStore((state: MapStoreState) => state.setRawGpxData);
-	const setGpxElevationPoints = useMapStore((state: MapStoreState) => state.setGpxElevationPoints);
 	const setGpxLoaded = useMapStore((state: MapStoreState) => state.setGpxLoaded);
 	const setGpxLoadFailed = useMapStore((state: MapStoreState) => state.setGpxLoadFailed);
 	const reloadTrailRequested = useMapStore((state: MapStoreState) => state.reloadTrailRequested);
@@ -381,17 +502,22 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 		}
 	}, [map]);
 
-	const removeRouteAndMarkersFromMap = useCallback((): void => {
+	/** Tears down the style-dependent layers: route polylines and section chips. */
+	const removeRouteLayer = useCallback((): void => {
 		if (!map) return;
 		if (routeLayerRef.current) {
 			routeLayerRef.current.removeFrom(map);
 			routeLayerRef.current = null;
 		}
-		sectionLayersRef.current = [];
 		for (const m of sectionBoundaryMarkersRef.current) {
 			m.removeFrom(map);
 		}
 		sectionBoundaryMarkersRef.current = [];
+		sectionStatsRef.current = [];
+	}, [map]);
+
+	const removeEndpointMarkers = useCallback((): void => {
+		if (!map) return;
 		if (startMarkerRef.current) {
 			startMarkerRef.current.removeFrom(map);
 			startMarkerRef.current = null;
@@ -638,13 +764,17 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 		}
 	}, [isRulerEnabled, clearMarkerAndTooltip, clearTrailHighlight]);
 
+	// Data: fetch the GPX, hydrate both stores, and publish the geometry snapshot
+	// the render effects draw from. Carries no style input by design, so changing
+	// the trail style never re-reads the GPX nor re-hydrates the stores - which
+	// would republish trailPoints / enhancedTrailPoints / gpxElevationPoints under
+	// fresh identities and cascade through every subscriber of them.
 	useEffect(() => {
 		if (!map) {
 			return;
 		}
 
 		let isMounted = true;
-		removeRouteAndMarkersFromMap();
 
 		const loadGpxData = async (): Promise<void> => {
 			try {
@@ -683,27 +813,25 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 					return;
 				}
 
-				let latLngPoints: L.LatLng[];
+				let points: L.LatLng[];
 				let cumDistances: number[];
 				let hasElevation: boolean;
-				let directionAdjustedElevPoints: { lat: number; lng: number; elevation: number }[];
-				let directionAdjustedPoints: L.LatLngExpression[];
+				let elevationPoints: { lat: number; lng: number; elevation: number }[];
 
 				if (workerData && workerData.points.length > 0) {
 					// Worker output is already direction-adjusted; the only
 					// main-thread loops left are cheap materialisations.
-					latLngPoints = workerData.points.map((p) => L.latLng(p.lat, p.lng));
-					directionAdjustedPoints = latLngPoints;
+					points = workerData.points.map((p) => L.latLng(p.lat, p.lng));
 					cumDistances = workerData.enhanced.map((p) => p.distanceFromStart);
 					hasElevation = workerData.hasElevation;
-					directionAdjustedElevPoints = workerData.elevationPoints;
+					elevationPoints = workerData.elevationPoints;
 
 					useStore.getState().applyComputedTrailData?.(workerData);
 					processTrailData?.(
-						latLngPoints,
-						directionAdjustedElevPoints,
-						latLngPoints[0] ?? null,
-						latLngPoints[latLngPoints.length - 1] ?? null,
+						points,
+						elevationPoints,
+						points[0] ?? null,
+						points[points.length - 1] ?? null,
 						workerData.metadata.totalDistanceM / 1000,
 						workerData.metadata.elevationGain,
 						workerData.metadata.elevationLoss,
@@ -711,37 +839,28 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 				} else {
 					const parsed = parseGpx(result.data);
 					const trackPts = parsed.tracks[0]?.points ?? [];
-					const points: L.LatLngExpression[] = trackPts.map(({ lat, lng }) => [lat, lng] as L.LatLngTuple);
 					hasElevation = trackPts.some((p) => p.ele !== undefined && p.ele !== null);
-					const elevationPoints = trackPts.map(({ lat, lng, ele }) => ({
-						lat,
-						lng,
-						elevation: ele ?? 0,
-					}));
+					const ordered = direction === 'NOBO' ? [...trackPts].reverse() : trackPts;
+					points = ordered.map(({ lat, lng }) => L.latLng(lat, lng));
+					elevationPoints = ordered.map(({ lat, lng, ele }) => ({ lat, lng, elevation: ele ?? 0 }));
 
-					directionAdjustedPoints = direction === 'NOBO' ? [...points].reverse() : points;
-					directionAdjustedElevPoints = direction === 'NOBO' ? [...elevationPoints].reverse() : elevationPoints;
-
-					// Compute cumulative distances to split points into sections.
-					latLngPoints = directionAdjustedPoints.map((p) => {
-						const tuple = p as L.LatLngTuple;
-						return L.latLng(tuple[0], tuple[1]);
-					});
-					let cumDistM = 0;
+					// Cumulative distances drive the section split and the OSM tag lookup.
 					cumDistances = [0];
-					for (let i = 1; i < latLngPoints.length; i++) {
-						cumDistM += latLngPoints[i - 1].distanceTo(latLngPoints[i]);
+					let cumDistM = 0;
+					for (let i = 1; i < points.length; i++) {
+						cumDistM += points[i - 1].distanceTo(points[i]);
 						cumDistances.push(cumDistM);
 					}
 
-					if (latLngPoints.length > 0) {
-						// Enrich early so `enhancedTrailPoints` (with gradeBand/gradePct) is in the store
-						// before the grade-tinted render branch consumes it. Both stores hold parallel trail
-						// state; their enrichment actions are independent and each must be invoked.
-						const computedMetadata = calculateTrailMetadata(latLngPoints, directionAdjustedElevPoints);
+					if (points.length > 0) {
+						// Enrich early so `enhancedTrailPoints` (with gradeBand/gradePct) is in the
+						// store before the grade-tinted render branch consumes it. Both stores hold
+						// parallel trail state; their enrichment actions are independent and each
+						// must be invoked.
+						const computedMetadata = calculateTrailMetadata(points, elevationPoints);
 						const processArgs = [
-							latLngPoints,
-							directionAdjustedElevPoints,
+							points,
+							elevationPoints,
 							computedMetadata.startPoint,
 							computedMetadata.endPoint,
 							computedMetadata.totalDistance / 1000,
@@ -753,322 +872,22 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 					}
 				}
 
-				if (latLngPoints.length > 0) {
-					const featureGroup = L.featureGroup();
-					const sectionPolylines: L.Polyline[] = [];
+				if (!isMounted || points.length === 0) {
+					return;
+				}
 
-					// Shared SVG renderer and base polyline options for all render branches.
-					const svgRenderer = L.svg({ padding: 10 });
-					const basePolylineOptions: L.PolylineOptions = {
-						...pathOptions,
-						smoothFactor: 1,
-						interactive: true,
-						bubblingMouseEvents: true,
-						weight: pathOptions.weight || 5,
-						renderer: svgRenderer,
-					};
+				setGeometry({
+					points,
+					elevationPoints,
+					cumDistances,
+					// Populated by the hydration calls above, in either branch.
+					enhanced: useStore.getState().enhancedTrailPoints,
+					hasElevation,
+					direction,
+				});
 
-					const attachPolylineHandlers = (pl: L.Polyline): void => {
-						pl.on('click', (e) => {
-							if (useMapStore.getState().isRulerEnabled) return;
-							lastRouteClickTimeRef.current = Date.now();
-							isTooltipPinnedByClickRef.current = true;
-							if (useStore.getState().tooltipPinnedFromShare) {
-								useStore.getState().setTooltipPinnedFromShare?.(false);
-								clearShareUrlParams();
-							}
-							if (highlightTrailPosition) {
-								// Use larger maxDistance so any click on the route finds the nearest point (sparse GPX can exceed 150m between points).
-								highlightTrailPosition({
-									lat: e.latlng.lat,
-									lng: e.latlng.lng,
-									maxDistance: 2000,
-								});
-								setIsTooltipVisible(true);
-								// Show the marker /tooltip immediately so it appears without needing to move the cursor.
-								const point = useStore.getState().highlightedTrailPoint;
-								if (point) {
-									showMarkerAtPositionRef.current(point);
-								}
-							}
-						});
-					};
-
-					// Default ref state; the showSections branch overwrites with its own values.
-					sectionBoundaryMarkersRef.current = [];
-					sectionStatsRef.current = [];
-
-					// SOBO-direction km lookup: the OSM tag dataset is direction-agnostic
-					// (always indexed from the SOBO start), so when the user traverses NOBO,
-					// we mirror the cum-distance back to SOBO space before binary-searching.
-					const totalDistanceMLocal = cumDistances[cumDistances.length - 1];
-					const soboKmForIdx = (idx: number): number =>
-						direction === 'SOBO' ? cumDistances[idx] / 1000 : (totalDistanceMLocal - cumDistances[idx]) / 1000;
-
-					// Trail style priority: sac > surface > grade > sections > default.
-					// Surface and SAC both require the OSM tag dataset; if it's missing, we
-					// silently fall through to the next style rather than rendering nothing.
-					const showGradeTinted = gradeTintedTrail && hasElevation;
-					const tagRuns = trailOsmTagsFile?.runs ?? null;
-					const showSurfaceColoured = surfaceColoured && tagRuns !== null && tagRuns.length > 0;
-					const showSacColoured = sacColoured && tagRuns !== null && tagRuns.length > 0;
-
-					if (showSacColoured) {
-						const runsByBucket = buildTagBandSegments<SacBucket>(latLngPoints, soboKmForIdx, (km) =>
-							bucketSac(findRunAtKm(tagRuns, km)?.sac_scale ?? null),
-						);
-						for (const [bucket, segments] of runsByBucket) {
-							if (segments.length === 0) continue;
-							const polyline = L.polyline(segments, { ...basePolylineOptions, color: SAC_COLORS[bucket] });
-							attachPolylineHandlers(polyline);
-							featureGroup.addLayer(polyline);
-							sectionPolylines.push(polyline);
-						}
-					} else if (showSurfaceColoured) {
-						const runsByBucket = buildTagBandSegments<SurfaceBucket>(latLngPoints, soboKmForIdx, (km) =>
-							bucketSurface(findRunAtKm(tagRuns, km)?.surface ?? null),
-						);
-						for (const [bucket, segments] of runsByBucket) {
-							if (segments.length === 0) continue;
-							const polyline = L.polyline(segments, { ...basePolylineOptions, color: SURFACE_COLORS[bucket] });
-							attachPolylineHandlers(polyline);
-							featureGroup.addLayer(polyline);
-							sectionPolylines.push(polyline);
-						}
-					} else if (showGradeTinted) {
-						const enhancedPoints = useStore.getState().enhancedTrailPoints;
-						const runs = buildGradeBandSegments(enhancedPoints, latLngPoints);
-
-						for (let band = 0; band < 5; band++) {
-							for (let sign = 0; sign < 2; sign++) {
-								const segments = runs[band][sign];
-								if (segments.length === 0) continue;
-								const color =
-									sign === 0
-										? GRADE_BAND_ASCENT_COLORS[band as 0 | 1 | 2 | 3 | 4]
-										: GRADE_BAND_DESCENT_COLORS[band as 0 | 1 | 2 | 3 | 4];
-								// MultiLineString form: L.polyline accepts LatLng[][] for grouped segments.
-								const polyline = L.polyline(segments, { ...basePolylineOptions, color });
-								attachPolylineHandlers(polyline);
-								featureGroup.addLayer(polyline);
-								sectionPolylines.push(polyline);
-							}
-						}
-					} else if (showSections) {
-						const totalDistanceM = cumDistances[cumDistances.length - 1];
-						// Position along trail (km from SOBO start): section boundaries are defined in this space.
-						const positionAlongTrailKm = (idx: number): number =>
-							direction === 'SOBO' ? cumDistances[idx] / 1000 : (totalDistanceM - cumDistances[idx]) / 1000;
-
-						// Bucket points by geographic section (0=A, 1=B, 2=C by position along trail). Ascent/descent in a direction of travel.
-						const sectionPointGroups: L.LatLngExpression[][] = TRAIL_SECTIONS.map(() => []);
-						const sectionFirstIdx: number[] = new Array(TRAIL_SECTIONS.length).fill(-1);
-						const sectionLastIdx: number[] = new Array(TRAIL_SECTIONS.length).fill(-1);
-						const sectionAscentM: number[] = new Array(TRAIL_SECTIONS.length).fill(0);
-						const sectionDescentM: number[] = new Array(TRAIL_SECTIONS.length).fill(0);
-
-						for (let i = 0; i < directionAdjustedPoints.length; i++) {
-							const trailKm = positionAlongTrailKm(i);
-							const sIdx = TRAIL_SECTIONS.findIndex((s) => trailKm >= s.startKm && trailKm < s.endKm);
-							const resolvedIdx = sIdx >= 0 ? sIdx : TRAIL_SECTIONS.length - 1;
-							sectionPointGroups[resolvedIdx].push(directionAdjustedPoints[i]);
-							if (sectionFirstIdx[resolvedIdx] === -1) sectionFirstIdx[resolvedIdx] = i;
-							sectionLastIdx[resolvedIdx] = i;
-							// Share the boundary point with the next section to avoid visual gaps.
-							if (
-								i + 1 < directionAdjustedPoints.length &&
-								TRAIL_SECTIONS.findIndex((s) => {
-									const nextTrailKm = positionAlongTrailKm(i + 1);
-									return nextTrailKm >= s.startKm && nextTrailKm < s.endKm;
-								}) !== resolvedIdx
-							) {
-								sectionPointGroups[resolvedIdx].push(directionAdjustedPoints[i + 1]);
-							}
-							// Elevation change in a direction of travel: attribute to the section of the segment start (i-1) by position along the trail.
-							if (i > 0 && directionAdjustedElevPoints[i] && directionAdjustedElevPoints[i - 1]) {
-								const elevDiff =
-									directionAdjustedElevPoints[i].elevation - directionAdjustedElevPoints[i - 1].elevation;
-								const prevTrailKm = positionAlongTrailKm(i - 1);
-								const prevSIdx = TRAIL_SECTIONS.findIndex((s) => prevTrailKm >= s.startKm && prevTrailKm < s.endKm);
-								const prevResolvedIdx = prevSIdx >= 0 ? prevSIdx : TRAIL_SECTIONS.length - 1;
-								if (elevDiff > 0) sectionAscentM[prevResolvedIdx] += elevDiff;
-								else sectionDescentM[prevResolvedIdx] += Math.abs(elevDiff);
-							}
-						}
-						const totalAscentM = sectionAscentM.reduce((a, b) => a + b, 0);
-						const totalDescentM = sectionDescentM.reduce((a, b) => a + b, 0);
-						const currentUnits = useMapStore.getState().units;
-						const currentPrecision = useMapStore.getState().distancePrecision;
-						const currentPaceKmh = packAdjustedPaceKmhFromState(useMapStore.getState());
-						const osmTags = useMapStore.getState().trailOsmTagsFile;
-						const osmTrailKm = osmTags?.totalKm ?? totalDistanceM / 1000;
-						const surfaceBreakdown = osmTags?.runs?.length
-							? computeSurfaceBreakdownBySection(osmTags.runs, osmTrailKm)
-							: null;
-
-						// Draw each geographic section with its own label and color (A=green, B=blue, C=red by position along the trail).
-						const newSectionMarkers: L.Marker[] = [];
-						const newSectionStats: typeof sectionStatsRef.current = [];
-
-						for (let si = 0; si < TRAIL_SECTIONS.length; si++) {
-							const section = TRAIL_SECTIONS[si];
-							const sectionPts = sectionPointGroups[si];
-							if (sectionPts.length === 0) continue;
-
-							const sectionPolyline = L.polyline(sectionPts, { ...basePolylineOptions, color: section.color });
-							attachPolylineHandlers(sectionPolyline);
-							featureGroup.addLayer(sectionPolyline);
-							sectionPolylines.push(sectionPolyline);
-
-							// sectionPts entries are L.LatLng in worker mode and
-							// [lat, lng] tuples in the sync fallback; L.latLng
-							// normalises both.
-							const firstLatLng = L.latLng(sectionPts[0]);
-							const lat0 = firstLatLng.lat;
-							const lng0 = firstLatLng.lng;
-							const fi = sectionFirstIdx[si];
-							const li = sectionLastIdx[si];
-							const startDistM = fi >= 0 ? cumDistances[fi] : 0;
-							const endDistM = li >= 0 ? cumDistances[li] : 0;
-							const secDistM = fi >= 0 && li >= 0 ? cumDistances[li] - cumDistances[fi] : 0;
-							const secAscent = sectionAscentM[si];
-							const secDescent = sectionDescentM[si];
-
-							const stat = {
-								startDistM,
-								endDistM,
-								secDistM,
-								secAscent,
-								secDescent,
-								sectionIndex: si,
-							};
-							newSectionStats.push(stat);
-
-							const tooltipHtml = buildSectionTooltipHtml(
-								stat,
-								{ totalDistanceM, totalAscentM, totalDescentM },
-								currentUnits,
-								currentPrecision,
-								t,
-								currentPaceKmh,
-								surfaceBreakdown ? surfaceMixForSection(surfaceBreakdown, si) : null,
-								(bucket) => tSurfaceBucket(bucket),
-							);
-							const marker = L.marker(L.latLng(lat0, lng0), {
-								icon: sectionBoundaryIcon(section.shortName, si),
-								zIndexOffset: 50,
-							});
-							marker.bindTooltip(tooltipHtml, {
-								direction: 'top',
-								permanent: false,
-								className: 'map-tooltip map-tooltip--section',
-							});
-							marker.addTo(map);
-							newSectionMarkers.push(marker);
-						}
-						sectionBoundaryMarkersRef.current = newSectionMarkers;
-						sectionStatsRef.current = newSectionStats;
-					} else {
-						// Sections hidden: single default-colored polyline.
-						const singlePolyline = L.polyline(directionAdjustedPoints, basePolylineOptions);
-						attachPolylineHandlers(singlePolyline);
-						featureGroup.addLayer(singlePolyline);
-						sectionPolylines.push(singlePolyline);
-					}
-
-					const handleMapClick = (e: L.LeafletMouseEvent): void => {
-						if (Date.now() - lastRouteClickTimeRef.current < 100) {
-							return;
-						}
-						if (useStore.getState().tooltipPinnedFromShare) {
-							return;
-						}
-						const tooltipEl = tooltipRef.current?.getElement();
-						if (tooltipEl?.contains(e.originalEvent.target as Node)) {
-							return;
-						}
-						isTooltipPinnedByClickRef.current = false;
-						if (clearTrailHighlight) {
-							clearTrailHighlight();
-						}
-					};
-					map.on('click', handleMapClick);
-					mapClickHandlerRef.current = handleMapClick;
-
-					featureGroup.addTo(map);
-					routeLayerRef.current = featureGroup;
-					sectionLayersRef.current = sectionPolylines;
-
-					const directionText = direction === 'SOBO' ? tChart('directionNorthSouth') : tChart('directionSouthNorth');
-					const startPoint = L.latLng(latLngPoints[0].lat, latLngPoints[0].lng);
-					const finishPoint = L.latLng(
-						latLngPoints[latLngPoints.length - 1].lat,
-						latLngPoints[latLngPoints.length - 1].lng,
-					);
-
-					// Hide the start marker when any colored trail style is shown, so the colored layer is unobstructed.
-					if (!showSections && !showGradeTinted && !showSurfaceColoured && !showSacColoured) {
-						const startIcon = L.divIcon({
-							className: 'trail-endpoint-marker trail-start-marker',
-							html: `<div class="trail-endpoint-marker-inner">${START_FLAG_SVG}</div>`,
-							iconSize: [28, 28],
-							iconAnchor: [14, 14],
-						});
-						const startMarker = L.marker(startPoint, {
-							icon: startIcon,
-							zIndexOffset: 100,
-						});
-						startMarker.bindTooltip(t('startingPoint', { direction: directionText }), {
-							direction: 'top',
-							permanent: false,
-							className: 'map-tooltip map-tooltip--compact',
-						});
-						const startLabel = t('startingPoint', { direction: directionText });
-						startMarker.on('add', () => {
-							const el =
-								(startMarker as L.Marker & { getElement?: () => HTMLElement }).getElement?.() ??
-								(startMarker as unknown as { _icon?: HTMLElement })._icon;
-							if (el) el.setAttribute('aria-label', startLabel);
-						});
-						startMarker.addTo(map);
-						startMarkerRef.current = startMarker;
-					} else {
-						startMarkerRef.current = null;
-					}
-
-					const finishIcon = L.divIcon({
-						className: 'trail-endpoint-marker trail-finish-marker',
-						html: `<div class="trail-endpoint-marker-inner">${FINISH_FLAG_SVG}</div>`,
-						iconSize: [28, 28],
-						iconAnchor: [14, 14],
-					});
-					const finishMarker = L.marker(finishPoint, {
-						icon: finishIcon,
-						zIndexOffset: 100,
-					});
-					finishMarker.bindTooltip(t('finishPoint', { direction: directionText }), {
-						direction: 'top',
-						permanent: false,
-						className: 'map-tooltip map-tooltip--compact',
-					});
-					const finishLabel = t('finishPoint', { direction: directionText });
-					finishMarker.on('add', () => {
-						const el =
-							(finishMarker as L.Marker & { getElement?: () => HTMLElement }).getElement?.() ??
-							(finishMarker as unknown as { _icon?: HTMLElement })._icon;
-						if (el) el.setAttribute('aria-label', finishLabel);
-					});
-					finishMarker.addTo(map);
-					finishMarkerRef.current = finishMarker;
-
-					const shareParams = getInitialShareUrlParams();
-					if (!shareParamsSkipInitialTrailFitBounds(shareParams)) {
-						map.fitBounds(featureGroup.getBounds(), { padding: [50, 50] });
-					}
-
-					if (setGpxLoaded) {
-						setGpxLoaded(true);
-					}
+				if (setGpxLoaded) {
+					setGpxLoaded(true);
 				}
 			} catch (error) {
 				console.error('Error loading GPX trail:', error);
@@ -1079,6 +898,260 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 		};
 
 		void loadGpxData();
+
+		return () => {
+			isMounted = false;
+		};
+	}, [
+		map,
+		selectedTrail,
+		direction,
+		reloadTrailRequested,
+		setRawGpxData,
+		setGpxLoaded,
+		setGpxLoadFailed,
+		processTrailData,
+	]);
+
+	// Route polylines and section boundary chips for the active style. Keyed on the
+	// geometry snapshot, so a style change redraws from data already in memory.
+	useEffect(() => {
+		if (!map || !geometry) {
+			return;
+		}
+
+		const { points, elevationPoints, cumDistances, enhanced, direction: geometryDirection } = geometry;
+		const featureGroup = L.featureGroup();
+		// Shared SVG renderer and base polyline options for all render branches.
+		const svgRenderer = L.svg({ padding: 10 });
+		const basePolylineOptions: L.PolylineOptions = {
+			...pathOptions,
+			smoothFactor: 1,
+			interactive: true,
+			bubblingMouseEvents: true,
+			weight: pathOptions.weight || 5,
+			renderer: svgRenderer,
+		};
+
+		/** Adds one route polyline (single run or MultiLineString) with click wiring. */
+		const addPolyline = (latlngs: L.LatLng[] | L.LatLng[][], color?: string): void => {
+			const polyline = L.polyline(latlngs, color ? { ...basePolylineOptions, color } : basePolylineOptions);
+			polyline.on('click', (e) => {
+				if (useMapStore.getState().isRulerEnabled) return;
+				lastRouteClickTimeRef.current = Date.now();
+				isTooltipPinnedByClickRef.current = true;
+				if (useStore.getState().tooltipPinnedFromShare) {
+					useStore.getState().setTooltipPinnedFromShare?.(false);
+					clearShareUrlParams();
+				}
+				if (highlightTrailPosition) {
+					// Use larger maxDistance so any click on the route finds the nearest point (sparse GPX can exceed 150m between points).
+					highlightTrailPosition({
+						lat: e.latlng.lat,
+						lng: e.latlng.lng,
+						maxDistance: 2000,
+					});
+					setIsTooltipVisible(true);
+					// Show the marker/tooltip immediately so it appears without needing to move the cursor.
+					const point = useStore.getState().highlightedTrailPoint;
+					if (point) {
+						showMarkerAtPositionRef.current(point);
+					}
+				}
+			});
+			featureGroup.addLayer(polyline);
+		};
+
+		// SOBO-direction km lookup: the OSM tag dataset is direction-agnostic
+		// (always indexed from the SOBO start), so when the user traverses NOBO,
+		// we mirror the cum-distance back to SOBO space before binary-searching.
+		const totalDistanceM = cumDistances[cumDistances.length - 1];
+		const soboKmForIdx = (idx: number): number =>
+			geometryDirection === 'SOBO' ? cumDistances[idx] / 1000 : (totalDistanceM - cumDistances[idx]) / 1000;
+
+		// Default ref state; the sections branch overwrites with its own values.
+		sectionBoundaryMarkersRef.current = [];
+		sectionStatsRef.current = [];
+
+		if (effectiveTrailStyle === 'sac' && styleTagRuns) {
+			const runsByBucket = buildTagBandSegments<SacBucket>(points, soboKmForIdx, (km) =>
+				bucketSac(findRunAtKm(styleTagRuns, km)?.sac_scale ?? null),
+			);
+			for (const [bucket, segments] of runsByBucket) {
+				if (segments.length > 0) addPolyline(segments, SAC_COLORS[bucket]);
+			}
+		} else if (effectiveTrailStyle === 'surface' && styleTagRuns) {
+			const runsByBucket = buildTagBandSegments<SurfaceBucket>(points, soboKmForIdx, (km) =>
+				bucketSurface(findRunAtKm(styleTagRuns, km)?.surface ?? null),
+			);
+			for (const [bucket, segments] of runsByBucket) {
+				if (segments.length > 0) addPolyline(segments, SURFACE_COLORS[bucket]);
+			}
+		} else if (effectiveTrailStyle === 'grade') {
+			const runs = buildGradeBandSegments(enhanced, points);
+			for (let band = 0; band < 5; band++) {
+				for (let sign = 0; sign < 2; sign++) {
+					const segments = runs[band][sign];
+					if (segments.length === 0) continue;
+					const color =
+						sign === 0
+							? GRADE_BAND_ASCENT_COLORS[band as 0 | 1 | 2 | 3 | 4]
+							: GRADE_BAND_DESCENT_COLORS[band as 0 | 1 | 2 | 3 | 4];
+					// MultiLineString form: L.polyline accepts LatLng[][] for grouped segments.
+					addPolyline(segments, color);
+				}
+			}
+		} else if (effectiveTrailStyle === 'sections') {
+			const groups = buildSectionGroups(points, elevationPoints, cumDistances, geometryDirection);
+			const currentUnits = useMapStore.getState().units;
+			const currentPrecision = useMapStore.getState().distancePrecision;
+			const currentPaceKmh = packAdjustedPaceKmhFromState(useMapStore.getState());
+			const osmTags = useMapStore.getState().trailOsmTagsFile;
+			const osmTrailKm = osmTags?.totalKm ?? totalDistanceM / 1000;
+			const surfaceBreakdown = osmTags?.runs?.length
+				? computeSurfaceBreakdownBySection(osmTags.runs, osmTrailKm)
+				: null;
+			const totals = {
+				totalDistanceM,
+				totalAscentM: groups.totalAscentM,
+				totalDescentM: groups.totalDescentM,
+			};
+			const newSectionMarkers: L.Marker[] = [];
+
+			// Draw each geographic section with its own label and color (A=green, B=blue, C=red by position along the trail).
+			for (const stat of groups.stats) {
+				const section = TRAIL_SECTIONS[stat.sectionIndex];
+				const sectionPts = groups.pointGroups[stat.sectionIndex];
+				addPolyline(sectionPts, section.color);
+
+				const marker = L.marker(sectionPts[0], {
+					icon: sectionBoundaryIcon(section.shortName, stat.sectionIndex),
+					zIndexOffset: 50,
+				});
+				marker.bindTooltip(
+					buildSectionTooltipHtml(
+						stat,
+						totals,
+						currentUnits,
+						currentPrecision,
+						t,
+						currentPaceKmh,
+						surfaceBreakdown ? surfaceMixForSection(surfaceBreakdown, stat.sectionIndex) : null,
+						(bucket) => tSurfaceBucket(bucket),
+					),
+					{
+						direction: 'top',
+						permanent: false,
+						className: 'map-tooltip map-tooltip--section',
+					},
+				);
+				marker.addTo(map);
+				newSectionMarkers.push(marker);
+			}
+			sectionBoundaryMarkersRef.current = newSectionMarkers;
+			sectionStatsRef.current = groups.stats;
+		} else {
+			// No style-specific colouring: a single default-coloured polyline.
+			addPolyline(points);
+		}
+
+		featureGroup.addTo(map);
+		routeLayerRef.current = featureGroup;
+
+		const shareParams = getInitialShareUrlParams();
+		if (!shareParamsSkipInitialTrailFitBounds(shareParams)) {
+			map.fitBounds(featureGroup.getBounds(), { padding: [50, 50] });
+		}
+
+		return () => {
+			removeRouteLayer();
+		};
+		// pathOptions is intentionally omitted: it is a module-level constant by default; including
+		// it would redraw the route on every parent render if a caller ever passed an inline object.
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [map, geometry, effectiveTrailStyle, styleTagRuns, removeRouteLayer, highlightTrailPosition, t, tSurfaceBucket]);
+
+	// Start and finish flags. Keyed on the geometry and on whether the start flag is
+	// drawn at all, so switching between two coloured styles leaves them - and any
+	// tooltip open on them - untouched.
+	useEffect(() => {
+		if (!map || !geometry || geometry.points.length === 0) {
+			return;
+		}
+
+		const { points, direction: geometryDirection } = geometry;
+		const directionText = geometryDirection === 'SOBO' ? tChart('directionNorthSouth') : tChart('directionSouthNorth');
+
+		const addEndpointMarker = (position: L.LatLng, className: string, svg: string, label: string): L.Marker => {
+			const marker = L.marker(position, {
+				icon: L.divIcon({
+					className: `trail-endpoint-marker ${className}`,
+					html: `<div class="trail-endpoint-marker-inner">${svg}</div>`,
+					iconSize: [28, 28],
+					iconAnchor: [14, 14],
+				}),
+				zIndexOffset: 100,
+			});
+			marker.bindTooltip(label, {
+				direction: 'top',
+				permanent: false,
+				className: 'map-tooltip map-tooltip--compact',
+			});
+			// The icon element only exists once the marker is on the map.
+			marker.on('add', () => {
+				const el =
+					(marker as L.Marker & { getElement?: () => HTMLElement }).getElement?.() ??
+					(marker as unknown as { _icon?: HTMLElement })._icon;
+				if (el) el.setAttribute('aria-label', label);
+			});
+			marker.addTo(map);
+			return marker;
+		};
+
+		if (startFlagVisible) {
+			startMarkerRef.current = addEndpointMarker(
+				points[0],
+				'trail-start-marker',
+				START_FLAG_SVG,
+				t('startingPoint', { direction: directionText }),
+			);
+		}
+		finishMarkerRef.current = addEndpointMarker(
+			points[points.length - 1],
+			'trail-finish-marker',
+			FINISH_FLAG_SVG,
+			t('finishPoint', { direction: directionText }),
+		);
+
+		return () => {
+			removeEndpointMarkers();
+		};
+	}, [map, geometry, startFlagVisible, removeEndpointMarkers, t, tChart]);
+
+	// Map click dismissal plus the highlight events the chart and scrubber fire.
+	// Independent of the data load and of the active style, so changing style no
+	// longer tears down an open trail tooltip or aborts its in-flight weather fetch.
+	useEffect(() => {
+		if (!map) {
+			return;
+		}
+
+		const handleMapClick = (e: L.LeafletMouseEvent): void => {
+			if (Date.now() - lastRouteClickTimeRef.current < 100) {
+				return;
+			}
+			if (useStore.getState().tooltipPinnedFromShare) {
+				return;
+			}
+			const tooltipEl = tooltipRef.current?.getElement();
+			if (tooltipEl?.contains(e.originalEvent.target as Node)) {
+				return;
+			}
+			isTooltipPinnedByClickRef.current = false;
+			if (clearTrailHighlight) {
+				clearTrailHighlight();
+			}
+		};
 
 		const handlePositionHighlighted = (e: CustomEvent): void => {
 			if (useStore.getState().tooltipPinnedFromShare) return;
@@ -1093,50 +1166,25 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 			setIsTooltipVisible(false);
 		};
 
+		map.on('click', handleMapClick);
 		window.addEventListener('trailPositionHighlighted', handlePositionHighlighted as EventListener);
 		window.addEventListener('trailHighlightCleared', handleHighlightCleared);
 
 		return () => {
-			isMounted = false;
+			map.off('click', handleMapClick);
 			window.removeEventListener('trailPositionHighlighted', handlePositionHighlighted as EventListener);
 			window.removeEventListener('trailHighlightCleared', handleHighlightCleared);
-			if (mapClickHandlerRef.current) {
-				map.off('click', mapClickHandlerRef.current);
-				mapClickHandlerRef.current = null;
-			}
-			removeRouteAndMarkersFromMap();
 			clearMarkerAndTooltipRef.current();
 		};
-		// pathOptions is intentionally omitted: it is a module-level constant by default; including
-		// it would trigger a full trail rebuild if a caller ever passed an inline object.
-		// `trailOsmTagsFile` is gated via `activeOsmTagsFile`: when neither Surface nor SAC is active,
-		// the async OSM data load does not invalidate the effect and triggers an avoidable rebuild.
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [
-		map,
-		removeRouteAndMarkersFromMap,
-		selectedTrail,
-		direction,
-		reloadTrailRequested,
-		t,
-		tChart,
-		setRawGpxData,
-		setGpxElevationPoints,
-		setGpxLoaded,
-		setGpxLoadFailed,
-		processTrailData,
-		highlightTrailPosition,
-		clearTrailHighlight,
-		showSections,
-		gradeTintedTrail,
-		surfaceColoured,
-		sacColoured,
-		activeOsmTagsFile,
-	]);
+	}, [map, clearTrailHighlight]);
 
 	// Update section boundary tooltips when units, precision, or locale change.
 	useEffect(() => {
-		if (!showSections || sectionBoundaryMarkersRef.current.length === 0 || sectionStatsRef.current.length === 0) {
+		if (
+			effectiveTrailStyle !== 'sections' ||
+			sectionBoundaryMarkersRef.current.length === 0 ||
+			sectionStatsRef.current.length === 0
+		) {
 			return;
 		}
 		const meta = trailMetadata;
@@ -1168,7 +1216,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 			}
 		}
 	}, [
-		showSections,
+		effectiveTrailStyle,
 		units,
 		distancePrecision,
 		locale,
