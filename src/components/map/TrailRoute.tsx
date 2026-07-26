@@ -336,6 +336,12 @@ interface TrailGeometry {
 	 *  it from the snapshot avoids mis-bucketing against a direction whose
 	 *  geometry has not landed yet. */
 	direction: TrailDirection;
+	/** Identity of the load that produced this geometry. The renderer fits the
+	 *  viewport once per distinct value, so a redraw of the same load (any style
+	 *  change) leaves the view alone. Deliberately excludes `direction`: SOBO and
+	 *  NOBO trace the same line, so a flip re-fitting to identical bounds would
+	 *  only discard the user's pan and zoom. */
+	loadToken: string;
 }
 
 /** Trail style actually drawn, after falling through styles whose data is missing. */
@@ -380,6 +386,8 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 	const lastRouteClickTimeRef = useRef(0);
 	/** Route geometry from the most recent data load; drives both render effects. */
 	const [geometry, setGeometry] = useState<TrailGeometry | null>(null);
+	/** Load token the viewport was last fitted for; see `TrailGeometry.loadToken`. */
+	const fittedTokenRef = useRef<string | null>(null);
 
 	useFitToRoute(map, routeLayerRef);
 
@@ -884,6 +892,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 					enhanced: useStore.getState().enhancedTrailPoints,
 					hasElevation,
 					direction,
+					loadToken: `${selectedTrail ?? ''}:${reloadTrailRequested}`,
 				});
 
 				if (setGpxLoaded) {
@@ -1058,9 +1067,15 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 		featureGroup.addTo(map);
 		routeLayerRef.current = featureGroup;
 
-		const shareParams = getInitialShareUrlParams();
-		if (!shareParamsSkipInitialTrailFitBounds(shareParams)) {
-			map.fitBounds(featureGroup.getBounds(), { padding: [50, 50] });
+		// Fit the viewport once per load (see TrailGeometry.loadToken), so a style
+		// change redraws inside whatever view the user is currently on. Mark the
+		// token consumed even when a share link suppresses the fit, otherwise the
+		// next redraw would claim it and yank the map away from the linked target.
+		if (fittedTokenRef.current !== geometry.loadToken) {
+			fittedTokenRef.current = geometry.loadToken;
+			if (!shareParamsSkipInitialTrailFitBounds(getInitialShareUrlParams())) {
+				map.fitBounds(featureGroup.getBounds(), { padding: [50, 50] });
+			}
 		}
 
 		return () => {
