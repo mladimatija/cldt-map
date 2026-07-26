@@ -322,7 +322,9 @@ function buildSectionGroups(
  * redraw from memory instead of re-reading the GPX and re-hydrating the stores.
  */
 interface TrailGeometry {
-	/** Direction-adjusted route vertices; index 0 is the current travel start. */
+	/** Direction-adjusted route vertices; index 0 is the current travel start.
+	 *  Never empty - the loader does not publish a snapshot for an empty route,
+	 *  so the renderer can index the ends and take bounds without checking. */
 	points: L.LatLng[];
 	/** Direction-adjusted elevation triples, parallel to `points`. */
 	elevationPoints: { lat: number; lng: number; elevation: number }[];
