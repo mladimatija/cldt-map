@@ -31,6 +31,32 @@ export interface TrailOsmTagsFile {
 }
 
 /**
+ * True when two datasets carry the same content, so a freshly parsed object can
+ * be discarded in favour of the one already published. This is a cheap content
+ * signature, not a hash: it compares `lastUpdated`, `totalKm`, `sampleStepM`, the
+ * run count and both run-array boundaries (the first run's fromKm and the last
+ * run's toKm).
+ *
+ * Residual limitation: the enrichment pipeline stamps `lastUpdated` with a date,
+ * not a timestamp, so a same-day re-enrichment that preserved the run count and
+ * both boundaries would be treated as unchanged until the next page load. That is
+ * the right trade for a cosmetic overlay - the alternative is republishing a new
+ * identity on every tab focus and rebuilding the whole trail with it.
+ */
+export function isSameTrailOsmTagsDataset(a: TrailOsmTagsFile, b: TrailOsmTagsFile): boolean {
+	if (
+		a.lastUpdated !== b.lastUpdated ||
+		a.totalKm !== b.totalKm ||
+		a.sampleStepM !== b.sampleStepM ||
+		a.runs.length !== b.runs.length
+	) {
+		return false;
+	}
+	if (a.runs.length === 0) return true;
+	return a.runs[0].fromKm === b.runs[0].fromKm && a.runs[a.runs.length - 1].toKm === b.runs[b.runs.length - 1].toKm;
+}
+
+/**
  * Overlap length in km between two km ranges [aFrom, aTo] and [bFrom, bTo].
  * Returns 0 when the ranges are disjoint or either range has zero (or negative)
  * length. Shared by the surface breakdown / dominant-surface and SAC-max range
@@ -213,7 +239,9 @@ function normalize(raw: Partial<TrailOsmTagsFile>): TrailOsmTagsFile | null {
 	if (raw.runs.length > MAX_RUNS) return null;
 	if (!raw.runs.every(isValidRun)) return null;
 	return {
-		lastUpdated: raw.lastUpdated ?? '',
+		// Coerce rather than pass through: a remote payload can put any JSON value in
+		// this field, and it is load-bearing for the dataset equality check.
+		lastUpdated: typeof raw.lastUpdated === 'string' ? raw.lastUpdated : '',
 		totalKm: typeof raw.totalKm === 'number' ? raw.totalKm : 0,
 		sampleStepM: raw.sampleStepM,
 		runs: raw.runs,

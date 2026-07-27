@@ -138,7 +138,6 @@ export interface TrailActions {
 	setClosestPoint: (point: ClosestPoint | null) => void;
 	setTrailMetadata: (metadata: TrailMetadata) => void;
 	setRawGpxData: (data: string) => void;
-	setGpxElevationPoints: (points: { lat: number; lng: number; elevation: number }[]) => void;
 	setDirection: (direction: TrailDirection) => void;
 
 	calculateClosestPoint: () => void;
@@ -257,7 +256,6 @@ export interface MapStoreState {
 	rawGpxData?: string | null;
 	setRawGpxData: (data: string | null) => void;
 	gpxElevationPoints?: { lat: number; lng: number; elevation: number }[];
-	setGpxElevationPoints: (points: { lat: number; lng: number; elevation: number }[]) => void;
 	gpxLoaded?: boolean;
 	setGpxLoaded: (loaded: boolean) => void;
 	gpxLoadFailed?: boolean;
