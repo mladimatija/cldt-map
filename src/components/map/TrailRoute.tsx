@@ -512,6 +512,43 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 		}
 	}, [map]);
 
+	/**
+	 * Builds one section-boundary tooltip. Shared by the sections render branch and
+	 * the tooltip-refresh effect so the OSM tag read, the surface breakdown and the
+	 * bucket-label closure live in a single place. `totals` is a parameter because
+	 * the two callers source it differently (geometry-derived at render time, the
+	 * trail metadata on refresh). Units, precision and pace are parameters rather
+	 * than subscriptions - and the tag dataset is read imperatively - so that this
+	 * callback's identity does not pull any of them into the route render effect's
+	 * dependencies, where a change would redraw every polyline.
+	 */
+	const renderSectionTooltip = useCallback(
+		(
+			stat: SectionTooltipStats,
+			totals: { totalDistanceM: number; totalAscentM: number; totalDescentM: number },
+			unitSystem: UnitSystem,
+			precision: number,
+			paceKmh: number,
+		): string => {
+			const osmTags = useMapStore.getState().trailOsmTagsFile;
+			const osmTrailKm = osmTags?.totalKm ?? totals.totalDistanceM / 1000;
+			const surfaceBreakdown = osmTags?.runs?.length
+				? computeSurfaceBreakdownBySection(osmTags.runs, osmTrailKm)
+				: null;
+			return buildSectionTooltipHtml(
+				stat,
+				totals,
+				unitSystem,
+				precision,
+				t,
+				paceKmh,
+				surfaceBreakdown ? surfaceMixForSection(surfaceBreakdown, stat.sectionIndex) : null,
+				(bucket) => tSurfaceBucket(bucket),
+			);
+		},
+		[t, tSurfaceBucket],
+	);
+
 	/** Tears down the style-dependent layers: route polylines and section chips. */
 	const removeRouteLayer = useCallback((): void => {
 		if (!map) return;
@@ -831,12 +868,21 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 				if (workerData && workerData.points.length > 0) {
 					// Worker output is already direction-adjusted; the only
 					// main-thread loops left are cheap materialisations.
-					points = workerData.points.map((p) => L.latLng(p.lat, p.lng));
+					useStore.getState().applyComputedTrailData?.(workerData);
+					// Borrow the main store's trailPoints instead of building a second
+					// L.LatLng array over the same ~100k coordinates: applyComputedTrailData
+					// has just materialised exactly this list, and zustand's set is
+					// synchronous so it is readable in the same tick. It early-returns when
+					// Leaflet is undefined, hence the length check and the fallback.
+					const hydratedPoints = useStore.getState().trailPoints;
+					points =
+						hydratedPoints.length === workerData.points.length
+							? hydratedPoints
+							: workerData.points.map((p) => L.latLng(p.lat, p.lng));
 					cumDistances = workerData.enhanced.map((p) => p.distanceFromStart);
 					hasElevation = workerData.hasElevation;
 					elevationPoints = workerData.elevationPoints;
 
-					useStore.getState().applyComputedTrailData?.(workerData);
 					processTrailData?.(
 						points,
 						elevationPoints,
@@ -1017,11 +1063,6 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 			const currentUnits = useMapStore.getState().units;
 			const currentPrecision = useMapStore.getState().distancePrecision;
 			const currentPaceKmh = packAdjustedPaceKmhFromState(useMapStore.getState());
-			const osmTags = useMapStore.getState().trailOsmTagsFile;
-			const osmTrailKm = osmTags?.totalKm ?? totalDistanceM / 1000;
-			const surfaceBreakdown = osmTags?.runs?.length
-				? computeSurfaceBreakdownBySection(osmTags.runs, osmTrailKm)
-				: null;
 			const totals = {
 				totalDistanceM,
 				totalAscentM: groups.totalAscentM,
@@ -1039,23 +1080,11 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 					icon: sectionBoundaryIcon(section.shortName, stat.sectionIndex),
 					zIndexOffset: 50,
 				});
-				marker.bindTooltip(
-					buildSectionTooltipHtml(
-						stat,
-						totals,
-						currentUnits,
-						currentPrecision,
-						t,
-						currentPaceKmh,
-						surfaceBreakdown ? surfaceMixForSection(surfaceBreakdown, stat.sectionIndex) : null,
-						(bucket) => tSurfaceBucket(bucket),
-					),
-					{
-						direction: 'top',
-						permanent: false,
-						className: 'map-tooltip map-tooltip--section',
-					},
-				);
+				marker.bindTooltip(renderSectionTooltip(stat, totals, currentUnits, currentPrecision, currentPaceKmh), {
+					direction: 'top',
+					permanent: false,
+					className: 'map-tooltip map-tooltip--section',
+				});
 				marker.addTo(map);
 				newSectionMarkers.push(marker);
 			}
@@ -1086,13 +1115,21 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 		// pathOptions is intentionally omitted: it is a module-level constant by default; including
 		// it would redraw the route on every parent render if a caller ever passed an inline object.
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [map, geometry, effectiveTrailStyle, styleTagRuns, removeRouteLayer, highlightTrailPosition, t, tSurfaceBucket]);
+	}, [
+		map,
+		geometry,
+		effectiveTrailStyle,
+		styleTagRuns,
+		removeRouteLayer,
+		highlightTrailPosition,
+		renderSectionTooltip,
+	]);
 
 	// Start and finish flags. Keyed on the geometry and on whether the start flag is
 	// drawn at all, so switching between two coloured styles leaves them - and any
 	// tooltip open on them - untouched.
 	useEffect(() => {
-		if (!map || !geometry || geometry.points.length === 0) {
+		if (!map || !geometry) {
 			return;
 		}
 
@@ -1213,19 +1250,13 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 
 		const markers = sectionBoundaryMarkersRef.current;
 		const stats = sectionStatsRef.current;
-		const osmTags = trailOsmTagsFile;
-		const osmTrailKm = osmTags?.totalKm ?? meta?.totalDistance ?? 0;
-		const surfaceBreakdown = osmTags?.runs?.length ? computeSurfaceBreakdownBySection(osmTags.runs, osmTrailKm) : null;
 		for (let i = 0; i < markers.length && i < stats.length; i++) {
-			const tooltipHtml = buildSectionTooltipHtml(
+			const tooltipHtml = renderSectionTooltip(
 				stats[i],
 				{ totalDistanceM, totalAscentM, totalDescentM },
 				currentUnits,
 				currentPrecision,
-				t,
 				walkingPaceKmh,
-				surfaceBreakdown ? surfaceMixForSection(surfaceBreakdown, stats[i].sectionIndex) : null,
-				(bucket) => tSurfaceBucket(bucket),
 			);
 			const tooltip = markers[i].getTooltip();
 			if (tooltip) {
@@ -1238,8 +1269,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 		distancePrecision,
 		locale,
 		trailMetadata,
-		t,
-		tSurfaceBucket,
+		renderSectionTooltip,
 		direction,
 		walkingPaceKmh,
 		trailOsmTagsFile,

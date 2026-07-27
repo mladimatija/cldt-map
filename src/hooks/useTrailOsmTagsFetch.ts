@@ -22,10 +22,14 @@ export function useTrailOsmTagsFetch(): void {
 
 		const fetchData = async (): Promise<void> => {
 			try {
+				// loadTrailOsmTags swallows its own fetch/parse errors and resolves to
+				// null, so this catch only covers unexpected throws. Publishing null is
+				// safe either way: the store setter keeps the previously published
+				// dataset rather than replacing it with null.
 				const file = await loadTrailOsmTags();
 				setTrailOsmTagsFile(file);
 			} catch {
-				// Retain previous file on failure
+				// Nothing to do; the store still holds the last good dataset.
 			}
 		};
 

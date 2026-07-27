@@ -1433,9 +1433,12 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 						// hands back a freshly parsed object every time. Republishing an
 						// identical dataset under a new identity invalidates every consumer
 						// keyed on this field - the trail polyline rebuild among them - so
-						// keep the existing reference when the content matches.
+						// keep the existing reference when the content matches. A failed
+						// revalidation resolves to null, which must not wipe a good dataset
+						// either: that would downgrade the user's chosen trail style and
+						// force the same full rebuild through the null door.
 						const current = get().trailOsmTagsFile;
-						if (current && file && isSameTrailOsmTagsDataset(current, file)) return;
+						if (current && (!file || isSameTrailOsmTagsDataset(current, file))) return;
 						set({ trailOsmTagsFile: file });
 					},
 
