@@ -367,6 +367,8 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 	const locale = useLocale();
 	const map = useMap();
 	const routeLayerRef = useRef<L.FeatureGroup | null>(null);
+	/** SVG renderer shared by every route redraw; built lazily by the route render effect. */
+	const svgRendererRef = useRef<L.SVG | null>(null);
 	const sectionBoundaryMarkersRef = useRef<L.Marker[]>([]);
 	const sectionStatsRef = useRef<SectionTooltipStats[]>([]);
 	const markerRef = useRef<L.Marker | null>(null);
@@ -513,29 +515,30 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 	}, [map]);
 
 	/**
-	 * Builds one section-boundary tooltip. Shared by the sections render branch and
-	 * the tooltip-refresh effect so the OSM tag read, the surface breakdown and the
-	 * bucket-label closure live in a single place. `totals` is a parameter because
-	 * the two callers source it differently (geometry-derived at render time, the
-	 * trail metadata on refresh). Units, precision and pace are parameters rather
-	 * than subscriptions - and the tag dataset is read imperatively - so that this
+	 * Returns a renderer for one batch of section-boundary tooltips. Shared by the
+	 * sections render branch and the tooltip-refresh effect so the OSM tag read, the
+	 * surface breakdown and the bucket-label closure live in a single place. The
+	 * breakdown is a full run-scan and is loop-invariant, so it is computed once per
+	 * batch here rather than once per section. `totals` is a parameter because the
+	 * two callers source it differently (geometry-derived at render time, the trail
+	 * metadata on refresh). Units, precision and pace are parameters rather than
+	 * subscriptions - and the tag dataset is read imperatively - so that this
 	 * callback's identity does not pull any of them into the route render effect's
 	 * dependencies, where a change would redraw every polyline.
 	 */
-	const renderSectionTooltip = useCallback(
-		(
+	const makeSectionTooltipRenderer = useCallback(() => {
+		const osmTags = useMapStore.getState().trailOsmTagsFile;
+		const surfaceBreakdown = osmTags?.runs?.length
+			? computeSurfaceBreakdownBySection(osmTags.runs, osmTags.totalKm)
+			: null;
+		return (
 			stat: SectionTooltipStats,
 			totals: { totalDistanceM: number; totalAscentM: number; totalDescentM: number },
 			unitSystem: UnitSystem,
 			precision: number,
 			paceKmh: number,
-		): string => {
-			const osmTags = useMapStore.getState().trailOsmTagsFile;
-			const osmTrailKm = osmTags?.totalKm ?? totals.totalDistanceM / 1000;
-			const surfaceBreakdown = osmTags?.runs?.length
-				? computeSurfaceBreakdownBySection(osmTags.runs, osmTrailKm)
-				: null;
-			return buildSectionTooltipHtml(
+		): string =>
+			buildSectionTooltipHtml(
 				stat,
 				totals,
 				unitSystem,
@@ -545,9 +548,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 				surfaceBreakdown ? surfaceMixForSection(surfaceBreakdown, stat.sectionIndex) : null,
 				(bucket) => tSurfaceBucket(bucket),
 			);
-		},
-		[t, tSurfaceBucket],
-	);
+	}, [t, tSurfaceBucket]);
 
 	/** Tears down the style-dependent layers: route polylines and section chips. */
 	const removeRouteLayer = useCallback((): void => {
@@ -563,17 +564,47 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 		sectionStatsRef.current = [];
 	}, [map]);
 
-	const removeEndpointMarkers = useCallback((): void => {
-		if (!map) return;
-		if (startMarkerRef.current) {
-			startMarkerRef.current.removeFrom(map);
-			startMarkerRef.current = null;
-		}
-		if (finishMarkerRef.current) {
-			finishMarkerRef.current.removeFrom(map);
-			finishMarkerRef.current = null;
-		}
-	}, [map]);
+	/** Removes whichever endpoint flag the given ref holds, if any. */
+	const removeEndpointMarker = useCallback(
+		(ref: React.MutableRefObject<L.Marker | null>): void => {
+			if (!map) return;
+			if (ref.current) {
+				ref.current.removeFrom(map);
+				ref.current = null;
+			}
+		},
+		[map],
+	);
+
+	/** Builds one endpoint flag and puts it on the map. */
+	const addEndpointMarker = useCallback(
+		(position: L.LatLng, className: string, svg: string, label: string): L.Marker => {
+			const marker = L.marker(position, {
+				icon: L.divIcon({
+					className: `trail-endpoint-marker ${className}`,
+					html: `<div class="trail-endpoint-marker-inner">${svg}</div>`,
+					iconSize: [28, 28],
+					iconAnchor: [14, 14],
+				}),
+				zIndexOffset: 100,
+			});
+			marker.bindTooltip(label, {
+				direction: 'top',
+				permanent: false,
+				className: 'map-tooltip map-tooltip--compact',
+			});
+			// The icon element only exists once the marker is on the map.
+			marker.on('add', () => {
+				const el =
+					(marker as L.Marker & { getElement?: () => HTMLElement }).getElement?.() ??
+					(marker as unknown as { _icon?: HTMLElement })._icon;
+				if (el) el.setAttribute('aria-label', label);
+			});
+			marker.addTo(map);
+			return marker;
+		},
+		[map],
+	);
 
 	const showMarkerAtPosition = useCallback(
 		(point: TrailPoint): void => {
@@ -872,12 +903,17 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 					// Borrow the main store's trailPoints instead of building a second
 					// L.LatLng array over the same ~100k coordinates: applyComputedTrailData
 					// has just materialised exactly this list, and zustand's set is
-					// synchronous so it is readable in the same tick. It early-returns when
-					// Leaflet is undefined, hence the length check and the fallback.
-					const hydratedPoints = useStore.getState().trailPoints;
+					// synchronous so it is readable in the same tick. It writes trailPoints
+					// and enhancedTrailPoints in one set(), so seeing our own `enhanced`
+					// object in the store proves this specific hydration landed and the
+					// array can be borrowed rather than rebuilt. Comparing lengths would
+					// not: a SOBO<->NOBO flip yields the same vertex count, so a stale
+					// array from the previous load would pass. The fallback covers the
+					// case where the store declined the write.
+					const hydrated = useStore.getState();
 					points =
-						hydratedPoints.length === workerData.points.length
-							? hydratedPoints
+						hydrated.enhancedTrailPoints === workerData.enhanced
+							? hydrated.trailPoints
 							: workerData.points.map((p) => L.latLng(p.lat, p.lng));
 					cumDistances = workerData.enhanced.map((p) => p.distanceFromStart);
 					hasElevation = workerData.hasElevation;
@@ -980,7 +1016,17 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 		const { points, elevationPoints, cumDistances, enhanced, direction: geometryDirection } = geometry;
 		const featureGroup = L.featureGroup();
 		// Shared SVG renderer and base polyline options for all render branches.
-		const svgRenderer = L.svg({ padding: 10 });
+		// One renderer is reused across redraws instead of being built per redraw:
+		// Leaflet adds a renderer to the map as a layer the first time a path using
+		// it is drawn, and tearing down the route FeatureGroup only detaches the
+		// paths - the renderer layer itself stays on the map, so its onRemove (which
+		// destroys the <svg> container and unbinds the viewreset / zoom / zoomanim /
+		// moveend / zoomend handlers) never fires. A per-redraw renderer would
+		// therefore leak one orphaned container plus a live handler set per style
+		// change. Built lazily here because it is only needed once geometry exists;
+		// it is removed from the map by the renderer-lifetime effect below.
+		svgRendererRef.current ??= L.svg({ padding: 10 });
+		const svgRenderer = svgRendererRef.current;
 		const basePolylineOptions: L.PolylineOptions = {
 			...pathOptions,
 			smoothFactor: 1,
@@ -990,7 +1036,9 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 			renderer: svgRenderer,
 		};
 
-		/** Adds one route polyline (single run or MultiLineString) with click wiring. */
+		/** Adds one route polyline with click wiring. The array-of-arrays form is the
+		 *  MultiLineString case: L.polyline draws grouped runs (grade bands, tag bands,
+		 *  section groups) as one layer. */
 		const addPolyline = (latlngs: L.LatLng[] | L.LatLng[][], color?: string): void => {
 			const polyline = L.polyline(latlngs, color ? { ...basePolylineOptions, color } : basePolylineOptions);
 			polyline.on('click', (e) => {
@@ -1026,10 +1074,6 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 		const soboKmForIdx = (idx: number): number =>
 			geometryDirection === 'SOBO' ? cumDistances[idx] / 1000 : (totalDistanceM - cumDistances[idx]) / 1000;
 
-		// Default ref state; the sections branch overwrites with its own values.
-		sectionBoundaryMarkersRef.current = [];
-		sectionStatsRef.current = [];
-
 		if (effectiveTrailStyle === 'sac' && styleTagRuns) {
 			const runsByBucket = buildTagBandSegments<SacBucket>(points, soboKmForIdx, (km) =>
 				bucketSac(findRunAtKm(styleTagRuns, km)?.sac_scale ?? null),
@@ -1054,7 +1098,6 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 						sign === 0
 							? GRADE_BAND_ASCENT_COLORS[band as 0 | 1 | 2 | 3 | 4]
 							: GRADE_BAND_DESCENT_COLORS[band as 0 | 1 | 2 | 3 | 4];
-					// MultiLineString form: L.polyline accepts LatLng[][] for grouped segments.
 					addPolyline(segments, color);
 				}
 			}
@@ -1069,6 +1112,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 				totalDescentM: groups.totalDescentM,
 			};
 			const newSectionMarkers: L.Marker[] = [];
+			const renderSectionTooltip = makeSectionTooltipRenderer();
 
 			// Draw each geographic section with its own label and color (A=green, B=blue, C=red by position along the trail).
 			for (const stat of groups.stats) {
@@ -1122,12 +1166,26 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 		styleTagRuns,
 		removeRouteLayer,
 		highlightTrailPosition,
-		renderSectionTooltip,
+		makeSectionTooltipRenderer,
 	]);
 
-	// Start and finish flags. Keyed on the geometry and on whether the start flag is
-	// drawn at all, so switching between two coloured styles leaves them - and any
-	// tooltip open on them - untouched.
+	// The shared SVG renderer outlives every redraw, so its teardown belongs to the
+	// map's lifetime rather than to the per-redraw cleanup - removing it alongside the
+	// route layer would defeat the point of sharing it. Declared after the route render
+	// effect so on unmount the polylines are detached before the renderer goes.
+	useEffect(
+		() => () => {
+			if (svgRendererRef.current) {
+				svgRendererRef.current.removeFrom(map);
+				svgRendererRef.current = null;
+			}
+		},
+		[map],
+	);
+
+	// Finish flag. Its presence does not depend on the trail style, so it is kept in
+	// its own effect: a style change must not destroy and rebuild it, which would
+	// close any tooltip the user has open on it.
 	useEffect(() => {
 		if (!map || !geometry) {
 			return;
@@ -1136,40 +1194,6 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 		const { points, direction: geometryDirection } = geometry;
 		const directionText = geometryDirection === 'SOBO' ? tChart('directionNorthSouth') : tChart('directionSouthNorth');
 
-		const addEndpointMarker = (position: L.LatLng, className: string, svg: string, label: string): L.Marker => {
-			const marker = L.marker(position, {
-				icon: L.divIcon({
-					className: `trail-endpoint-marker ${className}`,
-					html: `<div class="trail-endpoint-marker-inner">${svg}</div>`,
-					iconSize: [28, 28],
-					iconAnchor: [14, 14],
-				}),
-				zIndexOffset: 100,
-			});
-			marker.bindTooltip(label, {
-				direction: 'top',
-				permanent: false,
-				className: 'map-tooltip map-tooltip--compact',
-			});
-			// The icon element only exists once the marker is on the map.
-			marker.on('add', () => {
-				const el =
-					(marker as L.Marker & { getElement?: () => HTMLElement }).getElement?.() ??
-					(marker as unknown as { _icon?: HTMLElement })._icon;
-				if (el) el.setAttribute('aria-label', label);
-			});
-			marker.addTo(map);
-			return marker;
-		};
-
-		if (startFlagVisible) {
-			startMarkerRef.current = addEndpointMarker(
-				points[0],
-				'trail-start-marker',
-				START_FLAG_SVG,
-				t('startingPoint', { direction: directionText }),
-			);
-		}
 		finishMarkerRef.current = addEndpointMarker(
 			points[points.length - 1],
 			'trail-finish-marker',
@@ -1178,9 +1202,32 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 		);
 
 		return () => {
-			removeEndpointMarkers();
+			removeEndpointMarker(finishMarkerRef);
 		};
-	}, [map, geometry, startFlagVisible, removeEndpointMarkers, t, tChart]);
+	}, [map, geometry, addEndpointMarker, removeEndpointMarker, t, tChart]);
+
+	// Start flag, drawn only under the default style (it would otherwise sit on top
+	// of the coloured layer it is meant to show off). Separate from the finish flag
+	// so a style toggle rebuilds only the marker whose visibility actually changed.
+	useEffect(() => {
+		if (!map || !geometry || !startFlagVisible) {
+			return;
+		}
+
+		const { points, direction: geometryDirection } = geometry;
+		const directionText = geometryDirection === 'SOBO' ? tChart('directionNorthSouth') : tChart('directionSouthNorth');
+
+		startMarkerRef.current = addEndpointMarker(
+			points[0],
+			'trail-start-marker',
+			START_FLAG_SVG,
+			t('startingPoint', { direction: directionText }),
+		);
+
+		return () => {
+			removeEndpointMarker(startMarkerRef);
+		};
+	}, [map, geometry, startFlagVisible, addEndpointMarker, removeEndpointMarker, t, tChart]);
 
 	// Map click dismissal plus the highlight events the chart and scrubber fire.
 	// Independent of the data load and of the active style, so changing style no
@@ -1250,6 +1297,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 
 		const markers = sectionBoundaryMarkersRef.current;
 		const stats = sectionStatsRef.current;
+		const renderSectionTooltip = makeSectionTooltipRenderer();
 		for (let i = 0; i < markers.length && i < stats.length; i++) {
 			const tooltipHtml = renderSectionTooltip(
 				stats[i],
@@ -1263,14 +1311,17 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 				tooltip.setContent(tooltipHtml);
 			}
 		}
+		// `trailOsmTagsFile` is a deliberate re-run trigger rather than a value this
+		// effect reads: the renderer reads the dataset imperatively (to keep it out of
+		// the route render effect's dependencies), so this subscription is what makes
+		// the open tooltips pick up tag data that lands after they were built.
 	}, [
 		effectiveTrailStyle,
 		units,
 		distancePrecision,
 		locale,
 		trailMetadata,
-		renderSectionTooltip,
-		direction,
+		makeSectionTooltipRenderer,
 		walkingPaceKmh,
 		trailOsmTagsFile,
 	]);

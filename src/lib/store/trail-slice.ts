@@ -118,7 +118,6 @@ export const createTrailSlice: StateCreator<StoreState, [], [], TrailSlice> = (s
 	setClosestPoint: (point) => set({ closestPoint: point }),
 	setTrailMetadata: (metadata) => set({ trailMetadata: metadata }),
 	setRawGpxData: (data) => set({ rawGpxData: data }),
-	setGpxElevationPoints: (points) => set({ gpxElevationPoints: points }),
 	setDirection: (direction) => set({ direction }),
 
 	calculateClosestPoint: (): void => {

@@ -212,8 +212,6 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					rawGpxData: null,
 					setRawGpxData: (data: string | null) => set({ rawGpxData: data }),
 					gpxElevationPoints: [],
-					setGpxElevationPoints: (points: { lat: number; lng: number; elevation: number }[]) =>
-						set({ gpxElevationPoints: points }),
 					gpxLoaded: false,
 					setGpxLoaded: (loaded: boolean) => set({ gpxLoaded: loaded }),
 					gpxLoadFailed: false,
