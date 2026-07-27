@@ -39,7 +39,7 @@
 		"leaflet": "^1.9.4",
 		"leaflet-boundary-canvas": "^1.0.0",
 		"localforage": "^1.10.0",
-		"next": "16.2.10",
+		"next": "16.2.12",
 		"next-intl": "^4.13.2",
 		"open-location-code": "^1.0.3",
 		"react": "19.2.7",
