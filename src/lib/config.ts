@@ -103,7 +103,7 @@ export const config = {
 	showBoundary: envBool('NEXT_PUBLIC_SHOW_BOUNDARY', false),
 
 	/** Show boundary-clipped tiles on an initial load */
-	showTileBoundary: envBool('NEXT_PUBLIC_SHOW_TILE_BOUNDARY', false),
+	showTileBoundary: envBool('NEXT_PUBLIC_SHOW_TILE_BOUNDARY', true),
 
 	/** Show user location marker by default */
 	showUserMarker: envBool('NEXT_PUBLIC_SHOW_USER_MARKER', true),

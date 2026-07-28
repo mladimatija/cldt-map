@@ -239,7 +239,13 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					showBoundary: config.showBoundary,
 					setShowBoundary: (show: boolean) => set({ showBoundary: show }),
 					showTileBoundary: config.showTileBoundary,
-					setShowTileBoundary: (show: boolean) => set({ showTileBoundary: show }),
+					showTileBoundaryUserToggled: false,
+					setShowTileBoundary: (show: boolean, options?: { userInitiated?: boolean }) =>
+						set(
+							options?.userInitiated
+								? { showTileBoundary: show, showTileBoundaryUserToggled: true }
+								: { showTileBoundary: show },
+						),
 
 					isRulerEnabled: config.rulerEnabled,
 					setRulerEnabled: (enabled: boolean) => set({ isRulerEnabled: enabled }),
@@ -1678,6 +1684,7 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 						direction: state.direction,
 						showBoundary: state.showBoundary,
 						showTileBoundary: state.showTileBoundary,
+						showTileBoundaryUserToggled: state.showTileBoundaryUserToggled,
 						showUserMarker: state.showUserMarker,
 						showSections: state.showSections,
 						gradeTintedTrail: state.gradeTintedTrail,
@@ -1821,6 +1828,14 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					// season across sessions.
 					if (!merged.seasonalStatusLayerUserToggled) {
 						merged.seasonalStatusLayerEnabled = seasonalStatusLayerEnabledOverride ?? isSeasonalStatusDefaultEnabled();
+					}
+					// Until the user toggles boundary-clipping themselves, re-apply
+					// the shipped default on every hydration. Installs that predate
+					// the flag have no value for it, so they read as never-toggled
+					// and pick the default up on their next load instead of
+					// staying pinned to the value that was persisted at first run.
+					if (!merged.showTileBoundaryUserToggled) {
+						merged.showTileBoundary = config.showTileBoundary;
 					}
 					// enabledPoiTypes/Tags and legacy starredPoiIds were persisted as arrays
 					// (Set is not JSON-serialisable). Re-hydrate as Sets so the

@@ -82,6 +82,7 @@ export function createMapStoreStub(): MapStoreState {
 		showBoundary: false,
 		setShowBoundary: noop,
 		showTileBoundary: false,
+		showTileBoundaryUserToggled: false,
 		setShowTileBoundary: noop,
 		isRulerEnabled: false,
 		setRulerEnabled: noop,

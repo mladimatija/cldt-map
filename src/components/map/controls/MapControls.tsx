@@ -369,7 +369,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 				}
 			}
 
-			setShowTileBoundary(shouldShow);
+			setShowTileBoundary(shouldShow, { userInitiated: true });
 		} catch (error) {
 			console.error('Error toggling tile boundary:', error);
 
@@ -576,12 +576,16 @@ const MapControls: React.FC<MapControlsProps> = ({
 		const maxRetries = 5;
 
 		const initTileBoundary = async (): Promise<void> => {
-			if (cancelled) {
+			// The ref is re-checked here, not just in the effect body: the first run is
+			// a second behind the mount, and toggleTilesBoundary can create the layer
+			// inside that window. Without the re-check a pending timer would add a
+			// duplicate and orphan the layer the toggle just built.
+			if (cancelled || boundaryCanvasLayerRef.current) {
 				return;
 			}
 			try {
 				await import('leaflet-boundary-canvas');
-				if (cancelled) {
+				if (cancelled || boundaryCanvasLayerRef.current) {
 					return;
 				}
 
@@ -624,6 +628,9 @@ const MapControls: React.FC<MapControlsProps> = ({
 					console.error('Max retries reached, disabling tile boundary');
 					if (!cancelled) {
 						setShowTilesBoundary(false);
+						// Deliberately not userInitiated: this is the layer giving up, not a
+						// preference. The default is re-applied on the next load so an offline
+						// or slow-tile session does not turn clipping off for good.
 						setShowTileBoundary(false);
 					}
 				}

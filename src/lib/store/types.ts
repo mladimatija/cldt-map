@@ -285,7 +285,13 @@ export interface MapStoreState {
 	showBoundary: boolean;
 	setShowBoundary: (show: boolean) => void;
 	showTileBoundary: boolean;
-	setShowTileBoundary: (show: boolean) => void;
+	/** True once the user has flipped boundary clipping themselves. Until then the
+	 *  setting re-tracks `config.showTileBoundary` on every hydration. */
+	showTileBoundaryUserToggled: boolean;
+	/** Pass `{ userInitiated: true }` only for an explicit user toggle. An automatic
+	 *  disable (the layer failing to initialize) must leave the flag alone so a
+	 *  transient failure does not pin the setting off across sessions. */
+	setShowTileBoundary: (show: boolean, options?: { userInitiated?: boolean }) => void;
 
 	isRulerEnabled: boolean;
 	setRulerEnabled: (enabled: boolean) => void;
