@@ -306,6 +306,13 @@ const MapControls: React.FC<MapControlsProps> = ({
 		onToggleUnits(newUnits);
 	};
 
+	// Showing or hiding the outline only adds/removes one overlay layer: the
+	// viewport is left exactly where the user had it. Fitting the map to the
+	// country bounds here used to zoom the whole view out to Croatia on the
+	// first activation, which also forced every zoom-driven layer (tiles, POI
+	// and distance markers, junctions) to re-render as if the map had reloaded.
+	// The layer is built once and re-added on later toggles, so the GeoJSON is
+	// parsed a single time per mount.
 	const toggleBoundary = (): void => {
 		closePanel();
 		const shouldShow = !showBoundary;
@@ -317,22 +324,14 @@ const MapControls: React.FC<MapControlsProps> = ({
 					const boundary = createCroatiaBoundaryLayer(map, t('borderOfCroatia'));
 					boundaryLayerRef.current = boundary;
 					boundary.addTo(map);
-					map.fitBounds(boundary.getBounds(), { padding: [50, 50] });
 				} catch (error) {
 					console.error('Error creating boundary:', error);
 				}
 			} else {
 				boundaryLayerRef.current.addTo(map);
 			}
-		} else {
-			if (boundaryLayerRef.current) {
-				map.removeLayer(boundaryLayerRef.current);
-			}
-
-			const tileContainer = map.getContainer().querySelector('.leaflet-tile-container') as HTMLElement;
-			if (tileContainer) {
-				tileContainer.style.clipPath = 'none';
-			}
+		} else if (boundaryLayerRef.current) {
+			map.removeLayer(boundaryLayerRef.current);
 		}
 	};
 
