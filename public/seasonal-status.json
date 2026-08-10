@@ -1,5 +1,5 @@
 {
-	"lastUpdated": "2026-08-03",
+	"lastUpdated": "2026-08-10",
 	"source": "CLDT Seasonal Trail Status",
 	"sourceUrl": "https://cldt.hr",
 	"entries": [
@@ -10,12 +10,12 @@
 			"distanceStartKm": 1662,
 			"distanceEndKm": 1664.9,
 			"validFrom": "2026-05-12",
-			"validUntil": "2026-08-17",
+			"validUntil": "2026-08-24",
 			"note_hr": "Put Malog Princa u NP Paklenica zatvoren je do daljnjeg zbog dotrajalih elemenata osiguranja i pomagala u prolasku zahtjevnoga planinarskog puta.",
 			"note_en": "Put Malog Princa in NP Paklenica is closed until further notice due to worn safety elements and aids on this demanding trail.",
 			"source": "HPS - Planinarski putovi (vijesti)",
 			"sourceUrl": "https://www.hps.hr/novosti/planinarski-putovi/",
-			"lastUpdated": "2026-08-03"
+			"lastUpdated": "2026-08-10"
 		},
 		{
 			"id": "risnjak-vilje-trail-closed-2026",
@@ -24,86 +24,57 @@
 			"distanceStartKm": 1073.3,
 			"distanceEndKm": 1074.9,
 			"validFrom": "2026-06-26",
-			"validUntil": "2026-08-17",
+			"validUntil": "2026-08-24",
 			"note_hr": "U NP Risnjak od 26. lipnja 2026. zatvara se planinarski ulaz Vilje te planinarska staza Vilje - Risnjak (dio staze 108).",
 			"note_en": "In NP Risnjak, the Vilje mountain entrance and the Vilje - Risnjak trail (part of trail 108) are closed from 26 June 2026.",
 			"source": "HPS - Planinarski putovi (vijesti)",
 			"sourceUrl": "https://www.hps.hr/novosti/planinarski-putovi/",
-			"lastUpdated": "2026-08-03"
+			"lastUpdated": "2026-08-10"
 		},
 		{
-			"id": "medvednica-storm-damage-2026",
-			"severity": "caution",
-			"season": "year-round",
-			"distanceStartKm": 791.8,
-			"distanceEndKm": 834.4,
-			"validFrom": "2026-04-25",
-			"validUntil": "2026-08-17",
-			"note_hr": "Većina planinarskih staza na Medvednici pretrpjela je značajna oštećenja uslijed nedavnog nevremena te se stanje staza još uvijek sanira.",
-			"note_en": "Most hiking trails on Medvednica suffered significant damage due to a recent storm; restoration work is still ongoing.",
-			"source": "HPS - Planinarski putovi (vijesti)",
-			"sourceUrl": "https://www.hps.hr/novosti/planinarski-putovi/",
-			"lastUpdated": "2026-08-03"
-		},
-		{
-			"id": "gospicka-regija-heatwave-2026-08-03",
+			"id": "gospicka-regija-heatwave-2026-08-10",
 			"severity": "caution",
 			"season": "summer",
 			"distanceStartKm": 1578.5,
 			"distanceEndKm": 1686,
-			"validFrom": "2026-08-03",
-			"validUntil": "2026-08-03",
-			"note_hr": "Toplinski val u Gospićkoj regiji (Lika / Velebit). Maksimalna temperatura > 34 °C. Stupanj pripravnosti: Narančasto. Povećan zdravstveni rizik za osjetljive skupine.",
-			"note_en": "Heat wave in the Gospić region (Lika / Velebit). Maximum temperature > 34 °C. Alert level: Orange. Increased health risk for vulnerable populations.",
+			"validFrom": "2026-08-10",
+			"validUntil": "2026-08-10",
+			"note_hr": "Toplinski val u Gospićkoj regiji (Lika / Velebit). Maksimalna temperatura > 32 °C. Stupanj pripravnosti: Žuto. Povećan zdravstveni rizik za osjetljive skupine.",
+			"note_en": "Heat wave in the Gospić region (Lika / Velebit). Maximum temperature > 32 °C. Alert level: Yellow. Increased health risk for vulnerable populations.",
 			"gear": "High-factor sun protection, minimum 3 L water, electrolytes; avoid exposed ridgeline hiking during peak afternoon heat",
 			"source": "DHMZ - Upozorenja (vremenska)",
 			"sourceUrl": "https://meteo.hr/naslovnica-upozorenja.php?tab=upozorenja",
-			"lastUpdated": "2026-08-03"
+			"lastUpdated": "2026-08-10"
 		},
 		{
-			"id": "rjecka-regija-heatwave-2026-08-03",
+			"id": "rjecka-regija-heatwave-2026-08-10",
 			"severity": "closed_recommended",
 			"season": "summer",
 			"distanceStartKm": 1073.3,
 			"distanceEndKm": 1416.3,
-			"validFrom": "2026-08-03",
-			"validUntil": "2026-08-03",
-			"note_hr": "Toplinski val u Riječkoj regiji (Kvarner / Gorski kotar / Risnjak / Učka). Maksimalna temperatura > 36 °C; minimalna temperatura > 25 °C. Stupanj pripravnosti: Crveno. Mogući kvarovi infrastrukture.",
-			"note_en": "Heat wave in the Rijeka region (Kvarner / Gorski kotar / Risnjak / Učka). Maximum temperature > 36 °C; minimum temperature > 25 °C. Alert level: Red. Infrastructure failures possible.",
+			"validFrom": "2026-08-10",
+			"validUntil": "2026-08-10",
+			"note_hr": "Toplinski val u Riječkoj regiji (Kvarner / Risnjak / Učka). Maksimalna temperatura > 35 °C; minimalna temperatura > 24 °C. Stupanj pripravnosti: Crveno. PODUZMITE MJERE, očekuju se ekstremno visoke temperature.",
+			"note_en": "Heat wave in the Rijeka region (Kvarner / Risnjak / Učka). Maximum temperature > 35 °C; minimum temperature > 24 °C. Alert level: Red. TAKE ACTION, extremely high temperatures expected.",
 			"gear": "High-factor sun protection, minimum 3 L water, electrolytes; avoid prolonged exertion; consider postponing high-altitude sections",
 			"source": "DHMZ - Upozorenja (vremenska)",
 			"sourceUrl": "https://meteo.hr/naslovnica-upozorenja.php?tab=upozorenja",
-			"lastUpdated": "2026-08-03"
+			"lastUpdated": "2026-08-10"
 		},
 		{
-			"id": "splitska-regija-heatwave-2026-08-03",
-			"severity": "caution",
+			"id": "splitska-regija-heatwave-2026-08-10",
+			"severity": "closed_recommended",
 			"season": "summer",
 			"distanceStartKm": 1920.9,
 			"distanceEndKm": 1960.3,
-			"validFrom": "2026-08-03",
-			"validUntil": "2026-08-03",
-			"note_hr": "Toplinski val u Splitskoj regiji (Biokovo). Maksimalna temperatura > 35 °C; minimalna temperatura > 25 °C. Stupanj pripravnosti: Narančasto. Povećan zdravstveni rizik za osjetljive skupine.",
-			"note_en": "Heat wave in the Split region (Biokovo). Maximum temperature > 35 °C; minimum temperature > 25 °C. Alert level: Orange. Increased health risk for vulnerable populations.",
+			"validFrom": "2026-08-10",
+			"validUntil": "2026-08-10",
+			"note_hr": "Toplinski val u Splitskoj regiji (Biokovo). Maksimalna temperatura > 36 °C; minimalna temperatura > 26 °C. Stupanj pripravnosti: Crveno. PODUZMITE MJERE, očekuju se ekstremno visoke temperature.",
+			"note_en": "Heat wave in the Split region (Biokovo). Maximum temperature > 36 °C; minimum temperature > 26 °C. Alert level: Red. TAKE ACTION, extremely high temperatures expected.",
 			"gear": "High-factor sun protection, minimum 3 L water, electrolytes; avoid exposed ridgeline hiking during peak afternoon heat",
 			"source": "DHMZ - Upozorenja (vremenska)",
 			"sourceUrl": "https://meteo.hr/naslovnica-upozorenja.php?tab=upozorenja",
-			"lastUpdated": "2026-08-03"
-		},
-		{
-			"id": "kninska-regija-heatwave-2026-08-03",
-			"severity": "caution",
-			"season": "summer",
-			"distanceStartKm": 1662,
-			"distanceEndKm": 1800.2,
-			"validFrom": "2026-08-03",
-			"validUntil": "2026-08-03",
-			"note_hr": "Toplinski val u Kninskoj regiji (Paklenica / Dinara). Maksimalna temperatura > 38 °C; minimalna temperatura > 20 °C. Stupanj pripravnosti: Narančasto. Povećan zdravstveni rizik za osjetljive skupine.",
-			"note_en": "Heat wave in the Knin region (Paklenica / Dinara). Maximum temperature > 38 °C; minimum temperature > 20 °C. Alert level: Orange. Increased health risk for vulnerable populations.",
-			"gear": "High-factor sun protection, minimum 3 L water, electrolytes; avoid exposed ridgeline hiking during peak afternoon heat",
-			"source": "DHMZ - Upozorenja (vremenska)",
-			"sourceUrl": "https://meteo.hr/naslovnica-upozorenja.php?tab=upozorenja",
-			"lastUpdated": "2026-08-03"
+			"lastUpdated": "2026-08-10"
 		}
 	]
 }
