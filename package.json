@@ -68,7 +68,7 @@
 		"ajv": "^8.20.0",
 		"ajv-formats": "^3.0.1",
 		"eslint": "^10.8.1",
-		"eslint-config-next": "16.3.0",
+		"eslint-config-next": "16.3.1",
 		"eslint-config-prettier": "^10.1.8",
 		"jiti": "^2.7.0",
 		"postcss": "^8.5.26",
