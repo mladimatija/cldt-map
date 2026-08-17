@@ -52,7 +52,7 @@
 		"tailwind-merge": "^3.6.0",
 		"tailwindcss-animate": "^1.0.7",
 		"web-push": "^3.6.7",
-		"zustand": "^5.0.14"
+		"zustand": "^5.0.15"
 	},
 	"devDependencies": {
 		"@anthropic-ai/sdk": "^0.116.0",
