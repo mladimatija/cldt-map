@@ -29,7 +29,7 @@
 	},
 	"dependencies": {
 		"@garmin/fitsdk": "^21.214.0",
-		"@netlify/blobs": "^10.7.12",
+		"@netlify/blobs": "^11.0.2",
 		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",
 		"docx": "^9.7.1",
