@@ -28,7 +28,7 @@
 		"clean-install": "rm -rf node_modules .next package-lock.json && npm install"
 	},
 	"dependencies": {
-		"@garmin/fitsdk": "^21.212.0",
+		"@garmin/fitsdk": "^21.214.0",
 		"@netlify/blobs": "^10.7.12",
 		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",
