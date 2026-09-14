@@ -42,7 +42,7 @@
 		"next": "16.3.4",
 		"next-intl": "^4.14.2",
 		"open-location-code": "^1.0.3",
-		"react": "19.2.8",
+		"react": "19.3.0",
 		"react-dom": "19.2.8",
 		"react-icons": "^5.7.0",
 		"react-leaflet": "^5.0.0",
@@ -62,7 +62,7 @@
 		"@types/leaflet": "^1.9.22",
 		"@types/leaflet-boundary-canvas": "^1.0.4",
 		"@types/node": "^26.4.0",
-		"@types/react": "19.2.18",
+		"@types/react": "19.3.0",
 		"@types/react-dom": "19.2.5",
 		"@types/web-push": "^3.6.4",
 		"ajv": "^8.20.0",
@@ -80,7 +80,7 @@
 		"typescript": "^6.0.3"
 	},
 	"overrides": {
-		"@types/react": "19.2.18",
+		"@types/react": "19.3.0",
 		"@types/react-dom": "19.2.5"
 	}
 }
