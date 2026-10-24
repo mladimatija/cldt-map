@@ -19,7 +19,7 @@ import { LOCALES as APP_LOCALES } from '@/i18n/routing';
 const ANTHROPIC_URL = 'https://api.anthropic.com/v1/messages';
 const ANTHROPIC_VERSION = '2023-06-01';
 /** Sonnet for prose quality; a 30-day brief is a few thousand tokens. */
-const MODEL = process.env.NARRATIVE_MODEL || 'claude-sonnet-4-6';
+const MODEL = process.env.NARRATIVE_MODEL || 'claude-sonnet-5-5';
 const UPSTREAM_TIMEOUT_MS = 45_000;
 
 const MAX_DAYS = 31;
