@@ -141,6 +141,8 @@
 		"largeTouchTargets": "Large touch targets",
 		"compassHeading": "Compass heading",
 		"compassHeadingTooltip": "Shows which way you are facing as a cone on your location marker. Uses the device compass; on iPhone you will be asked for permission.",
+		"liveTracking": "Live location tracking",
+		"liveTrackingTooltip": "Follows your GPS position continuously while the map is open, so the distance overlay, off-route alert and automatic progress recording update as you walk. Uses more battery; battery saver asks for fewer, less precise fixes. When off, your position updates only when you tap the location button.",
 		"keepScreenOn": "Keep screen on while tracking",
 		"keepScreenOnTooltip": "Prevents the display from sleeping while your GPS position is shown on the map. Battery saver mode overrides this. Not supported in every browser.",
 		"offRouteAlert": "Off-route alert",

@@ -34,7 +34,7 @@ function nearestIndexByCoords(points: { lat: number; lng: number }[], targetLat:
  * setUserLocation resets closestPointCalculated, so this runs on EVERY GPS
  * fix. The previous linear nearest-index scan walked the full ~2,200 km
  * point array per tick; a spatial grid (built once per trail array, cached
- * by array identity so a reload or direction rebuild naturally invalidates)
+ * by array identity so a trail reload naturally invalidates)
  * makes the per-tick lookup near-constant.
  */
 const trailGridCache = new WeakMap<LatLng[], SpatialGrid>();
@@ -138,14 +138,15 @@ export const createTrailSlice: StateCreator<StoreState, [], [], TrailSlice> = (s
 				prev.distanceFromStart === closestPointData.distanceFromStart &&
 				Math.abs(prev.distance - closestPointData.distance) < 5;
 			if (unchanged) {
+				// The kept point's line state still holds: its distance moved < 5 m.
 				set({ closestPointCalculated: true });
 				return;
 			}
 			set({
 				closestPoint: closestPointData,
 				closestPointCalculated: true,
+				showClosestPointLine: closestPointData.distance < 10000,
 			});
-			set({ showClosestPointLine: closestPointData.distance < 10000 });
 		}
 	},
 

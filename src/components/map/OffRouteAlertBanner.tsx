@@ -40,19 +40,24 @@ export function OffRouteAlertBanner(): React.ReactElement | null {
 
 	const machineRef = useRef(OFF_ROUTE_INITIAL);
 	const wasEnabledRef = useRef(false);
+	/** The fix the machine last stepped on; arming counts fixes, not recomputes. */
+	const steppedLocationRef = useRef<typeof userLocation>(null);
 	const [view, setView] = useState<{ phase: OffRoutePhase; snoozed: boolean }>({
 		phase: 'dormant',
 		snoozed: false,
 	});
 
-	// Step the machine on every fix (closestPoint recomputes per location
-	// update). Toggling the feature off resets the machine (refs only, no
-	// render); on re-enable the rendered phase reconciles through the
-	// functional update below, which bails out when nothing changed.
+	// Step the machine once per new fix (a new userLocation object), reading the
+	// closest point computed for it; a closest-point change without a new fix
+	// (a trail reload) must not count as another fix. Toggling the feature off
+	// resets the machine (refs only, no render); on re-enable the rendered phase
+	// reconciles through the functional update below, which bails out when
+	// nothing changed.
 	useEffect(() => {
 		if (!enabled) {
 			wasEnabledRef.current = false;
 			machineRef.current = OFF_ROUTE_INITIAL;
+			steppedLocationRef.current = null;
 			emitMachineDev(OFF_ROUTE_INITIAL);
 			return;
 		}
@@ -60,6 +65,8 @@ export function OffRouteAlertBanner(): React.ReactElement | null {
 			wasEnabledRef.current = true;
 			machineRef.current = OFF_ROUTE_INITIAL;
 		}
+		if (userLocation !== null && userLocation === steppedLocationRef.current) return;
+		steppedLocationRef.current = userLocation;
 		const next = offRouteStep(machineRef.current, closestPoint?.distance ?? null, userLocation?.accuracy);
 		machineRef.current = next;
 		emitMachineDev(next);

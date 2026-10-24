@@ -14,6 +14,12 @@ import { getRandomLocationInBoundary, toLocationError } from '../utils';
 import { canShowOfflineInstallNudge, canShowPwaInstallPrompt, isStandalone } from '../pwa-install';
 import { LocationService } from '../services/location-service';
 import {
+	LIVE_WATCH_BATTERY_SAVER_OPTIONS,
+	LIVE_WATCH_OPTIONS,
+	ONE_OFF_BATTERY_SAVER_OPTIONS,
+} from '../services/location-options';
+import { haversineDistanceM } from '../haversine';
+import {
 	DEFAULT_STARRED_COLLECTION_NAME,
 	type ImportedTrack,
 	type LastKnownFix,
@@ -98,6 +104,13 @@ function ownsTileDownloadRun(controller: AbortController): boolean {
 /** Last time a GPS-source predictive pre-cache check was evaluated. Module-scoped so the debounce survives selector subscriptions. */
 let lastPredictiveCheckAt = 0;
 const PREDICTIVE_GPS_DEBOUNCE_MS = 30_000;
+
+/** The live watch publishes a fix only after this much movement or time, so a
+ *  hiker standing still does not re-render every position consumer per fix. */
+const LIVE_PUBLISH_MIN_MOVE_M = 3;
+const LIVE_PUBLISH_MIN_INTERVAL_MS = 10_000;
+/** The persisted last-known fix is refreshed at most this often while watching. */
+const LIVE_LAST_KNOWN_FIX_INTERVAL_MS = 60_000;
 
 /** Persisted GPS fixes older than this are dropped on rehydration so a stale fix
  *  from a prior trip is never presented in the emergency panel as the current
@@ -857,27 +870,20 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 
 						try {
 							const locationService = LocationService.getInstance();
-							const options = get().batterySaverMode ? { maximumAge: 60000, enableHighAccuracy: false } : {};
+							const options = get().batterySaverMode ? ONE_OFF_BATTERY_SAVER_OPTIONS : {};
 							const result = await locationService.getCurrentLocation(options);
 
-							if (result.lat && result.lng) {
-								set({
-									userLocation: {
-										lat: result.lat,
-										lng: result.lng,
-										accuracy: result.accuracy ?? undefined,
-									},
-									isLocating: false,
-								});
-
-								if (result.permissionStatus) {
-									set({ permissionStatus: result.permissionStatus });
-								}
+							if (!result.error && Number.isFinite(result.lat) && Number.isFinite(result.lng)) {
+								// The service has already published the fix (userLocation, the closest
+								// point, permission); setting it again here would hand consumers a
+								// second object for the same fix.
+								set({ isLocating: false });
 							} else if (result.error) {
+								// Only a denial changes the permission; a timeout keeps it.
 								set({
 									locationError: result.error,
 									isLocating: false,
-									permissionStatus: result.permissionStatus || 'prompt',
+									...(result.permissionStatus === 'denied' && { permissionStatus: 'denied' as const }),
 								});
 							}
 
@@ -901,7 +907,10 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 						const locationService = LocationService.getInstance();
 
 						locationService.setStoreUpdater({
-							setPermissionStatus: (status) => set({ permissionStatus: status }),
+							// Skip no-op writes: the live watch publishes through these on every fix.
+							setPermissionStatus: (status) => {
+								if (get().permissionStatus !== status) set({ permissionStatus: status });
+							},
 							setUserLocation: (location) => {
 								if (get().fakeUserLocationEnabled) {
 									return;
@@ -914,7 +923,9 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 								mainStore.calculateClosestPoint?.();
 							},
 							setIsLocating: (isLocating) => set({ isLocating }),
-							setLocationError: (error) => set({ locationError: error }),
+							setLocationError: (error) => {
+								if (error !== null || get().locationError !== null) set({ locationError: error });
+							},
 							setLastKnownFix: (fix) => {
 								// Skip fake/demo fixes; only real GPS should seed the persisted last-known fix.
 								if (get().fakeUserLocationEnabled) return;
@@ -944,10 +955,13 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 
 						try {
 							const locationService = LocationService.getInstance();
+							const before = get().userLocation;
 							const result = await locationService.requestPermission();
 							get().setPermissionStatus(result.state);
 
-							if (result.state === 'granted') {
+							// A prompt fetches a position itself; ask again only when no new fix
+							// landed (no prompt was needed, or it timed out).
+							if (result.state === 'granted' && get().userLocation === before) {
 								await get().getCurrentLocation();
 							}
 						} catch (error) {
@@ -956,6 +970,47 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 						} finally {
 							set({ isLocating: false });
 						}
+					},
+
+					liveTrackingEnabled: true,
+					setLiveTrackingEnabled: (enabled: boolean) => set({ liveTrackingEnabled: enabled }),
+					startLocationTracking: () => {
+						if (typeof window === 'undefined') return;
+						const locationService = LocationService.getInstance();
+						const options = get().batterySaverMode ? LIVE_WATCH_BATTERY_SAVER_OPTIONS : LIVE_WATCH_OPTIONS;
+						let lastPublished: { lat: number; lng: number; at: number } | null = null;
+						let lastKnownFixSavedAt = 0;
+						locationService.watchLocation(
+							(fix) => {
+								// Fake and demo positions own userLocation while enabled.
+								if (get().fakeUserLocationEnabled) return;
+								// Any fix ends an earlier timeout, even one the throttle holds back.
+								if (get().locationError !== null) set({ locationError: null });
+								const now = Date.now();
+								if (
+									lastPublished &&
+									now - lastPublished.at < LIVE_PUBLISH_MIN_INTERVAL_MS &&
+									haversineDistanceM(lastPublished.lat, lastPublished.lng, fix.lat, fix.lng) < LIVE_PUBLISH_MIN_MOVE_M
+								) {
+									return;
+								}
+								lastPublished = { lat: fix.lat, lng: fix.lng, at: now };
+								const saveLastKnownFix = now - lastKnownFixSavedAt >= LIVE_LAST_KNOWN_FIX_INTERVAL_MS;
+								if (saveLastKnownFix) lastKnownFixSavedAt = now;
+								// No isLocating toggle: that state belongs to one-off requests.
+								locationService.applyFixToStore(
+									{ lat: fix.lat, lng: fix.lng, accuracy: fix.accuracy, timestamp: fix.timestamp ?? undefined },
+									{ saveLastKnownFix },
+								);
+							},
+							() => {
+								// The service already put the error (and any denial) in the store.
+							},
+							options,
+						);
+					},
+					stopLocationTracking: () => {
+						LocationService.getInstance().stopWatchingLocation();
 					},
 
 					walkingPaceKmh: config.walkingPaceKmh,
@@ -1794,6 +1849,7 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 						batterySaverMode: state.batterySaverMode,
 						compassEnabled: state.compassEnabled,
 						keepScreenOn: state.keepScreenOn,
+						liveTrackingEnabled: state.liveTrackingEnabled,
 						offRouteAlertEnabled: state.offRouteAlertEnabled,
 						largeTouchTargets: state.largeTouchTargets,
 						uiTextScale: state.uiTextScale,

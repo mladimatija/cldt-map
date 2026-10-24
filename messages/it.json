@@ -141,6 +141,8 @@
 		"largeTouchTargets": "Pulsanti grandi",
 		"compassHeading": "Direzione bussola",
 		"compassHeadingTooltip": "Mostra la direzione in cui sei rivolto come un cono sul marcatore della posizione. Usa la bussola del dispositivo; su iPhone verrà chiesta l'autorizzazione.",
+		"liveTracking": "Tracciamento posizione in tempo reale",
+		"liveTrackingTooltip": "Segue continuamente la tua posizione GPS mentre la mappa è aperta, così l'indicatore delle distanze, l'avviso fuori percorso e la registrazione automatica dei progressi si aggiornano mentre cammini. Consuma più batteria; il risparmio energetico richiede posizioni meno frequenti e meno precise. Se disattivato, la posizione si aggiorna solo quando tocchi il pulsante della posizione.",
 		"keepScreenOn": "Mantieni lo schermo acceso durante il tracciamento",
 		"keepScreenOnTooltip": "Impedisce che lo schermo si spenga mentre la tua posizione GPS è mostrata sulla mappa. Il risparmio batteria ha la precedenza. Non supportato in tutti i browser.",
 		"offRouteAlert": "Avviso fuori percorso",

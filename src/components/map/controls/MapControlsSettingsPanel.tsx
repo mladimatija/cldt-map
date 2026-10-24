@@ -30,6 +30,7 @@ import {
 	IoMoonOutline,
 	IoSunnyOutline,
 	IoTrailSignOutline,
+	IoLocateOutline,
 	IoBatteryHalfOutline,
 	IoCompassOutline,
 	IoHandLeftOutline,
@@ -143,6 +144,8 @@ export function MapControlsSettingsPanel({
 	const setUiTextScale = useMapStore((state: MapStoreState) => state.setUiTextScale);
 	const compassEnabled = useMapStore((state: MapStoreState) => state.compassEnabled);
 	const setCompassEnabled = useMapStore((state: MapStoreState) => state.setCompassEnabled);
+	const liveTrackingEnabled = useMapStore((state: MapStoreState) => state.liveTrackingEnabled);
+	const setLiveTrackingEnabled = useMapStore((state: MapStoreState) => state.setLiveTrackingEnabled);
 	const keepScreenOn = useMapStore((state: MapStoreState) => state.keepScreenOn);
 	const setKeepScreenOn = useMapStore((state: MapStoreState) => state.setKeepScreenOn);
 	const offRouteAlertEnabled = useMapStore((state: MapStoreState) => state.offRouteAlertEnabled);
@@ -389,6 +392,13 @@ export function MapControlsSettingsPanel({
 									</div>
 									<p className="m-0 text-xs text-gray-500 dark:text-[var(--text-secondary)]">{t('textSizeTooltip')}</p>
 								</div>
+								<SettingsToggleRow
+									checked={liveTrackingEnabled}
+									icon={<IoLocateOutline className="h-4 w-4" />}
+									label={t('liveTracking')}
+									tooltip={t('liveTrackingTooltip')}
+									onCheckedChange={(checked) => setLiveTrackingEnabled(checked)}
+								/>
 								<SettingsToggleRow
 									checked={compassEnabled}
 									icon={<IoCompassOutline className="h-4 w-4" />}

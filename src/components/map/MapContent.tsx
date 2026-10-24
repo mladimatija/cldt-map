@@ -13,6 +13,7 @@ import { useSevereWeatherFetch } from '@/hooks/useSevereWeatherFetch';
 import { useMineAreasFetch } from '@/hooks/useMineAreasFetch';
 import { useTrailJunctionsFetch } from '@/hooks/useTrailJunctionsFetch';
 import { useCompletionAutoTrack } from '@/hooks/useCompletionAutoTrack';
+import { useLocationTracking } from '@/hooks/useLocationTracking';
 import { useSeasonalStatusFetch } from '@/hooks/useSeasonalStatusFetch';
 import { useTrailOsmTagsFetch } from '@/hooks/useTrailOsmTagsFetch';
 import { usePoisFetch } from '@/hooks/usePoisFetch';
@@ -170,10 +171,12 @@ export default function MapContent(): React.ReactElement {
 	const permissionStatus = useMapStore((state: MapStoreState) => state.permissionStatus);
 	const initLocationService = useMapStore((state: MapStoreState) => state.initLocationService);
 	const requestLocationPermission = useMapStore((state: MapStoreState) => state.requestLocationPermission);
+	const liveTrackingEnabled = useMapStore((state: MapStoreState) => state.liveTrackingEnabled);
 
 	useSevereWeatherFetch();
 	useMineAreasFetch();
 	useTrailJunctionsFetch();
+	useLocationTracking();
 	useCompletionAutoTrack();
 	useSeasonalStatusFetch();
 	useTrailOsmTagsFetch();
@@ -223,18 +226,29 @@ export default function MapContent(): React.ReactElement {
 		}
 		if (gpxLoaded && permissionStatus !== undefined && !initialLocationFetched) {
 			if (permissionStatus === 'granted') {
-				const getCurrentLocation = useMapStore.getState().getCurrentLocation;
-				void getCurrentLocation();
+				// The live watch delivers the first fix; a one-off request would ask twice.
+				if (!liveTrackingEnabled) {
+					const getCurrentLocation = useMapStore.getState().getCurrentLocation;
+					void getCurrentLocation();
+				}
 				queueMicrotask(() => setInitialLocationFetched(true));
 			} else if (permissionStatus === null) {
 				void checkAndRequestLocation(true);
 			}
 		}
-	}, [fakeUserLocationEnabled, gpxLoaded, permissionStatus, checkAndRequestLocation, initialLocationFetched]);
+	}, [
+		fakeUserLocationEnabled,
+		gpxLoaded,
+		permissionStatus,
+		checkAndRequestLocation,
+		initialLocationFetched,
+		liveTrackingEnabled,
+	]);
 
-	// Track permission changes to fetch location when permission is newly granted (skip when fake location is enabled)
+	// Fetch once when permission is newly granted and live tracking is off (the
+	// watch covers it otherwise; skip when fake location is enabled)
 	useEffect(() => {
-		if (fakeUserLocationEnabled) {
+		if (fakeUserLocationEnabled || liveTrackingEnabled) {
 			return;
 		}
 		if (permissionStatus !== 'granted') {
@@ -245,7 +259,15 @@ export default function MapContent(): React.ReactElement {
 			void getCurrentLocation();
 			queueMicrotask(() => setInitialLocationFetched(true));
 		}
-	}, [fakeUserLocationEnabled, permissionStatus, userLocation, isLocating, gpxLoaded, initialLocationFetched]);
+	}, [
+		fakeUserLocationEnabled,
+		liveTrackingEnabled,
+		permissionStatus,
+		userLocation,
+		isLocating,
+		gpxLoaded,
+		initialLocationFetched,
+	]);
 
 	return (
 		<>

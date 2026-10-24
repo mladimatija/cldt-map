@@ -313,6 +313,14 @@ export interface MapStoreState {
 	getCurrentLocation: () => Promise<{ lat: number; lng: number; error?: { code: number; message: string } }>;
 	initLocationService: () => void;
 	requestLocationPermission: () => Promise<void>;
+	/** Follow the GPS position continuously while the map is open (persisted,
+	 *  default on). useLocationTracking starts and stops the watch. */
+	liveTrackingEnabled: boolean;
+	setLiveTrackingEnabled: (enabled: boolean) => void;
+	/** Start (or restart, with the current battery-saver options) the live
+	 *  location watch. Safe to call repeatedly. */
+	startLocationTracking: () => void;
+	stopLocationTracking: () => void;
 	showUserMarker: boolean;
 	setShowUserMarker: (show: boolean) => void;
 	fakeUserLocationEnabled: boolean;

@@ -141,6 +141,8 @@
 		"largeTouchTargets": "Große Touch-Ziele",
 		"compassHeading": "Kompassrichtung",
 		"compassHeadingTooltip": "Zeigt als Kegel auf der Standortmarkierung, in welche Richtung Sie schauen. Nutzt den Gerätekompass; auf dem iPhone wird um Erlaubnis gefragt.",
+		"liveTracking": "Live-Standortverfolgung",
+		"liveTrackingTooltip": "Verfolgt Ihre GPS-Position laufend, solange die Karte geöffnet ist, damit Distanzanzeige, Routenabweichungs-Alarm und automatische Fortschrittsaufzeichnung beim Gehen aktuell bleiben. Verbraucht mehr Akku; der Energiesparmodus fragt seltener und weniger genau ab. Ausgeschaltet wird Ihre Position nur aktualisiert, wenn Sie auf die Standort-Schaltfläche tippen.",
 		"keepScreenOn": "Bildschirm beim Tracking anlassen",
 		"keepScreenOnTooltip": "Verhindert, dass das Display schlafen geht, solange Ihre GPS-Position auf der Karte angezeigt wird. Der Energiesparmodus hat Vorrang. Nicht in jedem Browser unterstützt.",
 		"offRouteAlert": "Routenabweichungs-Alarm",

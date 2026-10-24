@@ -1,6 +1,6 @@
 /**
  * Browser geolocation wrapper: getCurrentLocation, watchPosition, permission checks, and optional store sync via setStoreUpdater.
- * Singleton; used by the main store and useLocation.
+ * Singleton; used by the map store for one-off requests and the live watch (startLocationTracking).
  */
 import { LocationError } from '@/lib/utils';
 import {
@@ -73,13 +73,19 @@ export class LocationService {
 		this.storeUpdater = updater;
 	}
 
-	/** Apply a successful location result to the store (shared by getCurrentPosition and watchPosition). */
-	private applyLocationSuccessToStore(location: {
-		lat: number;
-		lng: number;
-		accuracy?: number | null;
-		timestamp?: number;
-	}): void {
+	/** Publish a successful fix to the store. One-off requests always publish and
+	 *  save the last-known fix; the live watch decides per fix (see the map
+	 *  store's startLocationTracking) and passes `saveLastKnownFix: false` for
+	 *  the fixes it does not persist. */
+	public applyFixToStore(
+		location: {
+			lat: number;
+			lng: number;
+			accuracy?: number | null;
+			timestamp?: number;
+		},
+		{ saveLastKnownFix = true }: { saveLastKnownFix?: boolean } = {},
+	): void {
 		if (this.storeUpdater.setUserLocation) {
 			this.storeUpdater.setUserLocation({
 				lat: location.lat,
@@ -89,7 +95,7 @@ export class LocationService {
 		}
 		// Persist the fix (with its GPS timestamp) so the emergency panel can show a
 		// real last-known position with its age when live GPS later drops.
-		if (typeof location.timestamp === 'number' && this.storeUpdater.setLastKnownFix) {
+		if (saveLastKnownFix && typeof location.timestamp === 'number' && this.storeUpdater.setLastKnownFix) {
 			this.storeUpdater.setLastKnownFix({
 				lat: location.lat,
 				lng: location.lng,
@@ -97,6 +103,8 @@ export class LocationService {
 				timestamp: location.timestamp,
 			});
 		}
+		// A fix proves the permission.
+		this.permissionResult = { state: 'granted' };
 		if (this.storeUpdater.setPermissionStatus) {
 			this.storeUpdater.setPermissionStatus('granted');
 		}
@@ -127,12 +135,9 @@ export class LocationService {
 				if (this.storeUpdater.setPermissionStatus) {
 					this.storeUpdater.setPermissionStatus(newState);
 				}
+				// No fetch here: a newly granted permission starts the live watch
+				// (useLocationTracking), so startup requests location only once.
 				this.permissionChangeCallbacks.forEach((cb) => cb(newState));
-				if (newState === 'granted' && this.storeUpdater.setUserLocation) {
-					void this.getCurrentLocation().catch((err) =>
-						console.error('Failed to auto-fetch location after permission granted', err),
-					);
-				}
 			});
 		}
 
@@ -225,7 +230,11 @@ export class LocationService {
 		}
 
 		try {
-			const permissionStatus = await this.checkPermission(true);
+			// The permission listener keeps the cached state current, so a request
+			// queries the Permissions API only the first time and after a denial
+			// (browsers without change events would otherwise never recover).
+			const cached = this.permissionResult;
+			const permissionStatus = cached && cached.state !== 'denied' ? cached : await this.checkPermission(true);
 
 			if (permissionStatus.state === 'denied') {
 				const error = {
@@ -258,7 +267,7 @@ export class LocationService {
 							timestamp: position.timestamp,
 							permissionStatus: 'granted' as PermissionState,
 						};
-						this.applyLocationSuccessToStore({
+						this.applyFixToStore({
 							lat: result.lat,
 							lng: result.lng,
 							accuracy: result.accuracy,
@@ -267,18 +276,14 @@ export class LocationService {
 						resolve(result);
 					},
 					(error) => {
-						// Handle permission denied specifically
-						const permissionStatus = error.code === 1 ? 'denied' : 'prompt';
-
 						const errorResult = {
 							code: error.code,
 							message: error.message || 'Unknown error getting location',
 						};
-
-						// Update the store if available
-						if (this.storeUpdater.setPermissionStatus) {
-							this.storeUpdater.setPermissionStatus(permissionStatus);
-						}
+						// Only a denial changes the permission; a timeout or an unavailable
+						// position keeps it (and with it the user marker and wake lock).
+						const denied = error.code === error.PERMISSION_DENIED;
+						if (denied) this.markPermissionDenied();
 
 						if (this.storeUpdater.setLocationError) {
 							this.storeUpdater.setLocationError(errorResult);
@@ -287,7 +292,7 @@ export class LocationService {
 						resolve({
 							lat: 0,
 							lng: 0,
-							permissionStatus,
+							...(denied && { permissionStatus: 'denied' as PermissionState }),
 							error: errorResult,
 						});
 					},
@@ -300,7 +305,10 @@ export class LocationService {
 	}
 
 	/**
-	 * Start watching position with callbacks for updates and errors
+	 * Start watching position with callbacks for updates and errors. Replaces
+	 * any watch already running. Fixes go to `onSuccess` only; the caller
+	 * decides which to publish (applyFixToStore). Errors update the store's
+	 * location error, and a denial also the permission.
 	 * @param onSuccess Callback for successful location updates
 	 * @param onError Callback for errors
 	 * @param options Location options
@@ -317,27 +325,22 @@ export class LocationService {
 		}
 
 		const defaultOptions = toPositionOptions(options);
+		// One watch at a time: starting again replaces the previous watch.
+		this.stopWatchingLocation();
 
 		try {
 			this.watchId = navigator.geolocation.watchPosition(
 				(position) => {
-					const result = {
+					onSuccess({
 						lat: position.coords.latitude,
 						lng: position.coords.longitude,
 						accuracy: position.coords.accuracy,
 						timestamp: position.timestamp,
-					};
-					this.applyLocationSuccessToStore({
-						lat: result.lat,
-						lng: result.lng,
-						accuracy: result.accuracy,
-						timestamp: result.timestamp,
 					});
-					onSuccess(result);
 				},
 				(error) => {
 					let message;
-					let permissionStatus: PermissionState = 'prompt';
+					let permissionStatus: PermissionState | undefined;
 
 					switch (error.code) {
 						case error.PERMISSION_DENIED:
@@ -354,10 +357,9 @@ export class LocationService {
 							message = 'An unknown error occurred';
 					}
 
-					// Update the store if available
-					if (this.storeUpdater.setPermissionStatus) {
-						this.storeUpdater.setPermissionStatus(permissionStatus);
-					}
+					// Only a denial changes the permission; the watch keeps running
+					// through timeouts and unavailable positions.
+					if (permissionStatus === 'denied') this.markPermissionDenied();
 
 					if (this.storeUpdater.setLocationError) {
 						this.storeUpdater.setLocationError({
@@ -383,8 +385,17 @@ export class LocationService {
 		return this.stopWatchingLocation.bind(this);
 	}
 
+	/** Record a denial from a failed request, so the cached state (used instead
+	 *  of re-querying the Permissions API) and the store agree. */
+	private markPermissionDenied(): void {
+		this.permissionResult = { state: 'denied' };
+		if (this.storeUpdater.setPermissionStatus) {
+			this.storeUpdater.setPermissionStatus('denied');
+		}
+	}
+
 	/**
-	 * Stop watching position
+	 * Stop watching position. The single stop path for the live watch.
 	 */
 	public stopWatchingLocation(): void {
 		if (this.watchId !== null) {

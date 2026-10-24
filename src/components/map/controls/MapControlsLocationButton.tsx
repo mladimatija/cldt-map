@@ -81,18 +81,21 @@ export default function MapControlsLocationButton({ checkPermission }: LocationB
 		}
 
 		try {
+			const before = useMapStore.getState().userLocation;
 			if (permissionStatus === 'granted') {
 				await getCurrentLocation();
-				const location = useMapStore.getState().userLocation;
-				if (location?.lat && location?.lng && isWithinMapBoundary(location.lat, location.lng)) {
-					map.flyTo([location.lat, location.lng], 14, {
-						animate: true,
-						duration: 1.5,
-						easeLinearity: 0.25,
-					});
-				}
 			} else {
 				await requestLocationPermission();
+			}
+			// Fly after a first grant too (fixes never move the map on their own),
+			// but only to a new fix: a denied or timed-out request leaves the old one.
+			const location = useMapStore.getState().userLocation;
+			if (location && location !== before && isWithinMapBoundary(location.lat, location.lng)) {
+				map.flyTo([location.lat, location.lng], 14, {
+					animate: true,
+					duration: 1.5,
+					easeLinearity: 0.25,
+				});
 			}
 		} catch (error) {
 			console.error('Error handling location button click:', error);

@@ -6,11 +6,19 @@ import { Marker, useMap } from 'react-leaflet';
 import { useTranslations } from 'next-intl';
 import L from 'leaflet';
 import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
-import { isWithinMapBoundary, getNavigateToPointUrl, formatDistance, formatElevation } from '@/lib/utils';
+import {
+	isWithinMapBoundary,
+	getInitialShareUrlParams,
+	getNavigateToPointUrl,
+	formatDistance,
+	formatElevation,
+	shareParamsNeedMapFollowUp,
+} from '@/lib/utils';
 import { TRAIL_OFF_TRAIL_THRESHOLD_M } from '@/lib/config';
 import { buildWindCompassPayload, computeDistanceRemaining, findNearestPointIndex } from '@/lib/distance-utils';
 import { travelBearingDeg, travelGainLoss, travelGainLossSoFar } from '@/lib/trail-frame';
 import { totalCompletedKm } from '@/lib/completion';
+import { haversineDistanceM } from '@/lib/haversine';
 import { useCompassHeading } from '@/hooks/useCompassHeading';
 import {
 	fetchWeather,
@@ -36,6 +44,16 @@ const OFF_TRAIL_DISTANCE_M = TRAIL_OFF_TRAIL_THRESHOLD_M;
 /** Pane for the persistent location card; z-index in map.css. */
 const USER_TOOLTIP_PANE = 'user-location-tooltip-pane';
 
+/** Weather at the hiker's position changes slowly; with live tracking the
+ *  position changes every few seconds, so refetch on time or a long move only. */
+const LOCATION_WEATHER_REFETCH_MS = 10 * 60_000;
+const LOCATION_WEATHER_REFETCH_M = 2000;
+const LOCATION_WEATHER_RETRY_MS = 60_000;
+
+/** A first fix this long after the trail loaded no longer recentres the map:
+ *  by then the user may be exploring it. */
+const INITIAL_RECENTRE_WINDOW_MS = 15_000;
+
 /**
  * User location marker and optional "off trail" tooltip with the "navigate-to-trail" link.
  * Hides marker when outside Croatia or permission is denied.
@@ -50,6 +68,14 @@ export default function MapMarkers(): React.ReactElement | null {
 	const userMarkerRef = useRef<L.Marker | null>(null);
 	const tooltipRootRef = useRef<Root | null>(null);
 	const weatherFetchedAtRef = useRef<number>(0);
+	/** Where the location weather was last fetched; a long move refetches early. */
+	const weatherFetchedAtLocationRef = useRef<{ lat: number; lng: number } | null>(null);
+	/** The map recentres on the hiker at most once, for the first fix after it
+	 *  opens; any user input on the map before then cancels it. */
+	const initialRecentreDoneRef = useRef(false);
+	const initialRecentreCancelledRef = useRef(false);
+	const initialRecentreFrameRef = useRef<number | null>(null);
+	const trailLoadedAtRef = useRef<number | null>(null);
 	const [markerReady, setMarkerReady] = useState(false);
 	const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
 	const [isWeatherLoading, setIsWeatherLoading] = useState(false);
@@ -73,7 +99,6 @@ export default function MapMarkers(): React.ReactElement | null {
 
 	// User location state from store
 	const userLocation = useMapStore((state: MapStoreState) => state.userLocation);
-	const isLocating = useMapStore((state: MapStoreState) => state.isLocating);
 	const showUserMarker = useMapStore((state: MapStoreState) => state.showUserMarker);
 	const permissionStatus = useMapStore((state: MapStoreState) => state.permissionStatus);
 	const rulerRange = useMapStore((state: MapStoreState) => state.rulerRange);
@@ -281,30 +306,74 @@ export default function MapMarkers(): React.ReactElement | null {
 		};
 	}, [effectiveWeatherData, enhancedTrailPoints, nearestEnhancedPointIdx, direction, tWeather]);
 
-	// Fetch weather for the user's location when on-trail; re-fetches after 30 s minimum.
+	// Fetch weather for the user's location when on-trail. Live tracking updates
+	// the location every few seconds, so refetch only every 10 minutes or after
+	// a 2 km move.
 	useEffect(() => {
 		if (!userLocation || isOffTrail) {
 			weatherFetchedAtRef.current = 0;
+			weatherFetchedAtLocationRef.current = null;
 			return;
 		}
-		if (Date.now() - weatherFetchedAtRef.current < 30_000) return;
+		const last = weatherFetchedAtLocationRef.current;
+		const movedFar =
+			last !== null &&
+			haversineDistanceM(last.lat, last.lng, userLocation.lat, userLocation.lng) >= LOCATION_WEATHER_REFETCH_M;
+		if (!movedFar && Date.now() - weatherFetchedAtRef.current < LOCATION_WEATHER_REFETCH_MS) return;
 		weatherFetchedAtRef.current = Date.now();
+		weatherFetchedAtLocationRef.current = { lat: userLocation.lat, lng: userLocation.lng };
 		setIsWeatherLoading(true);
 		void fetchWeather(userLocation.lat, userLocation.lng).then((data) => {
+			// A failed fetch retries after a minute instead of the full window.
+			if (data === null) {
+				weatherFetchedAtRef.current = Date.now() - LOCATION_WEATHER_REFETCH_MS + LOCATION_WEATHER_RETRY_MS;
+			}
 			setWeatherData(data);
 			setIsWeatherLoading(false);
 		});
 	}, [userLocation, isOffTrail]);
 
-	// Update marker when the user location changes
+	// Any user input on the map (pan, zoom, click, key, touch) before the first
+	// fix cancels the recentre.
 	useEffect(() => {
-		if (!userLocation || !withinMapBoundary || permissionStatus !== 'granted') {
-			return;
-		}
-		if (isLocating) {
-			map.setView([userLocation.lat, userLocation.lng], 14);
-		}
-	}, [userLocation, isLocating, map, withinMapBoundary, permissionStatus]);
+		const container = map.getContainer();
+		const cancel = (): void => {
+			initialRecentreCancelledRef.current = true;
+		};
+		const events = ['mousedown', 'touchstart', 'wheel', 'keydown'] as const;
+		map.on('dragstart', cancel);
+		for (const type of events) container.addEventListener(type, cancel, { passive: true });
+		return () => {
+			map.off('dragstart', cancel);
+			for (const type of events) container.removeEventListener(type, cancel);
+			if (initialRecentreFrameRef.current !== null) cancelAnimationFrame(initialRecentreFrameRef.current);
+		};
+	}, [map]);
+
+	useEffect(() => {
+		if (gpxLoaded && trailLoadedAtRef.current === null) trailLoadedAtRef.current = Date.now();
+	}, [gpxLoaded]);
+
+	// Recentre on the hiker once, for the first fix after the map opens, unless a
+	// share link owns the view. The watch starts before the trail loads, so this
+	// waits for the trail's first fit, which runs in an effect of the same commit
+	// as gpxLoaded: hence the frame delay. Later fixes never move the map; the
+	// location button flies to the hiker on demand.
+	useEffect(() => {
+		if (initialRecentreDoneRef.current || initialRecentreCancelledRef.current) return;
+		if (!userLocation || permissionStatus !== 'granted' || !gpxLoaded) return;
+		initialRecentreDoneRef.current = true;
+		const sinceTrailLoadMs = Date.now() - (trailLoadedAtRef.current ?? Date.now());
+		const params = getInitialShareUrlParams();
+		if (!withinMapBoundary || sinceTrailLoadMs > INITIAL_RECENTRE_WINDOW_MS) return;
+		if (params && shareParamsNeedMapFollowUp(params)) return;
+		initialRecentreFrameRef.current = requestAnimationFrame(() => {
+			initialRecentreFrameRef.current = null;
+			const location = useMapStore.getState().userLocation;
+			if (initialRecentreCancelledRef.current || !location) return;
+			map.setView([location.lat, location.lng], 14);
+		});
+	}, [userLocation, map, withinMapBoundary, permissionStatus, gpxLoaded]);
 
 	// Trigger GPS-source predictive pre-cache check on each location update (debounced internally)
 	useEffect(() => {
