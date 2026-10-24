@@ -265,11 +265,16 @@ export function PoiMarkers(): null {
 
 			// Shallow dirty-check: skip teardown when the candidate set hasn't
 			// moved. Cluster path reuses the pre-sorted visiblePois superset
-			// (sortedVisiblePoiIds memo). Non-cluster path joins ids WITHOUT
-			// sorting: candidates are a filter of visiblePois, so identical
-			// sets always arrive in identical order - the previous per-moveend
-			// sort bought nothing.
-			const newCandidateIds = shouldCluster ? sortedVisiblePoiIds : candidates.map((p) => p.id).join(',');
+			// (sortedVisiblePoiIds memo) plus the zoom, because the cluster grid
+			// is in projected pixels and regroups on every zoom change. The zoom
+			// is rounded to quarter steps so fractional pinch zooms (zoomSnap 0)
+			// don't recompute on every tiny change. Non-cluster path joins ids
+			// WITHOUT sorting: candidates are a filter of visiblePois, so
+			// identical sets always arrive in identical order - the previous
+			// per-moveend sort bought nothing.
+			const newCandidateIds = shouldCluster
+				? `${Math.round(currentZoom * 4) / 4}|${sortedVisiblePoiIds}`
+				: candidates.map((p) => p.id).join(',');
 			if (newCandidateIds === prevCandidateIdsRef.current) return;
 			prevCandidateIdsRef.current = newCandidateIds;
 
