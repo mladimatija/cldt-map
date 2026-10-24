@@ -8,9 +8,9 @@
  * cardinality and shorter-lived than share links.
  *
  * The store name ('rate-limits') and the expiresAt convention are the canonical
- * ones in src/lib/api-defense.ts (RATE_LIMIT_BLOB_STORE); they are re-declared
- * here because this function cannot import that server-only module (it pulls in
- * next/server). Keep the two in sync.
+ * ones in src/lib/rate-limit-core.ts (RATE_LIMIT_BLOB_STORE); they are re-declared
+ * here, following the self-contained convention of the other functions. Keep the
+ * two in sync.
  */
 
 import { getStore } from '@netlify/blobs';

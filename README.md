@@ -238,7 +238,7 @@ Locally, plain `npm run dev` leaves all three unset; localhost is still allowed 
 
 ### API rate limiting
 
-The server routes (`/api/*`, the `/api/share` create endpoint, and the `/s/{code}` redirect) share a per-IP sliding-window limiter in `src/lib/api-defense.ts`. The client IP is taken from the rightmost valid `x-forwarded-for` entry (the closest trusted proxy hop), so a forged header lands a direct hit in a shared `unknown` bucket instead of spoofing a victim's.
+The server routes (`/api/*`, the `/api/share` create endpoint, and the `/s/{code}` redirect) share a per-IP sliding-window limiter in `src/lib/rate-limit-core.ts` (framework-agnostic; `src/lib/api-defense.ts` wraps it for route handlers). On Netlify the client IP is `x-nf-client-connection-ip`, the address Netlify's edge saw (the rightmost `x-forwarded-for` entry there can be an internal proxy hop shared by many visitors). Elsewhere it is the rightmost valid `x-forwarded-for` entry (the closest trusted proxy hop), so a forged header lands a direct hit in a shared `unknown` bucket instead of spoofing a victim's.
 
 | Route / function                            | Role                                                                                                                                                                                                                                            |
 | ------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -326,7 +326,8 @@ src/
 │   ├── config.ts         # App defaults (env overrides)
 │   ├── ui-text-scale.ts  # UI text-size accessibility levels (default/large/larger) + root-class helper
 │   ├── trail-narration.ts # Screen-reader narration helpers (grade word, nearest usable water ahead)
-│   ├── api-defense.ts    # Per-IP rate limiting (Netlify Blobs, cross-instance; in-memory fallback under npm run dev) + upstream size caps
+│   ├── rate-limit-core.ts # Per-IP sliding-window rate limiting (Netlify Blobs, cross-instance; in-memory fallback under npm run dev)
+│   ├── api-defense.ts    # Route-handler wrapper for the rate limiter (429 responses) + upstream size caps
 │   ├── distance-utils.ts # ETA, grade-adjusted pace, nearest-point search, ruler formatting
 │   ├── spatial-grid.ts   # Uniform-grid nearest-point lookups (GPS fixes, track coverage)
 │   ├── trail-compute.ts / trail-compute-client.ts / trail-compute-cache.ts # Trail enhancement (Web Worker), result cached in localforage for instant repeat loads
