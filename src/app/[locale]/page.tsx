@@ -15,7 +15,7 @@ export default async function HomePage({ params }: Props): Promise<React.ReactEl
 	const t = await getTranslations('home');
 
 	return (
-		<Layout>
+		<Layout showHeader={false}>
 			<h1 className="sr-only">{t('srTitle', { companyName: siteMetadata.companyName })}</h1>
 			<MapWrapper locale={locale} />
 			<OnboardingWelcomeCard />

@@ -1032,7 +1032,8 @@
 		"lastUpdatedDaysAgo": "{days, plural, =0 {Ažurirano danas} =1 {Ažurirano jučer} few {Ažurirano prije # dana} other {Ažurirano prije # dana}}",
 		"freshness": {
 			"label": "Svježina sezonskih podataka",
-			"stale": "Sezonska zatvaranja zadnji put su ažurirana {date} i možda nisu aktualna. Za opasnosti i zatvaranja aktualniji je <source>službeni izvor stanja na stazama</source>.",
+			"title": "Sezonski podaci možda nisu aktualni.",
+			"stale": "Zatvaranja su zadnji put ažurirana {date}. Za opasnosti i zatvaranja aktualniji je <source>službeni izvor stanja na stazama</source>.",
 			"dismiss": "Odbaci"
 		}
 	},

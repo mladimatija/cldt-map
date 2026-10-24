@@ -1032,7 +1032,8 @@
 		"lastUpdatedDaysAgo": "{days, plural, =0 {Heute aktualisiert} =1 {Gestern aktualisiert} other {Vor # Tagen aktualisiert}}",
 		"freshness": {
 			"label": "Aktualität der Saisondaten",
-			"stale": "Saisonale Sperrungen wurden zuletzt am {date} aktualisiert und sind möglicherweise nicht mehr aktuell. Für Gefahren und Sperrungen ist <source>die offizielle Quelle für den Wegzustand</source> aktueller.",
+			"title": "Saisondaten sind möglicherweise veraltet.",
+			"stale": "Sperrungen wurden zuletzt am {date} aktualisiert. Für Gefahren und Sperrungen ist <source>die offizielle Quelle für den Wegzustand</source> aktueller.",
 			"dismiss": "Schließen"
 		}
 	},

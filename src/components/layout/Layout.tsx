@@ -16,7 +16,8 @@ interface LayoutProps {
 	className?: string;
 	/** Overlay header on the main surface (default). Set false on content pages with BackToMapBar. */
 	overlayHeader?: boolean;
-	/** When false, the CLDT logo header is omitted (e.g. Test page). */
+	/** When false, the CLDT logo header is omitted: the Test page, and the map pages, where
+	 *  MapWrapper renders it inside the map area below the alert banners. */
 	showHeader?: boolean;
 }
 

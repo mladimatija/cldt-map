@@ -1032,7 +1032,8 @@
 		"lastUpdatedDaysAgo": "{days, plural, =0 {Updated today} =1 {Updated yesterday} other {Updated # days ago}}",
 		"freshness": {
 			"label": "Seasonal data freshness",
-			"stale": "Seasonal closures were last updated {date} and may be out of date. For hazards and closures, <source>the official trail-status source</source> is more current.",
+			"title": "Seasonal data may be out of date.",
+			"stale": "Closures were last updated {date}. For hazards and closures, <source>the official trail-status source</source> is more current.",
 			"dismiss": "Dismiss"
 		}
 	},

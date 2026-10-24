@@ -14,7 +14,7 @@ export default async function DemoPage({ params }: Props): Promise<React.ReactEl
 	const t = await getTranslations('demo');
 
 	return (
-		<Layout>
+		<Layout showHeader={false}>
 			<h1 className="sr-only">{t('srTitle', { title: siteMetadata.title })}</h1>
 			<DemoClient locale={locale} />
 		</Layout>

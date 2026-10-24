@@ -13,6 +13,7 @@ import { config } from '@/lib/config';
 import { useMapStore } from '@/lib/store';
 import { MAP_FULLSCREEN_TOGGLE_EVENT } from '@/lib/map-events';
 
+const Header = dynamic(() => import('@/components/layout/Header').then((mod) => mod.Header), { ssr: false });
 const GPXLoadErrorBanner = dynamic(() => import('@/components/map/GPXLoadErrorBanner'), { ssr: false });
 const TrailNoticesBanner = dynamic(
 	() => import('@/components/map/TrailNoticesBanner').then((m) => ({ default: m.TrailNoticesBanner })),
@@ -120,7 +121,12 @@ export default function MapWrapper(_props?: MapWrapperProps): ReactElement {
 
 	// Show loading state
 	if (isLoading) {
-		return <MapLoading text={loadingText} />;
+		return (
+			<div className="relative h-full w-full">
+				<Header />
+				<MapLoading text={loadingText} />
+			</div>
+		);
 	}
 
 	return (
@@ -133,6 +139,9 @@ export default function MapWrapper(_props?: MapWrapperProps): ReactElement {
 			<SeasonalStatusBanner />
 			<SeasonalStatusFreshnessBanner />
 			<div className="relative min-h-0 flex-1 bg-white" ref={mapContainerRef}>
+				{/* The logo lives in the map area, not the page shell, so the banner
+				    stack above pushes it down with the map instead of covering it. */}
+				<Header />
 				<Map defaultBaseMap={config.baseMapProvider} zoomSnap={0} />
 			</div>
 			<SeasonalStatusModal />
