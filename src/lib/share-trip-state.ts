@@ -3,7 +3,7 @@
  * starred POIs) into a single compact `trip` query param on share URLs.
  */
 import { useMapStore } from '@/lib/store';
-import { getActiveStarredPoiIds, type StagePlan } from '@/lib/store/types';
+import { getActiveStarredPoiIds, type StagePlan, type TrailDirection } from '@/lib/store/types';
 import { SHARE_TARGET_MAX_LEN, SHARE_TRIP_PARAM_KEY } from '@/lib/share-url-constants';
 import { newId, type JournalEntry, type UserWaypoint } from '@/lib/user-waypoints';
 import { normalizeWaypointCategory } from '@/lib/waypoint-categories';
@@ -22,8 +22,13 @@ const MAX_JOURNAL_TEXT = 400;
 const MAX_REST_DAYS = 60;
 
 /** Compact wire format (short keys keep URLs within short-link limits). */
+/**
+ * Trip state carried in share links. Version 2 stores every trail km in SOBO
+ * km (from Ilok), like the app. Version 1 links stored them in the travel
+ * frame of the link's `dir`; normalizeShareTripStateToSobo converts those.
+ */
 export interface ShareTripStatePayload {
-	v: 1;
+	v: 1 | 2;
 	sp?: {
 		s: number;
 		e: number;
@@ -32,6 +37,8 @@ export interface ShareTripStatePayload {
 		sd?: string;
 		/** Rest-day anchors: 0-based stage indices a zero day follows. */
 		r?: number[];
+		/** Direction the plan was made for: 'n' for NOBO, absent for SOBO. */
+		dr?: 'n';
 	};
 	wp?: { i?: string; la: number; ln: number; n: string; no?: string; tk?: number | null; c?: string }[];
 	j?: { d: string; t: string; s?: number; e?: number; tr?: string; ti?: [number, number] }[];
@@ -76,6 +83,7 @@ function encodeStagePlan(plan: StagePlan): ShareTripStatePayload['sp'] {
 		b: plan.balanceMode === 'eta' ? 'e' : 'd',
 		...(plan.startDate && ISO_DATE_RE.test(plan.startDate) && { sd: plan.startDate }),
 		...(plan.restDays?.length && { r: normalizeRestDays(plan.restDays).slice(0, MAX_REST_DAYS) }),
+		...(plan.direction === 'NOBO' && { dr: 'n' as const }),
 	};
 }
 
@@ -104,7 +112,7 @@ function encodeJournal(entry: JournalEntry): NonNullable<ShareTripStatePayload['
 /** Read current trip-local fields from the map store. Returns null when empty. */
 export function collectShareTripStateFromStore(): ShareTripStatePayload | null {
 	const state = useMapStore.getState();
-	const payload: ShareTripStatePayload = { v: 1 };
+	const payload: ShareTripStatePayload = { v: 2 };
 	let hasAny = false;
 
 	if (state.stagePlan && state.stagePlan.stages.length > 0) {
@@ -249,6 +257,7 @@ function parseStagePlan(raw: unknown): StagePlan | null {
 		balanceMode: sp.b === 'e' ? 'eta' : 'distance',
 		...(sp.sd && ISO_DATE_RE.test(sp.sd) && { startDate: sp.sd }),
 		...(restDays.length > 0 && { restDays }),
+		direction: sp.dr === 'n' ? 'NOBO' : 'SOBO',
 	};
 }
 
@@ -344,14 +353,56 @@ export function parseShareTripStateParam(raw: string | null): ShareTripStatePayl
 	if (!json) return null;
 	try {
 		const parsed = JSON.parse(json) as ShareTripStatePayload;
-		if (parsed?.v !== 1) return null;
+		if (parsed?.v !== 1 && parsed?.v !== 2) return null;
 		return parsed;
 	} catch {
 		return null;
 	}
 }
 
-/** Apply decoded trip state to the map store (replaces existing trip-local data). */
+/** True when applying `payload` needs the trail length first (a northbound version 1 link). */
+export function shareTripStateNeedsTrailLength(payload: ShareTripStatePayload, linkDirection: TrailDirection): boolean {
+	return payload.v === 1 && linkDirection === 'NOBO';
+}
+
+/**
+ * Converts a payload to version 2 (SOBO km). Version 1 links from a NOBO
+ * sender stored km from Prevlaka, so those are mirrored with total - km, and
+ * ranges swap ends. Version 1 SOBO links were SOBO already.
+ */
+export function normalizeShareTripStateToSobo(
+	payload: ShareTripStatePayload,
+	linkDirection: TrailDirection,
+	totalKm: number,
+): ShareTripStatePayload {
+	if (!shareTripStateNeedsTrailLength(payload, linkDirection)) return { ...payload, v: 2 };
+	const m = (km: number): number => Math.max(0, totalKm - km);
+	return {
+		...payload,
+		v: 2,
+		...(payload.sp && {
+			sp: {
+				...payload.sp,
+				s: m(payload.sp.e),
+				e: m(payload.sp.s),
+				st: payload.sp.st.map(([a, b]): [number, number] => [m(b), m(a)]),
+				dr: 'n' as const,
+			},
+		}),
+		...(payload.wp && {
+			wp: payload.wp.map((wp) => (typeof wp.tk === 'number' ? { ...wp, tk: m(wp.tk) } : wp)),
+		}),
+		...(payload.j && {
+			j: payload.j.map((entry) =>
+				typeof entry.s === 'number' && typeof entry.e === 'number' ? { ...entry, s: m(entry.e), e: m(entry.s) } : entry,
+			),
+		}),
+		...(payload.done && { done: payload.done.map(([a, b]): [number, number] => [m(b), m(a)]) }),
+	};
+}
+
+/** Apply decoded trip state to the map store (replaces existing trip-local data).
+ *  Expects a version 2 (SOBO km) payload; see normalizeShareTripStateToSobo. */
 export function applyShareTripState(payload: ShareTripStatePayload): void {
 	const store = useMapStore.getState();
 

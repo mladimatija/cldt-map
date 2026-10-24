@@ -56,6 +56,7 @@ import { loadImportedTracks, persistImportedTrackPatch, removeImportedTrack } fr
 import { loadPois } from '@/lib/pois';
 import { prefetchPoiAssets, prefetchPoisAlongSlice } from '@/lib/poi-prefetch';
 import { addInterval, removeInterval, type CompletionInterval } from '../completion';
+import { TRAIL_SECTIONS } from '../trail-sections';
 import { clampPaceFactor, DEFAULT_WATER_CONSUMPTION_LPH } from '../pack-weight';
 import { DEFAULT_FOOD_CONSUMPTION_KG_PER_DAY } from '../resupply-cadence';
 import { normalizeWaypointCategory, type WaypointCategoryId } from '../waypoint-categories';
@@ -1232,6 +1233,53 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 						set({ severeWeatherData: data });
 					},
 
+					kmFrameMigration: null,
+					applyKmFrameMigration: (totalKm: number): void => {
+						const state = get();
+						// Demo mode holds the real data in a snapshot; migrate after it ends.
+						if (state.kmFrameMigration !== 'mirror' || !(totalKm > 0) || state.demoModeActive) return;
+						// Older builds stored a northbound user's km from Prevlaka (the travel
+						// frame). Mirror everything into SOBO km from Ilok.
+						const mirror = (km: number): number => Math.max(0, totalKm - km);
+						const mirrorRange = <T extends { startKm: number; endKm: number }>(range: T): T => ({
+							...range,
+							startKm: mirror(range.endKm),
+							endKm: mirror(range.startKm),
+						});
+						// The section checkboxes were the one writer that stored SOBO km in
+						// both directions, so an interval running exactly between section
+						// boundaries stays as it is.
+						const sectionBoundsKm = [...TRAIL_SECTIONS.map((s) => s.startKm), totalKm];
+						const atSectionBound = (km: number): boolean =>
+							sectionBoundsKm.some((bound) => Math.abs(bound - km) < 0.01);
+						set({
+							completedIntervals: state.completedIntervals.reduce<CompletionInterval[]>(
+								(acc, iv) =>
+									atSectionBound(iv.startKm) && atSectionBound(iv.endKm)
+										? addInterval(acc, iv.startKm, iv.endKm)
+										: addInterval(acc, mirror(iv.startKm), mirror(iv.endKm)),
+								[],
+							),
+							// Stages keep their travel order; each range becomes SOBO.
+							stagePlan: state.stagePlan
+								? {
+										...mirrorRange(state.stagePlan),
+										stages: state.stagePlan.stages.map(mirrorRange),
+										direction: 'NOBO',
+									}
+								: null,
+							journalEntries: state.journalEntries.map((entry) =>
+								entry.startKm !== undefined && entry.endKm !== undefined
+									? { ...entry, startKm: mirror(entry.endKm), endKm: mirror(entry.startKm) }
+									: entry,
+							),
+							userWaypoints: state.userWaypoints.map((wp) =>
+								wp.trailKm !== null ? { ...wp, trailKm: mirror(wp.trailKm) } : wp,
+							),
+							kmFrameMigration: null,
+						});
+					},
+
 					completedIntervals: [],
 					markCompleted: (startKm: number, endKm: number): void => {
 						set({ completedIntervals: addInterval(get().completedIntervals, startKm, endKm) });
@@ -1700,6 +1748,18 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 			},
 			{
 				name: 'cldt-map-storage',
+				// 1: trail km are stored southbound (from Ilok) in both directions.
+				// Version 0 stored them in the travel frame; for a northbound user that
+				// data needs mirroring, which needs the trail length, so the migration
+				// only flags it and applyKmFrameMigration runs once the trail loads.
+				version: 1,
+				migrate: (persistedState, version) => {
+					const state = (persistedState ?? {}) as Partial<MapStoreState>;
+					if (version === 0 && state.direction === 'NOBO') {
+						return { ...state, kmFrameMigration: 'mirror' as const };
+					}
+					return state;
+				},
 				// Debounced: persist would otherwise stringify and write the whole
 				// persisted state on every set, including non-persisted fields.
 				storage: createDebouncedJsonStorage(() => localStorage),
@@ -1778,6 +1838,7 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 						upNextMoreExpanded: state.upNextMoreExpanded,
 						aheadHorizonKm: state.aheadHorizonKm,
 						completedIntervals: demoSnapshot ? demoSnapshot.completedIntervals : state.completedIntervals,
+						kmFrameMigration: state.kmFrameMigration,
 						progressTrackIds: state.progressTrackIds,
 						completionAutoTrack: state.completionAutoTrack,
 						showCompletionOverlay: state.showCompletionOverlay,

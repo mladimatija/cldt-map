@@ -13,6 +13,7 @@ import { formatIsoDate } from '@/lib/date-format';
 import { escapeHtml } from '@/components/map/poi-marker-utils';
 import { WATER_STATUS_OPTIONS, type WaterLogEntry, type WaterStatus } from '@/lib/water-log';
 import { POI_NOTE_MAX_LENGTH } from '@/lib/poi-notes';
+import { toTravelKm } from '@/lib/trail-frame';
 
 export interface PopupBuildArgs {
 	direction: TrailDirection;
@@ -494,7 +495,7 @@ export function buildActionsHtml(poi: Poi, labels: PopupBuildLabels): string {
 export function buildPopupHtml(poi: Poi, displayName: string, typeLabel: string, args: PopupBuildArgs): string {
 	const { direction, units, totalKm, distancePrecision, labels, isStarred } = args;
 	const soboKm = poi.trailKm;
-	const directionAdjustedKm = direction === 'SOBO' ? soboKm : Math.max(0, totalKm - soboKm);
+	const directionAdjustedKm = toTravelKm(soboKm, direction, totalKm);
 	// Both `trailKm` and `distanceFromTrailKm` are already kilometres in the
 	// POI dataset, so do NOT pass `needsConversion: true` (that flag is for
 	// inputs in metres and would divide by 1000 - which is why off-trail POIs

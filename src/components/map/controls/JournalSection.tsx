@@ -16,12 +16,8 @@ import {
 import { useTranslations } from 'next-intl';
 import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
 import { exportJournalBundle, exportJournalEntryGpx } from '@/lib/journal-gpx-export';
-import {
-	buildJournalPreview,
-	displayTrailKm,
-	journalEntryBoundsForFit,
-	resolveTrackLink,
-} from '@/lib/journal-track-link';
+import { buildJournalPreview, journalEntryBoundsForFit, resolveTrackLink } from '@/lib/journal-track-link';
+import { toTravelKm, toTravelRange } from '@/lib/trail-frame';
 import { downloadTextFile, journalToMarkdown, newId, todayIsoDate, type JournalEntry } from '@/lib/user-waypoints';
 import { parseJournalMarkdown, parsedJournalToEntries } from '@/lib/user-waypoint-import';
 import { findNearestPointIndex } from '@/lib/distance-utils';
@@ -94,7 +90,12 @@ export function JournalSection({ embedded = false }: JournalSectionProps): React
 	}, [rulerRange]);
 
 	const fmt = (km: number): string => formatDistance(km, units, distancePrecision);
-	const fmtDisplayKm = (soboKm: number): string => fmt(displayTrailKm(soboKm, direction, totalKm));
+	const fmtDisplayKm = (soboKm: number): string => fmt(toTravelKm(soboKm, direction, totalKm));
+	/** A stored SOBO range as the hiker meets it: travel km, start first. */
+	const fmtTravelRange = (a: number, b: number): string => {
+		const range = toTravelRange(a, b, direction, totalKm);
+		return `${fmt(range.from)} - ${fmt(range.to)}`;
+	};
 
 	const journalSorted = useMemo(
 		() => [...journalEntries].sort((a, b) => b.date.localeCompare(a.date) || b.createdAt.localeCompare(a.createdAt)),
@@ -378,7 +379,7 @@ export function JournalSection({ embedded = false }: JournalSectionProps): React
 										{e.startKm !== undefined && e.endKm !== undefined && (
 											<span className="font-normal text-gray-400 dark:text-[var(--text-secondary)]">
 												{' '}
-												· {fmtDisplayKm(e.startKm)} - {fmtDisplayKm(e.endKm)}
+												· {fmtTravelRange(e.startKm, e.endKm)}
 											</span>
 										)}
 									</p>

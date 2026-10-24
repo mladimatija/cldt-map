@@ -8,13 +8,12 @@
  */
 
 import type { ComputedTrailData } from './trail-compute';
-import type { TrailDirection } from './store/types';
 
 const WORKER_TIMEOUT_MS = 20_000;
 
 type WorkerResponse = { ok: true; payload: ComputedTrailData } | { ok: false; error: string };
 
-export function computeTrailDataInWorker(gpxText: string, direction: TrailDirection): Promise<ComputedTrailData> {
+export function computeTrailDataInWorker(gpxText: string): Promise<ComputedTrailData> {
 	return new Promise((resolve, reject) => {
 		if (typeof window === 'undefined' || typeof Worker === 'undefined') {
 			reject(new Error('workers unavailable'));
@@ -42,6 +41,6 @@ export function computeTrailDataInWorker(gpxText: string, direction: TrailDirect
 			worker.terminate();
 			reject(new Error(event.message || 'trail worker error'));
 		};
-		worker.postMessage({ gpxText, direction });
+		worker.postMessage({ gpxText });
 	});
 }

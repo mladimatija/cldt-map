@@ -1,4 +1,5 @@
 import type { ClosestPoint, TrailDirection, UnitSystem } from '@/lib/store/types';
+import { remainingM, toTravelM } from '@/lib/trail-frame';
 
 export interface DistanceRemaining {
 	traveled: number;
@@ -11,18 +12,28 @@ export interface RulerRange {
 	distanceFromStartB: number;
 }
 
+/** The ruler end the hiker reaches last: the larger SOBO value for SOBO, the smaller for NOBO. */
+export function rulerTravelEndM(rulerRange: RulerRange, direction: TrailDirection): number {
+	const { distanceFromStartA: a, distanceFromStartB: b } = rulerRange;
+	return direction === 'NOBO' ? Math.min(a, b) : Math.max(a, b);
+}
+
 /**
  * Derives the three distance display values from the user's current closest trail point.
  *
- * @param closestPoint  The closest point on the trail to the user's location, or null if unknown.
- * @param rulerRange    Active ruler range (from map store), or null when ruler is inactive.
+ * @param closestPoint  The closest point on the trail to the user's location (SOBO metres), or null if unknown.
+ * @param rulerRange    Active ruler range in SOBO metres (from map store), or null when ruler is inactive.
  * @param onTrailThresholdM  Maximum distance in metres before the user is considered off-trail.
+ * @param direction     Travel direction, for the travelled / remaining split.
+ * @param totalM        Trail length in metres.
  * @returns null when the user is off-trail or closestPoint is unavailable.
  */
 export function computeDistanceRemaining(
 	closestPoint: ClosestPoint | null,
 	rulerRange: RulerRange | null,
 	onTrailThresholdM: number,
+	direction: TrailDirection,
+	totalM: number,
 ): DistanceRemaining | null {
 	if (closestPoint === null) {
 		return null;
@@ -32,9 +43,18 @@ export function computeDistanceRemaining(
 		return null;
 	}
 
-	const traveled = closestPoint.distanceFromStart;
-	const toTrailEnd = closestPoint.distanceToEnd;
-	const toSectionEnd = rulerRange ? Math.max(0, rulerRange.distanceFromStartB - closestPoint.distanceFromStart) : null;
+	const soboM = closestPoint.distanceFromStart;
+	const traveled = toTravelM(soboM, direction, totalM);
+	const toTrailEnd = remainingM(soboM, direction, totalM);
+	// Distance to the ruler end still ahead; 0 once it has been passed.
+	const toSectionEnd = rulerRange
+		? Math.max(
+				0,
+				direction === 'NOBO'
+					? soboM - rulerTravelEndM(rulerRange, direction)
+					: rulerTravelEndM(rulerRange, direction) - soboM,
+			)
+		: null;
 
 	return { traveled, toTrailEnd, toSectionEnd };
 }
@@ -95,9 +115,10 @@ export function computeEta(distanceM: number, paceKmh: number, opts?: ComputeEta
 		return Math.round((distanceM / 1000 / paceKmh) * 3600);
 	}
 
+	// Points are in SOBO order in both directions: SOBO walks forward, NOBO backward.
 	const { elevationPoints, fromIndex, direction = 'SOBO' } = opts;
 	// Clamp fromIndex to a valid array position to prevent NaN propagation when arrays
-	// are briefly out of sync (e.g. during a direction switch).
+	// are briefly out of sync (e.g. while a new trail loads).
 	const safeFromIndex = Math.max(0, Math.min(fromIndex, elevationPoints.length - 1));
 	const speedMps = (paceKmh * 1000) / 3600;
 
@@ -165,6 +186,16 @@ export function findNearestPointIndex(points: ReadonlyArray<{ distanceFromStart:
 		return lo - 1;
 	}
 	return lo;
+}
+
+/** Index range (SOBO order) of the trail points between the ruler ends, given in either order. */
+export function rulerSegmentIndices(
+	points: readonly { distanceFromStart: number }[],
+	range: RulerRange,
+): { startIndex: number; endIndex: number } {
+	const lo = Math.min(range.distanceFromStartA, range.distanceFromStartB);
+	const hi = Math.max(range.distanceFromStartA, range.distanceFromStartB);
+	return { startIndex: findNearestPointIndex(points, lo), endIndex: findNearestPointIndex(points, hi) };
 }
 
 export interface ProjectPositionAtTimeOpts {
@@ -394,12 +425,12 @@ export interface ElevationRemaining {
  * Computes cumulative elevation gain and loss from the user's position to trail end (and
  * optionally to the active ruler section end), direction-aware.
  *
- * @param elevationPoints  Ordered elevation profile points for the trail.
+ * @param elevationPoints  Elevation profile points in SOBO order.
  * @param fromIndex        Index of the point nearest to the user's current position.
  * @param direction        Travel direction: SOBO iterates forward, NOBO iterates backward.
- * @param rulerRange       Active ruler range (from map store), or null when ruler is inactive.
+ * @param rulerRange       Active ruler range in SOBO metres, or null when ruler is inactive.
  * @param enhancedPoints   Full enhanced trail points carrying distanceFromStart values,
- *                         used to resolve the section end index from rulerRange.distanceFromStartB.
+ *                         used to resolve the index of the ruler's travel end.
  */
 export function computeElevationRemaining(
 	elevationPoints: { elevation: number }[],
@@ -451,29 +482,21 @@ export function computeElevationRemaining(
 		return { gainM, lossM, sectionGainM: null, sectionLossM: null };
 	}
 
-	// Find the index in enhancedPoints nearest to rulerRange.distanceFromStartB
-	const sectionEndIdx = findNearestPointIndex(enhancedPoints, rulerRange.distanceFromStartB);
+	// The ruler end the hiker reaches last, clamped to the profile.
+	const sectionEndIdx = Math.min(
+		findNearestPointIndex(enhancedPoints, rulerTravelEndM(rulerRange, direction)),
+		elevationPoints.length - 1,
+	);
 
-	// Clamp sectionEndIdx to elevationPoints bounds
-	const clampedSectionEnd = Math.min(sectionEndIdx, elevationPoints.length - 1);
-
-	let sectionGainM: number;
-	let sectionLossM: number;
-
-	if (direction === 'SOBO') {
-		const start = Math.min(fromIndex, clampedSectionEnd);
-		const end = Math.max(fromIndex, clampedSectionEnd);
-		const { gain, loss } = accumulateDeltas(start, end);
-		sectionGainM = gain;
-		sectionLossM = loss;
-	} else {
-		// NOBO section: accumulate backward between the two boundary indices
-		const start = Math.min(fromIndex, clampedSectionEnd);
-		const end = Math.max(fromIndex, clampedSectionEnd);
-		const { gain, loss } = accumulateDeltas(start, end, true);
-		sectionGainM = gain;
-		sectionLossM = loss;
-	}
+	// Nothing left once the section end is behind the hiker.
+	const { gain: sectionGainM, loss: sectionLossM } =
+		direction === 'SOBO'
+			? fromIndex < sectionEndIdx
+				? accumulateDeltas(fromIndex, sectionEndIdx)
+				: { gain: 0, loss: 0 }
+			: fromIndex > sectionEndIdx
+				? accumulateDeltas(sectionEndIdx, fromIndex, true)
+				: { gain: 0, loss: 0 };
 
 	return { gainM, lossM, sectionGainM, sectionLossM };
 }

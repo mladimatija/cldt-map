@@ -11,6 +11,7 @@ import {
 	type TrailOsmTagRun,
 } from '@/lib/trail-osm-tags';
 import { findNearestPointIndex } from '@/lib/distance-utils';
+import { toSoboKm, travelGradePct } from '@/lib/trail-frame';
 import { type EnhancedTrailPoint } from '@/lib/store/types';
 import { type TrailDirection } from '@/lib/types';
 import { GRADE_BAND_ASCENT_COLORS, GRADE_BAND_DESCENT_COLORS } from '@/components/map/trail-route-constants';
@@ -79,24 +80,28 @@ export interface GradeAtTrailKm {
 	color: string;
 }
 
-/** Map chart km (direction-relative) to the grade band and signed percent at that point. */
+/** Map chart km (travel km) to the grade band and the percent signed for the travel direction. */
 export function resolveGradeAtTrailKm(
 	km: number,
 	enhancedTrailPoints: readonly EnhancedTrailPoint[],
+	direction: TrailDirection,
+	totalKm: number,
 ): GradeAtTrailKm | null {
 	if (!enhancedTrailPoints.length) return null;
-	const ep = enhancedTrailPoints[findNearestPointIndex(enhancedTrailPoints, km * 1000)];
+	const soboM = toSoboKm(km, direction, totalKm) * 1000;
+	const ep = enhancedTrailPoints[findNearestPointIndex(enhancedTrailPoints, soboM)];
 	if (!ep) return null;
-	const sign = ep.gradePct < 0 ? 'desc' : 'asc';
+	const gradePct = travelGradePct(ep, direction);
+	const sign = gradePct < 0 ? 'desc' : 'asc';
 	return {
 		gradeBand: ep.gradeBand,
-		gradePct: ep.gradePct,
+		gradePct,
 		sign,
 		color: gradeColorForKey(`g${ep.gradeBand}_${sign}`),
 	};
 }
 
-/** Map chart km (direction-relative) to the OSM tag run and coarse buckets at that point. */
+/** Map chart km (travel km) to the OSM tag run and coarse buckets at that point. */
 export function resolveOsmAtTrailKm(
 	km: number,
 	direction: TrailDirection,
@@ -104,8 +109,7 @@ export function resolveOsmAtTrailKm(
 	runs: TrailOsmTagRun[] | null | undefined,
 ): OsmAtTrailKm | null {
 	if (!runs?.length) return null;
-	const soboKm = direction === 'SOBO' ? km : Math.max(0, totalKm - km);
-	const run = findRunAtKm(runs, soboKm);
+	const run = findRunAtKm(runs, toSoboKm(km, direction, totalKm));
 	return {
 		run,
 		surfaceBucket: bucketSurface(run?.surface ?? null),

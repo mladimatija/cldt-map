@@ -58,6 +58,7 @@ import { MapControlInlineNameForm } from './MapControlInlineNameForm';
 import { MapControlsButton } from './MapControlsButton';
 import { MapControlsPoiDisclaimerModal } from './MapControlsPoiDisclaimerModal';
 import { DistanceUnit } from '@/lib/types';
+import { toTravelKm, toTravelRange } from '@/lib/trail-frame';
 
 /** Window after which the POI disclaimer must be shown again (30 days). */
 const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000;
@@ -143,7 +144,7 @@ const PoiListRow = React.memo(function PoiListRow({
 		},
 		[index, rowRefsRef],
 	);
-	const displayKm = direction === 'SOBO' ? poi.trailKm : Math.max(0, totalKm - poi.trailKm);
+	const displayKm = toTravelKm(poi.trailKm, direction, totalKm);
 	const distLabel = formatDistance(displayKm, units, distancePrecision);
 	const offTrailLabel = poi.distanceFromTrailKm >= 0.5 ? formatOffTrail(poi.distanceFromTrailKm, units) : '';
 	const gpsLabel =
@@ -589,8 +590,7 @@ export function MapControlsPoiList({
 	const aheadSummary = useMemo((): string | null => {
 		if (sort !== 'ahead' || anchorSoboKm === null) return null;
 		const range = aheadCorridorSoboRange(anchorSoboKm, aheadHorizonKm, direction, totalKm);
-		const fromTrailKm = direction === 'SOBO' ? range.from : totalKm - range.to;
-		const toTrailKm = direction === 'SOBO' ? range.to : totalKm - range.from;
+		const { from: fromTrailKm, to: toTrailKm } = toTravelRange(range.from, range.to, direction, totalKm);
 		const scale = units === 'imperial' ? 0.621371 : 1;
 		return t('aheadSummary', {
 			count: rows.length,

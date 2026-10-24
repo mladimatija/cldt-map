@@ -25,6 +25,7 @@ import { computeStagePackScenarios, formatVolume, formatWeight, kgToDisplay, wei
 import { buildResupplyCadenceLabels, type StageResupplyCadence } from '@/lib/resupply-cadence';
 import { poiDisplayName } from '@/lib/pois';
 import { filterOvernightCandidates } from '@/lib/stage-accommodation';
+import { stagePlanDirection } from '@/lib/stage-planner';
 import {
 	buildSafetyContactPlan,
 	buildSafetyContactPlanInput,
@@ -88,7 +89,9 @@ export function MapControlsTripBriefModal({
 	const gradeAdjustedEta = useMapStore((s: MapStoreState) => s.gradeAdjustedEta);
 	const units = useMapStore((s: MapStoreState) => s.units);
 	const distancePrecision = useMapStore((s: MapStoreState) => s.distancePrecision);
-	const direction = useMapStore((s: MapStoreState) => s.direction);
+	const mapDirection = useMapStore((s: MapStoreState) => s.direction);
+	/** The brief follows the plan's own direction, like the stage planner. */
+	const direction = stagePlan ? stagePlanDirection(stagePlan) : mapDirection;
 	const seasonalEntries = useMapStore((s: MapStoreState) => s.seasonalStatusEntries);
 	const enhancedTrailPoints = useStore((s: StoreState) => s.enhancedTrailPoints);
 
@@ -159,7 +162,6 @@ export function MapControlsTripBriefModal({
 			stagePlan,
 			poisFile,
 			enhancedTrailPoints,
-			elevationPoints: enhancedTrailPoints,
 			selectedPoiIds: activeStarredPoiIds,
 			includeAllInStage: poiScope === 'allInStage',
 			enabledPoiTypes,

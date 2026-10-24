@@ -33,8 +33,11 @@ const TICK_MS = 1000;
 const M_PER_DEG_LAT = 111_320;
 
 let timer: ReturnType<typeof setInterval> | null = null;
+/** SOBO-ordered trail points and their SOBO metres from Ilok. */
 let points: { lat: number; lng: number }[] = [];
 let cumM: number[] = [];
+/** The store array `points` was read from; a new trail load replaces it. */
+let sourcePoints: unknown = null;
 let posM = 0;
 let speedKmh = 4;
 let walkDirection: TrailDirection = 'SOBO';
@@ -44,21 +47,25 @@ let loopAtEnds = false;
 let loopStartM = 0;
 
 async function loadTrail(): Promise<boolean> {
-	if (points.length > 1) return true;
-	const main = useStore.getState();
-	const enhanced = main.enhancedTrailPoints ?? [];
+	const enhanced = useStore.getState().enhancedTrailPoints ?? [];
+	// Reuse the cache unless the app has loaded a different trail since.
+	if (points.length > 1 && (enhanced.length < 2 || enhanced === sourcePoints)) return true;
 	if (enhanced.length > 1) {
+		// Same SOBO points and distances the app uses, so the sim's km match the HUD.
 		points = enhanced.map((p) => ({ lat: p.lat, lng: p.lng }));
-	} else {
-		const { fetchAndParseTrailPoints } = await import('./gpx-cache');
-		points = await fetchAndParseTrailPoints();
+		cumM = enhanced.map((p) => p.distanceFromStart);
+		sourcePoints = enhanced;
+		return true;
 	}
+	const { fetchAndParseTrailPoints } = await import('./gpx-cache');
+	points = await fetchAndParseTrailPoints();
 	if (points.length < 2) return false;
 	cumM = new Array<number>(points.length);
 	cumM[0] = 0;
 	for (let i = 1; i < points.length; i++) {
 		cumM[i] = cumM[i - 1] + haversineDistanceM(points[i - 1].lat, points[i - 1].lng, points[i].lat, points[i].lng);
 	}
+	sourcePoints = null;
 	return true;
 }
 
@@ -93,9 +100,10 @@ function applyPosition(): void {
 	const idx = indexAt(posM);
 	const base = points[idx];
 	const next = points[Math.min(idx + 1, points.length - 1)];
-	// Trail bearing -> offset perpendicular to the left of travel.
+	// Trail bearing -> offset perpendicular to the left of travel. Points run SOBO,
+	// so a NOBO walk faces the other way.
 	const bearingRad = Math.atan2((next.lng - base.lng) * Math.cos((base.lat * Math.PI) / 180), next.lat - base.lat);
-	const sideRad = bearingRad + Math.PI / 2;
+	const sideRad = bearingRad + (walkDirection === 'SOBO' ? Math.PI / 2 : -Math.PI / 2);
 	const lat = base.lat + (offsetM * Math.cos(sideRad)) / M_PER_DEG_LAT;
 	const lng = base.lng + (offsetM * Math.sin(sideRad)) / (M_PER_DEG_LAT * Math.cos((base.lat * Math.PI) / 180));
 
@@ -110,7 +118,6 @@ function applyPosition(): void {
 		point: L.latLng(base.lat, base.lng),
 		distance: offsetM,
 		distanceFromStart: posM,
-		distanceToEnd: Math.max(0, cumM[cumM.length - 1] - posM),
 	});
 	main.setClosestPointCalculated(true);
 }

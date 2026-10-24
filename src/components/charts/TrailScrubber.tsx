@@ -18,6 +18,7 @@ import { useStore, useMapStore, type StoreState, type MapStoreState } from '@/li
 import { useBlockMapPropagation } from '@/hooks';
 import { formatDistance, formatElevation } from '@/lib/utils';
 import { findNearestPointIndex } from '@/lib/distance-utils';
+import { toSoboKm, travelGradePct } from '@/lib/trail-frame';
 import { gradeWord, nearestUsableWaterAheadKm } from '@/lib/trail-narration';
 
 /** Wait for the scrub/keyboard action to settle before the heavy map update. */
@@ -59,27 +60,26 @@ export function TrailScrubber(): React.ReactElement | null {
 		return null;
 	}
 
-	// The slider value IS travel-direction distance (km from the travel-direction
-	// start: left = start, right = end). That equals EnhancedTrailPoint
-	// .distanceFromStart - the same space the highlight pipeline and the elevation
-	// chart use (trail-compute reverses the points for NOBO) - so the highlight and
-	// aria text use the value directly. Only poi.trailKm is fixed SOBO km, so we
-	// convert just for the water lookup below.
+	// The slider value is travel km (left = the hiker's start, right = the end),
+	// the same axis as the elevation chart, so the aria text reads it directly.
+	// The trail points, the highlight pipeline and poi.trailKm are SOBO, so every
+	// lookup converts first.
 	const clamp = (v: number): number => Math.min(totalKm, Math.max(0, v));
+	const soboKmAt = (v: number): number => toSoboKm(clamp(v), direction, totalKm);
 	const pointAtValue = (v: number): (typeof enhancedTrailPoints)[number] =>
-		enhancedTrailPoints[findNearestPointIndex(enhancedTrailPoints, clamp(v) * 1000)];
+		enhancedTrailPoints[findNearestPointIndex(enhancedTrailPoints, soboKmAt(v) * 1000)];
 
 	const current = pointAtValue(value);
 	const ariaValueText = t('position', {
-		distance: formatDistance(current.distanceFromStart / 1000, units, distancePrecision),
+		distance: formatDistance(clamp(value), units, distancePrecision),
 		elevation: formatElevation(current.elevation, units),
-		grade: t(`grade.${gradeWord(current.gradePct)}`),
+		grade: t(`grade.${gradeWord(travelGradePct(current, direction))}`),
 	});
 
 	// Heavy update, deferred until the scrub settles.
 	const commit = (v: number): void => {
-		const travelKm = clamp(v);
-		highlightTrailPosition({ distance: travelKm * 1000 });
+		const soboKm = soboKmAt(v);
+		highlightTrailPosition({ distance: soboKm * 1000 });
 		const point = useStore.getState().highlightedTrailPoint;
 		if (!point) return;
 		const latLng = L.latLng(point.lat, point.lng);
@@ -91,8 +91,6 @@ export function TrailScrubber(): React.ReactElement | null {
 			lastSectionRef.current = section;
 			announce(t('enteringSection', { section: tTrail(section) }));
 		}
-		// poi.trailKm is fixed SOBO km, so convert the travel-direction position.
-		const soboKm = direction === 'SOBO' ? travelKm : totalKm - travelKm;
 		const waterKm = nearestUsableWaterAheadKm(soboKm, poisFile?.pois, direction);
 		if (waterKm !== null && !waterAnnouncedRef.current) {
 			waterAnnouncedRef.current = true;

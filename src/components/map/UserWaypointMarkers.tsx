@@ -5,7 +5,8 @@ import { useMap } from 'react-leaflet';
 import L from 'leaflet';
 import { useLocale, useTranslations } from 'next-intl';
 import { usePathname, useRouter } from '@/i18n/navigation';
-import { useMapStore, useStore, type MapStoreState } from '@/lib/store';
+import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
+import { toTravelKm } from '@/lib/trail-frame';
 import { newId, nextWaypointName, type UserWaypoint } from '@/lib/user-waypoints';
 import { buildWaypointShareUrl, clearShareUrlParams, formatDistance, getInitialShareUrlParams } from '@/lib/utils';
 import { wirePopupShareButton } from '@/lib/share-link-copy';
@@ -59,6 +60,8 @@ export function UserWaypointMarkers(): null {
 	const clearPendingOpenWaypoint = useMapStore((s: MapStoreState) => s.clearPendingOpenWaypoint);
 	const units = useMapStore((s: MapStoreState) => s.units);
 	const distancePrecision = useMapStore((s: MapStoreState) => s.distancePrecision);
+	const direction = useMapStore((s: MapStoreState) => s.direction);
+	const trailTotalKm = useStore((s: StoreState) => s.trailMetadata?.totalDistance ?? 0);
 
 	const markersRef = useRef<Map<string, L.Marker>>(new Map());
 	const deepLinkAppliedRef = useRef(false);
@@ -162,7 +165,10 @@ export function UserWaypointMarkers(): null {
 			metaLine.className = 'poi-popup__row poi-popup__row--muted';
 			const kmText =
 				wp.trailKm !== null
-					? t('atKm', { distance: formatDistance(wp.trailKm, units, distancePrecision) })
+					? t('atKm', {
+							// Stored SOBO; shown as km from the hiker's start.
+							distance: formatDistance(toTravelKm(wp.trailKm, direction, trailTotalKm), units, distancePrecision),
+						})
 					: t('offTrail');
 			metaLine.textContent = `${kmText} · ${formatIsoDate(wp.createdAt.slice(0, 10), locale)}`;
 
@@ -227,6 +233,8 @@ export function UserWaypointMarkers(): null {
 		hiddenWaypointCategories,
 		units,
 		distancePrecision,
+		direction,
+		trailTotalKm,
 		t,
 		tPois,
 		locale,

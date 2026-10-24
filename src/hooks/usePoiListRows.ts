@@ -6,6 +6,7 @@ import { isPoiInAheadCorridor, poiAheadKm } from '@/lib/poi-ahead-corridor';
 import { poiMatchesWaterReliabilityFilter, type WaterReliability } from '@/lib/water-intelligence';
 import { milesToKm, UnitSystem } from '@/lib/utils';
 import { DistanceUnit, TrailDirection } from '@/lib/types';
+import { toSoboKm, toTravelKm } from '@/lib/trail-frame';
 
 /** Distance window (km) around a numeric jump-to query within which we surface
  *  nearby POIs in the list. */
@@ -41,7 +42,7 @@ function parseDistanceQuery(
 		unitTyped === 'mi' ? 'mi' : unitTyped === 'km' ? 'km' : activeUnits === 'imperial' ? 'mi' : 'km';
 	const valueInKm = unit === 'mi' ? milesToKm(num) : num;
 	if (valueInKm > totalKm + 0.5) return null;
-	const soboKm = direction === 'SOBO' ? valueInKm : Math.max(0, totalKm - valueInKm);
+	const soboKm = toSoboKm(valueInKm, direction, totalKm);
 	return { value: num, unit, soboKm };
 }
 
@@ -159,11 +160,8 @@ export function usePoiListRows(args: UsePoiListRowsArgs): UsePoiListRowsResult {
 				const db = gpsDistanceById.get(b.id) ?? Number.POSITIVE_INFINITY;
 				return da - db;
 			}
-			// trail-km, direction-aware: NOBO walks the trail in reverse, so flip the
-			// effective km used for sorting.
-			const aKm = direction === 'SOBO' ? a.trailKm : totalKm - a.trailKm;
-			const bKm = direction === 'SOBO' ? b.trailKm : totalKm - b.trailKm;
-			return aKm - bKm;
+			// Sort by km from the hiker's start (NOBO walks the SOBO km in reverse).
+			return toTravelKm(a.trailKm, direction, totalKm) - toTravelKm(b.trailKm, direction, totalKm);
 		};
 		return [...pool].sort(cmp);
 	}, [
@@ -208,7 +206,7 @@ export function usePoiListRows(args: UsePoiListRowsArgs): UsePoiListRowsResult {
 		let currentHeader: Extract<PoiListGroupedItem, { type: 'header' }> | null = null;
 		for (let i = 0; i < rows.length; i++) {
 			const poi = rows[i];
-			const displayKm = direction === 'SOBO' ? poi.trailKm : Math.max(0, totalKm - poi.trailKm);
+			const displayKm = toTravelKm(poi.trailKm, direction, totalKm);
 			const bucket = Math.floor(displayKm / decadeKm);
 			if (bucket !== currentBucket) {
 				currentBucket = bucket;

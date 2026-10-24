@@ -17,6 +17,7 @@
 import { poiDisplayName, type Poi } from '@/lib/pois';
 import { findStageEndAccommodation } from '@/lib/stage-accommodation';
 import { stageCalendarDate } from '@/lib/stage-ical-export';
+import { stagePlanDirection } from '@/lib/stage-planner';
 import { dayOffsetForRestDayAfter, dayOffsetForStage, restDayCountAfter, totalTripDays } from '@/lib/stage-rest-days';
 import { formatShortWeekdayDate } from '@/lib/date-format';
 import type { StagePlan } from '@/lib/store/types';
@@ -77,7 +78,8 @@ export interface SafetyContactAnchor {
 
 /** One hiking stage plus any rest days taken after it. */
 export interface SafetyContactStage {
-	/** SOBO trail km at the stage start / end (rendered rounded to whole km). */
+	/** Official (SOBO) trail km where the day starts and ends, in walking order,
+	 *  so a northbound day reads from the higher km (rendered rounded to whole km). */
 	fromKm: number;
 	toKm: number;
 	/** Calendar date label for the stage; empty when the plan has no start date. */
@@ -187,8 +189,12 @@ export function buildSafetyContactPlanInput({
 	locale,
 	bufferDays,
 }: SafetyContactPlanInputOptions): SafetyContactPlanInput {
+	// Stages are SOBO ranges; a northbound day starts at the higher km.
+	const nobo = stagePlanDirection(stagePlan) === 'NOBO';
 	const stages: SafetyContactStage[] = stagePlan.stages.map((stage, i) => {
-		const acc = findStageEndAccommodation(stage.endKm, overnightPois);
+		const fromKm = nobo ? stage.endKm : stage.startKm;
+		const toKm = nobo ? stage.startKm : stage.endKm;
+		const acc = findStageEndAccommodation(toKm, overnightPois);
 		const restDayLabels: string[] = [];
 		if (stagePlan.startDate) {
 			const restCount = restDayCountAfter(i, stagePlan.restDays);
@@ -202,8 +208,8 @@ export function buildSafetyContactPlanInput({
 			}
 		}
 		return {
-			fromKm: stage.startKm,
-			toKm: stage.endKm,
+			fromKm,
+			toKm,
 			dateLabel: stagePlan.startDate
 				? formatShortWeekdayDate(
 						stageCalendarDate(stagePlan.startDate, dayOffsetForStage(i, stagePlan.restDays)),

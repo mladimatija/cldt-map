@@ -42,7 +42,6 @@ const trailGridCache = new WeakMap<LatLng[], SpatialGrid>();
 function computeClosestPointData(
 	points: LatLng[],
 	enhancedPoints: EnhancedTrailPoint[],
-	totalDistanceM: number,
 	userLatLng: LatLng,
 ): ClosestPoint | null {
 	if (points.length === 0) return null;
@@ -56,17 +55,10 @@ function computeClosestPointData(
 	const closestIndex = hit ? hit.index : nearestIndexByCoords(points, userLatLng.lat, userLatLng.lng);
 	const closestPoint = points[closestIndex];
 	const closestDistance = userLatLng.distanceTo(closestPoint);
-	const enhanced = enhancedPoints[closestIndex];
-	const distanceFromStart = enhanced?.distanceFromStart ?? 0;
-	const distanceToEnd = Math.max(0, totalDistanceM - distanceFromStart);
-	const elevationGainSoFar = enhanced?.elevationGainFromStart ?? 0;
-
 	return {
 		point: closestPoint,
 		distance: closestDistance,
-		distanceFromStart,
-		distanceToEnd,
-		elevationGainSoFar,
+		distanceFromStart: enhancedPoints[closestIndex]?.distanceFromStart ?? 0,
 	};
 }
 
@@ -130,13 +122,7 @@ export const createTrailSlice: StateCreator<StoreState, [], [], TrailSlice> = (s
 			return;
 		}
 		const userLatLng = L.latLng(state.userLocation.lat, state.userLocation.lng);
-		const totalDistanceM = (state.trailMetadata?.totalDistance ?? 0) * 1000;
-		const closestPointData = computeClosestPointData(
-			state.trailPoints,
-			state.enhancedTrailPoints,
-			totalDistanceM,
-			userLatLng,
-		);
+		const closestPointData = computeClosestPointData(state.trailPoints, state.enhancedTrailPoints, userLatLng);
 		if (closestPointData) {
 			// Publish suppression: every GPS fix resets closestPointCalculated,
 			// so this runs per tick even when the hiker is standing still and
@@ -180,8 +166,7 @@ export const createTrailSlice: StateCreator<StoreState, [], [], TrailSlice> = (s
 			return;
 		}
 		const userLatLng = L.latLng(location.lat, location.lng);
-		const totalDistanceM = (state.trailMetadata?.totalDistance ?? 0) * 1000;
-		const closestPointData = computeClosestPointData(points, state.enhancedTrailPoints, totalDistanceM, userLatLng);
+		const closestPointData = computeClosestPointData(points, state.enhancedTrailPoints, userLatLng);
 		if (closestPointData) {
 			set({
 				closestPoint: closestPointData,

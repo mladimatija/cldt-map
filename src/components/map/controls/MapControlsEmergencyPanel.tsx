@@ -13,6 +13,7 @@ import { EmergencySosCard } from './EmergencySosCard';
 import { Button, buttonVariants } from '@/components/ui/Button';
 import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
 import { computeBearing, findNearestPointIndex, formatDistanceM, formatShortDistanceM } from '@/lib/distance-utils';
+import { toTravelKm } from '@/lib/trail-frame';
 import {
 	bearingToCompass,
 	findNearestEntry,
@@ -166,6 +167,7 @@ export function MapControlsEmergencyPanel({ onClose }: MapControlsEmergencyPanel
 	const permissionStatus = useMapStore((s: MapStoreState) => s.permissionStatus);
 	const locationError = useMapStore((s: MapStoreState) => s.locationError);
 	const units = useMapStore((s: MapStoreState) => s.units);
+	const direction = useMapStore((s: MapStoreState) => s.direction);
 	const closestPoint = useStore((s: StoreState) => s.closestPoint);
 	const enhancedTrailPoints = useStore((s: StoreState) => s.enhancedTrailPoints);
 
@@ -309,16 +311,19 @@ export function MapControlsEmergencyPanel({ onClose }: MapControlsEmergencyPanel
 		[displayPosition],
 	);
 
-	const sectionInfo = useMemo<{ sectionName: string | null; km: number | null }>(() => {
+	const sectionInfo = useMemo<{ sectionName: string | null; soboKm: number | null; travelKm: number | null }>(() => {
 		if (!closestPoint || !enhancedTrailPoints || enhancedTrailPoints.length === 0) {
-			return { sectionName: null, km: null };
+			return { sectionName: null, soboKm: null, travelKm: null };
 		}
 		const p = enhancedTrailPoints[findNearestPointIndex(enhancedTrailPoints, closestPoint.distanceFromStart)];
+		const totalKm = enhancedTrailPoints[enhancedTrailPoints.length - 1].distanceFromStart / 1000;
+		const soboKm = p ? p.distanceFromStart / 1000 : null;
 		return {
 			sectionName: p?.sectionName ?? null,
-			km: p ? p.distanceFromStart / 1000 : null,
+			soboKm,
+			travelKm: soboKm !== null ? toTravelKm(soboKm, direction, totalKm) : null,
 		};
-	}, [enhancedTrailPoints, closestPoint]);
+	}, [enhancedTrailPoints, closestPoint, direction]);
 
 	const nearestRoad: NearestRoad | null = useMemo(() => {
 		if (displayPosition.source === null || roadAccess === null) return null;
@@ -341,14 +346,19 @@ export function MapControlsEmergencyPanel({ onClose }: MapControlsEmergencyPanel
 	const hgssCompass = useMemo(() => (nearestHgss ? bearingToCompass(nearestHgss.bearingDeg) : null), [nearestHgss]);
 
 	const sectionString = useMemo((): string => {
-		const { sectionName, km } = sectionInfo;
-		if (sectionName === null && km === null) return '';
+		const { sectionName, soboKm, travelKm } = sectionInfo;
+		if (sectionName === null && soboKm === null) return '';
 		const localisedName = sectionName ? tTrail(sectionName) : null;
-		const parts = [localisedName, km !== null ? t('kmFromStart', { km: km.toFixed(2) }) : null].filter(
-			(p): p is string => p !== null,
-		);
-		return parts.join(' - ');
-	}, [sectionInfo, t, tTrail]);
+		// SOBO km is the official trail km. Northbound, the hiker's own km from the
+		// start differs, so rescuers get both.
+		const kmText =
+			soboKm === null || travelKm === null
+				? null
+				: direction === 'NOBO'
+					? t('kmOnTrailFromStart', { official: soboKm.toFixed(2), km: travelKm.toFixed(2) })
+					: t('kmFromStart', { km: soboKm.toFixed(2) });
+		return [localisedName, kmText].filter((p): p is string => p !== null).join(' - ');
+	}, [sectionInfo, direction, t, tTrail]);
 
 	const hasPosition = displayPosition.source !== null;
 

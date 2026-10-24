@@ -1,5 +1,52 @@
-import type { EnhancedTrailPoint, StagePlan } from '@/lib/store/types';
+import type { EnhancedTrailPoint, StagePlan, TrailDirection } from '@/lib/store/types';
 import { computeEta, findNearestPointIndex, gradeSegmentSeconds } from '@/lib/distance-utils';
+import { segmentGainLoss, toSoboRange } from '@/lib/trail-frame';
+
+// Frames: the split functions below are frame-free maths over any ascending
+// `distanceFromStart` profile. The panel splits a travel-ordered profile
+// (travelProfile) in the travel km the user typed, then stores the result with
+// toStoredStagePlan: each stage a SOBO range, stages in travel order.
+
+/** The trail profile in travel order: metres from the hiker's start with the
+ *  elevation at each point. SOBO points are already in that order; NOBO
+ *  reverses them and measures from the other end. */
+export function travelProfile(
+	enhancedPoints: readonly EnhancedTrailPoint[],
+	direction: TrailDirection,
+): { elevation: number; distanceFromStart: number }[] {
+	if (direction === 'SOBO') return enhancedPoints as EnhancedTrailPoint[];
+	const n = enhancedPoints.length;
+	const totalM = enhancedPoints[n - 1]?.distanceFromStart ?? 0;
+	const out = new Array<{ elevation: number; distanceFromStart: number }>(n);
+	for (let i = 0; i < n; i++) {
+		const p = enhancedPoints[n - 1 - i];
+		out[i] = { elevation: p.elevation, distanceFromStart: totalM - p.distanceFromStart };
+	}
+	return out;
+}
+
+/** Converts a plan split in travel km into its stored form: every stage a
+ *  SOBO range with startKm < endKm, stages still in travel order (stage 0 is
+ *  day 1), tagged with the direction it was planned for. */
+export function toStoredStagePlan(plan: StagePlan, direction: TrailDirection, totalKm: number): StagePlan {
+	const stored = (a: number, b: number): { startKm: number; endKm: number } => {
+		const range = toSoboRange(a, b, direction, totalKm);
+		return { startKm: range.from, endKm: range.to };
+	};
+	return {
+		...plan,
+		...stored(plan.startKm, plan.endKm),
+		stages: plan.stages.map((stage) => stored(stage.startKm, stage.endKm)),
+		direction,
+	};
+}
+
+/** Direction a stored plan was made for. Its stage order, labels and stats all
+ *  follow it, whatever the current map direction. Plans from older builds
+ *  carry none and were made southbound. */
+export function stagePlanDirection(plan: Pick<StagePlan, 'direction'>): TrailDirection {
+	return plan.direction ?? 'SOBO';
+}
 
 /** Sensible upper bound for a sustained walking day - long-distance hikers
  *  typically walk 8-10 hours; 10 leaves headroom while preventing the planner
@@ -124,26 +171,25 @@ export interface StageStats {
 	etaSec: number;
 }
 
+/** Stats for a stored stage (a SOBO km range) as walked in `direction`:
+ *  climb and descent in travel order, ETA from the end the hiker starts at. */
 export function computeStageStats(
 	stage: { startKm: number; endKm: number },
 	enhancedPoints: EnhancedTrailPoint[],
-	elevationPoints: { elevation: number; distanceFromStart: number }[],
 	paceKmh: number,
 	gradeAdjusted: boolean,
+	direction: TrailDirection,
 ): StageStats {
-	const startM = stage.startKm * 1000;
-	const endM = stage.endKm * 1000;
-	const distanceM = endM - startM;
-	const enhancedStartIdx = findNearestPointIndex(enhancedPoints, startM);
-	const enhancedEndIdx = findNearestPointIndex(enhancedPoints, endM);
-	const startPoint = enhancedPoints[enhancedStartIdx];
-	const endPoint = enhancedPoints[enhancedEndIdx];
-	const gainM = endPoint.elevationGainFromStart - startPoint.elevationGainFromStart;
-	const lossM = endPoint.elevationLossFromStart - startPoint.elevationLossFromStart;
-	const elevStartIdx = findNearestPointIndex(elevationPoints, startM);
+	const loM = Math.min(stage.startKm, stage.endKm) * 1000;
+	const hiM = Math.max(stage.startKm, stage.endKm) * 1000;
+	const distanceM = hiM - loM;
+	const loIdx = findNearestPointIndex(enhancedPoints, loM);
+	const hiIdx = findNearestPointIndex(enhancedPoints, hiM);
+	const { gain: gainM, loss: lossM } = segmentGainLoss(enhancedPoints[loIdx], enhancedPoints[hiIdx], direction);
 	const etaSec = computeEta(distanceM, paceKmh, {
-		elevationPoints,
-		fromIndex: elevStartIdx,
+		elevationPoints: enhancedPoints,
+		fromIndex: direction === 'NOBO' ? hiIdx : loIdx,
+		direction,
 		gradeAdjusted,
 	});
 	return { distanceM, gainM, lossM, etaSec };

@@ -13,6 +13,7 @@ import { type TrailDirection } from '@/lib/types';
 import { type TrailOsmTagRun } from '@/lib/trail-osm-tags';
 import { SAC_BUCKET_SHORT_LABELS, SAC_COLORS, SURFACE_COLORS } from '@/components/map/trail-route-constants';
 import { type EnhancedTrailPoint } from '@/lib/store/types';
+import { toSoboKm } from '@/lib/trail-frame';
 import {
 	GRADE_BAND_LABEL_KEYS,
 	resolveGradeAtTrailKm,
@@ -84,7 +85,8 @@ export function ChartTooltipSync(props: {
 				clearTimeoutRef.current = null;
 			}
 			if (!isPinned) {
-				const distance = point.distance * 1000;
+				// Chart km is travel km; the store highlights by SOBO metres.
+				const distance = toSoboKm(point.distance, direction, totalKm) * 1000;
 				if (prevDistanceRef.current !== distance) {
 					if (highlightTimeoutRef.current) {
 						clearTimeout(highlightTimeoutRef.current);
@@ -121,7 +123,17 @@ export function ChartTooltipSync(props: {
 			if (highlightTimeoutRef.current) clearTimeout(highlightTimeoutRef.current);
 			if (clearTimeoutRef.current) clearTimeout(clearTimeoutRef.current);
 		};
-	}, [active, payload, coordinate, highlightTrailPosition, clearTrailHighlight, isPinned, onScaleCalibration]);
+	}, [
+		active,
+		payload,
+		coordinate,
+		highlightTrailPosition,
+		clearTrailHighlight,
+		isPinned,
+		onScaleCalibration,
+		direction,
+		totalKm,
+	]);
 
 	if (!active || !payload?.[0]?.payload) {
 		return null;
@@ -131,7 +143,8 @@ export function ChartTooltipSync(props: {
 		fillMode === 'surface' || fillMode === 'sac'
 			? resolveOsmAtTrailKm(point.distance, direction, totalKm, trailOsmRuns)
 			: null;
-	const grade = fillMode === 'grade' ? resolveGradeAtTrailKm(point.distance, enhancedTrailPoints) : null;
+	const grade =
+		fillMode === 'grade' ? resolveGradeAtTrailKm(point.distance, enhancedTrailPoints, direction, totalKm) : null;
 
 	return (
 		<div className="map-tooltip !max-w-none !min-w-0">

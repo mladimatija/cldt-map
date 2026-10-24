@@ -60,7 +60,6 @@ export function OffRouteAlertSimulator(): React.ReactElement {
 			point: L.latLng(TRAIL_POINT.lat, TRAIL_POINT.lng),
 			distance: distanceM,
 			distanceFromStart: 612_000,
-			distanceToEnd: 1_588_000,
 		});
 		setFixesSent((n) => n + 1);
 	};

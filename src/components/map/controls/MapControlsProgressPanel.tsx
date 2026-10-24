@@ -34,7 +34,7 @@ import {
 	WAYPOINT_CATEGORIES,
 	type WaypointCategoryId,
 } from '@/lib/waypoint-categories';
-import { displayTrailKm } from '@/lib/journal-track-link';
+import { toTravelKm, toTravelRange } from '@/lib/trail-frame';
 import { cn, formatDistance } from '@/lib/utils';
 import { parseGpxWaypoints, gpxWaypointsToUserWaypoints } from '@/lib/user-waypoint-import';
 import { TRAIL_SECTIONS } from '@/lib/trail-sections';
@@ -130,7 +130,11 @@ export function MapControlsProgressPanel(): React.ReactElement | null {
 	const animatedPct = useAnimatedNumber(pct);
 
 	const fmt = (km: number): string => formatDistance(km, units, distancePrecision);
-	const fmtDisplayKm = (soboKm: number): string => fmt(displayTrailKm(soboKm, direction, totalKm));
+	const fmtDisplayKm = (soboKm: number): string => fmt(toTravelKm(soboKm, direction, totalKm));
+	const fmtTravelRange = (loSoboKm: number, hiSoboKm: number): string => {
+		const range = toTravelRange(loSoboKm, hiSoboKm, direction, totalKm);
+		return `${fmt(range.from)} - ${fmt(range.to)}`;
+	};
 
 	const filteredWaypoints = useMemo(() => {
 		if (waypointListFilter.size === 0) return userWaypoints;
@@ -420,7 +424,7 @@ export function MapControlsProgressPanel(): React.ReactElement | null {
 										}
 									/>
 									<span className="min-w-0 flex-1 truncate text-gray-600 dark:text-[var(--text-primary)]">
-										{fmtDisplayKm(rulerKms.lo)} - {fmtDisplayKm(rulerKms.hi)}
+										{fmtTravelRange(rulerKms.lo, rulerKms.hi)}
 									</span>
 								</label>
 							</div>
@@ -651,7 +655,7 @@ export function MapControlsProgressPanel(): React.ReactElement | null {
 														{wp.trailKm !== null && (
 															<span className="text-gray-400 dark:text-[var(--text-secondary)]">
 																{' '}
-																· {fmt(wp.trailKm)}
+																· {fmtDisplayKm(wp.trailKm)}
 															</span>
 														)}
 														{hiddenOnMap ? (

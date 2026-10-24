@@ -1,6 +1,6 @@
 /**
  * Pure helpers for journal entries linked to imported GPX track segments.
- * Official trail km is always SOBO; display mirrors via displayTrailKm.
+ * Official trail km is always SOBO; labels convert with toTravelKm (src/lib/trail-frame.ts).
  */
 import type { TrackPoint } from './gpx-parser';
 import { IMPORT_MAX_OFF_TRAIL_M } from './completion';
@@ -14,11 +14,6 @@ export type ResolveTrackLinkResult =
 	| { status: 'none' }
 	| { status: 'missing'; link: JournalTrackLink }
 	| { status: 'ok'; link: JournalTrackLink; track: ImportedTrack };
-
-/** Mirror SOBO storage km for NOBO display labels. */
-export function displayTrailKm(soboKm: number, direction: 'SOBO' | 'NOBO', totalKm: number): number {
-	return direction === 'SOBO' ? soboKm : Math.max(0, totalKm - soboKm);
-}
 
 export function validateTrackLink(link: JournalTrackLink, track: ImportedTrack): JournalTrackLink {
 	const maxIdx = Math.max(0, track.points.length - 1);

@@ -56,7 +56,11 @@ export function TrailDistanceMarkers(): null {
 	const units = useMapStore((s: MapStoreState) => s.units);
 	const batterySaverMode = useMapStore((s: MapStoreState) => s.batterySaverMode);
 
-	const markers = useMemo(() => computeDistanceMarkers(enhancedTrailPoints, units), [enhancedTrailPoints, units]);
+	const direction = useMapStore((s: MapStoreState) => s.direction);
+	const markers = useMemo(
+		() => computeDistanceMarkers(enhancedTrailPoints, units, direction),
+		[enhancedTrailPoints, units, direction],
+	);
 
 	const groupsRef = useRef<Map<DistanceMarkerLevel, L.LayerGroup>>(new Map());
 	const mountedLevelsRef = useRef<Set<DistanceMarkerLevel>>(new Set());

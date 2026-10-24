@@ -7,11 +7,11 @@ import { importGpxFileAsTrack } from '@/lib/imported-tracks';
 import {
 	buildJournalTrackAttachment,
 	computeIndicesForTrailRange,
-	displayTrailKm,
 	formatRecordedStats,
 	sliceTrackPoints,
 	validateTrackLink,
 } from '@/lib/journal-track-link';
+import { toTravelRange } from '@/lib/trail-frame';
 import { buildSpatialGrid } from '@/lib/spatial-grid';
 import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
 import type { ImportedTrack } from '@/lib/store/types';
@@ -59,7 +59,11 @@ export function JournalTrackAttachControls({
 	const fileInputRef = useRef<HTMLInputElement>(null);
 
 	const fmt = (km: number): string => formatDistance(km, units, distancePrecision);
-	const fmtDisplayKm = (soboKm: number): string => fmt(displayTrailKm(soboKm, direction, totalKm));
+	/** A stored SOBO range as the hiker meets it: travel km, start first. */
+	const fmtTravelRange = (a: number, b: number): string => {
+		const range = toTravelRange(a, b, direction, totalKm);
+		return `${fmt(range.from)} - ${fmt(range.to)}`;
+	};
 
 	const applyTrack = (track: ImportedTrack, startIdx: number, endIdx: number): void => {
 		const grid = enhancedTrailPoints.length > 0 ? buildSpatialGrid(enhancedTrailPoints) : undefined;
@@ -146,9 +150,7 @@ export function JournalTrackAttachControls({
 				})()
 			: null;
 	const stretchRange =
-		value.startKm !== undefined && value.endKm !== undefined
-			? `${fmtDisplayKm(value.startKm)} - ${fmtDisplayKm(value.endKm)}`
-			: null;
+		value.startKm !== undefined && value.endKm !== undefined ? fmtTravelRange(value.startKm, value.endKm) : null;
 
 	if (readOnly) {
 		if (!value.trackLink && value.startKm === undefined) return null;
@@ -268,7 +270,7 @@ export function JournalTrackAttachControls({
 				<>
 					<label className="flex cursor-pointer items-center gap-2 text-xs text-gray-600 dark:text-[var(--text-secondary)]">
 						<Checkbox checked={attachRuler} onCheckedChange={onAttachRulerChange} />
-						{t('attachRuler', { range: `${fmtDisplayKm(rulerKms.lo)} - ${fmtDisplayKm(rulerKms.hi)}` })}
+						{t('attachRuler', { range: fmtTravelRange(rulerKms.lo, rulerKms.hi) })}
 					</label>
 					{!value.trackLink && importedTracks.length > 0 && (
 						<label className="flex cursor-pointer items-center gap-2 text-xs text-gray-600 dark:text-[var(--text-secondary)]">

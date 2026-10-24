@@ -67,16 +67,27 @@ import {
 	type TrailTooltipWindCompass,
 } from './TrailTooltipContent';
 import { buildWindCompassPayload } from '@/lib/distance-utils';
+import {
+	remainingM,
+	toTravelM,
+	travelBearingDeg,
+	travelEndIndex,
+	travelGainLoss,
+	travelGainLossSoFar,
+	travelGradePct,
+	travelStartIndex,
+} from '@/lib/trail-frame';
 import type { UnitSystem } from '@/lib/types';
 import { useLocale, useTranslations } from 'next-intl';
 import { useFitToRoute, usePackAdjustedPaceKmh, packAdjustedPaceKmhFromState } from '@/hooks';
 
 interface SectionTooltipStats {
-	/** Distance from current start to section start (m). */
+	/** SOBO metres from Ilok to the section start. */
 	startDistM: number;
-	/** Distance from the current start to the section end (m). */
+	/** SOBO metres from Ilok to the section end. */
 	endDistM: number;
 	secDistM: number;
+	/** Climb and descent in file (SOBO) order; the tooltip converts to the travel direction. */
 	secAscent: number;
 	secDescent: number;
 	/** Geographic section index (0=A, 1=B, 2=C) for label and color. */
@@ -103,6 +114,7 @@ function buildSurfaceMixHtml(
 function buildSectionTooltipHtml(
 	stats: SectionTooltipStats,
 	totals: { totalDistanceM: number; totalAscentM: number; totalDescentM: number },
+	direction: TrailDirection,
 	units: UnitSystem,
 	precision: number,
 	t: (key: string) => string,
@@ -110,9 +122,18 @@ function buildSectionTooltipHtml(
 	surfaceMix: SurfaceMixEntry[] | null,
 	surfaceBucketLabel: (bucket: SurfaceBucket) => string,
 ): string {
-	const { startDistM, endDistM, secDistM, secAscent, secDescent, sectionIndex } = stats;
+	const { startDistM, endDistM, secDistM, sectionIndex } = stats;
 	const section = TRAIL_SECTIONS[sectionIndex];
-	const { totalDistanceM, totalAscentM, totalDescentM } = totals;
+	const { totalDistanceM } = totals;
+	// Stats are in file order; show them as the hiker meets the section.
+	const fromStartA = toTravelM(startDistM, direction, totalDistanceM);
+	const fromStartB = toTravelM(endDistM, direction, totalDistanceM);
+	const { gain: secAscent, loss: secDescent } = travelGainLoss(stats.secAscent, stats.secDescent, direction);
+	const { gain: totalAscentM, loss: totalDescentM } = travelGainLoss(
+		totals.totalAscentM,
+		totals.totalDescentM,
+		direction,
+	);
 	const alongTrailStartM = section.startKm * 1000;
 	const alongTrailEndM = section.endKm === Infinity ? totalDistanceM : section.endKm * 1000;
 	const distPct = totalDistanceM > 0 ? ((secDistM / totalDistanceM) * 100).toFixed(1) : '0.0';
@@ -128,7 +149,7 @@ function buildSectionTooltipHtml(
 		<div class="map-tooltip__inner">
 			<p class="font-bold text-sm mb-1 trail-section-title-${sectionIndex}">${t(section.nameKey)}</p>
 			<p><span class="font-medium">${t('sectionAlongTrail')}</span> ${formatDistance(alongTrailStartM, units, precision, true)} - ${formatDistance(alongTrailEndM, units, precision, true)}</p>
-			<p><span class="font-medium">${t('sectionFromYourStart')}</span> ${formatDistance(startDistM, units, precision, true)} - ${formatDistance(endDistM, units, precision, true)}</p>
+			<p><span class="font-medium">${t('sectionFromYourStart')}</span> ${formatDistance(Math.min(fromStartA, fromStartB), units, precision, true)} - ${formatDistance(Math.max(fromStartA, fromStartB), units, precision, true)}</p>
 			<p><span class="font-medium">${t('sectionDistance')}</span> ${formatDistance(secDistM, units, precision, true)} (${distPct}% ${ofTrail})</p>
 			<p><span class="font-medium">${t('sectionAscent')}</span> ${formatElevation(secAscent, units)} (${ascentPct}% ${ofTrail})</p>
 			<p><span class="font-medium">${t('sectionDescent')}</span> ${formatElevation(secDescent, units)} (${descentPct}% ${ofTrail})</p>
@@ -150,15 +171,16 @@ interface TrailPoint {
 	elevationLossFromStart?: number;
 	sectionName?: string;
 	bearingDeg: number;
+	/** Index into enhancedTrailPoints, when the point came from it. */
+	index?: number;
 }
 
 /**
  * Walks the trail and groups consecutive segments by their OSM-derived bucket
  * (surface or SAC scale). Returns `Map<bucketKey, LatLng[][]>` ready to feed
  * into one polyline per bucket. The caller resolves bucket -> color and
- * renders. SOBO-direction km is looked up via `soboKmForIdx(idx)` so the
- * direction-agnostic OSM tag runs the map correctly even when the trail is
- * traversed NOBO.
+ * renders. The trail arrays and the OSM tag runs are both in SOBO km, so the
+ * cumulative distance is looked up directly.
  *
  * If the lookup returns null for a point (km outside the tag dataset or no
  * way found within the snap radius), the point is bucketed as 'unknown' /
@@ -166,7 +188,7 @@ interface TrailPoint {
  */
 function buildTagBandSegments<K extends string>(
 	pointLatLngs: L.LatLng[],
-	soboKmForIdx: (idx: number) => number,
+	cumDistancesM: number[],
 	bucketAt: (km: number) => K,
 ): Map<K, L.LatLng[][]> {
 	const result = new Map<K, L.LatLng[][]>();
@@ -186,7 +208,7 @@ function buildTagBandSegments<K extends string>(
 	for (let i = 0; i < pointLatLngs.length - 1; i++) {
 		const a = pointLatLngs[i];
 		const b = pointLatLngs[i + 1];
-		const key = bucketAt(soboKmForIdx(i));
+		const key = bucketAt(cumDistancesM[i] / 1000);
 
 		if (key !== currentKey) {
 			flush();
@@ -201,7 +223,11 @@ function buildTagBandSegments<K extends string>(
 	return result;
 }
 
-function buildGradeBandSegments(enhancedPoints: EnhancedTrailPoint[], pointLatLngs: L.LatLng[]): GradeBandRuns {
+function buildGradeBandSegments(
+	enhancedPoints: EnhancedTrailPoint[],
+	pointLatLngs: L.LatLng[],
+	direction: TrailDirection,
+): GradeBandRuns {
 	const runs: GradeBandRuns = Array.from({ length: 5 }, () => [[], []]);
 	if (enhancedPoints.length < 2) return runs;
 
@@ -220,7 +246,8 @@ function buildGradeBandSegments(enhancedPoints: EnhancedTrailPoint[], pointLatLn
 		const b = pointLatLngs[i + 1];
 		const band = enhancedPoints[i].gradeBand;
 		// Band 0 (flat) shares one color for both directions; collapse to sign 0.
-		const sign: 0 | 1 = band === 0 ? 0 : enhancedPoints[i].gradePct >= 0 ? 0 : 1;
+		// A SOBO climb is a NOBO descent, so the sign follows the travel direction.
+		const sign: 0 | 1 = band === 0 ? 0 : travelGradePct(enhancedPoints[i], direction) >= 0 ? 0 : 1;
 
 		if (band !== currentBand || sign !== currentSign) {
 			flush();
@@ -248,23 +275,18 @@ interface SectionGroups {
 }
 
 /**
- * Buckets the route into geographic sections (A/B/C by position along the trail
- * from the SOBO start) and accumulates each section's distance plus its ascent
- * and descent in the direction of travel. Section boundaries are defined in
- * along-trail km, so a NOBO traversal mirrors its cumulative distance back into
- * that space before comparing.
+ * Buckets the route into geographic sections (A/B/C by SOBO km from Ilok) and
+ * accumulates each section's distance plus its ascent and descent in file
+ * order. The arrays and TRAIL_SECTIONS are both SOBO, so no mirroring is
+ * needed; the tooltip converts climb and descent to the travel direction.
  */
 function buildSectionGroups(
 	points: L.LatLng[],
 	elevationPoints: { elevation: number }[],
 	cumDistances: number[],
-	direction: TrailDirection,
 ): SectionGroups {
-	const totalDistanceM = cumDistances[cumDistances.length - 1] ?? 0;
-	const positionAlongTrailKm = (idx: number): number =>
-		direction === 'SOBO' ? cumDistances[idx] / 1000 : (totalDistanceM - cumDistances[idx]) / 1000;
 	const sectionAtIdx = (idx: number): number => {
-		const trailKm = positionAlongTrailKm(idx);
+		const trailKm = cumDistances[idx] / 1000;
 		const found = TRAIL_SECTIONS.findIndex((s) => trailKm >= s.startKm && trailKm < s.endKm);
 		return found >= 0 ? found : TRAIL_SECTIONS.length - 1;
 	};
@@ -322,27 +344,22 @@ function buildSectionGroups(
  * redraw from memory instead of re-reading the GPX and re-hydrating the stores.
  */
 interface TrailGeometry {
-	/** Direction-adjusted route vertices; index 0 is the current travel start.
+	/** Route vertices in file (SOBO) order; index 0 is Ilok in both directions.
 	 *  Never empty - the loader does not publish a snapshot for an empty route,
 	 *  so the renderer can index the ends and take bounds without checking. */
 	points: L.LatLng[];
-	/** Direction-adjusted elevation triples, parallel to `points`. */
+	/** Elevation triples, parallel to `points`. */
 	elevationPoints: { lat: number; lng: number; elevation: number }[];
-	/** Cumulative metres from the current start, parallel to `points`. */
+	/** Cumulative SOBO metres from Ilok, parallel to `points`. */
 	cumDistances: number[];
 	/** Enhanced points (per-vertex grade band and percent) for the Grade style. */
 	enhanced: EnhancedTrailPoint[];
 	/** False when the GPX carries no elevation data, which rules out the Grade style. */
 	hasElevation: boolean;
-	/** Direction these arrays were built for; the styles index off it, so reading
-	 *  it from the snapshot avoids mis-bucketing against a direction whose
-	 *  geometry has not landed yet. */
-	direction: TrailDirection;
 	/** Identity of the load that produced this geometry. The renderer fits the
 	 *  viewport once per distinct value, so a redraw of the same load (any style
-	 *  change) leaves the view alone. Deliberately excludes `direction`: SOBO and
-	 *  NOBO trace the same line, so a flip re-fitting to identical bounds would
-	 *  only discard the user's pan and zoom. */
+	 *  change) leaves the view alone. The geometry is the same for both
+	 *  directions, so a direction flip neither reloads nor re-fits. */
 	loadToken: string;
 }
 
@@ -441,6 +458,10 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 	const styleTagRuns = effectiveTrailStyle === 'sac' || effectiveTrailStyle === 'surface' ? tagRuns : null;
 	// The start flag would sit on top of the coloured layer it is meant to show off.
 	const startFlagVisible = effectiveTrailStyle === 'default';
+	// Grade colours and section chips/tooltips depend on the travel direction; the
+	// other styles draw the same polylines either way, so a flip leaves them alone.
+	const styleDirection: TrailDirection | null =
+		effectiveTrailStyle === 'grade' || effectiveTrailStyle === 'sections' ? direction : null;
 
 	const highlightedPoint = useStore((state: StoreState) => state.highlightedTrailPoint);
 	const tooltipPinnedFromShare = useStore((state: StoreState) => state.tooltipPinnedFromShare);
@@ -533,6 +554,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 		return (
 			stat: SectionTooltipStats,
 			totals: { totalDistanceM: number; totalAscentM: number; totalDescentM: number },
+			travelDirection: TrailDirection,
 			unitSystem: UnitSystem,
 			precision: number,
 			paceKmh: number,
@@ -540,6 +562,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 			buildSectionTooltipHtml(
 				stat,
 				totals,
+				travelDirection,
 				unitSystem,
 				precision,
 				t,
@@ -639,14 +662,29 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 
 			const metadata = useStore.getState().trailMetadata;
 			const totalDistanceKm = metadata?.totalDistance ?? 0;
-			const totalElevationGain = metadata?.elevationGain ?? 0;
-			const totalElevationLoss = metadata?.elevationLoss ?? 0;
+			const travelDirection = useMapStore.getState().direction;
 			const totalDistanceM = totalDistanceKm * 1000;
+			// Totals as the hiker meets them: a SOBO climb is a NOBO descent.
+			const { gain: totalElevationGain, loss: totalElevationLoss } = travelGainLoss(
+				metadata?.elevationGain ?? 0,
+				metadata?.elevationLoss ?? 0,
+				travelDirection,
+			);
 
-			let distanceFromStart = point.distanceFromStart ?? 0;
-			let distanceToEnd = Math.max(0, totalDistanceM - distanceFromStart);
-			let elevationGainFromStart = point.elevationGainFromStart ?? 0;
-			let elevationLossFromStart = point.elevationLossFromStart ?? 0;
+			// The point carries SOBO values; the tooltip shows the hiker's frame.
+			const soboM = point.distanceFromStart ?? 0;
+			let distanceFromStart = toTravelM(soboM, travelDirection, totalDistanceM);
+			let distanceToEnd = remainingM(soboM, travelDirection, totalDistanceM);
+			const soFar = travelGainLossSoFar(
+				{
+					elevationGainFromStart: point.elevationGainFromStart ?? 0,
+					elevationLossFromStart: point.elevationLossFromStart ?? 0,
+				},
+				travelDirection,
+				{ gain: metadata?.elevationGain ?? 0, loss: metadata?.elevationLoss ?? 0 },
+			);
+			let elevationGainFromStart = soFar.gain;
+			let elevationLossFromStart = soFar.loss;
 
 			if (distanceFromStart < TRAIL_EPSILON_M) {
 				distanceFromStart = 0;
@@ -666,8 +704,8 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 			const accumulatedGainPct = totalElevationGain > 0 ? (elevationGainFromStart / totalElevationGain) * 100 : 0;
 			const accumulatedLossPct = totalElevationLoss > 0 ? (elevationLossFromStart / totalElevationLoss) * 100 : 0;
 
-			const distKm = distanceFromStart / 1000;
-			const section = TRAIL_SECTIONS.find((s) => distKm >= s.startKm && distKm < s.endKm);
+			const soboKm = soboM / 1000;
+			const section = TRAIL_SECTIONS.find((s) => soboKm >= s.startKm && soboKm < s.endKm);
 			const sectionKey = point.sectionName ?? section?.nameKey;
 			const pointData: TrailTooltipData = {
 				lat: point.lat,
@@ -707,7 +745,15 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 			};
 			const buildWindCompass = (weatherData: WeatherData | null): TrailTooltipWindCompass | null => {
 				if (!weatherData) return null;
-				const payload = buildWindCompassPayload(weatherData.windFromDeg, weatherData.windspeedKmh, point.bearingDeg);
+				// Points store the SOBO bearing to the next point; face the travel direction.
+				const enhanced = useStore.getState().enhancedTrailPoints;
+				const facingDeg =
+					point.index !== undefined && enhanced[point.index]
+						? travelBearingDeg(enhanced, point.index, travelDirection)
+						: travelDirection === 'NOBO'
+							? (point.bearingDeg + 180) % 360
+							: point.bearingDeg;
+				const payload = buildWindCompassPayload(weatherData.windFromDeg, weatherData.windspeedKmh, facingDeg);
 				if (!payload) return null;
 				return {
 					relativeAngle: payload.relativeAngle,
@@ -874,28 +920,30 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 				}
 
 				// Persisted-compute first: a prior visit's enhanced dataset (keyed by
-				// GPX cache version + direction) lets repeat loads and SOBO<->NOBO
-				// flips skip the parse + O(n) enhancement entirely - the largest
-				// cold-load block. On a miss, fall back to the worker (parse + enhance
-				// off the main thread) and persist its output for next time; any
-				// worker failure drops to the historical synchronous path below.
-				const computedKey = computedTrailCacheKey(result.version, direction);
+				// GPX cache version) lets repeat loads skip the parse + O(n)
+				// enhancement entirely - the largest cold-load block. On a miss, fall
+				// back to the worker (parse + enhance off the main thread) and persist
+				// its output for next time. The dataset is in SOBO order for both
+				// directions, so a direction flip never reloads it.
+				const computedKey = computedTrailCacheKey(result.version);
 				let computed = await loadComputedTrail(computedKey);
 				if (!computed) {
-					computed = await computeTrailDataInWorker(result.data, direction).catch(() => null);
+					computed = await computeTrailDataInWorker(result.data).catch(() => null);
 					if (computed) void saveComputedTrail(computedKey, computed);
 				}
 				// No worker (or it failed): the same computation on the main thread, so
 				// both paths produce identical points, distances and metadata.
-				if (!computed) computed = computeFromGpx(result.data, direction);
+				if (!computed) computed = computeFromGpx(result.data);
 
 				if (!isMounted || computed.points.length === 0) {
 					return;
 				}
 
-				// Output is already direction-adjusted; the only main-thread loops left
-				// are cheap materialisations.
+				// The only main-thread loops left are cheap materialisations.
 				useStore.getState().applyComputedTrailData?.(computed);
+				// One-time mirror of a northbound user's data saved before trail km were
+				// stored southbound; it needs the trail length, known from here on.
+				useMapStore.getState().applyKmFrameMigration?.(computed.metadata.totalDistanceM / 1000);
 				// Borrow the main store's trailPoints instead of building a second
 				// L.LatLng array over the same ~100k coordinates: applyComputedTrailData
 				// has just materialised exactly this list, and zustand's set is
@@ -921,7 +969,6 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 					// Populated by applyComputedTrailData above.
 					enhanced: useStore.getState().enhancedTrailPoints,
 					hasElevation,
-					direction,
 					loadToken: `${selectedTrail ?? ''}:${reloadTrailRequested}`,
 				});
 
@@ -941,7 +988,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 		return () => {
 			isMounted = false;
 		};
-	}, [map, selectedTrail, direction, reloadTrailRequested, setRawGpxData, setGpxLoaded, setGpxLoadFailed]);
+	}, [map, selectedTrail, reloadTrailRequested, setRawGpxData, setGpxLoaded, setGpxLoadFailed]);
 
 	// Route polylines and section boundary chips for the active style. Keyed on the
 	// geometry snapshot, so a style change redraws from data already in memory.
@@ -950,7 +997,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 			return;
 		}
 
-		const { points, elevationPoints, cumDistances, enhanced, direction: geometryDirection } = geometry;
+		const { points, elevationPoints, cumDistances, enhanced } = geometry;
 		const featureGroup = L.featureGroup();
 		// Shared SVG renderer and base polyline options for all render branches.
 		// One renderer is reused across redraws instead of being built per redraw:
@@ -1004,29 +1051,24 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 			featureGroup.addLayer(polyline);
 		};
 
-		// SOBO-direction km lookup: the OSM tag dataset is direction-agnostic
-		// (always indexed from the SOBO start), so when the user traverses NOBO,
-		// we mirror the cum-distance back to SOBO space before binary-searching.
 		const totalDistanceM = cumDistances[cumDistances.length - 1];
-		const soboKmForIdx = (idx: number): number =>
-			geometryDirection === 'SOBO' ? cumDistances[idx] / 1000 : (totalDistanceM - cumDistances[idx]) / 1000;
 
 		if (effectiveTrailStyle === 'sac' && styleTagRuns) {
-			const runsByBucket = buildTagBandSegments<SacBucket>(points, soboKmForIdx, (km) =>
+			const runsByBucket = buildTagBandSegments<SacBucket>(points, cumDistances, (km) =>
 				bucketSac(findRunAtKm(styleTagRuns, km)?.sac_scale ?? null),
 			);
 			for (const [bucket, segments] of runsByBucket) {
 				if (segments.length > 0) addPolyline(segments, SAC_COLORS[bucket]);
 			}
 		} else if (effectiveTrailStyle === 'surface' && styleTagRuns) {
-			const runsByBucket = buildTagBandSegments<SurfaceBucket>(points, soboKmForIdx, (km) =>
+			const runsByBucket = buildTagBandSegments<SurfaceBucket>(points, cumDistances, (km) =>
 				bucketSurface(findRunAtKm(styleTagRuns, km)?.surface ?? null),
 			);
 			for (const [bucket, segments] of runsByBucket) {
 				if (segments.length > 0) addPolyline(segments, SURFACE_COLORS[bucket]);
 			}
 		} else if (effectiveTrailStyle === 'grade') {
-			const runs = buildGradeBandSegments(enhanced, points);
+			const runs = buildGradeBandSegments(enhanced, points, styleDirection ?? 'SOBO');
 			for (let band = 0; band < 5; band++) {
 				for (let sign = 0; sign < 2; sign++) {
 					const segments = runs[band][sign];
@@ -1039,7 +1081,8 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 				}
 			}
 		} else if (effectiveTrailStyle === 'sections') {
-			const groups = buildSectionGroups(points, elevationPoints, cumDistances, geometryDirection);
+			const groups = buildSectionGroups(points, elevationPoints, cumDistances);
+			const travelDirection = styleDirection ?? 'SOBO';
 			const currentUnits = useMapStore.getState().units;
 			const currentPrecision = useMapStore.getState().distancePrecision;
 			const currentPaceKmh = packAdjustedPaceKmhFromState(useMapStore.getState());
@@ -1057,15 +1100,19 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 				const sectionPts = groups.pointGroups[stat.sectionIndex];
 				addPolyline(sectionPts, section.color);
 
-				const marker = L.marker(sectionPts[0], {
+				// Chip where the hiker enters the section: its SOBO start, or its SOBO end for NOBO.
+				const marker = L.marker(travelDirection === 'NOBO' ? sectionPts[sectionPts.length - 1] : sectionPts[0], {
 					icon: sectionBoundaryIcon(section.shortName, stat.sectionIndex),
 					zIndexOffset: 50,
 				});
-				marker.bindTooltip(renderSectionTooltip(stat, totals, currentUnits, currentPrecision, currentPaceKmh), {
-					direction: 'top',
-					permanent: false,
-					className: 'map-tooltip map-tooltip--section',
-				});
+				marker.bindTooltip(
+					renderSectionTooltip(stat, totals, travelDirection, currentUnits, currentPrecision, currentPaceKmh),
+					{
+						direction: 'top',
+						permanent: false,
+						className: 'map-tooltip map-tooltip--section',
+					},
+				);
 				marker.addTo(map);
 				newSectionMarkers.push(marker);
 			}
@@ -1101,6 +1148,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 		geometry,
 		effectiveTrailStyle,
 		styleTagRuns,
+		styleDirection,
 		removeRouteLayer,
 		highlightTrailPosition,
 		makeSectionTooltipRenderer,
@@ -1128,11 +1176,11 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 			return;
 		}
 
-		const { points, direction: geometryDirection } = geometry;
-		const directionText = geometryDirection === 'SOBO' ? tChart('directionNorthSouth') : tChart('directionSouthNorth');
+		const { points } = geometry;
+		const directionText = direction === 'SOBO' ? tChart('directionNorthSouth') : tChart('directionSouthNorth');
 
 		finishMarkerRef.current = addEndpointMarker(
-			points[points.length - 1],
+			points[travelEndIndex(points, direction)],
 			'trail-finish-marker',
 			FINISH_FLAG_SVG,
 			t('finishPoint', { direction: directionText }),
@@ -1141,7 +1189,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 		return () => {
 			removeEndpointMarker(finishMarkerRef);
 		};
-	}, [map, geometry, addEndpointMarker, removeEndpointMarker, t, tChart]);
+	}, [map, geometry, direction, addEndpointMarker, removeEndpointMarker, t, tChart]);
 
 	// Start flag, drawn only under the default style (it would otherwise sit on top
 	// of the coloured layer it is meant to show off). Separate from the finish flag
@@ -1151,11 +1199,11 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 			return;
 		}
 
-		const { points, direction: geometryDirection } = geometry;
-		const directionText = geometryDirection === 'SOBO' ? tChart('directionNorthSouth') : tChart('directionSouthNorth');
+		const { points } = geometry;
+		const directionText = direction === 'SOBO' ? tChart('directionNorthSouth') : tChart('directionSouthNorth');
 
 		startMarkerRef.current = addEndpointMarker(
-			points[0],
+			points[travelStartIndex(points, direction)],
 			'trail-start-marker',
 			START_FLAG_SVG,
 			t('startingPoint', { direction: directionText }),
@@ -1164,7 +1212,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 		return () => {
 			removeEndpointMarker(startMarkerRef);
 		};
-	}, [map, geometry, startFlagVisible, addEndpointMarker, removeEndpointMarker, t, tChart]);
+	}, [map, geometry, direction, startFlagVisible, addEndpointMarker, removeEndpointMarker, t, tChart]);
 
 	// Map click dismissal plus the highlight events the chart and scrubber fire.
 	// Independent of the data load and of the active style, so changing style no
@@ -1239,6 +1287,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 			const tooltipHtml = renderSectionTooltip(
 				stats[i],
 				{ totalDistanceM, totalAscentM, totalDescentM },
+				direction,
 				currentUnits,
 				currentPrecision,
 				walkingPaceKmh,
@@ -1254,6 +1303,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 		// the open tooltips pick up tag data that lands after they were built.
 	}, [
 		effectiveTrailStyle,
+		direction,
 		units,
 		distancePrecision,
 		locale,

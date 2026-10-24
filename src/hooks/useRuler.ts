@@ -5,8 +5,9 @@
  *
  * Owns everything ruler: Leaflet panes, point markers, the dashed connector,
  * the on-trail segment highlight, the permanent tooltip (with elevation
- * gain/loss), click capture, the elevation-chart drag bridge, direction-flip
- * range conversion, Escape-to-close, and the aria-live announcement.
+ * gain/loss), click capture, the elevation-chart drag bridge, Escape-to-close,
+ * and the aria-live announcement. The range is stored in SOBO metres, so a
+ * direction flip only relabels the tooltip.
  *
  * The host component only consumes the returned surface: button state
  * (isRulerEnabled, toggleRuler), the active range for export/share flows
@@ -15,9 +16,10 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import { useTranslations } from 'next-intl';
-import { findNearestPointIndex } from '@/lib/distance-utils';
+import { findNearestPointIndex, rulerSegmentIndices } from '@/lib/distance-utils';
 import { type EnhancedTrailPoint, type MapStoreState, type StoreState, useMapStore, useStore } from '@/lib/store';
 import { formatDistance, formatElevation } from '@/lib/utils';
+import { segmentGainLoss, toTravelM } from '@/lib/trail-frame';
 import { fitMapToRulerBounds } from '@/lib/export-utils';
 import { RULER_SET_FROM_CHART_EVENT, type RulerSetFromChartDetail } from '@/lib/ruler-from-chart';
 import { usePanelManager } from './usePanelManager';
@@ -65,6 +67,8 @@ type RulerPointData = { latlng: L.LatLng; distanceFromStart: number };
 type RulerSegmentOpts = {
 	units: UnitSystem;
 	distancePrecision: number;
+	/** Travel direction: labels and climb/descent follow the hiker. */
+	direction: TrailDirection;
 	t: (k: string) => string;
 	tChart: (k: string) => string;
 };
@@ -97,7 +101,6 @@ export function useRuler(map: L.Map): UseRulerResult {
 	const rulerPointDataRef = useRef<RulerPointData[]>([]);
 	const rulerSegmentHighlightRef = useRef<L.Polyline | null>(null);
 	const rulerClickHandlerRef = useRef<(e: L.LeafletMouseEvent) => void>(() => {});
-	const lastDirectionRef = useRef<TrailDirection | undefined>(undefined);
 
 	const stableRulerClick = useCallback((e: L.LeafletMouseEvent) => {
 		rulerClickHandlerRef.current(e);
@@ -163,32 +166,31 @@ export function useRuler(map: L.Map): UseRulerResult {
 			const distA = dataA.distanceFromStart;
 			const distB = dataB.distanceFromStart;
 			const distanceBetween = hasTrail ? Math.abs(distB - distA) : points[0].distanceTo(points[1]);
-			const minDist = Math.min(distA, distB);
-			const maxDist = Math.max(distA, distB);
-			const segment =
-				hasTrail && trailPoints
-					? trailPoints
-							.filter(
-								(p: EnhancedTrailPoint) => p.distanceFromStart >= minDist - 0.1 && p.distanceFromStart <= maxDist + 0.1,
-							)
-							.sort((a: EnhancedTrailPoint, b: EnhancedTrailPoint) => a.distanceFromStart - b.distanceFromStart)
-					: [];
-			const elevationGain =
+			// The trail is in SOBO order, so the segment is one slice between the two ends.
+			let segment: EnhancedTrailPoint[] = [];
+			if (hasTrail && trailPoints) {
+				const { startIndex, endIndex } = rulerSegmentIndices(trailPoints, {
+					distanceFromStartA: distA,
+					distanceFromStartB: distB,
+				});
+				segment = trailPoints.slice(startIndex, endIndex + 1);
+			}
+			const { gain: elevationGain, loss: elevationLoss } =
 				segment.length >= 2
-					? segment[segment.length - 1].elevationGainFromStart - segment[0].elevationGainFromStart
-					: 0;
-			const elevationLoss =
-				segment.length >= 2
-					? segment[segment.length - 1].elevationLossFromStart - segment[0].elevationLossFromStart
-					: 0;
+					? segmentGainLoss(segment[0], segment[segment.length - 1], opts.direction)
+					: { gain: 0, loss: 0 };
+			// The stored ends are SOBO metres; label them as the hiker meets them, A first.
+			const totalM = hasTrail && trailPoints ? trailPoints[trailPoints.length - 1].distanceFromStart : 0;
+			const travelA = toTravelM(distA, opts.direction, totalM);
+			const travelB = toTravelM(distB, opts.direction, totalM);
 			const fmt = (meters: number): string => formatDistance(meters / 1000, opts.units, opts.distancePrecision, false);
 			const elevationLines =
 				segment.length >= 2
 					? `<div>${opts.tChart('gain')}: ${formatElevation(elevationGain, opts.units)}</div><div>${opts.tChart('loss')}: ${formatElevation(elevationLoss, opts.units)}</div>`
 					: '';
 			const content = `<div class="distance-tooltip-content">
-                <div>${opts.t('pointA')}: ${fmt(distA)}</div>
-                <div>${opts.t('pointB')}: ${fmt(distB)}</div>
+                <div>${opts.t('pointA')}: ${fmt(Math.min(travelA, travelB))}</div>
+                <div>${opts.t('pointB')}: ${fmt(Math.max(travelA, travelB))}</div>
                 <div><strong>${opts.t('rulerDistance')}: ${fmt(distanceBetween)}</strong></div>
                 ${elevationLines}
             </div>`;
@@ -218,6 +220,7 @@ export function useRuler(map: L.Map): UseRulerResult {
 			const opts: RulerSegmentOpts = optsOverride ?? {
 				units: units,
 				distancePrecision: distancePrecision,
+				direction,
 				t,
 				tChart,
 			};
@@ -246,7 +249,7 @@ export function useRuler(map: L.Map): UseRulerResult {
 				}).addTo(map);
 			}
 		},
-		[units, distancePrecision, t, tChart, buildRulerSegmentAndTooltipContent, map],
+		[units, distancePrecision, direction, t, tChart, buildRulerSegmentAndTooltipContent, map],
 	);
 
 	const [rulerAnnouncement, setRulerAnnouncement] = useState<string | null>(null);
@@ -283,23 +286,8 @@ export function useRuler(map: L.Map): UseRulerResult {
 		setRulerRange(null);
 	}, [isRulerEnabled, map, clearRulerMarkersAndLayers, setRulerRange, stableRulerClick]);
 
-	// When trail direction changes and ruler is active, convert ruler range so the same segment uses the new direction's distance-from-start.
-	useEffect(() => {
-		if (!isRulerEnabled || !rulerRange || !enhancedTrailPoints?.length) {
-			lastDirectionRef.current = direction;
-			return;
-		}
-		if (lastDirectionRef.current !== undefined && lastDirectionRef.current !== direction) {
-			const totalM = enhancedTrailPoints[enhancedTrailPoints.length - 1]?.distanceFromStart ?? 0;
-			setRulerRange({
-				distanceFromStartA: totalM - rulerRange.distanceFromStartB,
-				distanceFromStartB: totalM - rulerRange.distanceFromStartA,
-			});
-		}
-		lastDirectionRef.current = direction;
-	}, [direction, isRulerEnabled, rulerRange, enhancedTrailPoints, setRulerRange]);
-
-	// When trail data (e.g., after direction change) updates and ruler is active, rebuild the ruler from the current store range.
+	// Rebuild the ruler from the stored SOBO range when the trail data changes, and its
+	// labels when the direction flips (the range itself is the same in both directions).
 	useEffect(() => {
 		if (!isRulerEnabled || !enhancedTrailPoints?.length || !rulerRange) return;
 
@@ -325,6 +313,7 @@ export function useRuler(map: L.Map): UseRulerResult {
 		const opts: RulerSegmentOpts = {
 			units: units,
 			distancePrecision: distancePrecision,
+			direction,
 			t,
 			tChart,
 		};
@@ -339,6 +328,7 @@ export function useRuler(map: L.Map): UseRulerResult {
 		isRulerEnabled,
 		rulerRange,
 		enhancedTrailPoints,
+		direction,
 		units,
 		distancePrecision,
 		map,
@@ -410,7 +400,7 @@ export function useRuler(map: L.Map): UseRulerResult {
 		};
 	}); // end useLayoutEffect - keeps rulerClickHandlerRef.current in sync
 
-	// Re-render the tooltip content when units / precision / locale change.
+	// Re-render the tooltip content when units / precision / locale / direction change.
 	useEffect(() => {
 		if (!rulerTooltipRef.current || rulerPointDataRef.current.length < 2) {
 			return;
@@ -418,10 +408,10 @@ export function useRuler(map: L.Map): UseRulerResult {
 		const [dataA, dataB] = rulerPointDataRef.current;
 		const trailPoints = useStore.getState().enhancedTrailPoints;
 		const points = rulerMarkerRef.current.map((m) => m.getLatLng()) as [L.LatLng, L.LatLng];
-		const opts = { units: units, distancePrecision: distancePrecision, t, tChart };
+		const opts = { units: units, distancePrecision: distancePrecision, direction, t, tChart };
 		const { content } = buildRulerSegmentAndTooltipContent(dataA, dataB, trailPoints, points, opts);
 		rulerTooltipRef.current.setContent(content);
-	}, [units, distancePrecision, t, tChart, buildRulerSegmentAndTooltipContent]);
+	}, [units, distancePrecision, direction, t, tChart, buildRulerSegmentAndTooltipContent]);
 
 	// When a user drags a range on the elevation chart, enable ruler and set the two points.
 	useEffect(() => {
@@ -466,6 +456,7 @@ export function useRuler(map: L.Map): UseRulerResult {
 			const opts: RulerSegmentOpts = {
 				units: useMapStore.getState().units,
 				distancePrecision: useMapStore.getState().distancePrecision,
+				direction: useMapStore.getState().direction,
 				t,
 				tChart,
 			};

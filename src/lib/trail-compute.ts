@@ -13,12 +13,12 @@ import { haversineDistanceM } from './haversine';
 import { computeBearing } from './distance-utils';
 import { TRAIL_SECTIONS } from './trail-sections';
 import { parseTrackPoints } from './gpx-parser';
-import type { EnhancedTrailPoint, TrailDirection } from './store/types';
+import type { EnhancedTrailPoint } from './store/types';
 
 export interface ComputedTrailData {
-	/** Direction-adjusted plain coordinates (same order as enhanced). */
+	/** Plain coordinates in file (SOBO) order, the same order as enhanced. */
 	points: { lat: number; lng: number }[];
-	/** Direction-adjusted elevation triples (0 where the GPX has no <ele>). */
+	/** Elevation triples in file order (0 where the GPX has no <ele>). */
 	elevationPoints: { lat: number; lng: number; elevation: number }[];
 	hasElevation: boolean;
 	enhanced: EnhancedTrailPoint[];
@@ -43,20 +43,18 @@ function bucketGradePct(absGradePct: number): 0 | 1 | 2 | 3 | 4 {
 }
 
 /**
- * Builds the full trail dataset from raw track points: direction-adjusted
- * coordinate/elevation arrays, the enhanced point array (cumulative
- * distance/gain/loss, section, bearing, grade), and metadata totals.
+ * Builds the full trail dataset from raw track points: coordinate/elevation
+ * arrays, the enhanced point array (cumulative distance/gain/loss, section,
+ * bearing, grade) and metadata totals. Everything is in file (SOBO) order and
+ * the same for both directions; src/lib/trail-frame.ts converts to the
+ * hiker's travel frame at the display edges.
  */
-export function computeTrailData(
-	rawPoints: { lat: number; lng: number; ele?: number }[],
-	direction: TrailDirection,
-): ComputedTrailData {
+export function computeTrailData(rawPoints: { lat: number; lng: number; ele?: number }[]): ComputedTrailData {
 	if (rawPoints.length === 0) throw new Error('GPX track has no points');
 
-	const ordered = direction === 'NOBO' ? [...rawPoints].reverse() : rawPoints;
 	const hasElevation = rawPoints.some((p) => p.ele !== undefined && p.ele !== null);
-	const points = ordered.map(({ lat, lng }) => ({ lat, lng }));
-	const elevationPoints = ordered.map(({ lat, lng, ele }) => ({ lat, lng, elevation: ele ?? 0 }));
+	const points = rawPoints.map(({ lat, lng }) => ({ lat, lng }));
+	const elevationPoints = rawPoints.map(({ lat, lng, ele }) => ({ lat, lng, elevation: ele ?? 0 }));
 
 	const enhanced: EnhancedTrailPoint[] = [];
 	let cumulativeDistance = 0;
@@ -125,6 +123,6 @@ export function computeTrailData(
 }
 
 /** One-call worker entry: parse + compute. */
-export function computeFromGpx(gpxText: string, direction: TrailDirection): ComputedTrailData {
-	return computeTrailData(parseTrackPoints(gpxText), direction);
+export function computeFromGpx(gpxText: string): ComputedTrailData {
+	return computeTrailData(parseTrackPoints(gpxText));
 }

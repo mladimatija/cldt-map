@@ -1,6 +1,7 @@
 import { BaseMapProvider } from '@/lib/services/base-map-provider';
 import type { EnhancedTrailPoint, StagePlan, TrailDirection, UnitSystem } from '@/lib/store/types';
 import { computeStageStats } from '@/lib/stage-planner';
+import { toTravelRange } from '@/lib/trail-frame';
 import { findNearestPointIndex, formatEta } from '@/lib/distance-utils';
 import { formatElevation, kmToMiles } from '@/lib/utils';
 import { siteMetadata } from '@/lib/metadata';
@@ -254,7 +255,6 @@ export async function cropToAspect(dataUrl: string, targetW: number, targetH: nu
 export async function exportStripMapPdf(
 	stagePlan: StagePlan,
 	enhancedPoints: EnhancedTrailPoint[],
-	elevationPoints: { elevation: number; distanceFromStart: number }[],
 	paceKmh: number,
 	gradeAdjusted: boolean,
 	units: UnitSystem,
@@ -281,8 +281,11 @@ export async function exportStripMapPdf(
 	// A4 landscape: 297 × 210 mm; 14 mm header band; map image fills remaining 196 mm
 
 	const isImperial = units === 'imperial';
+	// Stages are SOBO ranges; stats and labels follow the hiker's direction.
+	const travelDirection = direction ?? 'SOBO';
+	const totalKm = enhancedPoints[enhancedPoints.length - 1].distanceFromStart / 1000;
 	const allStats = stages.map((stage) =>
-		computeStageStats(stage, enhancedPoints, elevationPoints, paceKmh, gradeAdjusted),
+		computeStageStats(stage, enhancedPoints, paceKmh, gradeAdjusted, travelDirection),
 	);
 
 	const logoDataUrl = await fetch('/icon-192.png')
@@ -332,11 +335,11 @@ export async function exportStripMapPdf(
 			const toDisp = (km: number): string => (isImperial ? kmToMiles(km).toFixed(0) : km.toFixed(0));
 			const distKm = stage.endKm - stage.startKm;
 			const distDisplay = isImperial ? kmToMiles(distKm).toFixed(1) + ' mi' : distKm.toFixed(1) + ' km';
-			const isNobo = direction === 'NOBO';
-			const gainStr = formatElevation(isNobo ? stats.lossM : stats.gainM, units);
-			const lossStr = formatElevation(isNobo ? stats.gainM : stats.lossM, units);
+			const gainStr = formatElevation(stats.gainM, units);
+			const lossStr = formatElevation(stats.lossM, units);
 			const etaStr = formatEta(stats.etaSec);
-			const rangeStr = `${toDisp(stage.startKm)}-${toDisp(stage.endKm)} ${isImperial ? 'mi' : 'km'}`;
+			const travel = toTravelRange(stage.startKm, stage.endKm, travelDirection, totalKm);
+			const rangeStr = `${toDisp(travel.from)}-${toDisp(travel.to)} ${isImperial ? 'mi' : 'km'}`;
 
 			// Header band
 			pdf.setFillColor(240, 240, 240);

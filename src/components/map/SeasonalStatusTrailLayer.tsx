@@ -14,7 +14,8 @@ import { useMap } from 'react-leaflet';
 import L from 'leaflet';
 import { useLocale, useTranslations } from 'next-intl';
 import { formatSeasonalDateRange, severityColor, type SeasonalStatusEntry } from '@/lib/seasonal-status';
-import { type EnhancedTrailPoint, type MapStoreState, type StoreState, useMapStore, useStore } from '@/lib/store';
+import { type MapStoreState, type StoreState, useMapStore, useStore } from '@/lib/store';
+import { findNearestPointIndex } from '@/lib/distance-utils';
 
 /**
  * Pane for the seasonal-status halo polyline, drawn under the trail when an
@@ -61,28 +62,6 @@ function buildSeasonalChipIcon(entry: SeasonalStatusEntry, ariaLabel: string): L
 	});
 }
 
-/** Finds the index in `points` whose `distanceFromStart` is closest to `targetM`.
- *  `points` are assumed sorted ascending on distanceFromStart (the upstream
- *  pipeline guarantees this). Binary-searches the position then picks the
- *  closer of the two neighbors. */
-function nearestPointByDistanceM(points: EnhancedTrailPoint[], targetM: number): number {
-	if (points.length === 0) return 0;
-	let lo = 0;
-	let hi = points.length - 1;
-	while (lo < hi) {
-		const mid = (lo + hi) >> 1;
-		if (points[mid].distanceFromStart < targetM) lo = mid + 1;
-		else hi = mid;
-	}
-	if (
-		lo > 0 &&
-		Math.abs(points[lo - 1].distanceFromStart - targetM) < Math.abs(points[lo].distanceFromStart - targetM)
-	) {
-		return lo - 1;
-	}
-	return lo;
-}
-
 export default function SeasonalStatusTrailLayer(): null {
 	const map = useMap();
 	const locale = useLocale();
@@ -114,8 +93,8 @@ export default function SeasonalStatusTrailLayer(): null {
 
 	// Build one chip marker per active seasonal-status entry, anchored at the
 	// midpoint of the entry's km range. Hover sets the hovered-entry id (which
-	// drives the halo); click opens the modal. Direction is unused here because
-	// distanceFromStart is direction-agnostic SOBO meters.
+	// drives the halo); click opens the modal. Direction is unused here: the
+	// entries and enhancedTrailPoints are both in SOBO km.
 	useEffect(() => {
 		if (!map) return;
 
@@ -138,7 +117,7 @@ export default function SeasonalStatusTrailLayer(): null {
 			const startKm = entry.distanceStartKm as number;
 			const endKm = entry.distanceEndKm as number;
 			const midM = ((startKm + endKm) / 2) * 1000;
-			const idx = nearestPointByDistanceM(enhancedTrailPoints, midM);
+			const idx = findNearestPointIndex(enhancedTrailPoints, midM);
 			const pt = enhancedTrailPoints[idx];
 
 			const ariaLabel = tSeasonal('chipAriaLabel', {

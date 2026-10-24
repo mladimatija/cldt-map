@@ -84,8 +84,12 @@ import {
 	splitByEta,
 	computeStageStats,
 	computeMinStagesForCap,
+	stagePlanDirection,
+	toStoredStagePlan,
+	travelProfile,
 	DEFAULT_MAX_HOURS_PER_DAY,
 } from '@/lib/stage-planner';
+import { toTravelRange } from '@/lib/trail-frame';
 import { findNearestPointIndex, formatEta } from '@/lib/distance-utils';
 import { useStageForecasts } from '@/hooks/useStageForecasts';
 import { formatCompactTemp, weatherCodeToKey, weatherKeyToIcon } from '@/lib/weather';
@@ -193,7 +197,15 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 	const trailMetadata = useStore((s: StoreState) => s.trailMetadata);
 	const closestPoint = useStore((s: StoreState) => s.closestPoint);
 	const direction = useStore((s: StoreState) => s.direction);
-	const isNobo = direction === 'NOBO';
+	/** A stored plan is shown in the direction it was made for (its days are in
+	 *  that travel order); new plans are generated for the current direction. */
+	const planDirection = stagePlan ? stagePlanDirection(stagePlan) : direction;
+	const isNobo = planDirection === 'NOBO';
+	const planIsForOtherDirection = planDirection !== direction;
+	const trailTotalKm = trailMetadata?.totalDistance ?? 0;
+	/** Stored stages are SOBO ranges; show them as the hiker meets them (travel km, start first). */
+	const travelRange = (stage: { startKm: number; endKm: number }): { from: number; to: number } =>
+		toTravelRange(stage.startKm, stage.endKm, planDirection, trailTotalKm);
 
 	const map = useMap();
 	const popoverRef = usePopoverFocusTrap(true);
@@ -261,9 +273,9 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 	const stageStats = useMemo(() => {
 		if (!stagePlan || !enhancedTrailPoints?.length) return [];
 		return stagePlan.stages.map((stage) =>
-			computeStageStats(stage, enhancedTrailPoints, enhancedTrailPoints, walkingPaceKmh, gradeAdjustedEta),
+			computeStageStats(stage, enhancedTrailPoints, walkingPaceKmh, gradeAdjustedEta, planDirection),
 		);
-	}, [stagePlan, enhancedTrailPoints, walkingPaceKmh, gradeAdjustedEta]);
+	}, [stagePlan, enhancedTrailPoints, walkingPaceKmh, gradeAdjustedEta, planDirection]);
 
 	/** Per-stage calendar date label (e.g. "Mon 17 Jun"), rest days included, or
 	 *  [] when no trip start date is set. */
@@ -303,8 +315,13 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 		startDate: tripStartDate || undefined,
 	});
 
-	const runGenerate = (inputs: StagePlanPresetInputs): void => {
+	/** `restDays` carries an existing plan's rest days over (anchors past the new
+	 *  last stage are dropped). */
+	const runGenerate = (inputs: StagePlanPresetInputs, restDays?: number[]): void => {
 		if (!enhancedTrailPoints?.length) return;
+		// The typed range is travel km, so split a travel-ordered profile and then
+		// store each stage as a SOBO range (stages stay in travel order).
+		const profile = travelProfile(enhancedTrailPoints, direction);
 		const safeKmPerDay = Math.max(0.1, inputs.kmPerDayKm);
 		const safeStageCount = Math.min(MAX_STAGES, Math.max(1, inputs.stageCount));
 		const requestedCount =
@@ -312,7 +329,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 				? safeStageCount
 				: Math.min(MAX_STAGES, Math.max(1, Math.ceil((inputs.endKm - inputs.startKm) / safeKmPerDay)));
 		const minCount = computeMinStagesForCap(
-			enhancedTrailPoints,
+			profile,
 			inputs.startKm,
 			inputs.endKm,
 			walkingPaceKmh,
@@ -322,9 +339,20 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 		const finalCount = Math.min(MAX_STAGES, Math.max(requestedCount, minCount));
 		setAutoBumpNotice(finalCount > requestedCount ? { requested: requestedCount, actual: finalCount } : null);
 		const plan = inputs.balanceByEta
-			? splitByEta(enhancedTrailPoints, inputs.startKm, inputs.endKm, walkingPaceKmh, gradeAdjustedEta, finalCount)
+			? splitByEta(profile, inputs.startKm, inputs.endKm, walkingPaceKmh, gradeAdjustedEta, finalCount)
 			: splitByDistance(inputs.startKm, inputs.endKm, (inputs.endKm - inputs.startKm) / finalCount);
-		setStagePlan({ ...plan, startDate: inputs.startDate || undefined });
+		const keptRestDays = normalizeRestDays(restDays).filter((k) => k < plan.stages.length);
+		setStagePlan(
+			toStoredStagePlan(
+				{
+					...plan,
+					startDate: inputs.startDate || undefined,
+					...(keptRestDays.length > 0 && { restDays: keptRestDays }),
+				},
+				direction,
+				trailTotalKm,
+			),
+		);
 		setActiveStageIndex(0);
 		setSelectedStagePoiIdsByStage(new Map());
 		setConfirmReset(false);
@@ -333,6 +361,28 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 	};
 
 	const handleGenerate = (): void => runGenerate(currentPlannerInputs());
+
+	/** Re-split a plan made for the other direction over the same stretch for the
+	 *  current one, keeping its day count, balance mode, start date and rest days.
+	 *  The form fields are not used: they reset on every mount and need not
+	 *  describe the stored plan. */
+	const handleRegenerateForDirection = (): void => {
+		if (!stagePlan) return;
+		const range = toTravelRange(stagePlan.startKm, stagePlan.endKm, direction, trailTotalKm);
+		runGenerate(
+			{
+				startKm: range.from,
+				endKm: range.to,
+				mode: 'stages',
+				kmPerDayKm,
+				stageCount: stagePlan.stages.length,
+				balanceByEta: stagePlan.balanceMode === 'eta',
+				maxHoursPerDay,
+				startDate: stagePlan.startDate,
+			},
+			stagePlan.restDays,
+		);
+	};
 
 	const applyStagePreset = (preset: StagePlanPreset): void => {
 		const inp = preset.inputs;
@@ -375,21 +425,19 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 		map.fitBounds(pointsToBounds(pts), { padding: [50, 50] });
 	};
 
-	/** Document-level metadata for a stage GPX export: stage stats with the same
-	 *  isNobo ascent/descent swap handleFitExport applies, plus SAC/surface
-	 *  difficulty over the stage's SOBO km window. SAC/surface are added only when
-	 *  the OSM tag dataset is loaded, so the export stays valid without it. */
+	/** Document-level metadata for a stage GPX export: stage stats (already in
+	 *  the travel direction), plus SAC/surface difficulty over the stage's SOBO km
+	 *  window. SAC/surface are added only when the OSM tag dataset is loaded, so
+	 *  the export stays valid without it. */
 	const buildStageMeta = (
 		stage: { startKm: number; endKm: number },
 		stats: { distanceM: number; gainM: number; lossM: number; etaSec: number },
 		index: number,
 	): GpxDocMeta => {
-		const ascentM = isNobo ? stats.lossM : stats.gainM;
-		const descentM = isNobo ? stats.gainM : stats.lossM;
 		const parts: string[] = [
 			tGpxMeta('descDistance', { value: formatDistance(stats.distanceM / 1000, units, distancePrecision) }),
-			tGpxMeta('descAscent', { value: formatElevation(ascentM, units) }),
-			tGpxMeta('descDescent', { value: formatElevation(descentM, units) }),
+			tGpxMeta('descAscent', { value: formatElevation(stats.gainM, units) }),
+			tGpxMeta('descDescent', { value: formatElevation(stats.lossM, units) }),
 			tGpxMeta('descHikingTime', { value: formatEta(stats.etaSec) }),
 		];
 		const runs = trailOsmTagsFile?.runs;
@@ -448,8 +496,8 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 		const fitBytes = await buildFitCourseBytes({
 			points: pts.map((p) => ({ lat: p.lat, lng: p.lng, elevation: p.elevation })),
 			courseName: `CLDT Stage ${activeStageIndex + 1}`,
-			totalAscentM: stats ? (isNobo ? stats.lossM : stats.gainM) : undefined,
-			totalDescentM: stats ? (isNobo ? stats.gainM : stats.lossM) : undefined,
+			totalAscentM: stats?.gainM,
+			totalDescentM: stats?.lossM,
 		});
 		downloadFitFile(fitBytes, `cldt-stage-${activeStageIndex + 1}.fit`);
 	};
@@ -458,11 +506,11 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 		if (!stagePlan?.startDate || stagePlan.stages.length === 0 || stageStats.length === 0) return;
 		const events = stagePlan.stages.map((stage, index) => {
 			const stats = stageStats[index];
-			const startDisplay = toDisplay(stage.startKm).toFixed(1);
-			const endDisplay = toDisplay(stage.endKm).toFixed(1);
+			const range = travelRange(stage);
+			const startDisplay = toDisplay(range.from).toFixed(1);
+			const endDisplay = toDisplay(range.to).toFixed(1);
 			const distDisplay = toDisplay(stats.distanceM / 1000).toFixed(1);
-			const gainM = isNobo ? stats.lossM : stats.gainM;
-			const lossM = isNobo ? stats.gainM : stats.lossM;
+			const { gainM, lossM } = stats;
 			const date = stageCalendarDate(stagePlan.startDate!, dayOffsetForStage(index, stagePlan.restDays));
 			return {
 				date,
@@ -478,7 +526,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 					t('icalGain', { value: formatElevation(gainM, units) }),
 					t('icalLoss', { value: formatElevation(lossM, units) }),
 					t('icalEta', { value: formatEta(stats.etaSec) }),
-					t('icalDirection', { direction: direction === 'NOBO' ? 'NOBO' : 'SOBO' }),
+					t('icalDirection', { direction: planDirection }),
 				].join('\n'),
 			};
 		});
@@ -510,7 +558,6 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 			await exportStripMapPdf(
 				stagePlan,
 				enhancedTrailPoints,
-				enhancedTrailPoints,
 				walkingPaceKmh,
 				gradeAdjustedEta,
 				units,
@@ -520,7 +567,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 				leafletEl,
 				controller.signal,
 				(index) => setActiveStageIndex(index),
-				direction,
+				planDirection,
 			);
 		} catch (err) {
 			console.error('Strip-map PDF export failed:', err instanceof Error ? err.message : String(err));
@@ -574,8 +621,15 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 		if (activeStageIndex === null || !stagePlan || !enhancedTrailPoints?.length) return [];
 		const stage = stagePlan.stages[activeStageIndex];
 		if (!stage) return [];
-		return findToughestStretches(enhancedTrailPoints, stage.startKm, stage.endKm, trailOsmTagsFile?.runs ?? [], 3);
-	}, [activeStageIndex, stagePlan, enhancedTrailPoints, trailOsmTagsFile]);
+		return findToughestStretches(
+			enhancedTrailPoints,
+			stage.startKm,
+			stage.endKm,
+			trailOsmTagsFile?.runs ?? [],
+			3,
+			planDirection,
+		);
+	}, [activeStageIndex, stagePlan, enhancedTrailPoints, trailOsmTagsFile, planDirection]);
 
 	const distanceUnitLabel = isImperial ? 'mi' : 'km';
 	const valueUnitLabel = mode === 'stages' ? t('modeStages') : `${distanceUnitLabel}/day`;
@@ -663,8 +717,9 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 	const overnightPois = useMemo((): Poi[] => filterOvernightCandidates(poisFile?.pois ?? []), [poisFile]);
 	const accommodationByStage = useMemo((): (StageEndAccommodation | null)[] => {
 		if (!stagePlan) return [];
-		return stagePlan.stages.map((s) => findStageEndAccommodation(s.endKm, overnightPois));
-	}, [stagePlan, overnightPois]);
+		// The day ends at the SOBO end southbound and at the SOBO start northbound.
+		return stagePlan.stages.map((s) => findStageEndAccommodation(isNobo ? s.startKm : s.endKm, overnightPois));
+	}, [stagePlan, overnightPois, isNobo]);
 
 	/** Per-stage SAC hiking-scale breakdown over the stage's SOBO km window (the
 	 *  OSM runs share that frame). Empty until the OSM tag dataset is lazy-loaded,
@@ -729,8 +784,8 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 		if (!stagePlan || !poisFile?.pois?.length) return null;
 		const resupplyPoints = collectResupplyTownPoints(poisFile.pois);
 		if (resupplyPoints.length === 0) return null;
-		return computePlanResupplyCadence(stagePlan.stages, poisFile.pois, resupplyPoints);
-	}, [stagePlan, poisFile]);
+		return computePlanResupplyCadence(stagePlan.stages, poisFile.pois, resupplyPoints, planDirection);
+	}, [stagePlan, poisFile, planDirection]);
 
 	const poiById = useMemo((): Map<string, Poi> => {
 		const map = new Map<string, Poi>();
@@ -1174,9 +1229,18 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 								title={t('sections.stages')}
 								onOpenChange={setStagePlannerStagesOpen}
 							>
+								{planIsForOtherDirection && (
+									<p className="mt-0 mb-2 text-[0.6875rem] text-amber-700 dark:text-amber-400">
+										{t('planOtherDirection')}{' '}
+										<button className={MAP_CONTROL_FOOTNOTE_LINK} type="button" onClick={handleRegenerateForDirection}>
+											{t('planRegenerate')}
+										</button>
+									</p>
+								)}
 								<div className="divide-y divide-gray-100 rounded border border-gray-100 dark:divide-[var(--border-color)] dark:border-[var(--border-color)]">
 									{stagePlan.stages.map((stage, i) => {
 										const stats = stageStats[i];
+										const range = travelRange(stage);
 										const poiCount = poisByStage[i]?.length ?? 0;
 										const stageCadence = planResupplyCadence?.stages[i];
 										const resupplyStatus = stageCadence?.status ?? null;
@@ -1205,8 +1269,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 														<span className="flex w-full flex-wrap items-center gap-x-1.5 gap-y-0.5">
 															<span className="min-w-4 font-medium">{i + 1}</span>
 															<span className="whitespace-nowrap text-gray-500 dark:text-[var(--text-secondary)]">
-																{toDisplay(stage.startKm).toFixed(0)}-{toDisplay(stage.endKm).toFixed(0)}{' '}
-																{distanceUnitLabel}
+																{toDisplay(range.from).toFixed(0)}-{toDisplay(range.to).toFixed(0)} {distanceUnitLabel}
 															</span>
 															{stageDateLabels[i] && (
 																<span className="shrink-0 whitespace-nowrap text-gray-400 dark:text-[var(--text-secondary)]">
@@ -1216,11 +1279,9 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 															{stats && (
 																<>
 																	<span className="text-cldt-green shrink-0">
-																		↑{formatElevation(isNobo ? stats.lossM : stats.gainM, units)}
+																		↑{formatElevation(stats.gainM, units)}
 																	</span>
-																	<span className="text-cldt-red shrink-0">
-																		↓{formatElevation(isNobo ? stats.gainM : stats.lossM, units)}
-																	</span>
+																	<span className="text-cldt-red shrink-0">↓{formatElevation(stats.lossM, units)}</span>
 																	<span className="shrink-0 text-gray-500 tabular-nums dark:text-[var(--text-secondary)]">
 																		{formatEta(stats.etaSec)}
 																	</span>
@@ -1429,8 +1490,8 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 																<img
 																	alt={t('stageElevationProfileAlt', {
 																		index: i + 1,
-																		gain: formatElevation(isNobo ? stats.lossM : stats.gainM, units),
-																		loss: formatElevation(isNobo ? stats.gainM : stats.lossM, units),
+																		gain: formatElevation(stats.gainM, units),
+																		loss: formatElevation(stats.lossM, units),
 																	})}
 																	className="h-auto w-full rounded border border-gray-200 bg-white dark:border-[var(--border-color)]"
 																	src={activeStageElevationThumb}
@@ -1486,7 +1547,8 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 																						s.kind === 'climb'
 																							? t('stageTerrainSteepClimb', { grade })
 																							: t('stageTerrainSteepDescent', { grade });
-																					const bounds = `${toDisplay(s.fromKm).toFixed(1)}-${toDisplay(s.toKm).toFixed(1)} ${distanceUnitLabel}`;
+																					const range = travelRange({ startKm: s.fromKm, endKm: s.toKm });
+																					const bounds = `${toDisplay(range.from).toFixed(1)}-${toDisplay(range.to).toFixed(1)} ${distanceUnitLabel}`;
 																					const sacNote = s.sacClass
 																						? ` · ${t('stageTerrainSacNote', { class: SAC_BUCKET_SHORT_LABELS[s.sacClass] })}`
 																						: '';
@@ -1738,12 +1800,12 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 								{junctionsByStage.map((list, i) => {
 									if (list.length === 0) return null;
 									const stage = stagePlan.stages[i];
+									const range = travelRange(stage);
 									const rows = isNobo ? [...list].reverse() : list;
 									return (
 										<div className="flex flex-col gap-0.5" key={`${stage.startKm}-${stage.endKm}`}>
 											<p className="m-0 text-[0.625rem] font-medium tracking-wide text-gray-500 uppercase dark:text-[var(--text-secondary)]">
-												{i + 1}. {toDisplay(stage.startKm).toFixed(0)}-{toDisplay(stage.endKm).toFixed(0)}{' '}
-												{distanceUnitLabel}
+												{i + 1}. {toDisplay(range.from).toFixed(0)}-{toDisplay(range.to).toFixed(0)} {distanceUnitLabel}
 											</p>
 											{rows.map((junction) => {
 												const label = junctionLabel(junction, tJunctions('layerLabel'));

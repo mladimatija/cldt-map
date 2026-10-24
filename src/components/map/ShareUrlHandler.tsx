@@ -11,8 +11,22 @@ import {
 	shareParamsNeedMapFollowUp,
 	type ShareUrlParams,
 } from '@/lib/utils';
-import { applyShareTripState } from '@/lib/share-trip-state';
-import { useMapStore, useStore, type MapStoreState, type StoreState, TrailState } from '@/lib/store';
+import {
+	applyShareTripState,
+	normalizeShareTripStateToSobo,
+	shareTripStateNeedsTrailLength,
+	type ShareTripStatePayload,
+} from '@/lib/share-trip-state';
+import { findNearestPointIndex } from '@/lib/distance-utils';
+import { toSoboM, toSoboRange } from '@/lib/trail-frame';
+import {
+	useMapStore,
+	useStore,
+	type MapStoreState,
+	type StoreState,
+	type TrailDirection,
+	TrailState,
+} from '@/lib/store';
 
 /**
  * Handles share URL params on load: applies unit, map style (baseMap, trailStyle,
@@ -29,6 +43,10 @@ export default function ShareUrlHandler(): null {
 	const viewAppliedRef = useRef(false);
 	const tooltipAppliedRef = useRef(false);
 	const urlClearedRef = useRef(false);
+	/** Trip state applied once the trail has loaded: an older (version 1)
+	 *  northbound link needs the trail length, and a pending one-time km
+	 *  migration of the local data must run before the link's data lands. */
+	const pendingTripStateRef = useRef<{ payload: ShareTripStatePayload; linkDirection: TrailDirection } | null>(null);
 	const highlightTrailPosition = useStore((state: StoreState) => state.highlightTrailPosition);
 	const clearTrailHighlight = useStore((state: StoreState) => state.clearTrailHighlight);
 	const setTooltipPinnedFromShare = useStore((state: StoreState) => state.setTooltipPinnedFromShare);
@@ -52,7 +70,15 @@ export default function ShareUrlHandler(): null {
 		if (!params) return;
 		applyShareMapStyleParams(params);
 		if (params.tripState) {
-			applyShareTripState(params.tripState);
+			const linkDirection = params.dir ?? useMapStore.getState().direction;
+			if (
+				shareTripStateNeedsTrailLength(params.tripState, linkDirection) ||
+				useMapStore.getState().kmFrameMigration !== null
+			) {
+				pendingTripStateRef.current = { payload: params.tripState, linkDirection };
+			} else {
+				applyShareTripState(normalizeShareTripStateToSobo(params.tripState, linkDirection, 0));
+			}
 		}
 		if (params.dir && params.dir !== useMapStore.getState().direction) {
 			setDirection(params.dir);
@@ -62,6 +88,18 @@ export default function ShareUrlHandler(): null {
 			clearShareUrl();
 		}
 	}, [clearShareUrl, setDirection]);
+
+	// Deferred trip state: mirror older local data first (a no-op once done), so
+	// the link's data is not mirrored with it, then convert older northbound
+	// links from km from Prevlaka to SOBO km.
+	useEffect(() => {
+		const pending = pendingTripStateRef.current;
+		if (!pending || !gpxLoaded || !enhancedTrailPoints?.length) return;
+		pendingTripStateRef.current = null;
+		const totalKm = enhancedTrailPoints[enhancedTrailPoints.length - 1].distanceFromStart / 1000;
+		useMapStore.getState().applyKmFrameMigration?.(totalKm);
+		applyShareTripState(normalizeShareTripStateToSobo(pending.payload, pending.linkDirection, totalKm));
+	}, [gpxLoaded, enhancedTrailPoints]);
 
 	// Fly the map to the shared view / progress point and strip share params from the URL.
 	useEffect(() => {
@@ -75,7 +113,9 @@ export default function ShareUrlHandler(): null {
 		const hasRuler = params.rulerRange !== undefined;
 
 		if (!hasLatLngView && !hasProgress && !hasRuler) return;
-		if (hasProgress && (!gpxLoaded || !enhancedTrailPoints?.length)) return;
+		// Progress and ruler are travel distances under the link's `dir`; converting
+		// them to the stored SOBO frame needs the loaded trail's length.
+		if ((hasProgress || hasRuler) && (!gpxLoaded || !enhancedTrailPoints?.length)) return;
 
 		viewAppliedRef.current = true;
 
@@ -88,17 +128,13 @@ export default function ShareUrlHandler(): null {
 				map.flyTo(popupLatLng, zoom, { duration: 0.5 });
 			}
 
+			const totalM = enhancedTrailPoints.length
+				? enhancedTrailPoints[enhancedTrailPoints.length - 1].distanceFromStart
+				: 0;
+
 			if (hasProgress && enhancedTrailPoints?.length) {
-				const targetDistanceM = params.progress! * 1000;
-				let closest = enhancedTrailPoints[0];
-				let minDiff = Math.abs(closest.distanceFromStart - targetDistanceM);
-				for (let i = 1; i < enhancedTrailPoints.length; i++) {
-					const d = Math.abs(enhancedTrailPoints[i].distanceFromStart - targetDistanceM);
-					if (d < minDiff) {
-						minDiff = d;
-						closest = enhancedTrailPoints[i];
-					}
-				}
+				const targetSoboM = toSoboM(params.progress! * 1000, currentDirection, totalM);
+				const closest = enhancedTrailPoints[findNearestPointIndex(enhancedTrailPoints, targetSoboM)];
 				popupLatLng = [closest.lat, closest.lng];
 				const zoom = params.zoom ?? Math.max(map.getZoom(), 12);
 				map.flyTo(popupLatLng, zoom, { duration: 0.5 });
@@ -108,7 +144,13 @@ export default function ShareUrlHandler(): null {
 			}
 
 			if (params.rulerRange) {
-				setRulerRange(params.rulerRange);
+				const sobo = toSoboRange(
+					params.rulerRange.distanceFromStartA,
+					params.rulerRange.distanceFromStartB,
+					currentDirection,
+					totalM,
+				);
+				setRulerRange({ distanceFromStartA: sobo.from, distanceFromStartB: sobo.to });
 				setRulerEnabled(true);
 			}
 

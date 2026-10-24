@@ -1,5 +1,6 @@
 import type { EnhancedTrailPoint } from '@/lib/store';
-import type { UnitSystem } from '@/lib/types';
+import type { TrailDirection, UnitSystem } from '@/lib/types';
+import { toSoboM } from '@/lib/trail-frame';
 
 /** Step sizes (in the active unit: km or mi) at which markers are emitted. */
 export const DISTANCE_MARKER_LEVELS = [100, 50, 25, 10, 5, 1] as const;
@@ -9,7 +10,7 @@ export type DistanceMarkerLevel = (typeof DISTANCE_MARKER_LEVELS)[number];
 export interface DistanceMarker {
 	lat: number;
 	lng: number;
-	/** Distance from current direction's start, in metres. */
+	/** Distance from the hiker's start (travel frame), in metres. */
 	distanceM: number;
 	/** Density class for styling and zoom-visibility (1, 5, 10, 25, 50, 100). Not the printed label. */
 	level: DistanceMarkerLevel;
@@ -33,10 +34,15 @@ const METRES_PER_MILE = 1609.344;
  * visible at every zoom that level-50 would also be (since it's the same
  * physical point). This keeps the marker count to one per milestone.
  *
- * Direction-agnostic: consumes `distanceFromStart` which is already adjusted
- * for SOBO / NOBO upstream. Re-runs naturally when the trail rebuilds.
+ * Milestones count from the hiker's start (travel km). The points are SOBO, so
+ * each milestone is placed at its SOBO position; callers re-run on a direction
+ * change.
  */
-export function computeDistanceMarkers(points: EnhancedTrailPoint[], units: UnitSystem): DistanceMarker[] {
+export function computeDistanceMarkers(
+	points: EnhancedTrailPoint[],
+	units: UnitSystem,
+	direction: TrailDirection,
+): DistanceMarker[] {
 	if (!points || points.length < 2) return [];
 
 	const stepM = units === 'imperial' ? METRES_PER_MILE : 1000;
@@ -51,12 +57,12 @@ export function computeDistanceMarkers(points: EnhancedTrailPoint[], units: Unit
 		for (let milestoneM = intervalM, n = level; milestoneM < totalM; milestoneM += intervalM, n += level) {
 			const rounded = Math.round(milestoneM);
 			if (emittedAtM.has(rounded)) continue;
-			const idx = nearestPointIndex(points, milestoneM);
+			const idx = nearestPointIndex(points, toSoboM(milestoneM, direction, totalM));
 			const p = points[idx];
 			markers.push({
 				lat: p.lat,
 				lng: p.lng,
-				distanceM: p.distanceFromStart,
+				distanceM: milestoneM,
 				level,
 				label: String(n),
 			});

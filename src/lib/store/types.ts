@@ -78,25 +78,37 @@ export const SOS_CARD_FIELDS = [
 
 export interface ClosestPoint {
 	point: LatLng;
+	/** Metres from the user to the trail. */
 	distance: number;
+	/** SOBO metres from Ilok to the snapped point (the same in both directions);
+	 *  convert with src/lib/trail-frame.ts for travelled / remaining. */
 	distanceFromStart: number;
-	distanceToEnd: number;
-	elevationGainSoFar?: number;
 }
 
+/**
+ * One trail point in file (SOBO) order. Every distance and cumulative value
+ * runs from Ilok, the same in both travel directions; src/lib/trail-frame.ts
+ * converts to the hiker's frame (travelled, remaining, climb so far, grade and
+ * bearing as walked).
+ */
 export interface EnhancedTrailPoint {
 	lat: number;
 	lng: number;
 	elevation: number;
+	/** SOBO metres from Ilok. */
 	distanceFromStart: number;
+	/** Climb and descent from Ilok up to this point (SOBO). */
 	elevationGainFromStart: number;
 	elevationLossFromStart: number;
+	/** Index in the GPX track (file order). */
 	index: number;
+	/** Section by SOBO km. */
 	sectionName?: string;
-	/** Bearing in degrees (0-360, clockwise from north) from this point to the next.
+	/** Bearing in degrees (0-360, clockwise from north) from this point to the next in file order.
 	 * The last point inherits the previous point's bearing; single-point trails get 0. */
 	bearingDeg: number;
-	/** Signed grade percent: positive when ascending in the current direction, negative when descending. */
+	/** Signed grade percent to the next point in file order: positive when climbing southbound.
+	 * Use travelGradePct for the hiker's direction. */
 	gradePct: number;
 	/** Bucketed |gradePct|: 0 flat, 1 moderate, 2 steep, 3 very steep, 4 extreme. */
 	gradeBand: 0 | 1 | 2 | 3 | 4;
@@ -565,6 +577,11 @@ export interface MapStoreState {
 	severeWeatherData: GeoJSON.FeatureCollection | null;
 	setSevereWeatherData: (data: GeoJSON.FeatureCollection | null) => void;
 
+	/** Set by the persist migration when a northbound user's data predates SOBO
+	 *  storage; applyKmFrameMigration consumes it once the trail length is known. */
+	kmFrameMigration: 'mirror' | null;
+	applyKmFrameMigration: (totalKm: number) => void;
+
 	// ── Section completion tracking ─────────────────────────────────────
 	/** Normalized completed [startKm, endKm] intervals (SOBO km); persisted. */
 	completedIntervals: CompletionInterval[];
@@ -827,10 +844,14 @@ export interface MapStoreState {
 }
 
 export interface StagePlan {
+	/** Whole planned range as SOBO km (startKm < endKm). */
 	startKm: number;
 	endKm: number;
+	/** One SOBO km range per day (startKm < endKm), listed in travel order: stage 0 is day 1. */
 	stages: { startKm: number; endKm: number }[];
 	balanceMode: 'distance' | 'eta';
+	/** Direction the plan was made for; missing on plans from older builds (SOBO). */
+	direction?: TrailDirection;
 	/** Trip start date (yyyy-mm-dd). Optional; enables per-stage weather
 	 *  forecasts for stages within the 16-day Open-Meteo horizon. */
 	startDate?: string;

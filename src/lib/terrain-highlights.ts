@@ -1,4 +1,5 @@
 import { sacMaxForKmRange, type SacScale, type TrailOsmTagRun } from '@/lib/trail-osm-tags';
+import type { TrailDirection } from '@/lib/types';
 
 /**
  * Grade-based "toughest stretches" detector for the multi-day stage planner.
@@ -19,9 +20,9 @@ import { sacMaxForKmRange, type SacScale, type TrailOsmTagRun } from '@/lib/trai
  * structurally, so callers pass the store array directly.
  */
 export interface TerrainPoint {
-	/** Cumulative distance from the direction start, in meters. */
+	/** SOBO metres from Ilok. */
 	distanceFromStart: number;
-	/** Signed grade percent (positive = climbing in the current travel direction). */
+	/** Signed grade percent to the next point in file order (positive = climbing southbound). */
 	gradePct: number;
 	/** Bucketed |gradePct|: 0 flat, 1 moderate, 2 steep, 3 very steep, 4 extreme. */
 	gradeBand: 0 | 1 | 2 | 3 | 4;
@@ -63,10 +64,12 @@ interface RawStretch {
 }
 
 /**
- * Top `maxN` toughest stretches within [fromKm, toKm], ranked most-severe first.
- * `runs` is optional; when present each stretch is annotated with the hardest
- * SAC class overlapping its sub-range (via sacMaxForKmRange), otherwise sacClass
- * is omitted. Returns [] when the window has too few points to form a segment.
+ * Top `maxN` toughest stretches within the SOBO window [fromKm, toKm], ranked
+ * most-severe first. Stretch bounds stay SOBO km; `kind` is climb or descent as
+ * walked in `direction` (a SOBO climb is a NOBO descent). `runs` is optional;
+ * when present each stretch is annotated with the hardest SAC class overlapping
+ * its sub-range (via sacMaxForKmRange), otherwise sacClass is omitted. Returns
+ * [] when the window has too few points to form a segment.
  */
 export function findToughestStretches(
 	points: readonly TerrainPoint[],
@@ -74,6 +77,7 @@ export function findToughestStretches(
 	toKm: number,
 	runs: readonly TrailOsmTagRun[] = [],
 	maxN = 3,
+	direction: TrailDirection = 'SOBO',
 ): ToughestStretch[] {
 	if (points.length < 2 || maxN <= 0) return [];
 	const loM = Math.min(fromKm, toKm) * 1000;
@@ -135,7 +139,7 @@ export function findToughestStretches(
 		const stretch: ToughestStretch = {
 			fromKm: stretchFromKm,
 			toKm: stretchToKm,
-			kind: s.sign >= 0 ? 'climb' : 'descent',
+			kind: s.sign >= 0 === (direction === 'SOBO') ? 'climb' : 'descent',
 			avgGradePct,
 			...(sac ? { sacClass: sac } : {}),
 		};

@@ -263,6 +263,8 @@ export function createMapStoreStub(): MapStoreState {
 		setHoveredImportedTrackId: noop,
 
 		severeWeatherLayer: false,
+		kmFrameMigration: null,
+		applyKmFrameMigration: noop,
 		completedIntervals: [],
 		markCompleted: () => {},
 		unmarkCompleted: () => {},

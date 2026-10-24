@@ -19,7 +19,15 @@ import {
 	Tooltip as RechartsTooltip,
 } from 'recharts';
 import { formatElevation, formatDistance } from '@/lib/utils';
-import { computeEta, findNearestPointIndex } from '@/lib/distance-utils';
+import { computeEta, findNearestPointIndex, rulerSegmentIndices } from '@/lib/distance-utils';
+import {
+	segmentGainLoss,
+	toSoboKm,
+	toTravelKm,
+	toTravelRange,
+	travelGainLoss,
+	travelGradePct,
+} from '@/lib/trail-frame';
 import { useStore, useMapStore, type StoreState, type MapStoreState } from '@/lib/store';
 import { SAC_BUCKET_SHORT_LABELS, SAC_COLORS, SURFACE_COLORS } from '@/components/map/trail-route-constants';
 import { TRAIL_SECTIONS } from '@/lib/trail-sections';
@@ -122,8 +130,12 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 		});
 
 	const totalDistance = trailMetadata?.totalDistance || 0;
-	const elevationGain = trailMetadata?.elevationGain || 0;
-	const elevationLoss = trailMetadata?.elevationLoss || 0;
+	// Trail totals are stored southbound; a SOBO climb is a NOBO descent.
+	const { gain: elevationGain, loss: elevationLoss } = travelGainLoss(
+		trailMetadata?.elevationGain || 0,
+		trailMetadata?.elevationLoss || 0,
+		direction,
+	);
 
 	useEffect(() => {
 		if (!enhancedTrailPoints || enhancedTrailPoints.length === 0 || !gpxLoaded) {
@@ -132,14 +144,17 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 
 		// Min/max per bucket keeps every summit and valley; the first and last
 		// points are always included, so the profile reaches the trail end.
-		const elevationData: ElevationPoint[] = downsampleMinMax(enhancedTrailPoints, 500, (p) => p.elevation).map(
-			(point) => ({
-				distance: point.distanceFromStart / 1000,
-				elevation: point.elevation,
-				lat: point.lat,
-				lng: point.lng,
-			}),
-		);
+		// The x-axis is travel km (0 at the hiker's start), so NOBO runs the SOBO
+		// points backwards.
+		const sampled = downsampleMinMax(enhancedTrailPoints, 500, (p) => p.elevation);
+		const travelOrdered = direction === 'NOBO' ? sampled.slice().reverse() : sampled;
+		const trailKm = enhancedTrailPoints[enhancedTrailPoints.length - 1].distanceFromStart / 1000;
+		const elevationData: ElevationPoint[] = travelOrdered.map((point) => ({
+			distance: toTravelKm(point.distanceFromStart / 1000, direction, trailKm),
+			elevation: point.elevation,
+			lat: point.lat,
+			lng: point.lng,
+		}));
 
 		queueMicrotask(() => setChartData(elevationData));
 	}, [enhancedTrailPoints, gpxLoaded, direction]);
@@ -147,9 +162,10 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 	useEffect(() => {
 		let cancelled = false;
 		if (closestPoint) {
+			const progressKm = toTravelKm(closestPoint.distanceFromStart / 1000, direction, totalDistance);
 			queueMicrotask(() => {
 				if (!cancelled) {
-					setUserProgress(closestPoint.distanceFromStart / 1000);
+					setUserProgress(progressKm);
 				}
 			});
 		} else {
@@ -162,13 +178,13 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 		return () => {
 			cancelled = true;
 		};
-	}, [closestPoint]);
+	}, [closestPoint, direction, totalDistance]);
 
 	const highlightedPoint = useMemo((): ElevationPoint | null => {
 		if (!highlightedTrailPoint || chartData.length === 0) {
 			return null;
 		}
-		const distanceInKm = highlightedTrailPoint.distanceFromStart / 1000;
+		const distanceInKm = toTravelKm(highlightedTrailPoint.distanceFromStart / 1000, direction, totalDistance);
 		let closest = chartData[0];
 		let minDiff = Math.abs(chartData[0].distance - distanceInKm);
 		for (let i = 1; i < chartData.length; i++) {
@@ -179,38 +195,42 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 			}
 		}
 		return closest;
-	}, [highlightedTrailPoint, chartData]);
+	}, [highlightedTrailPoint, chartData, direction, totalDistance]);
 
 	const rulerHighlightRange = useMemo((): { startKm: number; endKm: number } | null => {
 		if (dragPreviewRange) return dragPreviewRange;
-		if (rulerRange)
-			return {
-				startKm: rulerRange.distanceFromStartA / 1000,
-				endKm: rulerRange.distanceFromStartB / 1000,
-			};
+		if (rulerRange) {
+			// The stored range is SOBO; the chart axis is travel km.
+			const travel = toTravelRange(
+				rulerRange.distanceFromStartA / 1000,
+				rulerRange.distanceFromStartB / 1000,
+				direction,
+				totalDistance,
+			);
+			return { startKm: travel.from, endKm: travel.to };
+		}
 		return null;
-	}, [dragPreviewRange, rulerRange]);
+	}, [dragPreviewRange, rulerRange, direction, totalDistance]);
 
 	// Segment geometry - recomputes only when the ruler range or trail data changes.
 	// Does NOT depend on gradeAdjustedEta or walkingPaceKmh, so toggling the pace model
 	// never re-runs the O(n) filter pass.
 	const rulerSegment = useMemo(() => {
 		if (!isRulerEnabled || !rulerRange || !enhancedTrailPoints?.length) return null;
-		const { distanceFromStartA, distanceFromStartB } = rulerRange;
-		// enhancedTrailPoints is already ordered by distanceFromStart - no sort needed.
-		const segment = enhancedTrailPoints.filter(
-			(p) => p.distanceFromStart >= distanceFromStartA && p.distanceFromStart <= distanceFromStartB,
-		);
-		if (segment.length < 2) return null;
-		const distanceM = distanceFromStartB - distanceFromStartA;
+		const { startIndex, endIndex } = rulerSegmentIndices(enhancedTrailPoints, rulerRange);
+		if (endIndex - startIndex < 1) return null;
+		const first = enhancedTrailPoints[startIndex];
+		const last = enhancedTrailPoints[endIndex];
+		const distanceM = last.distanceFromStart - first.distanceFromStart;
 		const distanceKm = distanceM / 1000;
-		const gain = segment[segment.length - 1].elevationGainFromStart - segment[0].elevationGainFromStart;
-		const loss = segment[segment.length - 1].elevationLossFromStart - segment[0].elevationLossFromStart;
-		// Use nearest-distance lookup instead of strict equality to avoid floating-point mismatch.
-		const fromIndex = findNearestPointIndex(enhancedTrailPoints, distanceFromStartA);
-		const sections = [...new Set(segment.map((p) => p.sectionName).filter(Boolean))] as string[];
+		const { gain, loss } = segmentGainLoss(first, last, direction);
+		// ETA walks from the end the hiker reaches first.
+		const fromIndex = direction === 'NOBO' ? endIndex : startIndex;
+		const segment = enhancedTrailPoints.slice(startIndex, endIndex + 1);
+		const travelOrdered = direction === 'NOBO' ? segment.slice().reverse() : segment;
+		const sections = [...new Set(travelOrdered.map((p) => p.sectionName).filter(Boolean))] as string[];
 		return { distanceKm, distanceM, gain, loss, fromIndex, sections };
-	}, [isRulerEnabled, rulerRange, enhancedTrailPoints]);
+	}, [isRulerEnabled, rulerRange, enhancedTrailPoints, direction]);
 
 	// ETA - lightweight memo that only recomputes when pace, direction, or grade toggle changes.
 	const rulerStats = useMemo(() => {
@@ -246,9 +266,8 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 		if (!fillMode || chartData.length === 0) return chartData;
 
 		// Resolve the bucket key for a given chart point per the active fillMode.
-		// Surface and SAC read from the SOBO-keyed OSM tag dataset; sections and grade
-		// read from the direction-adjusted enhancedTrailPoints (sectionName /
-		// gradeBand / gradePct are all already direction-relative there).
+		// Chart km is travel km; the OSM runs and enhancedTrailPoints are SOBO, so
+		// both lookups convert first. Grade is signed for the travel direction.
 		const bucketKeyAt: ((p: ElevationPoint) => string) | null = ((): ((p: ElevationPoint) => string) | null => {
 			if (fillMode === 'surface' || fillMode === 'sac') {
 				const runs = trailOsmTagsFile?.runs;
@@ -262,8 +281,8 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 			}
 			if (enhancedTrailPoints.length === 0) return null;
 			return (p) => {
-				const idx = findNearestPointIndex(enhancedTrailPoints, p.distance * 1000);
-				const ep = enhancedTrailPoints[idx];
+				const soboM = toSoboKm(p.distance, direction, totalDistance) * 1000;
+				const ep = enhancedTrailPoints[findNearestPointIndex(enhancedTrailPoints, soboM)];
 				if (fillMode === 'sections') {
 					// In practice every enhanced trail point has a sectionName because
 					// TRAIL_SECTIONS spans 0..Infinity. The fallback to the first section
@@ -272,7 +291,7 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 					return ep?.sectionName ?? TRAIL_SECTIONS[0].nameKey;
 				}
 				const band = ep?.gradeBand ?? 0;
-				const sign = (ep?.gradePct ?? 0) < 0 ? 'desc' : 'asc';
+				const sign = ep && travelGradePct(ep, direction) < 0 ? 'desc' : 'asc';
 				return `g${band}_${sign}`;
 			};
 		})();
@@ -299,7 +318,7 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 			prevKey = key;
 		}
 		return enriched;
-	}, [chartData, fillMode, trailOsmTagsFile, direction, trailMetadata, enhancedTrailPoints]);
+	}, [chartData, fillMode, trailOsmTagsFile, direction, trailMetadata, totalDistance, enhancedTrailPoints]);
 
 	const { highestPoint, lowestPoint } = useMemo(() => {
 		let high = -Infinity;
@@ -429,12 +448,9 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 		];
 		const runs = trailOsmTagsFile?.runs;
 		if (runs?.length) {
-			// rulerRange endpoints are direction-relative (chart km); map to SOBO km
-			// to line up with the SOBO-keyed OSM tag runs.
-			const kmA = rulerRange.distanceFromStartA / 1000;
-			const kmB = rulerRange.distanceFromStartB / 1000;
-			const soboA = direction === 'SOBO' ? kmA : Math.max(0, totalDistance - kmA);
-			const soboB = direction === 'SOBO' ? kmB : Math.max(0, totalDistance - kmB);
+			// The ruler range and the OSM tag runs are both SOBO.
+			const soboA = Math.min(rulerRange.distanceFromStartA, rulerRange.distanceFromStartB) / 1000;
+			const soboB = Math.max(rulerRange.distanceFromStartA, rulerRange.distanceFromStartB) / 1000;
 			const sac = sacMaxForKmRange(runs, soboA, soboB);
 			if (sac) parts.push(tGpxMeta('descSacMax', { value: SAC_BUCKET_SHORT_LABELS[sac] }));
 			const surface = dominantSurfaceForKmRange(runs, soboA, soboB);
@@ -476,23 +492,30 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 			return null;
 		}
 		if (gpxModalMode === 'segment' && rulerRange && enhancedTrailPoints?.length) {
-			// enhancedTrailPoints is already sorted by distanceFromStart - no sort needed.
-			const segment = enhancedTrailPoints.filter(
-				(p) =>
-					p.distanceFromStart >= rulerRange.distanceFromStartA && p.distanceFromStart <= rulerRange.distanceFromStartB,
-			);
-			if (segment.length < 2) return null;
+			const { startIndex, endIndex } = rulerSegmentIndices(enhancedTrailPoints, rulerRange);
+			if (endIndex - startIndex < 1) return null;
 			const filename = tGpx('filenameSegment');
 			const meta = buildSegmentMeta();
-			if (rawGpxData) {
+			// Enhanced indices are raw GPX indices (both in file order), so SOBO can
+			// copy the original trackpoints verbatim. NOBO writes the stretch in
+			// travel order, so a GPS app follows it the way the hiker walks.
+			if (rawGpxData && direction === 'SOBO') {
 				return {
-					gpx: extractGpxSegment(rawGpxData, segment[0].index, segment[segment.length - 1].index, filename, meta),
+					gpx: extractGpxSegment(
+						rawGpxData,
+						enhancedTrailPoints[startIndex].index,
+						enhancedTrailPoints[endIndex].index,
+						filename,
+						meta,
+					),
 					filename,
 				};
 			}
+			const segment = enhancedTrailPoints.slice(startIndex, endIndex + 1);
+			const travelOrdered = direction === 'NOBO' ? segment.slice().reverse() : segment;
 			return {
 				gpx: buildGpxXml(
-					segment.map((p) => ({ lat: p.lat, lng: p.lng, elevation: p.elevation })),
+					travelOrdered.map((p) => ({ lat: p.lat, lng: p.lng, elevation: p.elevation })),
 					filename,
 					meta,
 				),

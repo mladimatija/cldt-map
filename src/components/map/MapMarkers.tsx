@@ -9,6 +9,7 @@ import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/li
 import { isWithinMapBoundary, getNavigateToPointUrl, formatDistance, formatElevation } from '@/lib/utils';
 import { TRAIL_OFF_TRAIL_THRESHOLD_M } from '@/lib/config';
 import { buildWindCompassPayload, computeDistanceRemaining, findNearestPointIndex } from '@/lib/distance-utils';
+import { travelBearingDeg, travelGainLoss, travelGainLossSoFar } from '@/lib/trail-frame';
 import { totalCompletedKm } from '@/lib/completion';
 import { useCompassHeading } from '@/hooks/useCompassHeading';
 import {
@@ -76,6 +77,7 @@ export default function MapMarkers(): React.ReactElement | null {
 	const showUserMarker = useMapStore((state: MapStoreState) => state.showUserMarker);
 	const permissionStatus = useMapStore((state: MapStoreState) => state.permissionStatus);
 	const rulerRange = useMapStore((state: MapStoreState) => state.rulerRange);
+	const direction = useMapStore((state: MapStoreState) => state.direction);
 	const completedIntervals = useMapStore((state: MapStoreState) => state.completedIntervals);
 	const units = useMapStore((state: MapStoreState) => state.units);
 	const distancePrecision = useMapStore((state: MapStoreState) => state.distancePrecision);
@@ -173,26 +175,28 @@ export default function MapMarkers(): React.ReactElement | null {
 
 	const trailData = useMemo((): TrailTooltipData | null => {
 		if (!closestPoint || closestPoint.distance > OFF_TRAIL_DISTANCE_M || enhancedTrailPoints.length === 0) return null;
-		const distanceResult = computeDistanceRemaining(closestPoint, rulerRange, OFF_TRAIL_DISTANCE_M);
+		const totalDistanceM = (trailMetadata?.totalDistance ?? 0) * 1000;
+		const distanceResult = computeDistanceRemaining(
+			closestPoint,
+			rulerRange,
+			OFF_TRAIL_DISTANCE_M,
+			direction,
+			totalDistanceM,
+		);
 		if (!distanceResult || nearestEnhancedPointIdx < 0) return null;
 
 		const best = enhancedTrailPoints[nearestEnhancedPointIdx];
 
-		const totalDistanceM = (trailMetadata?.totalDistance ?? 0) * 1000;
-		const totalGain = trailMetadata?.elevationGain ?? 0;
-		const totalLoss = trailMetadata?.elevationLoss ?? 0;
+		// Climb and descent as the hiker meets them (stored values run from Ilok).
+		const soboTotals = { gain: trailMetadata?.elevationGain ?? 0, loss: trailMetadata?.elevationLoss ?? 0 };
+		const { gain: totalGain, loss: totalLoss } = travelGainLoss(soboTotals.gain, soboTotals.loss, direction);
+		const { gain: gainSoFar, loss: lossSoFar } = travelGainLossSoFar(best, direction, soboTotals);
 		const distanceFromStartPct =
-			totalDistanceM > 0 ? ((closestPoint.distanceFromStart / totalDistanceM) * 100).toFixed(1) : '0.0';
+			totalDistanceM > 0 ? ((distanceResult.traveled / totalDistanceM) * 100).toFixed(1) : '0.0';
 		const distanceToEndPct =
-			totalDistanceM > 0 ? ((closestPoint.distanceToEnd / totalDistanceM) * 100).toFixed(1) : '0.0';
-		const gainPct =
-			totalGain > 0 && best.elevationGainFromStart > 0
-				? ((best.elevationGainFromStart / totalGain) * 100).toFixed(1)
-				: null;
-		const lossPct =
-			totalLoss > 0 && best.elevationLossFromStart > 0
-				? ((best.elevationLossFromStart / totalLoss) * 100).toFixed(1)
-				: null;
+			totalDistanceM > 0 ? ((distanceResult.toTrailEnd / totalDistanceM) * 100).toFixed(1) : '0.0';
+		const gainPct = totalGain > 0 && gainSoFar > 0 ? ((gainSoFar / totalGain) * 100).toFixed(1) : null;
+		const lossPct = totalLoss > 0 && lossSoFar > 0 ? ((lossSoFar / totalLoss) * 100).toFixed(1) : null;
 
 		return {
 			lat: best.lat,
@@ -207,9 +211,9 @@ export default function MapMarkers(): React.ReactElement | null {
 				distanceResult.toSectionEnd !== null
 					? formatDistance(distanceResult.toSectionEnd, units, distancePrecision, true)
 					: null,
-			accumulatedGain: best.elevationGainFromStart > 0 ? formatElevation(best.elevationGainFromStart, units) : null,
+			accumulatedGain: gainSoFar > 0 ? formatElevation(gainSoFar, units) : null,
 			accumulatedGainPct: gainPct,
-			accumulatedLoss: best.elevationLossFromStart > 0 ? formatElevation(best.elevationLossFromStart, units) : null,
+			accumulatedLoss: lossSoFar > 0 ? formatElevation(lossSoFar, units) : null,
 			accumulatedLossPct: lossPct,
 			// Personal progress from section completion tracking - shown only
 			// once something is marked, so pre-feature tooltips look unchanged.
@@ -226,6 +230,7 @@ export default function MapMarkers(): React.ReactElement | null {
 	}, [
 		closestPoint,
 		rulerRange,
+		direction,
 		completedIntervals,
 		enhancedTrailPoints,
 		nearestEnhancedPointIdx,
@@ -267,14 +272,14 @@ export default function MapMarkers(): React.ReactElement | null {
 		const payload = buildWindCompassPayload(
 			effectiveWeatherData.windFromDeg,
 			effectiveWeatherData.windspeedKmh,
-			enhancedTrailPoints[nearestEnhancedPointIdx].bearingDeg,
+			travelBearingDeg(enhancedTrailPoints, nearestEnhancedPointIdx, direction),
 		);
 		if (!payload) return null;
 		return {
 			relativeAngle: payload.relativeAngle,
 			label: `${tWeather(`wind.${payload.cls}`)} ${Math.round(Math.abs(payload.relativeAngle))}°`,
 		};
-	}, [effectiveWeatherData, enhancedTrailPoints, nearestEnhancedPointIdx, tWeather]);
+	}, [effectiveWeatherData, enhancedTrailPoints, nearestEnhancedPointIdx, direction, tWeather]);
 
 	// Fetch weather for the user's location when on-trail; re-fetches after 30 s minimum.
 	useEffect(() => {

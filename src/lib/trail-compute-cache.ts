@@ -9,9 +9,10 @@
  * prior visit's result is reusable verbatim because, within one
  * NEXT_PUBLIC_CACHE_VERSION, `fetchGPXWithCache` always serves the same GPX
  * text (it only re-fetches when the version changes). So caching the computed
- * dataset, keyed by that version + travel direction, lets repeat visits (and
- * SOBO<->NOBO flips) hydrate the store instantly and skip both the worker and
- * the parse/enhance entirely.
+ * dataset, keyed by that version, lets repeat visits hydrate the store
+ * instantly and skip both the worker and the parse/enhance entirely. The
+ * dataset is the same for both travel directions, so a direction flip needs
+ * no reload at all.
  *
  * Invalidation:
  * - A NEXT_PUBLIC_CACHE_VERSION bump changes the key AND re-fetches the GPX.
@@ -22,16 +23,17 @@
 
 import localforage from 'localforage';
 import type { ComputedTrailData } from './trail-compute';
-import type { TrailDirection } from './store/types';
 
 const store = localforage.createInstance({ name: 'cldt-map', storeName: 'trail-computed' });
 
-/** Bump on any change to ComputedTrailData's shape or the enhancement logic. */
-const SCHEMA_VERSION = 1;
+/** Bump on any change to ComputedTrailData's shape or the enhancement logic.
+ *  2: one dataset in file (SOBO) order for both directions. */
+const SCHEMA_VERSION = 2;
 
-/** Cache key for a given GPX cache version + direction. */
-export function computedTrailCacheKey(version: string | undefined, direction: TrailDirection): string {
-	return `computed:${SCHEMA_VERSION}:${version ?? '1'}:${direction}`;
+/** Cache key for a given GPX cache version. The dataset no longer depends on
+ *  the travel direction, so one record serves both. */
+export function computedTrailCacheKey(version: string | undefined): string {
+	return `computed:${SCHEMA_VERSION}:${version ?? '1'}`;
 }
 
 /** Shape guard: a corrupt or older-schema record is treated as a miss. */
@@ -60,18 +62,15 @@ export async function loadComputedTrail(key: string): Promise<ComputedTrailData 
 }
 
 /**
- * Persists the computed dataset (best-effort) and prunes entries from other
- * schema/version generations so the store holds at most the current version's
- * two direction records. A write failure must never break trail loading.
+ * Persists the computed dataset (best-effort) and prunes every other record,
+ * including the per-direction records older builds wrote, so the store holds
+ * exactly one dataset. A write failure must never break trail loading.
  */
 export async function saveComputedTrail(key: string, data: ComputedTrailData): Promise<void> {
 	try {
 		await store.setItem(key, data);
-		// Generation prefix INCLUDING the trailing ":" so it stays delimited - e.g.
-		// "computed:1:1:" must not prefix-match a different version's "computed:1:10:".
-		const prefix = key.slice(0, key.lastIndexOf(':') + 1);
 		const keys = await store.keys();
-		await Promise.all(keys.filter((k) => !k.startsWith(prefix)).map((k) => store.removeItem(k)));
+		await Promise.all(keys.filter((k) => k !== key).map((k) => store.removeItem(k)));
 	} catch {
 		// best-effort cache write; ignore quota / private-mode failures
 	}

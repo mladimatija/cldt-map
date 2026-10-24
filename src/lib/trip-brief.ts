@@ -11,6 +11,7 @@
  */
 
 import { computeStageStats } from '@/lib/stage-planner';
+import { toTravelRange } from '@/lib/trail-frame';
 import { isUsableWaterSource, longestDryStretchKm } from '@/lib/water-intelligence';
 import {
 	collectResupplyTownPoints,
@@ -160,10 +161,6 @@ export interface TripBriefAssemblyArgs {
 	stagePlan: StagePlan;
 	poisFile: PoisFile | null;
 	enhancedTrailPoints: EnhancedTrailPoint[];
-	/** Elevation profile points. Accepts EnhancedTrailPoint[] directly since
-	 *  EnhancedTrailPoint is a superset of { elevation, distanceFromStart }
-	 *  - passing enhancedTrailPoints here avoids a redundant remap at the call site. */
-	elevationPoints: { elevation: number; distanceFromStart: number }[] | EnhancedTrailPoint[];
 	selectedPoiIds: ReadonlySet<string>;
 	/** When true, include every POI, whose `trailKm` falls in a stage's window
 	 *  (subject to the off-trail cap). Otherwise, only `selectedPoiIds` are
@@ -231,7 +228,6 @@ export function assembleTripBrief(args: TripBriefAssemblyArgs): TripBrief {
 		stagePlan,
 		poisFile,
 		enhancedTrailPoints,
-		elevationPoints,
 		selectedPoiIds,
 		includeAllInStage,
 		enabledPoiTypes,
@@ -261,7 +257,7 @@ export function assembleTripBrief(args: TripBriefAssemblyArgs): TripBrief {
 		poisFile?.pois?.length && resupplyCadenceLabels ? collectResupplyTownPoints(poisFile.pois) : [];
 	const planResupplyCadence =
 		resupplyPoints.length > 0 && stagePlan.stages.length > 0
-			? computePlanResupplyCadence(stagePlan.stages, poisFile?.pois ?? [], resupplyPoints)
+			? computePlanResupplyCadence(stagePlan.stages, poisFile?.pois ?? [], resupplyPoints, direction)
 			: null;
 
 	const resupplySummary =
@@ -315,18 +311,21 @@ export function assembleTripBrief(args: TripBriefAssemblyArgs): TripBrief {
 
 	const days: TripBriefDay[] = [];
 	stagePlan.stages.forEach((stage, i) => {
-		const stats = computeStageStats(stage, enhancedTrailPoints, elevationPoints, walkingPaceKmh, gradeAdjustedEta);
-		// Direction-aware accounting: in NOBO, what was uphill SOBO becomes
-		// downhill and vice versa. The narrative + UI both want the values
-		// as the hiker will experience them in their walking direction.
-		const dirGain = isNobo ? stats.lossM : stats.gainM;
-		const dirLoss = isNobo ? stats.gainM : stats.lossM;
+		// Stages are SOBO ranges; the stats come back as the hiker walks them.
+		const stats = computeStageStats(stage, enhancedTrailPoints, walkingPaceKmh, gradeAdjustedEta, direction);
+		const dirGain = stats.gainM;
+		const dirLoss = stats.lossM;
 		totalGainM += dirGain;
 		totalLossM += dirLoss;
 		totalDurationSec += stats.etaSec;
 
-		const directionStartKm = isNobo ? Math.max(0, trailTotalKm - stage.endKm) : stage.startKm;
-		const directionEndKm = isNobo ? Math.max(0, trailTotalKm - stage.startKm) : stage.endKm;
+		// Day labels count from the hiker's start.
+		const { from: directionStartKm, to: directionEndKm } = toTravelRange(
+			stage.startKm,
+			stage.endKm,
+			direction,
+			trailTotalKm,
+		);
 
 		const stagePois = collectStagePois(
 			visiblePoisByKm,

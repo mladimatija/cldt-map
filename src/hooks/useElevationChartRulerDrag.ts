@@ -12,6 +12,7 @@
 import { useCallback, useRef, useState, type RefObject } from 'react';
 import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
 import { RULER_SET_FROM_CHART_EVENT } from '@/lib/ruler-from-chart';
+import { toSoboKm, toSoboRange, toTravelRange } from '@/lib/trail-frame';
 import { type ElevationPoint, type PinnedPoint } from '@/components/charts/elevation-chart-shared';
 
 export interface UseElevationChartRulerDragArgs {
@@ -103,10 +104,17 @@ export function useElevationChartRulerDrag({
 			const distanceKm = getDistanceKmFromClientX(e.clientX);
 			if (distanceKm === null || !chartData.length) return;
 
+			// Chart km is travel km; the ruler range and highlights are SOBO metres.
+			const { direction } = useMapStore.getState();
+			const totalKm = useStore.getState().trailMetadata?.totalDistance ?? 0;
 			if (isRulerEnabled && rulerRange) {
-				const startKm = Math.min(rulerRange.distanceFromStartA, rulerRange.distanceFromStartB) / 1000;
-				const endKm = Math.max(rulerRange.distanceFromStartA, rulerRange.distanceFromStartB) / 1000;
-				if (distanceKm < startKm || distanceKm > endKm) {
+				const travel = toTravelRange(
+					rulerRange.distanceFromStartA / 1000,
+					rulerRange.distanceFromStartB / 1000,
+					direction,
+					totalKm,
+				);
+				if (distanceKm < travel.from || distanceKm > travel.to) {
 					setRulerEnabled(false);
 					return;
 				}
@@ -145,10 +153,9 @@ export function useElevationChartRulerDrag({
 				const minDragKm = 0.05;
 				const treatAsDrag = didDragRef.current || dragSpanKm >= minDragKm;
 				if (treatAsDrag) {
-					const startM = Math.round(startKm * 1000);
-					const endM = Math.round(endKm * 1000);
-					const distanceFromStartA = Math.min(startM, endM);
-					const distanceFromStartB = Math.max(startM, endM);
+					const sobo = toSoboRange(startKm, endKm, direction, totalKm);
+					const distanceFromStartA = Math.round(sobo.from * 1000);
+					const distanceFromStartB = Math.round(sobo.to * 1000);
 					setRulerRange({ distanceFromStartA, distanceFromStartB });
 					window.dispatchEvent(
 						new CustomEvent(RULER_SET_FROM_CHART_EVENT, {
@@ -158,8 +165,12 @@ export function useElevationChartRulerDrag({
 				} else {
 					const point = dragStartPointRef.current;
 					if (point && highlightTrailPosition) {
+						// The pin stays on the chart axis; the map highlight takes SOBO metres.
 						onPin({ distanceM: point.distanceM, elevation: point.elevation });
-						highlightTrailPosition({ distance: point.distanceM, elevation: point.elevation });
+						highlightTrailPosition({
+							distance: toSoboKm(point.distanceM / 1000, direction, totalKm) * 1000,
+							elevation: point.elevation,
+						});
 					}
 				}
 				dragStartPointRef.current = null;

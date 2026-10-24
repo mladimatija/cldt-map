@@ -8,6 +8,7 @@
  */
 
 import type { Poi, ResupplyKind } from './poi-types';
+import type { TrailDirection } from './store/types';
 import { longestDryStretchKm } from './water-intelligence';
 
 /** Default food consumption for pack-day estimates (kg/day). */
@@ -103,6 +104,15 @@ function nextGroceryAfter(km: number, points: ResupplyTownPoint[]): ResupplyTown
 	return points.find((p) => !p.partial && p.trailKm > km) ?? null;
 }
 
+function lastGroceryAtOrBefore(km: number, points: ResupplyTownPoint[]): ResupplyTownPoint | null {
+	let last: ResupplyTownPoint | null = null;
+	for (const p of points) {
+		if (p.trailKm > km) break;
+		if (!p.partial) last = p;
+	}
+	return last;
+}
+
 export function estimatedFoodDaysFromPack(consumableKg: number, kgPerDay: number): number | null {
 	if (!(consumableKg > 0) || !(kgPerDay > 0)) return null;
 	return Math.round((consumableKg / kgPerDay) * 10) / 10;
@@ -170,22 +180,31 @@ export function buildResupplyCadenceLabels(
 	return out;
 }
 
+/** Stages are SOBO km ranges listed in travel order (stage 0 is day 1), so
+ *  "before" and "after" depend on `direction`: a northbound hiker meets the
+ *  higher km first. */
 export function computePlanResupplyCadence(
 	stages: { startKm: number; endKm: number }[],
 	towns: Poi[],
 	resupplyPoints: ResupplyTownPoint[],
+	direction: TrailDirection,
 ): PlanResupplyCadence | null {
 	if (stages.length === 0) return null;
 
+	const nobo = direction === 'NOBO';
 	const groceryKms = groceryTrailKms(resupplyPoints);
-	const planStart = Math.min(stages[0].startKm, stages[0].endKm);
-	const planEnd = Math.max(stages[stages.length - 1].startKm, stages[stages.length - 1].endKm);
+	const planLo = Math.min(...stages.map((s) => Math.min(s.startKm, s.endKm)));
+	const planHi = Math.max(...stages.map((s) => Math.max(s.startKm, s.endKm)));
 
 	const maxFoodGapKm =
-		groceryKms.length > 0 ? longestDryStretchKm(planStart, planEnd, groceryKms) : Math.max(0, planEnd - planStart);
+		groceryKms.length > 0 ? longestDryStretchKm(planLo, planHi, groceryKms) : Math.max(0, planHi - planLo);
 
-	const firstGrocery = resupplyPoints.find((p) => !p.partial && p.trailKm >= planStart) ?? null;
-	const kmToFirstGrocery = firstGrocery ? Math.max(0, firstGrocery.trailKm - planStart) : null;
+	const firstGrocery = nobo
+		? lastGroceryAtOrBefore(planHi, resupplyPoints)
+		: (resupplyPoints.find((p) => !p.partial && p.trailKm >= planLo) ?? null);
+	const kmToFirstGrocery = firstGrocery
+		? Math.max(0, nobo ? planHi - firstGrocery.trailKm : firstGrocery.trailKm - planLo)
+		: null;
 
 	// Resolve each stage's resupply status once (each call filters the full town
 	// list), then derive the cross-stage counters from this length-N array. This
@@ -217,11 +236,18 @@ export function computePlanResupplyCadence(
 			}
 		}
 
-		const prevGrocery = lastGroceryBefore(lo, resupplyPoints);
-		const kmSinceGrocery = prevGrocery ? lo - prevGrocery.trailKm : i === 0 ? null : lo - planStart;
+		// The day starts at `lo` southbound and at `hi` northbound.
+		const dayStart = nobo ? hi : lo;
+		const dayEnd = nobo ? lo : hi;
+		const prevGrocery = nobo ? nextGroceryAfter(hi, resupplyPoints) : lastGroceryBefore(lo, resupplyPoints);
+		const kmSinceGrocery = prevGrocery
+			? Math.abs(dayStart - prevGrocery.trailKm)
+			: i === 0
+				? null
+				: Math.abs(dayStart - (nobo ? planHi : planLo));
 
-		const nextGrocery = nextGroceryAfter(hi, resupplyPoints);
-		const kmToNextGrocery = nextGrocery ? nextGrocery.trailKm - hi : null;
+		const nextGrocery = nobo ? lastGroceryBefore(lo, resupplyPoints) : nextGroceryAfter(hi, resupplyPoints);
+		const kmToNextGrocery = nextGrocery ? Math.abs(nextGrocery.trailKm - dayEnd) : null;
 
 		return {
 			status,

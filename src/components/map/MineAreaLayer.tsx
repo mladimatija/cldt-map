@@ -9,6 +9,7 @@ import { hasMineAreas, type MineAreasFile, type MineTrailRange } from '@/lib/min
 import { findNearestPointIndex } from '@/lib/distance-utils';
 import { formatDistance } from '@/lib/utils';
 import { formatIsoDate } from '@/lib/date-format';
+import { toTravelKm } from '@/lib/trail-frame';
 
 const OFFICIAL_URL = 'https://misportal.hcr.hr/';
 
@@ -109,7 +110,7 @@ export function MineAreaLayer(): null {
 		const group = L.layerGroup();
 
 		const popupStrings = (range?: MineTrailRange): PopupStrings => {
-			const toDisplayKm = (km: number): number => (direction === 'SOBO' ? km : Math.max(0, totalKm - km));
+			const toDisplayKm = (km: number): number => toTravelKm(km, direction, totalKm);
 			let affectedRange: string | undefined;
 			if (range) {
 				const a = toDisplayKm(range.startKm);

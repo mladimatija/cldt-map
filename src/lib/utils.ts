@@ -10,6 +10,7 @@ import { useStore, useMapStore } from '@/lib/store';
 import { config } from '@/lib/config';
 import type { DistanceUnit, TrailDirection, UnitSystem } from '@/lib/types';
 import { RulerRange } from '@/lib/distance-utils';
+import { toTravelRange } from '@/lib/trail-frame';
 import { PROVIDER_TO_KEY, KEY_TO_PROVIDER } from '@/components/map/base-map-options';
 import { BaseMapProvider } from '@/lib/services/map-service';
 import { siteMetadata } from '@/lib/metadata';
@@ -519,6 +520,13 @@ export function collectShareMapStyleParams(options?: {
 	const state = useMapStore.getState();
 	const rulerEnabled = options?.rulerEnabled ?? state.isRulerEnabled;
 	const baseMapKey = PROVIDER_TO_KEY[state.baseMapProvider as BaseMapProvider] as ShareBaseMapKey | undefined;
+	// The store keeps the ruler in SOBO metres; links carry it in travel metres
+	// under `dir`, as links have always done, so older and newer links read alike.
+	const soboRuler = rulerEnabled ? (options?.rulerRange ?? state.rulerRange) : null;
+	const totalM = (useStore.getState().trailMetadata?.totalDistance ?? 0) * 1000;
+	const travelRuler = soboRuler
+		? toTravelRange(soboRuler.distanceFromStartA, soboRuler.distanceFromStartB, state.direction, totalM)
+		: null;
 
 	return {
 		direction: state.direction,
@@ -531,7 +539,7 @@ export function collectShareMapStyleParams(options?: {
 		radar: state.showRadarOverlay,
 		distanceMarkers: state.showDistanceMarkers,
 		waymarked: state.waymarkedTrailsOverlay,
-		rulerRange: rulerEnabled ? (options?.rulerRange ?? state.rulerRange) : null,
+		rulerRange: travelRuler ? { distanceFromStartA: travelRuler.from, distanceFromStartB: travelRuler.to } : null,
 	};
 }
 

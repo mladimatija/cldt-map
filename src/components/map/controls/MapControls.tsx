@@ -54,6 +54,7 @@ import { MapControlsPoiList } from './MapControlsPoiList';
 import { MapControlsEmergencyPanel } from './MapControlsEmergencyPanel';
 import { prefetchEmergencyData } from '@/lib/emergency-data';
 import { BaseMapProvider } from '@/lib/services/base-map-provider';
+import { toTravelKm } from '@/lib/trail-frame';
 import { DEFAULT_MAP_SERVICES } from '@/lib/services/map-service-config';
 import { fitMapToRulerBounds, waitForTilesLoaded } from '@/lib/export-utils';
 
@@ -359,8 +360,9 @@ const MapControls: React.FC<MapControlsProps> = ({
 		const zoom = map.getZoom();
 		const styleParams = getShareStyleParams();
 
+		// Links carry travel km under `dir`; the store points are SOBO.
 		if (highlightedTrailPoint) {
-			const kmFromStart = highlightedTrailPoint.distanceFromStart / 1000;
+			const kmFromStart = toTravelKm(highlightedTrailPoint.distanceFromStart / 1000, direction, totalKm);
 			return buildShareProgressUrl(getShareBaseUrl(), {
 				kmFromStart,
 				direction: direction,
@@ -370,7 +372,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 		}
 
 		if (closestPoint) {
-			const kmFromStart = closestPoint.distanceFromStart / 1000;
+			const kmFromStart = toTravelKm(closestPoint.distanceFromStart / 1000, direction, totalKm);
 			return buildShareProgressUrl(getShareBaseUrl(), {
 				kmFromStart,
 				direction: direction,

@@ -164,6 +164,7 @@ export function DistanceRemainingOverlay(): React.ReactElement | null {
 	}
 	const closestPoint = useStore((state: StoreState) => state.closestPoint);
 	const enhancedTrailPoints = useStore((state: StoreState) => state.enhancedTrailPoints);
+	const trailTotalM = useStore((state: StoreState) => (state.trailMetadata?.totalDistance ?? 0) * 1000);
 	const rulerRange = useMapStore((state: MapStoreState) => state.rulerRange);
 	const units = useMapStore((state: MapStoreState) => state.units);
 	const direction = useMapStore((state: MapStoreState) => state.direction);
@@ -375,8 +376,8 @@ export function DistanceRemainingOverlay(): React.ReactElement | null {
 	// Without useMemo, computeDistanceRemaining returns a new object literal on every render,
 	// causing the downstream ETA useMemo to fire unnecessarily.
 	const distanceInfo = useMemo(
-		() => computeDistanceRemaining(closestPoint, rulerRange, TRAIL_OFF_TRAIL_THRESHOLD_M),
-		[closestPoint, rulerRange],
+		() => computeDistanceRemaining(closestPoint, rulerRange, TRAIL_OFF_TRAIL_THRESHOLD_M, direction, trailTotalM),
+		[closestPoint, rulerRange, direction, trailTotalM],
 	);
 
 	// Memoize the nearest-index lookup - only recomputes when the user's snapped position or

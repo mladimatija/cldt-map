@@ -45,10 +45,12 @@ function seedWaypoints(noteLabel: string): number {
 	const totalKm = points[points.length - 1].distanceFromStart / 1000;
 	const offsets = [2, 7.5, 18];
 	const categories: WaypointCategoryId[] = ['water', 'camp', 'resupply'];
+	// Ahead of the hiker: SOBO km grow southbound and shrink northbound.
+	const ahead = map.direction === 'NOBO' ? -1 : 1;
 	let created = 0;
 	for (let i = 0; i < offsets.length; i++) {
 		const off = offsets[i];
-		const km = Math.min(totalKm - 1, curKm + off);
+		const km = Math.max(1, Math.min(totalKm - 1, curKm + ahead * off));
 		const idx = points.findIndex((p) => p.distanceFromStart / 1000 >= km);
 		if (idx === -1) continue;
 		const pt = points[idx];
