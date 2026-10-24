@@ -18,6 +18,43 @@ export interface ParsedGpx {
  *  DOMParser, which would otherwise allocate memory for the whole document. */
 export const MAX_GPX_BYTES = 20 * 1024 * 1024;
 
+/**
+ * Regex-based trkpt extraction for the first <trk> of a GPX document.
+ * DOMParser does not exist in workers or Node scripts; for the trail GPX
+ * (machine-generated trkpt/ele markup) attribute-regex parsing is exact. The
+ * same safety gates as parseGpx apply: size cap and DOCTYPE rejection.
+ */
+export function parseTrackPoints(xml: string): { lat: number; lng: number; ele?: number }[] {
+	if (xml.length > MAX_GPX_BYTES) throw new Error('GPX file is too large');
+	if (/<!DOCTYPE/i.test(xml)) throw new Error('GPX file contains unsupported DOCTYPE');
+
+	// First <trk> scope only, mirroring `parsed.tracks[0]`.
+	const trkMatch = /<trk[\s>][\s\S]*?<\/trk>/.exec(xml);
+	const scope = trkMatch ? trkMatch[0] : xml;
+
+	const points: { lat: number; lng: number; ele?: number }[] = [];
+	const trkptRe = /<trkpt\b([^>]*)>([\s\S]*?)<\/trkpt>|<trkpt\b([^>]*)\/>/g;
+	let m: RegExpExecArray | null;
+	while ((m = trkptRe.exec(scope)) !== null) {
+		const attrs = m[1] ?? m[3] ?? '';
+		const latMatch = /lat="([^"]+)"/.exec(attrs);
+		const lonMatch = /lon="([^"]+)"/.exec(attrs);
+		if (!latMatch || !lonMatch) continue;
+		const lat = parseFloat(latMatch[1]);
+		const lng = parseFloat(lonMatch[1]);
+		if (Number.isNaN(lat) || Number.isNaN(lng)) continue;
+		const point: { lat: number; lng: number; ele?: number } = { lat, lng };
+		const body = m[2] ?? '';
+		const eleMatch = /<ele>([^<]+)<\/ele>/.exec(body);
+		if (eleMatch) {
+			const ele = parseFloat(eleMatch[1]);
+			if (!Number.isNaN(ele)) point.ele = ele;
+		}
+		points.push(point);
+	}
+	return points;
+}
+
 export function parseGpx(xml: string): ParsedGpx {
 	// Refuse to parse oversized files before they hit DOMParser, which would otherwise
 	// allocate proportional memory for the entire document.

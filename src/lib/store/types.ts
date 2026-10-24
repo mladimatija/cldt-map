@@ -144,17 +144,8 @@ export interface TrailActions {
 	calculateClosestPoint: () => void;
 	forceCalculateClosestPointFromLocation: (location: { lat: number; lng: number }) => void;
 	broadcastDirectionChange: (newDirection: TrailDirection) => void;
-	processTrailData: (
-		points: LatLng[],
-		elevationPoints: { lat: number; lng: number; elevation: number }[],
-		startPoint: LatLng | null,
-		endPoint: LatLng | null,
-		distance: number,
-		elevGain: number,
-		elevLoss: number,
-	) => void;
-	/** Applies a dataset precomputed by the trail worker (parse + enhance
-	 *  done off-thread); replaces processTrailData's O(n) main-thread loop. */
+	/** Applies a dataset computed by trail-compute (in the worker, or on the
+	 *  main thread when the worker is unavailable). */
 	applyComputedTrailData: (data: import('../trail-compute').ComputedTrailData) => void;
 	highlightTrailPosition: (
 		position: { lat: number; lng: number; maxDistance?: number } | { distance: number; elevation?: number },
@@ -248,15 +239,8 @@ export interface MapStoreState {
 	trailData: GeoJSON.FeatureCollection | null;
 	setTrailData: (data: GeoJSON.FeatureCollection | null) => void;
 
-	startPoint: LatLng | null;
-	endPoint: LatLng | null;
-	totalDistance: number;
-	elevationGain: number;
-	elevationLoss: number;
-
 	rawGpxData?: string | null;
 	setRawGpxData: (data: string | null) => void;
-	gpxElevationPoints?: { lat: number; lng: number; elevation: number }[];
 	gpxLoaded?: boolean;
 	setGpxLoaded: (loaded: boolean) => void;
 	gpxLoadFailed?: boolean;
@@ -265,15 +249,6 @@ export interface MapStoreState {
 	setReloadTrailRequested: (timestamp: number) => void;
 	trailPoints?: LatLng[];
 	requestRawGpxData?: () => string | null;
-	processTrailData?: (
-		points: LatLng[],
-		elevationPoints: { lat: number; lng: number; elevation: number }[],
-		startPoint: LatLng | null,
-		endPoint: LatLng | null,
-		totalDistance: number,
-		elevationGain: number,
-		elevationLoss: number,
-	) => void;
 
 	units: UnitSystem;
 	setUnits: (units: UnitSystem) => void;

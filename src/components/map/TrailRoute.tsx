@@ -39,9 +39,9 @@ import {
 import { TRAIL_SECTIONS } from '@/lib/trail-sections';
 import { fetchGPXWithCache } from '@/lib/gpx-cache';
 import { computeTrailDataInWorker } from '@/lib/trail-compute-client';
+import { computeFromGpx } from '@/lib/trail-compute';
 import { computedTrailCacheKey, loadComputedTrail, saveComputedTrail } from '@/lib/trail-compute-cache';
-import { parseGpx } from '@/lib/gpx-parser';
-import { calculateTrailMetadata, estimatePassageDays } from '@/lib/map';
+import { estimatePassageDays } from '@/lib/map';
 import {
 	clearShareUrlParams,
 	formatDistance,
@@ -452,7 +452,6 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 	const setGpxLoaded = useMapStore((state: MapStoreState) => state.setGpxLoaded);
 	const setGpxLoadFailed = useMapStore((state: MapStoreState) => state.setGpxLoadFailed);
 	const reloadTrailRequested = useMapStore((state: MapStoreState) => state.reloadTrailRequested);
-	const processTrailData = useMapStore((state: MapStoreState) => state.processTrailData);
 
 	// Mirror tooltip-visibility state into refs so showMarkerAtPosition can read the
 	// latest value without depending on it. Without this, every visibility toggle
@@ -881,98 +880,45 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 				// off the main thread) and persist its output for next time; any
 				// worker failure drops to the historical synchronous path below.
 				const computedKey = computedTrailCacheKey(result.version, direction);
-				let workerData = await loadComputedTrail(computedKey);
-				if (!workerData) {
-					workerData = await computeTrailDataInWorker(result.data, direction).catch(() => null);
-					if (workerData) void saveComputedTrail(computedKey, workerData);
+				let computed = await loadComputedTrail(computedKey);
+				if (!computed) {
+					computed = await computeTrailDataInWorker(result.data, direction).catch(() => null);
+					if (computed) void saveComputedTrail(computedKey, computed);
 				}
+				// No worker (or it failed): the same computation on the main thread, so
+				// both paths produce identical points, distances and metadata.
+				if (!computed) computed = computeFromGpx(result.data, direction);
 
-				if (!isMounted) {
+				if (!isMounted || computed.points.length === 0) {
 					return;
 				}
 
-				let points: L.LatLng[];
-				let cumDistances: number[];
-				let hasElevation: boolean;
-				let elevationPoints: { lat: number; lng: number; elevation: number }[];
-
-				if (workerData && workerData.points.length > 0) {
-					// Worker output is already direction-adjusted; the only
-					// main-thread loops left are cheap materialisations.
-					useStore.getState().applyComputedTrailData?.(workerData);
-					// Borrow the main store's trailPoints instead of building a second
-					// L.LatLng array over the same ~100k coordinates: applyComputedTrailData
-					// has just materialised exactly this list, and zustand's set is
-					// synchronous so it is readable in the same tick. It writes trailPoints
-					// and enhancedTrailPoints in one set(), so seeing our own `enhanced`
-					// object in the store proves this specific hydration landed and the
-					// array can be borrowed rather than rebuilt. Comparing lengths would
-					// not: a SOBO<->NOBO flip yields the same vertex count, so a stale
-					// array from the previous load would pass. The fallback covers the
-					// case where the store declined the write.
-					const hydrated = useStore.getState();
-					points =
-						hydrated.enhancedTrailPoints === workerData.enhanced
-							? hydrated.trailPoints
-							: workerData.points.map((p) => L.latLng(p.lat, p.lng));
-					cumDistances = workerData.enhanced.map((p) => p.distanceFromStart);
-					hasElevation = workerData.hasElevation;
-					elevationPoints = workerData.elevationPoints;
-
-					processTrailData?.(
-						points,
-						elevationPoints,
-						points[0] ?? null,
-						points[points.length - 1] ?? null,
-						workerData.metadata.totalDistanceM / 1000,
-						workerData.metadata.elevationGain,
-						workerData.metadata.elevationLoss,
-					);
-				} else {
-					const parsed = parseGpx(result.data);
-					const trackPts = parsed.tracks[0]?.points ?? [];
-					hasElevation = trackPts.some((p) => p.ele !== undefined && p.ele !== null);
-					const ordered = direction === 'NOBO' ? [...trackPts].reverse() : trackPts;
-					points = ordered.map(({ lat, lng }) => L.latLng(lat, lng));
-					elevationPoints = ordered.map(({ lat, lng, ele }) => ({ lat, lng, elevation: ele ?? 0 }));
-
-					// Cumulative distances drive the section split and the OSM tag lookup.
-					cumDistances = [0];
-					let cumDistM = 0;
-					for (let i = 1; i < points.length; i++) {
-						cumDistM += points[i - 1].distanceTo(points[i]);
-						cumDistances.push(cumDistM);
-					}
-
-					if (points.length > 0) {
-						// Enrich early so `enhancedTrailPoints` (with gradeBand/gradePct) is in the
-						// store before the grade-tinted render branch consumes it. Both stores hold
-						// parallel trail state; their enrichment actions are independent and each
-						// must be invoked.
-						const computedMetadata = calculateTrailMetadata(points, elevationPoints);
-						const processArgs = [
-							points,
-							elevationPoints,
-							computedMetadata.startPoint,
-							computedMetadata.endPoint,
-							computedMetadata.totalDistance / 1000,
-							computedMetadata.elevationGain,
-							computedMetadata.elevationLoss,
-						] as const;
-						processTrailData?.(...processArgs);
-						useStore.getState().processTrailData?.(...processArgs);
-					}
-				}
-
-				if (!isMounted || points.length === 0) {
-					return;
-				}
+				// Output is already direction-adjusted; the only main-thread loops left
+				// are cheap materialisations.
+				useStore.getState().applyComputedTrailData?.(computed);
+				// Borrow the main store's trailPoints instead of building a second
+				// L.LatLng array over the same ~100k coordinates: applyComputedTrailData
+				// has just materialised exactly this list, and zustand's set is
+				// synchronous so it is readable in the same tick. It writes trailPoints
+				// and enhancedTrailPoints in one set(), so seeing our own `enhanced`
+				// object in the store proves this specific hydration landed and the
+				// array can be borrowed rather than rebuilt. Comparing lengths would
+				// not: a SOBO<->NOBO flip yields the same vertex count, so a stale
+				// array from the previous load would pass. The fallback covers the
+				// case where the store declined the write.
+				const hydrated = useStore.getState();
+				const points =
+					hydrated.enhancedTrailPoints === computed.enhanced
+						? hydrated.trailPoints
+						: computed.points.map((p) => L.latLng(p.lat, p.lng));
+				const cumDistances = computed.enhanced.map((p) => p.distanceFromStart);
+				const { elevationPoints, hasElevation } = computed;
 
 				setGeometry({
 					points,
 					elevationPoints,
 					cumDistances,
-					// Populated by the hydration calls above, in either branch.
+					// Populated by applyComputedTrailData above.
 					enhanced: useStore.getState().enhancedTrailPoints,
 					hasElevation,
 					direction,
@@ -995,16 +941,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 		return () => {
 			isMounted = false;
 		};
-	}, [
-		map,
-		selectedTrail,
-		direction,
-		reloadTrailRequested,
-		setRawGpxData,
-		setGpxLoaded,
-		setGpxLoadFailed,
-		processTrailData,
-	]);
+	}, [map, selectedTrail, direction, reloadTrailRequested, setRawGpxData, setGpxLoaded, setGpxLoadFailed]);
 
 	// Route polylines and section boundary chips for the active style. Keyed on the
 	// geometry snapshot, so a style change redraws from data already in memory.

@@ -4,18 +4,8 @@ import { config } from '../config';
 import { isWithinMapBoundary } from '../utils';
 import type { StoreState, TrailSlice, TrailState, ClosestPoint, EnhancedTrailPoint } from './types';
 import { L } from './leaflet';
-import { TRAIL_SECTIONS } from '../trail-sections';
-import { computeBearing, findNearestPointIndex } from '../distance-utils';
+import { findNearestPointIndex } from '../distance-utils';
 import { buildSpatialGrid, type SpatialGrid } from '../spatial-grid';
-
-/** Bucket an absolute grade percent into one of five bands. */
-function bucketGradePct(absGradePct: number): 0 | 1 | 2 | 3 | 4 {
-	if (absGradePct <= 3) return 0;
-	if (absGradePct <= 6) return 1;
-	if (absGradePct <= 10) return 2;
-	if (absGradePct <= 15) return 3;
-	return 4;
-}
 
 /**
  * Find the index of the trail point closest to (targetLat, targetLng) by raw
@@ -208,92 +198,6 @@ export const createTrailSlice: StateCreator<StoreState, [], [], TrailSlice> = (s
 			detail: { direction: newDirection },
 		});
 		window.dispatchEvent(event);
-	},
-
-	// Caller is expected to pass `points` and `elevationPoints` already direction-adjusted
-	// (ascending index = advancing in current travel direction). The raw elevation delta to the
-	// next point therefore yields a direction-relative gradePct: positive = ascent in the current direction.
-	processTrailData: (points, elevationPoints, startPoint, endPoint, distance, elevGain, elevLoss): void => {
-		set({
-			trailPoints: points,
-			closestPoint: null,
-			closestPointCalculated: false,
-			showClosestPointLine: false,
-			trailMetadata: {
-				startPoint,
-				endPoint,
-				totalDistance: distance,
-				elevationGain: elevGain,
-				elevationLoss: elevLoss,
-			},
-			gpxElevationPoints: elevationPoints,
-			gpxLoaded: true,
-		});
-
-		const enhancedPoints: EnhancedTrailPoint[] = [];
-		let cumulativeDistance = 0;
-		let cumulativeElevGain = 0;
-		let cumulativeElevLoss = 0;
-
-		for (let i = 0; i < points.length; i++) {
-			if (i > 0) {
-				cumulativeDistance += points[i - 1].distanceTo(points[i]);
-			}
-
-			if (i > 0 && elevationPoints?.[i] && elevationPoints?.[i - 1]) {
-				const elevDiff = elevationPoints[i].elevation - elevationPoints[i - 1].elevation;
-				if (elevDiff > 0) {
-					cumulativeElevGain += elevDiff;
-				} else {
-					cumulativeElevLoss += Math.abs(elevDiff);
-				}
-			}
-
-			const distKm = cumulativeDistance / 1000;
-			const section = TRAIL_SECTIONS.find((s) => distKm >= s.startKm && distKm < s.endKm);
-
-			// Bearing to the next point; last point's value is overwritten in a final pass below
-			// (single-point trails keep 0).
-			const bearingDeg =
-				i < points.length - 1 ? computeBearing(points[i].lat, points[i].lng, points[i + 1].lat, points[i + 1].lng) : 0;
-
-			// Signed grade percent to the next point (positive = ascending in current direction).
-			let gradePct = 0;
-			if (i < points.length - 1 && elevationPoints?.[i] && elevationPoints?.[i + 1]) {
-				const dEle = elevationPoints[i + 1].elevation - elevationPoints[i].elevation;
-				const dDist = points[i].distanceTo(points[i + 1]);
-				gradePct = dDist > 0 ? (dEle / dDist) * 100 : 0;
-			}
-			const gradeBand = bucketGradePct(Math.abs(gradePct));
-
-			enhancedPoints.push({
-				lat: points[i].lat,
-				lng: points[i].lng,
-				elevation: elevationPoints?.[i]?.elevation || 0,
-				distanceFromStart: cumulativeDistance,
-				elevationGainFromStart: cumulativeElevGain,
-				elevationLossFromStart: cumulativeElevLoss,
-				index: i,
-				sectionName: section?.nameKey,
-				bearingDeg,
-				gradePct,
-				gradeBand,
-			});
-		}
-
-		// Last point inherits previous bearing/grade (single-point trails keep zeros).
-		if (enhancedPoints.length >= 2) {
-			const last = enhancedPoints[enhancedPoints.length - 1];
-			const prev = enhancedPoints[enhancedPoints.length - 2];
-			last.bearingDeg = prev.bearingDeg;
-			last.gradePct = prev.gradePct;
-			last.gradeBand = prev.gradeBand;
-		}
-
-		set({ enhancedTrailPoints: enhancedPoints });
-
-		// Recalculate immediately to avoid 500ms window where closestPoint is null (causes tooltip flicker).
-		get().calculateClosestPoint();
 	},
 
 	applyComputedTrailData: (data): void => {

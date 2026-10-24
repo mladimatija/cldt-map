@@ -36,6 +36,7 @@ import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { haversineDistanceM as haversineM, type LatLng } from '../src/lib/haversine';
+import { fetchTrailGpx, loadTrailPoints } from './trail-gpx';
 import {
 	fetchOverpass,
 	overpassCacheFile,
@@ -170,13 +171,11 @@ async function main(): Promise<void> {
 	if (!GPX_URL) fail('NEXT_PUBLIC_GPX_URL is required in env.');
 
 	console.log('-> Fetching GPX...');
-	const gpx = await fetchText(GPX_URL);
-	const trkpts = parseTrkpts(gpx);
+	const trkpts = loadTrailPoints(await fetchTrailGpx({ url: GPX_URL, timeoutMs: FETCH_TIMEOUT_MS }));
 	if (trkpts.length < 2) fail('GPX has fewer than 2 trkpts; aborting.');
 	console.log(`  ${trkpts.length} trkpts.`);
 
-	console.log('-> Computing cumulative distances...');
-	const points = computeCumPoints(trkpts);
+	const points: CumPoint[] = trkpts.map(({ lat, lng, cumM }) => ({ lat, lng, km: cumM / 1000 }));
 	const totalKm = points[points.length - 1].km;
 	console.log(`  Total trail: ${totalKm.toFixed(1)} km.`);
 
@@ -439,32 +438,6 @@ function pointToSegment(p: LatLng, a: CumPoint, b: CumPoint): NearestTrail {
 	};
 }
 
-// ---- GPX parsing + cumulative km -------------------------------------------
-
-function parseTrkpts(gpx: string): LatLng[] {
-	const pts: LatLng[] = [];
-	const re = /<trkpt\b[^>]*\blat="([\d.-]+)"[^>]*\blon="([\d.-]+)"/g;
-	let m: RegExpExecArray | null;
-	while ((m = re.exec(gpx)) !== null) {
-		const lat = parseFloat(m[1]);
-		const lng = parseFloat(m[2]);
-		if (!Number.isFinite(lat) || !Number.isFinite(lng)) continue;
-		if (lat < -90 || lat > 90 || lng < -180 || lng > 180) continue;
-		pts.push({ lat, lng });
-	}
-	return pts;
-}
-
-function computeCumPoints(pts: LatLng[]): CumPoint[] {
-	const out: CumPoint[] = [{ ...pts[0], km: 0 }];
-	let cumM = 0;
-	for (let i = 1; i < pts.length; i++) {
-		cumM += haversineM(pts[i - 1], pts[i]);
-		out.push({ ...pts[i], km: cumM / 1000 });
-	}
-	return out;
-}
-
 // ---- Bbox chunking ---------------------------------------------------------
 
 interface Bbox {
@@ -573,18 +546,6 @@ async function fetchRelationsInBbox(b: Bbox): Promise<OverpassJson> {
 }
 
 // ---- Small helpers ---------------------------------------------------------
-
-async function fetchText(url: string): Promise<string> {
-	const controller = new AbortController();
-	const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
-	try {
-		const res = await fetch(url, { signal: controller.signal });
-		if (!res.ok) fail(`Fetch ${url} returned HTTP ${res.status}.`);
-		return await res.text();
-	} finally {
-		clearTimeout(timeout);
-	}
-}
 
 function sleep(ms: number): Promise<void> {
 	return new Promise((r) => setTimeout(r, ms));

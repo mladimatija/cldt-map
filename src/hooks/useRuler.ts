@@ -15,7 +15,6 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import { useTranslations } from 'next-intl';
-import { calculateTrailMetadata } from '@/lib/map';
 import { findNearestPointIndex } from '@/lib/distance-utils';
 import { type EnhancedTrailPoint, type MapStoreState, type StoreState, useMapStore, useStore } from '@/lib/store';
 import { formatDistance, formatElevation } from '@/lib/utils';
@@ -163,7 +162,7 @@ export function useRuler(map: L.Map): UseRulerResult {
 			const hasTrail = trailPoints && trailPoints.length > 0;
 			const distA = dataA.distanceFromStart;
 			const distB = dataB.distanceFromStart;
-			const distanceBetween = hasTrail ? Math.abs(distB - distA) : calculateTrailMetadata(points).totalDistance;
+			const distanceBetween = hasTrail ? Math.abs(distB - distA) : points[0].distanceTo(points[1]);
 			const minDist = Math.min(distA, distB);
 			const maxDist = Math.max(distA, distB);
 			const segment =

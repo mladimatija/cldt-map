@@ -36,6 +36,7 @@ import type { HutInfo, Poi, PoiImage, PoiResupply, PoisFile, ResupplyKind, Resup
 import { classifyWater } from '../src/lib/water-intelligence';
 import { parseWikipediaRef, SUMMARY_HOST_TEMPLATE as WIKIPEDIA_SUMMARY_HOST_TEMPLATE } from '../src/lib/wikipedia';
 import { applyReachabilityFilter, formatStats, sliceCorridorIntoChunks } from './poi-reachability';
+import { fetchTrailGpx, loadTrailPoints } from './trail-gpx';
 import {
 	fetchOverpassJson,
 	fetchPolylineWithBisection,
@@ -356,11 +357,11 @@ async function main(): Promise<void> {
 	if (!safeUrl(OVERPASS_URL)) fail('OSM_OVERPASS_URL must be an http(s) URL.');
 
 	console.log('-> Fetching GPX...');
-	const trkpts = parseTrkpts(await fetchText(GPX_URL));
+	const trkpts = loadTrailPoints(await fetchTrailGpx({ url: GPX_URL, timeoutMs: FETCH_TIMEOUT_MS }));
 	if (trkpts.length < 2) fail('GPX has fewer than 2 trkpts; aborting.');
 	console.log(`  ${trkpts.length} trkpts.`);
 
-	const cumKm = computeCumKm(trkpts);
+	const cumKm = trkpts.map((p) => p.cumM / 1000);
 	const totalKm = cumKm[cumKm.length - 1];
 	console.log(`  Total trail: ${totalKm.toFixed(1)} km.`);
 
@@ -764,28 +765,6 @@ async function main(): Promise<void> {
 }
 
 // ---- GPX / geometry --------------------------------------------------------
-
-function parseTrkpts(gpx: string): LatLng[] {
-	const pts: LatLng[] = [];
-	const re = /<trkpt\b[^>]*\blat="([\d.-]+)"[^>]*\blon="([\d.-]+)"/g;
-	let m: RegExpExecArray | null;
-	while ((m = re.exec(gpx)) !== null) {
-		const lat = parseFloat(m[1]);
-		const lng = parseFloat(m[2]);
-		if (!Number.isFinite(lat) || !Number.isFinite(lng)) continue;
-		if (lat < -90 || lat > 90 || lng < -180 || lng > 180) continue;
-		pts.push({ lat, lng });
-	}
-	return pts;
-}
-
-function computeCumKm(pts: LatLng[]): number[] {
-	const cum: number[] = [0];
-	for (let i = 1; i < pts.length; i++) {
-		cum.push(cum[i - 1] + haversineM(pts[i - 1], pts[i]) / 1000);
-	}
-	return cum;
-}
 
 function bboxOf(pts: LatLng[]): Bbox {
 	let minLat = Infinity,
@@ -1886,18 +1865,6 @@ function mergePreservingCurated(
 }
 
 // ---- Helpers ---------------------------------------------------------------
-
-async function fetchText(url: string): Promise<string> {
-	const controller = new AbortController();
-	const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
-	try {
-		const res = await fetch(url, { signal: controller.signal });
-		if (!res.ok) fail(`Fetch ${url} returned HTTP ${res.status}.`);
-		return await res.text();
-	} finally {
-		clearTimeout(timeout);
-	}
-}
 
 async function readJsonOptional<T>(p: string): Promise<T | null> {
 	try {

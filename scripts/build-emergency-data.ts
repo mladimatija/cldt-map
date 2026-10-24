@@ -6,6 +6,7 @@ import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { haversineDistanceM } from '../src/lib/haversine';
+import { fetchTrailGpx, loadTrailPoints } from './trail-gpx';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -73,55 +74,6 @@ interface Crossing {
 const sleep = (ms: number): Promise<void> => new Promise((r) => setTimeout(r, ms));
 
 const haversineKm = (a: LatLng, b: LatLng): number => haversineDistanceM(a, b) / 1000;
-
-// ---- GPX loading -----------------------------------------------------------
-
-async function fetchTrailGpx(): Promise<string> {
-	const url = process.env.NEXT_PUBLIC_GPX_URL;
-	if (!url) {
-		throw new Error(
-			'NEXT_PUBLIC_GPX_URL is not set. Re-run with: ' +
-				'NEXT_PUBLIC_GPX_URL="https://…/trail.gpx" npm run build:emergency-data',
-		);
-	}
-	const parsed = new URL(url);
-	if (parsed.protocol !== 'https:' && parsed.protocol !== 'http:') {
-		throw new Error(`NEXT_PUBLIC_GPX_URL must use http(s); got ${parsed.protocol}`);
-	}
-	const res = await fetch(url);
-	if (!res.ok) {
-		throw new Error(`Failed to fetch GPX: HTTP ${res.status} ${res.statusText}`);
-	}
-	return await res.text();
-}
-
-function extractTrkPoints(xml: string): LatLng[] {
-	// Mirror gpx-parser.ts safety: reject DOCTYPE to prevent entity-expansion DoS.
-	if (/<!DOCTYPE/i.test(xml)) {
-		throw new Error('GPX file contains unsupported DOCTYPE');
-	}
-	const points: LatLng[] = [];
-	const re = /<trkpt\s+lat="(-?\d{1,3}(?:\.\d{1,15})?)"\s+lon="(-?\d{1,3}(?:\.\d{1,15})?)"/g;
-	let m: RegExpExecArray | null;
-	while ((m = re.exec(xml)) !== null) {
-		const lat = parseFloat(m[1]);
-		const lng = parseFloat(m[2]);
-		if (Number.isFinite(lat) && Number.isFinite(lng) && Math.abs(lat) <= 90 && Math.abs(lng) <= 180) {
-			points.push({ lat, lng });
-		}
-	}
-	return points;
-}
-
-function buildCumulativeKm(points: LatLng[]): TrailPoint[] {
-	const out: TrailPoint[] = [];
-	let cum = 0;
-	for (let i = 0; i < points.length; i++) {
-		if (i > 0) cum += haversineKm(points[i - 1], points[i]);
-		out.push({ lat: points[i].lat, lng: points[i].lng, cumKm: cum });
-	}
-	return out;
-}
 
 // ---- Chunk planning --------------------------------------------------------
 
@@ -400,11 +352,10 @@ async function main(): Promise<void> {
 	const xml = await fetchTrailGpx();
 
 	console.log('[2/5] Parsing trail points…');
-	const rawPoints = extractTrkPoints(xml);
-	if (rawPoints.length < 2) {
-		throw new Error(`Expected >=2 trail points; got ${rawPoints.length}`);
+	const trail: TrailPoint[] = loadTrailPoints(xml).map(({ lat, lng, cumM }) => ({ lat, lng, cumKm: cumM / 1000 }));
+	if (trail.length < 2) {
+		throw new Error(`Expected >=2 trail points; got ${trail.length}`);
 	}
-	const trail = buildCumulativeKm(rawPoints);
 	const trailSegments = buildTrailSegments(trail);
 	console.log(`     → ${trail.length} points, ${trail[trail.length - 1].cumKm.toFixed(1)} km total`);
 

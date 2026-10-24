@@ -22,6 +22,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { haversineDistanceM as haversineM } from '../src/lib/haversine';
 import { fetchOverpass } from './overpass-fetch';
+import { fetchTrailGpx, loadTrailPoints } from './trail-gpx';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -106,13 +107,12 @@ async function main(): Promise<void> {
 	}
 
 	console.log('-> Fetching GPX...');
-	const gpx = await fetchText(GPX_URL);
-	const trkpts = parseTrkpts(gpx);
+	const trkpts = loadTrailPoints(await fetchTrailGpx({ url: GPX_URL, timeoutMs: FETCH_TIMEOUT_MS }));
 	if (trkpts.length < 2) fail('GPX has fewer than 2 trkpts; aborting.');
 	console.log(`  ${trkpts.length} trkpts.`);
 
-	console.log('-> Computing cumulative distances...');
-	const { cumKm, totalKm } = computeCumKm(trkpts);
+	const cumKm = trkpts.map((p) => p.cumM / 1000);
+	const totalKm = cumKm[cumKm.length - 1];
 	console.log(`  Total trail: ${totalKm.toFixed(1)} km.`);
 
 	console.log(`-> Sampling every ${SAMPLE_STEP_M} m...`);
@@ -170,31 +170,7 @@ async function main(): Promise<void> {
 	console.log('\nDone. Review with `git diff public/trail-osm-tags.json` and open a PR.');
 }
 
-// ---- GPX parsing -----------------------------------------------------------
-
-function parseTrkpts(gpx: string): LatLng[] {
-	const pts: LatLng[] = [];
-	const re = /<trkpt\b[^>]*\blat="([\d.-]+)"[^>]*\blon="([\d.-]+)"/g;
-	let m: RegExpExecArray | null;
-	while ((m = re.exec(gpx)) !== null) {
-		const lat = parseFloat(m[1]);
-		const lng = parseFloat(m[2]);
-		if (!Number.isFinite(lat) || !Number.isFinite(lng)) continue;
-		if (lat < -90 || lat > 90 || lng < -180 || lng > 180) continue;
-		pts.push({ lat, lng });
-	}
-	return pts;
-}
-
-// ---- Cumulative km + sampling ----------------------------------------------
-
-function computeCumKm(pts: LatLng[]): { cumKm: number[]; totalKm: number } {
-	const cum: number[] = [0];
-	for (let i = 1; i < pts.length; i++) {
-		cum.push(cum[i - 1] + haversineM(pts[i - 1], pts[i]));
-	}
-	return { cumKm: cum.map((m) => m / 1000), totalKm: cum[cum.length - 1] / 1000 };
-}
+// ---- Sampling --------------------------------------------------------------
 
 function sampleTrail(pts: LatLng[], cumKm: number[], stepM: number): SamplePoint[] {
 	const stepKm = stepM / 1000;
@@ -423,18 +399,6 @@ function roundRun(r: Run): Run {
 		fromKm: Math.round(r.fromKm * 1000) / 1000,
 		toKm: Math.round(r.toKm * 1000) / 1000,
 	};
-}
-
-async function fetchText(url: string): Promise<string> {
-	const controller = new AbortController();
-	const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
-	try {
-		const res = await fetch(url, { signal: controller.signal });
-		if (!res.ok) fail(`Fetch ${url} returned HTTP ${res.status}.`);
-		return await res.text();
-	} finally {
-		clearTimeout(timeout);
-	}
 }
 
 function sleep(ms: number): Promise<void> {

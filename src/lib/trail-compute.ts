@@ -1,20 +1,18 @@
 /**
  * Pure, Leaflet-free trail computation: GPX track parse + enhanced-point
- * construction + metadata totals. Runs inside the trail Web Worker so a
- * ~100k-point GPX never blocks the main thread on cold load; also directly
- * testable in Node.
+ * construction + metadata totals. The single implementation for the app:
+ * it runs inside the trail Web Worker so a ~100k-point GPX never blocks the
+ * main thread on cold load, and TrailRoute calls computeFromGpx directly when
+ * the worker is unavailable.
  *
- * Semantics mirror the historical main-thread path (gpx-parser.ts +
- * trail-slice processTrailData) with one deliberate difference: distances
- * use the haversine formula instead of Leaflet's spherical law of cosines.
- * Both assume R=6371000; the cumulative difference over the full trail is
- * parts-per-million, far below the 0.01 km display rounding.
+ * Distances use the haversine formula (R=6371000), as do the data scripts
+ * (scripts/lib/trail.ts), so app and script km agree.
  */
 
 import { haversineDistanceM } from './haversine';
 import { computeBearing } from './distance-utils';
 import { TRAIL_SECTIONS } from './trail-sections';
-import { MAX_GPX_BYTES } from './gpx-parser';
+import { parseTrackPoints } from './gpx-parser';
 import type { EnhancedTrailPoint, TrailDirection } from './store/types';
 
 export interface ComputedTrailData {
@@ -45,47 +43,9 @@ function bucketGradePct(absGradePct: number): 0 | 1 | 2 | 3 | 4 {
 }
 
 /**
- * Regex-based trkpt extraction for the first <trk> of a GPX document.
- * DOMParser does not exist in workers; for the trail GPX (machine-generated
- * trkpt/ele markup) attribute-regex parsing is exact. The same safety gates
- * as gpx-parser.ts apply: size cap and DOCTYPE rejection.
- */
-export function parseTrackPoints(xml: string): { lat: number; lng: number; ele?: number }[] {
-	if (xml.length > MAX_GPX_BYTES) throw new Error('GPX file is too large');
-	if (/<!DOCTYPE/i.test(xml)) throw new Error('GPX file contains unsupported DOCTYPE');
-
-	// First <trk> scope only, mirroring `parsed.tracks[0]`.
-	const trkMatch = /<trk[\s>][\s\S]*?<\/trk>/.exec(xml);
-	const scope = trkMatch ? trkMatch[0] : xml;
-
-	const points: { lat: number; lng: number; ele?: number }[] = [];
-	const trkptRe = /<trkpt\b([^>]*)>([\s\S]*?)<\/trkpt>|<trkpt\b([^>]*)\/>/g;
-	let m: RegExpExecArray | null;
-	while ((m = trkptRe.exec(scope)) !== null) {
-		const attrs = m[1] ?? m[3] ?? '';
-		const latMatch = /lat="([^"]+)"/.exec(attrs);
-		const lonMatch = /lon="([^"]+)"/.exec(attrs);
-		if (!latMatch || !lonMatch) continue;
-		const lat = parseFloat(latMatch[1]);
-		const lng = parseFloat(lonMatch[1]);
-		if (Number.isNaN(lat) || Number.isNaN(lng)) continue;
-		const point: { lat: number; lng: number; ele?: number } = { lat, lng };
-		const body = m[2] ?? '';
-		const eleMatch = /<ele>([^<]+)<\/ele>/.exec(body);
-		if (eleMatch) {
-			const ele = parseFloat(eleMatch[1]);
-			if (!Number.isNaN(ele)) point.ele = ele;
-		}
-		points.push(point);
-	}
-	return points;
-}
-
-/**
  * Builds the full trail dataset from raw track points: direction-adjusted
  * coordinate/elevation arrays, the enhanced point array (cumulative
  * distance/gain/loss, section, bearing, grade), and metadata totals.
- * Port of trail-slice processTrailData's enhancement loop.
  */
 export function computeTrailData(
 	rawPoints: { lat: number; lng: number; ele?: number }[],

@@ -1,5 +1,4 @@
 import type * as GeoJSON from 'geojson';
-import type { LatLng } from 'leaflet';
 import { create, type StoreApi, type UseBoundStore } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { createDebouncedJsonStorage } from './debounced-storage';
@@ -224,15 +223,8 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					trailData: null,
 					setTrailData: (data: GeoJSON.FeatureCollection | null) => set({ trailData: data }),
 
-					startPoint: null,
-					endPoint: null,
-					totalDistance: 0,
-					elevationGain: 0,
-					elevationLoss: 0,
-
 					rawGpxData: null,
 					setRawGpxData: (data: string | null) => set({ rawGpxData: data }),
-					gpxElevationPoints: [],
 					gpxLoaded: false,
 					setGpxLoaded: (loaded: boolean) => set({ gpxLoaded: loaded }),
 					gpxLoadFailed: false,
@@ -853,26 +845,6 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					tileDownloadCompleteToast: false,
 					clearTileDownloadCompleteToast: (): void => {
 						set({ tileDownloadCompleteToast: false });
-					},
-
-					processTrailData: (
-						points: LatLng[],
-						elevationPoints: { lat: number; lng: number; elevation: number }[],
-						startPoint: LatLng | null,
-						endPoint: LatLng | null,
-						totalDistance: number,
-						elevationGain: number,
-						elevationLoss: number,
-					) => {
-						set({
-							startPoint,
-							endPoint,
-							totalDistance,
-							elevationGain,
-							elevationLoss,
-							gpxElevationPoints: elevationPoints,
-							gpxLoaded: true,
-						});
 					},
 
 					getCurrentLocation: async () => {

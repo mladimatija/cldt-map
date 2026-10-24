@@ -376,30 +376,7 @@ async function main(): Promise<void> {
 async function resolveTrailGeometry(): Promise<TrailGeometry | null> {
 	if (!GPX_URL) return null;
 	try {
-		const res = await fetch(GPX_URL);
-		if (!res.ok) return null;
-		const text = await res.text();
-
-		interface LatLngKm {
-			lat: number;
-			lng: number;
-			cumM: number;
-		}
-
-		const pts: LatLngKm[] = [];
-		const re = /<trkpt\b[^>]*\blat="([\d.-]+)"[^>]*\blon="([\d.-]+)"/g;
-		let m: RegExpExecArray | null;
-		let cum = 0;
-		let last: { lat: number; lng: number } | null = null;
-		while ((m = re.exec(text)) !== null) {
-			const lat = parseFloat(m[1]);
-			const lng = parseFloat(m[2]);
-			if (!Number.isFinite(lat) || !Number.isFinite(lng)) continue;
-			if (lat < -90 || lat > 90 || lng < -180 || lng > 180) continue;
-			if (last) cum += haversineMeters(last, { lat, lng });
-			pts.push({ lat, lng, cumM: cum });
-			last = { lat, lng };
-		}
+		const pts = loadTrailPoints(await fetchTrailGpx({ url: GPX_URL }));
 		if (pts.length < 2) return null;
 
 		const totalKm = pts[pts.length - 1].cumM / 1000;
