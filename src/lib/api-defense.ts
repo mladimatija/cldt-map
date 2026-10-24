@@ -10,6 +10,9 @@
  * - fetchWithSizeCap: wraps fetch() with a Content-Length precheck AND streamed reading with
  *   a byte counter. Reading is aborted once the running total exceeds maxBytes, so a hostile
  *   or misconfigured upstream cannot allocate a multi-megabyte string in memory.
+ *
+ * - readBodyWithCap: the same streamed byte counter for an incoming request body, so a
+ *   client cannot bypass a size limit by leaving out (or understating) Content-Length.
  */
 import { NextResponse, type NextRequest } from 'next/server';
 import { getClientIp, isRateLimited, type RateLimitOptions } from './rate-limit-core';
@@ -81,4 +84,28 @@ export async function fetchWithSizeCap(
 	chunks.push(decoder.decode());
 
 	return { ok: true, response, body: chunks.join('') };
+}
+
+/** Reads a request body as text, or null once it passes maxBytes. */
+export async function readBodyWithCap(request: Request, maxBytes: number): Promise<string | null> {
+	const declared = Number(request.headers.get('content-length') ?? NaN);
+	if (Number.isFinite(declared) && declared > maxBytes) return null;
+	if (!request.body) return '';
+
+	const reader = request.body.getReader();
+	const decoder = new TextDecoder();
+	const chunks: string[] = [];
+	let total = 0;
+	while (true) {
+		const { done, value } = await reader.read();
+		if (done) break;
+		total += value.length;
+		if (total > maxBytes) {
+			await reader.cancel().catch(() => {});
+			return null;
+		}
+		chunks.push(decoder.decode(value, { stream: true }));
+	}
+	chunks.push(decoder.decode());
+	return chunks.join('');
 }

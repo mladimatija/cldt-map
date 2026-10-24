@@ -5,22 +5,42 @@
  * elevation, ETA, place names, seasonal alerts, optional forecast) and asks
  * Claude for a short guidebook-style paragraph per day plus a trip overview,
  * in the brief's locale. The model is instructed to use ONLY the provided
- * facts - no invented trail conditions.
+ * facts - no invented trail conditions. Structured outputs fix the reply's
+ * shape; the day count, which a schema cannot express, is checked here.
  *
  * Privacy: the request carries plan facts only (no GPS fixes, no identifiers
  * beyond the calling IP that any HTTP request exposes). The Anthropic API key
  * lives in the deploy environment (ANTHROPIC_API_KEY); when it is absent the
- * route answers 503 and the client silently keeps the templated narratives.
+ * route answers 503 and the client silently keeps the templated narratives,
+ * as it does for any failure here.
  */
+import Anthropic from '@anthropic-ai/sdk';
 import { NextRequest, NextResponse } from 'next/server';
-import { enforceRateLimit } from '@/lib/api-defense';
+import { enforceRateLimit, readBodyWithCap } from '@/lib/api-defense';
 import { LOCALES as APP_LOCALES } from '@/i18n/routing';
 
-const ANTHROPIC_URL = 'https://api.anthropic.com/v1/messages';
-const ANTHROPIC_VERSION = '2023-06-01';
-/** Sonnet for prose quality; a 30-day brief is a few thousand tokens. */
+/** Sonnet for prose quality. An override must support structured outputs. */
 const MODEL = process.env.NARRATIVE_MODEL || 'claude-sonnet-5-5';
 const UPSTREAM_TIMEOUT_MS = 45_000;
+/** Room for the model's thinking plus a 31-day brief in Croatian or German. */
+const MAX_TOKENS = 16_000;
+/** The outline for a 31-day plan is a few KB; anything bigger is hostile. */
+const MAX_BODY_BYTES = 64_000;
+
+/** The reply shape structured outputs enforce. */
+const NARRATIVE_SCHEMA = {
+	type: 'object',
+	properties: {
+		overview: { type: 'string', description: 'A 2-3 sentence overview of the whole trip.' },
+		days: {
+			type: 'array',
+			items: { type: 'string' },
+			description: 'One 2-3 sentence narrative per day, in day order.',
+		},
+	},
+	required: ['overview', 'days'],
+	additionalProperties: false,
+};
 
 const MAX_DAYS = 31;
 const MAX_STR = 160;
@@ -138,6 +158,7 @@ function buildPrompt(req: NarrativeRequest): string {
 		if (d.forecast) parts.push(`Forecast: ${d.forecast}.`);
 		lines.push(parts.join(' '));
 	}
+	lines.push(`Write exactly ${req.days.length} day narratives, one per day in order, and the overview.`);
 	return lines.join('\n');
 }
 
@@ -149,13 +170,8 @@ function systemPrompt(locale: string): string {
 		`when provided, and weave in any warnings or forecast naturally. Also write a 2-3 sentence trip overview. ` +
 		`STRICT RULES: use only the facts given - never invent terrain details, place facts, conditions, or services. ` +
 		`Do not repeat raw numbers the reader already sees in the stats line more than once per day. ` +
-		`Use a regular hyphen-minus, never em or en dashes. ` +
-		`Respond with ONLY a JSON object: {"overview": string, "days": [string, ...]} with exactly one string per day, in order.`
+		`Use a regular hyphen-minus, never em or en dashes.`
 	);
-}
-
-interface AnthropicResponse {
-	content?: { type: string; text?: string }[];
 }
 
 export async function POST(request: NextRequest): Promise<Response> {
@@ -167,15 +183,14 @@ export async function POST(request: NextRequest): Promise<Response> {
 		return NextResponse.json({ error: 'Narrative generation is not configured' }, { status: 503 });
 	}
 
-	// The outline for a 31-day plan is a few KB; anything bigger is hostile.
-	const contentLength = Number(request.headers.get('content-length') ?? 0);
-	if (contentLength > 64_000) {
+	const body = await readBodyWithCap(request, MAX_BODY_BYTES);
+	if (body === null) {
 		return NextResponse.json({ error: 'Request too large' }, { status: 413 });
 	}
 
 	let req: NarrativeRequest | null = null;
 	try {
-		req = parseRequest(await request.json());
+		req = parseRequest(JSON.parse(body));
 	} catch {
 		// fall through to the 400 below
 	}
@@ -183,63 +198,55 @@ export async function POST(request: NextRequest): Promise<Response> {
 		return NextResponse.json({ error: 'Invalid request' }, { status: 400 });
 	}
 
-	const controller = new AbortController();
-	const timeout = setTimeout(() => controller.abort(), UPSTREAM_TIMEOUT_MS);
+	const client = new Anthropic({ apiKey, timeout: UPSTREAM_TIMEOUT_MS, maxRetries: 1 });
 	try {
-		const upstream = await fetch(ANTHROPIC_URL, {
-			method: 'POST',
-			headers: {
-				'content-type': 'application/json',
-				'x-api-key': apiKey,
-				'anthropic-version': ANTHROPIC_VERSION,
-			},
-			body: JSON.stringify({
-				model: MODEL,
-				max_tokens: Math.min(4096, 400 + req.days.length * 160),
-				system: systemPrompt(req.locale),
-				messages: [{ role: 'user', content: buildPrompt(req) }],
-			}),
-			signal: controller.signal,
+		const response = await client.beta.messages.create({
+			model: MODEL,
+			max_tokens: MAX_TOKENS,
+			// A policy decline is retried server-side on the model's default fallback.
+			betas: ['server-side-fallback-2026-07-01'],
+			fallbacks: 'default',
+			output_config: { effort: 'low', format: { type: 'json_schema', schema: NARRATIVE_SCHEMA } },
+			system: systemPrompt(req.locale),
+			messages: [{ role: 'user', content: buildPrompt(req) }],
 		});
-		clearTimeout(timeout);
 
-		if (!upstream.ok) {
-			console.error(`[narrative] upstream HTTP ${upstream.status}`);
+		if (response.stop_reason === 'max_tokens' || response.stop_reason === 'refusal') {
+			const category = response.stop_details?.category;
+			console.error(`[narrative] stop_reason ${response.stop_reason}${category ? ` (${category})` : ''}`);
 			return NextResponse.json({ error: 'Narrative generation failed' }, { status: 502 });
 		}
 
-		const json = (await upstream.json()) as AnthropicResponse;
-		const text = json.content?.find((c) => c.type === 'text')?.text ?? '';
-		const parsed = extractNarratives(text, req.days.length);
-		if (!parsed) {
+		const text = response.content.find((block) => block.type === 'text')?.text ?? '';
+		let parsed: unknown;
+		try {
+			parsed = JSON.parse(text);
+		} catch {
+			parsed = null;
+		}
+		const narratives = validateNarratives(parsed, req.days.length);
+		if (!narratives) {
 			console.error('[narrative] model response failed validation');
 			return NextResponse.json({ error: 'Narrative generation failed' }, { status: 502 });
 		}
-		return NextResponse.json(parsed);
+		return NextResponse.json(narratives);
 	} catch (err) {
-		clearTimeout(timeout);
-		if (err instanceof Error && err.name === 'AbortError') {
+		if (err instanceof Anthropic.APIConnectionTimeoutError) {
 			return NextResponse.json({ error: 'Narrative generation timed out' }, { status: 504 });
 		}
-		console.error('[narrative]', err instanceof Error ? err.message : String(err));
+		// Busy upstream (rate limited or overloaded): a later try may work.
+		if (err instanceof Anthropic.RateLimitError || (err instanceof Anthropic.APIError && err.status === 529)) {
+			return NextResponse.json({ error: 'Narrative generation is busy' }, { status: 503 });
+		}
+		const status = err instanceof Anthropic.APIError ? ` ${err.status ?? ''}` : '';
+		console.error(`[narrative] upstream error${status}:`, err instanceof Error ? err.message : String(err));
 		return NextResponse.json({ error: 'Narrative generation failed' }, { status: 502 });
 	}
 }
 
-/** Parses the model output (tolerating accidental code fencing), enforcing
- *  exactly one non-empty, length-capped string per day plus an overview.
- *  Em/en dashes are normalized to plain hyphens as a final guarantee. */
-function extractNarratives(text: string, dayCount: number): { overview: string; days: string[] } | null {
-	const stripped = text
-		.trim()
-		.replace(/^```(?:json)?\s*/i, '')
-		.replace(/\s*```$/, '');
-	let parsed: unknown;
-	try {
-		parsed = JSON.parse(stripped);
-	} catch {
-		return null;
-	}
+/** Enforces exactly one non-empty, length-capped string per day plus an
+ *  overview. Em/en dashes are normalized to plain hyphens as a final guarantee. */
+function validateNarratives(parsed: unknown, dayCount: number): { overview: string; days: string[] } | null {
 	if (!parsed || typeof parsed !== 'object') return null;
 	const o = parsed as { overview?: unknown; days?: unknown };
 	const clean = (v: unknown): string | null => {

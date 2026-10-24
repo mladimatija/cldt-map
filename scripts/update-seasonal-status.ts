@@ -46,6 +46,114 @@ const OUTPUT_PATH = path.resolve(PROJECT_ROOT, 'public/seasonal-status.json');
 const SYNTHESIS_MODEL = 'claude-sonnet-5-5';
 const SUMMARY_MODEL = 'claude-sonnet-5-5';
 const CRITIC_MODEL = 'claude-opus-5-5';
+
+// ---- Structured output schemas ---------------------------------------------
+
+const SIGNALS_SCHEMA = {
+	type: 'object',
+	properties: {
+		signals: {
+			type: 'array',
+			items: {
+				type: 'object',
+				properties: {
+					region: { type: 'string' },
+					hazard: { type: 'string' },
+					severity_guess: { enum: ['caution', 'closed_recommended', 'experts_only', 'unknown'] },
+					valid_window: { type: 'string' },
+					quote: { type: 'string' },
+				},
+				required: ['region', 'hazard', 'severity_guess', 'valid_window', 'quote'],
+				additionalProperties: false,
+			},
+		},
+	},
+	required: ['signals'],
+	additionalProperties: false,
+};
+
+const VERDICTS_SCHEMA = {
+	type: 'object',
+	properties: {
+		verdicts: {
+			type: 'array',
+			items: {
+				type: 'object',
+				properties: { id: { type: 'string' }, supported: { type: 'boolean' }, reason: { type: 'string' } },
+				required: ['id', 'supported', 'reason'],
+				additionalProperties: false,
+			},
+		},
+	},
+	required: ['verdicts'],
+	additionalProperties: false,
+};
+
+/** JSON Schema keywords structured outputs reject. The file is still validated
+ *  against the full schema with Ajv before it is written, and the synthesis
+ *  prompt shows the full schema, rules included. */
+const UNSUPPORTED_SCHEMA_KEYWORDS = new Set([
+	'$schema',
+	'$id',
+	'minLength',
+	'maxLength',
+	'pattern',
+	'minimum',
+	'maximum',
+	'exclusiveMinimum',
+	'exclusiveMaximum',
+	'multipleOf',
+	'minItems',
+	'maxItems',
+]);
+
+type SchemaNode = Record<string, unknown>;
+
+/** A copy of a schema node structured outputs accept: unsupported keywords
+ *  dropped, every object closed. Property names are never touched. */
+function toOutputSchema(node: SchemaNode): SchemaNode {
+	const out: SchemaNode = {};
+	for (const [key, value] of Object.entries(node)) {
+		if (UNSUPPORTED_SCHEMA_KEYWORDS.has(key)) continue;
+		if ((key === 'properties' || key === '$defs') && value && typeof value === 'object') {
+			out[key] = Object.fromEntries(
+				Object.entries(value as Record<string, SchemaNode>).map(([name, sub]) => [name, toOutputSchema(sub)]),
+			);
+		} else if (key === 'items' && value && typeof value === 'object' && !Array.isArray(value)) {
+			out[key] = toOutputSchema(value as SchemaNode);
+		} else if ((key === 'anyOf' || key === 'allOf') && Array.isArray(value)) {
+			// Branches that only list required properties ("set this or that") are
+			// rules a structured-output schema cannot carry next to `properties`.
+			const requiredOnly = value.every(
+				(sub) => !!sub && typeof sub === 'object' && Object.keys(sub as SchemaNode).every((k) => k === 'required'),
+			);
+			if (!requiredOnly) out[key] = value.map((sub) => toOutputSchema(sub as SchemaNode));
+		} else {
+			out[key] = value;
+		}
+	}
+	if (out.type === 'object') out.additionalProperties = false;
+	return out;
+}
+
+/** The synthesis reply: the seasonal-status file, each entry with the
+ *  audit-only `evidence` the script verifies and then strips. */
+function draftOutputSchema(fileSchema: object): SchemaNode {
+	const schema = toOutputSchema(fileSchema as SchemaNode);
+	const entry = (schema.$defs as Record<string, SchemaNode> | undefined)?.entry;
+	if (!entry) fail('seasonal-status schema has no $defs.entry');
+	entry.properties = {
+		...(entry.properties as Record<string, SchemaNode>),
+		evidence: {
+			type: 'object',
+			properties: { source_name: { type: 'string' }, quote: { type: 'string' } },
+			required: ['source_name', 'quote'],
+			additionalProperties: false,
+		},
+	};
+	entry.required = [...((entry.required as string[] | undefined) ?? []), 'evidence'];
+	return schema;
+}
 const MAX_FETCH_BYTES = 500_000;
 const MAX_SUMMARY_INPUT_CHARS = 30_000;
 const FETCH_TIMEOUT_MS = 30_000;
@@ -480,7 +588,7 @@ async function summariseSource(client: Anthropic, fetched: FetchedSource): Promi
 		`conditions relevant to the Croatia Long Distance Trail (CLDT) or to Croatian ` +
 		`mountain ranges (Velebit, Biokovo, Risnjak, Učka, Gorski kotar, Plitvice, ` +
 		`Paklenica, Krka).\n\n` +
-		`Reply with ONE JSON object: { "signals": [...] }. Each signal must have:\n` +
+		`Return the signals. Each signal has:\n` +
 		`  - "region": region or mountain name (string)\n` +
 		`  - "hazard": short description of the condition (string)\n` +
 		`  - "severity_guess": one of "caution", "closed_recommended", "experts_only", or "unknown"\n` +
@@ -488,28 +596,21 @@ async function summariseSource(client: Anthropic, fetched: FetchedSource): Promi
 		`  - "quote": a VERBATIM substring of the page content above, between 10 and 280 characters,\n` +
 		`    that directly supports the signal. The quote MUST appear character-for-character\n` +
 		`    in the page text - do not paraphrase, translate, summarise, or merge fragments.\n\n` +
-		`If the page has no relevant signals, reply exactly: { "signals": [] }\n\n` +
-		`Output JSON only - no prose, no Markdown fences, no explanation. Start with { and end with }.\n` +
+		`If the page has no relevant signals, return an empty list.\n\n` +
 		`Do NOT invent details. Only report what is explicitly on the page.`;
 
 	const response = await client.messages.create({
 		model: SUMMARY_MODEL,
 		max_tokens: 2000,
+		output_config: { format: { type: 'json_schema', schema: SIGNALS_SCHEMA } },
 		messages: [{ role: 'user', content: prompt }],
 	});
 
-	const text = response.content
-		.filter((b): b is Anthropic.TextBlock => b.type === 'text')
-		.map((b) => b.text)
-		.join('\n')
-		.trim();
-
 	try {
-		const parsed = parseJsonObject<{ signals?: RawSignal[] }>(text);
-		const signals = Array.isArray(parsed.signals) ? parsed.signals : [];
-		return { source: fetched.source, signals, error: null };
+		const parsed = readStructuredReply<{ signals: RawSignal[] }>(response);
+		return { source: fetched.source, signals: parsed.signals, error: null };
 	} catch (err) {
-		return { source: fetched.source, signals: [], error: `summary-parse: ${(err as Error).message}` };
+		return { source: fetched.source, signals: [], error: `summary: ${(err as Error).message}` };
 	}
 }
 
@@ -581,6 +682,7 @@ async function synthesise(
 	const response = await client.messages.create({
 		model: SYNTHESIS_MODEL,
 		max_tokens: 16_000,
+		output_config: { format: { type: 'json_schema', schema: draftOutputSchema(args.schema) } },
 		system: [
 			{
 				type: 'text',
@@ -593,11 +695,11 @@ async function synthesise(
 
 	logCacheUsage('synthesis', response.usage);
 
-	const raw = response.content
-		.filter((b): b is Anthropic.TextBlock => b.type === 'text')
-		.map((b) => b.text)
-		.join('\n');
-	return parseJsonObject<SeasonalStatusDraft>(raw);
+	try {
+		return readStructuredReply<SeasonalStatusDraft>(response);
+	} catch (err) {
+		fail(`Synthesis failed: ${(err as Error).message}`);
+	}
 }
 
 function buildSynthesisSystem(args: {
@@ -647,8 +749,7 @@ function buildSynthesisSystem(args: {
 		``,
 		`Today's date: ${args.today}`,
 		``,
-		`OUTPUT: exactly one JSON object matching the schema below, plus an "evidence" field on each ` +
-			`entry. No prose, no Markdown fences, no explanation. Start with { and end with }.`,
+		`OUTPUT: the updated file, matching the schema below, plus an "evidence" field on each entry.`,
 		``,
 		`SCHEMA:`,
 		JSON.stringify(args.schema, null, 2),
@@ -732,8 +833,7 @@ function buildSynthesisUser(args: { signals: VerifiedSignal[]; prior: SeasonalSt
 		JSON.stringify(args.prior, null, 2),
 		``,
 		`Produce the updated seasonal-status.json now. Each entry must include an "evidence" ` +
-			`object with "source_name" and "quote" from one of the verified signals above. ` +
-			`Output JSON only.`,
+			`object with "source_name" and "quote" from one of the verified signals above.`,
 	].join('\n');
 }
 
@@ -815,8 +915,7 @@ async function runCritic(
 		`Severity in the entry must not exceed what the signals state. Treat paraphrase, ` +
 			`extrapolation, or "this is probably still true" as NOT supported.`,
 		``,
-		`Reply with one JSON object: { "verdicts": [ { "id": "...", "supported": true|false, "reason": "..." } ] }`,
-		`Include one verdict per entry, in the same order. No prose outside the JSON.`,
+		`Give one verdict per entry (its id, whether it is supported, and the reason), in the same order.`,
 	].join('\n');
 
 	const user = [
@@ -842,6 +941,7 @@ async function runCritic(
 	const response = await client.messages.create({
 		model: CRITIC_MODEL,
 		max_tokens: 4000,
+		output_config: { format: { type: 'json_schema', schema: VERDICTS_SCHEMA } },
 		system: [
 			{
 				type: 'text',
@@ -854,17 +954,11 @@ async function runCritic(
 
 	logCacheUsage('critic', response.usage);
 
-	const raw = response.content
-		.filter((b): b is Anthropic.TextBlock => b.type === 'text')
-		.map((b) => b.text)
-		.join('\n');
-
 	let verdicts: CriticVerdict[];
 	try {
-		const parsed = parseJsonObject<{ verdicts?: CriticVerdict[] }>(raw);
-		verdicts = Array.isArray(parsed.verdicts) ? parsed.verdicts : [];
+		verdicts = readStructuredReply<{ verdicts: CriticVerdict[] }>(response).verdicts;
 	} catch (err) {
-		fail(`Critic returned unparseable JSON: ${(err as Error).message}`);
+		fail(`Critic failed: ${(err as Error).message}`);
 	}
 
 	const verdictById = new Map(verdicts.map((v) => [v.id, v]));
@@ -1061,17 +1155,15 @@ function isoDate(d: Date): string {
 	return d.toISOString().slice(0, 10);
 }
 
-function parseJsonObject<T>(raw: string): T {
-	const cleaned = raw
-		.replace(/^```(?:json)?\s*/m, '')
-		.replace(/```\s*$/m, '')
-		.trim();
-	const start = cleaned.indexOf('{');
-	const end = cleaned.lastIndexOf('}');
-	if (start === -1 || end === -1 || end <= start) {
-		throw new Error('No JSON object in model response.');
-	}
-	return JSON.parse(cleaned.slice(start, end + 1)) as T;
+/** The JSON a structured-output reply carries. Structured outputs guarantee
+ *  the shape only when the model finished, so a truncated or refused reply
+ *  throws instead of being parsed. */
+function readStructuredReply<T>(response: Anthropic.Message): T {
+	if (response.stop_reason === 'max_tokens') throw new Error('reply truncated at max_tokens');
+	if (response.stop_reason === 'refusal') throw new Error('model declined the request');
+	const text = response.content.find((b): b is Anthropic.TextBlock => b.type === 'text')?.text;
+	if (!text) throw new Error('reply has no text');
+	return JSON.parse(text) as T;
 }
 
 function fail(msg: string): never {
