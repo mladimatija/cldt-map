@@ -4,6 +4,7 @@
  * restores the visitor's real localStorage state on exit.
  */
 import { useMapStore } from '@/lib/store';
+import { flushPersistedStores } from '@/lib/store/debounced-storage';
 import { buildDemoSeedData, DEMO_START_KM } from '@/lib/demo-seed';
 import { releaseWalkSim, startWalkSim } from '@/lib/walk-sim';
 import type { CompletionInterval } from '@/lib/completion';
@@ -60,4 +61,6 @@ export function exitDemoSession(): void {
 		journalEntries: snapshot?.journalEntries ?? [],
 		completedIntervals: snapshot?.completedIntervals ?? [],
 	});
+	// Exiting usually navigates away; write the restored real data immediately.
+	flushPersistedStores();
 }

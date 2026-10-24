@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/Button';
 import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
 import { type BatteryManager, type NavigatorWithBattery, type NavigatorWithConnection } from '@/lib/tile-cache';
 import { isAppUpdateWaiting } from '@/lib/sw-update';
+import { flushPersistedStores } from '@/lib/store/debounced-storage';
 
 interface ServiceWorkerProviderProps {
 	children: React.ReactNode;
@@ -71,6 +72,7 @@ export function ServiceWorkerProvider({ children }: ServiceWorkerProviderProps):
 
 		const onControllerChange = (): void => {
 			if (refreshingRef.current) {
+				flushPersistedStores();
 				window.location.reload();
 			}
 		};
@@ -215,6 +217,7 @@ export function ServiceWorkerProvider({ children }: ServiceWorkerProviderProps):
 			refreshingRef.current = true;
 			reg.waiting.postMessage({ type: 'SKIP_WAITING' });
 		} else {
+			flushPersistedStores();
 			window.location.reload();
 		}
 	};

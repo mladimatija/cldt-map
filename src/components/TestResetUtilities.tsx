@@ -9,6 +9,7 @@
 import React, { useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { useMapStore, type MapStoreState } from '@/lib/store';
+import { flushPersistedStores } from '@/lib/store/debounced-storage';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 
@@ -61,6 +62,9 @@ export function TestResetUtilities(): React.ReactElement {
 	};
 
 	const clearPersistedStore = (): void => {
+		// Drain queued debounced writes first, so none can restore the key
+		// during the reload.
+		flushPersistedStores();
 		localStorage.removeItem(PERSIST_KEY);
 		window.location.reload();
 	};

@@ -1,7 +1,8 @@
 import type * as GeoJSON from 'geojson';
 import type { LatLng } from 'leaflet';
 import { create, type StoreApi, type UseBoundStore } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
+import { persist } from 'zustand/middleware';
+import { createDebouncedJsonStorage } from './debounced-storage';
 import { isAheadHorizonKm } from '../poi-ahead-corridor';
 import { isUiTextScale, type UiTextScale } from '../ui-text-scale';
 import {
@@ -1684,7 +1685,9 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 			},
 			{
 				name: 'cldt-map-storage',
-				storage: createJSONStorage(() => localStorage),
+				// Debounced: persist would otherwise stringify and write the whole
+				// persisted state on every set, including non-persisted fields.
+				storage: createDebouncedJsonStorage(() => localStorage),
 				partialize: (state) => {
 					const demoSnapshot = state.demoModeActive ? state.demoPersistSnapshot : null;
 					return {
