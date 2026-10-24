@@ -77,6 +77,24 @@ import { isBaseMapProviderAvailable } from '../services/map-service-config';
 /** Module-level abort controller for tile downloads - one download at a time. */
 let tilePrecacheAbortController: AbortController | null = null;
 
+/**
+ * Claims the single tile-download slot, synchronously (before any await), or
+ * returns null when a run is already active. Overlapping runs used to clobber
+ * each other: the older run's completion cleared the newer run's controller and
+ * flags, so the newer run could no longer be cancelled and the UI showed idle.
+ */
+function claimTileDownloadRun(): AbortController | null {
+	if (tilePrecacheAbortController) return null;
+	const controller = new AbortController();
+	tilePrecacheAbortController = controller;
+	return controller;
+}
+
+/** True while `controller` still owns the slot (cancel releases it). */
+function ownsTileDownloadRun(controller: AbortController): boolean {
+	return tilePrecacheAbortController === controller;
+}
+
 /** Last time a GPS-source predictive pre-cache check was evaluated. Module-scoped so the debounce survives selector subscriptions. */
 let lastPredictiveCheckAt = 0;
 const PREDICTIVE_GPS_DEBOUNCE_MS = 30_000;
@@ -456,34 +474,38 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 							set({ tileCacheError: 'no_template' });
 							return;
 						}
-						const storage = await estimateStorage();
-						if (!storage.available) {
-							set({ tileCacheError: 'quota_exceeded' });
-							return;
-						}
-						// User-initiated download: request durable storage so the browser does not
-						// evict the corridor under pressure. Skip autoSync (user already opted in).
-						if (opts?.source !== 'autoSync') void requestPersistentStorage();
-						const urls = generateTrailTileUrls(points, urlTemplate, PRECACHE_ZOOM_MIN, PRECACHE_ZOOM_MAX);
-						const providerKey = getProviderCacheKey(providerName);
-						tilePrecacheAbortController?.abort();
-						const controller = new AbortController();
-						tilePrecacheAbortController = controller;
+						// A second trigger (self-heal plus a tap) while a run is active is ignored.
+						const controller = claimTileDownloadRun();
+						if (!controller) return;
 						set({
 							tileCacheDownloading: true,
 							tileCacheDone: 0,
-							tileCacheTotal: urls.length,
+							tileCacheTotal: 0,
 							tileCacheError: null,
 							tileCacheFailed: 0,
 							tileCacheFailedUrls: [],
 						});
-						const result = await precacheTiles(
-							urls,
-							(done, total) => set({ tileCacheDone: done, tileCacheTotal: total }),
-							controller.signal,
-						);
-						tilePrecacheAbortController = null;
-						if (!result.cancelled) {
+						try {
+							const storage = await estimateStorage();
+							if (!ownsTileDownloadRun(controller)) return;
+							if (!storage.available) {
+								set({ tileCacheError: 'quota_exceeded' });
+								return;
+							}
+							// User-initiated download: request durable storage so the browser does not
+							// evict the corridor under pressure. Skip autoSync (user already opted in).
+							if (opts?.source !== 'autoSync') void requestPersistentStorage();
+							const urls = generateTrailTileUrls(points, urlTemplate, PRECACHE_ZOOM_MIN, PRECACHE_ZOOM_MAX);
+							const providerKey = getProviderCacheKey(providerName);
+							set({ tileCacheTotal: urls.length });
+							const result = await precacheTiles(
+								urls,
+								(done, total) => {
+									if (ownsTileDownloadRun(controller)) set({ tileCacheDone: done, tileCacheTotal: total });
+								},
+								controller.signal,
+							);
+							if (!ownsTileDownloadRun(controller) || result.cancelled) return;
 							const existingMeta = get().tileCacheMeta;
 							const meta: TileCacheMeta = {
 								cachedAt: Date.now(),
@@ -494,6 +516,7 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 								...(existingMeta?.hasHighDetailAhead ? { hasHighDetailAhead: true } : {}),
 							};
 							await saveTileCacheMeta(providerKey, meta);
+							if (!ownsTileDownloadRun(controller)) return;
 							const isManualDownload = opts?.source !== 'autoSync';
 							const offlineNudgeEligible =
 								isManualDownload &&
@@ -503,7 +526,6 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 								canShowOfflineInstallNudge();
 							set({
 								tileCacheMeta: meta,
-								tileCacheDownloading: false,
 								tileCacheFailed: result.failed,
 								tileCacheFailedUrls: result.failedUrls,
 								// A freshly cached corridor is never stale - dismiss the nag for
@@ -517,8 +539,15 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 							// the corridor download, so we mirror that intent for
 							// thumbnails + Wikipedia summaries. Failures are silent.
 							void prefetchPoiAssetsAfterDownload();
-						} else {
-							set({ tileCacheDownloading: false });
+						} catch (error) {
+							// e.g. the metadata write failed: surface it instead of a stuck progress bar.
+							console.warn('[tile-cache] download failed', error);
+							if (ownsTileDownloadRun(controller)) set({ tileCacheError: 'download_failed' });
+						} finally {
+							if (ownsTileDownloadRun(controller)) {
+								tilePrecacheAbortController = null;
+								set({ tileCacheDownloading: false });
+							}
 						}
 					},
 
@@ -531,32 +560,38 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					retryFailedTiles: async () => {
 						if (typeof window === 'undefined') return;
 						const failed = get().tileCacheFailedUrls;
-						if (failed.length === 0 || get().tileCacheDownloading) return;
-						tilePrecacheAbortController?.abort();
-						const controller = new AbortController();
-						tilePrecacheAbortController = controller;
+						if (failed.length === 0) return;
+						const controller = claimTileDownloadRun();
+						if (!controller) return;
 						set({
 							tileCacheDownloading: true,
 							tileCacheDone: 0,
 							tileCacheTotal: failed.length,
 							tileCacheError: null,
 						});
-						// Re-fetch only the misses; the live cache-count effect re-queries
-						// the real Cache Storage size once downloading flips back to false.
-						const result = await precacheTiles(
-							failed,
-							(done, total) => set({ tileCacheDone: done, tileCacheTotal: total }),
-							controller.signal,
-						);
-						tilePrecacheAbortController = null;
-						if (!result.cancelled) {
+						try {
+							// Re-fetch only the misses; the live cache-count effect re-queries
+							// the real Cache Storage size once downloading flips back to false.
+							const result = await precacheTiles(
+								failed,
+								(done, total) => {
+									if (ownsTileDownloadRun(controller)) set({ tileCacheDone: done, tileCacheTotal: total });
+								},
+								controller.signal,
+							);
+							if (!ownsTileDownloadRun(controller) || result.cancelled) return;
 							set({
-								tileCacheDownloading: false,
 								tileCacheFailed: result.failed,
 								tileCacheFailedUrls: result.failedUrls,
 							});
-						} else {
-							set({ tileCacheDownloading: false });
+						} catch (error) {
+							console.warn('[tile-cache] retry failed', error);
+							if (ownsTileDownloadRun(controller)) set({ tileCacheError: 'download_failed' });
+						} finally {
+							if (ownsTileDownloadRun(controller)) {
+								tilePrecacheAbortController = null;
+								set({ tileCacheDownloading: false });
+							}
 						}
 					},
 
@@ -601,14 +636,6 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 						const points = main.enhancedTrailPoints ?? [];
 						if (points.length < 2) return;
 
-						const storage = await estimateStorage();
-						if (!storage.available) {
-							set({ tileCacheError: 'quota_exceeded' });
-							return;
-						}
-						// User-initiated high-detail download: request durable storage too.
-						void requestPersistentStorage();
-
 						const slice = buildHighDetailAheadSlice({
 							points,
 							direction: state.direction,
@@ -620,11 +647,10 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 
 						const urls = generateAheadHighDetailTileUrls(slice, urlTemplate);
 						if (!urls.length) return;
-
 						const providerKey = getProviderCacheKey(providerName);
-						tilePrecacheAbortController?.abort();
-						const controller = new AbortController();
-						tilePrecacheAbortController = controller;
+
+						const controller = claimTileDownloadRun();
+						if (!controller) return;
 						set({
 							tileCacheDownloading: true,
 							tileCacheDone: 0,
@@ -633,14 +659,25 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 							tileCacheFailed: 0,
 							tileCacheFailedUrls: [],
 						});
-						const result = await precacheTiles(
-							urls,
-							(done, total) => set({ tileCacheDone: done, tileCacheTotal: total }),
-							controller.signal,
-						);
-						tilePrecacheAbortController = null;
-						if (!result.cancelled) {
-							const existingMeta = state.tileCacheMeta;
+						try {
+							const storage = await estimateStorage();
+							if (!ownsTileDownloadRun(controller)) return;
+							if (!storage.available) {
+								set({ tileCacheError: 'quota_exceeded' });
+								return;
+							}
+							// User-initiated high-detail download: request durable storage too.
+							void requestPersistentStorage();
+
+							const result = await precacheTiles(
+								urls,
+								(done, total) => {
+									if (ownsTileDownloadRun(controller)) set({ tileCacheDone: done, tileCacheTotal: total });
+								},
+								controller.signal,
+							);
+							if (!ownsTileDownloadRun(controller) || result.cancelled) return;
+							const existingMeta = get().tileCacheMeta;
 							const meta: TileCacheMeta = {
 								cachedAt: existingMeta?.cachedAt ?? Date.now(),
 								tileCount: (existingMeta?.tileCount ?? 0) + result.done,
@@ -650,15 +687,21 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 								hasHighDetailAhead: true,
 							};
 							await saveTileCacheMeta(providerKey, meta);
+							if (!ownsTileDownloadRun(controller)) return;
 							set({
 								tileCacheMeta: meta,
-								tileCacheDownloading: false,
 								tileCacheFailed: result.failed,
 								tileCacheFailedUrls: result.failedUrls,
 								...(result.done > 0 ? { tileDownloadCompleteToast: true } : {}),
 							});
-						} else {
-							set({ tileCacheDownloading: false });
+						} catch (error) {
+							console.warn('[tile-cache] high-detail download failed', error);
+							if (ownsTileDownloadRun(controller)) set({ tileCacheError: 'download_failed' });
+						} finally {
+							if (ownsTileDownloadRun(controller)) {
+								tilePrecacheAbortController = null;
+								set({ tileCacheDownloading: false });
+							}
 						}
 					},
 
