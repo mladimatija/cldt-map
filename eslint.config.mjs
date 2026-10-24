@@ -22,6 +22,8 @@ const eslintConfig = [
 			'**/build/**',
 			'**/.turbo/**',
 			'**/coverage/**',
+			// Local scratch scripts (untracked).
+			'**/.debug/**',
 		],
 	},
 	...nextCoreWebVitals,

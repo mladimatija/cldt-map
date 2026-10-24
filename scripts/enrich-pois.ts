@@ -1378,7 +1378,7 @@ function safeUrl(raw: string | undefined | null): string | undefined {
  *  written - even when upstream sources (Wikipedia, Commons, OSM) emit
  *  these characters in names or descriptions. */
 function normalizeDashes(s: string): string {
-	return s.replace(/[–—]/g, '-');
+	return s.replace(/[\u2013\u2014]/g, '-');
 }
 
 /** Applies normalizeDashes to every visible-text string field of a POI

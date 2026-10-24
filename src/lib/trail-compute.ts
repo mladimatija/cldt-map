@@ -14,9 +14,8 @@
 import { haversineDistanceM } from './haversine';
 import { computeBearing } from './distance-utils';
 import { TRAIL_SECTIONS } from './trail-sections';
+import { MAX_GPX_BYTES } from './gpx-parser';
 import type { EnhancedTrailPoint, TrailDirection } from './store/types';
-
-const MAX_GPX_BYTES = 20 * 1024 * 1024;
 
 export interface ComputedTrailData {
 	/** Direction-adjusted plain coordinates (same order as enhanced). */

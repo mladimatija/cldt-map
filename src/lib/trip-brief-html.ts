@@ -17,7 +17,7 @@ import {
 	formatKmRound,
 	todayIsoDate,
 } from '@/lib/trip-brief-i18n';
-import { formatElevation } from '@/lib/utils';
+import { formatElevation, isSafeUrl } from '@/lib/utils';
 
 const MAX_POIS_PER_DAY = 25;
 
@@ -173,7 +173,9 @@ function buildDaySection(brief: TripBrief, day: TripBriefDay): string {
 					? `<img class="poi-thumb" src="${escapeHtml(poi.thumbUrl)}" alt="" loading="lazy">`
 					: '';
 				const summary = poi.summary ? `<p class="poi-summary">${escapeHtml(poi.summary)}</p>` : '';
-				const name = poi.wikipediaUrl
+				// Only http(s) links: the URL comes from the POI dataset, and the brief is
+				// a standalone document a hiker may open from disk.
+				const name = isSafeUrl(poi.wikipediaUrl)
 					? `<a href="${escapeHtml(poi.wikipediaUrl)}" rel="noopener noreferrer">${escapeHtml(poi.name)}</a>`
 					: escapeHtml(poi.name);
 				return `<li class="poi-item">${thumb}<div class="poi-body"><p class="poi-name">${name}</p><p class="poi-meta">${metaLine}</p>${summary}</div></li>`;

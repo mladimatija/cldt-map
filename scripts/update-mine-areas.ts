@@ -451,7 +451,7 @@ async function main(): Promise<void> {
 	}
 
 	// Hyphen-only policy: normalize any em/en dashes from source attributes.
-	const json = (JSON.stringify(output, null, '\t') + '\n').replace(/[–—]/g, '-');
+	const json = (JSON.stringify(output, null, '\t') + '\n').replace(/[\u2013\u2014]/g, '-');
 	await fs.writeFile(OUTPUT_PATH, json, 'utf8');
 	const bytes = Buffer.byteLength(json);
 	console.log(

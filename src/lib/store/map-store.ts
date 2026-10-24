@@ -70,6 +70,7 @@ import { sanitizeWaterLog, waterLogToday, type WaterLogEntry, type WaterStatus }
 import { normalizePoiNote, sanitizePoiNotes } from '../poi-notes';
 import { sanitizeNavTarget, type NavTarget } from '../nav-target';
 import { isSameTrailOsmTagsDataset } from '../trail-osm-tags';
+import { DEFAULT_MAP_APPEARANCE, type MapAppearance } from '../map-appearance';
 
 /** Module-level abort controller for tile downloads - one download at a time. */
 let tilePrecacheAbortController: AbortController | null = null;
@@ -981,6 +982,10 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					setContourOverlayEnabled: (enabled: boolean): void => {
 						set({ contourOverlayEnabled: enabled });
 					},
+					mapAppearance: DEFAULT_MAP_APPEARANCE,
+					setMapAppearance: (appearance: MapAppearance): void => {
+						set({ mapAppearance: appearance });
+					},
 					shareShortLinks: config.shareShortLinks,
 					setShareShortLinks: (enabled: boolean): void => {
 						set({ shareShortLinks: enabled });
@@ -1725,6 +1730,7 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 						waymarkedTrailsOverlay: state.waymarkedTrailsOverlay,
 						hillshadeOverlayEnabled: state.hillshadeOverlayEnabled,
 						contourOverlayEnabled: state.contourOverlayEnabled,
+						mapAppearance: state.mapAppearance,
 						shareShortLinks: state.shareShortLinks,
 						includeRemotePois: state.includeRemotePois,
 						userWaypoints: demoSnapshot ? demoSnapshot.userWaypoints : state.userWaypoints,

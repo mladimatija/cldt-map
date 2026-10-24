@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useMap } from 'react-leaflet';
 import L from 'leaflet';
 import { useLocale, useTranslations } from 'next-intl';
-import { useMapStore, type MapStoreState } from '@/lib/store';
+import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
 import { getActiveStarredPoiIds } from '@/lib/store/types';
 import { isKnownType, poiDisplayName, poiMatchesTagFilter, poiPassesReachabilityFilter, type Poi } from '@/lib/pois';
 import {
@@ -113,7 +113,14 @@ export function PoiMarkers(): null {
 	 *  array on every navigation event. */
 	const poiById = useMemo(() => new Map<string, Poi>((poisFile?.pois ?? []).map((p) => [p.id, p])), [poisFile]);
 
-	const totalKm = useMemo(() => poisFile?.pois.reduce((m, p) => (p.trailKm > m ? p.trailKm : m), 0) ?? 0, [poisFile]);
+	// Trail length for NOBO km labels. The largest POI km is only a stand-in
+	// until the trail loads: it falls short of the trail end and shifts as POI
+	// types are toggled.
+	const trailTotalKm = useStore((s: StoreState) => s.trailMetadata?.totalDistance ?? 0);
+	const totalKm = useMemo(
+		() => trailTotalKm || (poisFile?.pois.reduce((m, p) => (p.trailKm > m ? p.trailKm : m), 0) ?? 0),
+		[trailTotalKm, poisFile],
+	);
 
 	const markersRef = useRef<L.Marker[]>([]);
 	/** id → marker map used by the deep-link effect to open a popup by id

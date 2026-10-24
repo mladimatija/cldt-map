@@ -63,10 +63,14 @@ function parseStations(xml: string): Station[] {
 		const lat = parseFloat(extractTag(block, 'Lat'));
 		const lng = parseFloat(extractTag(block, 'Lon'));
 		if (isNaN(lat) || isNaN(lng)) continue;
+		// A station without a current reading is skipped, so the nearest station
+		// WITH a temperature wins instead of reporting a missing value as 0 °C.
+		const tempC = parseFloat(extractTag(block, 'Temp'));
+		if (!Number.isFinite(tempC)) continue;
 		stations.push({
 			lat,
 			lng,
-			tempC: parseFloat(extractTag(block, 'Temp')) || 0,
+			tempC,
 			windMs: parseFloat(extractTag(block, 'VjetarBrzina')) || 0,
 			code: extractTag(block, 'VrijemeZnak'),
 		});

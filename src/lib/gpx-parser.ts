@@ -14,7 +14,9 @@ export interface ParsedGpx {
 	tracks: ParsedTrack[];
 }
 
-const MAX_GPX_BYTES = 20 * 1024 * 1024;
+/** Largest GPX accepted anywhere (trail load and user imports). Checked before
+ *  DOMParser, which would otherwise allocate memory for the whole document. */
+export const MAX_GPX_BYTES = 20 * 1024 * 1024;
 
 export function parseGpx(xml: string): ParsedGpx {
 	// Refuse to parse oversized files before they hit DOMParser, which would otherwise

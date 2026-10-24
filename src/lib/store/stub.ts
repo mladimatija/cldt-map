@@ -2,6 +2,7 @@ import type { StoreState, MapStoreState } from './types';
 import { BaseMapProvider } from '../services/map-service';
 import { INITIAL_TRAIL_STATE } from './trail-slice';
 import { DEFAULT_POI_TYPES } from '../poi-types';
+import { DEFAULT_MAP_APPEARANCE } from '../map-appearance';
 
 /**
  * Returns an object matching StoreState with default values and no-op functions for SSR.
@@ -214,6 +215,8 @@ export function createMapStoreStub(): MapStoreState {
 		setHillshadeOverlayEnabled: noop,
 		contourOverlayEnabled: false,
 		setContourOverlayEnabled: noop,
+		mapAppearance: DEFAULT_MAP_APPEARANCE,
+		setMapAppearance: noop,
 		shareShortLinks: true,
 		setShareShortLinks: noop,
 		shareCopyToast: null,

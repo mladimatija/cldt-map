@@ -1,10 +1,8 @@
 import localforage from 'localforage';
-import { parseGpx, type ParsedTrack } from './gpx-parser';
+import { MAX_GPX_BYTES, parseGpx, type ParsedTrack } from './gpx-parser';
 import type { ImportedTrack, TrackStats } from './store/types';
 import { haversineDistanceM as haversineM } from './haversine';
 import { buildSpatialGrid, type SpatialGrid } from './spatial-grid';
-
-const MAX_GPX_SIZE = 50_000_000; // 50 MB
 
 const importedTracksStore = localforage.createInstance({
 	name: 'cldt-map',
@@ -101,9 +99,9 @@ export async function saveImportedTrack(
 	parsed: ParsedTrack,
 	existingColorCount: number,
 ): Promise<ImportedTrack> {
-	if (rawXml.length > MAX_GPX_SIZE) {
+	if (rawXml.length > MAX_GPX_BYTES) {
 		// 'too large' is matched by the dropzone's error mapping.
-		throw new Error(`GPX file too large: exceeds maximum of ${MAX_GPX_SIZE / 1_000_000} MB`);
+		throw new Error(`GPX file too large: exceeds maximum of ${MAX_GPX_BYTES / 1024 / 1024} MB`);
 	}
 
 	const id = fnv1aHash(rawXml);

@@ -24,7 +24,7 @@ const MAX_ALERTS_PER_DAY = 4;
 const MAX_STR = 158;
 
 function trim(s: string): string {
-	return s.length > MAX_STR ? `${s.slice(0, MAX_STR - 1)}…`.replace('…', '...') : s;
+	return s.length > MAX_STR ? `${s.slice(0, MAX_STR - 3)}...` : s;
 }
 
 /**

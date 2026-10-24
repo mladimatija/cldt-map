@@ -16,6 +16,7 @@ import type { PackList } from '../pack-csv';
 import type { PoiImage, PoisFile } from '../pois';
 import { RulerRange } from '@/lib/distance-utils';
 import type { UiTextScale } from '../ui-text-scale';
+import type { MapAppearance } from '../map-appearance';
 
 export type { TrailDirection, UnitSystem };
 export type { TrackPoint } from '../gpx-parser';
@@ -487,6 +488,9 @@ export interface MapStoreState {
 	/** OpenTopoMap contour-lines overlay (multiply-blended over any base). Persisted. */
 	contourOverlayEnabled: boolean;
 	setContourOverlayEnabled: (enabled: boolean) => void;
+	/** Tools panel "Map appearance" brightness / contrast / saturation for the base tiles. Persisted. */
+	mapAppearance: MapAppearance;
+	setMapAppearance: (appearance: MapAppearance) => void;
 	/** Copy compact `/s/{code}` links when sharing the map or a POI. Persisted. */
 	shareShortLinks: boolean;
 	setShareShortLinks: (enabled: boolean) => void;

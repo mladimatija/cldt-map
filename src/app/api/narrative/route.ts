@@ -244,7 +244,7 @@ function extractNarratives(text: string, dayCount: number): { overview: string; 
 	const o = parsed as { overview?: unknown; days?: unknown };
 	const clean = (v: unknown): string | null => {
 		if (typeof v !== 'string') return null;
-		const t = v.replace(/[–—]/g, '-').trim();
+		const t = v.replace(/[\u2013\u2014]/g, '-').trim();
 		return t.length > 0 && t.length <= MAX_NARRATIVE_CHARS ? t : null;
 	};
 	const overview = clean(o.overview);

@@ -20,6 +20,7 @@ import { usePanelListeners } from '@/hooks';
 import { useWakeLock } from '@/hooks/useWakeLock';
 import { ShareCopyToast } from '@/components/map/ShareCopyToast';
 import { TileDownloadCompleteToast } from '@/components/map/TileDownloadCompleteToast';
+import { MapAppearanceFilter } from '@/components/map/MapAppearanceFilter';
 
 function MapTrailLoadingFallback(): React.ReactElement {
 	const t = useTranslations('mapWrapper');
@@ -239,6 +240,7 @@ export default function MapContent(): React.ReactElement {
 			<RadarOverlay />
 			<WaymarkedTrailsOverlay />
 			<TerrainOverlays />
+			<MapAppearanceFilter />
 			<Suspense fallback={<MapTrailLoadingFallback />}>
 				<TrailRoute pathOptions={DEFAULT_PATH_OPTIONS} />
 			</Suspense>

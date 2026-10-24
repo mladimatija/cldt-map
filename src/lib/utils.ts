@@ -40,7 +40,7 @@ export function cn(...inputs: ClassValue[]): string {
  * javascript:/data: payload cannot execute via the link. Relative paths and
  * non-http(s) schemes are rejected.
  */
-export function isSafeUrl(u: string | undefined | null): boolean {
+export function isSafeUrl(u: string | undefined | null): u is string {
 	if (!u) return false;
 	try {
 		const protocol = new URL(u).protocol;

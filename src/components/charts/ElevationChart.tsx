@@ -23,6 +23,7 @@ import { computeEta, findNearestPointIndex } from '@/lib/distance-utils';
 import { useStore, useMapStore, type StoreState, type MapStoreState } from '@/lib/store';
 import { SAC_BUCKET_SHORT_LABELS, SAC_COLORS, SURFACE_COLORS } from '@/components/map/trail-route-constants';
 import { TRAIL_SECTIONS } from '@/lib/trail-sections';
+import { downsampleMinMax } from '@/lib/downsample';
 import {
 	GRADE_BUCKETS,
 	SAC_BUCKETS,
@@ -129,34 +130,16 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 			return;
 		}
 
-		const sampleSize = Math.min(enhancedTrailPoints.length, 500);
-		const skipFactor = Math.max(1, Math.floor(enhancedTrailPoints.length / sampleSize));
-		const elevationData: ElevationPoint[] = [];
-
-		for (let i = 0; i < enhancedTrailPoints.length; i += skipFactor) {
-			const point = enhancedTrailPoints[i];
-			elevationData.push({
+		// Min/max per bucket keeps every summit and valley; the first and last
+		// points are always included, so the profile reaches the trail end.
+		const elevationData: ElevationPoint[] = downsampleMinMax(enhancedTrailPoints, 500, (p) => p.elevation).map(
+			(point) => ({
 				distance: point.distanceFromStart / 1000,
 				elevation: point.elevation,
 				lat: point.lat,
 				lng: point.lng,
-			});
-		}
-		if (enhancedTrailPoints.length > 1) {
-			const last = enhancedTrailPoints[enhancedTrailPoints.length - 1];
-			const lastDist = last.distanceFromStart / 1000;
-			const lastInData = elevationData[elevationData.length - 1]?.distance;
-			const needLast =
-				elevationData.length === 0 || (lastInData !== undefined && Math.abs(lastInData - lastDist) > 0.001);
-			if (needLast) {
-				elevationData.push({
-					distance: lastDist,
-					elevation: last.elevation,
-					lat: last.lat,
-					lng: last.lng,
-				});
-			}
-		}
+			}),
+		);
 
 		queueMicrotask(() => setChartData(elevationData));
 	}, [enhancedTrailPoints, gpxLoaded, direction]);

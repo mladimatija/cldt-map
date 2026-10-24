@@ -195,7 +195,6 @@ const MapControls: React.FC<MapControlsProps> = ({
 
 	const boundaryLayerRef = useRef<L.GeoJSON | null>(null);
 	const boundaryCanvasLayerRef = useRef<L.TileLayer | null>(null);
-	const colorAdjustRef = useRef<HTMLElement | null>(null);
 
 	const { close: closePanel } = usePanelManager();
 	// All ruler behavior (markers, tooltip, chart bridge, Escape handling)
@@ -228,67 +227,10 @@ const MapControls: React.FC<MapControlsProps> = ({
 		[],
 	);
 
-	const [colorSettings, setColorSettings] = useState({
-		brightness: 100,
-		contrast: 100,
-		saturation: 100,
-	});
-
 	// Warm the SW cache for emergency JSONs so the panel opens instantly offline.
 	useEffect(() => {
 		void prefetchEmergencyData();
 	}, []);
-
-	useEffect(() => {
-		const mapElement = document.querySelector('.leaflet-container') as HTMLElement;
-		if (!mapElement) {
-			return;
-		}
-		if (toolsPanel.isOpen) {
-			mapElement.style.filter = `
-                brightness(${colorSettings.brightness}%)
-                contrast(${colorSettings.contrast}%)
-                saturate(${colorSettings.saturation}%)
-            `;
-		} else {
-			mapElement.style.filter = '';
-		}
-	}, [toolsPanel.isOpen, colorSettings]);
-
-	useEffect(() => {
-		const mapContainer = map?.getContainer();
-		if (!mapContainer) {
-			return;
-		}
-		if (toolsPanel.isOpen) {
-			const overlay = document.createElement('div');
-			overlay.className = 'color-adjust-overlay';
-			overlay.style.cssText = `
-                position: absolute;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                z-index: var(--z-map-overlay);
-                pointer-events: none;
-                mix-blend-mode: multiply;
-                background-color: rgba(255, 255, 230, 0.2);
-            `;
-			mapContainer.appendChild(overlay);
-			colorAdjustRef.current = overlay;
-		} else {
-			if (colorAdjustRef.current) {
-				colorAdjustRef.current.remove();
-				colorAdjustRef.current = null;
-			}
-		}
-		return () => {
-			if (colorAdjustRef.current) {
-				colorAdjustRef.current.remove();
-				colorAdjustRef.current = null;
-			}
-		};
-	}, [map, toolsPanel.isOpen]);
 
 	const toggleDirection = (): void => {
 		closePanel();
@@ -674,7 +616,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 	}, [map]);
 
 	// Unmount cleanup for the layers this component still owns (boundary,
-	// boundary canvas, color-adjust overlay). Ruler teardown lives in useRuler.
+	// boundary canvas). Ruler teardown lives in useRuler.
 	useEffect(
 		() => () => {
 			if (boundaryLayerRef.current) {
@@ -683,16 +625,6 @@ const MapControls: React.FC<MapControlsProps> = ({
 
 			if (boundaryCanvasLayerRef.current) {
 				map.removeLayer(boundaryCanvasLayerRef.current);
-			}
-
-			if (colorAdjustRef.current) {
-				colorAdjustRef.current.remove();
-				colorAdjustRef.current = null;
-			}
-
-			const mapElement = document.querySelector('.leaflet-container') as HTMLElement;
-			if (mapElement) {
-				mapElement.style.filter = '';
 			}
 		},
 		[map],
@@ -789,7 +721,6 @@ const MapControls: React.FC<MapControlsProps> = ({
 						aria-label={t('directionTooltip', {
 							direction: direction === 'SOBO' ? t('directionSouthbound') : t('directionNorthbound'),
 						})}
-						title={`Change Direction (Currently ${direction === 'SOBO' ? t('directionTitleNorthSouth') : t('directionTitleSouthNorth')})`}
 						variant="controlRound"
 						onClick={toggleDirection}
 					>
@@ -856,8 +787,6 @@ const MapControls: React.FC<MapControlsProps> = ({
 					</MapControlsButton>
 					{toolsPanel.isOpen && (
 						<MapControlsToolsPanel
-							colorSettings={colorSettings}
-							setColorSettings={setColorSettings}
 							showRadarOverlay={showRadarOverlay}
 							showTilesBoundary={showTilesBoundary}
 							onToggleRadarOverlay={() => setShowRadarOverlay(!showRadarOverlay)}

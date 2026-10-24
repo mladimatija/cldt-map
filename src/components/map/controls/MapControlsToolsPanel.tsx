@@ -6,16 +6,11 @@ import { IoGridOutline, IoRainyOutline, IoTriangleOutline, IoMapOutline } from '
 import { Button } from '@/components/ui/Button';
 import { usePopoverFocusTrap } from '@/hooks';
 import { useMapStore, type MapStoreState } from '@/lib/store';
+import { DEFAULT_MAP_APPEARANCE } from '@/lib/map-appearance';
 import { cn } from '@/lib/utils';
 import { MAP_CONTROL_PANEL_WIDTH, MAP_CONTROL_POPOVER } from './map-controls-constants';
 import { MapControlSectionCard } from './MapControlSectionCard';
 import { SettingsToggleRow } from './SettingsToggleRow';
-
-interface ColorSettings {
-	brightness: number;
-	contrast: number;
-	saturation: number;
-}
 
 interface SliderRowProps {
 	label: string;
@@ -51,8 +46,6 @@ interface MapControlsToolsPanelProps {
 	onToggleTilesBoundary: () => void;
 	showRadarOverlay: boolean;
 	onToggleRadarOverlay: () => void;
-	colorSettings: ColorSettings;
-	setColorSettings: React.Dispatch<React.SetStateAction<ColorSettings>>;
 }
 
 /** Secondary map tools: tile clipping, color adjust, radar overlay, terrain overlays (hillshade + contour). */
@@ -61,8 +54,6 @@ export function MapControlsToolsPanel({
 	onToggleTilesBoundary,
 	showRadarOverlay,
 	onToggleRadarOverlay,
-	colorSettings,
-	setColorSettings,
 }: MapControlsToolsPanelProps): React.ReactElement {
 	const t = useTranslations('mapControls');
 	const popoverRef = usePopoverFocusTrap(true);
@@ -73,6 +64,8 @@ export function MapControlsToolsPanel({
 	const setHillshadeOverlay = useMapStore((s: MapStoreState) => s.setHillshadeOverlayEnabled);
 	const contourOverlay = useMapStore((s: MapStoreState) => s.contourOverlayEnabled);
 	const setContourOverlay = useMapStore((s: MapStoreState) => s.setContourOverlayEnabled);
+	const mapAppearance = useMapStore((s: MapStoreState) => s.mapAppearance);
+	const setMapAppearance = useMapStore((s: MapStoreState) => s.setMapAppearance);
 
 	return (
 		<div
@@ -135,29 +128,29 @@ export function MapControlsToolsPanel({
 								max={150}
 								min={50}
 								step={5}
-								value={colorSettings.brightness}
-								onChange={(v) => setColorSettings((s) => ({ ...s, brightness: v }))}
+								value={mapAppearance.brightness}
+								onChange={(v) => setMapAppearance({ ...mapAppearance, brightness: v })}
 							/>
 							<SliderRow
 								label={t('colorContrast')}
 								max={150}
 								min={50}
 								step={5}
-								value={colorSettings.contrast}
-								onChange={(v) => setColorSettings((s) => ({ ...s, contrast: v }))}
+								value={mapAppearance.contrast}
+								onChange={(v) => setMapAppearance({ ...mapAppearance, contrast: v })}
 							/>
 							<SliderRow
 								label={t('colorSaturation')}
 								max={200}
 								min={0}
 								step={5}
-								value={colorSettings.saturation}
-								onChange={(v) => setColorSettings((s) => ({ ...s, saturation: v }))}
+								value={mapAppearance.saturation}
+								onChange={(v) => setMapAppearance({ ...mapAppearance, saturation: v })}
 							/>
 							<Button
 								className="w-full px-3 py-1.5 text-xs"
 								variant="mapControlOutline"
-								onClick={() => setColorSettings({ brightness: 100, contrast: 100, saturation: 100 })}
+								onClick={() => setMapAppearance(DEFAULT_MAP_APPEARANCE)}
 							>
 								{t('colorReset')}
 							</Button>
