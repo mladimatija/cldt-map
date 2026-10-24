@@ -9,6 +9,7 @@ import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/li
 import { toTravelKm } from '@/lib/trail-frame';
 import { newId, nextWaypointName, type UserWaypoint } from '@/lib/user-waypoints';
 import { buildWaypointShareUrl, clearShareUrlParams, formatDistance, getInitialShareUrlParams } from '@/lib/utils';
+import { flyToOrSetView } from '@/lib/map-view';
 import { wirePopupShareButton } from '@/lib/share-link-copy';
 import { formatIsoDate } from '@/lib/date-format';
 import { appendWaypointCategoryChips } from '@/lib/waypoint-popup-dom';
@@ -65,6 +66,9 @@ export function UserWaypointMarkers(): null {
 
 	const markersRef = useRef<Map<string, L.Marker>>(new Map());
 	const deepLinkAppliedRef = useRef(false);
+	/** Waypoint whose popup was open when the markers were last rebuilt (units,
+	 *  direction or the trail length arriving), so the rebuild reopens it. */
+	const reopenPopupIdRef = useRef<string | null>(null);
 
 	useEffect(() => {
 		if (!map.getPane(WAYPOINT_PANE)) {
@@ -136,6 +140,9 @@ export function UserWaypointMarkers(): null {
 			marker.addTo(map);
 			markers.set(wp.id, marker);
 		}
+		const reopenId = reopenPopupIdRef.current;
+		reopenPopupIdRef.current = null;
+		if (reopenId) markers.get(reopenId)?.openPopup();
 
 		function buildWaypointPopup(wp: UserWaypoint): HTMLElement {
 			const category = normalizeWaypointCategory(wp.category);
@@ -224,6 +231,7 @@ export function UserWaypointMarkers(): null {
 		}
 
 		return () => {
+			reopenPopupIdRef.current = [...markers.entries()].find(([, m]) => m.isPopupOpen())?.[0] ?? null;
 			for (const m of markers.values()) m.remove();
 			markers.clear();
 		};
@@ -249,7 +257,7 @@ export function UserWaypointMarkers(): null {
 		clearPendingOpenWaypoint();
 		const target = marker.getLatLng();
 		if (!map.getBounds().contains(target)) {
-			map.flyTo(target, Math.max(map.getZoom(), 13));
+			flyToOrSetView(map, target, Math.max(map.getZoom(), 13));
 		}
 		marker.openPopup();
 	}, [pendingOpenWaypointId, userWaypoints, hiddenWaypointCategories, map, clearPendingOpenWaypoint]);

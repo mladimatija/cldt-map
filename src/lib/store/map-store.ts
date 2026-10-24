@@ -1,7 +1,8 @@
 import type * as GeoJSON from 'geojson';
 import { create, type StoreApi, type UseBoundStore } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { createDebouncedJsonStorage } from './debounced-storage';
+import { createDebouncedJsonStorage, flushPersistedStores } from './debounced-storage';
+import { DEFAULT_SHARE_TRIP_STATE_PARTS, SHARED_WAYPOINT_DEDUPE_M } from '../share-url-constants';
 import { isAheadHorizonKm } from '../poi-ahead-corridor';
 import { isUiTextScale, type UiTextScale } from '../ui-text-scale';
 import {
@@ -105,6 +106,56 @@ function ownsTileDownloadRun(controller: AbortController): boolean {
 let lastPredictiveCheckAt = 0;
 const PREDICTIVE_GPS_DEBOUNCE_MS = 30_000;
 
+/** localStorage key for the trip data replaceTripData saves for its undo. */
+const TRIP_BACKUP_STORAGE_KEY = 'cldt-trip-backup';
+
+type TripBackup = Pick<
+	MapStoreState,
+	| 'stagePlan'
+	| 'userWaypoints'
+	| 'journalEntries'
+	| 'completedIntervals'
+	| 'progressTrackIds'
+	| 'starredPoiCollections'
+	| 'activeStarredCollectionId'
+>;
+
+function readTripBackup(): TripBackup | null {
+	try {
+		const raw = localStorage.getItem(TRIP_BACKUP_STORAGE_KEY);
+		if (!raw) return null;
+		const backup = JSON.parse(raw) as Partial<TripBackup>;
+		if (
+			!Array.isArray(backup.userWaypoints) ||
+			!Array.isArray(backup.journalEntries) ||
+			!Array.isArray(backup.completedIntervals) ||
+			!Array.isArray(backup.progressTrackIds) ||
+			!Array.isArray(backup.starredPoiCollections)
+		) {
+			return null;
+		}
+		return {
+			stagePlan: backup.stagePlan ?? null,
+			userWaypoints: backup.userWaypoints,
+			journalEntries: backup.journalEntries,
+			completedIntervals: backup.completedIntervals,
+			progressTrackIds: backup.progressTrackIds,
+			starredPoiCollections: backup.starredPoiCollections,
+			activeStarredCollectionId: backup.activeStarredCollectionId ?? null,
+		};
+	} catch {
+		return null;
+	}
+}
+
+function clearTripBackup(): void {
+	try {
+		localStorage.removeItem(TRIP_BACKUP_STORAGE_KEY);
+	} catch {
+		// storage unavailable: nothing to clear
+	}
+}
+
 /** The live watch publishes a fix only after this much movement or time, so a
  *  hiker standing still does not re-render every position consumer per fix. */
 const LIVE_PUBLISH_MIN_MOVE_M = 3;
@@ -179,6 +230,9 @@ function patchOptionalUpNextToggles(
  * Creates the persisted map store. Receives getMainStore so it does not import the main store at module init (avoids circular deps).
  */
 export function createMapStore(getMainStore: () => StoreState): UseBoundStore<StoreApi<MapStoreState>> {
+	// The undo offer for a replaced trip lives only in this session, so a backup
+	// left by an earlier one can never be restored: drop it.
+	if (typeof window !== 'undefined') clearTripBackup();
 	return create<MapStoreState>()(
 		persist(
 			(set, get) => {
@@ -1080,6 +1134,140 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					clearShareCopyToast: (): void => {
 						set({ shareCopyToast: null });
 					},
+					shareIncludeTripState: false,
+					setShareIncludeTripState: (enabled: boolean): void => {
+						set({ shareIncludeTripState: enabled });
+					},
+					shareTripStateParts: { ...DEFAULT_SHARE_TRIP_STATE_PARTS },
+					setShareTripStateParts: (parts): void => {
+						set({ shareTripStateParts: parts });
+					},
+					pendingSharedTrip: null,
+					setPendingSharedTrip: (pending): void => {
+						set({ pendingSharedTrip: pending });
+					},
+					mergeTripData: (data, { includeProgress, sharedCollectionName }): void => {
+						const state = get();
+						const userWaypoints = [...state.userWaypoints];
+						for (const wp of data.waypoints) {
+							const known = userWaypoints.some(
+								(own) =>
+									own.id === wp.id || haversineDistanceM(own.lat, own.lng, wp.lat, wp.lng) <= SHARED_WAYPOINT_DEDUPE_M,
+							);
+							if (!known) userWaypoints.push({ ...wp, category: normalizeWaypointCategory(wp.category) });
+						}
+						// Links trim long journal text, so an own entry of the same date that
+						// starts with the shared text is the same entry.
+						const journalEntries = [...state.journalEntries];
+						for (const entry of data.journal) {
+							const known = journalEntries.some((own) => own.date === entry.date && own.text.startsWith(entry.text));
+							if (!known) journalEntries.push(entry);
+						}
+						// Skip starred places some own list already holds; a new list does
+						// not take over the active one unless there is none.
+						const ownStars = new Set(state.starredPoiCollections.flatMap((c) => c.poiIds));
+						const sharedCollection = data.stars.some((id) => !ownStars.has(id))
+							? { id: newId(), name: sharedCollectionName, poiIds: [...data.stars] }
+							: null;
+						set({
+							userWaypoints,
+							journalEntries,
+							stagePlan: state.stagePlan ?? data.stagePlan,
+							...(sharedCollection && {
+								starredPoiCollections: [...state.starredPoiCollections, sharedCollection],
+								activeStarredCollectionId: state.activeStarredCollectionId ?? sharedCollection.id,
+							}),
+							...(includeProgress && {
+								completedIntervals: data.done.reduce(
+									(acc, [startKm, endKm]) => addInterval(acc, startKm, endKm),
+									state.completedIntervals,
+								),
+							}),
+							pendingSharedTrip: null,
+						});
+						flushPersistedStores();
+					},
+					replaceTripData: (data, { includeProgress, sharedCollectionName }): boolean => {
+						const state = get();
+						// While an undo is still offered, keep the backup of the data from
+						// before the first replace, so undo always gets back to it.
+						if (state.tripReplaceUndoAt === null || !readTripBackup()) {
+							const backup: TripBackup = {
+								stagePlan: state.stagePlan,
+								userWaypoints: state.userWaypoints,
+								journalEntries: state.journalEntries,
+								completedIntervals: state.completedIntervals,
+								progressTrackIds: state.progressTrackIds,
+								starredPoiCollections: state.starredPoiCollections,
+								activeStarredCollectionId: state.activeStarredCollectionId,
+							};
+							try {
+								localStorage.setItem(TRIP_BACKUP_STORAGE_KEY, JSON.stringify(backup));
+							} catch {
+								// No backup, no undo: leave the local data alone.
+								return false;
+							}
+						}
+						const sharedCollection =
+							data.stars.length > 0 ? { id: newId(), name: sharedCollectionName, poiIds: [...data.stars] } : null;
+						// Only the kinds of data the link carries are replaced.
+						set({
+							...(data.stagePlan && { stagePlan: data.stagePlan }),
+							...(data.waypoints.length > 0 && {
+								userWaypoints: data.waypoints.map((wp) => ({
+									...wp,
+									category: normalizeWaypointCategory(wp.category),
+								})),
+							}),
+							...(data.journal.length > 0 && {
+								journalEntries: data.journal,
+								journalHighlightEntryId: null,
+								journalPreview: null,
+							}),
+							...(sharedCollection && {
+								starredPoiCollections: [sharedCollection],
+								activeStarredCollectionId: sharedCollection.id,
+							}),
+							...(includeProgress &&
+								data.done.length > 0 && {
+									completedIntervals: data.done.reduce<CompletionInterval[]>(
+										(acc, [startKm, endKm]) => addInterval(acc, startKm, endKm),
+										[],
+									),
+									progressTrackIds: [],
+									progressPreviewTrackId: null,
+									progressPreviewIntervals: [],
+								}),
+							pendingSharedTrip: null,
+							tripReplaceUndoAt: Date.now(),
+						});
+						flushPersistedStores();
+						return true;
+					},
+					restoreTripBackup: (): boolean => {
+						const backup = readTripBackup();
+						clearTripBackup();
+						if (!backup) {
+							set({ tripReplaceUndoAt: null });
+							return false;
+						}
+						set({
+							...backup,
+							journalHighlightEntryId: null,
+							journalPreview: null,
+							progressPreviewTrackId: null,
+							progressPreviewIntervals: [],
+							tripReplaceUndoAt: null,
+						});
+						flushPersistedStores();
+						return true;
+					},
+					tripReplaceUndoAt: null,
+					dismissTripReplaceUndo: (): void => {
+						// The backup only serves the undo offer.
+						clearTripBackup();
+						set({ tripReplaceUndoAt: null });
+					},
 
 					userWaypoints: [],
 					addUserWaypoint: (wp): void => {
@@ -1744,13 +1932,6 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 							),
 						});
 					},
-					importStarredPoisFromShare: (poiIds: string[]): void => {
-						const colId = newId();
-						set({
-							starredPoiCollections: [{ id: colId, name: DEFAULT_STARRED_COLLECTION_NAME, poiIds: [...poiIds] }],
-							activeStarredCollectionId: colId,
-						});
-					},
 					pendingOpenPoiId: null,
 					requestOpenPoi: (id: string): void => {
 						set({ pendingOpenPoiId: id });
@@ -1871,6 +2052,8 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 						contourOverlayEnabled: state.contourOverlayEnabled,
 						mapAppearance: state.mapAppearance,
 						shareShortLinks: state.shareShortLinks,
+						shareIncludeTripState: state.shareIncludeTripState,
+						shareTripStateParts: state.shareTripStateParts,
 						includeRemotePois: state.includeRemotePois,
 						userWaypoints: demoSnapshot ? demoSnapshot.userWaypoints : state.userWaypoints,
 						lastWaypointCategory: state.lastWaypointCategory,
@@ -1947,6 +2130,16 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					merged.poiNotes = sanitizePoiNotes((persistedState as { poiNotes?: unknown })?.poiNotes);
 					// Reject a corrupt persisted nav target so the HUD never renders garbage coords.
 					merged.navTarget = sanitizeNavTarget((persistedState as { navTarget?: unknown })?.navTarget);
+					// Share options: a non-boolean part falls back to its default.
+					const rawParts = (persistedState as { shareTripStateParts?: Record<string, unknown> })?.shareTripStateParts;
+					merged.shareTripStateParts = {
+						waypoints:
+							typeof rawParts?.waypoints === 'boolean' ? rawParts.waypoints : DEFAULT_SHARE_TRIP_STATE_PARTS.waypoints,
+						progress:
+							typeof rawParts?.progress === 'boolean' ? rawParts.progress : DEFAULT_SHARE_TRIP_STATE_PARTS.progress,
+						journal: typeof rawParts?.journal === 'boolean' ? rawParts.journal : DEFAULT_SHARE_TRIP_STATE_PARTS.journal,
+					};
+					merged.shareIncludeTripState = merged.shareIncludeTripState === true;
 					// Drop pre-hike checklist entries that are not booleans or whose key is
 					// not a known checklist item, so a hand-edited or renamed key can never
 					// accumulate orphaned entries in localStorage. Keep the key set in sync

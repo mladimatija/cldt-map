@@ -254,6 +254,13 @@
 		"shareQrLabel": "Codice QR per il link di condivisione",
 		"shareQrShortNote": "Link breve mostrato (scade dopo 90 giorni).",
 		"shareQrLongFallback": "Il link completo è nel codice QR. I link brevi richiedono connessione internet.",
+		"shareIncludeTrip": "Includi il mio piano di viaggio",
+		"shareIncludeTripHint": "Aggiunge il tuo piano delle tappe e i luoghi preferiti. Chi apre il link sceglie se importare qualcosa.",
+		"shareIncludeWaypoints": "I miei punti",
+		"shareIncludeProgress": "Sezioni completate",
+		"shareIncludeJournal": "Voci del diario",
+		"shareTripStoredNote": "Con i link brevi, questi dati di viaggio restano su map.cldt.hr per 90 giorni.",
+		"shareCreateTripLink": "Crea link breve",
 		"copyLink": "Copia link",
 		"cancel": "Annulla",
 		"borderOfCroatia": "Confine della Croazia",
@@ -1640,5 +1647,24 @@
 				"body": "Tieni premuto il pulsante SOS rosso per informazioni di emergenza offline, le coordinate esatte e una scorciatoia per chiamare il 112."
 			}
 		}
+	},
+	"shareImport": {
+		"title": "Dati di viaggio in questo link",
+		"body": "Con questo link sono stati condivisi dati di viaggio. Sulla tua mappa non è ancora cambiato nulla. Puoi guardare la mappa senza importare, aggiungere i dati ai tuoi o sostituire i tuoi dati di viaggio.",
+		"summaryStages": "{count, plural, one {Piano delle tappe di # giorno} other {Piano delle tappe di # giorni}}",
+		"summaryWaypoints": "{count, plural, one {# punto} other {# punti}}",
+		"summaryJournal": "{count, plural, one {# voce del diario} other {# voci del diario}}",
+		"summaryProgress": "Sezioni completate: {distance}",
+		"summaryStars": "{count, plural, one {# luogo preferito} other {# luoghi preferiti}}",
+		"includeProgress": "Importa anche le sezioni completate",
+		"view": "Guarda senza importare",
+		"add": "Aggiungi alla mia mappa",
+		"replace": "Sostituisci i miei dati di viaggio",
+		"addKeepsPlan": "Aggiungendo mantieni il tuo piano delle tappe; sostituendo usi quello condiviso.",
+		"replaceNote": "Sostituisci scambia i tuoi dati con quelli del link, solo per i tipi di dati che il link contiene. Prima viene salvato un backup, così puoi annullare.",
+		"replaceFailed": "Impossibile salvare un backup su questo dispositivo, quindi non è stato sostituito nulla.",
+		"sharedCollectionName": "Condivisi",
+		"replacedToast": "I tuoi dati di viaggio sono stati sostituiti con quelli condivisi.",
+		"undo": "Annulla"
 	}
 }

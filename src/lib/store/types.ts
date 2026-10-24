@@ -493,6 +493,30 @@ export interface MapStoreState {
 	shareCopyToast: ShareCopyToast | null;
 	showShareCopyToast: (feedback: { status: 'success' | 'error'; short: boolean }) => void;
 	clearShareCopyToast: () => void;
+	/** Links from the share panel carry the stage plan and starred places, plus
+	 *  the parts in shareTripStateParts. Off by default; POI links never carry
+	 *  trip data and waypoint links only the shared waypoint. Persisted. */
+	shareIncludeTripState: boolean;
+	setShareIncludeTripState: (enabled: boolean) => void;
+	shareTripStateParts: ShareTripStatePartsSetting;
+	setShareTripStateParts: (parts: ShareTripStatePartsSetting) => void;
+	/** Trip data from an opened share link, waiting for the import dialog. Session-only. */
+	pendingSharedTrip: PendingSharedTrip | null;
+	setPendingSharedTrip: (pending: PendingSharedTrip | null) => void;
+	/** Add shared trip data to the local data in one write: waypoints and
+	 *  journal entries deduplicated, starred places as a new collection, the
+	 *  stage plan only when there is none, progress only when asked. */
+	mergeTripData: (data: SharedTripData, options: SharedTripImportOptions) => void;
+	/** Back up the local trip data, then replace it with shared trip data in one
+	 *  write (progress only when asked) and offer an undo. False, with nothing
+	 *  replaced, when the backup cannot be saved. */
+	replaceTripData: (data: SharedTripData, options: SharedTripImportOptions) => boolean;
+	/** Restore the backup replaceTripData saved. False when there is none. */
+	restoreTripBackup: () => boolean;
+	/** When replaceTripData last ran while its undo is offered (restarts the
+	 *  offer's timer); null when there is no undo. Session-only. */
+	tripReplaceUndoAt: number | null;
+	dismissTripReplaceUndo: () => void;
 
 	/** Personal map annotations (long-press to add). Persisted. */
 	userWaypoints: UserWaypoint[];
@@ -819,8 +843,6 @@ export interface MapStoreState {
 	deleteStarredPoiCollection: (id: string) => void;
 	toggleStarredPoi: (id: string) => void;
 	clearStarredPois: () => void;
-	/** Replace all starred collections with one default list (share URL import). */
-	importStarredPoisFromShare: (poiIds: string[]) => void;
 	/** POI id the renderer should fly to and open the popup for on the next
 	 *  effect tick. Set by panels that want to surface a POI on the map
 	 *  (e.g. the stage planner places list); cleared by PoiMarkers after
@@ -849,6 +871,36 @@ export interface MapStoreState {
 	setSeasonalStatusModalEntry: (entry: SeasonalStatusEntry | null) => void;
 	seasonalStatusHoveredEntryId: string | null;
 	setSeasonalStatusHoveredEntryId: (id: string | null) => void;
+}
+
+/** Optional trip parts the share panel adds when shareIncludeTripState is on. */
+export interface ShareTripStatePartsSetting {
+	waypoints: boolean;
+	progress: boolean;
+	journal: boolean;
+}
+
+/** Trip data decoded from a share link (trail km in SOBO), ready to import. */
+export interface SharedTripData {
+	stagePlan: StagePlan | null;
+	waypoints: UserWaypoint[];
+	journal: JournalEntry[];
+	/** Completed [startKm, endKm] ranges. */
+	done: [number, number][];
+	/** Starred POI ids. */
+	stars: string[];
+}
+
+export interface PendingSharedTrip {
+	data: SharedTripData;
+	/** Waypoint a `wp` link points at; opened after an import that adds it. */
+	focusWaypointId?: string;
+}
+
+export interface SharedTripImportOptions {
+	includeProgress: boolean;
+	/** Name of the collection that receives the shared starred places. */
+	sharedCollectionName: string;
 }
 
 export interface StagePlan {

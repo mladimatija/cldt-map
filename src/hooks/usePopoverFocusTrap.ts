@@ -6,10 +6,13 @@ const FOCUSABLE_SELECTOR = 'button, [href], input, select, textarea, [tabindex]:
 
 /**
  * Returns a ref to attach to a popover/dialog container. When `isOpen` is true:
- * - Focuses the first focusable element inside the container.
+ * - Focuses `initialFocusRef` when given, else the first focusable element inside the container.
  * - Traps Tab/Shift+Tab so focus stays within the container (for keyboard accessibility).
  */
-export function usePopoverFocusTrap(isOpen: boolean): RefObject<HTMLDivElement | null> {
+export function usePopoverFocusTrap(
+	isOpen: boolean,
+	initialFocusRef?: RefObject<HTMLElement | null>,
+): RefObject<HTMLDivElement | null> {
 	const popoverRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
@@ -20,7 +23,7 @@ export function usePopoverFocusTrap(isOpen: boolean): RefObject<HTMLDivElement |
 		const focusables = el.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR);
 		const first = focusables[0];
 		const last = focusables[focusables.length - 1];
-		first?.focus();
+		(initialFocusRef?.current ?? first)?.focus();
 
 		const handleKeyDown = (e: KeyboardEvent): void => {
 			if (e.key !== 'Tab') return;
@@ -39,7 +42,7 @@ export function usePopoverFocusTrap(isOpen: boolean): RefObject<HTMLDivElement |
 		};
 		el.addEventListener('keydown', handleKeyDown);
 		return () => el.removeEventListener('keydown', handleKeyDown);
-	}, [isOpen]);
+	}, [isOpen, initialFocusRef]);
 
 	return popoverRef;
 }

@@ -14,6 +14,7 @@ import {
 	isSafeUrl,
 	openCoordinatesInMaps,
 } from '@/lib/utils';
+import { flyToOrSetView } from '@/lib/map-view';
 import { usePathname, useRouter } from '@/i18n/navigation';
 import { wirePopupShareButton } from '@/lib/share-link-copy';
 import { newId, todayIsoDate } from '@/lib/user-waypoints';
@@ -452,8 +453,7 @@ export function PoiMarkers(): null {
 	const flyAndOpenPoi = useCallback(
 		(target: { id: string; lat: number; lng: number }) => {
 			const targetZoom = Math.max(map.getZoom(), CLUSTER_MAX_ZOOM + 1);
-			map.flyTo([target.lat, target.lng], targetZoom, { duration: 0.6 });
-			map.once('moveend', () => {
+			flyToOrSetView(map, [target.lat, target.lng], targetZoom, { duration: 0.6 }, () => {
 				// Let marker re-render finish after the zoom before polling.
 				requestAnimationFrame(() => {
 					requestAnimationFrame(() => {

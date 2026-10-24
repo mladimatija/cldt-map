@@ -23,6 +23,8 @@ interface MapControlModalShellProps {
 	showCloseButton?: boolean;
 	closeLabel?: string;
 	backdropClassName?: string;
+	/** Element to focus on open instead of the first focusable one. */
+	initialFocusRef?: React.RefObject<HTMLElement | null>;
 }
 
 /**
@@ -42,8 +44,9 @@ export function MapControlModalShell({
 	showCloseButton = true,
 	closeLabel,
 	backdropClassName,
+	initialFocusRef,
 }: MapControlModalShellProps): React.ReactElement | null {
-	const cardRef = usePopoverFocusTrap(open);
+	const cardRef = usePopoverFocusTrap(open, initialFocusRef);
 
 	useEffect(() => {
 		if (!open) return;

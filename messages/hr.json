@@ -254,6 +254,13 @@
 		"shareQrLabel": "QR kod za poveznicu dijeljenja",
 		"shareQrShortNote": "Prikazana kratka poveznica (istječe za 90 dana).",
 		"shareQrLongFallback": "Puna poveznica je u QR kodu. Kratke poveznice trebaju internetsku vezu.",
+		"shareIncludeTrip": "Uključi moj plan putovanja",
+		"shareIncludeTripHint": "Dodaje vaš plan etapa i označena mjesta. Osoba koja otvori poveznicu bira hoće li išta uvesti.",
+		"shareIncludeWaypoints": "Moje točke",
+		"shareIncludeProgress": "Završene dionice",
+		"shareIncludeJournal": "Zapisi dnevnika",
+		"shareTripStoredNote": "Uz kratke poveznice ovi se podaci o putovanju spremaju na map.cldt.hr 90 dana.",
+		"shareCreateTripLink": "Izradi kratku poveznicu",
 		"copyLink": "Kopiraj poveznicu",
 		"cancel": "Odustani",
 		"borderOfCroatia": "Granica Hrvatske",
@@ -1640,5 +1647,24 @@
 				"body": "Držite crveni SOS gumb za offline hitne informacije, točne koordinate i prečac za poziv 112."
 			}
 		}
+	},
+	"shareImport": {
+		"title": "Podaci o putovanju u ovoj poveznici",
+		"body": "Netko je ovom poveznicom podijelio podatke o putovanju. Na vašoj karti još se ništa nije promijenilo. Možete pogledati kartu bez uvoza, dodati podatke svojima ili njima zamijeniti svoje podatke o putovanju.",
+		"summaryStages": "{count, plural, one {Plan etapa: # dan} few {Plan etapa: # dana} other {Plan etapa: # dana}}",
+		"summaryWaypoints": "{count, plural, one {# točka} few {# točke} other {# točaka}}",
+		"summaryJournal": "{count, plural, one {# zapis dnevnika} few {# zapisa dnevnika} other {# zapisa dnevnika}}",
+		"summaryProgress": "Završene dionice: {distance}",
+		"summaryStars": "{count, plural, one {# označeno mjesto} few {# označena mjesta} other {# označenih mjesta}}",
+		"includeProgress": "Uvezi i završene dionice",
+		"view": "Pogledaj bez uvoza",
+		"add": "Dodaj na moju kartu",
+		"replace": "Zamijeni moje podatke o putovanju",
+		"addKeepsPlan": "Dodavanje zadržava vaš plan etapa; zamjena koristi podijeljeni.",
+		"replaceNote": "Zamjena mijenja vaše podatke onima iz poveznice, samo za vrste podataka koje poveznica sadrži. Prvo se sprema sigurnosna kopija, pa zamjenu možete poništiti.",
+		"replaceFailed": "Sigurnosnu kopiju nije bilo moguće spremiti na ovom uređaju, pa ništa nije zamijenjeno.",
+		"sharedCollectionName": "Podijeljeno",
+		"replacedToast": "Vaši podaci o putovanju zamijenjeni su podijeljenima.",
+		"undo": "Poništi"
 	}
 }

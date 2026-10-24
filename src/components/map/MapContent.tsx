@@ -21,6 +21,7 @@ import { usePanelListeners } from '@/hooks';
 import { useWakeLock } from '@/hooks/useWakeLock';
 import { ShareCopyToast } from '@/components/map/ShareCopyToast';
 import { TileDownloadCompleteToast } from '@/components/map/TileDownloadCompleteToast';
+import { TripReplaceUndoToast } from '@/components/map/TripReplaceUndoToast';
 import { MapAppearanceFilter } from '@/components/map/MapAppearanceFilter';
 import { ErrorBoundary } from '@/components/common/ErrorBoundary';
 import { Button } from '@/components/ui/Button';
@@ -38,6 +39,10 @@ const LocationControls = dynamic(() => import('@/components/map/controls/MapCont
 const BaseMapSelector = dynamic(() => import('@/components/map/BaseMapSelector'), { ssr: false });
 const MapMarkers = dynamic(() => import('@/components/map/MapMarkers'), { ssr: false });
 const ShareUrlHandler = dynamic(() => import('@/components/map/ShareUrlHandler'), { ssr: false });
+const ShareTripImportDialog = dynamic(
+	() => import('@/components/map/ShareTripImportDialog').then((m) => ({ default: m.ShareTripImportDialog })),
+	{ ssr: false },
+);
 const ElevationChart = dynamic(() => import('@/components/charts/ElevationChart'), { ssr: false });
 const RulerHint = dynamic(() => import('@/components/map/controls/RulerHint').then((m) => ({ default: m.RulerHint })), {
 	ssr: false,
@@ -292,6 +297,9 @@ export default function MapContent(): React.ReactElement {
 			<MapLayerBoundary name="TileDownloadCompleteToast">
 				<TileDownloadCompleteToast />
 			</MapLayerBoundary>
+			<MapLayerBoundary name="TripReplaceUndoToast">
+				<TripReplaceUndoToast />
+			</MapLayerBoundary>
 			<MapLayerBoundary name="GpxImportDropzone">
 				<GpxImportDropzone />
 			</MapLayerBoundary>
@@ -308,6 +316,9 @@ export default function MapContent(): React.ReactElement {
 			)}
 			<MapLayerBoundary name="ShareUrlHandler">
 				<ShareUrlHandler />
+			</MapLayerBoundary>
+			<MapLayerBoundary name="ShareTripImportDialog">
+				<ShareTripImportDialog />
 			</MapLayerBoundary>
 			<MapLayerBoundary name="BaseMapSelector">
 				<BaseMapSelector />

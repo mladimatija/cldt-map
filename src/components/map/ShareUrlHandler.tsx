@@ -12,13 +12,14 @@ import {
 	type ShareUrlParams,
 } from '@/lib/utils';
 import {
-	applyShareTripState,
 	normalizeShareTripStateToSobo,
-	shareTripStateNeedsTrailLength,
+	parseShareTripState,
+	sharedTripHasData,
 	type ShareTripStatePayload,
 } from '@/lib/share-trip-state';
 import { findNearestPointIndex } from '@/lib/distance-utils';
 import { toSoboM, toSoboRange } from '@/lib/trail-frame';
+import { flyToOrSetView } from '@/lib/map-view';
 import {
 	useMapStore,
 	useStore,
@@ -43,9 +44,9 @@ export default function ShareUrlHandler(): null {
 	const viewAppliedRef = useRef(false);
 	const tooltipAppliedRef = useRef(false);
 	const urlClearedRef = useRef(false);
-	/** Trip state applied once the trail has loaded: an older (version 1)
-	 *  northbound link needs the trail length, and a pending one-time km
-	 *  migration of the local data must run before the link's data lands. */
+	/** Trip state from the link, offered for import once the trail has loaded:
+	 *  an older (version 1) northbound link needs the trail length, and a
+	 *  pending one-time km migration of the local data runs first. */
 	const pendingTripStateRef = useRef<{ payload: ShareTripStatePayload; linkDirection: TrailDirection } | null>(null);
 	const highlightTrailPosition = useStore((state: StoreState) => state.highlightTrailPosition);
 	const clearTrailHighlight = useStore((state: StoreState) => state.clearTrailHighlight);
@@ -70,15 +71,11 @@ export default function ShareUrlHandler(): null {
 		if (!params) return;
 		applyShareMapStyleParams(params);
 		if (params.tripState) {
-			const linkDirection = params.dir ?? useMapStore.getState().direction;
-			if (
-				shareTripStateNeedsTrailLength(params.tripState, linkDirection) ||
-				useMapStore.getState().kmFrameMigration !== null
-			) {
-				pendingTripStateRef.current = { payload: params.tripState, linkDirection };
-			} else {
-				applyShareTripState(normalizeShareTripStateToSobo(params.tripState, linkDirection, 0));
-			}
+			// Never applied silently: the import dialog asks once the trail is ready.
+			pendingTripStateRef.current = {
+				payload: params.tripState,
+				linkDirection: params.dir ?? useMapStore.getState().direction,
+			};
 		}
 		if (params.dir && params.dir !== useMapStore.getState().direction) {
 			setDirection(params.dir);
@@ -89,16 +86,30 @@ export default function ShareUrlHandler(): null {
 		}
 	}, [clearShareUrl, setDirection]);
 
-	// Deferred trip state: mirror older local data first (a no-op once done), so
-	// the link's data is not mirrored with it, then convert older northbound
-	// links from km from Prevlaka to SOBO km.
+	// Offer the link's trip state for import: mirror older local data first (a
+	// no-op once done) so the two never mix frames, convert older northbound
+	// links from km from Prevlaka to SOBO km, then hand it to the dialog.
 	useEffect(() => {
 		const pending = pendingTripStateRef.current;
 		if (!pending || !gpxLoaded || !enhancedTrailPoints?.length) return;
 		pendingTripStateRef.current = null;
 		const totalKm = enhancedTrailPoints[enhancedTrailPoints.length - 1].distanceFromStart / 1000;
 		useMapStore.getState().applyKmFrameMigration?.(totalKm);
-		applyShareTripState(normalizeShareTripStateToSobo(pending.payload, pending.linkDirection, totalKm));
+		const data = parseShareTripState(normalizeShareTripStateToSobo(pending.payload, pending.linkDirection, totalKm));
+		if (!sharedTripHasData(data)) return;
+		const store = useMapStore.getState();
+		// The demo is a sandbox over the real data; nothing is imported into it.
+		if (store.demoModeActive) return;
+		const focusWaypointId = shareParamsRef.current?.wp;
+		// A waypoint link whose waypoints are all already here just opens its popup.
+		const onlyKnownWaypoints =
+			data.stagePlan === null &&
+			data.journal.length === 0 &&
+			data.done.length === 0 &&
+			data.stars.length === 0 &&
+			data.waypoints.every((wp) => store.userWaypoints.some((own) => own.id === wp.id));
+		if (focusWaypointId && onlyKnownWaypoints) return;
+		store.setPendingSharedTrip({ data, ...(focusWaypointId && { focusWaypointId }) });
 	}, [gpxLoaded, enhancedTrailPoints]);
 
 	// Fly the map to the shared view / progress point and strip share params from the URL.
@@ -125,7 +136,7 @@ export default function ShareUrlHandler(): null {
 			if (hasLatLngView) {
 				popupLatLng = [params.lat!, params.lng!];
 				const zoom = params.zoom ?? map.getZoom();
-				map.flyTo(popupLatLng, zoom, { duration: 0.5 });
+				flyToOrSetView(map, popupLatLng, zoom, { duration: 0.5 });
 			}
 
 			const totalM = enhancedTrailPoints.length
@@ -137,7 +148,7 @@ export default function ShareUrlHandler(): null {
 				const closest = enhancedTrailPoints[findNearestPointIndex(enhancedTrailPoints, targetSoboM)];
 				popupLatLng = [closest.lat, closest.lng];
 				const zoom = params.zoom ?? Math.max(map.getZoom(), 12);
-				map.flyTo(popupLatLng, zoom, { duration: 0.5 });
+				flyToOrSetView(map, popupLatLng, zoom, { duration: 0.5 });
 				highlightTrailPosition?.({ distance: closest.distanceFromStart });
 				setTooltipPinnedFromShare?.(true);
 				tooltipAppliedRef.current = true;

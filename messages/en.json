@@ -254,6 +254,13 @@
 		"shareQrLabel": "QR code for the share link",
 		"shareQrShortNote": "Short link shown (90-day expiry).",
 		"shareQrLongFallback": "Full link is encoded in the QR code. Short links need an internet connection.",
+		"shareIncludeTrip": "Include my trip plan",
+		"shareIncludeTripHint": "Adds your stage plan and starred places. The person who opens the link chooses whether to import anything.",
+		"shareIncludeWaypoints": "My waypoints",
+		"shareIncludeProgress": "Completed sections",
+		"shareIncludeJournal": "Journal entries",
+		"shareTripStoredNote": "With short links on, this trip data is stored on map.cldt.hr for 90 days.",
+		"shareCreateTripLink": "Create short link",
 		"copyLink": "Copy link",
 		"cancel": "Cancel",
 		"borderOfCroatia": "Border of Croatia",
@@ -1640,5 +1647,24 @@
 				"body": "Hold the red SOS button for offline emergency info, your exact coordinates, and a 112 call shortcut."
 			}
 		}
+	},
+	"shareImport": {
+		"title": "Trip data in this link",
+		"body": "Someone shared trip data with this link. Nothing on your map has changed yet. You can look at the map without importing, add the data to your own, or replace your trip data with it.",
+		"summaryStages": "{count, plural, one {Stage plan with # day} other {Stage plan with # days}}",
+		"summaryWaypoints": "{count, plural, one {# waypoint} other {# waypoints}}",
+		"summaryJournal": "{count, plural, one {# journal entry} other {# journal entries}}",
+		"summaryProgress": "Completed sections: {distance}",
+		"summaryStars": "{count, plural, one {# starred place} other {# starred places}}",
+		"includeProgress": "Also import completed sections",
+		"view": "View without importing",
+		"add": "Add to my map",
+		"replace": "Replace my trip data",
+		"addKeepsPlan": "Adding keeps your own stage plan; replacing uses the shared one.",
+		"replaceNote": "Replace swaps your data for the link's, only for the kinds of data the link carries. A backup is saved first, so you can undo it.",
+		"replaceFailed": "Could not save a backup on this device, so nothing was replaced.",
+		"sharedCollectionName": "Shared",
+		"replacedToast": "Your trip data was replaced with the shared data.",
+		"undo": "Undo"
 	}
 }

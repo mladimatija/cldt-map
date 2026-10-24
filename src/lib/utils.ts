@@ -632,7 +632,6 @@ export function buildShareViewUrl(
 	url.searchParams.set('lng', params.lng.toFixed(5));
 	url.searchParams.set('zoom', String(params.zoom));
 	appendShareStyleParams(url, params);
-	appendShareTripStateToUrl(url);
 	return url.toString();
 }
 
@@ -655,7 +654,6 @@ export function buildShareProgressUrl(
 		url.searchParams.set('zoom', String(params.zoom));
 	}
 	appendShareStyleParams(url, { ...params, direction: params.direction });
-	appendShareTripStateToUrl(url);
 	return url.toString();
 }
 
@@ -753,7 +751,8 @@ export function parseShareUrlParams(): ShareUrlParams | null {
 /** Build a deep-link URL that points to a specific POI by id. The handler
  *  on load uses the id to look up the POI in the dataset, fly the map to its
  *  coordinates, and open its popup. Merges the current map style from the
- *  store so the recipient sees the same layers the sharer had enabled. */
+ *  store so the recipient sees the same layers the sharer had enabled. Never
+ *  carries trip data: the POI is public, the sender's plan and notes are not. */
 export function buildPoiShareUrl(poiId: string): string {
 	if (typeof window === 'undefined') return '';
 	const url = new URL(getShareBaseUrl());
@@ -761,19 +760,18 @@ export function buildPoiShareUrl(poiId: string): string {
 	// Recipients must see POI markers for the deep link to open the popup.
 	url.searchParams.set('pois', '1');
 	url.searchParams.set('poi', poiId);
-	appendShareTripStateToUrl(url);
 	return url.toString();
 }
 
-/** Build a deep-link URL that points to a personal waypoint by id. Trip-local
- *  waypoints are embedded in the `trip` param so recipients can open the popup
- *  even when the id is not already in their browser storage. */
+/** Build a deep-link URL that points to a personal waypoint by id. Only that
+ *  waypoint rides along in the `trip` param, so recipients can add it and open
+ *  its popup; the rest of the sender's trip data stays private. */
 export function buildWaypointShareUrl(waypointId: string): string {
 	if (typeof window === 'undefined') return '';
 	const url = new URL(getShareBaseUrl());
 	appendShareStyleParams(url, collectShareMapStyleParams());
 	url.searchParams.set('wp', waypointId);
-	appendShareTripStateToUrl(url);
+	appendShareTripStateToUrl(url, { waypoints: true, waypointIds: [waypointId] });
 	return url.toString();
 }
 

@@ -3,6 +3,7 @@ import { BaseMapProvider } from '../services/map-service';
 import { INITIAL_TRAIL_STATE } from './trail-slice';
 import { DEFAULT_POI_TYPES } from '../poi-types';
 import { DEFAULT_MAP_APPEARANCE } from '../map-appearance';
+import { DEFAULT_SHARE_TRIP_STATE_PARTS } from '../share-url-constants';
 
 /**
  * Returns an object matching StoreState with default values and no-op functions for SSR.
@@ -218,6 +219,17 @@ export function createMapStoreStub(): MapStoreState {
 		shareCopyToast: null,
 		showShareCopyToast: noop,
 		clearShareCopyToast: noop,
+		shareIncludeTripState: false,
+		setShareIncludeTripState: noop,
+		shareTripStateParts: { ...DEFAULT_SHARE_TRIP_STATE_PARTS },
+		setShareTripStateParts: noop,
+		pendingSharedTrip: null,
+		setPendingSharedTrip: noop,
+		mergeTripData: noop,
+		replaceTripData: () => false,
+		restoreTripBackup: () => false,
+		tripReplaceUndoAt: null,
+		dismissTripReplaceUndo: noop,
 		userWaypoints: [],
 		addUserWaypoint: noop,
 		updateUserWaypoint: noop,
@@ -409,7 +421,6 @@ export function createMapStoreStub(): MapStoreState {
 		deleteStarredPoiCollection: noop,
 		toggleStarredPoi: noop,
 		clearStarredPois: noop,
-		importStarredPoisFromShare: noop,
 		pendingOpenPoiId: null,
 		requestOpenPoi: noop,
 		clearPendingOpenPoi: noop,

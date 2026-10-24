@@ -254,6 +254,13 @@
 		"shareQrLabel": "QR-Code für den Freigabelink",
 		"shareQrShortNote": "Kurzlink angezeigt (90 Tage gültig).",
 		"shareQrLongFallback": "Der vollständige Link steckt im QR-Code. Kurzlinks brauchen eine Internetverbindung.",
+		"shareIncludeTrip": "Meinen Reiseplan mitsenden",
+		"shareIncludeTripHint": "Fügt Ihren Etappenplan und markierte Orte hinzu. Wer den Link öffnet, entscheidet, ob etwas importiert wird.",
+		"shareIncludeWaypoints": "Meine Wegpunkte",
+		"shareIncludeProgress": "Abgeschlossene Abschnitte",
+		"shareIncludeJournal": "Tagebucheinträge",
+		"shareTripStoredNote": "Mit Kurzlinks werden diese Reisedaten 90 Tage lang auf map.cldt.hr gespeichert.",
+		"shareCreateTripLink": "Kurzlink erstellen",
 		"copyLink": "Link kopieren",
 		"cancel": "Abbrechen",
 		"borderOfCroatia": "Grenze von Kroatien",
@@ -1640,5 +1647,24 @@
 				"body": "Halte den roten SOS-Knopf für Offline-Notfallinfos, deine genauen Koordinaten und einen 112-Anruf-Shortcut."
 			}
 		}
+	},
+	"shareImport": {
+		"title": "Reisedaten in diesem Link",
+		"body": "Mit diesem Link wurden Reisedaten geteilt. Auf Ihrer Karte hat sich noch nichts geändert. Sie können die Karte ohne Import ansehen, die Daten zu Ihren eigenen hinzufügen oder Ihre Reisedaten damit ersetzen.",
+		"summaryStages": "{count, plural, one {Etappenplan mit # Tag} other {Etappenplan mit # Tagen}}",
+		"summaryWaypoints": "{count, plural, one {# Wegpunkt} other {# Wegpunkte}}",
+		"summaryJournal": "{count, plural, one {# Tagebucheintrag} other {# Tagebucheinträge}}",
+		"summaryProgress": "Abgeschlossene Abschnitte: {distance}",
+		"summaryStars": "{count, plural, one {# markierter Ort} other {# markierte Orte}}",
+		"includeProgress": "Auch abgeschlossene Abschnitte importieren",
+		"view": "Ansehen ohne Import",
+		"add": "Zu meiner Karte hinzufügen",
+		"replace": "Meine Reisedaten ersetzen",
+		"addKeepsPlan": "Hinzufügen behält Ihren eigenen Etappenplan; Ersetzen übernimmt den geteilten.",
+		"replaceNote": "Ersetzen tauscht Ihre Daten gegen die aus dem Link, nur für die Arten von Daten, die der Link enthält. Vorher wird eine Sicherung gespeichert, sodass Sie es rückgängig machen können.",
+		"replaceFailed": "Auf diesem Gerät konnte keine Sicherung gespeichert werden, daher wurde nichts ersetzt.",
+		"sharedCollectionName": "Geteilt",
+		"replacedToast": "Ihre Reisedaten wurden durch die geteilten ersetzt.",
+		"undo": "Rückgängig"
 	}
 }

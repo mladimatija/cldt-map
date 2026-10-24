@@ -1,9 +1,11 @@
 /**
  * Encode / decode trip-local state (stage plan, waypoints, journal, completion,
  * starred POIs) into a single compact `trip` query param on share URLs.
+ * Nothing is shared unless the sender opts in, and nothing is applied on the
+ * receiving side without the import dialog (ShareTripImportDialog).
  */
 import { useMapStore } from '@/lib/store';
-import { getActiveStarredPoiIds, type StagePlan, type TrailDirection } from '@/lib/store/types';
+import { getActiveStarredPoiIds, type SharedTripData, type StagePlan, type TrailDirection } from '@/lib/store/types';
 import { SHARE_TARGET_MAX_LEN, SHARE_TRIP_PARAM_KEY } from '@/lib/share-url-constants';
 import { newId, type JournalEntry, type UserWaypoint } from '@/lib/user-waypoints';
 import { normalizeWaypointCategory } from '@/lib/waypoint-categories';
@@ -109,33 +111,48 @@ function encodeJournal(entry: JournalEntry): NonNullable<ShareTripStatePayload['
 	};
 }
 
-/** Read current trip-local fields from the map store. Returns null when empty. */
-export function collectShareTripStateFromStore(): ShareTripStatePayload | null {
+/** Which trip-local parts a link carries. Every part defaults to off. */
+export interface ShareTripStateParts {
+	plan?: boolean;
+	waypoints?: boolean;
+	journal?: boolean;
+	progress?: boolean;
+	stars?: boolean;
+	/** Only these waypoints (a waypoint link carries just the one it opens). */
+	waypointIds?: readonly string[];
+}
+
+/** Read the requested trip-local parts from the map store. Returns null when
+ *  none of them holds anything. */
+export function collectShareTripStateFromStore(parts: ShareTripStateParts = {}): ShareTripStatePayload | null {
 	const state = useMapStore.getState();
 	const payload: ShareTripStatePayload = { v: 2 };
 	let hasAny = false;
 
-	if (state.stagePlan && state.stagePlan.stages.length > 0) {
+	if (parts.plan && state.stagePlan && state.stagePlan.stages.length > 0) {
 		payload.sp = encodeStagePlan(state.stagePlan);
 		hasAny = true;
 	}
-	if (state.userWaypoints.length > 0) {
-		payload.wp = state.userWaypoints.slice(0, MAX_WAYPOINTS).map(encodeWaypoint);
+	const waypoints = parts.waypointIds
+		? state.userWaypoints.filter((wp) => parts.waypointIds!.includes(wp.id))
+		: state.userWaypoints;
+	if (parts.waypoints && waypoints.length > 0) {
+		payload.wp = waypoints.slice(0, MAX_WAYPOINTS).map(encodeWaypoint);
 		hasAny = true;
 	}
-	if (state.journalEntries.length > 0) {
+	if (parts.journal && state.journalEntries.length > 0) {
 		payload.j = state.journalEntries.slice(0, MAX_JOURNAL_ENTRIES).map(encodeJournal);
 		hasAny = true;
 	}
-	if (state.completedIntervals.length > 0) {
+	if (parts.progress && state.completedIntervals.length > 0) {
 		payload.done = state.completedIntervals
 			.slice(0, MAX_DONE_INTERVALS)
 			.map((iv) => [roundKm(iv.startKm), roundKm(iv.endKm)]);
 		hasAny = true;
 	}
 	// Export only the active starred collection as a flat `stars` array so share
-	// URLs stay backward compatible. Import resets to a single default collection.
-	const starred = getActiveStarredPoiIds(state);
+	// URLs stay backward compatible.
+	const starred = parts.stars ? getActiveStarredPoiIds(state) : new Set<string>();
 	if (starred.size > 0) {
 		const stars = [...starred].filter((id) => POI_ID_RE.test(id)).slice(0, MAX_STARS);
 		if (stars.length > 0) {
@@ -207,9 +224,9 @@ function compactPayloadForUrl(payload: ShareTripStatePayload, maxLen: number): S
 	return encoded && encoded.length <= maxLen ? current : null;
 }
 
-/** Append a `trip` param when the store holds shareable trip-local state. */
-export function appendShareTripStateToUrl(url: URL): void {
-	const payload = collectShareTripStateFromStore();
+/** Append a `trip` param carrying the requested parts, when any holds data. */
+export function appendShareTripStateToUrl(url: URL, parts: ShareTripStateParts = {}): void {
+	const payload = collectShareTripStateFromStore(parts);
 	if (!payload) return;
 
 	const maxLen = maxTripParamLen(url);
@@ -222,6 +239,13 @@ export function appendShareTripStateToUrl(url: URL): void {
 	if (encoded.length > maxLen) return;
 
 	url.searchParams.set(SHARE_TRIP_PARAM_KEY, encoded);
+}
+
+/** `href` with a `trip` param for the requested parts (unchanged when empty). */
+export function withShareTripState(href: string, parts: ShareTripStateParts): string {
+	const url = new URL(href);
+	appendShareTripStateToUrl(url, parts);
+	return url.toString();
 }
 
 function parseStagePlan(raw: unknown): StagePlan | null {
@@ -361,7 +385,7 @@ export function parseShareTripStateParam(raw: string | null): ShareTripStatePayl
 }
 
 /** True when applying `payload` needs the trail length first (a northbound version 1 link). */
-export function shareTripStateNeedsTrailLength(payload: ShareTripStatePayload, linkDirection: TrailDirection): boolean {
+function shareTripStateNeedsTrailLength(payload: ShareTripStatePayload, linkDirection: TrailDirection): boolean {
 	return payload.v === 1 && linkDirection === 'NOBO';
 }
 
@@ -401,42 +425,25 @@ export function normalizeShareTripStateToSobo(
 	};
 }
 
-/** Apply decoded trip state to the map store (replaces existing trip-local data).
- *  Expects a version 2 (SOBO km) payload; see normalizeShareTripStateToSobo. */
-export function applyShareTripState(payload: ShareTripStatePayload): void {
-	const store = useMapStore.getState();
+/** Decode a version 2 (SOBO km) payload into trip data for the import
+ *  dialog, dropping anything malformed. See normalizeShareTripStateToSobo. */
+export function parseShareTripState(payload: ShareTripStatePayload): SharedTripData {
+	return {
+		stagePlan: payload.sp ? parseStagePlan(payload.sp) : null,
+		waypoints: payload.wp ? parseWaypoints(payload.wp) : [],
+		journal: payload.j ? parseJournal(payload.j) : [],
+		done: payload.done ? parseDone(payload.done) : [],
+		stars: payload.stars ? parseStars(payload.stars) : [],
+	};
+}
 
-	const stagePlan = payload.sp ? parseStagePlan(payload.sp) : null;
-	if (stagePlan) {
-		store.setStagePlan(stagePlan);
-	}
-
-	const waypoints = payload.wp ? parseWaypoints(payload.wp) : [];
-	for (const wp of [...store.userWaypoints]) {
-		store.removeUserWaypoint(wp.id);
-	}
-	for (const wp of waypoints) {
-		store.addUserWaypoint(wp);
-	}
-
-	const journal = payload.j ? parseJournal(payload.j) : [];
-	for (const entry of [...store.journalEntries]) {
-		store.removeJournalEntry(entry.id);
-	}
-	for (const entry of journal) {
-		store.addJournalEntry(entry);
-	}
-
-	if (payload.done) {
-		store.clearCompletion();
-		for (const [startKm, endKm] of parseDone(payload.done)) {
-			store.markCompleted(startKm, endKm);
-		}
-	}
-
-	if (payload.stars) {
-		// Drop every existing collection so multi-list state cannot drift from the
-		// flat `stars` array in the URL (export carries the active list only).
-		store.importStarredPoisFromShare(parseStars(payload.stars));
-	}
+/** True when decoded trip data holds anything to import. */
+export function sharedTripHasData(data: SharedTripData): boolean {
+	return (
+		data.stagePlan !== null ||
+		data.waypoints.length > 0 ||
+		data.journal.length > 0 ||
+		data.done.length > 0 ||
+		data.stars.length > 0
+	);
 }
