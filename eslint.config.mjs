@@ -165,6 +165,23 @@ const eslintConfig = [
 			'no-console': 'off',
 		},
 	},
+	{
+		// Next.js inlines only literal `process.env.NEXT_PUBLIC_*` reads into client
+		// bundles. A computed `process.env[key]` stays a runtime lookup on an empty
+		// object in the browser, so the value silently never arrives.
+		files: ['src/**/*.ts', 'src/**/*.tsx'],
+		rules: {
+			'no-restricted-syntax': [
+				'error',
+				{
+					selector:
+						"MemberExpression[computed=true][object.type='MemberExpression'][object.object.name='process'][object.property.name='env']",
+					message:
+						'Read env vars with a literal process.env.NAME access. Computed process.env[...] reads are not inlined into client bundles.',
+				},
+			],
+		},
+	},
 ];
 
 export default eslintConfig;
