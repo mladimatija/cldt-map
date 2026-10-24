@@ -53,6 +53,8 @@ import { MapControlsEmergencyButton } from './MapControlsEmergencyButton';
 import { MapControlsPoiList } from './MapControlsPoiList';
 import { MapControlsEmergencyPanel } from './MapControlsEmergencyPanel';
 import { prefetchEmergencyData } from '@/lib/emergency-data';
+import { BaseMapProvider } from '@/lib/services/base-map-provider';
+import { DEFAULT_MAP_SERVICES } from '@/lib/services/map-service-config';
 import { fitMapToRulerBounds, waitForTilesLoaded } from '@/lib/export-utils';
 
 function getCroatiaGeoJsonBoundary(): GeoJSON.FeatureCollection {
@@ -97,18 +99,30 @@ function createCroatiaBoundaryLayer(map: L.Map, borderLabel: string): L.GeoJSON 
 	});
 }
 
-function createAndAddTileBoundaryCanvas(map: L.Map, urlTemplate: string): L.TileLayer {
+/**
+ * Swaps the base tile layer for a BoundaryCanvas copy clipped to Croatia. The
+ * copy is built from the provider's own config (URL including any key,
+ * attribution, zoom range, subdomains), not scraped from a rendered tile: the
+ * scraped `.png` pattern missed Esri's `{z}/{y}/{x}` URLs (one tile repeated
+ * everywhere) and dropped query-string keys. Returns null for providers
+ * BoundaryCanvas cannot clip (the Croatia Topo WMS); their plain base layer
+ * stays on the map.
+ */
+function createAndAddTileBoundaryCanvas(map: L.Map, provider: string): L.TileLayer | null {
+	const service = DEFAULT_MAP_SERVICES.find((s) => s.name === provider);
+	if (!service || provider === BaseMapProvider.CROATIA_TOPO) return null;
 	const boundary = getCroatiaGeoJsonBoundary();
 	const BoundaryCanvasCtor = (
 		L.TileLayer as unknown as {
 			BoundaryCanvas: new (url: string, opts: unknown) => L.TileLayer;
 		}
 	).BoundaryCanvas;
-	const layer = new BoundaryCanvasCtor(urlTemplate, {
+	const layer = new BoundaryCanvasCtor(service.url, {
 		boundary,
-		attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-		maxZoom: 19,
-		subdomains: 'abc',
+		attribution: service.attribution,
+		maxZoom: service.maxZoom,
+		minZoom: service.minZoom,
+		...(service.subdomains ? { subdomains: service.subdomains } : {}),
 	});
 	// Only swap out the BASE tile layer (Leaflet's default `tilePane`). Overlay
 	// tile layers in custom panes - radar (radarPane), and any future
@@ -146,7 +160,6 @@ const MapControls: React.FC<MapControlsProps> = ({
 	const map = useMap() as ExtendedMap;
 	const t = useTranslations('mapControls');
 	const [showTilesBoundary, setShowTilesBoundary] = useState(false);
-	const [tileBoundaryReinitKey, setTileBoundaryReinitKey] = useState(0);
 	const precisionContainerRef = useRef<HTMLDivElement>(null);
 	const settingsContainerRef = useRef<HTMLDivElement>(null);
 	const poiListContainerRef = useRef<HTMLDivElement>(null);
@@ -195,6 +208,8 @@ const MapControls: React.FC<MapControlsProps> = ({
 
 	const boundaryLayerRef = useRef<L.GeoJSON | null>(null);
 	const boundaryCanvasLayerRef = useRef<L.TileLayer | null>(null);
+	/** Base-map style the clipped layer was built for; a different style means it is stale. */
+	const boundaryCanvasProviderRef = useRef<string | null>(null);
 
 	const { close: closePanel } = usePanelManager();
 	// All ruler behavior (markers, tooltip, chart bridge, Escape handling)
@@ -216,7 +231,6 @@ const MapControls: React.FC<MapControlsProps> = ({
 	const showTileBoundary = useMapStore((state: MapStoreState) => state.showTileBoundary);
 	const baseMapProvider = useMapStore((state: MapStoreState) => state.baseMapProvider);
 	const gpxLoadFailed = useMapStore((state: MapStoreState) => state.gpxLoadFailed);
-	const prevBaseMapProviderRef = useRef(baseMapProvider);
 	// Pending PNG-export timer; cleared on unmount so a late capture can't run
 	// against a torn-down map container.
 	const pngExportTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -286,20 +300,12 @@ const MapControls: React.FC<MapControlsProps> = ({
 			if (shouldShow) {
 				await import('leaflet-boundary-canvas');
 
-				let baseLayerUrl = document.querySelector('.leaflet-tile-pane img')?.getAttribute('src');
-
-				if (!baseLayerUrl) {
-					baseLayerUrl = 'https://a.tile.openstreetmap.org/0/0/0.png';
-				}
-
-				const urlTemplate = baseLayerUrl
-					.replace(/\/\d+\/\d+\/\d+\.png.*$/, '/{z}/{x}/{y}.png')
-					.replace(/^https?:\/\/[a-z]\./, 'https://{s}.');
-
 				if (boundaryCanvasLayerRef.current) {
 					boundaryCanvasLayerRef.current.addTo(map);
 				} else if ((L.TileLayer as unknown as { BoundaryCanvas?: unknown }).BoundaryCanvas) {
-					boundaryCanvasLayerRef.current = createAndAddTileBoundaryCanvas(map, urlTemplate);
+					const provider = useMapStore.getState().baseMapProvider;
+					boundaryCanvasLayerRef.current = createAndAddTileBoundaryCanvas(map, provider);
+					boundaryCanvasProviderRef.current = provider;
 				}
 			} else {
 				if (boundaryCanvasLayerRef.current) {
@@ -485,25 +491,19 @@ const MapControls: React.FC<MapControlsProps> = ({
 		return () => clearTimeout(boundaryTimerId);
 	}, [direction, units, showBoundary, map, t]);
 
-	// When the base map provider changes while tile boundary is active, the old BoundaryCanvas
-	// layer is removed by BaseMapSelector's handleMapChange (which removes all TileLayers).
-	// The ref is stale (non-null but off the map), so the init effect below early-returns.
-	// Clear the stale ref and increment the reinit key to force re-initialization with the new tile URL.
+	// Builds the clipped layer on load and again after every base-map switch.
+	// BaseMapSelector drops every base tile layer (the clipped one included) when
+	// the style changes, so a layer built for another style is stale; remove it in
+	// case the style changed through a path that left it on the map.
 	useEffect(() => {
-		if (prevBaseMapProviderRef.current === baseMapProvider) {
-			prevBaseMapProviderRef.current = baseMapProvider;
+		if (!showTileBoundary) {
 			return;
 		}
-		prevBaseMapProviderRef.current = baseMapProvider;
-
-		if (showTileBoundary && boundaryCanvasLayerRef.current) {
+		if (boundaryCanvasLayerRef.current && boundaryCanvasProviderRef.current !== baseMapProvider) {
+			map.removeLayer(boundaryCanvasLayerRef.current);
 			boundaryCanvasLayerRef.current = null;
-			setTileBoundaryReinitKey((k) => k + 1);
 		}
-	}, [baseMapProvider, showTileBoundary]);
-
-	useEffect(() => {
-		if (!showTileBoundary || boundaryCanvasLayerRef.current) {
+		if (boundaryCanvasLayerRef.current) {
 			return;
 		}
 
@@ -531,9 +531,10 @@ const MapControls: React.FC<MapControlsProps> = ({
 					return;
 				}
 
-				let baseLayerUrl = document.querySelector('.leaflet-tile-pane img')?.getAttribute('src');
-
-				if (!baseLayerUrl && retryCount < maxRetries) {
+				// Wait until the base layer has rendered a tile, so it is on the map
+				// before the clipped copy replaces it.
+				const baseLayerReady = !!document.querySelector('.leaflet-tile-pane img');
+				if (!baseLayerReady && retryCount < maxRetries) {
 					retryCount++;
 					const delay = 1000 * Math.pow(1.5, retryCount);
 					const id = setTimeout(initTileBoundary, delay);
@@ -541,16 +542,10 @@ const MapControls: React.FC<MapControlsProps> = ({
 					return;
 				}
 
-				if (!baseLayerUrl) {
-					baseLayerUrl = 'https://a.tile.openstreetmap.org/0/0/0.png';
-				}
-
-				const urlTemplate = baseLayerUrl
-					.replace(/\/\d+\/\d+\/\d+\.png.*$/, '/{z}/{x}/{y}.png')
-					.replace(/^https?:\/\/[a-z]\./, 'https://{s}.');
-
 				if ((L.TileLayer as unknown as { BoundaryCanvas?: unknown }).BoundaryCanvas && !cancelled) {
-					boundaryCanvasLayerRef.current = createAndAddTileBoundaryCanvas(map, urlTemplate);
+					const provider = useMapStore.getState().baseMapProvider;
+					boundaryCanvasLayerRef.current = createAndAddTileBoundaryCanvas(map, provider);
+					boundaryCanvasProviderRef.current = provider;
 					if (!cancelled) {
 						setShowTilesBoundary(true);
 					}
@@ -586,7 +581,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 			cancelled = true;
 			clearAllTimeouts();
 		};
-	}, [map, setShowTileBoundary, showTileBoundary, tileBoundaryReinitKey]);
+	}, [map, setShowTileBoundary, showTileBoundary, baseMapProvider]);
 
 	useEffect(() => {
 		try {

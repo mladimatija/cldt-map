@@ -71,6 +71,7 @@ import { normalizePoiNote, sanitizePoiNotes } from '../poi-notes';
 import { sanitizeNavTarget, type NavTarget } from '../nav-target';
 import { isSameTrailOsmTagsDataset } from '../trail-osm-tags';
 import { DEFAULT_MAP_APPEARANCE, type MapAppearance } from '../map-appearance';
+import { isBaseMapProviderAvailable } from '../services/map-service-config';
 
 /** Module-level abort controller for tile downloads - one download at a time. */
 let tilePrecacheAbortController: AbortController | null = null;
@@ -393,7 +394,11 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 						set({ showDistanceMarkers: show });
 					},
 					baseMapProvider: config.baseMapProvider,
-					setBaseMapProvider: (provider: string) => set({ baseMapProvider: provider }),
+					setBaseMapProvider: (provider: string) => {
+						// Share links and stale state can name a style this build cannot show
+						// (Dark without the CARTO key); keep the current style instead.
+						if (isBaseMapProviderAvailable(provider)) set({ baseMapProvider: provider });
+					},
 
 					isMapFullscreen: false,
 					setMapFullscreen: (fullscreen: boolean) => set({ isMapFullscreen: fullscreen }),
@@ -1790,6 +1795,10 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 						...currentState,
 						...(persistedState as Partial<MapStoreState>),
 					};
+					// A style saved before the CARTO key was removed would render only watermarks.
+					if (!isBaseMapProviderAvailable(merged.baseMapProvider)) {
+						merged.baseMapProvider = currentState.baseMapProvider;
+					}
 					// Reject a corrupt, out-of-range, or stale persisted last-known fix so the
 					// emergency panel never renders garbage coordinates or a months-old position.
 					const rawLastKnownFix = (persistedState as { lastKnownFix?: unknown })?.lastKnownFix;

@@ -1,5 +1,15 @@
 import { BaseMapProvider, type BaseMapConfig } from './base-map-provider';
 
+/** CARTO basemaps key. Tile keys are public by design (every tile URL carries
+ *  it); the key is restricted to the production referrer in the CARTO dashboard. */
+const CARTO_BASEMAPS_KEY = (process.env.NEXT_PUBLIC_CARTO_BASEMAPS_KEY ?? '').trim();
+
+/** Without a key CARTO serves only "API key required" watermark tiles, so the
+ *  Dark style is offered only when the key is configured. */
+export function isBaseMapProviderAvailable(provider: string): boolean {
+	return provider !== BaseMapProvider.DARK || CARTO_BASEMAPS_KEY.length > 0;
+}
+
 /** Default base map layer configurations used by MapService. */
 export const DEFAULT_MAP_SERVICES: BaseMapConfig[] = [
 	{
@@ -63,11 +73,13 @@ export const DEFAULT_MAP_SERVICES: BaseMapConfig[] = [
 	},
 	{
 		name: BaseMapProvider.DARK,
-		url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
+		// Keyed URL format from carto.com/basemaps/apikey (no subdomains). CARTO's
+		// terms also ban bulk downloads and device caching beyond 30 days, so this
+		// style is excluded from offline downloads and the service worker cache.
+		url: `https://basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}.png?key=${encodeURIComponent(CARTO_BASEMAPS_KEY)}`,
 		attribution:
 			'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
 		maxZoom: 20,
 		minZoom: 0,
-		subdomains: 'abcd',
 	},
 ];

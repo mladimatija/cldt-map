@@ -1,5 +1,6 @@
 import type { TrailDirection, UnitSystem } from './types';
 import { BaseMapProvider } from './services/base-map-provider';
+import { isBaseMapProviderAvailable } from './services/map-service-config';
 import { DEFAULT_POI_TYPES } from './poi-types';
 import { isUiTextScale, type UiTextScale } from './ui-text-scale';
 import { clampPaceFactor } from './pack-weight';
@@ -62,7 +63,9 @@ function envMapCenter(value: string | undefined, defaultVal: [number, number]): 
 }
 
 function envBaseMapProvider(value: string | undefined, defaultVal: string): string {
-	if (!value || !VALID_BASE_MAP_PROVIDERS.has(value as BaseMapProvider)) return defaultVal;
+	if (!value || !VALID_BASE_MAP_PROVIDERS.has(value as BaseMapProvider) || !isBaseMapProviderAvailable(value)) {
+		return defaultVal;
+	}
 	return value;
 }
 

@@ -206,7 +206,9 @@ export class MapService {
 			attribution,
 			maxZoom,
 			minZoom,
-			subdomains,
+			// Only when set: Leaflet computes a subdomain for every tile, so an
+			// explicit `undefined` would override its default and throw.
+			...(subdomains !== undefined && { subdomains }),
 			bounds,
 			noWrap,
 			detectRetina: true,

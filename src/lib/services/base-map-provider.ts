@@ -13,7 +13,7 @@ export enum BaseMapProvider {
 	/** OpenHikingMap (openmaps.fr) - OpenTopoMap-based style with hiking-specific additions. */
 	OPEN_HIKING_MAP = 'OpenHikingMap',
 	CROATIA_TOPO = 'CroatiaTopo',
-	/** Dark / low-light base layer (CartoDB Dark Matter) for night use. */
+	/** Dark / low-light base layer (CARTO Dark Matter) for night use. Needs NEXT_PUBLIC_CARTO_BASEMAPS_KEY. */
 	DARK = 'Dark',
 }
 

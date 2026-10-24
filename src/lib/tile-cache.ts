@@ -95,9 +95,10 @@ export function getProviderCacheKey(providerName: string): string {
  * pre-fetched. WMS (DGU) is excluded because tile URLs include dynamic params.
  */
 /** Providers whose tile usage policy forbids bulk download / prefetch
- *  (openmaps.fr) or whose terms are restrictive (DGU). They still render
- *  live but are excluded from the offline pre-cache. */
-const NON_PRECACHEABLE_PROVIDERS = new Set(['CroatiaTopo', 'OpenHikingMap']);
+ *  (openmaps.fr, and CARTO for Dark: its basemap terms ban bulk downloads) or
+ *  whose terms are restrictive (DGU). They still render live but are excluded
+ *  from the offline pre-cache. */
+const NON_PRECACHEABLE_PROVIDERS = new Set(['CroatiaTopo', 'OpenHikingMap', 'Dark']);
 
 export function isProviderCacheable(providerName: string): boolean {
 	return providerName in PROVIDER_CACHE_KEY && !NON_PRECACHEABLE_PROVIDERS.has(providerName);

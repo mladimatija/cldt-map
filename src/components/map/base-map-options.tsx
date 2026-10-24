@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { BaseMapProvider } from '@/lib/services/map-service';
+import { isBaseMapProviderAvailable } from '@/lib/services/map-service-config';
 import {
 	FaMap,
 	FaMountain,
@@ -45,7 +46,7 @@ export interface MapOption {
 
 const iconClass = 'h-4 w-4 dark:text-white';
 
-export const mapOptions: MapOption[] = [
+const allMapOptions: MapOption[] = [
 	{
 		id: BaseMapProvider.OPEN_STREET_MAP,
 		name: 'Standard',
@@ -96,7 +97,12 @@ export const mapOptions: MapOption[] = [
 	},
 ];
 
-export const VALID_PROVIDERS = new Set<BaseMapProvider>(Object.values(BaseMapProvider));
+/** Styles offered in the selector: Dark is left out when the CARTO key is missing. */
+export const mapOptions: MapOption[] = allMapOptions.filter((option) => isBaseMapProviderAvailable(option.id));
+
+export const VALID_PROVIDERS = new Set<BaseMapProvider>(
+	Object.values(BaseMapProvider).filter((provider) => isBaseMapProviderAvailable(provider)),
+);
 
 export function resolveProvider(storeValue: string | undefined, fallback: BaseMapProvider): BaseMapProvider {
 	if (storeValue && VALID_PROVIDERS.has(storeValue as BaseMapProvider)) {

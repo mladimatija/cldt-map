@@ -53,15 +53,20 @@ const CORE_ASSETS = [
 	'/data/croatia-boundary-simplified.json',
 ];
 
-// Tile hosts to cache - keyed by substring match
+// Tile hosts to cache - keyed by substring match. CARTO (Dark) is deliberately
+// absent: its basemap terms forbid caching tiles on the device for more than
+// 30 days, so its requests bypass the worker (see the fetch handler) and the
+// browser HTTP cache applies CARTO's own 30-day max-age.
 const TILE_HOSTS = [
     'tile.openstreetmap.org',
     'tile.opentopomap.org',
     'server.arcgisonline.com',
     'tile-cyclosm.openstreetmap.fr',
-    'basemaps.cartocdn.com',
     'geoportal.dgu.hr',
 ];
+
+/** Tile cache from before the CARTO key: it holds only "API key required" watermark tiles. */
+const RETIRED_TILE_CACHES = [TILE_CACHE_PREFIX + 'carto'];
 
 /** Returns true if `hostname` is exactly `allowedHost` or a subdomain of it. */
 function isAllowedHost(hostname, allowedHost) {
@@ -75,7 +80,6 @@ function getTileProviderKey(hostname) {
     if (isAllowedHost(hostname, 'opentopomap.org')) return 'topo';
     if (isAllowedHost(hostname, 'arcgisonline.com')) return 'esri';
     if (hostname.includes('cyclosm')) return 'cyclosm';
-    if (isAllowedHost(hostname, 'cartocdn.com')) return 'carto';
     if (isAllowedHost(hostname, 'geoportal.dgu.hr')) return 'dgu';
     return 'other';
 }
@@ -217,6 +221,7 @@ self.addEventListener('activate', (event) => {
             await Promise.all(
                 cacheNames
                     .filter((name) => {
+                        if (RETIRED_TILE_CACHES.includes(name)) return true;
                         if (name === CACHE_NAME) return false;
                         if (name.startsWith(TILE_CACHE_PREFIX)) return false; // keep per-provider caches
                         if (name.startsWith('cldt-map-')) return true; // delete old versioned caches
@@ -253,6 +258,10 @@ self.addEventListener('fetch', (event) => {
     if (req.method !== 'GET') return;
 
     const url = new URL(req.url);
+
+    // CARTO tiles go straight to the network (no respondWith), so the worker never
+    // stores them; see TILE_HOSTS.
+    if (isAllowedHost(url.hostname, 'cartocdn.com')) return;
 
     // Tile requests: cache-first with per-provider caching
     if (isTileRequest(url)) {
