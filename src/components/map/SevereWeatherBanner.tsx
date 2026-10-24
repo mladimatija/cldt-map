@@ -1,13 +1,12 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useTranslations } from 'next-intl';
 import { useMapStore, type MapStoreState } from '@/lib/store';
 import { pointInPolygon } from '@/lib/point-in-polygon';
-import { resolveSeverity, type SeverityLevel } from '@/lib/severe-weather';
+import { regionWarnings, SEVERITY_ORDER, warningIsCurrent, type SeverityLevel } from '@/lib/severe-weather';
 import { Button } from '@/components/ui/Button';
 import { BANNER_REGION_CLASSES, BANNER_ROW_CLASSES, BANNER_RED_CLASSES } from './banner-styles';
-import type * as GeoJSON from 'geojson';
 
 function quantize(n: number): number {
 	return Math.round(n * 10000) / 10000;
@@ -15,7 +14,8 @@ function quantize(n: number): number {
 
 const DISMISSED_KEY = 'cldt-dismissed-weather-warnings';
 
-const SEVERITY_ORDER: Record<SeverityLevel, number> = { red: 3, orange: 2, yellow: 1 };
+/** Warnings start and end between polls; the banner re-checks this often. */
+const CLOCK_TICK_MS = 60_000;
 
 const SEVERITY_CLASSES: Record<SeverityLevel, string> = {
 	red: BANNER_RED_CLASSES,
@@ -48,17 +48,12 @@ function persistDismissed(id: string): void {
 	}
 }
 
-function getWarningId(feature: GeoJSON.Feature): string {
-	const event = (feature.properties?.event as string) ?? 'unknown';
-	const validUntil = (feature.properties?.validUntil as string) ?? '';
-	return `${event}-${validUntil}`;
-}
-
 interface ActiveWarning {
+	/** The alert id: dismissing it hides it in every county the alert covers. */
+	id: string;
 	severity: SeverityLevel;
 	event: string;
-	id: string;
-	feature: GeoJSON.Feature;
+	regionName: string;
 }
 
 export function SevereWeatherBanner(): React.ReactElement | null {
@@ -69,11 +64,17 @@ export function SevereWeatherBanner(): React.ReactElement | null {
 	const severeWeatherData = useMapStore((s: MapStoreState) => s.severeWeatherData);
 	const [dismissed, setDismissed] = useState<Set<string>>(() => getDismissed());
 
+	const [now, setNow] = useState(() => Date.now());
+	useEffect(() => {
+		const id = window.setInterval(() => setNow(Date.now()), CLOCK_TICK_MS);
+		return () => window.clearInterval(id);
+	}, []);
+
 	const activeWarnings = useMemo((): ActiveWarning[] => {
 		if (!coarseLocationKey || !severeWeatherData?.features) return [];
 
 		const [lat, lng] = coarseLocationKey.split(',').map(Number);
-		const warnings: ActiveWarning[] = [];
+		const byId = new Map<string, ActiveWarning>();
 		const point: [number, number] = [lng, lat];
 
 		for (const feature of severeWeatherData.features) {
@@ -81,15 +82,16 @@ export function SevereWeatherBanner(): React.ReactElement | null {
 			if (geom.type !== 'Polygon' && geom.type !== 'MultiPolygon') continue;
 			if (!pointInPolygon(point, geom)) continue;
 
-			const severity = resolveSeverity(feature);
-			const event = (feature.properties?.event as string) ?? '';
-			const id = getWarningId(feature);
-			warnings.push({ severity, event, id, feature });
+			const regionName = (feature.properties?.regionName as string | undefined) ?? '';
+			// Only warnings in force now: upcoming ones are on the map, expired ones gone.
+			for (const warning of regionWarnings(feature)) {
+				if (!warningIsCurrent(warning, now) || byId.has(warning.id)) continue;
+				byId.set(warning.id, { id: warning.id, severity: warning.severity, event: warning.event, regionName });
+			}
 		}
 
-		warnings.sort((a, b) => SEVERITY_ORDER[b.severity] - SEVERITY_ORDER[a.severity]);
-		return warnings;
-	}, [coarseLocationKey, severeWeatherData]);
+		return [...byId.values()].sort((a, b) => SEVERITY_ORDER[b.severity] - SEVERITY_ORDER[a.severity]);
+	}, [coarseLocationKey, severeWeatherData, now]);
 
 	if (activeWarnings.length === 0) return null;
 
@@ -114,6 +116,7 @@ export function SevereWeatherBanner(): React.ReactElement | null {
 						<span className="font-semibold">{t('bannerPrefix')}</span>
 						<span className="ml-1">{t(SEVERITY_LABELS[w.severity])}</span>
 						{w.event && <span className="ml-1">- {w.event}</span>}
+						{w.regionName && <span className="ml-1">({w.regionName})</span>}
 					</div>
 					{w.severity !== 'red' && (
 						<Button aria-label={t('dismiss')} variant="bannerClose" onClick={() => handleDismiss(w.id)}>
