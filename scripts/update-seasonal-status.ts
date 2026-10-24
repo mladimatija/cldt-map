@@ -32,6 +32,7 @@ import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { haversineDistanceM as haversineMeters } from '../src/lib/haversine';
+import { fetchTrailGpx, loadTrailPoints } from './trail-gpx';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -42,9 +43,9 @@ const SCHEMA_PATH = path.resolve(PROJECT_ROOT, 'public/seasonal-status.schema.js
 const SECTIONS_PATH = path.resolve(PROJECT_ROOT, 'public/sections.json');
 const OUTPUT_PATH = path.resolve(PROJECT_ROOT, 'public/seasonal-status.json');
 
-const SYNTHESIS_MODEL = 'claude-sonnet-4-6';
-const SUMMARY_MODEL = 'claude-sonnet-4-6';
-const CRITIC_MODEL = 'claude-opus-4-7';
+const SYNTHESIS_MODEL = 'claude-sonnet-5-5';
+const SUMMARY_MODEL = 'claude-sonnet-5-5';
+const CRITIC_MODEL = 'claude-opus-5-5';
 const MAX_FETCH_BYTES = 500_000;
 const MAX_SUMMARY_INPUT_CHARS = 30_000;
 const FETCH_TIMEOUT_MS = 30_000;
