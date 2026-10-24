@@ -395,14 +395,10 @@ export function shareParamsNeedMapFollowUp(params: ShareUrlParams): boolean {
 	return false;
 }
 
-/** Skip the default trail fitBounds on load when a share link will fly elsewhere. */
+/** Skip the default trail fitBounds on load when a share link will fly elsewhere.
+ *  Every follow-up except the ruler moves the view away from the whole trail. */
 export function shareParamsSkipInitialTrailFitBounds(params: ShareUrlParams | null): boolean {
-	if (!params) return false;
-	if (params.poi) return true;
-	if (params.wp) return true;
-	if (params.progress !== undefined) return true;
-	if (params.lat !== undefined && params.lng !== undefined) return true;
-	return false;
+	return !!params && shareParamsNeedMapFollowUp({ ...params, rulerRange: undefined });
 }
 
 /** Share URL param keys that we add/remove */
@@ -441,6 +437,24 @@ const VALID_SHARE_TRAIL_STYLES = new Set<ShareTrailStyle>(['default', 'sections'
 function parseShareFlag(value: string | null): boolean | undefined {
 	if (value === null) return undefined;
 	return value === '1';
+}
+
+/** On/off layer flags carried by share links (`1` on, anything else off). */
+const SHARE_FLAG_KEYS = ['pois', 'weather', 'radar', 'distanceMarkers', 'waymarked'] as const;
+
+/** Share-link view bounds: Croatia plus a margin, so a view panned slightly off
+ *  the coast or across a border still opens. Anything else is a broken link. */
+const SHARE_VIEW_BOUNDS = { latMin: 41.5, latMax: 47, lngMin: 12.5, lngMax: 20.5 };
+const SHARE_ZOOM_MIN = 0;
+const SHARE_ZOOM_MAX = 20;
+/** Upper bound for trail distances in share links (the trail is ~2,220 km). */
+const SHARE_MAX_TRAIL_KM = 5000;
+
+/** Strict number parse ("45abc" is rejected, unlike parseFloat) within [min, max]. */
+function parseShareNumber(value: string | null, min: number, max: number): number | undefined {
+	if (value === null || value.trim() === '') return undefined;
+	const n = Number(value);
+	return Number.isFinite(n) && n >= min && n <= max ? n : undefined;
 }
 
 function appendShareStyleParams(url: URL, params: ShareMapStyleParams): void {
@@ -679,23 +693,36 @@ export function parseShareUrlParams(): ShareUrlParams | null {
 	const wp = params.get('wp');
 	const tripState = parseShareTripStateParam(params.get(SHARE_TRIP_PARAM_KEY));
 
+	// Ruler ends are metres from the trail start.
 	let rulerRange: RulerRange | undefined;
 	if (ruler) {
 		const parts = ruler.split(',');
 		if (parts.length === 2) {
-			const a = parseFloat(parts[0]);
-			const b = parseFloat(parts[1]);
-			if (Number.isFinite(a) && Number.isFinite(b) && a >= 0 && b >= 0) {
+			const a = parseShareNumber(parts[0], 0, SHARE_MAX_TRAIL_KM * 1000);
+			const b = parseShareNumber(parts[1], 0, SHARE_MAX_TRAIL_KM * 1000);
+			if (a !== undefined && b !== undefined) {
 				rulerRange = { distanceFromStartA: a, distanceFromStartB: b };
 			}
 		}
 	}
 
+	// A coordinate pair counts only when BOTH parts are valid.
+	const latValue = parseShareNumber(lat, SHARE_VIEW_BOUNDS.latMin, SHARE_VIEW_BOUNDS.latMax);
+	const lngValue = parseShareNumber(lng, SHARE_VIEW_BOUNDS.lngMin, SHARE_VIEW_BOUNDS.lngMax);
+	const zoomValue = parseShareNumber(zoom, SHARE_ZOOM_MIN, SHARE_ZOOM_MAX);
+	const progressValue = parseShareNumber(progress, 0, SHARE_MAX_TRAIL_KM);
+
+	const flags: Partial<Record<(typeof SHARE_FLAG_KEYS)[number], boolean>> = {};
+	for (const key of SHARE_FLAG_KEYS) {
+		const value = parseShareFlag(params.get(key));
+		if (value !== undefined) flags[key] = value;
+	}
+
 	return {
-		...(lat && lng && { lat: parseFloat(lat), lng: parseFloat(lng) }),
-		...(zoom && { zoom: parseFloat(zoom) }),
+		...(latValue !== undefined && lngValue !== undefined && { lat: latValue, lng: lngValue }),
+		...(zoomValue !== undefined && { zoom: zoomValue }),
 		...(dir && (dir === 'NOBO' || dir === 'SOBO') && { dir }),
-		...(progress && { progress: parseFloat(progress) }),
+		...(progressValue !== undefined && { progress: progressValue }),
 		...(unit && (unit === 'km' || unit === 'mi') && { unit }),
 		...(baseMap &&
 			VALID_SHARE_BASE_MAP_KEYS.has(baseMap as ShareBaseMapKey) && {
@@ -707,15 +734,7 @@ export function parseShareUrlParams(): ShareUrlParams | null {
 			}),
 		...(sections !== null && sections !== undefined && { sections: sections === '1' }),
 		...(dark !== null && dark !== undefined && { dark: dark === '1' }),
-		...(parseShareFlag(params.get('pois')) !== undefined && { pois: parseShareFlag(params.get('pois')) }),
-		...(parseShareFlag(params.get('weather')) !== undefined && { weather: parseShareFlag(params.get('weather')) }),
-		...(parseShareFlag(params.get('radar')) !== undefined && { radar: parseShareFlag(params.get('radar')) }),
-		...(parseShareFlag(params.get('distanceMarkers')) !== undefined && {
-			distanceMarkers: parseShareFlag(params.get('distanceMarkers')),
-		}),
-		...(parseShareFlag(params.get('waymarked')) !== undefined && {
-			waymarked: parseShareFlag(params.get('waymarked')),
-		}),
+		...flags,
 		...(rulerRange && { rulerRange }),
 		...(poi && POI_ID_RE.test(poi) && { poi }),
 		...(wp && POI_ID_RE.test(wp) && { wp }),

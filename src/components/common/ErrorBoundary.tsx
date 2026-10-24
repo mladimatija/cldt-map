@@ -8,7 +8,11 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 
 interface Props {
 	children: ReactNode;
+	/** Rendered instead of the children after an error. `null` hides the failed
+	 *  subtree (a map layer that throws disappears). Omit for the full-page card. */
 	fallback?: ReactNode;
+	/** Label for the console error, e.g. the layer name. */
+	name?: string;
 }
 
 interface State {
@@ -16,20 +20,32 @@ interface State {
 	error: Error | null;
 }
 
-function ErrorBoundaryFallback({ error }: { error: Error | null }): React.ReactElement {
+interface ErrorFallbackCardProps {
+	message?: string | null;
+	/** Re-renders the failed segment without a full reload (route error boundaries). */
+	onRetry?: () => void;
+}
+
+/** Full-page "Something went wrong" card shared by ErrorBoundary and the route error boundary. */
+export function ErrorFallbackCard({ message, onRetry }: ErrorFallbackCardProps): React.ReactElement {
 	const t = useTranslations('error');
 	return (
 		<div className="flex min-h-screen items-center justify-center p-4">
 			<Card className="w-full max-w-md">
 				<CardHeader>
 					<CardTitle>{t('somethingWentWrong')}</CardTitle>
-					<CardDescription>{error?.message || t('unexpectedError')}</CardDescription>
+					<CardDescription>{message || t('unexpectedError')}</CardDescription>
 				</CardHeader>
 				<CardContent>
 					<p className="text-muted-foreground text-sm">{t('tryRefreshing')}</p>
 				</CardContent>
-				<CardFooter>
-					<Button size="default" variant="primary" onClick={() => window.location.reload()}>
+				<CardFooter className="gap-2">
+					{onRetry && (
+						<Button size="default" variant="primary" onClick={onRetry}>
+							{t('tryAgain')}
+						</Button>
+					)}
+					<Button size="default" variant={onRetry ? 'base' : 'primary'} onClick={() => window.location.reload()}>
 						{t('refreshPage')}
 					</Button>
 				</CardFooter>
@@ -52,15 +68,15 @@ export class ErrorBoundary extends Component<Props, State> {
 	}
 
 	public componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
-		console.error('Uncaught error:', error, errorInfo);
+		console.error(`Uncaught error${this.props.name ? ` in ${this.props.name}` : ''}:`, error, errorInfo);
 	}
 
 	public render(): ReactNode {
 		if (this.state.hasError) {
-			if (this.props.fallback) {
+			if (this.props.fallback !== undefined) {
 				return this.props.fallback;
 			}
-			return <ErrorBoundaryFallback error={this.state.error} />;
+			return <ErrorFallbackCard message={this.state.error?.message} />;
 		}
 
 		return this.props.children;

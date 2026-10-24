@@ -357,6 +357,7 @@
 		"somethingWentWrong": "Something went wrong",
 		"unexpectedError": "An unexpected error occurred",
 		"tryRefreshing": "Please try refreshing the page or contact support if the problem persists.",
+		"tryAgain": "Try again",
 		"refreshPage": "Refresh Page"
 	},
 	"serviceWorker": {

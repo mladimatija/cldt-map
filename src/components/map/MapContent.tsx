@@ -21,6 +21,8 @@ import { useWakeLock } from '@/hooks/useWakeLock';
 import { ShareCopyToast } from '@/components/map/ShareCopyToast';
 import { TileDownloadCompleteToast } from '@/components/map/TileDownloadCompleteToast';
 import { MapAppearanceFilter } from '@/components/map/MapAppearanceFilter';
+import { ErrorBoundary } from '@/components/common/ErrorBoundary';
+import { Button } from '@/components/ui/Button';
 
 function MapTrailLoadingFallback(): React.ReactElement {
 	const t = useTranslations('mapWrapper');
@@ -135,6 +137,29 @@ const TrailScrubber = dynamic(
 	{ ssr: false },
 );
 
+/** Hides a map layer that throws instead of blanking the whole map; the error
+ *  is still logged by ErrorBoundary. */
+function MapLayerBoundary({ name, children }: { name: string; children: React.ReactNode }): React.ReactElement {
+	return (
+		<ErrorBoundary fallback={null} name={name}>
+			{children}
+		</ErrorBoundary>
+	);
+}
+
+/** Compact stand-in for the control rail when it crashes, so the map stays usable. */
+function MapControlsErrorFallback(): React.ReactElement {
+	const t = useTranslations('error');
+	return (
+		<div className="z-controls absolute top-2 right-2 max-w-60 rounded-md bg-white p-3 text-sm shadow-lg dark:bg-[var(--bg-secondary)] dark:text-[var(--text-primary)]">
+			<p className="mb-2">{t('somethingWentWrong')}</p>
+			<Button size="sm" variant="primary" onClick={() => window.location.reload()}>
+				{t('refreshPage')}
+			</Button>
+		</div>
+	);
+}
+
 export default function MapContent(): React.ReactElement {
 	const [initialLocationFetched, setInitialLocationFetched] = useState(false);
 	const isLocating = useMapStore((state: MapStoreState) => state.isLocating);
@@ -224,50 +249,134 @@ export default function MapContent(): React.ReactElement {
 
 	return (
 		<>
-			<TrailA11yLiveRegion />
-			<MapKeyboardA11y />
-			<DemoBanner />
-			<OfflineIndicator />
-			<StaleCacheNotification />
-			<ShareCopyToast />
-			<TileDownloadCompleteToast />
-			<GpxImportDropzone />
-			<DistanceRemainingOverlay />
-			<NavTargetOverlay />
-			{tourActive && <CoachmarkTour />}
-			<ShareUrlHandler />
-			<BaseMapSelector />
-			<RadarOverlay />
-			<WaymarkedTrailsOverlay />
-			<TerrainOverlays />
-			<MapAppearanceFilter />
+			<MapLayerBoundary name="TrailA11yLiveRegion">
+				<TrailA11yLiveRegion />
+			</MapLayerBoundary>
+			<MapLayerBoundary name="MapKeyboardA11y">
+				<MapKeyboardA11y />
+			</MapLayerBoundary>
+			<MapLayerBoundary name="DemoBanner">
+				<DemoBanner />
+			</MapLayerBoundary>
+			<MapLayerBoundary name="OfflineIndicator">
+				<OfflineIndicator />
+			</MapLayerBoundary>
+			<MapLayerBoundary name="StaleCacheNotification">
+				<StaleCacheNotification />
+			</MapLayerBoundary>
+			<MapLayerBoundary name="ShareCopyToast">
+				<ShareCopyToast />
+			</MapLayerBoundary>
+			<MapLayerBoundary name="TileDownloadCompleteToast">
+				<TileDownloadCompleteToast />
+			</MapLayerBoundary>
+			<MapLayerBoundary name="GpxImportDropzone">
+				<GpxImportDropzone />
+			</MapLayerBoundary>
+			<MapLayerBoundary name="DistanceRemainingOverlay">
+				<DistanceRemainingOverlay />
+			</MapLayerBoundary>
+			<MapLayerBoundary name="NavTargetOverlay">
+				<NavTargetOverlay />
+			</MapLayerBoundary>
+			{tourActive && (
+				<MapLayerBoundary name="CoachmarkTour">
+					<CoachmarkTour />
+				</MapLayerBoundary>
+			)}
+			<MapLayerBoundary name="ShareUrlHandler">
+				<ShareUrlHandler />
+			</MapLayerBoundary>
+			<MapLayerBoundary name="BaseMapSelector">
+				<BaseMapSelector />
+			</MapLayerBoundary>
+			<MapLayerBoundary name="RadarOverlay">
+				<RadarOverlay />
+			</MapLayerBoundary>
+			<MapLayerBoundary name="WaymarkedTrailsOverlay">
+				<WaymarkedTrailsOverlay />
+			</MapLayerBoundary>
+			<MapLayerBoundary name="TerrainOverlays">
+				<TerrainOverlays />
+			</MapLayerBoundary>
+			<MapLayerBoundary name="MapAppearanceFilter">
+				<MapAppearanceFilter />
+			</MapLayerBoundary>
 			<Suspense fallback={<MapTrailLoadingFallback />}>
-				<TrailRoute pathOptions={DEFAULT_PATH_OPTIONS} />
+				<MapLayerBoundary name="TrailRoute">
+					<TrailRoute pathOptions={DEFAULT_PATH_OPTIONS} />
+				</MapLayerBoundary>
 			</Suspense>
-			<SeasonalStatusTrailLayer />
-			<ImportedTrackLayer />
-			<TrailDistanceMarkers />
-			<PoiMarkers />
-			<UserWaypointMarkers />
-			<PoiImageLightbox />
-			<MapMarkers />
-			<SunsetSunriseMarkers />
-			<StageBoundaryMarkers />
-			<NoticeMarkers />
-			<SevereWeatherLayer />
-			<MineAreaLayer />
-			<TrailJunctionLayer />
-			<CompletionOverlay />
-			<ProgressPreviewOverlay />
-			<JournalTrackHighlightOverlay />
-			<MapControls />
-			<RulerHint />
-			<ZoomControls />
-			<LocationControls checkPermission={checkAndRequestLocation} />
+			<MapLayerBoundary name="SeasonalStatusTrailLayer">
+				<SeasonalStatusTrailLayer />
+			</MapLayerBoundary>
+			<MapLayerBoundary name="ImportedTrackLayer">
+				<ImportedTrackLayer />
+			</MapLayerBoundary>
+			<MapLayerBoundary name="TrailDistanceMarkers">
+				<TrailDistanceMarkers />
+			</MapLayerBoundary>
+			<MapLayerBoundary name="PoiMarkers">
+				<PoiMarkers />
+			</MapLayerBoundary>
+			<MapLayerBoundary name="UserWaypointMarkers">
+				<UserWaypointMarkers />
+			</MapLayerBoundary>
+			<MapLayerBoundary name="PoiImageLightbox">
+				<PoiImageLightbox />
+			</MapLayerBoundary>
+			<MapLayerBoundary name="MapMarkers">
+				<MapMarkers />
+			</MapLayerBoundary>
+			<MapLayerBoundary name="SunsetSunriseMarkers">
+				<SunsetSunriseMarkers />
+			</MapLayerBoundary>
+			<MapLayerBoundary name="StageBoundaryMarkers">
+				<StageBoundaryMarkers />
+			</MapLayerBoundary>
+			<MapLayerBoundary name="NoticeMarkers">
+				<NoticeMarkers />
+			</MapLayerBoundary>
+			<MapLayerBoundary name="SevereWeatherLayer">
+				<SevereWeatherLayer />
+			</MapLayerBoundary>
+			<MapLayerBoundary name="MineAreaLayer">
+				<MineAreaLayer />
+			</MapLayerBoundary>
+			<MapLayerBoundary name="TrailJunctionLayer">
+				<TrailJunctionLayer />
+			</MapLayerBoundary>
+			<MapLayerBoundary name="CompletionOverlay">
+				<CompletionOverlay />
+			</MapLayerBoundary>
+			<MapLayerBoundary name="ProgressPreviewOverlay">
+				<ProgressPreviewOverlay />
+			</MapLayerBoundary>
+			<MapLayerBoundary name="JournalTrackHighlightOverlay">
+				<JournalTrackHighlightOverlay />
+			</MapLayerBoundary>
+			<ErrorBoundary fallback={<MapControlsErrorFallback />} name="MapControls">
+				<MapControls />
+			</ErrorBoundary>
+			<MapLayerBoundary name="RulerHint">
+				<RulerHint />
+			</MapLayerBoundary>
+			<MapLayerBoundary name="ZoomControls">
+				<ZoomControls />
+			</MapLayerBoundary>
+			<MapLayerBoundary name="LocationControls">
+				<LocationControls checkPermission={checkAndRequestLocation} />
+			</MapLayerBoundary>
 			<div className="z-map-overlay absolute right-16 bottom-2 left-16 mx-2 flex flex-col gap-1 sm:mx-0">
-				<RadarControls />
-				<TrailScrubber />
-				<ElevationChart className="shadow-lg" />
+				<MapLayerBoundary name="RadarControls">
+					<RadarControls />
+				</MapLayerBoundary>
+				<MapLayerBoundary name="TrailScrubber">
+					<TrailScrubber />
+				</MapLayerBoundary>
+				<MapLayerBoundary name="ElevationChart">
+					<ElevationChart className="shadow-lg" />
+				</MapLayerBoundary>
 			</div>
 		</>
 	);

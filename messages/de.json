@@ -357,6 +357,7 @@
 		"somethingWentWrong": "Etwas ist schiefgelaufen",
 		"unexpectedError": "Ein unerwarteter Fehler ist aufgetreten",
 		"tryRefreshing": "Bitte versuche, die Seite zu aktualisieren, oder kontaktiere den Support, wenn das Problem weiterhin besteht.",
+		"tryAgain": "Erneut versuchen",
 		"refreshPage": "Seite aktualisieren"
 	},
 	"serviceWorker": {

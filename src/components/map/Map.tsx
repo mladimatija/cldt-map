@@ -35,7 +35,9 @@ export default function Map({
 		const params = getInitialShareUrlParams();
 		const hasViewParams =
 			params?.lat !== null && params?.lat !== undefined && params?.lng !== null && params?.lng !== undefined;
-		const hasProgressParams = params?.progress !== null;
+		// Parsed params omit absent values, so test for undefined (a `!== null` check
+		// was always true and sent coordinate links through the progress fly-in).
+		const hasProgressParams = params?.progress !== undefined;
 		if (hasViewParams && !hasProgressParams) {
 			return {
 				center: [params.lat, params.lng] as LatLngTuple,

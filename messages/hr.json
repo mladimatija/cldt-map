@@ -357,6 +357,7 @@
 		"somethingWentWrong": "Nešto je pošlo krivo",
 		"unexpectedError": "Došlo je do neočekivane greške.",
 		"tryRefreshing": "Pokušajte osvježiti stranicu ili kontaktirajte podršku ako se problem nastavi.",
+		"tryAgain": "Pokušaj ponovno",
 		"refreshPage": "Osvježi stranicu"
 	},
 	"serviceWorker": {

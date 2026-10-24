@@ -357,6 +357,7 @@
 		"somethingWentWrong": "Qualcosa è andato storto",
 		"unexpectedError": "Si è verificato un errore imprevisto",
 		"tryRefreshing": "Prova ad aggiornare la pagina o contatta il supporto se il problema persiste.",
+		"tryAgain": "Riprova",
 		"refreshPage": "Aggiorna pagina"
 	},
 	"serviceWorker": {
