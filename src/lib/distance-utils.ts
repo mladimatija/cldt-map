@@ -296,6 +296,19 @@ export function formatDistanceM(meters: number, units: UnitSystem): string {
 }
 
 /**
+ * Formats a short distance (GPS accuracy, distance from a track): whole metres or
+ * feet below 1,000, then one-decimal km or miles. `formatDistanceM` alone would
+ * render an 8 m GPS fix as "0.0 km".
+ */
+export function formatShortDistanceM(meters: number, units: UnitSystem): string {
+	if (units === 'imperial') {
+		const feet = meters * 3.28084;
+		return feet < 1000 ? `${Math.round(feet)} ft` : formatDistanceM(meters, units);
+	}
+	return meters < 1000 ? `${Math.round(meters)} m` : formatDistanceM(meters, units);
+}
+
+/**
  * Computes the initial great-circle bearing (in degrees, 0-360, clockwise from north)
  * from point 1 to point 2. Uses the spherical "forward azimuth" formula.
  */

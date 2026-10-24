@@ -6,7 +6,7 @@ import { useMap } from 'react-leaflet';
 import { useTranslations } from 'next-intl';
 import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
 import { buildSpatialGrid, type SpatialGrid } from '@/lib/spatial-grid';
-import { kmToMiles } from '@/lib/utils';
+import { formatShortDistanceM } from '@/lib/distance-utils';
 
 export default function ImportedTrackLayer(): null {
 	const map = useMap();
@@ -103,15 +103,7 @@ export default function ImportedTrackLayer(): null {
 
 				// Unit-aware: meters/km in metric, feet/miles in imperial. Units
 				// are read at event time so a toggle doesn't require rebinding.
-				const currentUnits = useMapStore.getState().units;
-				const formatted =
-					currentUnits === 'imperial'
-						? hit.distanceM * 3.28084 < 1000
-							? `${Math.round(hit.distanceM * 3.28084)} ft`
-							: `${kmToMiles(hit.distanceM / 1000).toFixed(1)} mi`
-						: hit.distanceM < 1000
-							? `${Math.round(hit.distanceM)} m`
-							: `${(hit.distanceM / 1000).toFixed(1)} km`;
+				const formatted = formatShortDistanceM(hit.distanceM, useMapStore.getState().units);
 				const label = t('distanceFromTrail', { distance: formatted });
 				if (!tooltipRef.current) {
 					tooltipRef.current = L.tooltip({ permanent: false, direction: 'top' })

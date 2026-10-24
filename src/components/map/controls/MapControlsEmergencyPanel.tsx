@@ -12,7 +12,7 @@ import { MapControlModalShell } from './MapControlModalShell';
 import { EmergencySosCard } from './EmergencySosCard';
 import { Button, buttonVariants } from '@/components/ui/Button';
 import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
-import { computeBearing, findNearestPointIndex, formatDistanceM } from '@/lib/distance-utils';
+import { computeBearing, findNearestPointIndex, formatDistanceM, formatShortDistanceM } from '@/lib/distance-utils';
 import {
 	bearingToCompass,
 	findNearestEntry,
@@ -279,7 +279,7 @@ export function MapControlsEmergencyPanel({ onClose }: MapControlsEmergencyPanel
 		if (displayPosition.source !== 'gps' && displayPosition.source !== 'lastKnown') return null;
 		const acc = displayPosition.accuracy;
 		if (typeof acc !== 'number' || !Number.isFinite(acc) || acc <= 0) return null;
-		return `±${formatDistanceM(acc, units)}`;
+		return `±${formatShortDistanceM(acc, units)}`;
 	}, [displayPosition, units]);
 
 	// RFC 5870 geo: URI for the position QR. 6 decimals (~0.1 m) - intentionally
@@ -334,7 +334,7 @@ export function MapControlsEmergencyPanel({ onClose }: MapControlsEmergencyPanel
 		if (!nearestRoad) return '';
 		const ref = nearestRoad.entry.roadRef;
 		const displayRef = LOCALISABLE_ROAD_TYPES.has(ref) ? t(`roadType.${ref}`) : ref;
-		return t('crossroadsAt', { distance: formatDistanceM(nearestRoad.distanceM, units), ref: displayRef });
+		return t('crossroadsAt', { distance: formatShortDistanceM(nearestRoad.distanceM, units), ref: displayRef });
 	}, [nearestRoad, units, t]);
 
 	const roadCompass = useMemo(() => (nearestRoad ? bearingToCompass(nearestRoad.bearingDeg) : null), [nearestRoad]);
