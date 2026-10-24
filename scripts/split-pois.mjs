@@ -1,17 +1,19 @@
 /**
  * Splits the committed public/pois.json into per-type files under
- * public/data/pois/<type>.json (gitignored, regenerated on every build via
- * the npm "prebuild" hook). The client loader fetches only the types the
- * user has enabled and revalidates each file independently, so toggling off
- * the 1.4 MB peak dataset actually saves the transfer.
+ * public/data/pois/<type>.json. The split files are committed with each data
+ * refresh and regenerated on every build via the npm "prebuild" hook. The
+ * client loader fetches only the types the user has enabled and revalidates
+ * each file independently, so toggling off the 1.4 MB peak dataset actually
+ * saves the transfer.
  *
- * pois.json stays the single committed source of truth; this script is pure
- * derivation. When it has not run (plain `next dev`), the loader falls back
- * to whole-file /pois.json.
+ * pois.json stays the single source of truth; this script is pure derivation.
+ * If the split files are missing, the loader falls back to whole-file
+ * /pois.json.
  */
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
+import * as prettier from 'prettier';
 
 /** Keep in sync with KNOWN_POI_TYPES in src/lib/poi-types.ts. Empty files are
  *  written for known types absent from the dataset so the client never
@@ -54,9 +56,13 @@ if (unknownCount > 0) {
 	console.warn(`[split-pois] ${unknownCount} POIs have types outside KNOWN_POI_TYPES and were not split.`);
 }
 
+// Formatted with the repo's Prettier config, so a build leaves the committed
+// split files unchanged instead of rewriting them as one-line JSON.
 for (const [type, pois] of byType) {
 	const outPath = path.join(outDir, `${type}.json`);
-	writeFileSync(outPath, JSON.stringify({ lastUpdated: file.lastUpdated ?? '', pois }));
+	const options = (await prettier.resolveConfig(outPath, { editorconfig: true })) ?? {};
+	const json = JSON.stringify({ lastUpdated: file.lastUpdated ?? '', pois });
+	writeFileSync(outPath, await prettier.format(json, { ...options, parser: 'json' }));
 }
 
 // Per-type counts manifest: lets the UI show "Town (29)" in the type filter

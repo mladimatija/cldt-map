@@ -39,5 +39,10 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Prebuild outputs
+        run: |
+          test -f public/sw-version.js || { echo "public/sw-version.js is missing: the npm prebuild hook did not run"; exit 1; }
+          test -f public/data/pois/manifest.json || { echo "public/data/pois/manifest.json is missing: the npm prebuild hook did not run"; exit 1; }
+
       - name: Bundle size budget
         run: npm run check:bundle

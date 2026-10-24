@@ -201,7 +201,7 @@ Open [http://localhost:3000](http://localhost:3000).
    | `NEXT_PUBLIC_CACHE_VERSION` | No       | `1` (bump to invalidate cache)        |
    | Other `NEXT_PUBLIC_*`       | No       | See [Environment](#environment) above |
 
-3. **Deploy** - Netlify runs the build, and the Essential Next.js plugin handles the output. Node.js 24 is set in `netlify.toml`.
+3. **Deploy** - Netlify runs `npm run build` (set in `netlify.toml`), and the Essential Next.js plugin handles the output. Node.js 24 is set in `netlify.toml`. Keep the build command as `npm run build`, not `next build`: the npm `prebuild` hook writes `public/sw-version.js`, the build stamp that gives every deploy a fresh service worker cache and shows returning visitors the update prompt, and regenerates the per-type POI files from `public/pois.json`.
 
 **If you see "Page not found" or "publish directory cannot be the same as base directory":** In Site settings → Build & deploy → Build settings, clear **Base directory** and **Publish directory** (leave both empty) so `netlify.toml` applies. The config sets `publish = ".next"`.
 

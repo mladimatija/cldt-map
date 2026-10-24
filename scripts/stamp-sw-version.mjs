@@ -4,8 +4,9 @@
  * npm "prebuild" hook; public/sw.js loads the stamp via importScripts and
  * falls back to its manual version constant when the file is absent (dev).
  *
- * Identifier: short git commit hash, falling back to a timestamp when git is
- * unavailable (e.g. building from a tarball).
+ * Identifier: Netlify's COMMIT_REF when set (deploy builds), else the short git
+ * commit hash, else a timestamp when git is unavailable (e.g. building from a
+ * tarball).
  */
 import { execSync } from 'node:child_process';
 import { writeFileSync } from 'node:fs';
@@ -16,6 +17,8 @@ const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '
 const outPath = path.join(projectRoot, 'public', 'sw-version.js');
 
 function buildId() {
+	const commitRef = process.env.COMMIT_REF?.trim();
+	if (commitRef) return commitRef.slice(0, 7);
 	try {
 		return execSync('git rev-parse --short HEAD', { cwd: projectRoot, stdio: ['ignore', 'pipe', 'ignore'] })
 			.toString()

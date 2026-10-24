@@ -2,7 +2,9 @@
 # https://docs.netlify.com/frameworks/next-js/overview/
 
 [build]
-  command = "next build"
+  # npm run build, not next build: the npm prebuild hook writes the service
+  # worker version stamp (public/sw-version.js) and the per-type POI split.
+  command = "npm run build"
   publish = ".next"
 
 [build.environment]
