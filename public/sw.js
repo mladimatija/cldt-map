@@ -55,6 +55,10 @@ const CORE_ASSETS = [
 	'/data/croatia-boundary-display.json',
 ];
 
+/** Pages whose build files are precached with them: the app shell and the
+ *  offline fallback, which nothing loads while online. */
+const PRECACHED_PAGES = ['/', OFFLINE_URL];
+
 // Tile hosts to cache - keyed by substring match. CARTO (Dark) is deliberately
 // absent: its basemap terms forbid caching tiles on the device for more than
 // 30 days, so its requests bypass the worker (see the fetch handler) and the
@@ -208,12 +212,25 @@ self.addEventListener('install', (event) => {
     // response to the user's SKIP_WAITING message below. (A first install still
     // activates immediately - there is no controller for it to wait behind.)
     event.waitUntil(
-        caches.open(CACHE_NAME).then((cache) => {
-            return Promise.allSettled(CORE_ASSETS.map((url) => cache.add(url).catch(() => {
-            })));
+        caches.open(CACHE_NAME).then(async (cache) => {
+            await Promise.allSettled(CORE_ASSETS.map((url) => cache.add(url)));
+            await Promise.allSettled(PRECACHED_PAGES.map((page) => precachePageAssets(cache, page)));
         }),
     );
 });
+
+/** Precaches the scripts and styles a precached page references, so it also
+ *  renders when it is first needed offline. */
+async function precachePageAssets(cache, pageUrl) {
+    const page = await cache.match(pageUrl);
+    if (!page) return;
+    const html = await page.text();
+    const assets = new Set();
+    for (const match of html.matchAll(/(?:src|href)="(\/_next\/static\/[^"]+)"/g)) {
+        assets.add(match[1].replace(/&amp;/g, '&'));
+    }
+    await Promise.allSettled([...assets].map((url) => cache.add(url)));
+}
 
 self.addEventListener('activate', (event) => {
     event.waitUntil(
@@ -267,47 +284,69 @@ self.addEventListener('fetch', (event) => {
 
     // Tile requests: cache-first with per-provider caching
     if (isTileRequest(url)) {
-        event.respondWith(handleTileRequest(req, url));
+        event.respondWith(handleTileRequest(event, url));
         return;
     }
+
+    // Other cross-origin requests (weather, Wikipedia, geocoding) go to the network
+    // untouched: a cached copy would answer with stale data forever.
+    if (url.origin !== self.location.origin) return;
 
     // Navigation requests: network-first, offline fallback
     if (req.mode === 'navigate') {
-        event.respondWith(handleNavigationRequest(req));
+        event.respondWith(handleNavigationRequest(event, url));
         return;
     }
 
-    // Other GET requests: network-first, cache fallback
-    event.respondWith(handleGenericGetRequest(req));
+    // API routes and React Server Component fetches are dynamic: never cached.
+    if (url.pathname.startsWith('/api/') || url.searchParams.has('_rsc') || req.headers.get('RSC') === '1') {
+        return;
+    }
+
+    // Build output is content-hashed, so a cached copy is always current.
+    if (url.pathname.startsWith('/_next/static/')) {
+        event.respondWith(handleImmutableRequest(event));
+        return;
+    }
+
+    // Data files (/data/*, /*.json) and the other static files: network-first,
+    // cache fallback
+    event.respondWith(handleGenericGetRequest(event));
 });
 
 // ── Request handlers ─────────────────────────────────────────────────────────
+// Handlers return the network response at once and finish cache writes under
+// event.waitUntil, so a page never waits for a disk write.
 
-async function handleTileRequest(request, url) {
-    const cacheName = getTileCacheName(url.hostname);
-    const cache = await caches.open(cacheName);
+/** Stores a copy of `response` under `key` in the app-shell cache, in the background. */
+function cacheInBackground(event, key, response) {
+    const copy = response.clone();
+    event.waitUntil(
+        caches
+            .open(CACHE_NAME)
+            .then((cache) => cache.put(key, copy))
+            .catch(() => {
+                // best-effort; the next successful fetch writes it again
+            }),
+    );
+}
+
+async function handleTileRequest(event, url) {
+    const request = event.request;
+    const cache = await caches.open(getTileCacheName(url.hostname));
 
     const cachedResponse = await cache.match(request.url || request);
     if (cachedResponse) return cachedResponse;
 
     try {
         const networkResponse = await fetch(request);
-        const inBounds = await tileShouldBeCached(url, getTileProviderKey(url.hostname));
-        if (inBounds && (networkResponse.ok || networkResponse.type === 'opaque')) {
-            try {
-                await cache.put(request, networkResponse.clone());
-                if (Math.random() < TILE_TRIM_SAMPLE_RATE) {
-                    // Out-of-band: don't delay the tile response on housekeeping.
-                    trimTileCache(cache);
-                }
-            } catch (cacheErr) {
-                // Storage quota exceeded or other cache write error - serve the tile anyway
-                if (cacheErr && cacheErr.name === 'QuotaExceededError') {
-                    // Notify all clients so the UI can surface a warning
-                    const clients = await self.clients.matchAll({type: 'window'});
-                    clients.forEach((client) => client.postMessage({type: 'TILE_QUOTA_EXCEEDED'}));
-                }
-            }
+        if (networkResponse.ok || networkResponse.type === 'opaque') {
+            const stored = storeTile(event, cache, request, url, networkResponse.clone());
+            // Map tiles (<img>) are shown at once and written in the background. The
+            // corridor download fetches from script and waits for each write, so its
+            // progress counts stored tiles and its batches keep pace with the disk.
+            if (request.destination === 'image') event.waitUntil(stored);
+            else await stored;
         }
         return networkResponse;
     } catch {
@@ -324,17 +363,38 @@ async function handleTileRequest(request, url) {
     }
 }
 
-async function handleNavigationRequest(request) {
+/** Writes a fetched tile to its provider cache when it lies in Croatia and tells
+ *  the pages when storage is full. Never throws. Trimming now and then runs
+ *  alongside, so it never delays a tile. */
+async function storeTile(event, cache, request, url, response) {
     try {
-        const networkResponse = await fetch(request);
+        if (!(await tileShouldBeCached(url, getTileProviderKey(url.hostname)))) return;
+        await cache.put(request, response);
+        if (Math.random() < TILE_TRIM_SAMPLE_RATE) event.waitUntil(trimTileCache(cache));
+    } catch (cacheErr) {
+        // Storage quota exceeded or other cache write error - the tile was served anyway
+        if (cacheErr && cacheErr.name === 'QuotaExceededError') {
+            // Notify all clients so the UI can surface a warning
+            const clients = await self.clients.matchAll({type: 'window'}).catch(() => []);
+            clients.forEach((client) => client.postMessage({type: 'TILE_QUOTA_EXCEEDED'}));
+        }
+    }
+}
+
+async function handleNavigationRequest(event, url) {
+    // Keyed by path alone: the page is the same for every query string (share and
+    // deep links), so an offline share link still opens the app, and the cache
+    // holds one entry per path instead of one per link.
+    const cacheKey = url.origin + url.pathname;
+    try {
+        const networkResponse = await fetch(event.request);
         if (networkResponse && networkResponse.status === 200) {
-            const cache = await caches.open(CACHE_NAME);
-            await cache.put(request, networkResponse.clone());
+            cacheInBackground(event, cacheKey, networkResponse);
         }
         return networkResponse;
     } catch {
         const cache = await caches.open(CACHE_NAME);
-        const cached = await cache.match(request);
+        const cached = await cache.match(cacheKey);
         if (cached) return cached;
         const offline = await cache.match(OFFLINE_URL);
         if (offline) return offline;
@@ -342,16 +402,25 @@ async function handleNavigationRequest(request) {
     }
 }
 
-async function handleGenericGetRequest(request) {
+/** Cache-first for content-hashed build files. */
+async function handleImmutableRequest(event) {
+    const cache = await caches.open(CACHE_NAME);
+    const cached = await cache.match(event.request);
+    if (cached) return cached;
+    const networkResponse = await fetch(event.request);
+    if (networkResponse.status === 200) cacheInBackground(event, event.request, networkResponse);
+    return networkResponse;
+}
+
+async function handleGenericGetRequest(event) {
     try {
-        const networkResponse = await fetch(request);
+        const networkResponse = await fetch(event.request);
         if (networkResponse && networkResponse.status === 200) {
-            const cache = await caches.open(CACHE_NAME);
-            await cache.put(request, networkResponse.clone());
+            cacheInBackground(event, event.request, networkResponse);
         }
         return networkResponse;
     } catch {
-        return caches.match(request);
+        return (await caches.match(event.request)) || Response.error();
     }
 }
 // ── Web push (trail alert notifications) ────────────────────────────────────
@@ -376,13 +445,35 @@ self.addEventListener('push', (event) => {
 
 self.addEventListener('notificationclick', (event) => {
     event.notification.close();
-    const url = (event.notification.data && event.notification.data.url) || '/';
-    event.waitUntil(
-        self.clients.matchAll({type: 'window', includeUncontrolled: true}).then((clients) => {
-            for (const client of clients) {
-                if ('focus' in client) return client.focus();
-            }
-            return self.clients.openWindow(url);
-        }),
-    );
+    event.waitUntil(openNotificationTarget(event.notification.data && event.notification.data.url));
 });
+
+/** Opens a notification's link: same-origin links only (anything else opens the
+ *  start page). An open app window is focused and navigated to it, which also
+ *  reloads the alert data the page loaded once; otherwise a new window opens. */
+async function openNotificationTarget(rawUrl) {
+    let target = new URL('/', self.location.origin);
+    try {
+        const url = new URL(rawUrl || '/', self.location.origin);
+        if (url.origin === self.location.origin) target = url;
+    } catch {
+        // malformed link: keep the start page
+    }
+    const windows = await self.clients.matchAll({type: 'window', includeUncontrolled: true});
+    const existing = windows.find((client) => 'focus' in client);
+    if (!existing) {
+        await self.clients.openWindow(target.href);
+        return;
+    }
+    let client = existing;
+    try {
+        client = await existing.focus();
+    } catch {
+        // could not bring it to the front; navigating it still shows the alert
+    }
+    try {
+        await client.navigate(target.href);
+    } catch {
+        // A window this worker does not control cannot be navigated; it stays as it is.
+    }
+}

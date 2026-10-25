@@ -3,7 +3,7 @@
  * Ex-Yu Accept-Language codes default to Croatian; others to English.
  */
 import createMiddleware from 'next-intl/middleware';
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { routing, type Locale } from './i18n/routing';
 
 /** Ex-Yu language codes (former Yugoslavia): default to Croatian when no cookie/locale set. */
@@ -52,6 +52,15 @@ export default function proxy(request: NextRequest): ReturnType<ReturnType<typeo
 	const requestHeaders = new Headers(request.headers);
 	requestHeaders.set('x-nonce', nonce);
 	requestHeaders.set('Content-Security-Policy', cspHeader);
+
+	// The offline fallback lives outside the locale tree (the service worker
+	// precaches it and it picks its language on the client); locale routing would
+	// rewrite it to a page that does not exist.
+	if (request.nextUrl.pathname === '/offline') {
+		const response = NextResponse.next({ request: { headers: requestHeaders } });
+		response.headers.set('Content-Security-Policy', cspHeader);
+		return response;
+	}
 
 	const requestWithNonce = new NextRequest(request.url, {
 		headers: requestHeaders,
