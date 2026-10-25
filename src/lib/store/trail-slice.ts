@@ -261,8 +261,9 @@ export const createTrailSlice: StateCreator<StoreState, [], [], TrailSlice> = (s
 		}
 
 		if (point) {
-			set({ highlightedTrailPoint: point });
-			window.dispatchEvent(new CustomEvent('trailPositionHighlighted', { detail: { point } }));
+			// A fresh object every time, so highlighting the same point again (a second
+			// click, a scrubber step that lands on it) still re-renders its tooltip.
+			set({ highlightedTrailPoint: { ...point } });
 		}
 	},
 
@@ -272,7 +273,6 @@ export const createTrailSlice: StateCreator<StoreState, [], [], TrailSlice> = (s
 			return;
 		}
 		set({ highlightedTrailPoint: null, tooltipPinnedFromShare: false });
-		window.dispatchEvent(new CustomEvent('trailHighlightCleared'));
 	},
 
 	setTooltipPinnedFromShare: (pinned): void => {

@@ -338,6 +338,16 @@ function buildSectionGroups(
 	};
 }
 
+/** Unmounts a replaced tooltip's React root once the current commit is done:
+ *  tooltips are replaced and torn down from effects, where a synchronous unmount
+ *  is not allowed. The root's container is already off the map. */
+function unmountTooltipRoot(rootRef: React.RefObject<Root | null>): void {
+	const root = rootRef.current;
+	if (!root) return;
+	rootRef.current = null;
+	queueMicrotask(() => root.unmount());
+}
+
 /**
  * Everything the render effects need to draw the route, published once per data
  * load. Holding it apart from the raw GPX is what lets a trail-style change
@@ -391,17 +401,16 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 	const tooltipRef = useRef<L.Tooltip | null>(null);
 	const tooltipRootRef = useRef<Root | null>(null);
 	const weatherAbortRef = useRef<AbortController | null>(null);
-	// One click highlights the trail through three paths (direct click handler,
-	// the `trailPositionHighlighted` event, and the highlightedPoint effect),
-	// each of which re-renders the tooltip. This caches the in-flight weather
-	// request per coordinate so those paths share a single fetch instead of
-	// firing and aborting three. Cleared when the tooltip is torn down.
+	// Caches the in-flight weather request per coordinate, so re-rendering the
+	// open tooltip (a unit, precision or language change) reuses it instead of
+	// aborting and refetching. Cleared when the tooltip is torn down.
 	const weatherCacheRef = useRef<{ key: string; promise: Promise<WeatherData | null> } | null>(null);
 	const startMarkerRef = useRef<L.Marker | null>(null);
 	const finishMarkerRef = useRef<L.Marker | null>(null);
-	const [isTooltipVisible, setIsTooltipVisible] = useState(false);
-	const showMarkerAtPositionRef = useRef<(point: TrailPoint) => void>(() => {});
 	const clearMarkerAndTooltipRef = useRef<() => void>(() => {});
+	/** The open tooltip was pinned by a click on the route: it stays when the map
+	 *  is clicked (Leaflet closes a non-permanent tooltip on any map click,
+	 *  including clicks on its own buttons). Reset whenever the highlight clears. */
 	const isTooltipPinnedByClickRef = useRef(false);
 	const lastRouteClickTimeRef = useRef(0);
 	/** Route geometry from the most recent data load; drives both render effects. */
@@ -473,19 +482,17 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 	const setGpxLoadFailed = useMapStore((state: MapStoreState) => state.setGpxLoadFailed);
 	const reloadTrailRequested = useMapStore((state: MapStoreState) => state.reloadTrailRequested);
 
-	// Mirror tooltip-visibility state into refs so showMarkerAtPosition can read the
-	// latest value without depending on it. Without this, every visibility toggle
-	// changes the callback identity and causes the marker/tooltip to be torn down
-	// and rebuilt by the highlight-watching effect. The refs are updated in an
-	// effect, so we don't write to them during render (react-hooks/refs rule).
-	// showMarkerAtPosition is only invoked from event handlers and effect-scheduled
-	// callbacks, so the post-commit ref update is in sync by the time it runs.
-	const isTooltipVisibleRef = useRef(false);
+	// Mirror the share-pin state into a ref so showMarkerAtPosition can read the
+	// latest value without depending on it. Without this, every pin change would
+	// change the callback identity and make the highlight-watching effect tear the
+	// marker/tooltip down and rebuild it. The ref is updated in an effect, so we
+	// don't write to it during render (react-hooks/refs rule); this effect is
+	// declared before the highlight effect, so it has run by the time that one
+	// shows the tooltip.
 	const tooltipPinnedFromShareRef = useRef(tooltipPinnedFromShare);
 	useEffect(() => {
-		isTooltipVisibleRef.current = isTooltipVisible;
 		tooltipPinnedFromShareRef.current = tooltipPinnedFromShare;
-	}, [isTooltipVisible, tooltipPinnedFromShare]);
+	}, [tooltipPinnedFromShare]);
 
 	const tooltipLabels = useMemo(
 		() => ({
@@ -519,10 +526,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 		// Drop the per-coordinate weather cache so reopening this point later
 		// fetches fresh weather instead of reusing a stale resolved request.
 		weatherCacheRef.current = null;
-		if (tooltipRootRef.current) {
-			tooltipRootRef.current.unmount();
-			tooltipRootRef.current = null;
-		}
+		unmountTooltipRoot(tooltipRootRef);
 		if (markerRef.current && map) {
 			markerRef.current.removeFrom(map);
 			markerRef.current = null;
@@ -635,29 +639,29 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 			const currentUnits = useMapStore.getState().units;
 			const currentPrecision = useMapStore.getState().distancePrecision;
 
-			if (markerRef.current) {
-				markerRef.current.removeFrom(map);
-				markerRef.current = null;
-			}
-
+			// The marker stays when the point is the same (a re-render for units,
+			// precision or language); only the tooltip is rebuilt.
 			const markerPosition = L.latLng(point.lat, point.lng);
-			const marker = L.marker(markerPosition, {
-				pane: TRAIL_POINT_MARKER_PANE,
-				icon: L.divIcon({
-					className: 'trail-highlight-marker',
-					html: '<div class="pulse-marker"></div>',
-					iconSize: [14, 14],
-					iconAnchor: [7, 7],
-				}),
-			});
-
-			marker.addTo(map);
-			markerRef.current = marker;
+			if (!markerRef.current?.getLatLng().equals(markerPosition)) {
+				markerRef.current?.removeFrom(map);
+				const marker = L.marker(markerPosition, {
+					pane: TRAIL_POINT_MARKER_PANE,
+					icon: L.divIcon({
+						className: 'trail-highlight-marker',
+						html: '<div class="pulse-marker"></div>',
+						iconSize: [14, 14],
+						iconAnchor: [7, 7],
+					}),
+				});
+				marker.addTo(map);
+				markerRef.current = marker;
+			}
 
 			if (tooltipRef.current) {
 				tooltipRef.current.removeFrom(map);
 				tooltipRef.current = null;
 			}
+			unmountTooltipRoot(tooltipRootRef);
 
 			const metadata = useStore.getState().trailMetadata;
 			const totalDistanceKm = metadata?.totalDistance ?? 0;
@@ -781,10 +785,9 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 			// The AbortController cancels the request when this tooltip is replaced or torn down
 			// (clearMarkerAndTooltip aborts); the identity check below is the render-side guard.
 			// Reuse the in-flight (or just-resolved) weather request when the same
-			// point is shown again within one tooltip session - the three highlight
-			// paths fire in the same tick, and a units/precision change re-renders
-			// the open tooltip without needing fresh weather. Only start (and abort
-			// the previous) when the target coordinate actually changes.
+			// point is shown again within one tooltip session: a units/precision
+			// change re-renders the open tooltip without needing fresh weather. Only
+			// start (and abort the previous) when the target coordinate changes.
 			const weatherKey = `${point.lat.toFixed(5)},${point.lng.toFixed(5)}`;
 			let weatherCache = weatherCacheRef.current;
 			if (weatherCache?.key !== weatherKey) {
@@ -832,7 +835,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 				pane: TRAIL_POINT_TOOLTIP_PANE,
 				offset,
 				direction: dir,
-				permanent: isTooltipVisibleRef.current || tooltipPinnedFromShareRef.current,
+				permanent: isTooltipPinnedByClickRef.current || tooltipPinnedFromShareRef.current,
 				className: 'map-tooltip map-tooltip--wide',
 			})
 				.setLatLng(markerPosition)
@@ -872,9 +875,8 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 	);
 
 	useEffect(() => {
-		showMarkerAtPositionRef.current = showMarkerAtPosition;
 		clearMarkerAndTooltipRef.current = clearMarkerAndTooltip;
-	}, [showMarkerAtPosition, clearMarkerAndTooltip]);
+	}, [clearMarkerAndTooltip]);
 
 	useEffect(() => {
 		if (isRulerEnabled) {
@@ -1030,20 +1032,14 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 					useStore.getState().setTooltipPinnedFromShare?.(false);
 					clearShareUrlParams();
 				}
-				if (highlightTrailPosition) {
-					// Use larger maxDistance so any click on the route finds the nearest point (sparse GPX can exceed 150m between points).
-					highlightTrailPosition({
-						lat: e.latlng.lat,
-						lng: e.latlng.lng,
-						maxDistance: 2000,
-					});
-					setIsTooltipVisible(true);
-					// Show the marker/tooltip immediately so it appears without needing to move the cursor.
-					const point = useStore.getState().highlightedTrailPoint;
-					if (point) {
-						showMarkerAtPositionRef.current(point);
-					}
-				}
+				// Use larger maxDistance so any click on the route finds the nearest point
+				// (sparse GPX can exceed 150m between points). The highlight effect shows
+				// the tooltip.
+				highlightTrailPosition?.({
+					lat: e.latlng.lat,
+					lng: e.latlng.lng,
+					maxDistance: 2000,
+				});
 			});
 			featureGroup.addLayer(polyline);
 		};
@@ -1211,9 +1207,9 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 		};
 	}, [map, geometry, direction, startFlagVisible, addEndpointMarker, removeEndpointMarker, t, tChart]);
 
-	// Map click dismissal plus the highlight events the chart and scrubber fire.
-	// Independent of the data load and of the active style, so changing style no
-	// longer tears down an open trail tooltip or aborts its in-flight weather fetch.
+	// Map click dismissal. Independent of the data load and of the active style, so
+	// changing style does not tear down an open trail tooltip or abort its weather
+	// fetch.
 	useEffect(() => {
 		if (!map) {
 			return;
@@ -1230,33 +1226,13 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 			if (tooltipEl?.contains(e.originalEvent.target as Node)) {
 				return;
 			}
-			isTooltipPinnedByClickRef.current = false;
-			if (clearTrailHighlight) {
-				clearTrailHighlight();
-			}
-		};
-
-		const handlePositionHighlighted = (e: CustomEvent): void => {
-			if (useStore.getState().tooltipPinnedFromShare) return;
-			if (e.detail.point) {
-				showMarkerAtPositionRef.current(e.detail.point);
-			}
-		};
-
-		const handleHighlightCleared = (): void => {
-			isTooltipPinnedByClickRef.current = false;
-			clearMarkerAndTooltipRef.current();
-			setIsTooltipVisible(false);
+			clearTrailHighlight?.();
 		};
 
 		map.on('click', handleMapClick);
-		window.addEventListener('trailPositionHighlighted', handlePositionHighlighted as EventListener);
-		window.addEventListener('trailHighlightCleared', handleHighlightCleared);
 
 		return () => {
 			map.off('click', handleMapClick);
-			window.removeEventListener('trailPositionHighlighted', handlePositionHighlighted as EventListener);
-			window.removeEventListener('trailHighlightCleared', handleHighlightCleared);
 			clearMarkerAndTooltipRef.current();
 		};
 	}, [map, clearTrailHighlight]);
@@ -1320,14 +1296,17 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 			}
 			return;
 		}
+		// The single path that shows the tooltip (route click, chart hover, scrubber,
+		// share link) and tears it down when the highlight clears from anywhere. A
+		// unit, precision or trail-data change re-renders the open tooltip once.
 		if (highlightedPoint) {
 			showMarkerAtPosition(highlightedPoint);
-		} else if (!isTooltipVisible) {
+		} else {
+			isTooltipPinnedByClickRef.current = false;
 			clearMarkerAndTooltip();
 		}
 	}, [
 		highlightedPoint,
-		isTooltipVisible,
 		isRulerEnabled,
 		units,
 		distancePrecision,
@@ -1336,16 +1315,6 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 		clearMarkerAndTooltip,
 		clearTrailHighlight,
 	]);
-
-	useEffect(() => {
-		const handleUnitsChange = (): void => {
-			if (highlightedPoint) {
-				showMarkerAtPosition(highlightedPoint);
-			}
-		};
-		window.addEventListener('unitsChange', handleUnitsChange);
-		return () => window.removeEventListener('unitsChange', handleUnitsChange);
-	}, [highlightedPoint, units, distancePrecision, trailMetadata, showMarkerAtPosition]);
 
 	return null;
 }

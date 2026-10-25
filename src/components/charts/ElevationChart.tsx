@@ -4,7 +4,7 @@
  * Elevation profile chart (distance vs. elevation). Hover syncs with the trail highlight on the map via ChartTooltipSync.
  * Uses Recharts AreaChart; data comes from store enhancedTrailPoints.
  */
-import React, { useEffect, useMemo, useRef, useState, JSX } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState, JSX } from 'react';
 import { useBlockMapPropagation, usePackAdjustedPaceKmh } from '@/hooks';
 import {
 	AreaChart,
@@ -17,6 +17,7 @@ import {
 	ReferenceDot,
 	ReferenceArea,
 	Tooltip as RechartsTooltip,
+	type TooltipContentProps,
 } from 'recharts';
 import { formatElevation, formatDistance } from '@/lib/utils';
 import { computeEta, findNearestPointIndex, rulerSegmentIndices } from '@/lib/distance-utils';
@@ -392,6 +393,50 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 		return items;
 	}, [fillMode, isExpanded, enrichedChartData, tControls, tTrail]);
 
+	// Recharts renders a function `content` as a component, so a new function on
+	// every chart render would remount the tooltip sync each time and reset its
+	// hover dedupe: a map highlight re-renders the chart, and the remounted sync
+	// would push the same highlight again in a loop while the pointer rests here.
+	const renderChartTooltip = useCallback(
+		(props: TooltipContentProps) => (
+			<ChartTooltipSync
+				active={props.active && !rulerRange}
+				clearTrailHighlight={clearTrailHighlight}
+				coordinate={props.coordinate}
+				direction={direction}
+				distanceLabel={t('distanceLabel')}
+				distancePrecision={distancePrecision}
+				elevationLabel={t('elevationLabel')}
+				elevationUnitASL={tControls('elevationUnitASL')}
+				enhancedTrailPoints={enhancedTrailPoints}
+				fillMode={fillMode}
+				highlightTrailPosition={highlightTrailPosition}
+				isPinned={pinnedPoint !== null}
+				payload={props.payload}
+				totalKm={totalDistance}
+				trailOsmRuns={trailOsmTagsFile?.runs}
+				units={units}
+				onScaleCalibration={handleScaleCalibration}
+			/>
+		),
+		[
+			rulerRange,
+			clearTrailHighlight,
+			direction,
+			t,
+			distancePrecision,
+			tControls,
+			enhancedTrailPoints,
+			fillMode,
+			highlightTrailPosition,
+			pinnedPoint,
+			totalDistance,
+			trailOsmTagsFile,
+			units,
+			handleScaleCalibration,
+		],
+	);
+
 	if (chartData.length === 0) {
 		const emptyMessage = gpxLoadFailed ? tCommon('failedToLoadTrail') : gpxLoaded ? t('noData') : t('loading');
 		return (
@@ -738,27 +783,7 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 						<ResponsiveContainer height="100%" minHeight={200} width="100%">
 							<AreaChart data={enrichedChartData} margin={{ top: 10, right: 10, left: 0, bottom: 10 }}>
 								<RechartsTooltip
-									content={(props) => (
-										<ChartTooltipSync
-											active={props.active && !rulerRange}
-											clearTrailHighlight={clearTrailHighlight}
-											coordinate={props.coordinate}
-											direction={direction}
-											distanceLabel={t('distanceLabel')}
-											distancePrecision={distancePrecision}
-											elevationLabel={t('elevationLabel')}
-											elevationUnitASL={tControls('elevationUnitASL')}
-											enhancedTrailPoints={enhancedTrailPoints}
-											fillMode={fillMode}
-											highlightTrailPosition={highlightTrailPosition}
-											isPinned={pinnedPoint !== null}
-											payload={props.payload}
-											totalKm={totalDistance}
-											trailOsmRuns={trailOsmTagsFile?.runs}
-											units={units}
-											onScaleCalibration={handleScaleCalibration}
-										/>
-									)}
+									content={renderChartTooltip}
 									cursor={{ stroke: 'var(--cldt-green)', strokeWidth: 2 }}
 								/>
 								<CartesianGrid strokeDasharray="3 3" />
