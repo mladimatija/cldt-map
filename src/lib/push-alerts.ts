@@ -8,6 +8,8 @@
  */
 
 const SUBSCRIBE_ENDPOINT = '/.netlify/functions/push-subscribe';
+/** The UI language last sent with the subscription; notifications use it. */
+const SYNCED_LOCALE_KEY = 'cldt-push-locale';
 
 export function pushAlertsSupported(): boolean {
 	return (
@@ -31,8 +33,26 @@ function urlBase64ToUint8Array(base64: string): Uint8Array<ArrayBuffer> {
 	return out;
 }
 
-/** Must run inside a user gesture (permission prompt). */
-export async function enablePushAlerts(): Promise<boolean> {
+function postSubscription(subscription: PushSubscription, locale: string): Promise<Response> {
+	return fetch(SUBSCRIBE_ENDPOINT, {
+		method: 'POST',
+		headers: { 'content-type': 'application/json' },
+		body: JSON.stringify({ ...subscription.toJSON(), locale }),
+	});
+}
+
+function rememberSyncedLocale(locale: string | null): void {
+	try {
+		if (locale) localStorage.setItem(SYNCED_LOCALE_KEY, locale);
+		else localStorage.removeItem(SYNCED_LOCALE_KEY);
+	} catch {
+		// storage unavailable: the next sync just posts again
+	}
+}
+
+/** Must run inside a user gesture (permission prompt). `locale` is the UI
+ *  language the notifications are written in. */
+export async function enablePushAlerts(locale: string): Promise<boolean> {
 	if (!pushAlertsSupported()) return false;
 	try {
 		if ((await Notification.requestPermission()) !== 'granted') return false;
@@ -43,14 +63,27 @@ export async function enablePushAlerts(): Promise<boolean> {
 				userVisibleOnly: true,
 				applicationServerKey: urlBase64ToUint8Array(process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY as string),
 			}));
-		const res = await fetch(SUBSCRIBE_ENDPOINT, {
-			method: 'POST',
-			headers: { 'content-type': 'application/json' },
-			body: JSON.stringify(subscription.toJSON()),
-		});
+		const res = await postSubscription(subscription, locale);
+		if (res.ok) rememberSyncedLocale(locale);
 		return res.ok;
 	} catch {
 		return false;
+	}
+}
+
+/** Re-sends an existing subscription when the UI language changed since it
+ *  was last sent (or was never sent, for subscriptions from older builds), so
+ *  notifications follow the language. Best-effort; never prompts. */
+export async function syncPushAlertsLocale(locale: string): Promise<void> {
+	if (!pushAlertsSupported()) return;
+	try {
+		if (localStorage.getItem(SYNCED_LOCALE_KEY) === locale) return;
+		const registration = await navigator.serviceWorker.ready;
+		const subscription = await registration.pushManager.getSubscription();
+		if (!subscription) return;
+		if ((await postSubscription(subscription, locale)).ok) rememberSyncedLocale(locale);
+	} catch {
+		// best-effort; the next language change or app start tries again
 	}
 }
 
@@ -65,6 +98,7 @@ export async function disablePushAlerts(): Promise<void> {
 			body: JSON.stringify(subscription.toJSON()),
 		}).catch(() => undefined);
 		await subscription.unsubscribe();
+		rememberSyncedLocale(null);
 	} catch {
 		// best-effort; the scheduled sender prunes dead subscriptions anyway
 	}

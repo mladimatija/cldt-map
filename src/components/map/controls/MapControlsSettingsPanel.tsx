@@ -223,7 +223,7 @@ export function MapControlsSettingsPanel({
 			void disablePushAlerts();
 			return;
 		}
-		setPushAlertsEnabled(await enablePushAlerts());
+		setPushAlertsEnabled(await enablePushAlerts(activeLocale));
 	};
 
 	const units = useMapStore((state: MapStoreState) => state.units);

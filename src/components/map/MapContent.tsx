@@ -6,7 +6,7 @@
  */
 import React, { Suspense, useState, useEffect, useCallback } from 'react';
 import dynamic from 'next/dynamic';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { useMapStore, type MapStoreState } from '@/lib/store';
 import { DEFAULT_PATH_OPTIONS } from '@/components/map/trail-route-constants';
 import { useSevereWeatherFetch } from '@/hooks/useSevereWeatherFetch';
@@ -19,6 +19,7 @@ import { useTrailOsmTagsFetch } from '@/hooks/useTrailOsmTagsFetch';
 import { usePoisFetch } from '@/hooks/usePoisFetch';
 import { usePanelListeners } from '@/hooks';
 import { useWakeLock } from '@/hooks/useWakeLock';
+import { syncPushAlertsLocale } from '@/lib/push-alerts';
 import { ShareCopyToast } from '@/components/map/ShareCopyToast';
 import { TileDownloadCompleteToast } from '@/components/map/TileDownloadCompleteToast';
 import { TripReplaceUndoToast } from '@/components/map/TripReplaceUndoToast';
@@ -194,6 +195,14 @@ export default function MapContent(): React.ReactElement {
 	// Coordinates mutual-exclusion close behavior for every panel that
 	// registers via `usePanel` (map controls + base map dropdown).
 	usePanelListeners();
+
+	// Trail-alert notifications are written in the UI language; keep the
+	// server's copy of it current when the language changes.
+	const locale = useLocale();
+	const pushAlertsEnabled = useMapStore((state: MapStoreState) => state.pushAlertsEnabled);
+	useEffect(() => {
+		if (pushAlertsEnabled) void syncPushAlertsLocale(locale);
+	}, [pushAlertsEnabled, locale]);
 
 	// Initialize location service once when the component mounts
 	useEffect(() => {

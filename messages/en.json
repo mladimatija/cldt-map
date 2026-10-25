@@ -1684,5 +1684,12 @@
 		"sharedCollectionName": "Shared",
 		"replacedToast": "Your trip data was replaced with the shared data.",
 		"undo": "Undo"
+	},
+	"push": {
+		"appName": "CLDT Map",
+		"newNotice": "New trail condition notice",
+		"newNotices": "New trail condition notices ({count})",
+		"newWarning": "New trail warning",
+		"newWarnings": "New trail warnings ({count})"
 	}
 }

@@ -1684,5 +1684,12 @@
 		"sharedCollectionName": "Podijeljeno",
 		"replacedToast": "Vaši podaci o putovanju zamijenjeni su podijeljenima.",
 		"undo": "Poništi"
+	},
+	"push": {
+		"appName": "CLDT Map",
+		"newNotice": "Nova obavijest o stanju staze",
+		"newNotices": "Nove obavijesti o stanju staze ({count})",
+		"newWarning": "Novo upozorenje za stazu",
+		"newWarnings": "Nova upozorenja za stazu ({count})"
 	}
 }

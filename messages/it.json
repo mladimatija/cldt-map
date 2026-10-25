@@ -1684,5 +1684,12 @@
 		"sharedCollectionName": "Condivisi",
 		"replacedToast": "I tuoi dati di viaggio sono stati sostituiti con quelli condivisi.",
 		"undo": "Annulla"
+	},
+	"push": {
+		"appName": "CLDT Map",
+		"newNotice": "Nuovo avviso sulle condizioni del sentiero",
+		"newNotices": "Nuovi avvisi sulle condizioni del sentiero ({count})",
+		"newWarning": "Nuova allerta per il sentiero",
+		"newWarnings": "Nuove allerte per il sentiero ({count})"
 	}
 }

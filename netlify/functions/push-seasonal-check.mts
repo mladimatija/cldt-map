@@ -1,16 +1,13 @@
 /**
  * Scheduled check (hourly) for new seasonal-status entries; sends a web push
- * notification for entries not seen on the previous run.
- *
- * State is one blob ("push-state"/"seen-seasonal-ids") holding the entry ids
- * already notified, so a redeploy never re-notifies the whole dataset: on
- * first run (no state) the current ids are recorded without sending.
- * Subscriptions that the push service reports as gone (404/410) are pruned.
+ * notification for entries not seen on the previous run (shared flow and state
+ * rules in _shared/new-entries-push.mts). Notes are Croatian for Croatian
+ * subscribers and English for everyone else, as the dataset carries both.
  */
 
-import { getStore } from '@netlify/blobs';
 import type { Config } from '@netlify/functions';
-import { configureVapid, sendToAllSubscribers } from './_shared/push-send.mts';
+import { runNewEntriesPush } from './_shared/new-entries-push.mts';
+import { pushStrings, withCount } from './_shared/push-i18n.mts';
 
 const SITE_URL = process.env.URL ?? 'https://map.cldt.hr';
 
@@ -41,44 +38,33 @@ async function fetchSeasonalEntries(): Promise<SeasonalEntry[] | null> {
 	return (file.entries ?? []).filter((e) => typeof e.id === 'string');
 }
 
+function entryNote(entry: SeasonalEntry, locale: string): string | undefined {
+	return locale === 'hr' ? (entry.note_hr ?? entry.note_en) : (entry.note_en ?? entry.note_hr);
+}
+
 export default async function handler(): Promise<Response> {
-	if (!configureVapid()) return new Response('push not configured', { status: 200 });
-
-	const entries = await fetchSeasonalEntries();
-	if (entries === null) return new Response('seasonal fetch failed', { status: 200 });
-	const currentIds = entries.map((e) => e.id);
-
-	const stateStore = getStore('push-state');
-	const seen = (await stateStore.get('seen-seasonal-ids', { type: 'json' })) as string[] | null;
-
-	// First run: baseline only, never blast the whole dataset.
-	if (seen === null) {
-		await stateStore.setJSON('seen-seasonal-ids', currentIds);
-		return new Response('baseline recorded', { status: 200 });
-	}
-
-	const seenSet = new Set(seen);
-	const fresh = entries.filter((e) => !seenSet.has(e.id));
-	if (fresh.length === 0) return new Response('no new entries', { status: 200 });
-
-	const title =
-		fresh.length === 1
-			? (fresh[0].note_en ?? fresh[0].note_hr ?? 'New trail warning')
-			: `${fresh.length} new trail warnings`;
-	const payload = JSON.stringify({
-		title: `CLDT Map: ${title}`,
-		body: fresh
-			.slice(0, 3)
-			.map((e) => `[${e.severity ?? 'info'}] ${e.note_en ?? e.note_hr ?? e.id}`)
-			.join('\n'),
-		url: `${SITE_URL}/`,
+	return runNewEntriesPush<SeasonalEntry>({
+		stateKey: 'seen-seasonal-ids',
+		fetchEntries: fetchSeasonalEntries,
+		buildMessage: (fresh, locale) => {
+			const strings = pushStrings(locale);
+			const title =
+				fresh.length === 1
+					? (entryNote(fresh[0], locale) ?? strings.newWarning)
+					: withCount(strings.newWarnings, fresh.length);
+			return {
+				title: `${strings.appName}: ${title}`,
+				body: fresh
+					.slice(0, 3)
+					.map((e) => {
+						const severity = e.severity ? (strings.severity[e.severity] ?? e.severity) : '';
+						const note = entryNote(e, locale) ?? e.id;
+						return severity ? `${severity}: ${note}` : note;
+					})
+					.join('\n'),
+			};
+		},
 	});
-
-	const { sent, total } = await sendToAllSubscribers(payload);
-	if (total === 0) return new Response('no subscribers', { status: 200 });
-
-	await stateStore.setJSON('seen-seasonal-ids', [...new Set([...seen, ...fresh.map((e) => e.id)])]);
-	return new Response(`sent ${sent}/${total} for ${fresh.length} new entries`, { status: 200 });
 }
 
 export const config: Config = {
