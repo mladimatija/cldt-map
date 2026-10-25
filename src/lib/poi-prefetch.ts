@@ -63,10 +63,18 @@ export async function prefetchPoiAssets(
 	// backend; fanning all ~16k at once at 8k+ POIs saturates the IPC queue on
 	// low-memory devices).
 	const CACHE_CHECK_BATCH = 32;
-	const existingHits: (Response | undefined)[] = [];
+	// Presence only: keeping the matched Responses would hold up to ~16k of them alive.
+	const existingHits: boolean[] = [];
 	for (let i = 0; i < candidates.length; i += CACHE_CHECK_BATCH) {
 		const batch = candidates.slice(i, i + CACHE_CHECK_BATCH);
-		const hits = await Promise.all(batch.map((c) => cache.match(c.url).catch(() => undefined)));
+		const hits = await Promise.all(
+			batch.map((c) =>
+				cache.match(c.url).then(
+					(res) => res !== undefined,
+					() => false,
+				),
+			),
+		);
 		existingHits.push(...hits);
 	}
 	const work = candidates.filter((_, i) => !existingHits[i]);

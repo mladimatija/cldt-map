@@ -39,6 +39,31 @@ function nearestIndexByCoords(points: { lat: number; lng: number }[], targetLat:
  */
 const trailGridCache = new WeakMap<LatLng[], SpatialGrid>();
 
+function trailGrid(points: LatLng[]): SpatialGrid {
+	let grid = trailGridCache.get(points);
+	if (!grid) {
+		grid = buildSpatialGrid(points);
+		trailGridCache.set(points, grid);
+	}
+	return grid;
+}
+
+/** LatLng points converted from an enhanced array, for when the store's
+ *  trailPoints are not set; cached so the grid built on them is too. */
+const convertedPointsCache = new WeakMap<EnhancedTrailPoint[], LatLng[]>();
+
+/** Leaflet points parallel to `enhancedPoints` (same order, same indices): the
+ *  store's trailPoints when they match, otherwise a cached conversion. */
+function latLngsFor(trailPoints: LatLng[], enhancedPoints: EnhancedTrailPoint[]): LatLng[] {
+	if (trailPoints.length === enhancedPoints.length) return trailPoints;
+	let converted = convertedPointsCache.get(enhancedPoints);
+	if (!converted) {
+		converted = enhancedPoints.map((p) => L.latLng(p.lat, p.lng));
+		convertedPointsCache.set(enhancedPoints, converted);
+	}
+	return converted;
+}
+
 function computeClosestPointData(
 	points: LatLng[],
 	enhancedPoints: EnhancedTrailPoint[],
@@ -46,12 +71,7 @@ function computeClosestPointData(
 ): ClosestPoint | null {
 	if (points.length === 0) return null;
 
-	let grid = trailGridCache.get(points);
-	if (!grid) {
-		grid = buildSpatialGrid(points);
-		trailGridCache.set(points, grid);
-	}
-	const hit = grid.nearest(userLatLng.lat, userLatLng.lng);
+	const hit = trailGrid(points).nearest(userLatLng.lat, userLatLng.lng);
 	const closestIndex = hit ? hit.index : nearestIndexByCoords(points, userLatLng.lat, userLatLng.lng);
 	const closestPoint = points[closestIndex];
 	const closestDistance = userLatLng.distanceTo(closestPoint);
@@ -159,9 +179,7 @@ export const createTrailSlice: StateCreator<StoreState, [], [], TrailSlice> = (s
 			return;
 		}
 		const points =
-			state.trailPoints.length > 0
-				? state.trailPoints
-				: (state.enhancedTrailPoints ?? []).map((p) => L.latLng(p.lat, p.lng));
+			state.trailPoints.length > 0 ? state.trailPoints : latLngsFor(state.trailPoints, state.enhancedTrailPoints ?? []);
 		if (!points.length) {
 			return;
 		}
@@ -240,13 +258,11 @@ export const createTrailSlice: StateCreator<StoreState, [], [], TrailSlice> = (s
 			return null;
 		}
 
-		const closestIndex = nearestIndexByCoords(enhancedTrailPoints, lat, lng);
-		const closestPoint = enhancedTrailPoints[closestIndex];
-		const exactDistance = L.latLng(closestPoint.lat, closestPoint.lng).distanceTo(L.latLng(lat, lng));
-		if (exactDistance <= maxDistanceM) {
-			return closestPoint;
-		}
-		return null;
+		// The trail grid instead of a scan over every point per click; its
+		// haversine distance is the one Leaflet's distanceTo would give.
+		const hit = trailGrid(latLngsFor(get().trailPoints, enhancedTrailPoints)).nearest(lat, lng);
+		if (!hit) return null;
+		return hit.distanceM <= maxDistanceM ? enhancedTrailPoints[hit.index] : null;
 	},
 
 	highlightTrailPosition: (position): void => {

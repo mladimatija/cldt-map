@@ -6,14 +6,18 @@
  *
  * Distances use the same haversine as the rest of the app, so results are
  * drop-in compatible with linear scans. Cell sizing uses an equirectangular
- * approximation at the dataset's mid-latitude, which is accurate at Croatia's
- * extent and conservative elsewhere (cells merely get slightly rectangular,
- * never incorrect, because the ring-stop bound below uses the smaller of the
- * two cell dimensions).
+ * approximation at the dataset's mid-latitude, so cells are slightly narrower
+ * away from it; the ring-stop bound below uses the narrowest cell the search
+ * can cross, which keeps the result exact.
  */
 import { haversineDistanceM } from './haversine';
 
 const METERS_PER_DEGREE_LAT = 111_320;
+/** Cell indices are shifted by the offset and packed into one number; with
+ *  cells of 50 m or more every index on Earth fits, well inside the safe
+ *  integer range. */
+const CELL_KEY_OFFSET = 2 ** 20;
+const CELL_KEY_STRIDE = 2 ** 21;
 
 export interface NearestHit {
 	/** Index into the points array passed to buildSpatialGrid. */
@@ -51,13 +55,17 @@ export function buildSpatialGrid(points: readonly GridPoint[], cellSizeM = 500):
 	const cellLatDeg = cellSizeM / METERS_PER_DEGREE_LAT;
 	// Clamp the cos so polar data cannot produce a degenerate (infinite-width) cell.
 	const cellLngDeg = cellSizeM / (METERS_PER_DEGREE_LAT * Math.max(0.05, Math.cos(midLatRad)));
-	// Lower bound (meters) on the distance covered by stepping one ring out;
-	// used as the safe stopping criterion for the expanding search.
-	const minCellSpanM = cellSizeM;
+	/** East-west width of a cell at a latitude, in meters. */
+	const cellWidthAtM = (lat: number): number => cellLngDeg * METERS_PER_DEGREE_LAT * Math.cos((lat * Math.PI) / 180);
+	// Narrowest cell over the data: the latitude farthest from the equator.
+	const dataMinSpanM = Math.min(cellSizeM, cellWidthAtM(Math.max(Math.abs(minLat), Math.abs(maxLat))));
 
-	const cells = new Map<string, number[]>();
-	const keyFor = (lat: number, lng: number): string =>
-		`${Math.floor(lat / cellLatDeg)}:${Math.floor(lng / cellLngDeg)}`;
+	// Numeric cell keys: string building in the per-query ring loop was the hot spot.
+	const cells = new Map<number, number[]>();
+	const cellKey = (latCell: number, lngCell: number): number =>
+		(latCell + CELL_KEY_OFFSET) * CELL_KEY_STRIDE + (lngCell + CELL_KEY_OFFSET);
+	const keyFor = (lat: number, lng: number): number =>
+		cellKey(Math.floor(lat / cellLatDeg), Math.floor(lng / cellLngDeg));
 
 	for (let i = 0; i < points.length; i++) {
 		const key = keyFor(points[i].lat, points[i].lng);
@@ -81,12 +89,15 @@ export function buildSpatialGrid(points: readonly GridPoint[], cellSizeM = 500):
 	function nearest(lat: number, lng: number): NearestHit | null {
 		const baseLat = Math.floor(lat / cellLatDeg);
 		const baseLng = Math.floor(lng / cellLngDeg);
+		// Lower bound (meters) on the distance covered by stepping one ring out: the
+		// narrowest cell between the query and the data. The safe stopping criterion.
+		const minCellSpanM = Math.min(dataMinSpanM, cellWidthAtM(Math.abs(lat)));
 
 		let bestIdx = -1;
 		let bestDist = Infinity;
 
 		const scanCell = (latKey: number, lngKey: number): void => {
-			const bucket = cells.get(`${latKey}:${lngKey}`);
+			const bucket = cells.get(cellKey(latKey, lngKey));
 			if (!bucket) return;
 			for (const i of bucket) {
 				const d = haversineDistanceM(lat, lng, points[i].lat, points[i].lng);

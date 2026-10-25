@@ -9,7 +9,7 @@ import { routing, type Locale } from './i18n/routing';
 /** Ex-Yu language codes (former Yugoslavia): default to Croatian when no cookie/locale set. */
 const EX_YU_LANGUAGE_CODES = ['hr', 'sr', 'sl', 'bs', 'mk', 'sq', 'cnr'];
 
-function getDefaultLocaleFromRequest(request: NextRequest): Locale {
+function getDefaultLocaleFromRequest(request: NextRequest): Extract<Locale, 'en' | 'hr'> {
 	const acceptLanguage = request.headers.get('accept-language') || '';
 	const parts = acceptLanguage.split(',').map((p) => p.trim().split(';')[0]);
 	for (const part of parts) {
@@ -45,6 +45,13 @@ function buildCspHeader(nonce: string): string {
 	].join('; ');
 }
 
+/** Locale routing per default locale, built once rather than on every request:
+ *  the default is the only part that varies, and it is either en or hr. */
+const I18N_ROUTING = {
+	en: createMiddleware({ ...routing, defaultLocale: 'en' }),
+	hr: createMiddleware({ ...routing, defaultLocale: 'hr' }),
+};
+
 export default function proxy(request: NextRequest): ReturnType<ReturnType<typeof createMiddleware>> {
 	const nonce = Buffer.from(crypto.randomUUID()).toString('base64');
 	const cspHeader = buildCspHeader(nonce);
@@ -67,12 +74,7 @@ export default function proxy(request: NextRequest): ReturnType<ReturnType<typeo
 		method: request.method,
 	});
 
-	const defaultLocale = getDefaultLocaleFromRequest(request);
-	const handleI18nRouting = createMiddleware({
-		...routing,
-		defaultLocale,
-	});
-	const response = handleI18nRouting(requestWithNonce);
+	const response = I18N_ROUTING[getDefaultLocaleFromRequest(request)](requestWithNonce);
 	response.headers.set('Content-Security-Policy', cspHeader);
 	return response;
 }

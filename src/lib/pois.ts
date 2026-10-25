@@ -58,11 +58,13 @@ interface TypeCacheEntry {
 const typeCache = new Map<string, TypeCacheEntry>();
 /** Sticky once a per-type file is missing or a remote override is configured. */
 let splitUnavailable = !!process.env.NEXT_PUBLIC_POIS_URL;
-/** Memo of the last merge so repeat calls with the same inputs keep object
- *  identity (consumers memo on the file reference). */
-let lastMergeKey: string | null = null;
-let lastMergeInputs: (PoisFile | null)[] = [];
-let lastMergeResult: PoisFile | null = null;
+/** Merges by type-set key, so repeat calls with the same inputs keep object
+ *  identity (consumers memo on the file reference) even when callers with
+ *  different type sets alternate (the map's enabled types, the up-next strip,
+ *  the planner's all-types load). A few entries cover them; the oldest goes
+ *  first beyond that. */
+const mergeCache = new Map<string, { inputs: (PoisFile | null)[]; result: PoisFile }>();
+const MAX_MERGES = 8;
 
 function entryFor(type: string): TypeCacheEntry {
 	let e = typeCache.get(type);
@@ -111,13 +113,11 @@ function loadPoiType(type: string): Promise<PoisFile | null> {
 }
 
 function mergeTypeFiles(key: string, files: (PoisFile | null)[]): PoisFile {
-	if (
-		lastMergeResult &&
-		lastMergeKey === key &&
-		lastMergeInputs.length === files.length &&
-		lastMergeInputs.every((f, i) => f === files[i])
-	) {
-		return lastMergeResult;
+	const cached = mergeCache.get(key);
+	if (cached?.inputs.length === files.length && cached.inputs.every((f, i) => f === files[i])) {
+		mergeCache.delete(key);
+		mergeCache.set(key, cached);
+		return cached.result;
 	}
 	const pois: Poi[] = [];
 	let lastUpdated = '';
@@ -127,10 +127,11 @@ function mergeTypeFiles(key: string, files: (PoisFile | null)[]): PoisFile {
 		if (f.lastUpdated > lastUpdated) lastUpdated = f.lastUpdated;
 	}
 	pois.sort((a, b) => a.trailKm - b.trailKm);
-	lastMergeKey = key;
-	lastMergeInputs = files;
-	lastMergeResult = { lastUpdated, pois };
-	return lastMergeResult;
+	const result = { lastUpdated, pois };
+	mergeCache.delete(key);
+	mergeCache.set(key, { inputs: files, result });
+	if (mergeCache.size > MAX_MERGES) mergeCache.delete(mergeCache.keys().next().value as string);
+	return result;
 }
 
 /**
@@ -303,14 +304,29 @@ export function searchPoisByName(pois: Poi[], query: string, limit = 20): Poi[] 
 	if (q.length === 0) return [];
 	const matches: Poi[] = [];
 	for (const p of pois) {
-		const en = foldDiacritics(p.name_en.toLowerCase());
-		const hr = foldDiacritics(p.name_hr.toLowerCase());
-		if (en.includes(q) || hr.includes(q)) {
+		if (searchableName(p).includes(q)) {
 			matches.push(p);
 			if (matches.length >= limit) break;
 		}
 	}
 	return matches;
+}
+
+/** Folded names per POI, computed on the first search instead of on every
+ *  keystroke. POI objects are shared by every merge of their file, so one entry
+ *  serves them all; a new dataset brings new objects and the old entries go
+ *  with the old ones. */
+const searchableNames = new WeakMap<Poi, string>();
+
+/** Both names lowercased and folded, joined by a character a query cannot
+ *  contain, so a match never spans the two. */
+function searchableName(p: Poi): string {
+	let name = searchableNames.get(p);
+	if (name === undefined) {
+		name = `${foldDiacritics(p.name_en.toLowerCase())}\u0000${foldDiacritics(p.name_hr.toLowerCase())}`;
+		searchableNames.set(p, name);
+	}
+	return name;
 }
 
 /** Fold Croatian diacritics so a user can type ascii and still match

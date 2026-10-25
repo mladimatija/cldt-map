@@ -246,12 +246,12 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 				async function prefetchPoiAssetsAfterDownload(): Promise<void> {
 					const file = await loadPois();
 					if (!file?.pois?.length) return;
+					// AbortSignal.timeout fallback: a bare `new AbortController().signal`
+					// never fires, which would let the prefetch run unbounded on
+					// browsers without timeout support. Arm the controller manually.
+					let timeoutId: ReturnType<typeof setTimeout> | null = null;
 					try {
-						// AbortSignal.timeout fallback: a bare `new AbortController().signal`
-						// never fires, which would let the prefetch run unbounded on
-						// browsers without timeout support. Arm the controller manually.
 						let signal: AbortSignal;
-						let timeoutId: ReturnType<typeof setTimeout> | null = null;
 						if (typeof AbortSignal.timeout === 'function') {
 							signal = AbortSignal.timeout(120_000);
 						} else {
@@ -260,11 +260,12 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 							signal = controller.signal;
 						}
 						const summary = await prefetchPoiAssets(file.pois, signal);
-						if (timeoutId) clearTimeout(timeoutId);
 						set({ poiPrefetchSkipped: summary.cancelled ? null : summary.skipped });
 					} catch {
 						// Hard failure (e.g. Cache Storage unavailable): flag rather than swallow.
 						set({ poiPrefetchSkipped: file.pois.length });
+					} finally {
+						if (timeoutId) clearTimeout(timeoutId);
 					}
 					set((s) => ({ poiPrefetchVersion: s.poiPrefetchVersion + 1 }));
 				}
