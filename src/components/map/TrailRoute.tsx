@@ -738,8 +738,8 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 					feelsLike: formatTemperature(weatherData.feelsLikeC, currentUnits),
 					precipitation: `${weatherData.precipitationProbabilityPct}%`,
 					wind: formatWindSpeed(weatherData.windspeedKmh, currentUnits),
-					sunrise: formatSunTime(weatherData.sunrise, currentUnits),
-					sunset: formatSunTime(weatherData.sunset, currentUnits),
+					sunrise: formatSunTime(weatherData.sunrise, weatherData, currentUnits, locale),
+					sunset: formatSunTime(weatherData.sunset, weatherData, currentUnits, locale),
 					exposure: tooltipExposure(weatherData.feelsLikeC, weatherData.windspeedKmh, tWeather),
 				};
 			};
@@ -764,7 +764,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 				tooltipRoot.render(
 					<TrailTooltipContent
 						showClose
-						hourlyStrip={buildHourlyStripData(weatherData, currentUnits, tWeather)}
+						hourlyStrip={buildHourlyStripData(weatherData, currentUnits, locale, tWeather)}
 						labels={tooltipLabels}
 						trailData={pointData}
 						weather={buildWeather(weatherData)}
@@ -869,7 +869,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 
 			tooltipRef.current = tooltip;
 		},
-		[map, clearTrailHighlight, t, tControls, tWeather, tooltipLabels],
+		[map, clearTrailHighlight, t, tControls, tWeather, tooltipLabels, locale],
 	);
 
 	useEffect(() => {

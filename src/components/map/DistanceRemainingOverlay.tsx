@@ -435,7 +435,7 @@ export function DistanceRemainingOverlay(): React.ReactElement | null {
 			etaSec,
 			afterDark: marginMin < 0,
 			marginSec: Math.abs(Math.round(marginMin * 60)),
-			sunsetTimeStr: formatSunTime(w.sunset, units),
+			sunsetTimeStr: formatSunTime(w.sunset, w, units, locale),
 		};
 	}, [
 		sunWeather.weatherData,
@@ -448,6 +448,7 @@ export function DistanceRemainingOverlay(): React.ReactElement | null {
 		gradeAdjustedEta,
 		walkingPaceKmh,
 		units,
+		locale,
 	]);
 
 	const renderDaylightChip = (d: DaylightChipData): React.ReactElement => {

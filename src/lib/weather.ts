@@ -21,11 +21,15 @@ export interface WeatherData {
 	/** UTC offset of the queried location in seconds (e.g. 7200 for UTC+2).
 	 *  Required to correctly convert Open-Meteo's timezone-local ISO strings to UTC. */
 	utcOffsetSeconds: number;
+	/** IANA timezone of the queried location (Open-Meteo `timezone=auto`); weather
+	 *  times are shown in it. Absent without Open-Meteo data. */
+	timeZone?: string;
 	hourly?: HourlyEntry[];
 }
 
 interface OpenMeteoResponse {
 	utc_offset_seconds?: number;
+	timezone?: string;
 	current?: {
 		temperature_2m?: number;
 		apparent_temperature?: number;
@@ -66,7 +70,8 @@ async function fetchOpenMeteo(lat: number, lng: number, signal?: AbortSignal): P
 		if (!current || !daily) return null;
 
 		// Find the hourly precipitation probability for the current hour.
-		const hourlyTimes = json.hourly?.time ?? [];
+		const utcOffsetSeconds = json.utc_offset_seconds ?? 0;
+		const hourlyTimes = (json.hourly?.time ?? []).map((t) => isoLocalToUtcMs(t, utcOffsetSeconds));
 		const hourlyProb = json.hourly?.precipitation_probability ?? [];
 		const now = Date.now();
 		let precipPct = 0;
@@ -74,7 +79,7 @@ async function fetchOpenMeteo(lat: number, lng: number, signal?: AbortSignal): P
 			let closestIdx = 0;
 			let closestDiff = Infinity;
 			for (let i = 0; i < hourlyTimes.length; i++) {
-				const diff = Math.abs(new Date(hourlyTimes[i]).getTime() - now);
+				const diff = Math.abs(hourlyTimes[i] - now);
 				if (diff < closestDiff) {
 					closestDiff = diff;
 					closestIdx = i;
@@ -105,7 +110,8 @@ async function fetchOpenMeteo(lat: number, lng: number, signal?: AbortSignal): P
 			weatherCode: current.weathercode ?? 0,
 			sunrise: daily.sunrise?.[0] ?? '',
 			sunset: daily.sunset?.[0] ?? '',
-			utcOffsetSeconds: json.utc_offset_seconds ?? 0,
+			utcOffsetSeconds,
+			timeZone: json.timezone,
 			hourly,
 		};
 	} catch {
@@ -145,6 +151,7 @@ export async function fetchWeather(lat: number, lng: number, signal?: AbortSigna
 				sunrise: openMeteo?.sunrise || dhmz.sunrise,
 				sunset: openMeteo?.sunset || dhmz.sunset,
 				utcOffsetSeconds: openMeteo?.utcOffsetSeconds ?? dhmz.utcOffsetSeconds ?? 0,
+				timeZone: openMeteo?.timeZone,
 				hourly: openMeteo?.hourly,
 			};
 		}
@@ -237,16 +244,61 @@ export function weatherKeyToIcon(key: string): string {
 	return WEATHER_ICONS[key] ?? '🌡️';
 }
 
-/** Formats an hour label compactly: "14:00" for metric, "2 PM" for imperial. */
-export function formatHourlyTime(date: Date, units: UnitSystem): string {
-	if (units === 'imperial') {
-		return date.toLocaleTimeString('en-US', { hour: 'numeric', hour12: true });
+/** The zone weather times are shown in when a forecast names none: the trail's. */
+const TRAIL_TIME_ZONE = 'Europe/Zagreb';
+
+const clockFormats = new Map<string, Intl.DateTimeFormat>();
+
+/** Cached clock formatter: 12-hour for imperial units, 24-hour for metric, in
+ *  the app language and the given zone (the trail's when unknown or invalid). */
+function clockFormat(
+	locale: string,
+	units: UnitSystem,
+	timeZone: string | undefined,
+	withMinutes: boolean,
+): Intl.DateTimeFormat {
+	const zone = timeZone || TRAIL_TIME_ZONE;
+	const key = `${locale}|${units}|${zone}|${withMinutes}`;
+	let format = clockFormats.get(key);
+	if (!format) {
+		const options: Intl.DateTimeFormatOptions = {
+			...(units === 'imperial' ? { hour: 'numeric', hour12: true } : { hour: '2-digit', hourCycle: 'h23' }),
+			...(withMinutes ? { minute: '2-digit' } : {}),
+		};
+		try {
+			format = new Intl.DateTimeFormat(locale, { ...options, timeZone: zone });
+		} catch {
+			format = new Intl.DateTimeFormat(locale, { ...options, timeZone: TRAIL_TIME_ZONE });
+		}
+		clockFormats.set(key, format);
 	}
-	return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+	return format;
 }
 
-export function formatHourlyTimeShort(date: Date, units: UnitSystem): string {
-	const h = date.getHours();
+/**
+ * Clock time ("14:05", "2:05 PM") in the app language and the forecast
+ * location's timezone, so a planner abroad reads the times a hiker on the
+ * trail sees. `timeZone` is `WeatherData.timeZone`; the trail's when absent.
+ */
+export function formatClockTime(date: Date, units: UnitSystem, locale: string, timeZone?: string): string {
+	return clockFormat(locale, units, timeZone, true).format(date);
+}
+
+/** Formats an hour label compactly: "14:00" for metric, "2 PM" for imperial. */
+export function formatHourlyTime(date: Date, units: UnitSystem, locale: string, timeZone?: string): string {
+	return clockFormat(locale, units, timeZone, units !== 'imperial').format(date);
+}
+
+/** Hour of the day (0-23) in the given zone. */
+function hourInZone(date: Date, timeZone: string | undefined): number {
+	const hour = clockFormat('en-US', 'metric', timeZone, false)
+		.formatToParts(date)
+		.find((part) => part.type === 'hour')?.value;
+	return Number(hour) % 24;
+}
+
+export function formatHourlyTimeShort(date: Date, units: UnitSystem, timeZone?: string): string {
+	const h = hourInZone(date, timeZone);
 	if (units === 'imperial') {
 		const h12 = h % 12 || 12;
 		return `${h12}${h < 12 ? 'a' : 'p'}`;
@@ -357,28 +409,29 @@ export function computeBestWindowHintParams(
 }
 
 /**
- * Formats a sunrise/sunset ISO datetime string (e.g. "2026-03-18T06:42") to a
- * time string. Metric units use 24 h format; imperial uses the locale default.
+ * Formats a forecast sunrise/sunset (e.g. "2026-03-18T06:42", location-local)
+ * as a clock time in the location's timezone and the app language (see
+ * formatClockTime). Empty for a missing or malformed value.
  */
-export function formatSunTime(isoString: string, units: UnitSystem = 'metric'): string {
+export function formatSunTime(
+	isoString: string,
+	weather: Pick<WeatherData, 'utcOffsetSeconds' | 'timeZone'>,
+	units: UnitSystem,
+	locale: string,
+): string {
 	if (!isoString) return '';
-	try {
-		return new Date(isoString).toLocaleTimeString([], {
-			hour: '2-digit',
-			minute: '2-digit',
-			hour12: units === 'imperial' ? undefined : false,
-		});
-	} catch {
-		return isoString.slice(11, 16);
-	}
+	const ms = isoLocalToUtcMs(isoString, weather.utcOffsetSeconds);
+	return Number.isFinite(ms) ? formatClockTime(new Date(ms), units, locale, weather.timeZone) : '';
 }
 
 /**
  * Converts an Open-Meteo local ISO string (no timezone suffix, expressed in the
  * trail location's timezone) to a UTC millisecond timestamp. Without this,
  * `new Date(isoLocal)` parses in the browser's timezone, which is wrong whenever
- * the browser sits in a different zone than the trail. Use the returned value
- * for arithmetic (deltas against Date.now()); use formatSunTime for display.
+ * the browser sits in a different zone than the trail. Open-Meteo writes every
+ * time in a response with one offset (the current one, even across a DST
+ * change), so subtracting `utc_offset_seconds` gives the exact instant. Use the
+ * returned value for arithmetic and formatClockTime for display.
  */
 export function isoLocalToUtcMs(isoLocal: string, utcOffsetSeconds: number): number {
 	return new Date(isoLocal + 'Z').getTime() - utcOffsetSeconds * 1000;
@@ -400,16 +453,18 @@ export interface HourlyStripData {
 export function buildHourlyStripData(
 	weatherData: WeatherData | null,
 	units: UnitSystem,
+	locale: string,
 	tWeather: (key: string, params?: Record<string, string | number>) => string,
 ): HourlyStripData | undefined {
 	if (!weatherData?.hourly?.length) return undefined;
-	const hourly = weatherData.hourly;
+	const { hourly, timeZone } = weatherData;
+	const hourLabel = (date: Date): string => formatHourlyTime(date, units, locale, timeZone);
 	const columns: HourlyColumnData[] = hourly.map((entry) => ({
-		hourLabel: formatHourlyTimeShort(entry.time, units),
+		hourLabel: formatHourlyTimeShort(entry.time, units, timeZone),
 		precipPct: entry.precipPct,
 		precipSrText: tWeather('hourly.precipAt', {
 			pct: entry.precipPct,
-			time: formatHourlyTime(entry.time, units),
+			time: hourLabel(entry.time),
 		}),
 		temperature: formatCompactTemp(entry.tempC, units),
 	}));
@@ -419,12 +474,12 @@ export function buildHourlyStripData(
 	if (hintParams) {
 		if (hintParams.type === 'drierWindow') {
 			bestWindowHint = tWeather('hourly.drierWindow', {
-				start: formatHourlyTime(hintParams.start, units),
-				end: formatHourlyTime(hintParams.end, units),
+				start: hourLabel(hintParams.start),
+				end: hourLabel(hintParams.end),
 			});
 		} else {
 			bestWindowHint = tWeather('hourly.bestToStartBy', {
-				time: formatHourlyTime(hintParams.time, units),
+				time: hourLabel(hintParams.time),
 			});
 		}
 	}

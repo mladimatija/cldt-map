@@ -3,7 +3,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { Marker, useMap } from 'react-leaflet';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import L from 'leaflet';
 import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
 import {
@@ -63,6 +63,7 @@ export default function MapMarkers(): React.ReactElement | null {
 	const tRoute = useTranslations('trailRoute');
 	const tControls = useTranslations('mapControls');
 	const tWeather = useTranslations('weather');
+	const locale = useLocale();
 	const tOverlay = useTranslations('distanceOverlay');
 	const map = useMap();
 	const userMarkerRef = useRef<L.Marker | null>(null);
@@ -280,15 +281,15 @@ export default function MapMarkers(): React.ReactElement | null {
 			feelsLike: formatTemperature(effectiveWeatherData.feelsLikeC, units),
 			precipitation: `${effectiveWeatherData.precipitationProbabilityPct}%`,
 			wind: formatWindSpeed(effectiveWeatherData.windspeedKmh, units),
-			sunrise: formatSunTime(effectiveWeatherData.sunrise, units),
-			sunset: formatSunTime(effectiveWeatherData.sunset, units),
+			sunrise: formatSunTime(effectiveWeatherData.sunrise, effectiveWeatherData, units, locale),
+			sunset: formatSunTime(effectiveWeatherData.sunset, effectiveWeatherData, units, locale),
 			exposure: tooltipExposure(effectiveWeatherData.feelsLikeC, effectiveWeatherData.windspeedKmh, tWeather),
 		};
-	}, [effectiveWeatherData, units, tWeather]);
+	}, [effectiveWeatherData, units, locale, tWeather]);
 
 	const tooltipHourlyStrip = useMemo(
-		() => buildHourlyStripData(effectiveWeatherData, units, tWeather),
-		[effectiveWeatherData, units, tWeather],
+		() => buildHourlyStripData(effectiveWeatherData, units, locale, tWeather),
+		[effectiveWeatherData, units, locale, tWeather],
 	);
 
 	/** Wind-vs-trail compass payload. Null when off-trail, calm, or wind direction unavailable. */

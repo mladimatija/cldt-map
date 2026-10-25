@@ -7,14 +7,17 @@
  */
 import React, { useEffect } from 'react';
 import { IoPlayOutline, IoPauseOutline } from 'react-icons/io5';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { useMapStore, type MapStoreState } from '@/lib/store';
+import { formatClockTime } from '@/lib/weather';
 
 const FRAME_INTERVAL_MS = 600;
 const GRADIENT = 'linear-gradient(to right, #9ec8f0, #24d324, #f0f024, #f08024, #f02424)';
 
 export function RadarControls(): React.ReactElement | null {
 	const t = useTranslations('weather');
+	const locale = useLocale();
+	const units = useMapStore((state: MapStoreState) => state.units);
 	const showRadarOverlay = useMapStore((state: MapStoreState) => state.showRadarOverlay);
 	const radarFrames = useMapStore((state: MapStoreState) => state.radarFrames);
 	const radarFrameIndex = useMapStore((state: MapStoreState) => state.radarFrameIndex);
@@ -33,13 +36,8 @@ export function RadarControls(): React.ReactElement | null {
 	if (!showRadarOverlay || !radarFrames.length) return null;
 
 	const currentFrame = radarFrames[radarFrameIndex];
-	const timestamp = currentFrame
-		? new Date(currentFrame.time * 1000).toLocaleTimeString([], {
-				hour: '2-digit',
-				minute: '2-digit',
-				hour12: false,
-			})
-		: '--:--';
+	// In the trail's timezone and the app language, like the forecast times.
+	const timestamp = currentFrame ? formatClockTime(new Date(currentFrame.time * 1000), units, locale) : '--:--';
 
 	return (
 		<div className="flex items-center gap-2.5 self-start rounded-lg bg-white/80 px-2.5 py-1.5 shadow backdrop-blur-sm dark:bg-zinc-800/80">
