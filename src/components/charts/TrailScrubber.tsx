@@ -14,7 +14,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useMap } from 'react-leaflet';
 import { useTranslations } from 'next-intl';
 import L from 'leaflet';
-import { useStore, useMapStore, type StoreState, type MapStoreState } from '@/lib/store';
+import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
 import { useBlockMapPropagation } from '@/hooks';
 import { formatDistance, formatElevation } from '@/lib/utils';
 import { findNearestPointIndex } from '@/lib/distance-utils';
@@ -33,7 +33,7 @@ export function TrailScrubber(): React.ReactElement | null {
 	const enhancedTrailPoints = useStore((state: StoreState) => state.enhancedTrailPoints);
 	const trailMetadata = useStore((state: StoreState) => state.trailMetadata);
 	const highlightTrailPosition = useStore((state: StoreState) => state.highlightTrailPosition);
-	const direction = useStore((state: StoreState) => state.direction);
+	const direction = useMapStore((state: MapStoreState) => state.direction);
 	const units = useMapStore((state: MapStoreState) => state.units);
 	const distancePrecision = useMapStore((state: MapStoreState) => state.distancePrecision);
 	const poisFile = useMapStore((state: MapStoreState) => state.poisFile);

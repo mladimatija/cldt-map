@@ -89,7 +89,7 @@ export function MineAreaLayer(): null {
 	const units = useMapStore((s: MapStoreState) => s.units);
 	const distancePrecision = useMapStore((s: MapStoreState) => s.distancePrecision);
 	const enhancedTrailPoints = useStore((s: StoreState) => s.enhancedTrailPoints);
-	const direction = useStore((s: StoreState) => s.direction);
+	const direction = useMapStore((s: MapStoreState) => s.direction);
 	const totalKm = useStore((s: StoreState) => s.trailMetadata.totalDistance);
 
 	const groupRef = useRef<L.LayerGroup | null>(null);

@@ -4,7 +4,7 @@
 import React, { useCallback, useState, useEffect, useRef } from 'react';
 import { useMap } from 'react-leaflet';
 import { useBlockMapPropagation } from '@/hooks';
-import { useMapStore, type MapStoreState } from '@/lib/store';
+import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
 import { IoAddOutline, IoRemoveOutline, IoExpandOutline } from 'react-icons/io5';
 import { MdFullscreen, MdFullscreenExit } from 'react-icons/md';
 import SmartTooltip from '@/components/ui/SmartTooltip';
@@ -27,8 +27,8 @@ export default function MapControlsZoomControls(): React.ReactElement {
 	const containerRef = useRef<HTMLDivElement>(null);
 	useBlockMapPropagation(containerRef);
 	const isFullscreen = useMapStore((state: MapStoreState) => state.isMapFullscreen);
-	const gpxLoaded = useMapStore((state: MapStoreState) => state.gpxLoaded);
-	const gpxLoadFailed = useMapStore((state: MapStoreState) => state.gpxLoadFailed);
+	const gpxLoaded = useStore((state: StoreState) => state.gpxLoaded);
+	const gpxLoadFailed = useStore((state: StoreState) => state.gpxLoadFailed);
 	const [mapZoom, setMapZoom] = useState(map.getZoom());
 
 	const handleZoomChange = useCallback((): void => {

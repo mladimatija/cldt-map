@@ -431,7 +431,6 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 		ensurePane(TRAIL_POINT_TOOLTIP_PANE, 'trail-point-tooltip-pane');
 	}, [map]);
 
-	const selectedTrail = useMapStore((state: MapStoreState) => state.selectedTrail);
 	const direction = useMapStore((state: MapStoreState) => state.direction);
 	const units = useMapStore((state: MapStoreState) => state.units);
 	const isRulerEnabled = useMapStore((state: MapStoreState) => state.isRulerEnabled);
@@ -477,9 +476,8 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 	const clearTrailHighlight = useStore((state: StoreState) => state.clearTrailHighlight);
 	const trailMetadata = useStore((state: StoreState) => state.trailMetadata);
 
-	const setRawGpxData = useMapStore((state: MapStoreState) => state.setRawGpxData);
-	const setGpxLoaded = useMapStore((state: MapStoreState) => state.setGpxLoaded);
-	const setGpxLoadFailed = useMapStore((state: MapStoreState) => state.setGpxLoadFailed);
+	const setRawGpxData = useStore((state: StoreState) => state.setRawGpxData);
+	const setGpxLoadFailed = useStore((state: StoreState) => state.setGpxLoadFailed);
 	const reloadTrailRequested = useMapStore((state: MapStoreState) => state.reloadTrailRequested);
 
 	// Mirror the share-pin state into a ref so showMarkerAtPosition can read the
@@ -910,15 +908,11 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 
 				if (result.status === 'error') {
 					console.error('Failed to load GPX data:', result.message);
-					if (setGpxLoadFailed) {
-						setGpxLoadFailed(true);
-					}
+					setGpxLoadFailed(true);
 					return;
 				}
 
-				if (setRawGpxData) {
-					setRawGpxData(result.data);
-				}
+				setRawGpxData(result.data);
 
 				// Persisted-compute first: a prior visit's enhanced dataset (keyed by
 				// GPX cache version) lets repeat loads skip the parse + O(n)
@@ -936,15 +930,20 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 				// both paths produce identical points, distances and metadata.
 				if (!computed) computed = computeFromGpx(result.data);
 
-				if (!isMounted || computed.enhanced.length === 0) {
+				if (!isMounted) {
+					return;
+				}
+				if (computed.enhanced.length === 0) {
+					// A track without points (a truncated or wrong file): offer the retry.
+					setGpxLoadFailed(true);
 					return;
 				}
 
 				// The only main-thread loops left are cheap materialisations.
-				useStore.getState().applyComputedTrailData?.(computed);
+				useStore.getState().applyComputedTrailData(computed);
 				// One-time mirror of a northbound user's data saved before trail km were
 				// stored southbound; it needs the trail length, known from here on.
-				useMapStore.getState().applyKmFrameMigration?.(computed.metadata.totalDistanceM / 1000);
+				useMapStore.getState().applyKmFrameMigration(computed.metadata.totalDistanceM / 1000);
 				// Borrow the main store's trailPoints instead of building a second
 				// L.LatLng array over the same ~100k coordinates: applyComputedTrailData
 				// has just materialised exactly this list, and zustand's set is
@@ -968,17 +967,11 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 					// Populated by applyComputedTrailData above.
 					enhanced: useStore.getState().enhancedTrailPoints,
 					hasElevation: computed.hasElevation,
-					loadToken: `${selectedTrail ?? ''}:${reloadTrailRequested}`,
+					loadToken: String(reloadTrailRequested),
 				});
-
-				if (setGpxLoaded) {
-					setGpxLoaded(true);
-				}
 			} catch (error) {
 				console.error('Error loading GPX trail:', error);
-				if (setGpxLoadFailed) {
-					setGpxLoadFailed(true);
-				}
+				setGpxLoadFailed(true);
 			}
 		};
 
@@ -987,7 +980,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 		return () => {
 			isMounted = false;
 		};
-	}, [map, selectedTrail, reloadTrailRequested, setRawGpxData, setGpxLoaded, setGpxLoadFailed]);
+	}, [map, reloadTrailRequested, setRawGpxData, setGpxLoadFailed]);
 
 	// Route polylines and section boundary chips for the active style. Keyed on the
 	// geometry snapshot, so a style change redraws from data already in memory.
@@ -1298,7 +1291,8 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 		}
 		// The single path that shows the tooltip (route click, chart hover, scrubber,
 		// share link) and tears it down when the highlight clears from anywhere. A
-		// unit, precision or trail-data change re-renders the open tooltip once.
+		// unit, precision, direction or trail-data change re-renders the open
+		// tooltip once (its distances are counted from the hiker's start).
 		if (highlightedPoint) {
 			showMarkerAtPosition(highlightedPoint);
 		} else {
@@ -1310,6 +1304,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 		isRulerEnabled,
 		units,
 		distancePrecision,
+		direction,
 		trailMetadata,
 		showMarkerAtPosition,
 		clearMarkerAndTooltip,

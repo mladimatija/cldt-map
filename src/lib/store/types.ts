@@ -127,34 +127,26 @@ export interface TrailState {
 	enhancedTrailPoints: EnhancedTrailPoint[];
 	highlightedTrailPoint: EnhancedTrailPoint | null;
 	tooltipPinnedFromShare: boolean;
-	boundaryInitialized: boolean;
+	/** The trail data has been applied (applyComputedTrailData). */
 	gpxLoaded: boolean;
+	/** The GPX could not be loaded; the error banner offers a retry. */
 	gpxLoadFailed: boolean;
 	closestPointCalculated: boolean;
 	showClosestPointLine: boolean;
 	closestPoint: ClosestPoint | null;
 	trailMetadata: TrailMetadata;
+	/** The GPX text the trail was computed from, for the full-trail download. */
 	rawGpxData: string | null;
-	direction: TrailDirection;
 }
 
 export interface TrailActions {
-	setTrailPoints: (points: LatLng[]) => void;
-	setEnhancedTrailPoints: (points: EnhancedTrailPoint[]) => void;
-	setHighlightedTrailPoint: (point: EnhancedTrailPoint | null) => void;
-	setBoundaryInitialized: (initialized: boolean) => void;
-	setGpxLoaded: (loaded: boolean) => void;
 	setGpxLoadFailed: (failed: boolean) => void;
 	setClosestPointCalculated: (calculated: boolean) => void;
-	setShowClosestPointLine: (show: boolean) => void;
 	setClosestPoint: (point: ClosestPoint | null) => void;
-	setTrailMetadata: (metadata: TrailMetadata) => void;
 	setRawGpxData: (data: string) => void;
-	setDirection: (direction: TrailDirection) => void;
 
 	calculateClosestPoint: () => void;
 	forceCalculateClosestPointFromLocation: (location: { lat: number; lng: number }) => void;
-	broadcastDirectionChange: (newDirection: TrailDirection) => void;
 	/** Applies a dataset computed by trail-compute (in the worker, or on the
 	 *  main thread when the worker is unavailable). */
 	applyComputedTrailData: (data: import('../trail-compute').ComputedTrailData) => void;
@@ -163,31 +155,13 @@ export interface TrailActions {
 	) => void;
 	clearTrailHighlight: (force?: boolean) => void;
 	setTooltipPinnedFromShare: (pinned: boolean) => void;
-	requestRawGpxData: () => string | null;
 	findTrailPointByDistance: (distance: number) => EnhancedTrailPoint | null;
 	findTrailPointByCoordinates: (lat: number, lng: number, maxDistanceM?: number) => EnhancedTrailPoint | null;
 }
 
 export type TrailSlice = TrailState & TrailActions;
 
-export interface UIState {
-	showBoundary: boolean;
-	showTileBoundary: boolean;
-	units: UnitSystem;
-	mapMountTime: number | null;
-}
-
-export interface UIActions {
-	setShowBoundary: (show: boolean) => void;
-	setShowTileBoundary: (show: boolean) => void;
-	setUnits: (units: UnitSystem) => void;
-	setMapMountTime: (time: number) => void;
-	broadcastUnitsChange: (newUnits: UnitSystem) => void;
-}
-
-export type UISlice = UIState & UIActions;
-
-export type StoreState = LocationSlice & TrailSlice & UISlice;
+export type StoreState = LocationSlice & TrailSlice;
 
 export interface ShareCopyToast {
 	status: 'success' | 'error';
@@ -244,22 +218,8 @@ export function getActiveStarredPoiIds(
 }
 
 export interface MapStoreState {
-	selectedTrail: string | null;
-	setSelectedTrail: (id: string | null) => void;
-
-	trailData: GeoJSON.FeatureCollection | null;
-	setTrailData: (data: GeoJSON.FeatureCollection | null) => void;
-
-	rawGpxData?: string | null;
-	setRawGpxData: (data: string | null) => void;
-	gpxLoaded?: boolean;
-	setGpxLoaded: (loaded: boolean) => void;
-	gpxLoadFailed?: boolean;
-	setGpxLoadFailed: (failed: boolean) => void;
 	reloadTrailRequested: number;
 	setReloadTrailRequested: (timestamp: number) => void;
-	trailPoints?: LatLng[];
-	requestRawGpxData?: () => string | null;
 
 	units: UnitSystem;
 	setUnits: (units: UnitSystem) => void;
@@ -388,7 +348,8 @@ export interface MapStoreState {
 	// ── Offline / tile cache ─────────────────────────────────────────────────
 	isOffline: boolean;
 	setIsOffline: (offline: boolean) => void;
-	initOfflineDetection: () => void;
+	/** Tracks navigator.onLine into isOffline; returns the cleanup. */
+	initOfflineDetection: () => () => void;
 
 	tileCacheDownloading: boolean;
 	tileCacheDone: number;

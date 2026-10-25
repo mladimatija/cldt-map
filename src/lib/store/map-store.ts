@@ -66,7 +66,7 @@ import { addInterval, removeInterval, type CompletionInterval } from '../complet
 import { TRAIL_SECTIONS } from '../trail-sections';
 import { clampPaceFactor, DEFAULT_WATER_CONSUMPTION_LPH } from '../pack-weight';
 import { DEFAULT_FOOD_CONSUMPTION_KG_PER_DAY } from '../resupply-cadence';
-import { normalizeWaypointCategory, type WaypointCategoryId } from '../waypoint-categories';
+import { isWaypointCategoryId, normalizeWaypointCategory } from '../waypoint-categories';
 import {
 	filterActiveEntries,
 	isSeasonalStatusDefaultEnabled,
@@ -284,19 +284,22 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					if (ran) set((s) => ({ poiPrefetchVersion: s.poiPrefetchVersion + 1 }));
 				}
 
+				/** Callers of initOfflineDetection still active, and how to remove the
+				 *  online/offline listeners once the last one is done. */
+				let offlineDetectionUsers = 0;
+				let removeOfflineListeners: (() => void) | null = null;
+
+				/** Lands a fake GPS fix in both stores the way a real one would, with the
+				 *  fake mode on, in one update. */
+				const applyFakeLocation = (lat: number, lng: number): void => {
+					const location = { lat, lng, accuracy: 50 };
+					set({ fakeUserLocationEnabled: true, userLocation: location, permissionStatus: 'granted' as const });
+					const main = getMainStore();
+					main.setUserLocation(location);
+					main.forceCalculateClosestPointFromLocation(location);
+				};
+
 				return {
-					selectedTrail: null,
-					setSelectedTrail: (id: string | null) => set({ selectedTrail: id }),
-
-					trailData: null,
-					setTrailData: (data: GeoJSON.FeatureCollection | null) => set({ trailData: data }),
-
-					rawGpxData: null,
-					setRawGpxData: (data: string | null) => set({ rawGpxData: data }),
-					gpxLoaded: false,
-					setGpxLoaded: (loaded: boolean) => set({ gpxLoaded: loaded }),
-					gpxLoadFailed: false,
-					setGpxLoadFailed: (failed: boolean) => set({ gpxLoadFailed: failed }),
 					reloadTrailRequested: 0,
 					setReloadTrailRequested: (timestamp: number) => set({ reloadTrailRequested: timestamp }),
 
@@ -367,32 +370,16 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					setShowUserMarker: (show: boolean) => set({ showUserMarker: show }),
 					fakeUserLocationEnabled: false,
 					setFakeUserLocationEnabled: (enabled: boolean) => {
-						set({ fakeUserLocationEnabled: enabled });
 						if (enabled) {
-							const loc = getRandomLocationInBoundary();
-							const location = { lat: loc.lat, lng: loc.lng, accuracy: 50 };
-							set({
-								userLocation: location,
-								permissionStatus: 'granted' as const,
-							});
-							const main = getMainStore();
-							main.setUserLocation(location);
-							main.forceCalculateClosestPointFromLocation?.(location);
+							get().setFakeUserLocation();
 						} else {
-							set({ userLocation: null });
+							set({ fakeUserLocationEnabled: false, userLocation: null });
 							getMainStore().setUserLocation(null);
 						}
 					},
 					setFakeUserLocation: () => {
 						const loc = getRandomLocationInBoundary();
-						const location = { lat: loc.lat, lng: loc.lng, accuracy: 50 };
-						set({
-							userLocation: location,
-							permissionStatus: 'granted' as const,
-						});
-						const main = getMainStore();
-						main.setUserLocation(location);
-						main.forceCalculateClosestPointFromLocation?.(location);
+						applyFakeLocation(loc.lat, loc.lng);
 					},
 					setFakeUserLocationOnTrail: async () => {
 						let points: { lat: number; lng: number }[] = [];
@@ -409,17 +396,8 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 							points = await fetchAndParseTrailPoints();
 						}
 						if (points.length === 0) return;
-						const idx = Math.floor(Math.random() * points.length);
-						const { lat, lng } = points[idx];
-						const location = { lat, lng, accuracy: 50 };
-						set({
-							fakeUserLocationEnabled: true,
-							userLocation: location,
-							permissionStatus: 'granted' as const,
-						});
-						const main = getMainStore();
-						main.setUserLocation(location);
-						main.forceCalculateClosestPointFromLocation?.(location);
+						const { lat, lng } = points[Math.floor(Math.random() * points.length)];
+						applyFakeLocation(lat, lng);
 					},
 
 					darkMode: config.darkMode,
@@ -499,13 +477,30 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					setIsOffline: (offline: boolean) => set({ isOffline: offline }),
 
 					initOfflineDetection: () => {
-						if (typeof window === 'undefined') return;
+						if (typeof window === 'undefined') return () => {};
 						const update = (): void => {
 							set({ isOffline: !navigator.onLine });
 						};
 						update();
-						window.addEventListener('online', update);
-						window.addEventListener('offline', update);
+						// One listener pair however many callers (React's dev double mount, a
+						// second consumer); each caller's cleanup releases its own use.
+						if (offlineDetectionUsers++ === 0) {
+							window.addEventListener('online', update);
+							window.addEventListener('offline', update);
+							removeOfflineListeners = () => {
+								window.removeEventListener('online', update);
+								window.removeEventListener('offline', update);
+							};
+						}
+						let released = false;
+						return () => {
+							if (released) return;
+							released = true;
+							if (--offlineDetectionUsers === 0) {
+								removeOfflineListeners?.();
+								removeOfflineListeners = null;
+							}
+						};
 					},
 
 					tileCacheDownloading: false,
@@ -2190,15 +2185,23 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 
 					const rawPresets = (persistedState as { poiFilterPresets?: unknown })?.poiFilterPresets;
 					if (Array.isArray(rawPresets)) {
-						merged.poiFilterPresets = rawPresets.filter(
-							(p): p is NonNullable<MapStoreState['poiFilterPresets']>[number] =>
-								!!p &&
-								typeof p === 'object' &&
-								typeof (p as { id?: unknown }).id === 'string' &&
-								typeof (p as { name?: unknown }).name === 'string' &&
-								Array.isArray((p as { enabledPoiTypes?: unknown }).enabledPoiTypes) &&
-								Array.isArray((p as { enabledPoiTags?: unknown }).enabledPoiTags),
-						);
+						merged.poiFilterPresets = rawPresets
+							.filter(
+								(p): p is NonNullable<MapStoreState['poiFilterPresets']>[number] =>
+									!!p &&
+									typeof p === 'object' &&
+									typeof (p as { id?: unknown }).id === 'string' &&
+									typeof (p as { name?: unknown }).name === 'string' &&
+									Array.isArray((p as { enabledPoiTypes?: unknown }).enabledPoiTypes) &&
+									Array.isArray((p as { enabledPoiTags?: unknown }).enabledPoiTags),
+							)
+							// The lists become Sets of strings when a preset is applied.
+							.map((p) => ({
+								id: p.id,
+								name: p.name,
+								enabledPoiTypes: p.enabledPoiTypes.filter((t): t is string => typeof t === 'string'),
+								enabledPoiTags: p.enabledPoiTags.filter((t): t is string => typeof t === 'string'),
+							}));
 					}
 
 					const rawStagePresets = (persistedState as { stagePlanPresets?: unknown })?.stagePlanPresets;
@@ -2251,7 +2254,8 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 						(persistedState as { hiddenWaypointCategories?: unknown })?.hiddenWaypointCategories,
 					);
 					if (rehydratedHiddenWp) {
-						merged.hiddenWaypointCategories = rehydratedHiddenWp as Set<WaypointCategoryId>;
+						// Known categories only: an unknown id (an older build, a hand edit) hides nothing.
+						merged.hiddenWaypointCategories = new Set([...rehydratedHiddenWp].filter(isWaypointCategoryId));
 					}
 					if (typeof (persistedState as { lastWaypointCategory?: unknown })?.lastWaypointCategory === 'string') {
 						merged.lastWaypointCategory = normalizeWaypointCategory(

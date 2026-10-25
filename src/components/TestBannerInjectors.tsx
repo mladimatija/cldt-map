@@ -13,7 +13,7 @@ import React, { useState } from 'react';
 import dynamic from 'next/dynamic';
 import { useTranslations } from 'next-intl';
 import type * as GeoJSON from 'geojson';
-import { useMapStore, useStore, type MapStoreState } from '@/lib/store';
+import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
 import type { SeasonalStatusFile } from '@/lib/seasonal-status';
 import type { MineAreasFile } from '@/lib/mine-areas';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
@@ -187,8 +187,8 @@ export function TestBannerInjectors(): React.ReactElement {
 	const userLocation = useMapStore((s: MapStoreState) => s.userLocation);
 	const severeWeatherData = useMapStore((s: MapStoreState) => s.severeWeatherData);
 	const setSevereWeatherData = useMapStore((s: MapStoreState) => s.setSevereWeatherData);
-	const gpxLoadFailed = useMapStore((s: MapStoreState) => s.gpxLoadFailed);
-	const setGpxLoadFailed = useMapStore((s: MapStoreState) => s.setGpxLoadFailed);
+	const gpxLoadFailed = useStore((s: StoreState) => s.gpxLoadFailed);
+	const setGpxLoadFailed = useStore((s: StoreState) => s.setGpxLoadFailed);
 	const showStaleCacheNotification = useMapStore((s: MapStoreState) => s.showStaleCacheNotification);
 	const setStaleCacheNotification = useMapStore((s: MapStoreState) => s.setStaleCacheNotification);
 

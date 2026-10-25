@@ -2,7 +2,7 @@
 
 import React, { useRef } from 'react';
 import { useBlockMapPropagation } from '@/hooks';
-import { useMapStore, type MapStoreState } from '@/lib/store';
+import { useStore, type StoreState } from '@/lib/store';
 import MapControlsLocationButton from './MapControlsLocationButton';
 import MapControlsUserLocationToggleButton from './MapControlsUserLocationToggleButton';
 
@@ -13,7 +13,7 @@ interface LocationControlsProps {
 export default function MapControlsLocationControls({ checkPermission }: LocationControlsProps): React.ReactElement {
 	const containerRef = useRef<HTMLDivElement>(null);
 	useBlockMapPropagation(containerRef);
-	const gpxLoadFailed = useMapStore((state: MapStoreState) => state.gpxLoadFailed);
+	const gpxLoadFailed = useStore((state: StoreState) => state.gpxLoadFailed);
 
 	return (
 		<div

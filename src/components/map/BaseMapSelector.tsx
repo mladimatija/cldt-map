@@ -6,7 +6,7 @@ import { useMap } from 'react-leaflet';
 import { BaseMapProvider, MapService } from '@/lib/services/map-service';
 import { useBlockMapPropagation, useMapStore, usePanel } from '@/hooks';
 import { L } from '@/lib/store/leaflet';
-import type { MapStoreState } from '@/lib/store';
+import { useStore, type MapStoreState, type StoreState } from '@/lib/store';
 import { cn } from '@/lib/utils';
 import SmartTooltip from '@/components/ui/SmartTooltip';
 import { Button } from '@/components/ui/Button';
@@ -25,7 +25,7 @@ export default function BaseMapSelector({ initialProvider }: BaseMapSelectorProp
 	const map = useMap();
 	const storedProvider = useMapStore((state: MapStoreState) => state.baseMapProvider);
 	const setBaseMapProvider = useMapStore((state: MapStoreState) => state.setBaseMapProvider);
-	const gpxLoadFailed = useMapStore((state: MapStoreState) => state.gpxLoadFailed);
+	const gpxLoadFailed = useStore((state: StoreState) => state.gpxLoadFailed);
 	const effectiveInitial = resolveProvider(storedProvider, initialProvider || BaseMapProvider.OPEN_STREET_MAP);
 	const [currentLayer, setCurrentLayer] = useState<BaseMapProvider>(effectiveInitial);
 

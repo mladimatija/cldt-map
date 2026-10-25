@@ -1,6 +1,5 @@
 import type { LatLng } from 'leaflet';
 import type { StateCreator } from 'zustand';
-import { config } from '../config';
 import { isWithinMapBoundary } from '../utils';
 import type { StoreState, TrailSlice, TrailState, ClosestPoint, EnhancedTrailPoint } from './types';
 import { L } from './leaflet';
@@ -88,7 +87,6 @@ export const INITIAL_TRAIL_STATE: TrailState = {
 	enhancedTrailPoints: [],
 	highlightedTrailPoint: null,
 	tooltipPinnedFromShare: false,
-	boundaryInitialized: false,
 	gpxLoaded: false,
 	gpxLoadFailed: false,
 	closestPointCalculated: false,
@@ -102,24 +100,15 @@ export const INITIAL_TRAIL_STATE: TrailState = {
 		elevationLoss: 0,
 	},
 	rawGpxData: null,
-	direction: config.direction,
 };
 
 export const createTrailSlice: StateCreator<StoreState, [], [], TrailSlice> = (set, get) => ({
 	...INITIAL_TRAIL_STATE,
 
-	setTrailPoints: (points) => set({ trailPoints: points }),
-	setEnhancedTrailPoints: (points) => set({ enhancedTrailPoints: points }),
-	setHighlightedTrailPoint: (point) => set({ highlightedTrailPoint: point }),
-	setBoundaryInitialized: (initialized) => set({ boundaryInitialized: initialized }),
-	setGpxLoaded: (loaded) => set({ gpxLoaded: loaded }),
 	setGpxLoadFailed: (failed) => set({ gpxLoadFailed: failed }),
 	setClosestPointCalculated: (calculated) => set({ closestPointCalculated: calculated }),
-	setShowClosestPointLine: (show) => set({ showClosestPointLine: show }),
 	setClosestPoint: (point) => set({ closestPoint: point }),
-	setTrailMetadata: (metadata) => set({ trailMetadata: metadata }),
 	setRawGpxData: (data) => set({ rawGpxData: data }),
-	setDirection: (direction) => set({ direction }),
 
 	calculateClosestPoint: (): void => {
 		const state = get();
@@ -192,15 +181,6 @@ export const createTrailSlice: StateCreator<StoreState, [], [], TrailSlice> = (s
 				showClosestPointLine: closestPointData.distance < 10000,
 			});
 		}
-	},
-
-	broadcastDirectionChange: (newDirection): void => {
-		set({ direction: newDirection });
-
-		const event = new CustomEvent('directionChange', {
-			detail: { direction: newDirection },
-		});
-		window.dispatchEvent(event);
 	},
 
 	applyComputedTrailData: (data): void => {
@@ -294,6 +274,4 @@ export const createTrailSlice: StateCreator<StoreState, [], [], TrailSlice> = (s
 	setTooltipPinnedFromShare: (pinned): void => {
 		set({ tooltipPinnedFromShare: pinned });
 	},
-
-	requestRawGpxData: (): string | null => get().rawGpxData,
 });

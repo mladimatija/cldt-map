@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useTranslations } from 'next-intl';
-import { useMapStore, type MapStoreState } from '@/lib/store';
+import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
 import { clearGPXCache } from '@/lib/gpx-cache';
 import { Button } from '@/components/ui/Button';
 
@@ -11,8 +11,8 @@ import { Button } from '@/components/ui/Button';
  */
 export default function GPXLoadErrorBanner(): React.ReactElement | null {
 	const t = useTranslations('common');
-	const gpxLoadFailed = useMapStore((state: MapStoreState) => state.gpxLoadFailed);
-	const setGpxLoadFailed = useMapStore((state: MapStoreState) => state.setGpxLoadFailed);
+	const gpxLoadFailed = useStore((state: StoreState) => state.gpxLoadFailed);
+	const setGpxLoadFailed = useStore((state: StoreState) => state.setGpxLoadFailed);
 	const setReloadTrailRequested = useMapStore((state: MapStoreState) => state.setReloadTrailRequested);
 
 	const handleDismiss = (): void => setGpxLoadFailed(false);

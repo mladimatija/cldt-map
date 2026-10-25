@@ -7,7 +7,7 @@
 import React, { Suspense, useState, useEffect, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 import { useLocale, useTranslations } from 'next-intl';
-import { useMapStore, type MapStoreState } from '@/lib/store';
+import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
 import { DEFAULT_PATH_OPTIONS } from '@/components/map/trail-route-constants';
 import { useSevereWeatherFetch } from '@/hooks/useSevereWeatherFetch';
 import { useMineAreasFetch } from '@/hooks/useMineAreasFetch';
@@ -172,7 +172,7 @@ export default function MapContent(): React.ReactElement {
 	const isLocating = useMapStore((state: MapStoreState) => state.isLocating);
 	const userLocation = useMapStore((state: MapStoreState) => state.userLocation);
 	const fakeUserLocationEnabled = useMapStore((state: MapStoreState) => state.fakeUserLocationEnabled);
-	const gpxLoaded = useMapStore((state: MapStoreState) => state.gpxLoaded);
+	const gpxLoaded = useStore((state: StoreState) => state.gpxLoaded);
 	const tourActive = useMapStore((state: MapStoreState) => state.tourActive);
 	const permissionStatus = useMapStore((state: MapStoreState) => state.permissionStatus);
 	const initLocationService = useMapStore((state: MapStoreState) => state.initLocationService);

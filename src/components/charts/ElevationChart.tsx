@@ -29,7 +29,7 @@ import {
 	travelGainLoss,
 	travelGradePct,
 } from '@/lib/trail-frame';
-import { useStore, useMapStore, type StoreState, type MapStoreState } from '@/lib/store';
+import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
 import { SAC_BUCKET_SHORT_LABELS, SAC_COLORS, SURFACE_COLORS } from '@/components/map/trail-route-constants';
 import { TRAIL_SECTIONS } from '@/lib/trail-sections';
 import { downsampleMinMax } from '@/lib/downsample';
@@ -101,8 +101,8 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 	const clearTrailHighlight = useStore((state: StoreState) => state.clearTrailHighlight);
 	const trailMetadata = useStore((state: StoreState) => state.trailMetadata);
 	const gpxLoaded = useStore((state: StoreState) => state.gpxLoaded);
-	const gpxLoadFailed = useMapStore((state: MapStoreState) => state.gpxLoadFailed);
-	const rawGpxData = useMapStore((state: MapStoreState) => state.rawGpxData);
+	const gpxLoadFailed = useStore((state: StoreState) => state.gpxLoadFailed);
+	const rawGpxData = useStore((state: StoreState) => state.rawGpxData);
 	const walkingPaceKmh = usePackAdjustedPaceKmh();
 	const gradeAdjustedEta = useMapStore((state: MapStoreState) => state.gradeAdjustedEta);
 	const darkMode = useMapStore((state: MapStoreState) => state.darkMode);

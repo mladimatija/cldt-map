@@ -12,62 +12,31 @@ export function createStoreStub(): StoreState {
 	return {
 		userLocation: null,
 		...INITIAL_TRAIL_STATE,
-		direction: 'SOBO',
-		showBoundary: false,
-		showTileBoundary: false,
-		units: 'metric',
-		mapMountTime: null,
 		setUserLocation: () => {},
-		setTrailPoints: () => {},
-		setEnhancedTrailPoints: () => {},
-		setHighlightedTrailPoint: () => {},
-		setBoundaryInitialized: () => {},
-		setGpxLoaded: () => {},
 		setGpxLoadFailed: () => {},
 		setClosestPointCalculated: () => {},
-		setShowClosestPointLine: () => {},
 		setClosestPoint: () => {},
-		setTrailMetadata: () => {},
 		setRawGpxData: () => {},
-		setDirection: () => {},
 		calculateClosestPoint: () => {},
 		forceCalculateClosestPointFromLocation: () => {},
-		broadcastDirectionChange: () => {},
 		applyComputedTrailData: () => {},
 		highlightTrailPosition: () => {},
 		clearTrailHighlight: () => {},
 		setTooltipPinnedFromShare: () => {},
-		requestRawGpxData: () => null,
 		findTrailPointByDistance: () => null,
 		findTrailPointByCoordinates: () => null,
-		setShowBoundary: () => {},
-		setShowTileBoundary: () => {},
-		setUnits: () => {},
-		setMapMountTime: () => {},
-		broadcastUnitsChange: () => {},
 	};
 }
 
 const noop = (): void => {};
 const noopAsyncLocation = async (): Promise<{ lat: number; lng: number }> => ({ lat: 0, lng: 0 });
 const noopAsyncVoid = async (): Promise<void> => {};
-const noopNull = (): string | null => null;
 
 /**
  * Returns an object matching MapStoreState with default values and no-op functions for SSR.
  */
 export function createMapStoreStub(): MapStoreState {
 	return {
-		selectedTrail: null,
-		setSelectedTrail: noop,
-		trailData: null,
-		setTrailData: noop,
-		rawGpxData: null,
-		setRawGpxData: noop,
-		gpxLoaded: false,
-		setGpxLoaded: noop,
-		gpxLoadFailed: false,
-		setGpxLoadFailed: noop,
 		reloadTrailRequested: 0,
 		setReloadTrailRequested: noop,
 		units: 'metric',
@@ -154,11 +123,10 @@ export function createMapStoreStub(): MapStoreState {
 		startTour: noop,
 		endTour: noop,
 		markOnboardingSeen: noop,
-		requestRawGpxData: noopNull,
 
 		isOffline: false,
 		setIsOffline: noop,
-		initOfflineDetection: noop,
+		initOfflineDetection: () => noop,
 		tileCacheDownloading: false,
 		tileCacheDone: 0,
 		tileCacheTotal: 0,

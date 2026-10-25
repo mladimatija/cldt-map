@@ -68,8 +68,8 @@ export function MapControlsTileCachePanel({ embedded = false }: MapControlsTileC
 	const userLocation = useMapStore((s: MapStoreState) => s.userLocation);
 	const poiPrefetchVersion = useMapStore((s: MapStoreState) => s.poiPrefetchVersion);
 	const poiPrefetchSkipped = useMapStore((s: MapStoreState) => s.poiPrefetchSkipped);
-	const gpxLoaded = useMapStore((s: MapStoreState) => s.gpxLoaded);
-	const rawGpxData = useMapStore((s: MapStoreState) => s.rawGpxData);
+	const gpxLoaded = useStore((s: StoreState) => s.gpxLoaded);
+	const rawGpxData = useStore((s: StoreState) => s.rawGpxData);
 	const startTileDownload = useMapStore((s: MapStoreState) => s.startTileDownload);
 	const cancelTileDownload = useMapStore((s: MapStoreState) => s.cancelTileDownload);
 	const retryFailedTiles = useMapStore((s: MapStoreState) => s.retryFailedTiles);

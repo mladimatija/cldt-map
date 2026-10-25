@@ -185,25 +185,10 @@ export function milesToKm(mi: number): number {
  */
 export function formatDistance(
 	distance: number,
-	units?: UnitSystem,
+	units: UnitSystem,
 	precision?: number,
 	needsConversion: boolean = false,
 ): string {
-	// Allow use without passing units: read from Zustand store when in browser (SSR-safe).
-	if (units === undefined) {
-		units = 'metric';
-		if (typeof window !== 'undefined') {
-			try {
-				const store = useStore.getState?.();
-				if (store?.units) {
-					units = store.units;
-				}
-			} catch {
-				// Use default when store not ready (e.g., SSR)
-			}
-		}
-	}
-
 	// Precision can come from store (user preference) or config default; avoid store access during SSR.
 	if (precision === undefined) {
 		precision = config.distancePrecision;
@@ -234,25 +219,7 @@ export function formatDistance(
  * @param precision Number of decimal places for formatted output
  * @returns Formatted elevation string with units
  */
-export function formatElevation(elevation: number, units?: UnitSystem, precision: number = 0): string {
-	// If units not provided via parameter, try to get from the store
-	if (units === undefined) {
-		// Default to metric
-		units = 'metric';
-
-		// Only try to access the store in a browser environment
-		if (typeof window !== 'undefined') {
-			try {
-				const store = useStore.getState?.();
-				if (store?.units) {
-					units = store.units;
-				}
-			} catch (_e) {
-				// Use the default
-			}
-		}
-	}
-
+export function formatElevation(elevation: number, units: UnitSystem, precision: number = 0): string {
 	// Convert to imperial if needed
 	let value = elevation;
 	if (units === 'imperial') {
@@ -572,9 +539,7 @@ export function applyShareTrailStyle(trailStyle: ShareTrailStyle): void {
 export function applyShareMapStyleParams(params: ShareMapStyleParams): void {
 	const store = useMapStore.getState();
 	if (params.unit) {
-		const units: UnitSystem = params.unit === 'mi' ? 'imperial' : 'metric';
-		store.setUnits(units);
-		useStore.getState().setUnits?.(units);
+		store.setUnits(params.unit === 'mi' ? 'imperial' : 'metric');
 	}
 	if (params.baseMap) {
 		const provider = KEY_TO_PROVIDER[params.baseMap];

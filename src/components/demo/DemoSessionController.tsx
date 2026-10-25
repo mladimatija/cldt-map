@@ -2,11 +2,11 @@
 
 /** Starts the demo hike once trail data is loaded; restores real state on exit. */
 import { useEffect } from 'react';
-import { useMapStore, type MapStoreState } from '@/lib/store';
+import { useStore, type StoreState } from '@/lib/store';
 import { enterDemoSession, exitDemoSession } from '@/lib/demo-session';
 
 export function DemoSessionController(): null {
-	const gpxLoaded = useMapStore((s: MapStoreState) => s.gpxLoaded);
+	const gpxLoaded = useStore((s: StoreState) => s.gpxLoaded);
 
 	// Enter and exit are paired in ONE effect so they can never desync: the
 	// cleanup always restores the visitor's real progress when the demo route

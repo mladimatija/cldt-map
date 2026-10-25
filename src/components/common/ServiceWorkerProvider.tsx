@@ -104,9 +104,10 @@ export function ServiceWorkerProvider({ children }: ServiceWorkerProviderProps):
 
 	// Init offline detection, stale cache check, and restore imported tracks once on mount.
 	useEffect(() => {
-		initOfflineDetection();
+		const stopOfflineDetection = initOfflineDetection();
 		void initStaleCacheCheck();
 		void loadImportedTracksFromStorage();
+		return stopOfflineDetection;
 	}, [initOfflineDetection, initStaleCacheCheck, loadImportedTracksFromStorage]);
 
 	// Launch self-heal: refresh a stale offline cache for the already-online user.

@@ -196,7 +196,7 @@ export function MapControlsStagePlannerPanel(): React.ReactElement {
 	const enhancedTrailPoints = useStore((s: StoreState) => s.enhancedTrailPoints);
 	const trailMetadata = useStore((s: StoreState) => s.trailMetadata);
 	const closestPoint = useStore((s: StoreState) => s.closestPoint);
-	const direction = useStore((s: StoreState) => s.direction);
+	const direction = useMapStore((s: MapStoreState) => s.direction);
 	/** A stored plan is shown in the direction it was made for (its days are in
 	 *  that travel order); new plans are generated for the current direction. */
 	const planDirection = stagePlan ? stagePlanDirection(stagePlan) : direction;

@@ -55,7 +55,7 @@ export default function ShareUrlHandler(): null {
 	const currentDirection = useMapStore((state: MapStoreState) => state.direction);
 	const setRulerEnabled = useMapStore((state: MapStoreState) => state.setRulerEnabled);
 	const setRulerRange = useMapStore((state: MapStoreState) => state.setRulerRange);
-	const gpxLoaded = useMapStore((state: MapStoreState) => state.gpxLoaded);
+	const gpxLoaded = useStore((state: StoreState) => state.gpxLoaded);
 	const enhancedTrailPoints = useStore((state: TrailState) => state.enhancedTrailPoints);
 
 	const clearShareUrl = useCallback((): void => {
@@ -79,7 +79,6 @@ export default function ShareUrlHandler(): null {
 		}
 		if (params.dir && params.dir !== useMapStore.getState().direction) {
 			setDirection(params.dir);
-			useStore.getState().broadcastDirectionChange?.(params.dir);
 		}
 		if (!shareParamsNeedMapFollowUp(params)) {
 			clearShareUrl();

@@ -9,12 +9,12 @@ import { useBlockMapPropagation, usePanel, usePanelManager, useRuler } from '@/h
 import { useMap } from 'react-leaflet';
 import L from 'leaflet';
 import {
+	useMapStore,
+	useStore,
 	type MapStoreState,
 	type StoreState,
 	type TrailDirection,
 	type UnitSystem,
-	useMapStore,
-	useStore,
 } from '@/lib/store';
 import {
 	buildShareProgressUrl,
@@ -76,7 +76,12 @@ function loadCroatiaBoundary(): Promise<GeoJSON.FeatureCollection> {
 	return croatiaBoundaryPromise;
 }
 
-function createCroatiaBoundaryLayer(map: L.Map, borderLabel: string, boundary: GeoJSON.FeatureCollection): L.GeoJSON {
+/** `borderLabel` is read on each hover, so the tooltip follows a language change. */
+function createCroatiaBoundaryLayer(
+	map: L.Map,
+	borderLabel: () => string,
+	boundary: GeoJSON.FeatureCollection,
+): L.GeoJSON {
 	return L.geoJSON(boundary, {
 		style: () => ({
 			color: 'var(--cldt-blue)',
@@ -97,7 +102,7 @@ function createCroatiaBoundaryLayer(map: L.Map, borderLabel: string, boundary: G
 					offset: [0, -5],
 				})
 					.setLatLng(latlng)
-					.setContent(borderLabel)
+					.setContent(borderLabel())
 					.addTo(map);
 			});
 			layer.on('mouseout', function () {
@@ -173,6 +178,10 @@ const MapControls: React.FC<MapControlsProps> = ({
 }): React.ReactElement => {
 	const map = useMap() as ExtendedMap;
 	const t = useTranslations('mapControls');
+	const borderLabelRef = useRef('');
+	useEffect(() => {
+		borderLabelRef.current = t('borderOfCroatia');
+	}, [t]);
 	const [showTilesBoundary, setShowTilesBoundary] = useState(false);
 	const precisionContainerRef = useRef<HTMLDivElement>(null);
 	const settingsContainerRef = useRef<HTMLDivElement>(null);
@@ -247,7 +256,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 	const showBoundary = useMapStore((state: MapStoreState) => state.showBoundary);
 	const showTileBoundary = useMapStore((state: MapStoreState) => state.showTileBoundary);
 	const baseMapProvider = useMapStore((state: MapStoreState) => state.baseMapProvider);
-	const gpxLoadFailed = useMapStore((state: MapStoreState) => state.gpxLoadFailed);
+	const gpxLoadFailed = useStore((state: StoreState) => state.gpxLoadFailed);
 	// Pending PNG-export timer; cleared on unmount so a late capture can't run
 	// against a torn-down map container.
 	const pngExportTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -267,7 +276,6 @@ const MapControls: React.FC<MapControlsProps> = ({
 		closePanel();
 		const newDirection = direction === 'SOBO' ? 'NOBO' : 'SOBO';
 		setDirection(newDirection);
-		useStore.getState().broadcastDirectionChange(newDirection);
 		onToggleDirection(newDirection);
 	};
 
@@ -275,7 +283,6 @@ const MapControls: React.FC<MapControlsProps> = ({
 		closePanel();
 		const newUnits = units === 'metric' ? 'imperial' : 'metric';
 		setUnits(newUnits);
-		useStore.getState().broadcastUnitsChange(newUnits);
 		onToggleUnits(newUnits);
 	};
 
@@ -297,7 +304,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 					.then((boundary) => {
 						// Switched off again while loading, or built by the mount effect meanwhile.
 						if (!useMapStore.getState().showBoundary || boundaryLayerRef.current) return;
-						const layer = createCroatiaBoundaryLayer(map, t('borderOfCroatia'), boundary);
+						const layer = createCroatiaBoundaryLayer(map, () => borderLabelRef.current, boundary);
 						boundaryLayerRef.current = layer;
 						layer.addTo(map);
 					})
@@ -492,22 +499,17 @@ const MapControls: React.FC<MapControlsProps> = ({
 	};
 
 	useEffect(() => {
-		useStore.getState().broadcastDirectionChange(direction);
-		// Persisted units live in mapStore, but MapControlsUnitsSelector reads from the
-		// main useStore UISlice. Propagate on mount so the selector matches reality after
-		// a reload with a non-default preference.
-		useStore.getState().setUnits(units);
 		if (!showBoundary || boundaryLayerRef.current || !map) return;
 		// Delay lets the map container settle before drawing the boundary. The run is
 		// cancelled on re-run/unmount and the ref is re-checked once the outline has
-		// loaded: this effect also re-fires on direction/units/t changes, and without
-		// both guards a pending run from before could add a duplicate, orphaned layer.
+		// loaded: without both guards a pending run from before (a quick hide and show)
+		// could add a duplicate, orphaned layer.
 		let cancelled = false;
 		const boundaryTimerId = setTimeout(() => {
 			loadCroatiaBoundary()
 				.then((boundary) => {
 					if (cancelled || boundaryLayerRef.current) return;
-					const layer = createCroatiaBoundaryLayer(map, t('borderOfCroatia'), boundary);
+					const layer = createCroatiaBoundaryLayer(map, () => borderLabelRef.current, boundary);
 					boundaryLayerRef.current = layer;
 					layer.addTo(map);
 				})
@@ -517,7 +519,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 			cancelled = true;
 			clearTimeout(boundaryTimerId);
 		};
-	}, [direction, units, showBoundary, map, t]);
+	}, [showBoundary, map]);
 
 	// Builds the clipped layer on load and again after every base-map switch.
 	// BaseMapSelector drops every base tile layer (the clipped one included) when

@@ -38,11 +38,12 @@ export const WAYPOINT_CATEGORIES: readonly WaypointCategoryDef[] = [
 
 const BY_ID = new Map(WAYPOINT_CATEGORIES.map((c) => [c.id, c]));
 
+export function isWaypointCategoryId(value: string | undefined | null): value is WaypointCategoryId {
+	return !!value && (WAYPOINT_CATEGORY_IDS as readonly string[]).includes(value);
+}
+
 export function normalizeWaypointCategory(value: string | undefined | null): WaypointCategoryId {
-	if (value && (WAYPOINT_CATEGORY_IDS as readonly string[]).includes(value)) {
-		return value as WaypointCategoryId;
-	}
-	return 'generic';
+	return isWaypointCategoryId(value) ? value : 'generic';
 }
 
 export function waypointCategoryDef(id: WaypointCategoryId | string | undefined | null): WaypointCategoryDef {

@@ -2,7 +2,6 @@ import { create, type StoreApi, type UseBoundStore } from 'zustand';
 import type { StoreState, MapStoreState } from './types';
 import { createLocationSlice } from './location-slice';
 import { createTrailSlice } from './trail-slice';
-import { createUISlice } from './ui-slice';
 import { createMapStore } from './map-store';
 import { createStoreStub, createMapStoreStub } from './stub';
 
@@ -19,9 +18,6 @@ export type {
 	TrailSlice,
 	TrailDirection,
 	UnitSystem,
-	UIState,
-	UIActions,
-	UISlice,
 } from './types';
 
 type MainStore = UseBoundStore<StoreApi<StoreState>>;
@@ -34,7 +30,6 @@ function createMainStore(): MainStore {
 	return create<StoreState>()((set, get, api) => ({
 		...createLocationSlice(set, get, api),
 		...createTrailSlice(set, get, api),
-		...createUISlice(set, get, api),
 	}));
 }
 

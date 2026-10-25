@@ -86,7 +86,7 @@ export function PoiMarkers(): null {
 	const locale = useLocale();
 	const poisFile = useMapStore((s: MapStoreState) => s.poisFile);
 	const poisLayerEnabled = useMapStore((s: MapStoreState) => s.poisLayerEnabled);
-	const gpxLoaded = useMapStore((s: MapStoreState) => s.gpxLoaded);
+	const gpxLoaded = useStore((s: StoreState) => s.gpxLoaded);
 	const enabledPoiTypes = useMapStore((s: MapStoreState) => s.enabledPoiTypes);
 	const enabledPoiTags = useMapStore((s: MapStoreState) => s.enabledPoiTags);
 	const includeRemotePois = useMapStore((s: MapStoreState) => s.includeRemotePois);
