@@ -773,7 +773,7 @@ export interface MapStoreState {
 
 	// ── Trail OSM tag enrichment (surface, highway, SAC, MTB scale) ──
 	trailOsmTagsFile: TrailOsmTagsFile | null;
-	setTrailOsmTagsFile: (file: TrailOsmTagsFile | null) => void;
+	setTrailOsmTagsFile: (file: TrailOsmTagsFile) => void;
 
 	// ── Marked-trail junctions (OSM route=hiking/foot branching off the CLDT) ──
 	/** Layer toggle; persisted, defaults OFF. The layer/toggle stay hidden while

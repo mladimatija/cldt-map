@@ -23,6 +23,7 @@
 
 import type * as GeoJSON from 'geojson';
 import { pointInPolygon } from './point-in-polygon';
+import { createDatasetLoader } from './dataset-loader';
 
 /** A hiker closer than this to a polygon edge gets the "near" warning. */
 export const MINE_NEAR_BUFFER_M = 500;
@@ -66,6 +67,27 @@ export interface MineAreasFile {
 export function hasMineAreas(file: MineAreasFile | null): file is MineAreasFile {
 	return !!file && file.areas.length > 0;
 }
+
+const mineAreasLoader = createDatasetLoader<MineAreasFile>({
+	localPath: '/data/mine-areas.json',
+	normalize: (raw) => {
+		const o = raw as Partial<MineAreasFile> | null;
+		if (!o || typeof o !== 'object' || !Array.isArray(o.areas)) return null;
+		return {
+			lastUpdated: typeof o.lastUpdated === 'string' ? o.lastUpdated : '',
+			source: typeof o.source === 'string' ? o.source : '',
+			areas: o.areas,
+			trailRanges: Array.isArray(o.trailRanges) ? o.trailRanges : [],
+		};
+	},
+});
+
+/** Loads the bundled dataset (there is no remote override). Cached for the
+ *  page until resetMineAreasCache(). */
+export const loadMineAreas = mineAreasLoader.load;
+
+/** Marks the dataset stale: the next loadMineAreas call revalidates. */
+export const resetMineAreasCache = mineAreasLoader.reset;
 
 /** Point-in-expanded-bbox prefilter; `padDeg` ~ 0.006 covers 500 m. */
 export function inBbox(lat: number, lng: number, bbox: [number, number, number, number], padDeg: number): boolean {

@@ -1,4 +1,4 @@
-import { isSafeUrl } from '@/lib/utils';
+import { createDatasetLoader } from '@/lib/dataset-loader';
 import type { TrailDirection } from '@/lib/types';
 
 /**
@@ -187,30 +187,22 @@ export function normalize(raw: Partial<TrailJunctionsFile> | null | undefined): 
 	};
 }
 
+const trailJunctionsLoader = createDatasetLoader({
+	remoteUrl: process.env.NEXT_PUBLIC_TRAIL_JUNCTIONS_URL,
+	localPath: '/data/trail-junctions.json',
+	normalize: (raw) => normalize(raw as Partial<TrailJunctionsFile>),
+});
+
 /**
  * Loads the marked-trail junction dataset: the remote override
- * (NEXT_PUBLIC_TRAIL_JUNCTIONS_URL, when set and safe) first, then the bundled
+ * (NEXT_PUBLIC_TRAIL_JUNCTIONS_URL, https only) first, then the bundled
  * /data/trail-junctions.json. Returns null on total failure so the layer simply
- * stays hidden. Mirrors loadTrailOsmTags / the mine-areas fetch.
+ * stays hidden. Cached for the page until resetTrailJunctionsCache().
  */
-export async function loadTrailJunctions(): Promise<TrailJunctionsFile | null> {
-	const remoteUrl = process.env.NEXT_PUBLIC_TRAIL_JUNCTIONS_URL;
-	if (remoteUrl && isSafeUrl(remoteUrl)) {
-		try {
-			const res = await fetch(remoteUrl);
-			if (res.ok) return normalize((await res.json()) as Partial<TrailJunctionsFile>);
-		} catch {
-			// fall through to the bundled copy
-		}
-	}
-	try {
-		const res = await fetch('/data/trail-junctions.json');
-		if (res.ok) return normalize((await res.json()) as Partial<TrailJunctionsFile>);
-	} catch {
-		// ignore - the layer stays empty
-	}
-	return null;
-}
+export const loadTrailJunctions = trailJunctionsLoader.load;
+
+/** Marks the dataset stale: the next loadTrailJunctions call revalidates. */
+export const resetTrailJunctionsCache = trailJunctionsLoader.reset;
 
 export interface JunctionAhead {
 	junction: TrailJunction;

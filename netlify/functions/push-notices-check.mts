@@ -6,22 +6,14 @@
  */
 
 import type { Config } from '@netlify/functions';
+import { isHttpsUrl, normalizeNoticeList } from '../../src/lib/feed-validation';
+import type { LocalizedString, TrailNotice } from '../../src/lib/notices';
 import { runNewEntriesPush } from './_shared/new-entries-push.mts';
 import { pushStrings, withCount } from './_shared/push-i18n.mts';
 
 const SITE_URL = process.env.URL ?? 'https://map.cldt.hr';
 
-type LocalizedString = string | ({ default: string } & Record<string, string>);
-
-interface TrailNotice {
-	id: string;
-	severity?: string;
-	title?: LocalizedString;
-	expiresAt?: string;
-}
-
-function resolveLocalized(value: LocalizedString | undefined, locale = 'en'): string {
-	if (!value) return '';
+function resolveLocalized(value: LocalizedString, locale: string): string {
 	if (typeof value === 'string') return value;
 	return value[locale] ?? value.default;
 }
@@ -30,24 +22,23 @@ function filterActiveNotices(notices: TrailNotice[], now = new Date()): TrailNot
 	return notices.filter((n) => !n.expiresAt || new Date(n.expiresAt) > now);
 }
 
+/** The sources and notice validation of the app (src/lib/notices.ts): an https
+ *  remote override, then the bundled file; malformed notices are dropped, so a
+ *  push never announces a notice the app does not show. */
 async function fetchNotices(): Promise<TrailNotice[] | null> {
 	const remoteUrl = process.env.NEXT_PUBLIC_NOTICES_URL;
-	if (remoteUrl) {
+	const bundled = `${SITE_URL}/notices.json`;
+	for (const url of isHttpsUrl(remoteUrl) ? [remoteUrl, bundled] : [bundled]) {
 		try {
-			const res = await fetch(remoteUrl, { cache: 'no-store' });
-			if (res.ok) {
-				const file = (await res.json()) as { notices?: TrailNotice[] };
-				return filterActiveNotices((file.notices ?? []).filter((n) => typeof n.id === 'string'));
-			}
+			const res = await fetch(url, { cache: 'no-store' });
+			if (!res.ok) continue;
+			const notices = normalizeNoticeList(await res.json());
+			if (notices) return filterActiveNotices(notices);
 		} catch {
-			// fall through to bundled file
+			// try the next source
 		}
 	}
-
-	const res = await fetch(`${SITE_URL}/notices.json`, { cache: 'no-store' });
-	if (!res.ok) return null;
-	const file = (await res.json()) as { notices?: TrailNotice[] };
-	return filterActiveNotices((file.notices ?? []).filter((n) => typeof n.id === 'string'));
+	return null;
 }
 
 export default async function handler(): Promise<Response> {

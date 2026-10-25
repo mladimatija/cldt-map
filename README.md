@@ -166,10 +166,13 @@ Optional overrides (see `src/lib/config.ts`, `src/lib/gpx-cache.ts`):
 - `NEXT_PUBLIC_DEFAULT_MAP_CENTER` - `lat,lng` (e.g. `44.4268,16.438`)
 - `NEXT_PUBLIC_DEFAULT_MAP_ZOOM` - initial zoom level
 - `NEXT_PUBLIC_TILE_CACHE_TTL_DAYS` - days after which offline tile cache is considered stale (default `30`)
-- `NEXT_PUBLIC_NOTICES_URL` - URL for remote trail-condition notices JSON; falls back to bundled `/notices.json` on network error
-- `NEXT_PUBLIC_SEASONAL_STATUS_URL` - URL for remote seasonal trail status JSON; falls back to bundled `/seasonal-status.json` on network error
-- `NEXT_PUBLIC_TRAIL_OSM_TAGS_URL` - URL for remote OSM tag dataset JSON; falls back to bundled `/trail-osm-tags.json` on network error
+- `NEXT_PUBLIC_NOTICES_URL` - URL for remote trail-condition notices JSON; falls back to bundled `/notices.json`
+- `NEXT_PUBLIC_SEASONAL_STATUS_URL` - URL for remote seasonal trail status JSON; falls back to bundled `/seasonal-status.json`
+- `NEXT_PUBLIC_TRAIL_OSM_TAGS_URL` - URL for remote OSM tag dataset JSON; falls back to bundled `/trail-osm-tags.json`
+- `NEXT_PUBLIC_TRAIL_JUNCTIONS_URL` - URL for remote marked-trail junction JSON; falls back to bundled `/data/trail-junctions.json`
 - `NEXT_PUBLIC_POIS_URL` - URL for a remote whole-file POI dataset JSON. When set, the loader fetches that single file (with the bundled `/pois.json` as the network-error fallback). When unset (the default), the loader fetches **per-type split files** `/data/pois/<type>.json` on demand - only the currently enabled types - and reads `/data/pois/manifest.json` for per-type counts, falling back to the whole `/pois.json` if the split is unavailable. The split files are derived from `public/pois.json` by `scripts/split-pois.mjs` (npm prebuild). The bundled whole file runs ~1.6 MB uncompressed and gzips to ~250 KB; Next.js serves static assets gzipped, and `next.config.ts` sets `Cache-Control: public, max-age=86400` so returning visitors do not re-download it. The runtime loader rejects payloads above 20,000 rows with a `console.warn` to surface enricher mistakes that would otherwise silently kill the feature.
+
+Remote dataset URLs must be `https:`. The bundled file is used whenever the remote one fails (network or HTTP error, or data that fails validation; seasonal entries and notices are also checked one by one and malformed ones dropped). Datasets revalidate when the tab is shown again at least five minutes after the last load; an unchanged bundled file answers `304` and the app keeps the data it has, and a failed revalidation keeps the last good copy.
 
 Script-only:
 

@@ -77,7 +77,6 @@ import { newId, type JournalEntry } from '@/lib/user-waypoints';
 import { sanitizeWaterLog, waterLogToday, type WaterLogEntry, type WaterStatus } from '../water-log';
 import { normalizePoiNote, sanitizePoiNotes } from '../poi-notes';
 import { sanitizeNavTarget, type NavTarget } from '../nav-target';
-import { isSameTrailOsmTagsDataset } from '../trail-osm-tags';
 import { DEFAULT_MAP_APPEARANCE, type MapAppearance } from '../map-appearance';
 import { isBaseMapProviderAvailable } from '../services/map-service-config';
 
@@ -1749,17 +1748,10 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					},
 
 					trailOsmTagsFile: null,
+					// The loader hands back the same object when a revalidation finds the
+					// dataset unchanged and keeps the last good one when it fails, so a plain
+					// set never republishes identical data (the trail rebuild keys on it).
 					setTrailOsmTagsFile: (file): void => {
-						// The loader re-fetches whenever the tab becomes visible again and
-						// hands back a freshly parsed object every time. Republishing an
-						// identical dataset under a new identity invalidates every consumer
-						// keyed on this field - the trail polyline rebuild among them - so
-						// keep the existing reference when the content matches. A failed
-						// revalidation resolves to null, which must not wipe a good dataset
-						// either: that would downgrade the user's chosen trail style and
-						// force the same full rebuild through the null door.
-						const current = get().trailOsmTagsFile;
-						if (current && (!file || isSameTrailOsmTagsDataset(current, file))) return;
 						set({ trailOsmTagsFile: file });
 					},
 
@@ -1958,10 +1950,14 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 
 					seasonalStatusFile: null,
 					setSeasonalStatusFile: (file: SeasonalStatusFile | null): void => {
-						set({
-							seasonalStatusFile: file,
-							seasonalStatusEntries: file ? filterActiveEntries(file.entries) : [],
-						});
+						// Recomputed on every load, so entries that expired since drop out, but
+						// the previous array is kept when the active set is unchanged: the layer
+						// and banner redraw on its identity, and revalidations mostly return
+						// the same file.
+						const entries = file ? filterActiveEntries(file.entries) : [];
+						const previous = get().seasonalStatusEntries;
+						const unchanged = entries.length === previous.length && entries.every((e, i) => e === previous[i]);
+						set({ seasonalStatusFile: file, seasonalStatusEntries: unchanged ? previous : entries });
 					},
 					seasonalStatusEntries: [],
 					seasonalStatusLayerEnabled: seasonalStatusLayerEnabledOverride ?? isSeasonalStatusDefaultEnabled(),

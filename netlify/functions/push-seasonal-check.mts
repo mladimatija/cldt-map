@@ -6,36 +6,30 @@
  */
 
 import type { Config } from '@netlify/functions';
+import { isHttpsUrl, normalizeSeasonalStatusFile } from '../../src/lib/feed-validation';
+import type { SeasonalStatusEntry as SeasonalEntry } from '../../src/lib/seasonal-status';
 import { runNewEntriesPush } from './_shared/new-entries-push.mts';
 import { pushStrings, withCount } from './_shared/push-i18n.mts';
 
 const SITE_URL = process.env.URL ?? 'https://map.cldt.hr';
 
-interface SeasonalEntry {
-	id: string;
-	severity?: string;
-	note_en?: string;
-	note_hr?: string;
-}
-
+/** The sources and entry validation of the app (src/lib/seasonal-status.ts):
+ *  an https remote override, then the bundled file; malformed entries are
+ *  dropped, so a push never announces an entry the app does not show. */
 async function fetchSeasonalEntries(): Promise<SeasonalEntry[] | null> {
 	const remoteUrl = process.env.NEXT_PUBLIC_SEASONAL_STATUS_URL;
-	if (remoteUrl) {
+	const bundled = `${SITE_URL}/seasonal-status.json`;
+	for (const url of isHttpsUrl(remoteUrl) ? [remoteUrl, bundled] : [bundled]) {
 		try {
-			const res = await fetch(remoteUrl, { cache: 'no-store' });
-			if (res.ok) {
-				const file = (await res.json()) as { entries?: SeasonalEntry[] };
-				return (file.entries ?? []).filter((e) => typeof e.id === 'string');
-			}
+			const res = await fetch(url, { cache: 'no-store' });
+			if (!res.ok) continue;
+			const file = normalizeSeasonalStatusFile(await res.json());
+			if (file) return file.entries;
 		} catch {
-			// fall through to bundled file
+			// try the next source
 		}
 	}
-
-	const res = await fetch(`${SITE_URL}/seasonal-status.json`, { cache: 'no-store' });
-	if (!res.ok) return null;
-	const file = (await res.json()) as { entries?: SeasonalEntry[] };
-	return (file.entries ?? []).filter((e) => typeof e.id === 'string');
+	return null;
 }
 
 function entryNote(entry: SeasonalEntry, locale: string): string | undefined {

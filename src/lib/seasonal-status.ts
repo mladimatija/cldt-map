@@ -1,4 +1,5 @@
-import { isSafeUrl } from '@/lib/utils';
+import { createDatasetLoader } from '@/lib/dataset-loader';
+import { normalizeSeasonalStatusFile } from '@/lib/feed-validation';
 
 export type SeasonalSeverity = 'open' | 'caution' | 'closed_recommended' | 'experts_only';
 
@@ -80,70 +81,22 @@ export function isSeasonalStatusDefaultEnabled(now: Date = new Date()): boolean 
 	return m >= 10 || m <= 4;
 }
 
-interface SeasonalStatusFileRaw {
-	lastUpdated?: string;
-	source?: string;
-	sourceUrl?: string;
-	entries?: SeasonalStatusEntry[];
-}
-
-let cachedPromise: Promise<SeasonalStatusFile | null> | null = null;
-
-async function fetchSeasonalStatus(): Promise<SeasonalStatusFile | null> {
-	const remoteUrl = process.env.NEXT_PUBLIC_SEASONAL_STATUS_URL;
-	if (remoteUrl && isSafeUrl(remoteUrl)) {
-		try {
-			const res = await fetch(remoteUrl);
-			if (res.ok) {
-				const json = (await res.json()) as SeasonalStatusFileRaw;
-				return normalizeFile(json);
-			}
-		} catch {
-			// fall through to local file
-		}
-	}
-
-	try {
-		const res = await fetch('/seasonal-status.json');
-		if (res.ok) {
-			const json = (await res.json()) as SeasonalStatusFileRaw;
-			return normalizeFile(json);
-		}
-	} catch {
-		// ignore
-	}
-
-	return null;
-}
-
-function normalizeFile(raw: SeasonalStatusFileRaw): SeasonalStatusFile | null {
-	if (!raw || typeof raw !== 'object') return null;
-	if (!Array.isArray(raw.entries)) return null;
-	return {
-		lastUpdated: raw.lastUpdated ?? '',
-		source: raw.source ?? '',
-		sourceUrl: raw.sourceUrl,
-		entries: raw.entries,
-	};
-}
+const seasonalStatusLoader = createDatasetLoader({
+	remoteUrl: process.env.NEXT_PUBLIC_SEASONAL_STATUS_URL,
+	localPath: '/seasonal-status.json',
+	normalize: normalizeSeasonalStatusFile,
+});
 
 /**
  * Loads seasonal trail status entries, trying the remote URL first (if configured
- * via NEXT_PUBLIC_SEASONAL_STATUS_URL) and falling back to the bundled
- * /seasonal-status.json. The result is cached for the lifetime of the page.
- * Returns null if neither source is reachable or the response is malformed.
+ * via NEXT_PUBLIC_SEASONAL_STATUS_URL, https only) and falling back to the bundled
+ * /seasonal-status.json. Cached for the page until resetSeasonalStatusCache().
+ * Returns null if neither source is reachable or valid.
  */
-export function loadSeasonalStatus(): Promise<SeasonalStatusFile | null> {
-	if (!cachedPromise) {
-		cachedPromise = fetchSeasonalStatus();
-	}
-	return cachedPromise;
-}
+export const loadSeasonalStatus = seasonalStatusLoader.load;
 
-/** Resets the module-level cache so the next loadSeasonalStatus call re-fetches. */
-export function resetSeasonalStatusCache(): void {
-	cachedPromise = null;
-}
+/** Marks the dataset stale: the next loadSeasonalStatus call revalidates. */
+export const resetSeasonalStatusCache = seasonalStatusLoader.reset;
 
 /**
  * Compact localised range like "12 May - 12 Aug". Falls back to raw ISO if
