@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react';
 import L from 'leaflet';
 import { useMap } from 'react-leaflet';
 import { useMapStore, type MapStoreState } from '@/lib/store';
+import { ensurePane } from '@/lib/leaflet-panes';
 
 /** Esri World Hillshade - free, no API key, same ArcGIS family as the satellite
  *  base. Esri tiles use {z}/{y}/{x} order (y before x). */
@@ -77,15 +78,7 @@ export function TerrainOverlays(): null {
 		// markers (the app flattens pane z-index, so document order wins). The
 		// multiply blend is what makes them read as overlays over satellite.
 		for (const { pane } of TERRAIN_LAYERS) {
-			if (!map.getPane(pane)) {
-				map.createPane(pane);
-				const el = map.getPane(pane);
-				const overlayPane = map.getPane('overlayPane');
-				if (el) {
-					el.style.mixBlendMode = 'multiply';
-					if (overlayPane?.parentNode) overlayPane.parentNode.insertBefore(el, overlayPane);
-				}
-			}
+			ensurePane(map, pane, { before: 'overlayPane', style: { mixBlendMode: 'multiply' } });
 		}
 		for (const layer of TERRAIN_LAYERS) {
 			const existing = layersRef.current[layer.key];

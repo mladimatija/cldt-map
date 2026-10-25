@@ -1,5 +1,6 @@
 import type { ClosestPoint, TrailDirection, UnitSystem } from '@/lib/store/types';
 import { remainingM, toTravelM } from '@/lib/trail-frame';
+import { formatKm, KM_PER_MILE, kmToMiles, metresToFeet } from './units';
 
 export interface DistanceRemaining {
 	traveled: number;
@@ -58,8 +59,6 @@ export function computeDistanceRemaining(
 
 	return { traveled, toTrailEnd, toSectionEnd };
 }
-
-const KM_TO_MILES = 1.60934;
 
 // --- Grade-adjusted ETA model constants ---
 // Naismith's rule: 1 hour of extra time per 600 m of ascent → 6 s/m
@@ -313,30 +312,22 @@ export function formatEta(seconds: number): string {
  */
 export function formatPace(paceKmh: number, units: UnitSystem): string {
 	if (units === 'imperial') {
-		const mph = paceKmh / KM_TO_MILES;
-		return `${mph.toFixed(1)} mph`;
+		return `${kmToMiles(paceKmh).toFixed(1)} mph`;
 	}
 	return `${paceKmh.toFixed(1)} km/h`;
 }
 
-export function formatDistanceM(meters: number, units: UnitSystem): string {
-	if (units === 'imperial') {
-		return `${(meters / 1609.344).toFixed(1)} mi`;
-	}
-	return `${(meters / 1000).toFixed(1)} km`;
-}
-
 /**
  * Formats a short distance (GPS accuracy, distance from a track): whole metres or
- * feet below 1,000, then one-decimal km or miles. `formatDistanceM` alone would
+ * feet below 1,000, then one-decimal km or miles. One-decimal km alone would
  * render an 8 m GPS fix as "0.0 km".
  */
 export function formatShortDistanceM(meters: number, units: UnitSystem): string {
 	if (units === 'imperial') {
-		const feet = meters * 3.28084;
-		return feet < 1000 ? `${Math.round(feet)} ft` : formatDistanceM(meters, units);
+		const feet = metresToFeet(meters);
+		return feet < 1000 ? `${Math.round(feet)} ft` : formatKm(meters / 1000, units, 1);
 	}
-	return meters < 1000 ? `${Math.round(meters)} m` : formatDistanceM(meters, units);
+	return meters < 1000 ? `${Math.round(meters)} m` : formatKm(meters / 1000, units, 1);
 }
 
 /**
@@ -411,7 +402,7 @@ function formatMinSec(totalSec: number, unit: string): string {
 
 export function formatPaceFromSecPerKm(secPerKm: number, units: UnitSystem): string {
 	if (secPerKm === 0) return '-';
-	return units === 'imperial' ? formatMinSec(secPerKm * 1.60934, 'mi') : formatMinSec(secPerKm, 'km');
+	return units === 'imperial' ? formatMinSec(secPerKm * KM_PER_MILE, 'mi') : formatMinSec(secPerKm, 'km');
 }
 
 export interface ElevationRemaining {

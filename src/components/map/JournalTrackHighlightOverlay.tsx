@@ -6,6 +6,7 @@ import { useMap } from 'react-leaflet';
 import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
 import { findNearestPointIndex } from '@/lib/distance-utils';
 import { sliceTrackPoints } from '@/lib/journal-track-link';
+import { ensurePane } from '@/lib/leaflet-panes';
 
 const JOURNAL_PANE = 'journal-highlight-pane';
 
@@ -43,12 +44,7 @@ export function JournalTrackHighlightOverlay(): null {
 			return;
 		}
 
-		if (!map.getPane(JOURNAL_PANE)) {
-			const pane = map.createPane(JOURNAL_PANE);
-			pane.classList.add(JOURNAL_PANE);
-			const markerPane = map.getPane('markerPane');
-			if (markerPane?.parentNode) markerPane.parentNode.insertBefore(pane, markerPane);
-		}
+		ensurePane(map, JOURNAL_PANE, { className: JOURNAL_PANE, before: 'markerPane' });
 
 		const group = L.layerGroup();
 		const loM = Math.min(preview.trailStartKm, preview.trailEndKm) * 1000;

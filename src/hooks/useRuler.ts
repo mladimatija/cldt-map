@@ -23,6 +23,7 @@ import { segmentGainLoss, toTravelM } from '@/lib/trail-frame';
 import { fitMapToRulerBounds } from '@/lib/export-utils';
 import { RULER_SET_FROM_CHART_EVENT, type RulerSetFromChartDetail } from '@/lib/ruler-from-chart';
 import { usePanelManager } from './usePanelManager';
+import { ensurePane } from '@/lib/leaflet-panes';
 
 type RulerRange = NonNullable<MapStoreState['rulerRange']>;
 type UnitSystem = MapStoreState['units'];
@@ -119,21 +120,9 @@ export function useRuler(map: L.Map): UseRulerResult {
 
 	// Ruler panes: order set in map.css (ruler-pane, ruler-markers-pane, ruler-tooltip-pane).
 	useEffect(() => {
-		if (!map.getPane(RULER_PANE)) {
-			map.createPane(RULER_PANE);
-			const pane = map.getPane(RULER_PANE);
-			if (pane) pane.classList.add('ruler-pane');
-		}
-		if (!map.getPane(RULER_MARKERS_PANE)) {
-			map.createPane(RULER_MARKERS_PANE);
-			const pane = map.getPane(RULER_MARKERS_PANE);
-			if (pane) pane.classList.add('ruler-markers-pane');
-		}
-		if (!map.getPane(RULER_TOOLTIP_PANE)) {
-			map.createPane(RULER_TOOLTIP_PANE);
-			const pane = map.getPane(RULER_TOOLTIP_PANE);
-			if (pane) pane.classList.add('ruler-tooltip-pane');
-		}
+		ensurePane(map, RULER_PANE, { className: 'ruler-pane' });
+		ensurePane(map, RULER_MARKERS_PANE, { className: 'ruler-markers-pane' });
+		ensurePane(map, RULER_TOOLTIP_PANE, { className: 'ruler-tooltip-pane' });
 	}, [map]);
 
 	const clearRulerMarkersAndLayers = useCallback((): void => {

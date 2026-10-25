@@ -37,6 +37,7 @@ import {
 	type WaterLogPopupLabels,
 } from '@/components/map/poi-popup-builders';
 import { isWaterStatus } from '@/lib/water-log';
+import { ensurePane } from '@/lib/leaflet-panes';
 
 const POI_PANE = 'poiMarkerPane';
 const POI_TOOLTIP_PANE = 'poiTooltipPane';
@@ -151,14 +152,8 @@ export function PoiMarkers(): null {
 
 	// Create dedicated panes once.
 	useEffect(() => {
-		if (!map.getPane(POI_PANE)) {
-			map.createPane(POI_PANE);
-			map.getPane(POI_PANE)?.classList.add('poi-marker-pane');
-		}
-		if (!map.getPane(POI_TOOLTIP_PANE)) {
-			map.createPane(POI_TOOLTIP_PANE);
-			map.getPane(POI_TOOLTIP_PANE)?.classList.add('poi-tooltip-pane');
-		}
+		ensurePane(map, POI_PANE, { className: 'poi-marker-pane' });
+		ensurePane(map, POI_TOOLTIP_PANE, { className: 'poi-tooltip-pane' });
 	}, [map]);
 
 	useEffect(() => {

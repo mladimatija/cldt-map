@@ -1,18 +1,10 @@
+import { downloadBlob } from './download';
+import { escapeXml } from './html-escape';
+
 export interface GpxExportPoint {
 	lat: number;
 	lng: number;
 	elevation?: number;
-}
-
-/** XML-escape attribute / text content. The dataset is curated but we don't
- *  trust that to mean it never contains `&` or `<` (Wikipedia titles do). */
-function escapeXml(s: string): string {
-	return s
-		.replace(/&/g, '&amp;')
-		.replace(/</g, '&lt;')
-		.replace(/>/g, '&gt;')
-		.replace(/"/g, '&quot;')
-		.replace(/'/g, '&apos;');
 }
 
 /**
@@ -224,23 +216,6 @@ ${trackPoints}
 \t\t</trkseg>
 \t</trk>
 </gpx>`;
-}
-
-/**
- * Triggers a browser file download for arbitrary content. Revokes the object
- * URL on a short delay because Safari needs it alive until the click is
- * processed. Shared by every file-export path.
- */
-export function downloadBlob(content: BlobPart, filename: string, mime: string): void {
-	const blob = new Blob([content], { type: mime });
-	const url = URL.createObjectURL(blob);
-	const a = document.createElement('a');
-	a.href = url;
-	a.download = filename;
-	document.body.appendChild(a);
-	a.click();
-	document.body.removeChild(a);
-	setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
 /** Triggers a browser file download for the given GPX content. */

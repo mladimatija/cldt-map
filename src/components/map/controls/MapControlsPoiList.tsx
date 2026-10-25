@@ -39,7 +39,8 @@ import {
 	type ParsedDistance,
 	type SortMode,
 } from '@/hooks';
-import { cn, formatDistance, formatOffTrail } from '@/lib/utils';
+import { cn, formatDistance } from '@/lib/utils';
+import { formatKm, kmToUnit } from '@/lib/units';
 import { findNearestPointIndex } from '@/lib/distance-utils';
 import { haversineDistanceM } from '@/lib/haversine';
 import { buildGpxWaypointXml, downloadGpxFile, type GpxWaypoint } from '@/lib/gpx-export';
@@ -146,7 +147,7 @@ const PoiListRow = React.memo(function PoiListRow({
 	);
 	const displayKm = toTravelKm(poi.trailKm, direction, totalKm);
 	const distLabel = formatDistance(displayKm, units, distancePrecision);
-	const offTrailLabel = poi.distanceFromTrailKm >= 0.5 ? formatOffTrail(poi.distanceFromTrailKm, units) : '';
+	const offTrailLabel = poi.distanceFromTrailKm >= 0.5 ? formatKm(poi.distanceFromTrailKm, units, 1) : '';
 	const gpsLabel =
 		hasGps && typeof gpsDistanceM === 'number' ? formatDistance(gpsDistanceM, units, distancePrecision, true) : '';
 	const aheadLabel =
@@ -591,11 +592,10 @@ export function MapControlsPoiList({
 		if (sort !== 'ahead' || anchorSoboKm === null) return null;
 		const range = aheadCorridorSoboRange(anchorSoboKm, aheadHorizonKm, direction, totalKm);
 		const { from: fromTrailKm, to: toTrailKm } = toTravelRange(range.from, range.to, direction, totalKm);
-		const scale = units === 'imperial' ? 0.621371 : 1;
 		return t('aheadSummary', {
 			count: rows.length,
-			from: (fromTrailKm * scale).toFixed(0),
-			to: (toTrailKm * scale).toFixed(0),
+			from: kmToUnit(fromTrailKm, units).toFixed(0),
+			to: kmToUnit(toTrailKm, units).toFixed(0),
 			unit: units === 'imperial' ? 'mi' : 'km',
 		});
 	}, [sort, anchorSoboKm, aheadHorizonKm, direction, totalKm, rows.length, units, t]);

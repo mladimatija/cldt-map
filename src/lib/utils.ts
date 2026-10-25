@@ -11,7 +11,12 @@ import { config } from '@/lib/config';
 import type { DistanceUnit, TrailDirection, UnitSystem } from '@/lib/types';
 import { RulerRange } from '@/lib/distance-utils';
 import { toTravelRange } from '@/lib/trail-frame';
-import { PROVIDER_TO_KEY, KEY_TO_PROVIDER } from '@/components/map/base-map-options';
+import {
+	PROVIDER_TO_KEY,
+	KEY_TO_PROVIDER,
+	isShareBaseMapKey,
+	type ShareBaseMapKey,
+} from '@/components/map/base-map-options';
 import { BaseMapProvider } from '@/lib/services/map-service';
 import { siteMetadata } from '@/lib/metadata';
 import { SHARE_QUERY_PARAM_KEYS, SHARE_TRIP_PARAM_KEY } from '@/lib/share-url-constants';
@@ -20,6 +25,9 @@ import {
 	parseShareTripStateParam,
 	type ShareTripStatePayload,
 } from '@/lib/share-trip-state';
+import { POI_ID_RE } from '@/lib/poi-types';
+import { CROATIA_BBOX, isInCroatiaBbox } from '@/lib/geo-bounds';
+import { formatKm, metresToFeet } from '@/lib/units';
 
 export type { UnitSystem };
 
@@ -139,41 +147,6 @@ export function toLocationError(error: unknown, fallbackMessage: string): { code
 	};
 }
 
-// --------------------------------------
-// Units conversion utilities
-// --------------------------------------
-
-interface Conversions {
-	distance: (value: number) => number;
-	elevation: (value: number) => number;
-}
-
-/** Factor for km → mi (1 km = 0.621371 mi). */
-const KM_TO_MI = 0.621371;
-
-/** Convert kilometers to miles. */
-export function kmToMiles(km: number): number {
-	return km * KM_TO_MI;
-}
-
-/** Format a distance-from-trail value (in km) for display in POI list/search
- *  rows. Returns a string with one decimal place in the active unit. */
-export function formatOffTrail(km: number, units: UnitSystem): string {
-	const v = units === 'imperial' ? kmToMiles(km) : km;
-	const unit = units === 'imperial' ? 'mi' : 'km';
-	return `${(Math.round(v * 10) / 10).toFixed(1)} ${unit}`;
-}
-
-const toImperial: Conversions = {
-	distance: kmToMiles,
-	elevation: (meters: number): number => meters * 3.28084,
-};
-
-/** Convert miles to kilometers. */
-export function milesToKm(mi: number): number {
-	return mi / KM_TO_MI;
-}
-
 /**
  * Format distance with appropriate units
  *
@@ -204,11 +177,7 @@ export function formatDistance(
 		}
 	}
 
-	let value = needsConversion ? distance / 1000 : distance;
-	if (units === 'imperial') {
-		value = toImperial.distance(value);
-	}
-	return `${value.toFixed(precision)} ${units === 'imperial' ? 'mi' : 'km'}`;
+	return formatKm(needsConversion ? distance / 1000 : distance, units, precision);
 }
 
 /**
@@ -220,24 +189,10 @@ export function formatDistance(
  * @returns Formatted elevation string with units
  */
 export function formatElevation(elevation: number, units: UnitSystem, precision: number = 0): string {
-	// Convert to imperial if needed
-	let value = elevation;
-	if (units === 'imperial') {
-		value = toImperial.elevation(value);
-	}
-
-	// Format the number - round to whole numbers
-	const formatted = value.toFixed(precision);
-
-	// Add the unit and return
-	return `${formatted} ${units === 'imperial' ? 'ft' : 'm'}`;
+	return units === 'imperial'
+		? `${metresToFeet(elevation).toFixed(precision)} ft`
+		: `${elevation.toFixed(precision)} m`;
 }
-
-/** Croatia bounding box (same as isWithinMapBoundary) */
-const BOUNDARY_LAT_MIN = 42.3;
-const BOUNDARY_LAT_MAX = 46.5;
-const BOUNDARY_LNG_MIN = 13.5;
-const BOUNDARY_LNG_MAX = 19.5;
 
 /**
  * Generate a random point within the map boundary (Croatia)
@@ -246,8 +201,8 @@ const BOUNDARY_LNG_MAX = 19.5;
  * @returns Location object with lat, lng
  */
 export function getRandomLocationInBoundary(): { lat: number; lng: number } {
-	const lat = BOUNDARY_LAT_MIN + Math.random() * (BOUNDARY_LAT_MAX - BOUNDARY_LAT_MIN);
-	const lng = BOUNDARY_LNG_MIN + Math.random() * (BOUNDARY_LNG_MAX - BOUNDARY_LNG_MIN);
+	const lat = CROATIA_BBOX.latMin + Math.random() * (CROATIA_BBOX.latMax - CROATIA_BBOX.latMin);
+	const lng = CROATIA_BBOX.lngMin + Math.random() * (CROATIA_BBOX.lngMax - CROATIA_BBOX.lngMin);
 	return { lat, lng };
 }
 
@@ -318,9 +273,7 @@ export function openCoordinatesInMaps(lat: number, lng: number): void {
 	}
 }
 
-/** Short keys for base map used in share URLs (e.g. standard, topo, croatiaTopo, darkMap) */
-export type ShareBaseMapKey =
-	'standard' | 'topo' | 'satellite' | 'terrain' | 'cycling' | 'openHikingMap' | 'croatiaTopo' | 'darkMap';
+export type { ShareBaseMapKey };
 
 /** Mutually exclusive trail rendering modes encoded in share URLs. */
 export type ShareTrailStyle = 'default' | 'sections' | 'grade' | 'surface' | 'sac';
@@ -383,22 +336,6 @@ export function getInitialShareUrlParams(): ShareUrlParams | null {
 	}
 	return initialShareUrlParams;
 }
-
-/** POI ids are token-like (alphanumeric, dot, dash, underscore). Anything
- *  else is rejected to avoid the URL becoming an injection vector or
- *  carrying surprising whitespace into selectors. */
-const POI_ID_RE = /^[A-Za-z0-9._-]{1,128}$/;
-
-const VALID_SHARE_BASE_MAP_KEYS = new Set<ShareBaseMapKey>([
-	'standard',
-	'topo',
-	'satellite',
-	'terrain',
-	'cycling',
-	'openHikingMap',
-	'croatiaTopo',
-	'darkMap',
-]);
 
 const VALID_SHARE_TRAIL_STYLES = new Set<ShareTrailStyle>(['default', 'sections', 'grade', 'surface', 'sac']);
 
@@ -486,7 +423,8 @@ export function collectShareMapStyleParams(options?: {
 }): ShareMapStyleParams {
 	const state = useMapStore.getState();
 	const rulerEnabled = options?.rulerEnabled ?? state.isRulerEnabled;
-	const baseMapKey = PROVIDER_TO_KEY[state.baseMapProvider as BaseMapProvider] as ShareBaseMapKey | undefined;
+	// The store holds a plain string (persisted); an unknown provider has no key.
+	const baseMapKey: ShareBaseMapKey | undefined = PROVIDER_TO_KEY[state.baseMapProvider as BaseMapProvider];
 	// The store keeps the ruler in SOBO metres; links carry it in travel metres
 	// under `dir`, as links have always done, so older and newer links read alike.
 	const soboRuler = rulerEnabled ? (options?.rulerRange ?? state.rulerRange) : null;
@@ -542,10 +480,7 @@ export function applyShareMapStyleParams(params: ShareMapStyleParams): void {
 		store.setUnits(params.unit === 'mi' ? 'imperial' : 'metric');
 	}
 	if (params.baseMap) {
-		const provider = KEY_TO_PROVIDER[params.baseMap];
-		if (provider) {
-			store.setBaseMapProvider(provider);
-		}
+		store.setBaseMapProvider(KEY_TO_PROVIDER[params.baseMap]);
 	}
 	const trailStyle =
 		params.trailStyle ?? (params.sections !== undefined ? (params.sections ? 'sections' : 'default') : undefined);
@@ -695,10 +630,7 @@ export function parseShareUrlParams(): ShareUrlParams | null {
 		...(dir && (dir === 'NOBO' || dir === 'SOBO') && { dir }),
 		...(progressValue !== undefined && { progress: progressValue }),
 		...(unit && (unit === 'km' || unit === 'mi') && { unit }),
-		...(baseMap &&
-			VALID_SHARE_BASE_MAP_KEYS.has(baseMap as ShareBaseMapKey) && {
-				baseMap: baseMap as ShareBaseMapKey,
-			}),
+		...(baseMap && isShareBaseMapKey(baseMap) && { baseMap }),
 		...(trailStyle &&
 			VALID_SHARE_TRAIL_STYLES.has(trailStyle as ShareTrailStyle) && {
 				trailStyle: trailStyle as ShareTrailStyle,
@@ -748,10 +680,5 @@ export function buildWaypointShareUrl(waypointId: string): string {
  * @returns Boolean indicating if the point is within the map boundary
  */
 export function isWithinMapBoundary(latitude: number, longitude: number): boolean {
-	return (
-		latitude >= BOUNDARY_LAT_MIN &&
-		latitude <= BOUNDARY_LAT_MAX &&
-		longitude >= BOUNDARY_LNG_MIN &&
-		longitude <= BOUNDARY_LNG_MAX
-	);
+	return isInCroatiaBbox(latitude, longitude);
 }

@@ -14,19 +14,9 @@ import {
 	FaHiking,
 } from 'react-icons/fa';
 
-export const PROVIDER_TO_KEY: Record<BaseMapProvider, string> = {
-	[BaseMapProvider.OPEN_STREET_MAP]: 'standard',
-	[BaseMapProvider.OPEN_TOPO_MAP]: 'topo',
-	[BaseMapProvider.SATELLITE]: 'satellite',
-	[BaseMapProvider.TERRAIN]: 'terrain',
-	[BaseMapProvider.CYCL_OSM]: 'cycling',
-	[BaseMapProvider.OPEN_HIKING_MAP]: 'openHikingMap',
-	[BaseMapProvider.CROATIA_TOPO]: 'croatiaTopo',
-	[BaseMapProvider.DARK]: 'darkMap',
-};
-
-/** Reverse map for a share URL key → provider (for applying shared style). */
-export const KEY_TO_PROVIDER: Record<string, BaseMapProvider> = {
+/** Share URL key → provider (for applying a shared style). Its keys are the
+ *  base-map values a share link can carry. */
+export const KEY_TO_PROVIDER = {
 	standard: BaseMapProvider.OPEN_STREET_MAP,
 	topo: BaseMapProvider.OPEN_TOPO_MAP,
 	satellite: BaseMapProvider.SATELLITE,
@@ -35,6 +25,24 @@ export const KEY_TO_PROVIDER: Record<string, BaseMapProvider> = {
 	openHikingMap: BaseMapProvider.OPEN_HIKING_MAP,
 	croatiaTopo: BaseMapProvider.CROATIA_TOPO,
 	darkMap: BaseMapProvider.DARK,
+} as const satisfies Record<string, BaseMapProvider>;
+
+/** Short base-map keys used in share URLs (e.g. standard, topo, croatiaTopo, darkMap). */
+export type ShareBaseMapKey = keyof typeof KEY_TO_PROVIDER;
+
+export function isShareBaseMapKey(value: string): value is ShareBaseMapKey {
+	return Object.hasOwn(KEY_TO_PROVIDER, value);
+}
+
+export const PROVIDER_TO_KEY: Record<BaseMapProvider, ShareBaseMapKey> = {
+	[BaseMapProvider.OPEN_STREET_MAP]: 'standard',
+	[BaseMapProvider.OPEN_TOPO_MAP]: 'topo',
+	[BaseMapProvider.SATELLITE]: 'satellite',
+	[BaseMapProvider.TERRAIN]: 'terrain',
+	[BaseMapProvider.CYCL_OSM]: 'cycling',
+	[BaseMapProvider.OPEN_HIKING_MAP]: 'openHikingMap',
+	[BaseMapProvider.CROATIA_TOPO]: 'croatiaTopo',
+	[BaseMapProvider.DARK]: 'darkMap',
 };
 
 export interface MapOption {

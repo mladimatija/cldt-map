@@ -10,8 +10,8 @@ import { SHARE_TARGET_MAX_LEN, SHARE_TRIP_PARAM_KEY } from '@/lib/share-url-cons
 import { newId, type JournalEntry, type UserWaypoint } from '@/lib/user-waypoints';
 import { normalizeWaypointCategory } from '@/lib/waypoint-categories';
 import { normalizeRestDays } from '@/lib/stage-rest-days';
+import { POI_ID_RE } from '@/lib/poi-types';
 
-const POI_ID_RE = /^[A-Za-z0-9._-]{1,128}$/;
 const ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 
 const MAX_WAYPOINTS = 50;

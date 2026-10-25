@@ -21,6 +21,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
 import { hasTrailJunctions, junctionColor, junctionLabel, type TrailJunction } from '@/lib/trail-junctions';
 import { findNearestPointIndex } from '@/lib/distance-utils';
+import { escapeHtml } from '@/lib/html-escape';
 
 /** Minimum pixel gap between two chips before the later one is dropped at the
  *  current zoom, so a dense cluster of junctions never stacks into an
@@ -53,14 +54,10 @@ function contrastStroke(bgHex: string): string {
 	return luma > 150 ? '#1f2937' : '#ffffff';
 }
 
-function escapeHtmlAttr(s: string): string {
-	return s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-}
-
 function buildChipIcon(color: string, ariaLabel: string): L.DivIcon {
 	const stroke = contrastStroke(color);
 	const html =
-		`<span class="trail-junction-chip" role="img" aria-label="${escapeHtmlAttr(ariaLabel)}" ` +
+		`<span class="trail-junction-chip" role="img" aria-label="${escapeHtml(ariaLabel)}" ` +
 		`style="display:flex;align-items:center;justify-content:center;width:20px;height:20px;` +
 		`border-radius:9999px;background:${color};color:${stroke};stroke:${stroke};` +
 		`box-shadow:0 0 0 2px #fff,0 1px 3px rgba(0,0,0,0.45);">${JUNCTION_GLYPH}</span>`;

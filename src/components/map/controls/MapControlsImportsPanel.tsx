@@ -8,7 +8,7 @@ import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/li
 import type { ImportedTrack, TrackStats } from '@/lib/store/types';
 import { computeTrackStats, trackBounds } from '@/lib/imported-tracks';
 import { buildSpatialGrid } from '@/lib/spatial-grid';
-import { formatEta, formatDistanceM, formatPaceFromSecPerKm } from '@/lib/distance-utils';
+import { formatEta, formatPaceFromSecPerKm } from '@/lib/distance-utils';
 import { findPoisNearTrack } from '@/lib/poi-proximity';
 import {
 	downloadCoverageReportCsv,
@@ -28,6 +28,7 @@ import {
 	IoEyeOutline,
 	IoTrashOutline,
 } from 'react-icons/io5';
+import { formatKm } from '@/lib/units';
 
 interface MapControlsImportsPanelProps {
 	embedded?: boolean;
@@ -128,7 +129,7 @@ export function MapControlsImportsPanel({ embedded = false }: MapControlsImports
 			generatedAt: now.toLocaleString(locale === 'en' ? 'en-GB' : locale),
 			summaryHeading: t('reportSummaryHeading'),
 			distanceLabel: t('distance'),
-			distanceValue: formatDistanceM(stats.totalDistanceM, units),
+			distanceValue: formatKm(stats.totalDistanceM / 1000, units, 1),
 			elapsedLabel: t('elapsed'),
 			elapsedValue: stats.totalElapsedSec > 0 ? formatEta(stats.totalElapsedSec) : '-',
 			movingLabel: t('moving'),
@@ -215,7 +216,7 @@ export function MapControlsImportsPanel({ embedded = false }: MapControlsImports
 							</div>
 							<div className="mt-1 flex flex-wrap gap-x-3 gap-y-0.5 pl-5 text-xs text-gray-500 dark:text-[var(--text-secondary)]">
 								<span>
-									{t('distance')}: {stats ? formatDistanceM(stats.totalDistanceM, units) : '-'}
+									{t('distance')}: {stats ? formatKm(stats.totalDistanceM / 1000, units, 1) : '-'}
 								</span>
 								<span>
 									{t('elapsed')}: {stats && stats.totalElapsedSec > 0 ? formatEta(stats.totalElapsedSec) : '-'}

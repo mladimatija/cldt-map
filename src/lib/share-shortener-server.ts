@@ -211,7 +211,3 @@ export async function deleteExpiredShareLinks(): Promise<{ scanned: number; dele
 
 	return { scanned, deleted };
 }
-
-export function isShareShortenerConfigured(): boolean {
-	return Boolean(process.env.NETLIFY || process.env.NETLIFY_BLOBS_CONTEXT);
-}

@@ -45,6 +45,7 @@ import {
 	writeOverpassJsonCache,
 	type OverpassCacheOptions,
 } from './overpass-fetch';
+import { boundsOf } from '../src/lib/geo-bounds';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -767,17 +768,9 @@ async function main(): Promise<void> {
 // ---- GPX / geometry --------------------------------------------------------
 
 function bboxOf(pts: LatLng[]): Bbox {
-	let minLat = Infinity,
-		maxLat = -Infinity,
-		minLng = Infinity,
-		maxLng = -Infinity;
-	for (const p of pts) {
-		if (p.lat < minLat) minLat = p.lat;
-		if (p.lat > maxLat) maxLat = p.lat;
-		if (p.lng < minLng) minLng = p.lng;
-		if (p.lng > maxLng) maxLng = p.lng;
-	}
-	return { minLat, maxLat, minLng, maxLng };
+	const box = boundsOf(pts);
+	if (!box) throw new Error('bboxOf needs at least one point');
+	return box;
 }
 
 function padBbox(b: Bbox, paddingKm: number): Bbox {

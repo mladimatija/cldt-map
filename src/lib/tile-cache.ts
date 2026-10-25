@@ -20,6 +20,7 @@ import { DEFAULT_MAP_SERVICES } from '@/lib/services/map-service-config';
 import { tileCacheTtlDays } from '@/lib/config';
 import { findNearestPointIndex } from '@/lib/distance-utils';
 import type { EnhancedTrailPoint, TrailDirection } from '@/lib/store/types';
+import { CROATIA_BBOX } from '@/lib/geo-bounds';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -119,12 +120,6 @@ function buildTileUrl(template: string, z: number, x: number, y: number): string
 	return template.replace('{z}', String(z)).replace('{x}', String(x)).replace('{y}', String(y)).replace(/{s}/g, 'a'); // use subdomain 'a' for pre-caching
 }
 
-/** Croatia bounding box - mirror of CROATIA_BBOX in public/sw.js. Used as a
- *  defence-in-depth clip so the pre-cache never emits tiles outside Croatia,
- *  even if the corridor math ever drifts. The Service Worker applies the
- *  authoritative bbox + polygon clip on the cache-write path. */
-const CROATIA_BBOX = { latMin: 42.3, latMax: 46.56, lngMin: 13.2, lngMax: 19.45 };
-
 /** Web-Mercator tile (z/x/y) to its lat/lng bounds. */
 function tileLatLngBounds(z: number, x: number, y: number): { lngW: number; lngE: number; latN: number; latS: number } {
 	const n = 2 ** z;
@@ -135,6 +130,9 @@ function tileLatLngBounds(z: number, x: number, y: number): { lngW: number; lngE
 	return { lngW, lngE, latN, latS };
 }
 
+/** Defence in depth: the pre-cache never emits tiles outside Croatia's box, even
+ *  if the corridor math ever drifts. The service worker applies the
+ *  authoritative box plus polygon clip on the cache-write path. */
 function tileIntersectsCroatia(z: number, x: number, y: number): boolean {
 	const b = tileLatLngBounds(z, x, y);
 	return (

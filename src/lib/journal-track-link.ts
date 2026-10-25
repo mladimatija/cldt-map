@@ -9,6 +9,7 @@ import { forEachResampledPoint, trackBounds } from './imported-tracks';
 import { buildSpatialGrid, type SpatialGrid } from './spatial-grid';
 import type { ImportedTrack, JournalPreview } from './store/types';
 import type { JournalEntry, JournalTrackLink } from './user-waypoints';
+import { boundsOf, toLeafletBounds } from './geo-bounds';
 
 export type ResolveTrackLinkResult =
 	| { status: 'none' }
@@ -147,22 +148,8 @@ export function journalEntryBoundsForFit(
 		const endIdx = findNearestPointIndex([...enhancedPoints], hiM);
 		const lo = Math.min(startIdx, endIdx);
 		const hi = Math.max(startIdx, endIdx);
-		let minLat = Infinity;
-		let maxLat = -Infinity;
-		let minLng = Infinity;
-		let maxLng = -Infinity;
-		for (let i = lo; i <= hi; i++) {
-			const p = enhancedPoints[i];
-			if (p.lat < minLat) minLat = p.lat;
-			if (p.lat > maxLat) maxLat = p.lat;
-			if (p.lng < minLng) minLng = p.lng;
-			if (p.lng > maxLng) maxLng = p.lng;
-		}
-		if (!Number.isFinite(minLat)) return null;
-		return [
-			[minLat, minLng],
-			[maxLat, maxLng],
-		];
+		const box = boundsOf(enhancedPoints, lo, hi);
+		return box && toLeafletBounds(box);
 	}
 	return null;
 }

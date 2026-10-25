@@ -8,9 +8,9 @@
 
 import type { TrailDirection, UnitSystem } from '@/lib/types';
 import type { Poi } from '@/lib/pois';
-import { formatDistance, isSafeUrl } from '@/lib/utils';
+import { formatDistance, formatElevation, isSafeUrl } from '@/lib/utils';
 import { formatIsoDate } from '@/lib/date-format';
-import { escapeHtml } from '@/components/map/poi-marker-utils';
+import { escapeHtml } from '@/lib/html-escape';
 import { WATER_STATUS_OPTIONS, type WaterLogEntry, type WaterStatus } from '@/lib/water-log';
 import { POI_NOTE_MAX_LENGTH } from '@/lib/poi-notes';
 import { toTravelKm } from '@/lib/trail-frame';
@@ -327,8 +327,7 @@ export function buildMetaRowsHtml(
 		}
 	}
 	if (typeof poi.elevationM === 'number') {
-		const elev =
-			units === 'imperial' ? `${Math.round(poi.elevationM * 3.28084)} ft` : `${Math.round(poi.elevationM)} m`;
+		const elev = formatElevation(poi.elevationM, units);
 		lines.push(
 			`<p class="poi-popup__row"><span class="poi-popup__label">${escapeHtml(labels.elevationLabel)}</span> ${escapeHtml(elev)}</p>`,
 		);

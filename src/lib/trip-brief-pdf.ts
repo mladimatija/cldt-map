@@ -41,7 +41,6 @@ import {
 	dayHeader,
 	directionDisplay,
 	formatGeneratedAt,
-	formatKmRound,
 	todayIsoDate,
 } from '@/lib/trip-brief-i18n';
 import { registerTripBriefFonts } from '@/lib/trip-brief-fonts';
@@ -49,6 +48,7 @@ import { registerTripBriefFonts } from '@/lib/trip-brief-fonts';
 // rest of this module type-check normally; the real jsPDF is lazy-imported
 // inside `exportTripBriefPdf`.
 import type { jsPDF as JsPDF } from 'jspdf';
+import { formatKm } from './units';
 
 export interface TripBriefPdfArgs {
 	brief: TripBrief;
@@ -262,7 +262,7 @@ function renderCover(pdf: JsPDF, brief: TripBrief, logoDataUrl: string | null): 
 	// fixed column.
 	pdf.setFontSize(11);
 	const grid: [string, string][] = [
-		[meta.strings.labels.totalDistance, formatKmRound(overview.totalKm, meta.units)],
+		[meta.strings.labels.totalDistance, formatKm(overview.totalKm, meta.units, 1)],
 		[meta.strings.labels.dayCount, `${overview.dayCount}`],
 		[meta.strings.labels.direction, directionDisplay(meta.direction, meta.strings)],
 		[meta.strings.labels.gain, `+${formatElevation(overview.totalGainM, meta.units)}`],
@@ -332,7 +332,7 @@ function renderCover(pdf: JsPDF, brief: TripBrief, logoDataUrl: string | null): 
 			continue;
 		}
 		const distKm = day.endKm - day.startKm;
-		const distStr = formatKmRound(distKm, meta.units);
+		const distStr = formatKm(distKm, meta.units, 1);
 		const eta = formatEta(day.etaSec);
 		const headerStr = dateLabel
 			? `${dateLabel} - ${dayHeader(day, meta.strings, meta.units)}`
@@ -361,7 +361,7 @@ function renderDay(
 	// stat segments (green gain, red loss, gray ETA). Same shape as the
 	// strip-map per-stage header.
 	const distKm = day.endKm - day.startKm;
-	const headerTitle = `${dayHeader(day, meta.strings, meta.units)}  |  ${formatKmRound(distKm, meta.units)}`;
+	const headerTitle = `${dayHeader(day, meta.strings, meta.units)}  |  ${formatKm(distKm, meta.units, 1)}`;
 	const gainStr = formatElevation(day.gainM, meta.units);
 	const lossStr = formatElevation(day.lossM, meta.units);
 	const etaStr = formatEta(day.etaSec);
@@ -482,7 +482,7 @@ function renderDay(
 			const nameWidth = pdf.getTextWidth(poi.name);
 			pdf.setFont('NotoSans', 'normal');
 			const offTrailFrag =
-				poi.distanceFromTrailKm >= 0.5 ? ` - ${formatKmRound(poi.distanceFromTrailKm, meta.units)} off-trail` : '';
+				poi.distanceFromTrailKm >= 0.5 ? ` - ${formatKm(poi.distanceFromTrailKm, meta.units, 1)} off-trail` : '';
 			const resupplyFrag = poi.resupply ? ` - ${meta.strings.labels.resupply}` : '';
 			const metaLine = ` - ${poi.typeLabel} - km ${poi.trailKm.toFixed(0)}${offTrailFrag}${resupplyFrag}`;
 			pdf.text(metaLine, MARGIN_X + nameWidth, yCursor);
@@ -631,4 +631,4 @@ function footer(pdf: JsPDF, page: number, totalPages: number): void {
 
 // ── Localisation helpers ────────────────────────────────────────────────────
 // All shared labels (LBL, DAYS_HEADING, MORE_LABEL, dayHeader, directionDisplay,
-// formatKmRound, todayIsoDate, EMERGENCY_BODY) are imported from trip-brief-i18n.
+// todayIsoDate, EMERGENCY_BODY) are imported from trip-brief-i18n.

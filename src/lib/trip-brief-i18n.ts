@@ -156,12 +156,6 @@ export function dayDateLabel(day: TripBriefDay, locale: string): string {
 	return day.date ? formatShortWeekdayDate(day.date, locale) : '';
 }
 
-/** Format a distance value for display in trip-brief documents. */
-export function formatKmRound(km: number, units: TripBrief['meta']['units']): string {
-	if (units === 'imperial') return `${(km * 0.621371).toFixed(1)} mi`;
-	return `${km.toFixed(1)} km`;
-}
-
 /** Today's date as an ISO 8601 string (YYYY-MM-DD). */
 export function todayIsoDate(): string {
 	const d = new Date();

@@ -1,4 +1,5 @@
 import type { UnitSystem } from '@/lib/types';
+import { kmToMiles } from '@/lib/units';
 
 export interface HourlyEntry {
 	time: Date;
@@ -209,7 +210,7 @@ export function formatTemperature(celsius: number, units: UnitSystem): string {
 /** Formats a wind speed value (in km/h) according to the user's unit system. */
 export function formatWindSpeed(kmh: number, units: UnitSystem): string {
 	if (units === 'imperial') {
-		return `${Math.round(kmh * 0.621371)} mph`;
+		return `${Math.round(kmToMiles(kmh))} mph`;
 	}
 	return `${Math.round(kmh)} km/h`;
 }

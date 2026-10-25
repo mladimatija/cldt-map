@@ -11,6 +11,7 @@
  * can cross, which keeps the result exact.
  */
 import { haversineDistanceM } from './haversine';
+import { boundsOf } from './geo-bounds';
 
 const METERS_PER_DEGREE_LAT = 111_320;
 /** Cell indices are shifted by the offset and packed into one number; with
@@ -45,12 +46,12 @@ export function buildSpatialGrid(points: readonly GridPoint[], cellSizeM = 500):
 		return { nearest: () => null };
 	}
 
-	let minLat = Infinity;
-	let maxLat = -Infinity;
-	for (const p of points) {
-		if (p.lat < minLat) minLat = p.lat;
-		if (p.lat > maxLat) maxLat = p.lat;
+	const box = boundsOf(points);
+	// No point with usable coordinates (a malformed track): nothing to find.
+	if (!box) {
+		return { nearest: () => null };
 	}
+	const { minLat, maxLat, minLng, maxLng } = box;
 	const midLatRad = (((minLat + maxLat) / 2) * Math.PI) / 180;
 	const cellLatDeg = cellSizeM / METERS_PER_DEGREE_LAT;
 	// Clamp the cos so polar data cannot produce a degenerate (infinite-width) cell.
@@ -77,12 +78,6 @@ export function buildSpatialGrid(points: readonly GridPoint[], cellSizeM = 500):
 	// Ring scan caps at the grid's own diameter: beyond that every cell has
 	// been visited and the query point is simply far from all data.
 	const latCells = Math.ceil((maxLat - minLat) / cellLatDeg) + 2;
-	let minLng = Infinity;
-	let maxLng = -Infinity;
-	for (const p of points) {
-		if (p.lng < minLng) minLng = p.lng;
-		if (p.lng > maxLng) maxLng = p.lng;
-	}
 	const lngCells = Math.ceil((maxLng - minLng) / cellLngDeg) + 2;
 	const maxRing = Math.max(latCells, lngCells);
 

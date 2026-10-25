@@ -3,17 +3,17 @@ import { enforceRateLimit } from '@/lib/api-defense';
 import {
 	collectShareAllowedHosts,
 	createShortShareLink,
-	isShareShortenerConfigured,
 	normalizeShareTarget,
 	resolvePublicOrigin,
 } from '@/lib/share-shortener-server';
+import { isBlobsConfigured } from '@/lib/netlify-env';
 
 interface ShareCreateBody {
 	url?: unknown;
 }
 
 export async function POST(request: NextRequest): Promise<Response> {
-	if (!isShareShortenerConfigured()) {
+	if (!isBlobsConfigured()) {
 		return NextResponse.json({ error: 'Share shortener unavailable' }, { status: 503 });
 	}
 

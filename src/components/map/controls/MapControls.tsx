@@ -56,6 +56,7 @@ import { BaseMapProvider } from '@/lib/services/base-map-provider';
 import { toTravelKm } from '@/lib/trail-frame';
 import { DEFAULT_MAP_SERVICES } from '@/lib/services/map-service-config';
 import { fitMapToRulerBounds, waitForTilesLoaded } from '@/lib/export-utils';
+import { downloadBlob } from '@/lib/download';
 
 const CROATIA_BOUNDARY_URL = '/data/croatia-boundary-display.json';
 
@@ -484,14 +485,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 				await waitForTilesLoaded(map);
 				const blob = await toBlob(mapEl, { cacheBust: true });
 				if (!blob) return;
-				const url = URL.createObjectURL(blob);
-				const link = document.createElement('a');
-				link.download = 'cldt-map.png';
-				link.href = url;
-				link.click();
-				// Defer revocation one tick: revoking synchronously after click() can
-				// abort the download in Safari.
-				setTimeout(() => URL.revokeObjectURL(url), 1000);
+				downloadBlob(blob, 'cldt-map.png', 'image/png');
 			} catch (err) {
 				console.error('PNG export failed:', err instanceof Error ? err.message : String(err));
 			}

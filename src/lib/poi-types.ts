@@ -210,3 +210,9 @@ export function isKnownType(t: string): t is KnownPoiType {
 /** Off-trail cap (km) at which a POI is still considered "in" a stage or
  *  nearby window. */
 export const STAGE_POI_OFFTRAIL_KM = 5;
+
+/** POI ids are token-like (alphanumeric, dot, dash, underscore). The one rule
+ *  for ingestion (pois.ts), share links (utils.ts) and shared trip state, so
+ *  they agree on what a valid id is; it also keeps ids free of whitespace and
+ *  CSS special characters, which PoiMarkers puts into selectors. */
+export const POI_ID_RE = /^[A-Za-z0-9._-]{1,128}$/;

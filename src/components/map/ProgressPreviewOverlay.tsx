@@ -5,6 +5,7 @@ import L from 'leaflet';
 import { useMap } from 'react-leaflet';
 import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
 import { findNearestPointIndex } from '@/lib/distance-utils';
+import { ensurePane } from '@/lib/leaflet-panes';
 
 const PREVIEW_PANE = 'progress-preview-pane';
 
@@ -43,12 +44,7 @@ export function ProgressPreviewOverlay(): null {
 			return;
 		}
 
-		if (!map.getPane(PREVIEW_PANE)) {
-			const pane = map.createPane(PREVIEW_PANE);
-			pane.classList.add(PREVIEW_PANE);
-			const markerPane = map.getPane('markerPane');
-			if (markerPane?.parentNode) markerPane.parentNode.insertBefore(pane, markerPane);
-		}
+		ensurePane(map, PREVIEW_PANE, { className: PREVIEW_PANE, before: 'markerPane' });
 		const group = L.layerGroup();
 		for (const iv of intervals) {
 			const startIdx = findNearestPointIndex(enhancedTrailPoints, iv.startKm * 1000);

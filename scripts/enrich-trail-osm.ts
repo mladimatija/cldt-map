@@ -23,6 +23,7 @@ import { fileURLToPath } from 'node:url';
 import { haversineDistanceM as haversineM } from '../src/lib/haversine';
 import { fetchOverpass } from './overpass-fetch';
 import { fetchTrailGpx, loadTrailPoints } from './trail-gpx';
+import { boundsOf } from '../src/lib/geo-bounds';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -203,17 +204,9 @@ interface Bbox {
 }
 
 function bboxOf(points: LatLng[]): Bbox {
-	let minLat = Infinity,
-		maxLat = -Infinity,
-		minLng = Infinity,
-		maxLng = -Infinity;
-	for (const p of points) {
-		if (p.lat < minLat) minLat = p.lat;
-		if (p.lat > maxLat) maxLat = p.lat;
-		if (p.lng < minLng) minLng = p.lng;
-		if (p.lng > maxLng) maxLng = p.lng;
-	}
-	return { minLat, maxLat, minLng, maxLng };
+	const box = boundsOf(points);
+	if (!box) throw new Error('bboxOf needs at least one point');
+	return box;
 }
 
 function bboxSpansKm(b: Bbox): { latKm: number; lngKm: number } {

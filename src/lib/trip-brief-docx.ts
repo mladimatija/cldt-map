@@ -15,16 +15,16 @@ import { formatElevation } from '@/lib/utils';
 import type { TripBrief } from '@/lib/trip-brief';
 import type { EnhancedTrailPoint } from '@/lib/store/types';
 import { dataUrlToBytes } from './elevation-thumbnail';
-import { downloadBlob } from './gpx-export';
+import { downloadBlob } from './download';
 import {
 	dayDateLabel,
 	emergencyLines,
 	dayHeader,
 	directionDisplay,
 	formatGeneratedAt,
-	formatKmRound,
 	todayIsoDate,
 } from '@/lib/trip-brief-i18n';
+import { formatKm } from './units';
 
 /** Display width matches the elevation thumbnail; height keeps PDF map aspect. */
 const MAP_IMG_W = 522;
@@ -90,7 +90,7 @@ export async function exportTripBriefDocx(args: TripBriefDocxArgs): Promise<void
 		out.push(new Paragraph({ text: meta.strings.labels.overview, heading: HeadingLevel.HEADING_1 }));
 
 		const grid: [string, string][] = [
-			[meta.strings.labels.totalDistance, formatKmRound(overview.totalKm, meta.units)],
+			[meta.strings.labels.totalDistance, formatKm(overview.totalKm, meta.units, 1)],
 			[meta.strings.labels.dayCount, `${overview.dayCount}`],
 			[meta.strings.labels.direction, directionDisplay(meta.direction, meta.strings)],
 			[meta.strings.labels.gain, `+${formatElevation(overview.totalGainM, meta.units)}`],
@@ -247,7 +247,7 @@ export async function exportTripBriefDocx(args: TripBriefDocxArgs): Promise<void
 			);
 			for (const poi of day.pois) {
 				const off =
-					poi.distanceFromTrailKm >= 0.5 ? ` · ${formatKmRound(poi.distanceFromTrailKm, meta.units)} off-trail` : '';
+					poi.distanceFromTrailKm >= 0.5 ? ` · ${formatKm(poi.distanceFromTrailKm, meta.units, 1)} off-trail` : '';
 				out.push(
 					new Paragraph({
 						numbering: { reference: 'bullet', level: 0 },
@@ -415,4 +415,4 @@ export async function exportTripBriefDocx(args: TripBriefDocxArgs): Promise<void
 
 // ── Localisation ────────────────────────────────────────────────────────────
 // Shared labels (LBL), EMERGENCY_BODY, dayHeader, directionDisplay,
-// formatKmRound, todayIsoDate are imported from trip-brief-i18n.
+// todayIsoDate are imported from trip-brief-i18n.

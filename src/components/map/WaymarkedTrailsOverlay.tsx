@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react';
 import L from 'leaflet';
 import { useMap } from 'react-leaflet';
 import { useMapStore, type MapStoreState } from '@/lib/store';
+import { ensurePane } from '@/lib/leaflet-panes';
 
 const TILE_URL = 'https://tile.waymarkedtrails.org/hiking/{z}/{x}/{y}.png';
 const ATTRIBUTION =
@@ -29,14 +30,7 @@ export function WaymarkedTrailsOverlay(): null {
 		// (The app's CSS flattens every pane's z-index with !important, so
 		// stacking inside the map is purely document order - same pattern as
 		// the completion overlay pane.)
-		if (!map.getPane('waymarkedPane')) {
-			map.createPane('waymarkedPane');
-			const pane = map.getPane('waymarkedPane');
-			const overlayPane = map.getPane('overlayPane');
-			if (pane && overlayPane?.parentNode) {
-				overlayPane.parentNode.insertBefore(pane, overlayPane);
-			}
-		}
+		ensurePane(map, 'waymarkedPane', { before: 'overlayPane' });
 		if (enabled && !layerRef.current) {
 			layerRef.current = L.tileLayer(TILE_URL, {
 				attribution: ATTRIBUTION,

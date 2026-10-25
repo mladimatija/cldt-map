@@ -37,15 +37,8 @@ import { MapControlSectionCard } from './MapControlSectionCard';
 import { SettingsToggleRow } from './SettingsToggleRow';
 import type { StagePlanPreset, StagePlanPresetInputs } from '@/lib/store/types';
 import { MapControlsTripBriefModal } from './MapControlsTripBriefModal';
-import {
-	cn,
-	formatDistance,
-	formatElevation,
-	kmToMiles,
-	LINKABLE_PHONE_RE,
-	milesToKm,
-	toDialString,
-} from '@/lib/utils';
+import { cn, formatDistance, formatElevation, LINKABLE_PHONE_RE, toDialString } from '@/lib/utils';
+import { kmToMiles, milesToKm } from '@/lib/units';
 import { copyTextToClipboard } from '@/lib/share-link-copy';
 import {
 	buildSafetyContactPlan,

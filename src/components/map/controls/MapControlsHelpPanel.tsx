@@ -11,25 +11,10 @@ import { cn } from '@/lib/utils';
 import { Checkbox } from '@/components/ui/Checkbox';
 import { INLINE_LINK_CLASS } from '@/components/ui/ExternalLink';
 import { useMapStore, type MapStoreState } from '@/lib/store';
+import { PREHIKE_ITEMS } from '@/lib/prehike-checklist';
 
 /** Secondary muted body text shared by the pre-hike intro and advice rows. */
 const PREHIKE_SECONDARY_TEXT = 'text-xs leading-snug text-gray-600 dark:text-[var(--text-secondary)]';
-
-/** HGSS pre-hike readiness checklist item descriptors. Rows with an `action`
- *  deep-link into the already-shipped surface that satisfies them (the settings
- *  overlays card for closures, the offline-maps card for offline, the emergency
- *  panel for medical/checkin); advice-only rows carry no action. Static shape
- *  lives at module scope; the component maps the action to a store call and
- *  reads tick state from the store. Tick state is persisted on-device only. */
-const PREHIKE_ITEMS: { key: string; action?: 'closures' | 'offline' | 'emergency' }[] = [
-	{ key: 'closures', action: 'closures' },
-	{ key: 'offline', action: 'offline' },
-	{ key: 'medical', action: 'emergency' },
-	{ key: 'checkin', action: 'emergency' },
-	{ key: 'tellSomeone' },
-	{ key: 'gear' },
-	{ key: 'markedTrails' },
-];
 
 function HelpKbd({ children }: { children: React.ReactNode }): React.ReactElement {
 	return (

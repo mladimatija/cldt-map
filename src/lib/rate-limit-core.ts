@@ -8,6 +8,7 @@
  * when Blobs is momentarily unreachable.
  */
 import { getStore } from '@netlify/blobs';
+import { isBlobsConfigured } from './netlify-env';
 
 export interface RateLimitOptions {
 	windowMs: number;
@@ -43,11 +44,6 @@ interface InMemoryBucket {
 }
 
 const IN_MEMORY_RATE_LIMIT_BUCKETS = new Map<string, InMemoryBucket>();
-
-/** True where Netlify Blobs is reachable (production, deploy previews, dev with the blobs context). */
-export function isBlobsConfigured(): boolean {
-	return Boolean(process.env.NETLIFY || process.env.NETLIFY_BLOBS_CONTEXT);
-}
 
 const IPV4_PATTERN = /^(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?)$/;
 // Accepts a leading '::' for compressed loopback/unspecified forms (e.g. ::1, ::ffff:1.2.3.4),

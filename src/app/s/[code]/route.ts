@@ -1,11 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { enforceRateLimit } from '@/lib/api-defense';
-import {
-	isShareShortenerConfigured,
-	resolvePublicOrigin,
-	resolveShortShareLink,
-	SHARE_CODE_PATTERN,
-} from '@/lib/share-shortener-server';
+import { resolvePublicOrigin, resolveShortShareLink, SHARE_CODE_PATTERN } from '@/lib/share-shortener-server';
+import { isBlobsConfigured } from '@/lib/netlify-env';
 
 interface RouteContext {
 	params: Promise<{ code: string }>;
@@ -26,7 +22,7 @@ export async function GET(request: NextRequest, context: RouteContext): Promise<
 	const limited = await enforceRateLimit(request, { name: 'share-redirect', windowMs: 60_000, max: 60 });
 	if (limited) return limited;
 
-	if (!isShareShortenerConfigured()) {
+	if (!isBlobsConfigured()) {
 		return redirectToHome(request);
 	}
 

@@ -5,6 +5,7 @@ import L from 'leaflet';
 import { useMap } from 'react-leaflet';
 import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
 import { findNearestPointIndex } from '@/lib/distance-utils';
+import { ensurePane } from '@/lib/leaflet-panes';
 
 /** Dedicated pane: the global stylesheet flattens every Leaflet pane to
  *  --z-map, so inside the shared overlay pane the trail polyline would cover
@@ -53,12 +54,7 @@ export function CompletionOverlay(): null {
 			return;
 		}
 
-		if (!map.getPane(COMPLETION_PANE)) {
-			const pane = map.createPane(COMPLETION_PANE);
-			pane.classList.add(COMPLETION_PANE);
-			const markerPane = map.getPane('markerPane');
-			if (markerPane?.parentNode) markerPane.parentNode.insertBefore(pane, markerPane);
-		}
+		ensurePane(map, COMPLETION_PANE, { className: COMPLETION_PANE, before: 'markerPane' });
 		const group = L.layerGroup();
 		for (const iv of intervals) {
 			const startIdx = findNearestPointIndex(enhancedTrailPoints, iv.startKm * 1000);

@@ -7,6 +7,7 @@ import { sliceTrackPoints } from './journal-track-link';
 import type { ImportedTrack } from './store/types';
 import { journalToMarkdown, type JournalEntry, type JournalExportLabels } from './user-waypoints';
 import type { UnitSystem } from './types';
+import { downloadBlob } from './download';
 
 function sanitizeFilenamePart(value: string): string {
 	return value
@@ -91,14 +92,5 @@ export async function exportJournalBundle(
 	}
 
 	files['cldt-journal/manifest.json'] = strToU8(JSON.stringify(manifest, null, 2));
-	const zipped = zipSync(files);
-	const blob = new Blob([zipped], { type: 'application/zip' });
-	const url = URL.createObjectURL(blob);
-	const a = document.createElement('a');
-	a.href = url;
-	a.download = 'cldt-journal-bundle.zip';
-	document.body.appendChild(a);
-	a.click();
-	document.body.removeChild(a);
-	setTimeout(() => URL.revokeObjectURL(url), 1000);
+	downloadBlob(zipSync(files), 'cldt-journal-bundle.zip', 'application/zip');
 }

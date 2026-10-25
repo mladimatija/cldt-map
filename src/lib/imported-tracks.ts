@@ -3,6 +3,7 @@ import { MAX_GPX_BYTES, parseGpx, type ParsedTrack } from './gpx-parser';
 import type { ImportedTrack, TrackStats } from './store/types';
 import { haversineDistanceM as haversineM } from './haversine';
 import { buildSpatialGrid, type SpatialGrid } from './spatial-grid';
+import { boundsOf, toLeafletBounds } from './geo-bounds';
 
 const importedTracksStore = localforage.createInstance({
 	name: 'cldt-map',
@@ -313,21 +314,8 @@ function computeTrackStatsUncached(
 /** Track bounding box as [[minLat, minLng], [maxLat, maxLng]], or null for
  *  empty tracks. Single numeric pass - feed straight into map.fitBounds. */
 export function trackBounds(track: ImportedTrack): [[number, number], [number, number]] | null {
-	if (track.points.length === 0) return null;
-	let minLat = Infinity;
-	let maxLat = -Infinity;
-	let minLng = Infinity;
-	let maxLng = -Infinity;
-	for (const pt of track.points) {
-		if (pt.lat < minLat) minLat = pt.lat;
-		if (pt.lat > maxLat) maxLat = pt.lat;
-		if (pt.lng < minLng) minLng = pt.lng;
-		if (pt.lng > maxLng) maxLng = pt.lng;
-	}
-	return [
-		[minLat, minLng],
-		[maxLat, maxLng],
-	];
+	const box = boundsOf(track.points);
+	return box && toLeafletBounds(box);
 }
 
 /** Step used whenever a metric walks the track geometry. Import-time

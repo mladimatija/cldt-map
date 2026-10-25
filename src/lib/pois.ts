@@ -5,6 +5,7 @@ import { createDatasetLoader } from '@/lib/dataset-loader';
 // them so existing call sites that import from '@/lib/pois' continue to work.
 import {
 	KNOWN_POI_TYPES,
+	POI_ID_RE,
 	POI_TYPE_GROUPS,
 	isKnownType,
 	STAGE_POI_OFFTRAIL_KM,
@@ -239,18 +240,12 @@ const MAX_NAME_LEN = 128;
  *  summits that clutter the map without being useful to a CLDT walker. */
 const MAX_PEAK_OFFTRAIL_KM = 2;
 
-/** Character whitelist for POI ids. Mirrors the read-side `POI_ID_RE` in
- *  utils.ts so ingestion and URL parsing agree on what a valid id looks like.
- *  Also closes the CSS-selector injection vector in PoiMarkers.tsx by
- *  ensuring ids never contain unescaped CSS special characters. */
-const POI_ID_VALID_RE = /^[A-Za-z0-9._-]{1,128}$/;
-
 function isValidPoi(p: unknown): p is Poi {
 	if (!p || typeof p !== 'object') return false;
 	const o = p as Record<string, unknown>;
 	return (
 		typeof o.id === 'string' &&
-		POI_ID_VALID_RE.test(o.id) &&
+		POI_ID_RE.test(o.id) &&
 		typeof o.type === 'string' &&
 		typeof o.name_en === 'string' &&
 		o.name_en.length <= MAX_NAME_LEN &&

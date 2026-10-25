@@ -9,6 +9,7 @@
 import L from 'leaflet';
 import type { Poi } from '@/lib/pois';
 import { WATER_COLOR } from '@/lib/water-intelligence';
+import { escapeHtml } from '@/lib/html-escape';
 
 /** Zoom level at and above which clustering is disabled. Below this, nearby
  *  POIs are grouped into a single count-bearing marker; at this zoom or
@@ -63,13 +64,6 @@ export const TYPE_COLOR: Record<string, string> = {
 	water: 'var(--poi-color-water)',
 	crag: 'var(--poi-color-crag)',
 };
-
-/** Escape HTML special characters for use in element text or attribute
- *  values. Shared with the popup builders in PoiMarkers since every dynamic
- *  string injected into Leaflet's innerHTML must pass through this. */
-export function escapeHtml(s: string): string {
-	return s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-}
 
 /** Build a Leaflet divIcon for a single POI. Water markers tint by their
  *  reliability class (blue reliable / amber seasonal / slate unverified /

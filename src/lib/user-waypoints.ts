@@ -9,7 +9,7 @@
  */
 
 import type { UnitSystem } from './types';
-import { downloadBlob } from './gpx-export';
+import { downloadBlob } from './download';
 import { normalizeWaypointCategory, type WaypointCategoryId } from './waypoint-categories';
 
 export interface UserWaypoint {

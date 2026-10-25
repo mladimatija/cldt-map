@@ -3,8 +3,10 @@ import type { EnhancedTrailPoint, StagePlan, TrailDirection, UnitSystem } from '
 import { computeStageStats } from '@/lib/stage-planner';
 import { toTravelRange } from '@/lib/trail-frame';
 import { findNearestPointIndex, formatEta } from '@/lib/distance-utils';
-import { formatElevation, kmToMiles } from '@/lib/utils';
+import { formatElevation } from '@/lib/utils';
+import { formatKm, kmToUnit } from '@/lib/units';
 import { siteMetadata } from '@/lib/metadata';
+import { boundsOf, toLeafletBounds } from '@/lib/geo-bounds';
 
 /** Providers whose tile servers don't send Access-Control-Allow-Origin; PNG canvas export will taint. */
 const CORS_BLOCKED_PROVIDERS: string[] = [BaseMapProvider.SATELLITE, BaseMapProvider.CROATIA_TOPO];
@@ -47,21 +49,9 @@ export interface LeafletMapForExport {
 }
 
 export function pointsToBounds(pts: { lat: number; lng: number }[]): [[number, number], [number, number]] {
-	if (pts.length === 0) throw new Error('pointsToBounds requires at least one point');
-	let minLat = pts[0].lat,
-		maxLat = pts[0].lat,
-		minLng = pts[0].lng,
-		maxLng = pts[0].lng;
-	for (const p of pts) {
-		if (p.lat < minLat) minLat = p.lat;
-		if (p.lat > maxLat) maxLat = p.lat;
-		if (p.lng < minLng) minLng = p.lng;
-		if (p.lng > maxLng) maxLng = p.lng;
-	}
-	return [
-		[minLat, minLng],
-		[maxLat, maxLng],
-	];
+	const box = boundsOf(pts);
+	if (!box) throw new Error('pointsToBounds requires at least one point');
+	return toLeafletBounds(box);
 }
 
 export async function blobToDataUrl(blob: Blob): Promise<string> {
@@ -332,9 +322,9 @@ export async function exportStripMapPdf(
 			if (i > 0) pdf.addPage();
 
 			const stats = allStats[i];
-			const toDisp = (km: number): string => (isImperial ? kmToMiles(km).toFixed(0) : km.toFixed(0));
+			const toDisp = (km: number): string => kmToUnit(km, units).toFixed(0);
 			const distKm = stage.endKm - stage.startKm;
-			const distDisplay = isImperial ? kmToMiles(distKm).toFixed(1) + ' mi' : distKm.toFixed(1) + ' km';
+			const distDisplay = formatKm(distKm, units, 1);
 			const gainStr = formatElevation(stats.gainM, units);
 			const lossStr = formatElevation(stats.lossM, units);
 			const etaStr = formatEta(stats.etaSec);

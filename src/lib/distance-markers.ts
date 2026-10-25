@@ -1,6 +1,7 @@
 import type { EnhancedTrailPoint } from '@/lib/store';
 import type { TrailDirection, UnitSystem } from '@/lib/types';
 import { toSoboM } from '@/lib/trail-frame';
+import { METRES_PER_MILE } from './units';
 
 /** Step sizes (in the active unit: km or mi) at which markers are emitted. */
 export const DISTANCE_MARKER_LEVELS = [100, 50, 25, 10, 5, 1] as const;
@@ -19,8 +20,6 @@ export interface DistanceMarker {
 	 * */
 	label: string;
 }
-
-const METRES_PER_MILE = 1609.344;
 
 /**
  * Computes one DistanceMarker per (level, milestone) along the trail.

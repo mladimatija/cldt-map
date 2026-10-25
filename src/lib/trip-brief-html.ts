@@ -14,10 +14,12 @@ import {
 	directionDisplay,
 	emergencyLines,
 	formatGeneratedAt,
-	formatKmRound,
 	todayIsoDate,
 } from '@/lib/trip-brief-i18n';
 import { formatElevation, isSafeUrl } from '@/lib/utils';
+import { downloadBlob } from './download';
+import { escapeHtml } from './html-escape';
+import { formatKm } from './units';
 
 const MAX_POIS_PER_DAY = 25;
 
@@ -83,13 +85,13 @@ export async function exportTripBriefHtml(args: TripBriefHtmlArgs): Promise<void
 	if (signal?.aborted) return;
 	const html = buildTripBriefHtml(brief);
 	onProgress?.(2, totalSteps);
-	downloadHtmlFile(html, `cldt-trip-brief-${todayIsoDate()}.html`);
+	downloadBlob(html, `cldt-trip-brief-${todayIsoDate()}.html`, 'text/html;charset=utf-8');
 }
 
 function buildCoverSection(brief: TripBrief): string {
 	const { meta, overview } = brief;
 	const rows: [string, string][] = [
-		[meta.strings.labels.totalDistance, formatKmRound(overview.totalKm, meta.units)],
+		[meta.strings.labels.totalDistance, formatKm(overview.totalKm, meta.units, 1)],
 		[meta.strings.labels.dayCount, `${overview.dayCount}`],
 		[meta.strings.labels.direction, directionDisplay(meta.direction, meta.strings)],
 		[meta.strings.labels.gain, `+${formatElevation(overview.totalGainM, meta.units)}`],
@@ -165,7 +167,7 @@ function buildDaySection(brief: TripBrief, day: TripBriefDay): string {
 			.map((poi) => {
 				const offTrail =
 					poi.distanceFromTrailKm >= 0.5
-						? ` · ${escapeHtml(formatKmRound(poi.distanceFromTrailKm, meta.units))} off-trail`
+						? ` · ${escapeHtml(formatKm(poi.distanceFromTrailKm, meta.units, 1))} off-trail`
 						: '';
 				const resupply = poi.resupply ? ` · ${escapeHtml(meta.strings.labels.resupply)}` : '';
 				const metaLine = `${escapeHtml(poi.typeLabel)} · km ${poi.trailKm.toFixed(0)}${offTrail}${resupply}`;
@@ -194,7 +196,7 @@ function buildDaySection(brief: TripBrief, day: TripBriefDay): string {
     <span class="stat-gain">+${escapeHtml(gainStr)}</span>
     <span class="stat-loss">-${escapeHtml(lossStr)}</span>
     <span class="stat-eta">${escapeHtml(etaStr)}</span>
-    <span class="stat-dist">${escapeHtml(formatKmRound(distKm, meta.units))}</span>
+    <span class="stat-dist">${escapeHtml(formatKm(distKm, meta.units, 1))}</span>
   </p>
   ${elevBlock}
   <p class="narrative">${escapeHtml(day.narrative)}</p>
@@ -240,22 +242,6 @@ function buildEmergencySection(brief: TripBrief): string {
   ${lines}
   ${safetyBlock}
 </section>`;
-}
-
-function escapeHtml(value: string): string {
-	return value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-}
-
-function downloadHtmlFile(content: string, filename: string): void {
-	const blob = new Blob([content], { type: 'text/html;charset=utf-8' });
-	const url = URL.createObjectURL(blob);
-	const a = document.createElement('a');
-	a.href = url;
-	a.download = filename;
-	document.body.appendChild(a);
-	a.click();
-	document.body.removeChild(a);
-	URL.revokeObjectURL(url);
 }
 
 const TRIP_BRIEF_CSS = `

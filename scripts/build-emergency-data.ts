@@ -7,6 +7,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { haversineDistanceM } from '../src/lib/haversine';
 import { fetchTrailGpx, loadTrailPoints } from './trail-gpx';
+import { boundsOf } from '../src/lib/geo-bounds';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -105,21 +106,13 @@ function chunkBboxesAlongTrail(
 }
 
 function bboxOf(pts: LatLng[], padDeg: number): BBox {
-	let south = Infinity;
-	let west = Infinity;
-	let north = -Infinity;
-	let east = -Infinity;
-	for (const p of pts) {
-		if (p.lat < south) south = p.lat;
-		if (p.lat > north) north = p.lat;
-		if (p.lng < west) west = p.lng;
-		if (p.lng > east) east = p.lng;
-	}
+	const box = boundsOf(pts);
+	if (!box) throw new Error('bboxOf needs at least one point');
 	return {
-		south: south - padDeg,
-		west: west - padDeg,
-		north: north + padDeg,
-		east: east + padDeg,
+		south: box.minLat - padDeg,
+		west: box.minLng - padDeg,
+		north: box.maxLat + padDeg,
+		east: box.maxLng + padDeg,
 	};
 }
 

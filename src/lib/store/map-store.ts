@@ -79,6 +79,7 @@ import { normalizePoiNote, sanitizePoiNotes } from '../poi-notes';
 import { sanitizeNavTarget, type NavTarget } from '../nav-target';
 import { DEFAULT_MAP_APPEARANCE, type MapAppearance } from '../map-appearance';
 import { isBaseMapProviderAvailable } from '../services/map-service-config';
+import { PREHIKE_KEYS } from '../prehike-checklist';
 
 /** Module-level abort controller for tile downloads - one download at a time. */
 let tilePrecacheAbortController: AbortController | null = null;
@@ -2133,23 +2134,13 @@ export function createMapStore(getMainStore: () => StoreState): UseBoundStore<St
 					};
 					merged.shareIncludeTripState = merged.shareIncludeTripState === true;
 					// Drop pre-hike checklist entries that are not booleans or whose key is
-					// not a known checklist item, so a hand-edited or renamed key can never
-					// accumulate orphaned entries in localStorage. Keep the key set in sync
-					// with PREHIKE_ITEMS in MapControlsHelpPanel.tsx.
-					const KNOWN_PREHIKE_KEYS = new Set([
-						'closures',
-						'offline',
-						'medical',
-						'checkin',
-						'tellSomeone',
-						'gear',
-						'markedTrails',
-					]);
+					// not a checklist item, so a hand-edited or renamed key can never
+					// accumulate orphaned entries in localStorage.
 					const rawPrehike = (persistedState as { prehikeChecklist?: unknown })?.prehikeChecklist;
 					const cleanPrehike: Record<string, boolean> = {};
 					if (rawPrehike && typeof rawPrehike === 'object' && !Array.isArray(rawPrehike)) {
 						for (const [k, v] of Object.entries(rawPrehike as Record<string, unknown>)) {
-							if (typeof v === 'boolean' && KNOWN_PREHIKE_KEYS.has(k)) cleanPrehike[k] = v;
+							if (typeof v === 'boolean' && PREHIKE_KEYS.has(k)) cleanPrehike[k] = v;
 						}
 					}
 					merged.prehikeChecklist = cleanPrehike;

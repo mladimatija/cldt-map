@@ -1,6 +1,7 @@
 import type { CourseMesg, EventMesg, FileIdMesg, LapMesg, RecordMesg } from '@garmin/fitsdk';
 import type { GpxExportPoint } from '@/lib/gpx-export';
 import { haversineDistanceM } from '@/lib/haversine';
+import { downloadBlob } from './download';
 
 const SEMICIRCLES_PER_DEGREE = 2 ** 31 / 180;
 /** processed + valid + distance + position */
@@ -102,15 +103,5 @@ export async function buildFitCourseBytes(options: FitCourseBuildOptions): Promi
 
 /** Triggers a browser file download for the given FIT course bytes. */
 export function downloadFitFile(bytes: Uint8Array, filename: string): void {
-	const blob = new Blob([Uint8Array.from(bytes)], {
-		type: 'application/vnd.ant.fit',
-	});
-	const url = URL.createObjectURL(blob);
-	const a = document.createElement('a');
-	a.href = url;
-	a.download = filename;
-	document.body.appendChild(a);
-	a.click();
-	document.body.removeChild(a);
-	URL.revokeObjectURL(url);
+	downloadBlob(Uint8Array.from(bytes), filename, 'application/vnd.ant.fit');
 }

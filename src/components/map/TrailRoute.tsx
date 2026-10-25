@@ -80,6 +80,7 @@ import {
 import type { UnitSystem } from '@/lib/types';
 import { useLocale, useTranslations } from 'next-intl';
 import { useFitToRoute, usePackAdjustedPaceKmh, packAdjustedPaceKmhFromState } from '@/hooks';
+import { ensurePane } from '@/lib/leaflet-panes';
 
 interface SectionTooltipStats {
 	/** SOBO metres from Ilok to the section start. */
@@ -422,13 +423,8 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 
 	// Panes for trail point marker and tooltip; z-index order set in map.css.
 	useEffect(() => {
-		const ensurePane = (name: string, className: string): void => {
-			if (map.getPane(name)) return;
-			map.createPane(name);
-			map.getPane(name)?.classList.add(className);
-		};
-		ensurePane(TRAIL_POINT_MARKER_PANE, 'trail-point-marker-pane');
-		ensurePane(TRAIL_POINT_TOOLTIP_PANE, 'trail-point-tooltip-pane');
+		ensurePane(map, TRAIL_POINT_MARKER_PANE, { className: 'trail-point-marker-pane' });
+		ensurePane(map, TRAIL_POINT_TOOLTIP_PANE, { className: 'trail-point-tooltip-pane' });
 	}, [map]);
 
 	const direction = useMapStore((state: MapStoreState) => state.direction);

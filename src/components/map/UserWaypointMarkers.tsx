@@ -19,6 +19,7 @@ import {
 	normalizeWaypointCategory,
 	type WaypointCategoryId,
 } from '@/lib/waypoint-categories';
+import { ensurePane } from '@/lib/leaflet-panes';
 
 const WAYPOINT_PANE = 'userWaypointPane';
 
@@ -71,10 +72,7 @@ export function UserWaypointMarkers(): null {
 	const reopenPopupIdRef = useRef<string | null>(null);
 
 	useEffect(() => {
-		if (!map.getPane(WAYPOINT_PANE)) {
-			map.createPane(WAYPOINT_PANE);
-			map.getPane(WAYPOINT_PANE)?.classList.add('user-waypoint-pane');
-		}
+		ensurePane(map, WAYPOINT_PANE, { className: 'user-waypoint-pane' });
 	}, [map]);
 
 	useEffect(() => {

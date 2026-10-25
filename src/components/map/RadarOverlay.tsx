@@ -13,6 +13,7 @@ import { useEffect, useRef } from 'react';
 import { useMap } from 'react-leaflet';
 import L from 'leaflet';
 import { useMapStore, type MapStoreState } from '@/lib/store';
+import { ensurePane } from '@/lib/leaflet-panes';
 
 const RADAR_PANE = 'radarPane';
 const RADAR_PANE_Z = 450;
@@ -50,11 +51,7 @@ export function RadarOverlay(): null {
 
 	// Create pane once on mount.
 	useEffect(() => {
-		if (!map.getPane(RADAR_PANE)) {
-			map.createPane(RADAR_PANE);
-			const pane = map.getPane(RADAR_PANE);
-			if (pane) pane.style.zIndex = String(RADAR_PANE_Z);
-		}
+		ensurePane(map, RADAR_PANE, { style: { zIndex: String(RADAR_PANE_Z) } });
 	}, [map]);
 
 	// Fetch frame metadata when overlay is enabled; clean up when disabled.

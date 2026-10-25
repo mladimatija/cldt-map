@@ -12,6 +12,8 @@ import {
 	type DistanceMarkerLevel,
 } from '@/lib/distance-markers';
 import type { UnitSystem } from '@/lib/types';
+import { escapeHtml } from '@/lib/html-escape';
+import { ensurePane } from '@/lib/leaflet-panes';
 
 /** Dedicated pane so distance markers render above the seasonal-status halo
  *  (z-map+1) but below the chip-marker pane, trail-point-marker pane, and
@@ -36,10 +38,6 @@ function buildIcon(marker: DistanceMarker, units: UnitSystem): L.DivIcon {
 		iconSize: [0, 0], // anchor only; visible bubble sizes itself via CSS
 		iconAnchor: [0, 0],
 	});
-}
-
-function escapeHtml(s: string): string {
-	return s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
 /**
@@ -67,10 +65,7 @@ export function TrailDistanceMarkers(): null {
 
 	// Create the pane once; z-index is set in map.css.
 	useEffect(() => {
-		if (!map.getPane(DISTANCE_MARKER_PANE)) {
-			map.createPane(DISTANCE_MARKER_PANE);
-			map.getPane(DISTANCE_MARKER_PANE)?.classList.add('trail-distance-marker-pane');
-		}
+		ensurePane(map, DISTANCE_MARKER_PANE, { className: 'trail-distance-marker-pane' });
 	}, [map]);
 
 	// Build per-level LayerGroups whenever the marker set or units change.

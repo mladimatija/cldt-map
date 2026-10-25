@@ -16,6 +16,8 @@ import { useLocale, useTranslations } from 'next-intl';
 import { formatSeasonalDateRange, severityColor, type SeasonalStatusEntry } from '@/lib/seasonal-status';
 import { type MapStoreState, type StoreState, useMapStore, useStore } from '@/lib/store';
 import { findNearestPointIndex } from '@/lib/distance-utils';
+import { escapeHtml } from '@/lib/html-escape';
+import { ensurePane } from '@/lib/leaflet-panes';
 
 /**
  * Pane for the seasonal-status halo polyline, drawn under the trail when an
@@ -44,13 +46,9 @@ const SEASONAL_STATUS_CHIP_GLYPH =
 	'<circle cx="5" cy="10" r="1.2" fill="white"/>' +
 	'</svg>';
 
-function escapeHtmlAttr(s: string): string {
-	return s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-}
-
 function buildSeasonalChipIcon(entry: SeasonalStatusEntry, ariaLabel: string): L.DivIcon {
 	const color = severityColor(entry.severity);
-	const safeLabel = escapeHtmlAttr(ariaLabel);
+	const safeLabel = escapeHtml(ariaLabel);
 	const html =
 		`<span class="seasonal-status-chip" style="--seasonal-chip-color:${color};background:${color}" ` +
 		`aria-label="${safeLabel}">${SEASONAL_STATUS_CHIP_GLYPH}</span>`;
@@ -78,17 +76,11 @@ export default function SeasonalStatusTrailLayer(): null {
 	const seasonalChipMarkersRef = useRef<Map<string, L.Marker>>(new Map());
 	const seasonalHaloRef = useRef<L.Polyline | null>(null);
 
-	// Panes; z-index order set in map.css. Idempotent against TrailRoute having
-	// created them in an earlier app version (createPane throws on duplicates).
+	// Panes; z-index order set in map.css.
 	useEffect(() => {
-		const ensurePane = (name: string, className: string): void => {
-			if (map.getPane(name)) return;
-			map.createPane(name);
-			map.getPane(name)?.classList.add(className);
-		};
-		ensurePane(SEASONAL_STATUS_PANE, 'seasonal-status-pane');
-		ensurePane(SEASONAL_STATUS_MARKER_PANE, 'seasonal-status-marker-pane');
-		ensurePane(SEASONAL_STATUS_TOOLTIP_PANE, 'seasonal-status-tooltip-pane');
+		ensurePane(map, SEASONAL_STATUS_PANE, { className: 'seasonal-status-pane' });
+		ensurePane(map, SEASONAL_STATUS_MARKER_PANE, { className: 'seasonal-status-marker-pane' });
+		ensurePane(map, SEASONAL_STATUS_TOOLTIP_PANE, { className: 'seasonal-status-tooltip-pane' });
 	}, [map]);
 
 	// Build one chip marker per active seasonal-status entry, anchored at the
@@ -136,9 +128,9 @@ export default function SeasonalStatusTrailLayer(): null {
 			const validLabel = tSeasonal('validLabel');
 			const tooltipHtml =
 				`<div class="map-tooltip__inner">` +
-				`<p class="font-semibold text-sm mb-0.5" style="color:${severityColor(entry.severity)}">${escapeHtmlAttr(severityLabel)}</p>` +
-				`<p class="text-xs">${escapeHtmlAttr(entry.source)}</p>` +
-				`<p class="text-xs opacity-75 mt-0.5"><span class="font-medium">${escapeHtmlAttr(validLabel)}</span> ${escapeHtmlAttr(dateRange)}</p>` +
+				`<p class="font-semibold text-sm mb-0.5" style="color:${severityColor(entry.severity)}">${escapeHtml(severityLabel)}</p>` +
+				`<p class="text-xs">${escapeHtml(entry.source)}</p>` +
+				`<p class="text-xs opacity-75 mt-0.5"><span class="font-medium">${escapeHtml(validLabel)}</span> ${escapeHtml(dateRange)}</p>` +
 				`</div>`;
 			marker.bindTooltip(tooltipHtml, {
 				direction: 'top',

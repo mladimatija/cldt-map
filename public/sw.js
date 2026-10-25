@@ -107,7 +107,9 @@ function isTileRequest(url) {
 // fall outside Croatia. A cheap bounding box rejects the bulk; a simplified
 // Croatia outline (loaded once from CORE_ASSETS) then trims the bbox's
 // over-inclusion of Bosnia / Slovenia / Hungary / Serbia interiors.
-const CROATIA_BBOX = { latMin: 42.3, latMax: 46.56, lngMin: 13.2, lngMax: 19.45 };
+// From the build stamp (scripts/stamp-sw-version.mjs writes src/lib/croatia-bbox.json
+// into /sw-version.js). Without a stamp (dev) tiles are cached without the clip.
+const CROATIA_BBOX = self.CLDT_CROATIA_BBOX || null;
 // Below this zoom a single tile is wider than the country; there are only a
 // handful, so keep any in-bbox tile rather than risk dropping one that covers
 // Croatia. The polygon refinement applies from this zoom up, where the heavy
@@ -146,6 +148,7 @@ function tileLatLngBounds(z, x, y) {
 }
 
 function bboxIntersectsCroatia(b) {
+    if (!CROATIA_BBOX) return true;
     return (
         b.lngE >= CROATIA_BBOX.lngMin &&
         b.lngW <= CROATIA_BBOX.lngMax &&

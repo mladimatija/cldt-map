@@ -12,7 +12,7 @@ import { MapControlModalShell } from './MapControlModalShell';
 import { EmergencySosCard } from './EmergencySosCard';
 import { Button, buttonVariants } from '@/components/ui/Button';
 import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
-import { computeBearing, findNearestPointIndex, formatDistanceM, formatShortDistanceM } from '@/lib/distance-utils';
+import { computeBearing, findNearestPointIndex, formatShortDistanceM } from '@/lib/distance-utils';
 import { toTravelKm } from '@/lib/trail-frame';
 import {
 	bearingToCompass,
@@ -25,6 +25,7 @@ import { fetchReverseGeocodeAddress } from '@/lib/reverse-geocode-client';
 import { formatDms, formatMgrs, formatUtm } from '@/lib/coordinate-formats';
 import { buildCheckinNote } from '@/lib/checkin-note';
 import { cn, isSafeUrl, LINKABLE_PHONE_RE, toDialString } from '@/lib/utils';
+import { formatKm } from '@/lib/units';
 
 const COPY_RESET_MS = 1500;
 
@@ -406,7 +407,7 @@ export function MapControlsEmergencyPanel({ onClose }: MapControlsEmergencyPanel
 			lines.push(`${t('nearestRoad')}: ${roadLabel} (${t(`compass.${roadCompass}`)})`);
 		}
 		if (nearestHgss) {
-			const stationLine = `${t('nearestRescue')}: ${nearestHgss.entry.name} (${formatDistanceM(nearestHgss.distanceM, units)})`;
+			const stationLine = `${t('nearestRescue')}: ${nearestHgss.entry.name} (${formatKm(nearestHgss.distanceM / 1000, units, 1)})`;
 			lines.push(hgssCompass ? `${stationLine} (${t(`compass.${hgssCompass}`)})` : stationLine);
 			if (nearestHgss.entry.phone) {
 				lines.push(formatPhoneDisplay(nearestHgss.entry.phone));
@@ -782,7 +783,7 @@ export function MapControlsEmergencyPanel({ onClose }: MapControlsEmergencyPanel
 									<span className="min-w-0 text-sm">
 										{nearestHgss.entry.name}
 										<span className="ml-1 text-xs text-gray-500 dark:text-[var(--text-secondary)]">
-											· {formatDistanceM(nearestHgss.distanceM, units)}
+											· {formatKm(nearestHgss.distanceM / 1000, units, 1)}
 										</span>
 									</span>
 									<CompassBearing

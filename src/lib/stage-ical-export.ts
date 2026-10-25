@@ -7,6 +7,7 @@
  */
 
 import { siteMetadata } from '@/lib/metadata';
+import { downloadBlob } from './download';
 
 export interface StageIcalEventInput {
 	/** Calendar date for this stage (yyyy-mm-dd). */
@@ -97,13 +98,5 @@ export function buildStagePlanIcs(events: StageIcalEventInput[], calendarName: s
 
 /** Trigger a browser download for the given ICS content. */
 export function downloadIcsFile(content: string, filename: string): void {
-	const blob = new Blob([content], { type: 'text/calendar;charset=utf-8' });
-	const url = URL.createObjectURL(blob);
-	const a = document.createElement('a');
-	a.href = url;
-	a.download = filename;
-	document.body.appendChild(a);
-	a.click();
-	document.body.removeChild(a);
-	URL.revokeObjectURL(url);
+	downloadBlob(content, filename, 'text/calendar;charset=utf-8');
 }

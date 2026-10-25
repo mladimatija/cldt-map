@@ -37,6 +37,7 @@ import {
 	type TrailTooltipWeather,
 	type TrailTooltipWindCompass,
 } from './TrailTooltipContent';
+import { ensurePane } from '@/lib/leaflet-panes';
 
 /** @see TRAIL_OFF_TRAIL_THRESHOLD_M in src/lib/config.ts */
 const OFF_TRAIL_DISTANCE_M = TRAIL_OFF_TRAIL_THRESHOLD_M;
@@ -481,9 +482,7 @@ export default function MapMarkers(): React.ReactElement | null {
 		// the global pane rule, which let seasonal-status chip markers
 		// (z-map-tooltips + 2) paint over the location card. z-index lives in
 		// map.css (.user-location-tooltip-pane).
-		if (!map.getPane(USER_TOOLTIP_PANE)) {
-			map.createPane(USER_TOOLTIP_PANE).classList.add(USER_TOOLTIP_PANE);
-		}
+		ensurePane(map, USER_TOOLTIP_PANE, { className: USER_TOOLTIP_PANE });
 		marker.bindTooltip(container, {
 			offset: L.point(0, -15),
 			direction: 'top',

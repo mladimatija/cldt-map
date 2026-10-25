@@ -1,6 +1,7 @@
 import { haversineDistanceM } from '@/lib/haversine';
 import type { Poi } from '@/lib/pois';
 import type { TrackPoint } from '@/lib/gpx-parser';
+import { boundsOf } from './geo-bounds';
 
 /**
  * Closest-pass report for one POI relative to an imported GPX track. The
@@ -42,20 +43,12 @@ export function findPoisNearTrack(track: TrackPoint[], pois: Poi[], radiusM = DE
 	// 100 km from the recorded hike). Add radius-equivalent padding in
 	// degrees (~111 km per degree latitude).
 	const padDeg = radiusM / 111_000;
-	let minLat = Infinity,
-		maxLat = -Infinity,
-		minLng = Infinity,
-		maxLng = -Infinity;
-	for (const pt of track) {
-		if (pt.lat < minLat) minLat = pt.lat;
-		if (pt.lat > maxLat) maxLat = pt.lat;
-		if (pt.lng < minLng) minLng = pt.lng;
-		if (pt.lng > maxLng) maxLng = pt.lng;
-	}
-	minLat -= padDeg;
-	maxLat += padDeg;
-	minLng -= padDeg;
-	maxLng += padDeg;
+	const box = boundsOf(track);
+	if (!box) return [];
+	const minLat = box.minLat - padDeg;
+	const maxLat = box.maxLat + padDeg;
+	const minLng = box.minLng - padDeg;
+	const maxLng = box.maxLng + padDeg;
 
 	// Pre-compute cumulative track distance for the `atTrackKm` field.
 	const cumKm: number[] = new Array(track.length).fill(0);
