@@ -282,7 +282,7 @@ interface SectionGroups {
  */
 function buildSectionGroups(
 	points: L.LatLng[],
-	elevationPoints: { elevation: number }[],
+	enhanced: { elevation: number }[],
 	cumDistances: number[],
 ): SectionGroups {
 	const sectionAtIdx = (idx: number): number => {
@@ -307,8 +307,8 @@ function buildSectionGroups(
 			pointGroups[sIdx].push(points[i + 1]);
 		}
 		// Attribute a segment's elevation change to the section its start falls in.
-		if (i > 0 && elevationPoints[i] && elevationPoints[i - 1]) {
-			const elevDiff = elevationPoints[i].elevation - elevationPoints[i - 1].elevation;
+		if (i > 0 && enhanced[i] && enhanced[i - 1]) {
+			const elevDiff = enhanced[i].elevation - enhanced[i - 1].elevation;
 			const prevIdx = sectionAtIdx(i - 1);
 			if (elevDiff > 0) ascentM[prevIdx] += elevDiff;
 			else descentM[prevIdx] += Math.abs(elevDiff);
@@ -348,11 +348,10 @@ interface TrailGeometry {
 	 *  Never empty - the loader does not publish a snapshot for an empty route,
 	 *  so the renderer can index the ends and take bounds without checking. */
 	points: L.LatLng[];
-	/** Elevation triples, parallel to `points`. */
-	elevationPoints: { lat: number; lng: number; elevation: number }[];
 	/** Cumulative SOBO metres from Ilok, parallel to `points`. */
 	cumDistances: number[];
-	/** Enhanced points (per-vertex grade band and percent) for the Grade style. */
+	/** Enhanced points, parallel to `points`: elevation for the section climb
+	 *  totals, grade band and percent for the Grade style. */
 	enhanced: EnhancedTrailPoint[];
 	/** False when the GPX carries no elevation data, which rules out the Grade style. */
 	hasElevation: boolean;
@@ -890,8 +889,8 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 	// Data: fetch the GPX, hydrate both stores, and publish the geometry snapshot
 	// the render effects draw from. Carries no style input by design, so changing
 	// the trail style never re-reads the GPX nor re-hydrates the stores - which
-	// would republish trailPoints / enhancedTrailPoints / gpxElevationPoints under
-	// fresh identities and cascade through every subscriber of them.
+	// would republish trailPoints / enhancedTrailPoints under fresh identities and
+	// cascade through every subscriber of them.
 	useEffect(() => {
 		if (!map) {
 			return;
@@ -935,7 +934,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 				// both paths produce identical points, distances and metadata.
 				if (!computed) computed = computeFromGpx(result.data);
 
-				if (!isMounted || computed.points.length === 0) {
+				if (!isMounted || computed.enhanced.length === 0) {
 					return;
 				}
 
@@ -958,17 +957,15 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 				const points =
 					hydrated.enhancedTrailPoints === computed.enhanced
 						? hydrated.trailPoints
-						: computed.points.map((p) => L.latLng(p.lat, p.lng));
+						: computed.enhanced.map((p) => L.latLng(p.lat, p.lng));
 				const cumDistances = computed.enhanced.map((p) => p.distanceFromStart);
-				const { elevationPoints, hasElevation } = computed;
 
 				setGeometry({
 					points,
-					elevationPoints,
 					cumDistances,
 					// Populated by applyComputedTrailData above.
 					enhanced: useStore.getState().enhancedTrailPoints,
-					hasElevation,
+					hasElevation: computed.hasElevation,
 					loadToken: `${selectedTrail ?? ''}:${reloadTrailRequested}`,
 				});
 
@@ -997,7 +994,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 			return;
 		}
 
-		const { points, elevationPoints, cumDistances, enhanced } = geometry;
+		const { points, cumDistances, enhanced } = geometry;
 		const featureGroup = L.featureGroup();
 		// Shared SVG renderer and base polyline options for all render branches.
 		// One renderer is reused across redraws instead of being built per redraw:
@@ -1081,7 +1078,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 				}
 			}
 		} else if (effectiveTrailStyle === 'sections') {
-			const groups = buildSectionGroups(points, elevationPoints, cumDistances);
+			const groups = buildSectionGroups(points, enhanced, cumDistances);
 			const travelDirection = styleDirection ?? 'SOBO';
 			const currentUnits = useMapStore.getState().units;
 			const currentPrecision = useMapStore.getState().distancePrecision;

@@ -2,7 +2,7 @@
 
 /**
  * Elevation profile chart (distance vs. elevation). Hover syncs with the trail highlight on the map via ChartTooltipSync.
- * Uses Recharts AreaChart; data comes from store enhancedTrailPoints / gpxElevationPoints.
+ * Uses Recharts AreaChart; data comes from store enhancedTrailPoints.
  */
 import React, { useEffect, useMemo, useRef, useState, JSX } from 'react';
 import { useBlockMapPropagation, usePackAdjustedPaceKmh } from '@/hooks';

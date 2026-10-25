@@ -135,7 +135,6 @@ export interface TrailState {
 	closestPoint: ClosestPoint | null;
 	trailMetadata: TrailMetadata;
 	rawGpxData: string | null;
-	gpxElevationPoints: { lat: number; lng: number; elevation: number }[] | null;
 	direction: TrailDirection;
 }
 

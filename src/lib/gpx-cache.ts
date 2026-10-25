@@ -17,7 +17,6 @@ interface CachedGPX {
 	data: string;
 	version: string;
 	timestamp: number;
-	isFallback?: boolean;
 }
 
 interface GPXResult {
@@ -152,10 +151,6 @@ async function doFetchGPXWithCache(): Promise<GPXResult> {
 			console.error('Error fetching GPX via proxy:', proxyError);
 
 			if (cachedData) {
-				await localforage.setItem(GPX_CACHE_KEY, {
-					...cachedData,
-					isFallback: true,
-				});
 				return {
 					data: cachedData.data,
 					source: 'cache',

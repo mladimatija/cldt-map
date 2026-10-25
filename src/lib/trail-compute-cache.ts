@@ -27,8 +27,9 @@ import type { ComputedTrailData } from './trail-compute';
 const store = localforage.createInstance({ name: 'cldt-map', storeName: 'trail-computed' });
 
 /** Bump on any change to ComputedTrailData's shape or the enhancement logic.
- *  2: one dataset in file (SOBO) order for both directions. */
-const SCHEMA_VERSION = 2;
+ *  2: one dataset in file (SOBO) order for both directions.
+ *  3: the enhanced points only, without the separate coordinate and elevation copies. */
+const SCHEMA_VERSION = 3;
 
 /** Cache key for a given GPX cache version. The dataset no longer depends on
  *  the travel direction, so one record serves both. */
@@ -43,9 +44,7 @@ function isComputedTrailData(data: unknown): data is ComputedTrailData {
 	return (
 		Array.isArray(d.enhanced) &&
 		d.enhanced.length > 0 &&
-		Array.isArray(d.points) &&
-		d.points.length === d.enhanced.length &&
-		Array.isArray(d.elevationPoints) &&
+		typeof d.hasElevation === 'boolean' &&
 		!!d.metadata &&
 		typeof d.metadata.totalDistanceM === 'number'
 	);

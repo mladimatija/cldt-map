@@ -16,11 +16,11 @@ import { parseTrackPoints } from './gpx-parser';
 import type { EnhancedTrailPoint } from './store/types';
 
 export interface ComputedTrailData {
-	/** Plain coordinates in file (SOBO) order, the same order as enhanced. */
-	points: { lat: number; lng: number }[];
-	/** Elevation triples in file order (0 where the GPX has no <ele>). */
-	elevationPoints: { lat: number; lng: number; elevation: number }[];
 	hasElevation: boolean;
+	/** One entry per GPX vertex in file (SOBO) order: coordinates, elevation (0
+	 *  where the GPX has no <ele>), cumulative distance, gain and loss, section,
+	 *  bearing and grade. The only copy of the route: consumers build what else
+	 *  they need (Leaflet points, distance arrays) from it. */
 	enhanced: EnhancedTrailPoint[];
 	metadata: {
 		startPoint: { lat: number; lng: number };
@@ -43,18 +43,17 @@ function bucketGradePct(absGradePct: number): 0 | 1 | 2 | 3 | 4 {
 }
 
 /**
- * Builds the full trail dataset from raw track points: coordinate/elevation
- * arrays, the enhanced point array (cumulative distance/gain/loss, section,
- * bearing, grade) and metadata totals. Everything is in file (SOBO) order and
- * the same for both directions; src/lib/trail-frame.ts converts to the
- * hiker's travel frame at the display edges.
+ * Builds the trail dataset from raw track points: the enhanced point array
+ * (cumulative distance/gain/loss, section, bearing, grade) and metadata
+ * totals. Everything is in file (SOBO) order and the same for both directions;
+ * src/lib/trail-frame.ts converts to the hiker's travel frame at the display
+ * edges.
  */
-export function computeTrailData(rawPoints: { lat: number; lng: number; ele?: number }[]): ComputedTrailData {
-	if (rawPoints.length === 0) throw new Error('GPX track has no points');
+export function computeTrailData(points: { lat: number; lng: number; ele?: number }[]): ComputedTrailData {
+	if (points.length === 0) throw new Error('GPX track has no points');
 
-	const hasElevation = rawPoints.some((p) => p.ele !== undefined && p.ele !== null);
-	const points = rawPoints.map(({ lat, lng }) => ({ lat, lng }));
-	const elevationPoints = rawPoints.map(({ lat, lng, ele }) => ({ lat, lng, elevation: ele ?? 0 }));
+	const hasElevation = points.some((p) => p.ele !== undefined && p.ele !== null);
+	const elevations = points.map((p) => p.ele ?? 0);
 
 	const enhanced: EnhancedTrailPoint[] = [];
 	let cumulativeDistance = 0;
@@ -64,7 +63,7 @@ export function computeTrailData(rawPoints: { lat: number; lng: number; ele?: nu
 	for (let i = 0; i < points.length; i++) {
 		if (i > 0) {
 			cumulativeDistance += haversineDistanceM(points[i - 1].lat, points[i - 1].lng, points[i].lat, points[i].lng);
-			const elevDiff = elevationPoints[i].elevation - elevationPoints[i - 1].elevation;
+			const elevDiff = elevations[i] - elevations[i - 1];
 			if (elevDiff > 0) cumulativeElevGain += elevDiff;
 			else cumulativeElevLoss += Math.abs(elevDiff);
 		}
@@ -77,7 +76,7 @@ export function computeTrailData(rawPoints: { lat: number; lng: number; ele?: nu
 
 		let gradePct = 0;
 		if (i < points.length - 1) {
-			const dEle = elevationPoints[i + 1].elevation - elevationPoints[i].elevation;
+			const dEle = elevations[i + 1] - elevations[i];
 			const dDist = haversineDistanceM(points[i].lat, points[i].lng, points[i + 1].lat, points[i + 1].lng);
 			gradePct = dDist > 0 ? (dEle / dDist) * 100 : 0;
 		}
@@ -86,7 +85,7 @@ export function computeTrailData(rawPoints: { lat: number; lng: number; ele?: nu
 		enhanced.push({
 			lat: points[i].lat,
 			lng: points[i].lng,
-			elevation: elevationPoints[i].elevation || 0,
+			elevation: elevations[i] || 0,
 			distanceFromStart: cumulativeDistance,
 			elevationGainFromStart: cumulativeElevGain,
 			elevationLossFromStart: cumulativeElevLoss,
@@ -107,14 +106,14 @@ export function computeTrailData(rawPoints: { lat: number; lng: number; ele?: nu
 		last.gradeBand = prev.gradeBand;
 	}
 
+	const first = points[0];
+	const last = points[points.length - 1];
 	return {
-		points,
-		elevationPoints,
 		hasElevation,
 		enhanced,
 		metadata: {
-			startPoint: points[0],
-			endPoint: points[points.length - 1],
+			startPoint: { lat: first.lat, lng: first.lng },
+			endPoint: { lat: last.lat, lng: last.lng },
 			totalDistanceM: cumulativeDistance,
 			elevationGain: cumulativeElevGain,
 			elevationLoss: cumulativeElevLoss,

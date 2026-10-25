@@ -82,7 +82,6 @@ export const INITIAL_TRAIL_STATE: TrailState = {
 		elevationLoss: 0,
 	},
 	rawGpxData: null,
-	gpxElevationPoints: null,
 	direction: config.direction,
 };
 
@@ -191,7 +190,7 @@ export const createTrailSlice: StateCreator<StoreState, [], [], TrailSlice> = (s
 		// The only main-thread cost left: materialise Leaflet LatLng instances
 		// (closest-point consumers call .distanceTo on trailPoints). Enhanced
 		// points are plain objects and transfer straight from the worker.
-		const latLngPoints = data.points.map((p) => L.latLng(p.lat, p.lng));
+		const latLngPoints = data.enhanced.map((p) => L.latLng(p.lat, p.lng));
 		set({
 			trailPoints: latLngPoints,
 			closestPoint: null,
@@ -204,7 +203,6 @@ export const createTrailSlice: StateCreator<StoreState, [], [], TrailSlice> = (s
 				elevationGain: data.metadata.elevationGain,
 				elevationLoss: data.metadata.elevationLoss,
 			},
-			gpxElevationPoints: data.elevationPoints,
 			gpxLoaded: true,
 			enhancedTrailPoints: data.enhanced,
 		});
