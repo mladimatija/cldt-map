@@ -51,6 +51,8 @@ const CORE_ASSETS = [
 	'/data/road-access.json',
 	'/data/hgss-stations.json',
 	'/data/croatia-boundary-simplified.json',
+	// The outline the map draws and clips tiles to, so clipping works offline.
+	'/data/croatia-boundary-display.json',
 ];
 
 // Tile hosts to cache - keyed by substring match. CARTO (Dark) is deliberately

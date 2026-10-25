@@ -21,6 +21,7 @@
 		"generate-pwa-icons": "node scripts/generate-pwa-icons.mjs",
 		"build:emergency-data": "tsx scripts/build-emergency-data.ts",
 		"build:meteoalarm-regions": "tsx scripts/build-meteoalarm-regions.ts",
+		"build:boundary": "tsx scripts/build-boundary.ts",
 		"update-mine-areas": "tsx --env-file-if-exists=.env.local scripts/update-mine-areas.ts",
 		"update-seasonal": "tsx --env-file-if-exists=.env.local scripts/update-seasonal-status.ts",
 		"enrich-osm": "tsx --env-file-if-exists=.env.local scripts/enrich-trail-osm.ts",

@@ -14,5 +14,6 @@ yarn.lock
 
 # Generated
 public/data/meteoalarm-regions-hr.json
+public/data/croatia-boundary-display.json
 *.min.js
 *.min.css

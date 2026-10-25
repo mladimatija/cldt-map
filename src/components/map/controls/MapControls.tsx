@@ -8,7 +8,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useBlockMapPropagation, usePanel, usePanelManager, useRuler } from '@/hooks';
 import { useMap } from 'react-leaflet';
 import L from 'leaflet';
-import geoData from '@/../public/data/geoJsonHr.json';
 import {
 	type MapStoreState,
 	type StoreState,
@@ -58,16 +57,27 @@ import { toTravelKm } from '@/lib/trail-frame';
 import { DEFAULT_MAP_SERVICES } from '@/lib/services/map-service-config';
 import { fitMapToRulerBounds, waitForTilesLoaded } from '@/lib/export-utils';
 
-function getCroatiaGeoJsonBoundary(): GeoJSON.FeatureCollection {
-	return {
-		type: 'FeatureCollection',
-		features: [{ type: 'Feature', properties: {}, geometry: geoData.geojson }],
-	} as GeoJSON.FeatureCollection;
+const CROATIA_BOUNDARY_URL = '/data/croatia-boundary-display.json';
+
+let croatiaBoundaryPromise: Promise<GeoJSON.FeatureCollection> | null = null;
+
+/** The Croatia outline both the border layer and tile clipping use (simplified
+ *  display copy, `npm run build:boundary`), fetched once per page on first use
+ *  instead of shipping in the map bundle. A failed load is retried on the next
+ *  call. */
+function loadCroatiaBoundary(): Promise<GeoJSON.FeatureCollection> {
+	croatiaBoundaryPromise ??= fetch(CROATIA_BOUNDARY_URL).then((res) => {
+		if (!res.ok) throw new Error(`boundary HTTP ${res.status}`);
+		return res.json() as Promise<GeoJSON.FeatureCollection>;
+	});
+	croatiaBoundaryPromise.catch(() => {
+		croatiaBoundaryPromise = null;
+	});
+	return croatiaBoundaryPromise;
 }
 
-function createCroatiaBoundaryLayer(map: L.Map, borderLabel: string): L.GeoJSON {
-	const geoJsonBoundary = getCroatiaGeoJsonBoundary();
-	return L.geoJSON(geoJsonBoundary, {
+function createCroatiaBoundaryLayer(map: L.Map, borderLabel: string, boundary: GeoJSON.FeatureCollection): L.GeoJSON {
+	return L.geoJSON(boundary, {
 		style: () => ({
 			color: 'var(--cldt-blue)',
 			weight: 3,
@@ -109,10 +119,13 @@ function createCroatiaBoundaryLayer(map: L.Map, borderLabel: string): L.GeoJSON 
  * BoundaryCanvas cannot clip (the Croatia Topo WMS); their plain base layer
  * stays on the map.
  */
-function createAndAddTileBoundaryCanvas(map: L.Map, provider: string): L.TileLayer | null {
+function createAndAddTileBoundaryCanvas(
+	map: L.Map,
+	provider: string,
+	boundary: GeoJSON.FeatureCollection,
+): L.TileLayer | null {
 	const service = DEFAULT_MAP_SERVICES.find((s) => s.name === provider);
 	if (!service || provider === BaseMapProvider.CROATIA_TOPO) return null;
-	const boundary = getCroatiaGeoJsonBoundary();
 	const BoundaryCanvasCtor = (
 		L.TileLayer as unknown as {
 			BoundaryCanvas: new (url: string, opts: unknown) => L.TileLayer;
@@ -209,6 +222,9 @@ const MapControls: React.FC<MapControlsProps> = ({
 
 	const boundaryLayerRef = useRef<L.GeoJSON | null>(null);
 	const boundaryCanvasLayerRef = useRef<L.TileLayer | null>(null);
+	/** The clipping state the latest toggle asked for; an older toggle still
+	 *  loading must not apply its result. */
+	const tileBoundaryIntentRef = useRef<boolean | null>(null);
 	/** Base-map style the clipped layer was built for; a different style means it is stale. */
 	const boundaryCanvasProviderRef = useRef<string | null>(null);
 
@@ -268,8 +284,8 @@ const MapControls: React.FC<MapControlsProps> = ({
 	// country bounds here used to zoom the whole view out to Croatia on the
 	// first activation, which also forced every zoom-driven layer (tiles, POI
 	// and distance markers, junctions) to re-render as if the map had reloaded.
-	// The layer is built once and re-added on later toggles, so the GeoJSON is
-	// parsed a single time per mount.
+	// The layer is built once and re-added on later toggles; the outline itself is
+	// fetched and parsed once per page (loadCroatiaBoundary).
 	const toggleBoundary = (): void => {
 		closePanel();
 		const shouldShow = !showBoundary;
@@ -277,13 +293,15 @@ const MapControls: React.FC<MapControlsProps> = ({
 
 		if (shouldShow) {
 			if (!boundaryLayerRef.current) {
-				try {
-					const boundary = createCroatiaBoundaryLayer(map, t('borderOfCroatia'));
-					boundaryLayerRef.current = boundary;
-					boundary.addTo(map);
-				} catch (error) {
-					console.error('Error creating boundary:', error);
-				}
+				loadCroatiaBoundary()
+					.then((boundary) => {
+						// Switched off again while loading, or built by the mount effect meanwhile.
+						if (!useMapStore.getState().showBoundary || boundaryLayerRef.current) return;
+						const layer = createCroatiaBoundaryLayer(map, t('borderOfCroatia'), boundary);
+						boundaryLayerRef.current = layer;
+						layer.addTo(map);
+					})
+					.catch((error: unknown) => console.error('Error creating boundary:', error));
 			} else {
 				boundaryLayerRef.current.addTo(map);
 			}
@@ -294,18 +312,21 @@ const MapControls: React.FC<MapControlsProps> = ({
 
 	const toggleTilesBoundary = async (): Promise<void> => {
 		const shouldShow = !showTilesBoundary;
+		tileBoundaryIntentRef.current = shouldShow;
 
 		setShowTilesBoundary(shouldShow);
 
 		try {
 			if (shouldShow) {
-				await import('leaflet-boundary-canvas');
+				const [, boundary] = await Promise.all([import('leaflet-boundary-canvas'), loadCroatiaBoundary()]);
+				// Switched off again while the plugin or the outline loaded.
+				if (tileBoundaryIntentRef.current !== shouldShow) return;
 
 				if (boundaryCanvasLayerRef.current) {
 					boundaryCanvasLayerRef.current.addTo(map);
 				} else if ((L.TileLayer as unknown as { BoundaryCanvas?: unknown }).BoundaryCanvas) {
 					const provider = useMapStore.getState().baseMapProvider;
-					boundaryCanvasLayerRef.current = createAndAddTileBoundaryCanvas(map, provider);
+					boundaryCanvasLayerRef.current = createAndAddTileBoundaryCanvas(map, provider, boundary);
 					boundaryCanvasProviderRef.current = provider;
 				}
 			} else {
@@ -321,6 +342,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 			setShowTileBoundary(shouldShow, { userInitiated: true });
 		} catch (error) {
 			console.error('Error toggling tile boundary:', error);
+			if (tileBoundaryIntentRef.current !== shouldShow) return;
 
 			setShowTilesBoundary(!shouldShow);
 
@@ -476,21 +498,25 @@ const MapControls: React.FC<MapControlsProps> = ({
 		// a reload with a non-default preference.
 		useStore.getState().setUnits(units);
 		if (!showBoundary || boundaryLayerRef.current || !map) return;
-		// Delay lets the map container settle before drawing the boundary. The timer is
-		// cleared on re-run/unmount and the ref is re-checked inside the callback: this
-		// effect also re-fires on direction/units/t changes, and without both guards a
-		// pending timer from a previous run could add a duplicate, orphaned layer.
+		// Delay lets the map container settle before drawing the boundary. The run is
+		// cancelled on re-run/unmount and the ref is re-checked once the outline has
+		// loaded: this effect also re-fires on direction/units/t changes, and without
+		// both guards a pending run from before could add a duplicate, orphaned layer.
+		let cancelled = false;
 		const boundaryTimerId = setTimeout(() => {
-			if (boundaryLayerRef.current) return;
-			try {
-				const boundary = createCroatiaBoundaryLayer(map, t('borderOfCroatia'));
-				boundaryLayerRef.current = boundary;
-				boundary.addTo(map);
-			} catch (error) {
-				console.error('Error initializing boundary:', error);
-			}
+			loadCroatiaBoundary()
+				.then((boundary) => {
+					if (cancelled || boundaryLayerRef.current) return;
+					const layer = createCroatiaBoundaryLayer(map, t('borderOfCroatia'), boundary);
+					boundaryLayerRef.current = layer;
+					layer.addTo(map);
+				})
+				.catch((error: unknown) => console.error('Error initializing boundary:', error));
 		}, 300);
-		return () => clearTimeout(boundaryTimerId);
+		return () => {
+			cancelled = true;
+			clearTimeout(boundaryTimerId);
+		};
 	}, [direction, units, showBoundary, map, t]);
 
 	// Builds the clipped layer on load and again after every base-map switch.
@@ -528,7 +554,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 				return;
 			}
 			try {
-				await import('leaflet-boundary-canvas');
+				const [, boundary] = await Promise.all([import('leaflet-boundary-canvas'), loadCroatiaBoundary()]);
 				if (cancelled || boundaryCanvasLayerRef.current) {
 					return;
 				}
@@ -546,7 +572,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 
 				if ((L.TileLayer as unknown as { BoundaryCanvas?: unknown }).BoundaryCanvas && !cancelled) {
 					const provider = useMapStore.getState().baseMapProvider;
-					boundaryCanvasLayerRef.current = createAndAddTileBoundaryCanvas(map, provider);
+					boundaryCanvasLayerRef.current = createAndAddTileBoundaryCanvas(map, provider, boundary);
 					boundaryCanvasProviderRef.current = provider;
 					if (!cancelled) {
 						setShowTilesBoundary(true);
