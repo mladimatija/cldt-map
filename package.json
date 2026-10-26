@@ -30,7 +30,7 @@
 		"clean-install": "rm -rf node_modules .next package-lock.json && npm install"
 	},
 	"dependencies": {
-		"@anthropic-ai/sdk": "^1.1.0",
+		"@anthropic-ai/sdk": "^1.2.0",
 		"@garmin/fitsdk": "^21.218.0",
 		"@netlify/blobs": "^11.1.6",
 		"class-variance-authority": "^0.7.1",
