@@ -35,7 +35,7 @@
 		"@netlify/blobs": "^11.1.6",
 		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",
-		"docx": "^9.13.0",
+		"docx": "^9.14.0",
 		"fflate": "^0.8.3",
 		"html-to-image": "^1.11.13",
 		"jspdf": "^4.2.1",
