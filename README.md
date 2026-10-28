@@ -329,7 +329,7 @@ src/
 ├── hooks/            # selected: usePoisFetch, usePoiListRows, useRuler, useElevationChartRulerDrag, useStageForecasts, usePackAdjustedPace, useCompletionAutoTrack, useCompassHeading, useWakeLock, useMineAreasFetch, usePanelManager (see src/hooks for all)
 ├── lib/                  # selected modules; see src/lib for the full set (~74 files)
 │   ├── store/            # Zustand slices, map-store, trail-slice, stub, types
-│   ├── services/         # LocationService, MapService, base-map-provider
+│   ├── services/         # LocationService, base map layers and providers
 │   ├── config.ts         # App defaults (env overrides)
 │   ├── ui-text-scale.ts  # UI text-size accessibility levels (default/large/larger) + root-class helper
 │   ├── trail-narration.ts # Screen-reader narration helpers (grade word, nearest usable water ahead)

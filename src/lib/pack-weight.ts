@@ -12,8 +12,8 @@
 
 import type { UnitSystem } from './types';
 
-export const LB_PER_KG = 2.20462;
-export const QT_PER_L = 1.05669;
+const LB_PER_KG = 2.20462;
+const QT_PER_L = 1.05669;
 
 /** Default drinking rate; 0.5-0.7 L/h is typical for summer karst hiking. */
 export const DEFAULT_WATER_CONSUMPTION_LPH = 0.6;
@@ -24,7 +24,7 @@ export const PACK_ETA_REFERENCE_KG = 8;
 /** ETA penalty per kg of base weight above the reference: ~1% slower per kg.
  *  A deliberately conservative flat heuristic - published load/pace models
  *  depend on body weight, which the app does not ask for. */
-export const PACK_ETA_PENALTY_PER_KG = 0.01;
+const PACK_ETA_PENALTY_PER_KG = 0.01;
 
 /** Carry suggestions round up to this step so the number maps onto real
  *  bottles instead of suggesting 1.37 L. */
@@ -89,7 +89,7 @@ export function waterCarryLiters(dryKm: number, paceKmh: number, consumptionLph:
 }
 
 /** Total pack weight: base plus water at 1 kg/L. */
-export function packTotalKg(baseKg: number, liters: number): number {
+function packTotalKg(baseKg: number, liters: number): number {
 	return baseKg + liters;
 }
 
@@ -136,7 +136,7 @@ export function formatPackWeightRange(baseKg: number, loadedKg: number, units: U
  *  pack-weight ETA adjustment. Based on base weight only - water carried
  *  varies per stage and folding it in would make ETAs disagree between
  *  surfaces that know the stage and surfaces that do not. */
-export function packEtaMultiplier(baseKg: number | null, enabled: boolean): number {
+function packEtaMultiplier(baseKg: number | null, enabled: boolean): number {
 	if (!enabled || baseKg === null || !(baseKg > PACK_ETA_REFERENCE_KG)) return 1;
 	return 1 + (baseKg - PACK_ETA_REFERENCE_KG) * PACK_ETA_PENALTY_PER_KG;
 }

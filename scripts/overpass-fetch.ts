@@ -41,7 +41,7 @@ export interface RetryInfo {
 	message: string;
 }
 
-export class OverpassFetchError extends Error {
+class OverpassFetchError extends Error {
 	readonly status?: number;
 	constructor(message: string, status?: number) {
 		super(message);

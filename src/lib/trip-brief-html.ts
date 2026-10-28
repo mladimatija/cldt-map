@@ -30,7 +30,7 @@ export interface TripBriefHtmlArgs {
 }
 
 /** Build the HTML document string (does not trigger download). */
-export function buildTripBriefHtml(brief: TripBrief): string {
+function buildTripBriefHtml(brief: TripBrief): string {
 	const { meta, days } = brief;
 	const lang = meta.locale;
 	const title = escapeHtml(meta.title);

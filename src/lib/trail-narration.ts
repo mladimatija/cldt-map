@@ -11,7 +11,7 @@ import type { TrailDirection } from '@/lib/types';
 export type GradeWord = 'climbing' | 'descending' | 'flat';
 
 /** Forward look-ahead (km) for the "water ahead" safety announcement. */
-export const WATER_AHEAD_HORIZON_KM = 5;
+const WATER_AHEAD_HORIZON_KM = 5;
 
 /**
  * Climbing / descending / flat from the signed grade. gradePct is positive when

@@ -1,8 +1,8 @@
-import type { LatLngBoundsExpression } from 'leaflet';
+import type { LatLngBoundsExpression, WMSOptions } from 'leaflet';
 
 /**
- * Available base map providers. Kept in a separate module, so config and map-service-config
- * can use it without creating a circular dependency with map-service.
+ * Available base map providers. Kept apart from the Leaflet layer factory
+ * (base-map-layer), so config and the store can use it without loading Leaflet.
  */
 export enum BaseMapProvider {
 	OPEN_STREET_MAP = 'OpenStreetMap',
@@ -27,4 +27,10 @@ export interface BaseMapConfig {
 	subdomains?: string;
 	bounds?: LatLngBoundsExpression;
 	noWrap?: boolean;
+	/** Request higher-zoom tiles on HiDPI screens (default true), which sharpens
+	 *  256px sources like OSM. */
+	detectRetina?: boolean;
+	/** Set for a WMS service: `url` is then the service endpoint, not a z/x/y
+	 *  template, so the tile cache and the boundary clip leave the style alone. */
+	wms?: Pick<WMSOptions, 'layers' | 'format' | 'transparent' | 'version'>;
 }

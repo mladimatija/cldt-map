@@ -5,10 +5,10 @@
 import { nextWaypointName, type JournalEntry, type JournalTrackLink, type UserWaypoint } from './user-waypoints';
 import { gpxTextToWaypointCategory, normalizeWaypointCategory } from './waypoint-categories';
 
-export const MAX_WAYPOINT_GPX_BYTES = 2 * 1024 * 1024;
-export const MAX_JOURNAL_MD_BYTES = 512 * 1024;
-export const MAX_WAYPOINTS_PER_IMPORT = 100;
-export const MAX_JOURNAL_ENTRIES_PER_IMPORT = 100;
+const MAX_WAYPOINT_GPX_BYTES = 2 * 1024 * 1024;
+const MAX_JOURNAL_MD_BYTES = 512 * 1024;
+const MAX_WAYPOINTS_PER_IMPORT = 100;
+const MAX_JOURNAL_ENTRIES_PER_IMPORT = 100;
 
 const ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 const CLDT_JOURNAL_RANGE_RE = /<!--\s*cldt-journal-range:([\d.]+),([\d.]+)\s*-->/;

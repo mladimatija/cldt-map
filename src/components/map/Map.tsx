@@ -10,7 +10,7 @@ import { LatLngTuple } from 'leaflet';
 import dynamic from 'next/dynamic';
 import { mapDefaults } from '@/lib/config';
 import 'leaflet/dist/leaflet.css';
-import { BaseMapProvider } from '@/lib/services/map-service';
+import { BaseMapProvider } from '@/lib/services/base-map-provider';
 import { getInitialShareUrlParams } from '@/lib/utils';
 
 const MapContent = dynamic(() => import('./MapContent'), { ssr: false });

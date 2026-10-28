@@ -18,8 +18,7 @@ export interface RateLimitOptions {
 
 /**
  * Netlify Blobs store holding cross-instance rate-limit buckets, one per `name:ip`.
- * The matching cleanup sweep in netlify/functions/rate-limits-cleanup.mts
- * re-declares this store name and the bucket shape. Keep the two in sync.
+ * The cleanup sweep in netlify/functions/rate-limits-cleanup.mts reads it too.
  */
 export const RATE_LIMIT_BLOB_STORE = 'rate-limits';
 
@@ -30,7 +29,7 @@ export const RATE_LIMIT_BLOB_STORE = 'rate-limits';
  */
 const KV_MAX_WRITE_ATTEMPTS = 4;
 
-export interface RateLimitBucket {
+interface RateLimitBucket {
 	/** Request timestamps (ms) inside the retention window; bounded by `max` (window filtering plus the over-limit guard keep it from growing unbounded). */
 	hits: number[];
 	/** Epoch ms after which the whole bucket is stale; also mirrored into blob metadata so the cleanup sweep can decide deletions without a full-body read. */

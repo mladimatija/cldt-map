@@ -279,17 +279,6 @@ function normalize(raw: Partial<PoisFile>): PoisFile | null {
 	return { lastUpdated: raw.lastUpdated ?? '', pois: validPois };
 }
 
-/** Buckets a flat POI list by type. Useful for per-type rendering / toggles. */
-export function bucketByType(pois: Poi[]): Map<PoiType, Poi[]> {
-	const out = new Map<PoiType, Poi[]>();
-	for (const p of pois) {
-		const list = out.get(p.type) ?? [];
-		list.push(p);
-		out.set(p.type, list);
-	}
-	return out;
-}
-
 /** Case-insensitive substring match against name_en and name_hr. Diacritics
  *  are folded so a search for "Cakovec" matches "Čakovec" and "Đakovo"
  *  matches "Djakovo". Returns matches in the original order; callers can
@@ -387,7 +376,7 @@ export function poiPassesReachabilityFilter(p: Poi, includeRemotePois: boolean):
 
 /** True when this POI would be hidden with `includeRemotePois === false`.
  *  Hut/shelter exemptions and PT-rescued POIs are not counted. */
-export function poiHiddenByReachabilityFilter(p: Poi): boolean {
+function poiHiddenByReachabilityFilter(p: Poi): boolean {
 	return !poiPassesReachabilityFilter(p, false);
 }
 

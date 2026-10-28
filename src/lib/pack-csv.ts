@@ -61,7 +61,7 @@ const KG_PER: Record<string, number> = {
  *  opens quoted mode at the START of a cell, anywhere else it is literal.
  *  Packstack quotes commas, quotes, and newlines RFC-style; newlines inside
  *  quoted cells (multi-line notes) are preserved. */
-export function parseCsv(text: string): string[][] {
+function parseCsv(text: string): string[][] {
 	const rows: string[][] = [];
 	let row: string[] = [];
 	let cell = '';

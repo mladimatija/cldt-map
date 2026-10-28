@@ -44,7 +44,7 @@ export function resolveTrackLink(
 }
 
 /** Bounding envelope of on-trail SOBO km for a track point index range. */
-export function computeOnTrailRangeForIndices(
+function computeOnTrailRangeForIndices(
 	track: ImportedTrack,
 	startIdx: number,
 	endIdx: number,

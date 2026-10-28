@@ -42,7 +42,3 @@ export const MAP_CONTROL_SECTION_DIVIDER = 'border-t border-gray-200 pt-3 dark:b
  */
 /** Dark panel background + border (panels, popovers, modals). */
 export const DARK_PANEL = 'dark:border-[var(--border-color)] dark:bg-[var(--bg-secondary)]';
-/** Dark primary text. */
-export const DARK_TEXT = 'dark:text-[var(--text-primary)]';
-/** Dark muted/secondary text (descriptions, hints, labels). */
-export const DARK_TEXT_MUTED = 'dark:text-[var(--text-secondary)]';

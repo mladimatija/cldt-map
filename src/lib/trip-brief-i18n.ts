@@ -18,8 +18,6 @@ import type { TripBrief, TripBriefDay } from '@/lib/trip-brief';
 import { TrailDirection } from '@/lib/types';
 import { formatShortWeekdayDate } from './date-format';
 
-export type TripBriefLocale = TripBrief['meta']['locale'];
-
 /** Shape of the `tripBrief.document` subtree in messages/<locale>.json.
  *  Single-locale: the caller resolves the active locale before export. */
 export interface TripBriefStrings {

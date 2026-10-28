@@ -5,8 +5,7 @@
 
 import { getStore } from '@netlify/blobs';
 import type { Config } from '@netlify/functions';
-
-const SHARE_LINKS_BLOB_STORE = 'share-links';
+import { SHARE_LINKS_BLOB_STORE } from '../../src/lib/share-url-constants';
 
 interface ShareLinkRecord {
 	target: string;

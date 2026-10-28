@@ -66,11 +66,10 @@ function fail(msg: string): never {
 	process.exit(1);
 }
 
-// ---- EPSG:3765 (HTRS96/TM) <-> WGS84 ---------------------------------------
+// ---- EPSG:3765 (HTRS96/TM) -> WGS84 ----------------------------------------
 // Transverse Mercator on GRS80: k0 = 0.9999, lon0 = 16.5 deg, FE = 500000,
-// FN = 0. Forward + inverse implemented with the standard Snyder series so
-// the script stays dependency-free; the round trip is verified in tests to
-// sub-centimetre precision, and FE at the central meridian is exact.
+// FN = 0. The inverse uses the standard Snyder series, so the script stays
+// dependency-free.
 const TM = {
 	a: 6378137,
 	f: 1 / 298.257222101,
@@ -81,38 +80,6 @@ const TM = {
 };
 const E2 = TM.f * (2 - TM.f);
 const EP2 = E2 / (1 - E2);
-
-function tmForward(latDeg: number, lonDeg: number): { e: number; n: number } {
-	const lat = (latDeg * Math.PI) / 180;
-	const lon = (lonDeg * Math.PI) / 180;
-	const sin = Math.sin(lat);
-	const cos = Math.cos(lat);
-	const t = Math.tan(lat) ** 2;
-	const c = EP2 * cos * cos;
-	const aCoef = (lon - TM.lon0) * cos;
-	const nu = TM.a / Math.sqrt(1 - E2 * sin * sin);
-	const m =
-		TM.a *
-		((1 - E2 / 4 - (3 * E2 * E2) / 64 - (5 * E2 ** 3) / 256) * lat -
-			((3 * E2) / 8 + (3 * E2 * E2) / 32 + (45 * E2 ** 3) / 1024) * Math.sin(2 * lat) +
-			((15 * E2 * E2) / 256 + (45 * E2 ** 3) / 1024) * Math.sin(4 * lat) -
-			((35 * E2 ** 3) / 3072) * Math.sin(6 * lat));
-	const e =
-		TM.fe +
-		TM.k0 *
-			nu *
-			(aCoef + ((1 - t + c) * aCoef ** 3) / 6 + ((5 - 18 * t + t * t + 72 * c - 58 * EP2) * aCoef ** 5) / 120);
-	const n =
-		TM.fn +
-		TM.k0 *
-			(m +
-				nu *
-					Math.tan(lat) *
-					((aCoef * aCoef) / 2 +
-						((5 - t + 9 * c + 4 * c * c) * aCoef ** 4) / 24 +
-						((61 - 58 * t + t * t + 600 * c - 330 * EP2) * aCoef ** 6) / 720));
-	return { e, n };
-}
 
 function tmInverse(e: number, n: number): { lat: number; lon: number } {
 	const e1 = (1 - Math.sqrt(1 - E2)) / (1 + Math.sqrt(1 - E2));
@@ -145,8 +112,6 @@ function tmInverse(e: number, n: number): { lat: number; lon: number } {
 			cos1;
 	return { lat: (lat * 180) / Math.PI, lon: (lon * 180) / Math.PI };
 }
-
-export { tmForward, tmInverse };
 
 // ---- Geometry helpers -------------------------------------------------------
 

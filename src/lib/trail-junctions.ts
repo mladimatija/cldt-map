@@ -45,7 +45,7 @@ export interface TrailJunctionsFile {
 }
 
 /** Neutral chip colour used when osmc:symbol has no usable leading colour token. */
-export const TRAIL_JUNCTION_NEUTRAL_COLOR = '#6b7280';
+const TRAIL_JUNCTION_NEUTRAL_COLOR = '#6b7280';
 
 /** Defensive bound: even a densely mapped 2,200 km corridor yields far fewer
  *  route relations than this, so a larger payload is treated as corrupt. */
@@ -80,7 +80,7 @@ const OSMC_COLOR_HEX: Record<string, string> = {
  * only that leading colour token and map it to hex; anything unrecognised (or a
  * missing tag) falls back to the neutral colour so the chip always renders.
  */
-export function parseOsmcSymbolColor(osmcSymbol?: string | null): string {
+function parseOsmcSymbolColor(osmcSymbol?: string | null): string {
 	if (!osmcSymbol || typeof osmcSymbol !== 'string') return TRAIL_JUNCTION_NEUTRAL_COLOR;
 	const leading = osmcSymbol.split(':', 1)[0]?.trim().toLowerCase();
 	if (!leading) return TRAIL_JUNCTION_NEUTRAL_COLOR;
@@ -168,7 +168,7 @@ function normalizeJunction(raw: unknown): TrailJunction | null {
 /** Validate + sanitise a raw payload (remote or bundled) into a
  *  TrailJunctionsFile, dropping malformed junctions and rejecting oversized or
  *  structurally invalid files. Returns null when the file cannot be trusted. */
-export function normalize(raw: Partial<TrailJunctionsFile> | null | undefined): TrailJunctionsFile | null {
+function normalize(raw: Partial<TrailJunctionsFile> | null | undefined): TrailJunctionsFile | null {
 	if (!raw || typeof raw !== 'object') return null;
 	if (!Array.isArray(raw.junctions)) return null;
 	if (raw.junctions.length > MAX_JUNCTIONS) return null;

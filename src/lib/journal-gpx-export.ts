@@ -18,12 +18,12 @@ function sanitizeFilenamePart(value: string): string {
 		.slice(0, 60);
 }
 
-export function journalEntryGpxFilename(entry: JournalEntry, trackName: string): string {
+function journalEntryGpxFilename(entry: JournalEntry, trackName: string): string {
 	const name = sanitizeFilenamePart(trackName || entry.date);
 	return `cldt-journal-${entry.date}-${name}.gpx`;
 }
 
-export function buildJournalEntryGpx(entry: JournalEntry, track: ImportedTrack): string | null {
+function buildJournalEntryGpx(entry: JournalEntry, track: ImportedTrack): string | null {
 	if (!entry.trackLink) return null;
 	const points = sliceTrackPoints(track, entry.trackLink);
 	if (points.length === 0) return null;
@@ -46,7 +46,7 @@ function bundleGpxPath(link: NonNullable<JournalEntry['trackLink']>): string {
 	return `gpx/${link.trackId}-${link.startIdx}-${link.endIdx}.gpx`;
 }
 
-export interface JournalBundleManifestEntry {
+interface JournalBundleManifestEntry {
 	date: string;
 	gpx: string;
 	trackId: string;
@@ -54,7 +54,7 @@ export interface JournalBundleManifestEntry {
 	endIdx: number;
 }
 
-export interface JournalBundleManifest {
+interface JournalBundleManifest {
 	version: 1;
 	entries: JournalBundleManifestEntry[];
 }

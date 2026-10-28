@@ -14,7 +14,7 @@ export interface RulerRange {
 }
 
 /** The ruler end the hiker reaches last: the larger SOBO value for SOBO, the smaller for NOBO. */
-export function rulerTravelEndM(rulerRange: RulerRange, direction: TrailDirection): number {
+function rulerTravelEndM(rulerRange: RulerRange, direction: TrailDirection): number {
 	const { distanceFromStartA: a, distanceFromStartB: b } = rulerRange;
 	return direction === 'NOBO' ? Math.min(a, b) : Math.max(a, b);
 }
@@ -62,12 +62,12 @@ export function computeDistanceRemaining(
 
 // --- Grade-adjusted ETA model constants ---
 // Naismith's rule: 1 hour of extra time per 600 m of ascent → 6 s/m
-export const NAISMITH_SEC_PER_M_CLIMB = 6;
+const NAISMITH_SEC_PER_M_CLIMB = 6;
 // Tobler's hiking function peak-efficiency slope offset
-export const TOBLER_OPTIMAL_SLOPE = 0.05;
+const TOBLER_OPTIMAL_SLOPE = 0.05;
 // Normalization factor so that a flat (0%) grade produces a Tobler factor of exactly 1.0,
 // preserving the user's configured pace as the flat-terrain baseline.
-export const TOBLER_NORM = Math.exp(-3.5 * TOBLER_OPTIMAL_SLOPE);
+const TOBLER_NORM = Math.exp(-3.5 * TOBLER_OPTIMAL_SLOPE);
 
 /**
  * Per-segment time in seconds combining Tobler's hiking-function and Naismith's rule.
@@ -356,7 +356,7 @@ export function computeBearing(lat1: number, lng1: number, lat2: number, lng2: n
  * The output is the rotation to apply to the compass arrow so that it points
  * toward the wind's source while the trail bearing is fixed pointing up.
  */
-export function relativeWindAngle(windFromDeg: number, trailBearingDeg: number): number {
+function relativeWindAngle(windFromDeg: number, trailBearingDeg: number): number {
 	return ((windFromDeg - trailBearingDeg + 540) % 360) - 180;
 }
 
@@ -377,7 +377,7 @@ export function classifyWind(relativeAngle: number): WindClass {
 }
 
 /** Wind speeds below this (km/h) are treated as calm and the compass is hidden. */
-export const CALM_WIND_THRESHOLD_KMH = 3;
+const CALM_WIND_THRESHOLD_KMH = 3;
 
 /**
  * Computes the wind-vs-bearing payload for a tooltip compass. Returns `null`

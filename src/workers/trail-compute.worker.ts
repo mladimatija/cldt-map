@@ -7,7 +7,7 @@
 
 import { computeFromGpx } from '@/lib/trail-compute';
 
-export interface TrailWorkerRequest {
+interface TrailWorkerRequest {
 	gpxText: string;
 }
 

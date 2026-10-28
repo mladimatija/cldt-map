@@ -170,7 +170,7 @@ export async function fetchWeather(lat: number, lng: number, signal?: AbortSigna
  * @returns `{ startIdx, endIdx }` (inclusive) for the first-longest qualifying
  *          window, or `null` if no window of at least `minHours` entries exists.
  */
-export function findBestWindow(
+function findBestWindow(
 	hourly: HourlyEntry[],
 	thresholdPct = 30,
 	minHours = 2,
@@ -286,7 +286,7 @@ export function formatClockTime(date: Date, units: UnitSystem, locale: string, t
 }
 
 /** Formats an hour label compactly: "14:00" for metric, "2 PM" for imperial. */
-export function formatHourlyTime(date: Date, units: UnitSystem, locale: string, timeZone?: string): string {
+function formatHourlyTime(date: Date, units: UnitSystem, locale: string, timeZone?: string): string {
 	return clockFormat(locale, units, timeZone, units !== 'imperial').format(date);
 }
 
@@ -298,7 +298,7 @@ function hourInZone(date: Date, timeZone: string | undefined): number {
 	return Number(hour) % 24;
 }
 
-export function formatHourlyTimeShort(date: Date, units: UnitSystem, timeZone?: string): string {
+function formatHourlyTimeShort(date: Date, units: UnitSystem, timeZone?: string): string {
 	const h = hourInZone(date, timeZone);
 	if (units === 'imperial') {
 		const h12 = h % 12 || 12;
@@ -393,7 +393,7 @@ export async function fetchStageForecasts(
  * - `{ type: 'drierWindow'; start: Date; end: Date }` - window starts within 30 min of now
  * - `{ type: 'bestToStartBy'; time: Date }` - window starts later
  */
-export function computeBestWindowHintParams(
+function computeBestWindowHintParams(
 	hourly: HourlyEntry[],
 	bestWindow: { startIdx: number; endIdx: number } | null,
 ): { type: 'drierWindow'; start: Date; end: Date } | { type: 'bestToStartBy'; time: Date } | null {

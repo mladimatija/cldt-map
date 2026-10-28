@@ -26,7 +26,7 @@ export interface TrailNotice {
 }
 
 /** Returns only notices whose `expiresAt` is absent or still in the future. */
-export function filterActiveNotices(notices: TrailNotice[], now: Date = new Date()): TrailNotice[] {
+function filterActiveNotices(notices: TrailNotice[], now: Date = new Date()): TrailNotice[] {
 	return notices.filter((n) => !n.expiresAt || new Date(n.expiresAt) > now);
 }
 

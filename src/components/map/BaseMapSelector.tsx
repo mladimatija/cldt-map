@@ -1,9 +1,10 @@
 'use client';
 
-/** Dropdown to switch base map layer (OSM, Topo, Satellite, etc.); syncs with MapService and persisted store. */
+/** Dropdown to switch base map layer (OSM, Topo, Satellite, etc.); syncs with the persisted store. */
 import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import { useMap } from 'react-leaflet';
-import { BaseMapProvider, MapService } from '@/lib/services/map-service';
+import { BaseMapProvider } from '@/lib/services/base-map-provider';
+import { createBaseMapLayer } from '@/lib/services/base-map-layer';
 import { useBlockMapPropagation, useMapStore, usePanel } from '@/hooks';
 import { L } from '@/lib/store/leaflet';
 import { useStore, type MapStoreState, type StoreState } from '@/lib/store';
@@ -46,7 +47,6 @@ export default function BaseMapSelector({ initialProvider }: BaseMapSelectorProp
 		}
 
 		let cancelled = false;
-		const service = MapService.getInstance();
 
 		const isMapContainerValid = (): boolean => {
 			try {
@@ -60,7 +60,7 @@ export default function BaseMapSelector({ initialProvider }: BaseMapSelectorProp
 		const addInitialLayer = (): void => {
 			if (cancelled || !isMapContainerValid()) return;
 			try {
-				const layer = service.createBaseMapLayer(effectiveInitial);
+				const layer = createBaseMapLayer(effectiveInitial);
 				if (!cancelled && isMapContainerValid()) {
 					layer.addTo(map);
 				}
@@ -85,8 +85,9 @@ export default function BaseMapSelector({ initialProvider }: BaseMapSelectorProp
 	const handleMapChange = (provider: BaseMapProvider): void => {
 		if (!isBrowser) return;
 
-		const service = MapService.getInstance();
 		try {
+			// Built before the old layer goes, so a failure leaves the map as it was.
+			const newLayer = createBaseMapLayer(provider);
 			map.eachLayer((layer) => {
 				// Base layers live in the default tile pane; overlays (radar,
 				// Waymarked Trails) set their own pane and must survive a
@@ -100,7 +101,6 @@ export default function BaseMapSelector({ initialProvider }: BaseMapSelectorProp
 				}
 			});
 
-			const newLayer = service.createBaseMapLayer(provider);
 			newLayer.addTo(map);
 			setCurrentLayer(provider);
 			setBaseMapProvider(provider);

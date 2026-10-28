@@ -17,13 +17,13 @@
 import { STAGE_POI_OFFTRAIL_KM, type Poi } from './poi-types';
 
 /** POI types that count as a place to spend the night. */
-export const OVERNIGHT_POI_TYPES = ['hut', 'shelter', 'town', 'settlement'] as const;
+const OVERNIGHT_POI_TYPES = ['hut', 'shelter', 'town', 'settlement'] as const;
 
 const OVERNIGHT_SET = new Set<string>(OVERNIGHT_POI_TYPES);
 
 /** Default along-trail search window (km) on each side of the stage boundary.
  *  Beyond this, there is effectively no overnight option at the stage end. */
-export const STAGE_ACCOMMODATION_WINDOW_KM = 8;
+const STAGE_ACCOMMODATION_WINDOW_KM = 8;
 
 /** Huts and shelters are purpose-built overnight stops; prefer one over a town
  *  at a similar along-trail distance by discounting its effective distance. */

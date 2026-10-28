@@ -113,11 +113,7 @@ export interface PopupBuildLabels extends WaterLogPopupLabels, PoiNotePopupLabel
 
 /** Builds the gallery or legacy single-image HTML block. Returns empty string
  *  if no images. */
-export function buildGalleryHtml(
-	poi: Poi,
-	displayName: string,
-	labels?: Pick<PopupBuildLabels, 'galleryImageLabel'>,
-): string {
+function buildGalleryHtml(poi: Poi, displayName: string, labels?: Pick<PopupBuildLabels, 'galleryImageLabel'>): string {
 	const lines: string[] = [];
 	// The Phase 4 `images[]` field wins when present (carries attribution and
 	// licence); fall back to the legacy `image` string for older datasets.
@@ -223,7 +219,7 @@ export function buildPoiNoteInnerHtml(note: string | undefined, editing: boolean
 
 /** Builds the metadata rows (position, elevation, population, season, phone,
  *  URL, Wikipedia, provenance) that appear below the title. */
-export function buildMetaRowsHtml(
+function buildMetaRowsHtml(
 	poi: Poi,
 	args: PopupBuildArgs,
 	trailDistanceLabel: string,
@@ -420,7 +416,7 @@ export function buildMetaRowsHtml(
 }
 
 /** Builds the title row with star toggle left of the POI name. */
-export function buildTitleRowHtml(
+function buildTitleRowHtml(
 	poi: Poi,
 	displayName: string,
 	typeLabel: string,
@@ -445,7 +441,7 @@ const REPORT_EMAIL_RE = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
  *  prefilled with the place name, id, coordinates, and date, plus a free-text
  *  prompt the hiker completes in their own mail client (account-free, one-way,
  *  user-sent). Returns an empty string when no valid curator email is set. */
-export function buildReportLinkHtml(poi: Poi, displayName: string, args: PopupBuildArgs): string {
+function buildReportLinkHtml(poi: Poi, displayName: string, args: PopupBuildArgs): string {
 	const email = args.reportEmail?.trim();
 	if (!email || !REPORT_EMAIL_RE.test(email)) return '';
 	const { labels } = args;
@@ -473,7 +469,7 @@ export function buildReportLinkHtml(poi: Poi, displayName: string, args: PopupBu
 /** Builds the action rows: Open in Maps + Share on the first line, Add as
  *  waypoint centred on the second. Buttons are wired imperatively in
  *  PoiMarkers after the popup opens. */
-export function buildActionsHtml(poi: Poi, labels: PopupBuildLabels): string {
+function buildActionsHtml(poi: Poi, labels: PopupBuildLabels): string {
 	return (
 		`<div class="poi-popup__actions poi-popup__actions--poi">` +
 		`<button type="button" class="poi-popup__open-maps" data-poi-open-maps="${escapeHtml(poi.id)}">${escapeHtml(labels.openInMaps)}</button>` +

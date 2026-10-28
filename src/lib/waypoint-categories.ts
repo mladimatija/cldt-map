@@ -4,15 +4,7 @@
  * POI marker hues so user pins stay visually separate on the map.
  */
 
-export const WAYPOINT_CATEGORY_IDS = [
-	'generic',
-	'camp',
-	'water',
-	'resupply',
-	'viewpoint',
-	'transport',
-	'hazard',
-] as const;
+const WAYPOINT_CATEGORY_IDS = ['generic', 'camp', 'water', 'resupply', 'viewpoint', 'transport', 'hazard'] as const;
 
 export type WaypointCategoryId = (typeof WAYPOINT_CATEGORY_IDS)[number];
 

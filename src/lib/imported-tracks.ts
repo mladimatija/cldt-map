@@ -10,7 +10,7 @@ const importedTracksStore = localforage.createInstance({
 	storeName: 'imported-tracks',
 });
 
-export const TRACK_COLOR_PALETTE = ['#e74c3c', '#3498db', '#2ecc71', '#f39c12', '#9b59b6'];
+const TRACK_COLOR_PALETTE = ['#e74c3c', '#3498db', '#2ecc71', '#f39c12', '#9b59b6'];
 
 // FNV-1a 32-bit: sufficient for content-addressable deduplication of user-local files
 function fnv1aHash(str: string): string {
@@ -46,7 +46,7 @@ const SIMPLIFY_TOLERANCE_M = 5;
 /** Iterative Douglas-Peucker on track points (equirectangular meters).
  *  Keeps the original point objects, so timestamps and elevation survive
  *  for the moving-time stats. Endpoints always survive. */
-export function simplifyTrackPoints<T extends { lat: number; lng: number }>(points: T[], toleranceM: number): T[] {
+function simplifyTrackPoints<T extends { lat: number; lng: number }>(points: T[], toleranceM: number): T[] {
 	if (points.length <= 2) return points;
 	const cosLat = Math.cos((points[0].lat * Math.PI) / 180);
 	const M_PER_DEG = 111_320;
@@ -95,7 +95,7 @@ export function simplifyTrackPoints<T extends { lat: number; lng: number }>(poin
 	return out;
 }
 
-export async function saveImportedTrack(
+async function saveImportedTrack(
 	rawXml: string,
 	parsed: ParsedTrack,
 	existingColorCount: number,
@@ -132,10 +132,7 @@ export type ImportGpxXmlResult =
 	| { status: 'error' };
 
 /** Parse GPX XML and persist the first track. Dedupes by content hash. */
-export async function importGpxXmlAsTrack(
-	xml: string,
-	existingTracks: readonly ImportedTrack[],
-): Promise<ImportGpxXmlResult> {
+async function importGpxXmlAsTrack(xml: string, existingTracks: readonly ImportedTrack[]): Promise<ImportGpxXmlResult> {
 	try {
 		const parsed = parseGpx(xml);
 		const firstTrack = parsed.tracks[0];

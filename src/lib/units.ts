@@ -3,7 +3,7 @@ import type { UnitSystem } from './types';
 /** Unit conversion factors; the one place they are defined. */
 export const KM_PER_MILE = 1.609344;
 export const METRES_PER_MILE = 1609.344;
-export const FEET_PER_METRE = 3.28084;
+const FEET_PER_METRE = 3.28084;
 
 export function kmToMiles(km: number): number {
 	return km / KM_PER_MILE;

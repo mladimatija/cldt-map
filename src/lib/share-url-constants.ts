@@ -37,3 +37,7 @@ export const SHARE_QUERY_PARAM_KEYS = [
 	'wp',
 	SHARE_TRIP_PARAM_KEY,
 ] as const;
+
+/** Netlify Blobs store for `/s/{code}` short links; the shortener and the
+ *  monthly cleanup function both use it. */
+export const SHARE_LINKS_BLOB_STORE = 'share-links';

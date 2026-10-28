@@ -1,9 +1,9 @@
 /** Shared PWA install prompt guardrails (session dismiss, cooldown, standalone). */
 
-export const SESSION_DISMISS_KEY = 'cldt-map-pwa-install-dismissed';
-export const COOLDOWN_DAYS = 7;
-export const COOLDOWN_KEY = 'cldt-map-pwa-install-dismissed-until';
-export const OFFLINE_NUDGE_SHOWN_KEY = 'cldt-map-pwa-offline-nudge-shown';
+const SESSION_DISMISS_KEY = 'cldt-map-pwa-install-dismissed';
+const COOLDOWN_DAYS = 7;
+const COOLDOWN_KEY = 'cldt-map-pwa-install-dismissed-until';
+const OFFLINE_NUDGE_SHOWN_KEY = 'cldt-map-pwa-offline-nudge-shown';
 
 export function isStandalone(): boolean {
 	if (typeof window === 'undefined') return false;

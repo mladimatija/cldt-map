@@ -34,7 +34,7 @@ export interface TerrainPoint {
  * grade-tinted trail style, so this reuses the existing thresholds rather than
  * inventing a new cutoff.
  */
-export const CRUX_MIN_GRADE_BAND = 2;
+const CRUX_MIN_GRADE_BAND = 2;
 
 /**
  * Ignore merged stretches shorter than this (km). Sub-threshold blips of a few
@@ -42,7 +42,7 @@ export const CRUX_MIN_GRADE_BAND = 2;
  * them, but the floor keeps a lone 30 m pitch from being crowned the crux of an
  * otherwise gentle stage.
  */
-export const MIN_CRUX_STRETCH_KM = 0.15;
+const MIN_CRUX_STRETCH_KM = 0.15;
 
 export interface ToughestStretch {
 	/** km bounds in the same frame as the enhanced points' distanceFromStart. */

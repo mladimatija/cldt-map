@@ -10,7 +10,8 @@ export function isBaseMapProviderAvailable(provider: string): boolean {
 	return provider !== BaseMapProvider.DARK || CARTO_BASEMAPS_KEY.length > 0;
 }
 
-/** Default base map layer configurations used by MapService. */
+/** Base map layer configurations, read by createBaseMapLayer, the tile cache
+ *  and the Croatia boundary clip. */
 export const DEFAULT_MAP_SERVICES: BaseMapConfig[] = [
 	{
 		name: BaseMapProvider.OPEN_STREET_MAP,
@@ -47,6 +48,9 @@ export const DEFAULT_MAP_SERVICES: BaseMapConfig[] = [
 			'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
 		maxZoom: 18,
 		minZoom: 0,
+		// The Esri layers load at their native zoom instead of fetching four
+		// tiles one level deeper on HiDPI screens.
+		detectRetina: false,
 	},
 	{
 		name: BaseMapProvider.TERRAIN,
@@ -54,6 +58,7 @@ export const DEFAULT_MAP_SERVICES: BaseMapConfig[] = [
 		attribution: 'Tiles &copy; Esri &mdash; Source: USGS, Esri, TANA, DeLorme, and NPS',
 		maxZoom: 16,
 		minZoom: 0,
+		detectRetina: false,
 	},
 	{
 		name: BaseMapProvider.CYCL_OSM,
@@ -66,10 +71,12 @@ export const DEFAULT_MAP_SERVICES: BaseMapConfig[] = [
 	},
 	{
 		name: BaseMapProvider.CROATIA_TOPO,
-		url: 'https://geoportal.dgu.hr/wms',
+		url: 'https://geoportal.dgu.hr/services/tk/wms',
 		attribution: '&copy; <a href="https://dgu.gov.hr/">Državna geodetska uprava</a>',
 		maxZoom: 19,
-		minZoom: 0,
+		minZoom: 8,
+		// TK25 is the 1:25,000 topographic map.
+		wms: { layers: 'TK25', format: 'image/png', transparent: true, version: '1.3.0' },
 	},
 	{
 		name: BaseMapProvider.DARK,

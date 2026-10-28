@@ -15,7 +15,7 @@ export interface CompletionInterval {
 
 /** Gaps narrower than this merge away - GPS jitter and snapped-point
  *  rounding should not fragment a day's hike into dozens of slivers. */
-export const MERGE_TOLERANCE_KM = 0.05;
+const MERGE_TOLERANCE_KM = 0.05;
 
 /** A GPS fix farther than this from the trail does not record progress. */
 export const AUTO_TRACK_MAX_OFF_TRAIL_M = 150;
@@ -31,7 +31,7 @@ export const IMPORT_MAX_OFF_TRAIL_M = 50;
 
 /** Gaps along the trail shorter than this are bridged when converting an
  *  imported track's snapped kms into intervals - tracks sample sparsely. */
-export const IMPORT_BRIDGE_GAP_KM = 0.5;
+const IMPORT_BRIDGE_GAP_KM = 0.5;
 
 function normalize(intervals: CompletionInterval[]): CompletionInterval[] {
 	const sorted = intervals

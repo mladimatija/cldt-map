@@ -10,9 +10,9 @@ import { releaseWalkSim, startWalkSim } from '@/lib/walk-sim';
 import type { CompletionInterval } from '@/lib/completion';
 import type { JournalEntry, UserWaypoint } from '@/lib/user-waypoints';
 
-export const DEMO_SPEED_KMH = 4;
+const DEMO_SPEED_KMH = 4;
 
-export interface DemoPersistSnapshot {
+interface DemoPersistSnapshot {
 	userWaypoints: UserWaypoint[];
 	journalEntries: JournalEntry[];
 	completedIntervals: CompletionInterval[];

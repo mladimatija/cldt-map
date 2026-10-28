@@ -26,12 +26,12 @@ export const CLUSTER_CELL_PX = 60;
  *  the small per-type `size` (so dense clusters stay legible), but Leaflet
  *  allocates a 44x44 transparent wrapper around it. The dot is centred via flex in
  *  `.poi-marker-wrapper`. */
-export const POI_TAP_TARGET = 44;
+const POI_TAP_TARGET = 44;
 
 /** Per-type marker disc size. Bigger types are higher-priority info: a town
  *  matters more at country zoom than a single ATM. Open dictionary so future
  *  types only need to add a size entry. */
-export const TYPE_SIZE: Record<string, number> = {
+const TYPE_SIZE: Record<string, number> = {
 	town: 18,
 	settlement: 15,
 	peak: 15,
@@ -50,7 +50,7 @@ export const TYPE_SIZE: Record<string, number> = {
  *  `theme.css`. Each known type maps to a `var(--poi-color-<type>)` reference
  *  so light / dark palettes live in one file and a future palette change is a
  *  CSS-only edit. Unknown types fall back to `var(--poi-color-default)`. */
-export const TYPE_COLOR: Record<string, string> = {
+const TYPE_COLOR: Record<string, string> = {
 	town: 'var(--poi-color-town)',
 	settlement: 'var(--poi-color-settlement)',
 	peak: 'var(--poi-color-peak)',

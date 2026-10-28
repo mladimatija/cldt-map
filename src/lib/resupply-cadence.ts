@@ -45,17 +45,13 @@ export interface PlanResupplyCadence {
 	stages: StageResupplyCadence[];
 }
 
-export function poiHasGroceryResupply(poi: Poi): boolean {
-	return poiHasResupplyKind(poi, 'grocery');
-}
-
 export function poiHasResupplyKind(poi: Poi, kind: ResupplyKind): boolean {
 	return (
 		(poi.type === 'town' || poi.type === 'settlement') && !!poi.resupply?.places.some((place) => place.kind === kind)
 	);
 }
 
-export function stageResupplyStatus(stageStart: number, stageEnd: number, towns: Poi[]): StageResupplyStatus {
+function stageResupplyStatus(stageStart: number, stageEnd: number, towns: Poi[]): StageResupplyStatus {
 	const lo = Math.min(stageStart, stageEnd);
 	const hi = Math.max(stageStart, stageEnd);
 	const inStage = towns.filter(
@@ -113,7 +109,7 @@ function lastGroceryAtOrBefore(km: number, points: ResupplyTownPoint[]): Resuppl
 	return last;
 }
 
-export function estimatedFoodDaysFromPack(consumableKg: number, kgPerDay: number): number | null {
+function estimatedFoodDaysFromPack(consumableKg: number, kgPerDay: number): number | null {
 	if (!(consumableKg > 0) || !(kgPerDay > 0)) return null;
 	return Math.round((consumableKg / kgPerDay) * 10) / 10;
 }

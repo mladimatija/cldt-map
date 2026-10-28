@@ -16,7 +16,7 @@ import { rangeOverlapKm, SAC_SCALE_ORDER, type SacScale, type TrailOsmTagRun } f
  * from ever firing the chip and filters short mis-tags, so the chip only lands on
  * the genuinely demanding Velebit / Paklenica days.
  */
-export const SAC_DEMANDING_MIN_KM = 1;
+const SAC_DEMANDING_MIN_KM = 1;
 
 /** Rank of the easiest "demanding" class (T3). Classes at or above this rank
  *  count toward the demanding-terrain gate. */

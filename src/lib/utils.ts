@@ -17,7 +17,7 @@ import {
 	isShareBaseMapKey,
 	type ShareBaseMapKey,
 } from '@/components/map/base-map-options';
-import { BaseMapProvider } from '@/lib/services/map-service';
+import { BaseMapProvider } from '@/lib/services/base-map-provider';
 import { siteMetadata } from '@/lib/metadata';
 import { SHARE_QUERY_PARAM_KEYS, SHARE_TRIP_PARAM_KEY } from '@/lib/share-url-constants';
 import {
@@ -114,16 +114,6 @@ export class LocationError extends AppError {
 	constructor(message: string, details?: unknown) {
 		super(message, 'LOCATION_ERROR', 400, details);
 		this.name = 'LocationError';
-	}
-}
-
-/**
- * Error class for map-related errors
- */
-export class MapError extends AppError {
-	constructor(message: string, details?: unknown) {
-		super(message, 'MAP_ERROR', 400, details);
-		this.name = 'MapError';
 	}
 }
 
@@ -403,7 +393,7 @@ function appendShareStyleParams(url: URL, params: ShareMapStyleParams): void {
 }
 
 /** Derive the active trail style from store flags (SAC > surface > grade > sections > default). */
-export function resolveShareTrailStyle(state: {
+function resolveShareTrailStyle(state: {
 	sacColoured: boolean;
 	surfaceColoured: boolean;
 	gradeTintedTrail: boolean;
@@ -449,7 +439,7 @@ export function collectShareMapStyleParams(options?: {
 }
 
 /** Apply a share trail style, clearing the other mutually exclusive modes. */
-export function applyShareTrailStyle(trailStyle: ShareTrailStyle): void {
+function applyShareTrailStyle(trailStyle: ShareTrailStyle): void {
 	const store = useMapStore.getState();
 	switch (trailStyle) {
 		case 'sac':
@@ -579,7 +569,7 @@ export function clearShareUrlParams(): void {
 /**
  * Parse share URL params from the current location. Returns null if no share-related params are present.
  */
-export function parseShareUrlParams(): ShareUrlParams | null {
+function parseShareUrlParams(): ShareUrlParams | null {
 	if (typeof window === 'undefined') return null;
 	const params = new URLSearchParams(window.location.search);
 	if (!SHARE_URL_PARAMS.some((key) => params.has(key))) return null;

@@ -9,7 +9,7 @@
  * exposed-ridgeline case that a mild feels-like can understate.
  */
 
-export type ExposureLevel = 'coldWarning' | 'coldCaution' | 'heatCaution' | 'heatWarning' | null;
+type ExposureLevel = 'coldWarning' | 'coldCaution' | 'heatCaution' | 'heatWarning' | null;
 
 /** Feels-like (C) bounds for each tier. */
 const COLD_WARNING_C = -5;
@@ -20,7 +20,7 @@ const HEAT_WARNING_C = 35;
 const WINDY_COLD_FEELS_C = 8;
 const WINDY_COLD_KMH = 40;
 
-export function classifyExposure(feelsLikeC: number, windspeedKmh: number): ExposureLevel {
+function classifyExposure(feelsLikeC: number, windspeedKmh: number): ExposureLevel {
 	if (!Number.isFinite(feelsLikeC)) return null;
 	if (feelsLikeC <= COLD_WARNING_C) return 'coldWarning';
 	if (feelsLikeC <= COLD_CAUTION_C) return 'coldCaution';
@@ -31,13 +31,13 @@ export function classifyExposure(feelsLikeC: number, windspeedKmh: number): Expo
 }
 
 /** Cold tiers tint blue, heat tiers tint amber. */
-export function exposureTone(level: Exclude<ExposureLevel, null>): 'cold' | 'heat' {
+function exposureTone(level: Exclude<ExposureLevel, null>): 'cold' | 'heat' {
 	return level.startsWith('cold') ? 'cold' : 'heat';
 }
 
 /** Builds the localized tooltip advisory, or null when conditions are benign.
  *  `translate` maps a level key to its localized string (e.g. weather.exposure.*). */
-export function buildExposureAdvisory(
+function buildExposureAdvisory(
 	feelsLikeC: number,
 	windspeedKmh: number,
 	translate: (level: Exclude<ExposureLevel, null>) => string,

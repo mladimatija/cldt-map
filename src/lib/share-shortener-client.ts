@@ -18,7 +18,7 @@ function cacheShortUrl(longUrl: string, result: ShortenShareUrlResult): ShortenS
 }
 
 /** Ask the server to store a long share URL and return a compact `/s/{code}` link. */
-export async function shortenShareUrl(longUrl: string): Promise<ShortenShareUrlResult> {
+async function shortenShareUrl(longUrl: string): Promise<ShortenShareUrlResult> {
 	const cached = sessionShortUrlCache.get(longUrl);
 	if (cached) return cached;
 

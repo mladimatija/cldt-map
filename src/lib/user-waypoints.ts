@@ -10,7 +10,7 @@
 
 import type { UnitSystem } from './types';
 import { downloadBlob } from './download';
-import { normalizeWaypointCategory, type WaypointCategoryId } from './waypoint-categories';
+import type { WaypointCategoryId } from './waypoint-categories';
 
 export interface UserWaypoint {
 	id: string;
@@ -49,10 +49,6 @@ export interface JournalEntry {
 	/** Optional link to a slice of an imported GPX track. */
 	trackLink?: JournalTrackLink;
 	createdAt: string;
-}
-
-export function normalizeUserWaypoint(wp: UserWaypoint): UserWaypoint {
-	return { ...wp, category: normalizeWaypointCategory(wp.category) };
 }
 
 export function newId(): string {

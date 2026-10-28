@@ -30,7 +30,7 @@ export async function copyTextToClipboard(text: string): Promise<boolean> {
 }
 
 /** Resolve a share URL (short when possible, else long) and copy it to the clipboard. */
-export async function copyShareLink(
+async function copyShareLink(
 	longUrl: string,
 	options: { useShortLinks: boolean; online: boolean },
 ): Promise<{ ok: boolean; short: boolean }> {

@@ -73,7 +73,7 @@ function csvRow(cells: string[]): string {
 	return cells.map(csvEscape).join(',');
 }
 
-export function buildCoverageReportCsv(content: CoverageReportContent): string {
+function buildCoverageReportCsv(content: CoverageReportContent): string {
 	const lines: string[] = [];
 	lines.push(csvRow([content.title]));
 	lines.push(csvRow([content.trackLabel, content.trackName]));

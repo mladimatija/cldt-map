@@ -40,12 +40,6 @@ const nextConfig: NextConfig = {
 	reactStrictMode: true,
 	// cacheComponents: true causes "Map container is being reused by another instance" with react-leaflet
 	// when navigating between pages; Leaflet needs a fresh container on each mount.
-	images: {
-		remotePatterns: [
-			{ protocol: 'https', hostname: 'cldt.hr', pathname: '/**' },
-			{ protocol: 'https', hostname: 'www.cldt.hr', pathname: '/**' },
-		],
-	},
 	compress: true,
 	poweredByHeader: false,
 	async headers() {

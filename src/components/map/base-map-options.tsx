@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { BaseMapProvider } from '@/lib/services/map-service';
+import { BaseMapProvider } from '@/lib/services/base-map-provider';
 import { isBaseMapProviderAvailable } from '@/lib/services/map-service-config';
 import {
 	FaMap,
@@ -108,7 +108,7 @@ const allMapOptions: MapOption[] = [
 /** Styles offered in the selector: Dark is left out when the CARTO key is missing. */
 export const mapOptions: MapOption[] = allMapOptions.filter((option) => isBaseMapProviderAvailable(option.id));
 
-export const VALID_PROVIDERS = new Set<BaseMapProvider>(
+const VALID_PROVIDERS = new Set<BaseMapProvider>(
 	Object.values(BaseMapProvider).filter((provider) => isBaseMapProviderAvailable(provider)),
 );
 

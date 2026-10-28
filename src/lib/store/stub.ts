@@ -1,5 +1,5 @@
 import type { StoreState, MapStoreState } from './types';
-import { BaseMapProvider } from '../services/map-service';
+import { BaseMapProvider } from '../services/base-map-provider';
 import { INITIAL_TRAIL_STATE } from './trail-slice';
 import { DEFAULT_POI_TYPES } from '../poi-types';
 import { DEFAULT_MAP_APPEARANCE } from '../map-appearance';

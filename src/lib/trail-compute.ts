@@ -49,7 +49,7 @@ function bucketGradePct(absGradePct: number): 0 | 1 | 2 | 3 | 4 {
  * src/lib/trail-frame.ts converts to the hiker's travel frame at the display
  * edges.
  */
-export function computeTrailData(points: { lat: number; lng: number; ele?: number }[]): ComputedTrailData {
+function computeTrailData(points: { lat: number; lng: number; ele?: number }[]): ComputedTrailData {
 	if (points.length === 0) throw new Error('GPX track has no points');
 
 	const hasElevation = points.some((p) => p.ele !== undefined && p.ele !== null);

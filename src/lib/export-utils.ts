@@ -11,22 +11,11 @@ import { boundsOf, toLeafletBounds } from '@/lib/geo-bounds';
 /** Providers whose tile servers don't send Access-Control-Allow-Origin; PNG canvas export will taint. */
 const CORS_BLOCKED_PROVIDERS: string[] = [BaseMapProvider.SATELLITE, BaseMapProvider.CROATIA_TOPO];
 
-export const MAP_RENDER_SETTLE_MS = 600;
+const MAP_RENDER_SETTLE_MS = 600;
 
 /** Returns true if PNG export should be disabled for the given base map provider. */
 export function isPngExportDisabled(provider: string): boolean {
 	return CORS_BLOCKED_PROVIDERS.includes(provider);
-}
-
-/**
- * Returns the reason why PNG export is disabled for the provider,
- * or an empty string if export is allowed.
- */
-export function getExportDisabledReason(provider: string): string {
-	if (isPngExportDisabled(provider)) {
-		return 'PNG export is unavailable for this map style due to tile server CORS restrictions.';
-	}
-	return '';
 }
 
 interface RulerRange {
@@ -215,7 +204,7 @@ export async function captureStageMapSnapshot(
 	return cropToAspect(dataUrl, aspectW, aspectH);
 }
 
-export async function cropToAspect(dataUrl: string, targetW: number, targetH: number): Promise<string> {
+async function cropToAspect(dataUrl: string, targetW: number, targetH: number): Promise<string> {
 	return new Promise((resolve) => {
 		const img = new Image();
 		img.onload = () => {

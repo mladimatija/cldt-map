@@ -52,7 +52,6 @@ import { MapControlsEmergencyButton } from './MapControlsEmergencyButton';
 import { MapControlsPoiList } from './MapControlsPoiList';
 import { MapControlsEmergencyPanel } from './MapControlsEmergencyPanel';
 import { prefetchEmergencyData } from '@/lib/emergency-data';
-import { BaseMapProvider } from '@/lib/services/base-map-provider';
 import { toTravelKm } from '@/lib/trail-frame';
 import { DEFAULT_MAP_SERVICES } from '@/lib/services/map-service-config';
 import { fitMapToRulerBounds, waitForTilesLoaded } from '@/lib/export-utils';
@@ -121,9 +120,9 @@ function createCroatiaBoundaryLayer(
  * copy is built from the provider's own config (URL including any key,
  * attribution, zoom range, subdomains), not scraped from a rendered tile: the
  * scraped `.png` pattern missed Esri's `{z}/{y}/{x}` URLs (one tile repeated
- * everywhere) and dropped query-string keys. Returns null for providers
- * BoundaryCanvas cannot clip (the Croatia Topo WMS); their plain base layer
- * stays on the map.
+ * everywhere) and dropped query-string keys. Returns null for styles
+ * BoundaryCanvas cannot clip (WMS services such as Croatia Topo); their plain
+ * base layer stays on the map.
  */
 function createAndAddTileBoundaryCanvas(
 	map: L.Map,
@@ -131,7 +130,7 @@ function createAndAddTileBoundaryCanvas(
 	boundary: GeoJSON.FeatureCollection,
 ): L.TileLayer | null {
 	const service = DEFAULT_MAP_SERVICES.find((s) => s.name === provider);
-	if (!service || provider === BaseMapProvider.CROATIA_TOPO) return null;
+	if (!service || service.wms) return null;
 	const BoundaryCanvasCtor = (
 		L.TileLayer as unknown as {
 			BoundaryCanvas: new (url: string, opts: unknown) => L.TileLayer;

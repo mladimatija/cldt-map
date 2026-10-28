@@ -20,15 +20,6 @@ import { haversineDistanceM } from '@/lib/haversine';
 import { L } from '@/lib/store/leaflet';
 import type { TrailDirection } from '@/lib/types';
 
-export interface WalkSimState {
-	running: boolean;
-	posKm: number;
-	speedKmh: number;
-	walkDirection: TrailDirection;
-	offsetM: number;
-	totalKm: number;
-}
-
 const TICK_MS = 1000;
 const M_PER_DEG_LAT = 111_320;
 

@@ -106,7 +106,7 @@ interface TierRule {
 
 /** Per-type tier rules. Edit here to retune the filter. The matching column
  *  in the runtime / docs lives in src/lib/pois.ts. */
-export const TIER_RULES: Record<string, TierRule> = {
+const TIER_RULES: Record<string, TierRule> = {
 	town: {
 		maxOffTrailKm: 3,
 		requireRoadWithinM: 100,
@@ -174,10 +174,10 @@ export const TIER_RULES: Record<string, TierRule> = {
 };
 
 /** A PT stop must sit within this many metres of a trail-reachable highway node. */
-export const PT_TRAIL_SIDE_SNAP_M = 150;
+const PT_TRAIL_SIDE_SNAP_M = 150;
 
 /** Max straight-line distance from POI to a trail-side PT stop to count as escape. */
-export const PT_POI_ESCAPE_MAX_M: Partial<Record<string, number>> = {
+const PT_POI_ESCAPE_MAX_M: Partial<Record<string, number>> = {
 	town: 1500,
 	settlement: 800,
 	viewpoint: 1000,
@@ -193,7 +193,7 @@ export const PT_POI_ESCAPE_MAX_M: Partial<Record<string, number>> = {
  *
  *  Notability never overrides the per-type distance cap, only the road / path
  *  / reachability / population / named requirements. */
-export function isNotable(poi: ReachabilityPoi): boolean {
+function isNotable(poi: ReachabilityPoi): boolean {
 	if (poi.wikipedia && poi.wikipedia.length > 0) return true;
 	if (poi.source === 'wikidata') return true;
 	if (poi.type === 'settlement' && (poi.population ?? 0) >= 500) return true;
@@ -327,7 +327,7 @@ function mergeHighwayWays(byId: Map<number, OverpassWayElement>, ways: OverpassW
  * slices succeed but some fail, retries only the failed slices once before
  * applying partial results.
  */
-export async function fetchHighwaysAlongCorridor(
+async function fetchHighwaysAlongCorridor(
 	corridorPoly: LatLng[],
 	radiusM: number,
 	opts: HighwayFetchOptions,
@@ -387,7 +387,7 @@ export async function fetchHighwaysAlongCorridor(
 /** Builds an undirected graph from Overpass way elements. Consecutive points
  *  in a way become adjacent nodes; nodes shared across ways are deduped via
  *  the `quantize()` key so the graph captures real intersections. */
-export function buildHighwayGraph(ways: OverpassWayElement[]): Graph {
+function buildHighwayGraph(ways: OverpassWayElement[]): Graph {
 	const nodes = new Map<string, LatLng>();
 	const adj = new Map<string, Set<string>>();
 	const hasPath = new Set<string>();
@@ -430,7 +430,7 @@ function isWalkingPath(highway: string | undefined): boolean {
 /** Flood-fill the graph starting from every node within `seedRadiusM` of the
  *  trail polyline. Returns the set of node ids reachable along graph edges
  *  from any trail-seed node. */
-export function floodFillFromTrail(graph: Graph, trailPts: LatLng[], seedRadiusM = 100): Set<string> {
+function floodFillFromTrail(graph: Graph, trailPts: LatLng[], seedRadiusM = 100): Set<string> {
 	const reached = new Set<string>();
 	const queue: string[] = [];
 
@@ -493,7 +493,7 @@ export function floodFillFromTrail(graph: Graph, trailPts: LatLng[], seedRadiusM
 /** Grid-based nearest-neighbor index over highway nodes. Cell size is the
  *  search radius, so a query touches at most 9 cells (the cell containing the
  *  query point + its 8 neighbors). Built once per enricher run. */
-export class HighwayNodeIndex {
+class HighwayNodeIndex {
 	private cells = new Map<string, { id: string; coord: LatLng }[]>();
 	private cellLatDeg: number;
 	private cellLngDeg: number;
@@ -555,7 +555,7 @@ interface OverpassNodeElement {
 	tags?: Record<string, string>;
 }
 
-export interface PublicTransportStop {
+interface PublicTransportStop {
 	lat: number;
 	lng: number;
 	kind: 'bus' | 'train';
@@ -572,7 +572,7 @@ function classifyPublicTransportKind(tags: Record<string, string> | undefined): 
 
 /** Fetches bus and train stop nodes along the trail corridor. Non-fatal on
  *  failure: callers skip PT escape rescue when this returns `failed: true`. */
-export async function fetchPublicTransportAlongCorridor(
+async function fetchPublicTransportAlongCorridor(
 	corridorPoly: LatLng[],
 	radiusM: number,
 	opts: HighwayFetchOptions,
@@ -632,7 +632,7 @@ export async function fetchPublicTransportAlongCorridor(
 }
 
 /** Keeps PT stops that sit on the trail-reachable highway network. */
-export function findTrailSidePublicTransportStops(
+function findTrailSidePublicTransportStops(
 	stops: PublicTransportStop[],
 	index: HighwayNodeIndex,
 	reachable: Set<string>,
@@ -649,7 +649,7 @@ export function findTrailSidePublicTransportStops(
 }
 
 /** Grid index over trail-side PT stops for nearest-neighbour lookup. */
-export class PublicTransportIndex {
+class PublicTransportIndex {
 	private cells = new Map<string, PublicTransportStop[]>();
 	private cellLatDeg: number;
 	private cellLngDeg: number;
@@ -699,7 +699,7 @@ export interface TierDrop {
 /** Apply the per-type tier rule. Returns `null` if the POI passes; an object
  *  with the failure `reason` if dropped. The reason is used purely for
  *  per-type drop tallies in the enricher log. */
-export function checkTier(
+function checkTier(
 	poi: ReachabilityPoi,
 	rule: TierRule,
 	nearestHighwayM: number,

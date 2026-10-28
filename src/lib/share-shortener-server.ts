@@ -7,13 +7,12 @@ import { getStore, type Store } from '@netlify/blobs';
 import type { NextRequest } from 'next/server';
 import { LOCALES } from '@/i18n/routing';
 import { siteMetadata } from '@/lib/metadata';
-import { SHARE_QUERY_PARAM_KEYS, SHARE_TARGET_MAX_LEN } from '@/lib/share-url-constants';
+import { SHARE_LINKS_BLOB_STORE, SHARE_QUERY_PARAM_KEYS, SHARE_TARGET_MAX_LEN } from '@/lib/share-url-constants';
 
-export const SHARE_LINKS_BLOB_STORE = 'share-links';
-export const SHARE_LINK_TTL_MS = 90 * 86_400_000;
+const SHARE_LINK_TTL_MS = 90 * 86_400_000;
 export const SHARE_CODE_PATTERN = /^[A-Za-z0-9_-]{7}$/;
 /** Backoff after a Blobs write before treating a code as missing (eventual consistency). */
-export const SHARE_LINK_READ_RETRY_DELAYS_MS = [200, 500, 1000, 2000, 4000] as const;
+const SHARE_LINK_READ_RETRY_DELAYS_MS = [200, 500, 1000, 2000, 4000] as const;
 
 export interface ShareLinkRecord {
 	/** Pathname + search only, e.g. `/?progress=42.50&dir=SOBO`. */
@@ -23,11 +22,11 @@ export interface ShareLinkRecord {
 	hits: number;
 }
 
-export function getShareLinksStore(): Store {
+function getShareLinksStore(): Store {
 	return getStore(SHARE_LINKS_BLOB_STORE);
 }
 
-export function generateShareCode(): string {
+function generateShareCode(): string {
 	return randomBytes(5).toString('base64url').slice(0, 7);
 }
 
@@ -109,7 +108,7 @@ export function normalizeShareTarget(inputUrl: string, allowedHosts: ReadonlySet
 	return `/${parsed.search}`;
 }
 
-export function createShareLinkRecord(target: string, now = Date.now()): ShareLinkRecord {
+function createShareLinkRecord(target: string, now = Date.now()): ShareLinkRecord {
 	const createdAt = new Date(now).toISOString();
 	return {
 		target,
@@ -119,7 +118,7 @@ export function createShareLinkRecord(target: string, now = Date.now()): ShareLi
 	};
 }
 
-export function isShareLinkExpired(record: ShareLinkRecord, now = Date.now()): boolean {
+function isShareLinkExpired(record: ShareLinkRecord, now = Date.now()): boolean {
 	return Date.parse(record.expiresAt) <= now;
 }
 
@@ -190,24 +189,4 @@ export async function resolveShortShareLink(code: string): Promise<ShareLinkReco
 	result.hits = (result.hits ?? 0) + 1;
 	void store.setJSON(code, result).catch(() => {});
 	return result;
-}
-
-export async function deleteExpiredShareLinks(): Promise<{ scanned: number; deleted: number }> {
-	const store = getShareLinksStore();
-	const now = Date.now();
-	let scanned = 0;
-	let deleted = 0;
-
-	for await (const page of store.list({ paginate: true })) {
-		for (const blob of page.blobs) {
-			scanned++;
-			const record = (await store.get(blob.key, { type: 'json' })) as ShareLinkRecord | null;
-			if (!record || isShareLinkExpired(record, now)) {
-				await store.delete(blob.key);
-				deleted++;
-			}
-		}
-	}
-
-	return { scanned, deleted };
 }

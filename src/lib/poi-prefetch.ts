@@ -157,7 +157,7 @@ export async function clearPoiAssetCache(): Promise<void> {
 /** Off-trail radius (m) within which a POI is considered "in the corridor"
  *  for prefetch purposes. Matches the 5 km off-trail cap the stage planner
  *  uses so the two surfaces agree on what counts as a corridor POI. */
-export const POI_PREFETCH_RADIUS_M = 5_000;
+const POI_PREFETCH_RADIUS_M = 5_000;
 
 /** Lightweight slice shape (lat / lng / cumulative distance along the trail
  *  in metres) accepted by `pickPoisNearSlice` and `prefetchPoisAlongSlice`. */
@@ -180,7 +180,7 @@ export interface CorridorSlicePoint {
  *
  *  For a 20 km slice and 5 km radius, stage 1 typically drops the candidate
  *  pool from ~6,000 to ~50, cutting the precache prep cost by ~100x. */
-export function pickPoisNearSlice(pois: Poi[], slice: CorridorSlicePoint[], radiusM: number): Poi[] {
+function pickPoisNearSlice(pois: Poi[], slice: CorridorSlicePoint[], radiusM: number): Poi[] {
 	if (slice.length === 0) return [];
 	const startKm = slice[0].distanceFromStart / 1000;
 	const endKm = slice[slice.length - 1].distanceFromStart / 1000;

@@ -6,7 +6,7 @@ export interface LocationOptions {
 }
 
 /** Default values for location requests. */
-export const DEFAULT_LOCATION_OPTIONS: Required<LocationOptions> = {
+const DEFAULT_LOCATION_OPTIONS: Required<LocationOptions> = {
 	enableHighAccuracy: true,
 	timeout: 10000,
 	maximumAge: 0,

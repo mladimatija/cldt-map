@@ -24,7 +24,7 @@ import { CROATIA_BBOX } from '@/lib/geo-bounds';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
-export const TILE_CACHE_TTL_MS = tileCacheTtlDays * 24 * 60 * 60 * 1000;
+const TILE_CACHE_TTL_MS = tileCacheTtlDays * 24 * 60 * 60 * 1000;
 export const PRECACHE_ZOOM_MIN = 8;
 export const PRECACHE_ZOOM_MAX = 14;
 export const PRECACHE_ZOOM_MAX_HIGH = 15;
@@ -69,7 +69,7 @@ export interface StorageEstimate {
 // ── Provider mapping ──────────────────────────────────────────────────────────
 
 /** Maps BaseMapProvider name → SW cache key. */
-export const PROVIDER_CACHE_KEY: Record<string, string> = {
+const PROVIDER_CACHE_KEY: Record<string, string> = {
 	OpenStreetMap: 'osm',
 	OpenTopoMap: 'topo',
 	Satellite: 'esri',
@@ -91,16 +91,16 @@ export function getProviderCacheKey(providerName: string): string {
 	return PROVIDER_CACHE_KEY[providerName] ?? 'other';
 }
 
-/**
- * Returns true when the provider uses a stable z/x/y tile URL that can be
- * pre-fetched. WMS (DGU) is excluded because tile URLs include dynamic params.
- */
 /** Providers whose tile usage policy forbids bulk download / prefetch
  *  (openmaps.fr, and CARTO for Dark: its basemap terms ban bulk downloads) or
  *  whose terms are restrictive (DGU). They still render live but are excluded
  *  from the offline pre-cache. */
 const NON_PRECACHEABLE_PROVIDERS = new Set(['CroatiaTopo', 'OpenHikingMap', 'Dark']);
 
+/**
+ * Returns true when the provider uses a stable z/x/y tile URL that can be
+ * pre-fetched. WMS (DGU) is excluded because tile URLs include dynamic params.
+ */
 export function isProviderCacheable(providerName: string): boolean {
 	return providerName in PROVIDER_CACHE_KEY && !NON_PRECACHEABLE_PROVIDERS.has(providerName);
 }
@@ -302,7 +302,7 @@ export type PredictivePrecacheSlicePoint = Pick<EnhancedTrailPoint, 'lat' | 'lng
 /** Default look-ahead distance (km) for the predictive runner. */
 const PRECACHE_AHEAD_KM = 20;
 
-export interface AheadTrailSliceArgs {
+interface AheadTrailSliceArgs {
 	points: Pick<EnhancedTrailPoint, 'lat' | 'lng' | 'distanceFromStart'>[];
 	fromIdx: number;
 	direction: TrailDirection;
@@ -322,7 +322,7 @@ export interface ResolveAheadSliceStartArgs {
  * position when available; otherwise the trail start in the current direction
  * (index 0 for SOBO, last point for NOBO).
  */
-export function resolveAheadSliceStartIndex({
+function resolveAheadSliceStartIndex({
 	points,
 	direction,
 	userLocation,
@@ -337,7 +337,7 @@ export function resolveAheadSliceStartIndex({
 }
 
 /** Builds the trail-point slice covering the next `kmAhead` km from `fromIdx`. */
-export function buildAheadTrailSlice({
+function buildAheadTrailSlice({
 	points,
 	fromIdx,
 	direction,
