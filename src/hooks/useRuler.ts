@@ -18,7 +18,7 @@ import L from 'leaflet';
 import { useTranslations } from 'next-intl';
 import { findNearestPointIndex, rulerSegmentIndices } from '@/lib/distance-utils';
 import { type EnhancedTrailPoint, type MapStoreState, type StoreState, useMapStore, useStore } from '@/lib/store';
-import { formatDistance, formatElevation } from '@/lib/utils';
+import { formatDistance, formatElevation } from '@/lib/format';
 import { segmentGainLoss, toTravelM } from '@/lib/trail-frame';
 import { fitMapToRulerBounds } from '@/lib/export-utils';
 import { RULER_SET_FROM_CHART_EVENT, type RulerSetFromChartDetail } from '@/lib/ruler-from-chart';

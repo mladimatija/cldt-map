@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { IoCheckmark } from 'react-icons/io5';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/cn';
 
 export interface CheckboxProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'onChange'> {
 	checked?: boolean;

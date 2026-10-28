@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/cn';
 
 // Shared class fragments (DRY)
 const CLDT_HOVER_FOCUS =

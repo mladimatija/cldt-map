@@ -2,7 +2,7 @@
 
 import React, { useEffect } from 'react';
 import { useTranslations } from 'next-intl';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/cn';
 import { useMapStore, type MapStoreState } from '@/lib/store';
 
 const TOAST_MS = 1500;

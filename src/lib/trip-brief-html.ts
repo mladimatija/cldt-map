@@ -16,7 +16,8 @@ import {
 	formatGeneratedAt,
 	todayIsoDate,
 } from '@/lib/trip-brief-i18n';
-import { formatElevation, isSafeUrl } from '@/lib/utils';
+import { formatElevation } from '@/lib/format';
+import { isSafeUrl } from '@/lib/url-safety';
 import { downloadBlob } from './download';
 import { escapeHtml } from './html-escape';
 import { formatKm } from './units';

@@ -2,7 +2,7 @@
  * Browser geolocation wrapper: getCurrentLocation, watchPosition, permission checks, and optional store sync via setStoreUpdater.
  * Singleton; used by the map store for one-off requests and the live watch (startLocationTracking).
  */
-import { LocationError } from '@/lib/utils';
+import { LocationError } from '@/lib/errors';
 import {
 	addGeolocationPermissionListener,
 	type GeolocationPermissionState,

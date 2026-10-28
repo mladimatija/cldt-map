@@ -6,7 +6,8 @@ import { IoAddOutline } from 'react-icons/io5';
 import { useMapStore, type MapStoreState } from '@/lib/store';
 import { SOS_CARD_FIELDS, SOS_CARD_FIELD_MAX_LEN, type SosCard } from '@/lib/store/types';
 import { Button } from '@/components/ui/Button';
-import { cn, LINKABLE_PHONE_RE, toDialString } from '@/lib/utils';
+import { cn } from '@/lib/cn';
+import { LINKABLE_PHONE_RE, toDialString } from '@/lib/url-safety';
 import { MAP_CONTROL_SECTION_HEADING } from './MapControlSectionCard';
 import { MAP_CONTROL_INPUT, MAP_CONTROL_LINK_BUTTON, MAP_CONTROL_SECTION_DIVIDER } from './map-controls-constants';
 

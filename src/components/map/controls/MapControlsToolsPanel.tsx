@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/Button';
 import { usePopoverFocusTrap } from '@/hooks';
 import { useMapStore, type MapStoreState } from '@/lib/store';
 import { DEFAULT_MAP_APPEARANCE } from '@/lib/map-appearance';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/cn';
 import { MAP_CONTROL_PANEL_WIDTH, MAP_CONTROL_POPOVER } from './map-controls-constants';
 import { MapControlSectionCard } from './MapControlSectionCard';
 import { SettingsToggleRow } from './SettingsToggleRow';

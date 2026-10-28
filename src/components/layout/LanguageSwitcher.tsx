@@ -9,7 +9,7 @@ import { usePathname, useRouter } from '@/i18n/navigation';
 import { routing, type Locale } from '@/i18n/routing';
 import { useClientLocale } from '@/components/providers/ClientIntlProvider';
 import { useClickOutside } from '@/hooks';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/cn';
 
 export function LanguageSwitcher(): React.ReactElement {
 	const t = useTranslations('footer');

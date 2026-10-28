@@ -18,7 +18,7 @@ import {
 } from '@/lib/import-coverage-report';
 import { formatIsoDate } from '@/lib/date-format';
 import { isKnownType, poiDisplayName, poiPassesReachabilityFilter } from '@/lib/pois';
-import { formatDistance } from '@/lib/utils';
+import { formatDistance } from '@/lib/format';
 import { Button } from '@/components/ui/Button';
 import { MapControlIconButton } from './MapControlIconButton';
 import {

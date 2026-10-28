@@ -356,7 +356,9 @@ src/
 │   ├── push-alerts.ts / pwa-install.ts # Web-push subscription + PWA install guardrails
 │   ├── tile-cache.ts     # Tile pre-caching, corridor generation, metadata, storage utils
 │   ├── notices.ts / metadata.ts / map.ts / map-events.ts / ruler-from-chart.ts / date-format.ts / export-utils.ts / trail-sections.ts / weather.ts / wikipedia.ts / types.ts
-│   └── utils.ts          # Formatting, URL parsing, boundary check, unit conversion, share URL builders
+│   ├── share-url.ts      # Share link build, parse and apply (view, progress, POI, waypoint)
+│   ├── format.ts / units.ts # Distance and elevation formatting, unit conversion
+│   └── cn.ts / errors.ts / geo-bounds.ts / url-safety.ts / device.ts / external-maps.ts # Class names, error types, Croatia box, link and phone guards, mobile check, open-in-maps links
 ├── workers/          # trail-compute.worker.ts (off-main-thread trail enhancement)
 ├── i18n/             # next-intl routing and request config
 ├── types/            # TypeScript definitions

@@ -18,7 +18,7 @@ import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/li
 import { OFF_ROUTE_INITIAL, offRouteStep, type OffRouteMachineState, type OffRoutePhase } from '@/lib/off-route-alert';
 import { computeBearing } from '@/lib/distance-utils';
 import { bearingToCompass } from '@/lib/emergency-data';
-import { formatDistance } from '@/lib/utils';
+import { formatDistance } from '@/lib/format';
 import { Button } from '@/components/ui/Button';
 
 /** Dev-only: publishes each machine step so the test page simulator can show

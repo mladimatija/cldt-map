@@ -31,7 +31,7 @@ import {
 	type LeafletMapForExport,
 } from '@/lib/export-utils';
 import { formatEta } from '@/lib/distance-utils';
-import { formatElevation } from '@/lib/utils';
+import { formatElevation } from '@/lib/format';
 import { siteMetadata } from '@/lib/metadata';
 import type { TripBrief, TripBriefDay } from '@/lib/trip-brief';
 import type { EnhancedTrailPoint } from '@/lib/store/types';

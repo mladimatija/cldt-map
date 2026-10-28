@@ -23,7 +23,8 @@ import {
 } from '@/lib/tile-cache';
 import { clearPoiAssetCache, getPoiAssetCount } from '@/lib/poi-prefetch';
 import { tileCacheTtlDays, TRAIL_OFF_TRAIL_THRESHOLD_M } from '@/lib/config';
-import { formatDistance, isMobile } from '@/lib/utils';
+import { formatDistance } from '@/lib/format';
+import { isMobile } from '@/lib/device';
 import { downloadGpxFile } from '@/lib/gpx-export';
 import { Button } from '@/components/ui/Button';
 import { SettingsToggleRow } from './SettingsToggleRow';

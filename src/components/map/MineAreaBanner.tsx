@@ -4,7 +4,7 @@ import React, { useMemo, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { useMapStore, type MapStoreState } from '@/lib/store';
 import { classifyMineProximity, hasMineAreas, MINE_NEAR_BUFFER_M } from '@/lib/mine-areas';
-import { formatDistance } from '@/lib/utils';
+import { formatDistance } from '@/lib/format';
 import { Button } from '@/components/ui/Button';
 import { BANNER_REGION_CLASSES, BANNER_ROW_CLASSES, BANNER_RED_CLASSES } from './banner-styles';
 

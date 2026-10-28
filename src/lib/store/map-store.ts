@@ -11,7 +11,8 @@ import {
 	seasonalStatusLayerEnabledOverride,
 	TRAIL_OFF_TRAIL_THRESHOLD_M,
 } from '../config';
-import { getRandomLocationInBoundary, toLocationError } from '../utils';
+import { getRandomLocationInBoundary } from '../geo-bounds';
+import { toLocationError } from '../errors';
 import { canShowOfflineInstallNudge, canShowPwaInstallPrompt, isStandalone } from '../pwa-install';
 import { LocationService } from '../services/location-service';
 import {

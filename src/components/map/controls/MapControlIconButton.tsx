@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Button, type ButtonProps } from '@/components/ui/Button';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/cn';
 
 export interface MapControlIconButtonProps extends Omit<ButtonProps, 'size'> {
 	'aria-label': string;

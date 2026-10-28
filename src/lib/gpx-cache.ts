@@ -1,7 +1,7 @@
 'use client';
 
 import localforage from 'localforage';
-import { NetworkError } from '@/lib/utils';
+import { NetworkError } from '@/lib/errors';
 import { parseGpx } from './gpx-parser';
 
 // Configure localforage

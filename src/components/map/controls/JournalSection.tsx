@@ -22,7 +22,8 @@ import { downloadTextFile, journalToMarkdown, newId, todayIsoDate, type JournalE
 import { parseJournalMarkdown, parsedJournalToEntries } from '@/lib/user-waypoint-import';
 import { findNearestPointIndex } from '@/lib/distance-utils';
 import { TRAIL_OFF_TRAIL_THRESHOLD_M } from '@/lib/config';
-import { cn, formatDistance, formatElevation } from '@/lib/utils';
+import { cn } from '@/lib/cn';
+import { formatDistance, formatElevation } from '@/lib/format';
 import { Button } from '@/components/ui/Button';
 import { MAP_CONTROL_INPUT } from './map-controls-constants';
 import { MapControlIconButton } from './MapControlIconButton';

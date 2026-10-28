@@ -16,13 +16,8 @@ import {
 	type TrailDirection,
 	type UnitSystem,
 } from '@/lib/store';
-import {
-	buildShareProgressUrl,
-	buildShareViewUrl,
-	collectShareMapStyleParams,
-	getShareBaseUrl,
-	isWithinMapBoundary,
-} from '@/lib/utils';
+import { buildShareProgressUrl, buildShareViewUrl, collectShareMapStyleParams, getShareBaseUrl } from '@/lib/share-url';
+import { isInCroatiaBbox } from '@/lib/geo-bounds';
 import { copyTextToClipboard } from '@/lib/share-link-copy';
 import type * as GeoJSON from 'geojson';
 import {
@@ -222,7 +217,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 	const largeTouchTargets = useMapStore((state: MapStoreState) => state.largeTouchTargets);
 	const highlightedTrailPoint = useStore((state: StoreState) => state.highlightedTrailPoint);
 
-	const withinMapBoundary = userLocation ? isWithinMapBoundary(userLocation.lat, userLocation.lng) : false;
+	const withinMapBoundary = userLocation ? isInCroatiaBbox(userLocation.lat, userLocation.lng) : false;
 	const hasUserLocationInBounds = !!userLocation && permissionStatus === 'granted' && withinMapBoundary;
 	const canShare = hasUserLocationInBounds || !!highlightedTrailPoint;
 

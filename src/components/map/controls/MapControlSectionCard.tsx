@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { IoChevronDownOutline } from 'react-icons/io5';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/cn';
 
 export const MAP_CONTROL_SECTION_HEADING =
 	'm-0 text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-[var(--text-secondary)]';

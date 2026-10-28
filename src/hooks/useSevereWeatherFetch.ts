@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useLocale } from 'next-intl';
 import { useMapStore, type MapStoreState } from '@/lib/store';
-import { isWithinMapBoundary } from '@/lib/utils';
+import { isInCroatiaBbox } from '@/lib/geo-bounds';
 import { joinWarningRegions, type SevereWeatherResponse, type WarningRegionsFile } from '@/lib/severe-weather';
 
 const FETCH_INTERVAL_MS = 15 * 60 * 1000; // 15 minutes
@@ -39,7 +39,7 @@ export function useSevereWeatherFetch(): void {
 	const setSevereWeatherData = useMapStore((s: MapStoreState) => s.setSevereWeatherData);
 	const layerEnabled = useMapStore((s: MapStoreState) => s.severeWeatherLayer);
 	const fixInCroatia = useMapStore(
-		(s: MapStoreState) => !!s.userLocation && isWithinMapBoundary(s.userLocation.lat, s.userLocation.lng),
+		(s: MapStoreState) => !!s.userLocation && isInCroatiaBbox(s.userLocation.lat, s.userLocation.lng),
 	);
 	const needed = layerEnabled || fixInCroatia;
 	/** Locale and start time of the last successful fetch; a new locale refetches at once. */

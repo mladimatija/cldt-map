@@ -3,7 +3,7 @@ import type { EnhancedTrailPoint, StagePlan, TrailDirection, UnitSystem } from '
 import { computeStageStats } from '@/lib/stage-planner';
 import { toTravelRange } from '@/lib/trail-frame';
 import { findNearestPointIndex, formatEta } from '@/lib/distance-utils';
-import { formatElevation } from '@/lib/utils';
+import { formatElevation } from '@/lib/format';
 import { formatKm, kmToUnit } from '@/lib/units';
 import { siteMetadata } from '@/lib/metadata';
 import { boundsOf, toLeafletBounds } from '@/lib/geo-bounds';

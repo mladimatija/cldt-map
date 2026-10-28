@@ -11,7 +11,7 @@
 
 import { formatEta } from '@/lib/distance-utils';
 import { captureStageMapSnapshot, makeCaptureFilter, type LeafletMapForExport } from '@/lib/export-utils';
-import { formatElevation } from '@/lib/utils';
+import { formatElevation } from '@/lib/format';
 import type { TripBrief } from '@/lib/trip-brief';
 import type { EnhancedTrailPoint } from '@/lib/store/types';
 import { dataUrlToBytes } from './elevation-thumbnail';

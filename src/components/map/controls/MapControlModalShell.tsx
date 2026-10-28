@@ -8,7 +8,7 @@ import { IoCloseOutline } from 'react-icons/io5';
 // so pulling the barrel here evaluates Leaflet during SSR (window is not defined).
 import { usePopoverFocusTrap } from '@/hooks/usePopoverFocusTrap';
 import { Button } from '@/components/ui/Button';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/cn';
 
 interface MapControlModalShellProps {
 	open: boolean;

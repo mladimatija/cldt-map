@@ -16,6 +16,13 @@ export function isInCroatiaBbox(lat: number, lng: number): boolean {
 	);
 }
 
+/** A random point inside the Croatia box, for the dev-mode fake user location. */
+export function getRandomLocationInBoundary(): { lat: number; lng: number } {
+	const lat = CROATIA_BBOX.latMin + Math.random() * (CROATIA_BBOX.latMax - CROATIA_BBOX.latMin);
+	const lng = CROATIA_BBOX.lngMin + Math.random() * (CROATIA_BBOX.lngMax - CROATIA_BBOX.lngMin);
+	return { lat, lng };
+}
+
 export interface LatLngBox {
 	minLat: number;
 	maxLat: number;

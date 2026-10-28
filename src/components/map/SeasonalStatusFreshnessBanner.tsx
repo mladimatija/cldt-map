@@ -7,7 +7,7 @@ import { ExternalLink } from '@/components/ui/ExternalLink';
 import { useMapStore, type MapStoreState } from '@/lib/store';
 import { isFeedStale } from '@/lib/data-freshness';
 import { formatIsoDate } from '@/lib/date-format';
-import { isSafeUrl } from '@/lib/utils';
+import { isSafeUrl } from '@/lib/url-safety';
 import { SIGURNE_STAZE_URL } from '@/lib/official-sources';
 import { BANNER_INFO_CLASSES, BANNER_REGION_CLASSES, BANNER_ROW_CLASSES } from './banner-styles';
 

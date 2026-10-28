@@ -7,7 +7,7 @@ import { Link } from '@/i18n/navigation';
 import { MAP_CONTROL_LINK_BUTTON, MAP_CONTROL_PANEL_WIDTH, MAP_CONTROL_POPOVER } from './map-controls-constants';
 import { MapControlSectionCard } from './MapControlSectionCard';
 import { usePopoverFocusTrap } from '@/hooks';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/cn';
 import { Checkbox } from '@/components/ui/Checkbox';
 import { INLINE_LINK_CLASS } from '@/components/ui/ExternalLink';
 import { useMapStore, type MapStoreState } from '@/lib/store';

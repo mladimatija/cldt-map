@@ -11,7 +11,7 @@ import dynamic from 'next/dynamic';
 import { ErrorBoundary } from '@/components/common/ErrorBoundary';
 import { mapDefaults } from '@/lib/config';
 import 'leaflet/dist/leaflet.css';
-import { getInitialShareUrlParams } from '@/lib/utils';
+import { getInitialShareUrlParams } from '@/lib/share-url';
 
 const MapContent = dynamic(() => import('./MapContent'), { ssr: false });
 // Loaded beside MapContent, not inside it, so the base tiles do not wait for MapContent's chunk.

@@ -24,7 +24,9 @@ import {
 import { fetchReverseGeocodeAddress } from '@/lib/reverse-geocode-client';
 import { formatDms, formatMgrs, formatUtm } from '@/lib/coordinate-formats';
 import { buildCheckinNote } from '@/lib/checkin-note';
-import { cn, isSafeUrl, LINKABLE_PHONE_RE, toDialString } from '@/lib/utils';
+import { cn } from '@/lib/cn';
+import { isSafeUrl, LINKABLE_PHONE_RE, toDialString } from '@/lib/url-safety';
+import { coordinatesMapsUrl } from '@/lib/external-maps';
 import { formatKm } from '@/lib/units';
 
 const COPY_RESET_MS = 1500;
@@ -385,15 +387,10 @@ export function MapControlsEmergencyPanel({ onClose }: MapControlsEmergencyPanel
 	const addressLine = addressLookup?.key === addressLookupKey && addressLookup.line ? addressLookup.line : null;
 	const addressLoading = Boolean(addressLookupKey && addressLookup?.key !== addressLookupKey);
 
-	const mapsHref = useMemo(() => {
-		if (!hasPosition) return undefined;
-		const lat = displayPosition.lat.toFixed(6);
-		const lng = displayPosition.lng.toFixed(6);
-		const isMobile =
-			typeof window !== 'undefined' &&
-			(window.matchMedia('(pointer: coarse)').matches || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent));
-		return isMobile ? `geo:${lat},${lng}?q=${lat},${lng}` : `https://www.google.com/maps?q=${lat},${lng}`;
-	}, [hasPosition, displayPosition]);
+	const mapsHref = useMemo(
+		() => (hasPosition ? coordinatesMapsUrl(displayPosition.lat, displayPosition.lng) : undefined),
+		[hasPosition, displayPosition],
+	);
 
 	const copyAllText = useMemo((): string => {
 		const lines: string[] = [];

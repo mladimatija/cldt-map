@@ -4,7 +4,7 @@ import React from 'react';
 import SmartTooltip from '@/components/ui/SmartTooltip';
 import { Checkbox } from '@/components/ui/Checkbox';
 import { IoHelpCircleOutline } from 'react-icons/io5';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/cn';
 
 interface SettingsToggleRowProps {
 	checked: boolean;

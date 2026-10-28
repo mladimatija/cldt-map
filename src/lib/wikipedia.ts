@@ -1,4 +1,4 @@
-import { isSafeUrl } from '@/lib/utils';
+import { isSafeUrl } from '@/lib/url-safety';
 import { matchCachedAsset } from '@/lib/poi-prefetch';
 
 /**

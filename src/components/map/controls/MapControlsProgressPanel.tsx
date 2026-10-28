@@ -35,7 +35,8 @@ import {
 	type WaypointCategoryId,
 } from '@/lib/waypoint-categories';
 import { toTravelKm, toTravelRange } from '@/lib/trail-frame';
-import { cn, formatDistance } from '@/lib/utils';
+import { cn } from '@/lib/cn';
+import { formatDistance } from '@/lib/format';
 import { parseGpxWaypoints, gpxWaypointsToUserWaypoints } from '@/lib/user-waypoint-import';
 import { TRAIL_SECTIONS } from '@/lib/trail-sections';
 import { buildSpatialGrid } from '@/lib/spatial-grid';

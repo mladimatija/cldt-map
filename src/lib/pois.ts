@@ -1,4 +1,4 @@
-import { isSafeUrl } from '@/lib/utils';
+import { isSafeUrl } from '@/lib/url-safety';
 import { createDatasetLoader } from '@/lib/dataset-loader';
 // Single import surface for the leaf type module: brings the symbols into
 // local scope for use in function signatures below AND lets us re-export

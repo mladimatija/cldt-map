@@ -52,7 +52,7 @@ import {
 	SURFACE_COLORS,
 } from '@/components/map/trail-route-constants';
 import { Button } from '@/components/ui/Button';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/cn';
 import {
 	MAP_CONTROL_INPUT,
 	MAP_CONTROL_LABEL_INPUT_GRID,

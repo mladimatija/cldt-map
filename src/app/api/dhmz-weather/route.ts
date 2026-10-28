@@ -5,7 +5,7 @@
  */
 import { NextRequest, NextResponse } from 'next/server';
 import { enforceRateLimit, fetchWithSizeCap } from '@/lib/api-defense';
-import { escapeRegex } from '@/lib/utils';
+import { escapeRegex } from '@/lib/url-safety';
 import { haversineDistanceM } from '@/lib/haversine';
 
 const MAX_BODY_BYTES = 5 * 1024 * 1024;

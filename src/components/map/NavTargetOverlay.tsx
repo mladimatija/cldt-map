@@ -7,7 +7,7 @@ import { useMapStore, type MapStoreState } from '@/lib/store';
 import { Button } from '@/components/ui/Button';
 import { haversineDistanceM } from '@/lib/haversine';
 import { computeBearing } from '@/lib/distance-utils';
-import { formatDistance } from '@/lib/utils';
+import { formatDistance } from '@/lib/format';
 import { bearingToCompass } from '@/lib/emergency-data';
 
 /**

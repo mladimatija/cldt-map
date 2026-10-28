@@ -16,7 +16,8 @@ import { buildSpatialGrid } from '@/lib/spatial-grid';
 import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
 import type { ImportedTrack } from '@/lib/store/types';
 import type { JournalTrackLink } from '@/lib/user-waypoints';
-import { cn, formatDistance } from '@/lib/utils';
+import { cn } from '@/lib/cn';
+import { formatDistance } from '@/lib/format';
 import { Checkbox } from '@/components/ui/Checkbox';
 import { MapControlIconButton } from './MapControlIconButton';
 

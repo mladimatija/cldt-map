@@ -42,13 +42,8 @@ import { computeTrailDataInWorker } from '@/lib/trail-compute-client';
 import { computeFromGpx } from '@/lib/trail-compute';
 import { computedTrailCacheKey, loadComputedTrail, saveComputedTrail } from '@/lib/trail-compute-cache';
 import { estimatePassageDays } from '@/lib/map';
-import {
-	clearShareUrlParams,
-	formatDistance,
-	formatElevation,
-	getInitialShareUrlParams,
-	shareParamsSkipInitialTrailFitBounds,
-} from '@/lib/utils';
+import { clearShareUrlParams, getInitialShareUrlParams, shareParamsSkipInitialTrailFitBounds } from '@/lib/share-url';
+import { formatDistance, formatElevation } from '@/lib/format';
 import {
 	fetchWeather,
 	buildHourlyStripData,

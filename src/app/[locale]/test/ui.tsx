@@ -9,7 +9,7 @@ import { OffRouteAlertSimulator } from '@/components/OffRouteAlertSimulator';
 import { Layout } from '@/components/layout/Layout';
 import { BackToMapBar } from '@/components/layout/BackToMapBar';
 import { CONTENT_PAGE_CONTAINER } from '@/components/layout/content-page';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/cn';
 import { useTranslations } from 'next-intl';
 
 /** Dev-only store playground. Reached only in development: the server page

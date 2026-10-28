@@ -19,7 +19,7 @@ import {
 	type StageResupplyCadence,
 } from '@/lib/resupply-cadence';
 import { formatEta } from '@/lib/distance-utils';
-import { formatDistance } from '@/lib/utils';
+import { formatDistance } from '@/lib/format';
 import {
 	isKnownType,
 	pickThumbUrl,

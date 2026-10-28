@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/Button';
 // re-exports Leaflet-importing hooks that would break this app-root component.
 import { usePopoverFocusTrap } from '@/hooks/usePopoverFocusTrap';
 import { useMapStore, type MapStoreState } from '@/lib/store';
-import { isSafeUrl } from '@/lib/utils';
+import { isSafeUrl } from '@/lib/url-safety';
 
 /** Wrap-around index math kept in one place so the keyboard and pointer
  *  paths can't drift apart on a boundary-condition fix. */

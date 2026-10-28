@@ -9,7 +9,8 @@ import React from 'react';
 import { Button } from '@/components/ui/Button';
 import { HourlyWeatherStrip } from './HourlyWeatherStrip';
 import { WindCompass } from './WindCompass';
-import { cn, openCoordinatesInMaps } from '@/lib/utils';
+import { cn } from '@/lib/cn';
+import { openCoordinatesInMaps } from '@/lib/external-maps';
 import type { HourlyStripData } from '@/lib/weather';
 
 export interface TrailTooltipData {

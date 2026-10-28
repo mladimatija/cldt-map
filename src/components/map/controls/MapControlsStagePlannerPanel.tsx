@@ -37,7 +37,9 @@ import { MapControlSectionCard } from './MapControlSectionCard';
 import { SettingsToggleRow } from './SettingsToggleRow';
 import type { StagePlanPreset, StagePlanPresetInputs } from '@/lib/store/types';
 import { MapControlsTripBriefModal } from './MapControlsTripBriefModal';
-import { cn, formatDistance, formatElevation, LINKABLE_PHONE_RE, toDialString } from '@/lib/utils';
+import { cn } from '@/lib/cn';
+import { formatDistance, formatElevation } from '@/lib/format';
+import { LINKABLE_PHONE_RE, toDialString } from '@/lib/url-safety';
 import { kmToMiles, milesToKm } from '@/lib/units';
 import { copyTextToClipboard } from '@/lib/share-link-copy';
 import {

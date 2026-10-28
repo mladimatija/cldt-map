@@ -3,7 +3,7 @@
 import React, { useRef } from 'react';
 import { useMapStore, type MapStoreState } from '@/lib/store';
 import { useBlockMapPropagation } from '@/hooks';
-import { isWithinMapBoundary } from '@/lib/utils';
+import { isInCroatiaBbox } from '@/lib/geo-bounds';
 import { Tooltip } from '@/components/ui/Tooltip';
 import { MdPersonPinCircle } from 'react-icons/md';
 import { useTranslations } from 'next-intl';
@@ -18,7 +18,7 @@ export default function MapControlsUserLocationToggleButton(): React.ReactElemen
 	const permissionStatus = useMapStore((state: MapStoreState) => state.permissionStatus);
 	const userLocation = useMapStore((state: MapStoreState) => state.userLocation);
 
-	const withinMapBoundary = userLocation ? isWithinMapBoundary(userLocation.lat, userLocation.lng) : true;
+	const withinMapBoundary = userLocation ? isInCroatiaBbox(userLocation.lat, userLocation.lng) : true;
 	const isDisabled = !userLocation || permissionStatus !== 'granted' || !withinMapBoundary;
 
 	const handleClick = (): void => {

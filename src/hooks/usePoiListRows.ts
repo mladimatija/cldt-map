@@ -4,9 +4,8 @@ import { useMemo } from 'react';
 import { isKnownType, poiMatchesTagFilter, poiPassesReachabilityFilter, searchPoisByName, type Poi } from '@/lib/pois';
 import { isPoiInAheadCorridor, poiAheadKm } from '@/lib/poi-ahead-corridor';
 import { poiMatchesWaterReliabilityFilter, type WaterReliability } from '@/lib/water-intelligence';
-import { UnitSystem } from '@/lib/utils';
 import { milesToKm } from '@/lib/units';
-import { DistanceUnit, TrailDirection } from '@/lib/types';
+import { DistanceUnit, TrailDirection, UnitSystem } from '@/lib/types';
 import { toSoboKm, toTravelKm } from '@/lib/trail-frame';
 
 /** Distance window (km) around a numeric jump-to query within which we surface

@@ -12,7 +12,7 @@ import { addInterval, totalCompletedKm, type CompletionInterval } from '@/lib/co
 import { haversineDistanceM } from '@/lib/haversine';
 import { flyToOrSetView } from '@/lib/map-view';
 import { SHARED_WAYPOINT_DEDUPE_M } from '@/lib/share-url-constants';
-import { formatDistance } from '@/lib/utils';
+import { formatDistance } from '@/lib/format';
 
 /**
  * Asks before trip data from an opened share link touches the local data:

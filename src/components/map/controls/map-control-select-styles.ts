@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/cn';
 
 /** Shared Tailwind classNames for react-select in map control panels. */
 export const mapControlSelectClassNames = {

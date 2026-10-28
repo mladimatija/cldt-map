@@ -5,7 +5,7 @@
 import type { ClosestPoint, TrailDirection, UnitSystem } from '@/lib/store/types';
 import type { RulerRange } from '@/lib/distance-utils';
 import { isKnownType, poiMatchesTagFilter, poiPassesReachabilityFilter, type Poi } from '@/lib/pois';
-import { formatDistance } from '@/lib/utils';
+import { formatKm } from '@/lib/units';
 
 export const AHEAD_HORIZON_OPTIONS = [25, 50, 100] as const;
 export type AheadHorizonKm = (typeof AHEAD_HORIZON_OPTIONS)[number];
@@ -24,7 +24,7 @@ export function isAheadHorizonKm(v: number): v is AheadHorizonKm {
 
 /** User-facing label for a trail-km horizon (e.g. "50 km" or "31 mi"). */
 export function formatAheadHorizon(horizonKm: number, units: UnitSystem, distancePrecision: number): string {
-	return formatDistance(horizonKm, units, distancePrecision);
+	return formatKm(horizonKm, units, distancePrecision);
 }
 
 /** GPS on-trail when within threshold; otherwise ruler midpoint when set. */

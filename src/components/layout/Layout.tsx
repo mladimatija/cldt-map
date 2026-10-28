@@ -2,7 +2,7 @@
 
 /** App shell: header, scrollable main content, footer. Header and footer are loaded dynamically (no SSR). */
 import React from 'react';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/cn';
 import dynamic from 'next/dynamic';
 
 const Header = dynamic(() => import('@/components/layout/Header').then((mod) => mod.Header), { ssr: false });

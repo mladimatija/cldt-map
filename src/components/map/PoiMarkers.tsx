@@ -7,13 +7,9 @@ import { useLocale, useTranslations } from 'next-intl';
 import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
 import { getActiveStarredPoiIds } from '@/lib/store/types';
 import { isKnownType, poiDisplayName, poiMatchesTagFilter, poiPassesReachabilityFilter, type Poi } from '@/lib/pois';
-import {
-	buildPoiShareUrl,
-	clearShareUrlParams,
-	getInitialShareUrlParams,
-	isSafeUrl,
-	openCoordinatesInMaps,
-} from '@/lib/utils';
+import { buildPoiShareUrl, clearShareUrlParams, getInitialShareUrlParams } from '@/lib/share-url';
+import { isSafeUrl } from '@/lib/url-safety';
+import { openCoordinatesInMaps } from '@/lib/external-maps';
 import { flyToOrSetView } from '@/lib/map-view';
 import { usePathname, useRouter } from '@/i18n/navigation';
 import { wirePopupShareButton } from '@/lib/share-link-copy';

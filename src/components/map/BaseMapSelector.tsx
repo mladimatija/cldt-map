@@ -10,7 +10,7 @@ import { isBaseTilePane } from '@/lib/leaflet-panes';
 import { useBlockMapPropagation, useMapStore, usePanel } from '@/hooks';
 import { useStore, type MapStoreState, type StoreState } from '@/lib/store';
 import { config } from '@/lib/config';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/cn';
 import SmartTooltip from '@/components/ui/SmartTooltip';
 import { Button } from '@/components/ui/Button';
 import { useTranslations } from 'next-intl';

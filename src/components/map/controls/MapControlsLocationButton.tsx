@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useMapStore, type MapStoreState } from '@/lib/store';
 import { useBlockMapPropagation } from '@/hooks';
-import { isWithinMapBoundary } from '@/lib/utils';
+import { isInCroatiaBbox } from '@/lib/geo-bounds';
 import { Tooltip } from '@/components/ui/Tooltip';
 import { useMap } from 'react-leaflet';
 import { MdMyLocation, MdLocationSearching } from 'react-icons/md';
@@ -29,7 +29,7 @@ export default function MapControlsLocationButton({ checkPermission }: LocationB
 
 	const map = useMap();
 
-	const withinMapBoundary = userLocation ? isWithinMapBoundary(userLocation.lat, userLocation.lng) : true;
+	const withinMapBoundary = userLocation ? isInCroatiaBbox(userLocation.lat, userLocation.lng) : true;
 
 	useEffect(() => {
 		if (isLocating) {
@@ -90,7 +90,7 @@ export default function MapControlsLocationButton({ checkPermission }: LocationB
 			// Fly after a first grant too (fixes never move the map on their own),
 			// but only to a new fix: a denied or timed-out request leaves the old one.
 			const location = useMapStore.getState().userLocation;
-			if (location && location !== before && isWithinMapBoundary(location.lat, location.lng)) {
+			if (location && location !== before && isInCroatiaBbox(location.lat, location.lng)) {
 				map.flyTo([location.lat, location.lng], 14, {
 					animate: true,
 					duration: 1.5,

@@ -3,11 +3,12 @@
  * trail notices), shared by the app's loaders and the push functions so both
  * accept exactly the same sources and entries: a notification never announces
  * an entry the app drops. Malformed entries are dropped one by one, not the
- * whole file. Free of runtime imports (types only), so the Netlify functions
- * can bundle it.
+ * whole file. Its one runtime import (url-safety) has no imports of its own,
+ * so the Netlify functions can bundle it.
  */
 import type { SeasonalStatusEntry, SeasonalStatusFile } from './seasonal-status';
 import type { LocalizedString, TrailNotice } from './notices';
+import { isSafeUrl } from './url-safety';
 
 /** True for an absolute https URL: remote dataset overrides must not ride plain http. */
 export function isHttpsUrl(url: string | undefined): url is string {
@@ -19,15 +20,9 @@ export function isHttpsUrl(url: string | undefined): url is string {
 	}
 }
 
-/** An http(s) URL, safe to render as a link (the rule of utils.isSafeUrl). */
+/** An http(s) URL, safe to render as a link. */
 function isLink(v: unknown): v is string {
-	if (typeof v !== 'string') return false;
-	try {
-		const protocol = new URL(v).protocol;
-		return protocol === 'http:' || protocol === 'https:';
-	} catch {
-		return false;
-	}
+	return typeof v === 'string' && isSafeUrl(v);
 }
 
 function isText(v: unknown, maxLen: number): v is string {

@@ -1,6 +1,6 @@
 import type { LatLng } from 'leaflet';
 import type { StateCreator } from 'zustand';
-import { isWithinMapBoundary } from '../utils';
+import { isInCroatiaBbox } from '../geo-bounds';
 import type { StoreState, TrailSlice, TrailState, ClosestPoint, EnhancedTrailPoint } from './types';
 import { L } from './leaflet';
 import { findNearestPointIndex } from '../distance-utils';
@@ -121,7 +121,7 @@ export const createTrailSlice: StateCreator<StoreState, [], [], TrailSlice> = (s
 			return;
 		}
 
-		if (!isWithinMapBoundary(state.userLocation.lat, state.userLocation.lng)) {
+		if (!isInCroatiaBbox(state.userLocation.lat, state.userLocation.lng)) {
 			set({ closestPoint: null, closestPointCalculated: true, showClosestPointLine: false });
 			return;
 		}
@@ -163,7 +163,7 @@ export const createTrailSlice: StateCreator<StoreState, [], [], TrailSlice> = (s
 		if (!state.gpxLoaded || typeof L === 'undefined') {
 			return;
 		}
-		if (!isWithinMapBoundary(location.lat, location.lng)) {
+		if (!isInCroatiaBbox(location.lat, location.lng)) {
 			set({ closestPoint: null, closestPointCalculated: true, showClosestPointLine: false });
 			return;
 		}

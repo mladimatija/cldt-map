@@ -1,4 +1,4 @@
-import { isSafeUrl } from '@/lib/utils';
+import { isSafeUrl } from '@/lib/url-safety';
 import { haversineDistanceM } from '@/lib/haversine';
 import { loadPois, pickThumbUrl, type Poi } from '@/lib/pois';
 import { parseWikipediaRef, SUMMARY_HOST_TEMPLATE } from '@/lib/wikipedia';

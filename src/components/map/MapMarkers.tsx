@@ -6,14 +6,10 @@ import { Marker, useMap } from 'react-leaflet';
 import { useLocale, useTranslations } from 'next-intl';
 import L from 'leaflet';
 import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
-import {
-	isWithinMapBoundary,
-	getInitialShareUrlParams,
-	getNavigateToPointUrl,
-	formatDistance,
-	formatElevation,
-	shareParamsNeedMapFollowUp,
-} from '@/lib/utils';
+import { isInCroatiaBbox } from '@/lib/geo-bounds';
+import { getInitialShareUrlParams, shareParamsNeedMapFollowUp } from '@/lib/share-url';
+import { getNavigateToPointUrl } from '@/lib/external-maps';
+import { formatDistance, formatElevation } from '@/lib/format';
 import { TRAIL_OFF_TRAIL_THRESHOLD_M } from '@/lib/config';
 import { buildWindCompassPayload, computeDistanceRemaining, findNearestPointIndex } from '@/lib/distance-utils';
 import { travelBearingDeg, travelGainLoss, travelGainLossSoFar } from '@/lib/trail-frame';
@@ -113,7 +109,7 @@ export default function MapMarkers(): React.ReactElement | null {
 	const gpxLoaded = useStore((state: StoreState) => state.gpxLoaded);
 	const enhancedTrailPoints = useStore((state: StoreState) => state.enhancedTrailPoints);
 	const trailMetadata = useStore((state: StoreState) => state.trailMetadata);
-	const withinMapBoundary = userLocation ? isWithinMapBoundary(userLocation.lat, userLocation.lng) : true;
+	const withinMapBoundary = userLocation ? isInCroatiaBbox(userLocation.lat, userLocation.lng) : true;
 	const shouldShowLocation = userLocation && showUserMarker && permissionStatus === 'granted' && withinMapBoundary;
 
 	/** Off trail: no trail data, or known distance > threshold. When closestPoint is null but GPX is loaded,

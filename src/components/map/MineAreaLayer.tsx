@@ -7,7 +7,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
 import { hasMineAreas, type MineAreasFile, type MineTrailRange } from '@/lib/mine-areas';
 import { findNearestPointIndex } from '@/lib/distance-utils';
-import { formatDistance } from '@/lib/utils';
+import { formatDistance } from '@/lib/format';
 import { formatIsoDate } from '@/lib/date-format';
 import { toTravelKm } from '@/lib/trail-frame';
 

@@ -8,7 +8,7 @@ import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/li
 import { usePackAdjustedPaceKmh, useTrailSunWeather } from '@/hooks';
 import { findNearestPointIndex, projectPositionAtTime, type ProjectedPosition } from '@/lib/distance-utils';
 import { isoLocalToUtcMs } from '@/lib/weather';
-import { formatDistance, formatElevation } from '@/lib/utils';
+import { formatDistance, formatElevation } from '@/lib/format';
 
 const createSunDivIcon = (color: string): L.DivIcon =>
 	L.divIcon({

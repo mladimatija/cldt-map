@@ -1,15 +1,10 @@
 /**
- * Consolidated utility functions
- *
- * This file serves as the central place for all utility functions.
+ * Share links: build view, progress, POI and waypoint URLs from the stores, and
+ * parse and apply the params a link carries.
  */
-
-import { type ClassValue, clsx } from 'clsx';
-import { twMerge } from 'tailwind-merge';
 import { useStore, useMapStore } from '@/lib/store';
-import { config } from '@/lib/config';
-import type { DistanceUnit, TrailDirection, UnitSystem } from '@/lib/types';
-import { RulerRange } from '@/lib/distance-utils';
+import type { DistanceUnit, TrailDirection } from '@/lib/types';
+import type { RulerRange } from '@/lib/distance-utils';
 import { toTravelRange } from '@/lib/trail-frame';
 import {
 	PROVIDER_TO_KEY,
@@ -17,7 +12,7 @@ import {
 	isShareBaseMapKey,
 	type ShareBaseMapKey,
 } from '@/components/map/base-map-options';
-import { BaseMapProvider } from '@/lib/services/base-map-provider';
+import type { BaseMapProvider } from '@/lib/services/base-map-provider';
 import { siteMetadata } from '@/lib/metadata';
 import { SHARE_QUERY_PARAM_KEYS, SHARE_TRIP_PARAM_KEY } from '@/lib/share-url-constants';
 import {
@@ -26,244 +21,6 @@ import {
 	type ShareTripStatePayload,
 } from '@/lib/share-trip-state';
 import { POI_ID_RE } from '@/lib/poi-types';
-import { CROATIA_BBOX, isInCroatiaBbox } from '@/lib/geo-bounds';
-import { formatKm, metresToFeet } from '@/lib/units';
-
-export type { UnitSystem };
-
-// --------------------------------------
-// Core utilities
-// --------------------------------------
-
-/**
- * Combines className strings and Tailwind utility classes
- * Uses clsx to combine class values and twMerge to handle Tailwind-specific merging
- */
-export function cn(...inputs: ClassValue[]): string {
-	return twMerge(clsx(inputs));
-}
-
-/**
- * Returns true when the URL is an absolute http(s) URL. Used to gate anchors whose
- * href comes from external data (notices feed, HGSS dataset) so a malicious
- * javascript:/data: payload cannot execute via the link. Relative paths and
- * non-http(s) schemes are rejected.
- */
-export function isSafeUrl(u: string | undefined | null): u is string {
-	if (!u) return false;
-	try {
-		const protocol = new URL(u).protocol;
-		return protocol === 'http:' || protocol === 'https:';
-	} catch {
-		return false;
-	}
-}
-
-/** Phone shapes safe to turn into a tel:/sms: link (mirrors the POI popup / HGSS guard). */
-export const LINKABLE_PHONE_RE = /^\+?[\d\s().,-]{1,30}$/;
-
-/**
- * Reduce a (LINKABLE_PHONE_RE-valid) phone to a tel:/sms: dial string: digits with
- * at most a single leading '+'. Drops formatting characters that could otherwise
- * inject extra sms: URI parameters, and collapses stray inner '+' signs.
- */
-export function toDialString(phone: string): string {
-	const cleaned = phone.replace(/[^\d+]/g, '');
-	const digits = cleaned.replace(/\+/g, '');
-	return cleaned.startsWith('+') ? `+${digits}` : digits;
-}
-
-/**
- * Escape a string for safe interpolation into a RegExp source. Use before
- * `new RegExp(...)` whenever the pattern is built from a value that could be
- * influenced by external input.
- */
-export function escapeRegex(value: string): string {
-	return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
-
-// --------------------------------------
-// Error handling utilities
-// --------------------------------------
-
-/**
- * Base error class for application errors
- * Provides standardized error handling with code, status, and optional details
- */
-class AppError extends Error {
-	constructor(
-		message: string,
-		public code: string,
-		public status: number = 500,
-		public details?: unknown,
-	) {
-		super(message);
-		this.name = 'AppError';
-
-		// Ensure a prototype chain is properly maintained in transpiled code
-		if (Error.captureStackTrace) {
-			Error.captureStackTrace(this, this.constructor);
-		}
-	}
-}
-
-/**
- * Error class for location-related errors
- */
-export class LocationError extends AppError {
-	constructor(message: string, details?: unknown) {
-		super(message, 'LOCATION_ERROR', 400, details);
-		this.name = 'LocationError';
-	}
-}
-
-/**
- * Error class for network-related errors
- */
-export class NetworkError extends AppError {
-	constructor(message: string, details?: unknown) {
-		super(message, 'NETWORK_ERROR', 503, details);
-		this.name = 'NetworkError';
-	}
-}
-
-/**
- * Shape used by store for locationError.
- */
-export function toLocationError(error: unknown, fallbackMessage: string): { code: number; message: string } {
-	return {
-		code: 0,
-		message: error instanceof Error ? error.message : fallbackMessage,
-	};
-}
-
-/**
- * Format distance with appropriate units
- *
- * @param distance Distance in kilometers (for metric) or meters (if needsConversion is true)
- * @param units Unit system to use (metric or imperial)
- * @param precision Number of decimal places; when undefined, uses store's distancePrecision (default 2)
- * @param needsConversion If true, treats the distance as meters and converts to km first
- * @returns Formatted distance string with units
- */
-export function formatDistance(
-	distance: number,
-	units: UnitSystem,
-	precision?: number,
-	needsConversion: boolean = false,
-): string {
-	// Precision can come from store (user preference) or config default; avoid store access during SSR.
-	if (precision === undefined) {
-		precision = config.distancePrecision;
-		if (typeof window !== 'undefined') {
-			try {
-				const mapState = useMapStore?.getState?.();
-				if (typeof mapState?.distancePrecision === 'number') {
-					precision = mapState.distancePrecision;
-				}
-			} catch {
-				// Use config default when store not ready
-			}
-		}
-	}
-
-	return formatKm(needsConversion ? distance / 1000 : distance, units, precision);
-}
-
-/**
- * Format elevation with appropriate units
- *
- * @param elevation Elevation in meters
- * @param units Unit system to use (metric or imperial)
- * @param precision Number of decimal places for formatted output
- * @returns Formatted elevation string with units
- */
-export function formatElevation(elevation: number, units: UnitSystem, precision: number = 0): string {
-	return units === 'imperial'
-		? `${metresToFeet(elevation).toFixed(precision)} ft`
-		: `${elevation.toFixed(precision)} m`;
-}
-
-/**
- * Generate a random point within the map boundary (Croatia)
- * Used for dev-mode fake user location.
- *
- * @returns Location object with lat, lng
- */
-export function getRandomLocationInBoundary(): { lat: number; lng: number } {
-	const lat = CROATIA_BBOX.latMin + Math.random() * (CROATIA_BBOX.latMax - CROATIA_BBOX.latMin);
-	const lng = CROATIA_BBOX.lngMin + Math.random() * (CROATIA_BBOX.lngMax - CROATIA_BBOX.lngMin);
-	return { lat, lng };
-}
-
-/**
- * Detect if the user is on a mobile device (phone or tablet).
- * Combines the UA regex with a coarse-pointer + touch heuristic so modern
- * tablets that omit the legacy UA tokens are still treated as mobile.
- */
-export function isMobile(): boolean {
-	if (typeof navigator === 'undefined') return false;
-	if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-		return true;
-	}
-	if (typeof window !== 'undefined' && typeof window.matchMedia === 'function') {
-		const coarse = window.matchMedia('(pointer: coarse)').matches;
-		if (coarse && (navigator.maxTouchPoints ?? 0) > 0) return true;
-	}
-	return false;
-}
-
-/**
- * Build a navigation URL from the user's current location to a destination point.
- * On mobile: uses geo: URI to open the device's default maps app (whatever the user has installed).
- * On desktop: uses Google Maps in the browser.
- *
- * @param originLat User's current latitude
- * @param originLng User's current longitude
- * @param destLat Destination latitude
- * @param destLng Destination longitude
- * @returns URL to open for navigation
- */
-export function getNavigateToPointUrl(originLat: number, originLng: number, destLat: number, destLng: number): string {
-	// Defence-in-depth: clamp to finite numbers before interpolating into URIs.
-	if (
-		!Number.isFinite(originLat) ||
-		!Number.isFinite(originLng) ||
-		!Number.isFinite(destLat) ||
-		!Number.isFinite(destLng)
-	) {
-		return '';
-	}
-	if (isMobile()) {
-		return `geo:${destLat},${destLng}`;
-	}
-	return `https://www.google.com/maps/dir/?api=1&origin=${originLat},${originLng}&destination=${destLat},${destLng}`;
-}
-
-/**
- * Open a map app at the given coordinates (no directions, just the point).
- * On mobile: opens the device's default maps app via `geo:` URI (Apple Maps,
- *   Google Maps, OsmAnd, Organic Maps, whatever the user has set as default).
- * On desktop: opens Google Maps in a new tab.
- *
- * Shared between the trail click tooltip and the POI popup so both surfaces
- * use the same "view this point externally" affordance.
- *
- * @param lat Latitude
- * @param lng Longitude
- */
-export function openCoordinatesInMaps(lat: number, lng: number): void {
-	if (typeof window === 'undefined') return;
-	// Defence-in-depth: clamp to finite numbers before interpolating into URIs.
-	if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
-	if (isMobile()) {
-		window.location.href = `geo:${lat},${lng}?q=${lat},${lng}`;
-	} else {
-		window.open(`https://www.google.com/maps?q=${lat},${lng}`, '_blank', 'noopener,noreferrer');
-	}
-}
-
-export type { ShareBaseMapKey };
 
 /** Mutually exclusive trail rendering modes encoded in share URLs. */
 export type ShareTrailStyle = 'default' | 'sections' | 'grade' | 'surface' | 'sac';
@@ -660,15 +417,4 @@ export function buildWaypointShareUrl(waypointId: string): string {
 	url.searchParams.set('wp', waypointId);
 	appendShareTripStateToUrl(url, { waypoints: true, waypointIds: [waypointId] });
 	return url.toString();
-}
-
-/**
- * Check if a geographic point is within the map boundary (Croatia)
- *
- * @param latitude Latitude of the point to check
- * @param longitude Longitude of the point to check
- * @returns Boolean indicating if the point is within the map boundary
- */
-export function isWithinMapBoundary(latitude: number, longitude: number): boolean {
-	return isInCroatiaBbox(latitude, longitude);
 }

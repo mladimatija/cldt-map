@@ -6,7 +6,7 @@ import { Link } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
 import { buttonVariants } from '@/components/ui/Button';
 import { CONTENT_PAGE_CONTAINER } from '@/components/layout/content-page';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/cn';
 
 interface BackToMapBarProps {
 	className?: string;

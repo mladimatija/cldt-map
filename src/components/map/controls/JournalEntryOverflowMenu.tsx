@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { IoEllipsisHorizontal } from 'react-icons/io5';
 import { MapControlIconButton } from './MapControlIconButton';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/cn';
 
 interface JournalEntryOverflowMenuProps {
 	menuLabel: string;

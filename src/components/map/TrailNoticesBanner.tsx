@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { loadNotices, resolveLocalized, type TrailNotice, type NoticeSeverity } from '@/lib/notices';
-import { isSafeUrl } from '@/lib/utils';
+import { isSafeUrl } from '@/lib/url-safety';
 import { Button } from '@/components/ui/Button';
 import { BANNER_REGION_CLASSES, BANNER_ROW_CLASSES, BANNER_RED_CLASSES } from './banner-styles';
 

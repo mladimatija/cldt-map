@@ -34,7 +34,7 @@ import { isUsableWaterSource, WATER_COLOR } from '@/lib/water-intelligence';
 import { hasTrailJunctions, junctionColor, junctionLabel, junctionRowKey, junctionsAhead } from '@/lib/trail-junctions';
 import { poiHasResupplyKind } from '@/lib/resupply-cadence';
 import { formatVolume, waterCarryLiters } from '@/lib/pack-weight';
-import { formatDistance, formatElevation } from '@/lib/utils';
+import { formatDistance, formatElevation } from '@/lib/format';
 import { formatSunTime, isoLocalToUtcMs } from '@/lib/weather';
 
 /** Nearest POI rows shown before the "More ahead" collapse. */

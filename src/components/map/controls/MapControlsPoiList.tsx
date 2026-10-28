@@ -39,7 +39,8 @@ import {
 	type ParsedDistance,
 	type SortMode,
 } from '@/hooks';
-import { cn, formatDistance } from '@/lib/utils';
+import { cn } from '@/lib/cn';
+import { formatDistance } from '@/lib/format';
 import { formatKm, kmToUnit } from '@/lib/units';
 import { findNearestPointIndex } from '@/lib/distance-utils';
 import { haversineDistanceM } from '@/lib/haversine';
@@ -65,7 +66,7 @@ import { toTravelKm, toTravelRange } from '@/lib/trail-frame';
 const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000;
 
 // formatJumpLabel intentionally bypasses the metric/imperial conversion
-// in formatDistance (utils.ts): parseDistanceQuery returns values already
+// in formatDistance (format.ts): parseDistanceQuery returns values already
 // in the user's active unit (km or mi), so no conversion is needed here.
 function formatJumpLabel(distance: number, unit: DistanceUnit): string {
 	const rounded = Math.round(distance * 10) / 10;

@@ -4,7 +4,7 @@ import React from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useMapStore, type MapStoreState } from '@/lib/store';
 import { formatSeasonalDateRange, resolveSeasonalNote, severityColor } from '@/lib/seasonal-status';
-import { isSafeUrl } from '@/lib/utils';
+import { isSafeUrl } from '@/lib/url-safety';
 import { MapControlModalShell } from '@/components/map/controls/MapControlModalShell';
 
 export function SeasonalStatusModal(): React.ReactElement | null {

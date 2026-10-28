@@ -1,10 +1,8 @@
 /** Dependency-free POI type constants and interfaces.
  *
- *  This module is intentionally a leaf: it MUST NOT import from utils.ts,
- *  config.ts, or any module that transitively imports config.ts. Keeping it
- *  a leaf breaks the circular dependency that would otherwise arise because
- *  config.ts needs KNOWN_POI_TYPES while pois.ts (the previous home of these
- *  constants) imports isSafeUrl from utils.ts which in turn imports config.ts.
+ *  This module is intentionally a leaf: it MUST NOT import config.ts or any
+ *  module that transitively imports it, because config.ts needs
+ *  KNOWN_POI_TYPES and the import would be circular.
  */
 
 /** All POI categories the v1 + Phase 2 renderer / settings recognise. The
@@ -212,7 +210,7 @@ export function isKnownType(t: string): t is KnownPoiType {
 export const STAGE_POI_OFFTRAIL_KM = 5;
 
 /** POI ids are token-like (alphanumeric, dot, dash, underscore). The one rule
- *  for ingestion (pois.ts), share links (utils.ts) and shared trip state, so
+ *  for ingestion (pois.ts), share links (share-url.ts) and shared trip state, so
  *  they agree on what a valid id is; it also keeps ids free of whitespace and
  *  CSS special characters, which PoiMarkers puts into selectors. */
 export const POI_ID_RE = /^[A-Za-z0-9._-]{1,128}$/;

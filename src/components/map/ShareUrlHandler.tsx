@@ -10,7 +10,7 @@ import {
 	getInitialShareUrlParams,
 	shareParamsNeedMapFollowUp,
 	type ShareUrlParams,
-} from '@/lib/utils';
+} from '@/lib/share-url';
 import {
 	normalizeShareTripStateToSobo,
 	parseShareTripState,

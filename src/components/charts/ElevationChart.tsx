@@ -19,7 +19,7 @@ import {
 	Tooltip as RechartsTooltip,
 	type TooltipContentProps,
 } from 'recharts';
-import { formatElevation, formatDistance } from '@/lib/utils';
+import { formatElevation, formatDistance } from '@/lib/format';
 import { computeEta, findNearestPointIndex, rulerSegmentIndices } from '@/lib/distance-utils';
 import {
 	segmentGainLoss,

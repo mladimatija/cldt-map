@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl';
 import { IoContractOutline, IoExpandOutline } from 'react-icons/io5';
 import type { JournalEntry } from '@/lib/user-waypoints';
 import { useMapStore, type MapStoreState } from '@/lib/store';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/cn';
 import { Button } from '@/components/ui/Button';
 import { MAP_CONTROL_INPUT } from './map-controls-constants';
 import { MapControlModalShell } from './MapControlModalShell';

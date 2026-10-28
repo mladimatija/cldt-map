@@ -8,7 +8,7 @@ import { ExternalLink, INLINE_LINK_CLASS } from '@/components/ui/ExternalLink';
 import { BackToMapBar } from '@/components/layout/BackToMapBar';
 import { CONTENT_PAGE_CONTAINER } from '@/components/layout/content-page';
 import { Layout } from '@/components/layout/Layout';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/cn';
 import { SIGURNE_STAZE_URL } from '@/lib/official-sources';
 
 export default function AboutPage(): React.ReactNode {

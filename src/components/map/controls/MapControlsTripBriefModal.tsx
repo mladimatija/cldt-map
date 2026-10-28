@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/Button';
 import { Radio } from '@/components/ui/Radio';
 import { Checkbox } from '@/components/ui/Checkbox';
 import { applyAiNarratives, fetchAiNarratives } from '@/lib/trip-brief-ai';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/cn';
 import {
 	applyNarrativeEdits,
 	assembleTripBrief,

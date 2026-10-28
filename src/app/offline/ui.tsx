@@ -7,7 +7,7 @@ import de from '../../../messages/de.json';
 import it from '../../../messages/it.json';
 import { routing, type Locale } from '@/i18n/routing';
 import { Button, buttonVariants } from '@/components/ui/Button';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/cn';
 
 const LOCALE_STORAGE_KEY = 'cldt-map-locale';
 

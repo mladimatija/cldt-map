@@ -16,7 +16,7 @@ import { useTranslations } from 'next-intl';
 import L from 'leaflet';
 import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
 import { useBlockMapPropagation } from '@/hooks';
-import { formatDistance, formatElevation } from '@/lib/utils';
+import { formatDistance, formatElevation } from '@/lib/format';
 import { findNearestPointIndex } from '@/lib/distance-utils';
 import { toSoboKm, travelGradePct } from '@/lib/trail-frame';
 import { gradeWord, nearestUsableWaterAheadKm } from '@/lib/trail-narration';

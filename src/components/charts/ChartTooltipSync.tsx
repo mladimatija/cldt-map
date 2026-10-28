@@ -7,7 +7,7 @@
  */
 import React, { useEffect, useRef } from 'react';
 import { useTranslations } from 'next-intl';
-import { formatDistance, formatElevation } from '@/lib/utils';
+import { formatDistance, formatElevation } from '@/lib/format';
 import { type UnitSystem } from '@/lib/store';
 import { type TrailDirection } from '@/lib/types';
 import { type TrailOsmTagRun } from '@/lib/trail-osm-tags';

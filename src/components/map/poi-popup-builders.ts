@@ -8,7 +8,8 @@
 
 import type { TrailDirection, UnitSystem } from '@/lib/types';
 import type { Poi } from '@/lib/pois';
-import { formatDistance, formatElevation, isSafeUrl } from '@/lib/utils';
+import { formatDistance, formatElevation } from '@/lib/format';
+import { isSafeUrl } from '@/lib/url-safety';
 import { formatIsoDate } from '@/lib/date-format';
 import { escapeHtml } from '@/lib/html-escape';
 import { WATER_STATUS_OPTIONS, type WaterLogEntry, type WaterStatus } from '@/lib/water-log';

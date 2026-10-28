@@ -15,7 +15,7 @@ import { Button } from '@/components/ui/Button';
 import { MapControlModalShell } from '@/components/map/controls/MapControlModalShell';
 import { MAP_CONTROL_LINK_BUTTON } from '@/components/map/controls/map-controls-constants';
 import { useMapStore, type MapStoreState } from '@/lib/store';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/cn';
 
 /** Launchers into the highest-value panels (panel ids match `setOpenPanel`). */
 const LAUNCHERS = [
