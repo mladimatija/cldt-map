@@ -334,7 +334,7 @@ export function MapControlsPoiList({
 	const popoverRef = usePopoverFocusTrap(isExpanded);
 	const searchInputRef = useRef<HTMLInputElement | null>(null);
 
-	const [sort, setSort] = useState<SortMode>('trail');
+	const [sortChoice, setSort] = useState<SortMode>('trail');
 	const [query, setQuery] = useState('');
 	/** Debounced query feeds the O(N) search filter to avoid scanning 8k+ POIs
 	 *  on every keystroke. The input stays responsive on `query` itself. */
@@ -381,6 +381,23 @@ export function MapControlsPoiList({
 		[closestPoint, rulerRange],
 	);
 	const anchorSoboKm = trailAnchor?.soboKm ?? null;
+	// Ahead order needs an anchor; while there is none, the list runs in trail order.
+	const sort: SortMode = sortChoice === 'ahead' && !trailAnchor ? 'trail' : sortChoice;
+
+	// Deep-link from Up next chip or stage planner preview; the effect clears the request.
+	if (isExpanded && pendingPoiListSort === 'ahead' && sortChoice !== 'ahead') setSort('ahead');
+	useEffect(() => {
+		if (isExpanded && pendingPoiListSort === 'ahead') clearPendingPoiListSort();
+	}, [isExpanded, pendingPoiListSort, clearPendingPoiListSort]);
+
+	// On the first GPS lock, switch from the default 'trail' sort to 'gps'. Only
+	// that first lock counts, so later picks (including returning to 'trail')
+	// are preserved.
+	const [gpsLockSeen, setGpsLockSeen] = useState(false);
+	if (hasGps && !gpsLockSeen) {
+		setGpsLockSeen(true);
+		if (sort === 'trail') setSort('gps');
+	}
 
 	/** Snapped GPS coordinates: rounded to ~0.001 deg (~100 m), so the
 	 *  O(N) haversine loop below only re-runs when the user has moved
@@ -579,6 +596,15 @@ export function MapControlsPoiList({
 		groupByDecade,
 	});
 
+	// Reset the cursor whenever the underlying row set changes (sort, filter,
+	// debouncedQuery, tag filter, GPS distance recompute - all of which feed
+	// into `rows` via usePoiListRows) so we never highlight a stale index.
+	const [cursorRows, setCursorRows] = useState(rows);
+	if (rows !== cursorRows) {
+		setCursorRows(rows);
+		setActiveIndex(null);
+	}
+
 	const aheadKmById = useMemo((): Map<string, number> => {
 		const out = new Map<string, number>();
 		if (sort !== 'ahead' || anchorSoboKm === null) return out;
@@ -601,48 +627,19 @@ export function MapControlsPoiList({
 		});
 	}, [sort, anchorSoboKm, aheadHorizonKm, direction, totalKm, rows.length, units, t]);
 
-	// Deep-link from Up next chip or stage planner preview.
-	useEffect(() => {
-		if (!isExpanded || pendingPoiListSort !== 'ahead') return;
-		queueMicrotask(() => {
-			setSort('ahead');
-			clearPendingPoiListSort();
-		});
-	}, [isExpanded, pendingPoiListSort, clearPendingPoiListSort]);
-
-	// If ahead sort is active but the anchor disappears, fall back to trail order.
-	useEffect(() => {
-		if (sort !== 'ahead' || trailAnchor) return;
-		queueMicrotask(() => setSort('trail'));
-	}, [sort, trailAnchor]);
-
-	// Auto-promote to "Near me" the first time GPS becomes available and the
-	// user hasn't already manually picked a different sort. Manual picks are
-	// preserved (we only switch out of the default `trail` mode). Deferred to
-	// a microtask, so the lint rule against synchronous setState-in-effect is
-	// satisfied; the visual outcome is identical (one extra microtask).
-	// On the first GPS lock, switch from the default 'trail' sort to 'gps'. The ref
-	// guard ensures this only fires once; later user picks (including
-	// returning to 'trail') are preserved.
-	const gpsAutoSwitchedRef = useRef(false);
-	useEffect(() => {
-		if (hasGps && !gpsAutoSwitchedRef.current && sort === 'trail') {
-			gpsAutoSwitchedRef.current = true;
-			queueMicrotask(() => setSort('gps'));
+	// Drop transient state on close so reopening starts clean.
+	const [wasExpanded, setWasExpanded] = useState(isExpanded);
+	if (isExpanded !== wasExpanded) {
+		setWasExpanded(isExpanded);
+		if (!isExpanded) {
+			setSelected(new Set());
+			setQuery('');
 		}
-	}, [hasGps, sort]);
+	}
 
 	useEffect(() => {
-		if (isExpanded) {
-			// Focus the search input on open so the user can type immediately.
-			queueMicrotask(() => searchInputRef.current?.focus());
-		} else {
-			// Drop transient state on close so reopening starts clean.
-			queueMicrotask(() => {
-				setSelected(new Set());
-				setQuery('');
-			});
-		}
+		// Focus the search input on open so the user can type immediately.
+		if (isExpanded) queueMicrotask(() => searchInputRef.current?.focus());
 	}, [isExpanded]);
 
 	// Stable identity - setSelected (from useState) never changes, so this
@@ -751,15 +748,6 @@ export function MapControlsPoiList({
 			if (poi) toggleSelected(poi.id);
 		}
 	};
-
-	// Reset the cursor whenever the underlying row set changes (sort, filter,
-	// debouncedQuery, tag filter, GPS distance recompute - all of which feed
-	// into `rows` via usePoiListRows) so we never highlight a stale index.
-	// `rows` identity is the single source-of-truth here; no need to list
-	// the upstream triggers in this effect.
-	useEffect(() => {
-		queueMicrotask(() => setActiveIndex(null));
-	}, [rows]);
 
 	useEffect(() => {
 		if (activeIndex === null) return;

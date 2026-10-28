@@ -38,9 +38,10 @@ export function Tooltip({
 
 	// Calculate and set the tooltip position when it becomes visible.
 	// Use double rAF to wait for layout: first rAF = DOM committed, second = layout complete.
+	// Readiness needs no reset here: scheduleHide, the only path that hides the
+	// tooltip, clears it together with showTooltip.
 	useEffect(() => {
 		if (!showTooltip || !childRef.current || !tooltipRef.current) {
-			queueMicrotask(() => setTooltipReady(false));
 			return;
 		}
 

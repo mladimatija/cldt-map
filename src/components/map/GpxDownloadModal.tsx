@@ -45,11 +45,6 @@ export function GpxDownloadModal({
 
 	useEffect(() => {
 		if (!isOpen) return;
-		queueMicrotask(() => setAcknowledged(false));
-	}, [isOpen]);
-
-	useEffect(() => {
-		if (!isOpen) return;
 		const handler = (e: KeyboardEvent): void => {
 			if (e.key === 'Escape') onClose();
 		};

@@ -132,14 +132,14 @@ export default function MapMarkers(): React.ReactElement | null {
 	const showOffTrailActions = canNavigateToTrail && isOffTrailTooltipOpen;
 
 	// When the user becomes off trail, show the tooltip by default and reset the "on-trail" dismissed state.
-	useEffect(() => {
+	const [wasOffTrail, setWasOffTrail] = useState(isOffTrail);
+	if (isOffTrail !== wasOffTrail) {
+		setWasOffTrail(isOffTrail);
 		if (isOffTrail) {
-			queueMicrotask(() => {
-				setIsOffTrailTooltipOpen(true);
-				setIsOnTrailTooltipDismissed(false);
-			});
+			setIsOffTrailTooltipOpen(true);
+			setIsOnTrailTooltipDismissed(false);
 		}
-	}, [isOffTrail]);
+	}
 
 	const handleMarkerClick = useCallback((): void => {
 		if (isOffTrail) {

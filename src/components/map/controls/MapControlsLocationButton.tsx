@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import { useMapStore, type MapStoreState } from '@/lib/store';
 import { useBlockMapPropagation } from '@/hooks';
 import { isInCroatiaBbox } from '@/lib/geo-bounds';
@@ -18,7 +18,6 @@ interface LocationButtonProps {
 
 export default function MapControlsLocationButton({ checkPermission }: LocationButtonProps): React.ReactElement {
 	const t = useTranslations('location');
-	const [isAnimating, setIsAnimating] = useState(false);
 	const containerRef = useRef<HTMLButtonElement>(null);
 	useBlockMapPropagation(containerRef);
 	const userLocation = useMapStore((state: MapStoreState) => state.userLocation);
@@ -31,17 +30,10 @@ export default function MapControlsLocationButton({ checkPermission }: LocationB
 
 	const withinMapBoundary = userLocation ? isInCroatiaBbox(userLocation.lat, userLocation.lng) : true;
 
-	useEffect(() => {
-		if (isLocating) {
-			queueMicrotask(() => setIsAnimating(true));
-		} else {
-			const timer = setTimeout(() => {
-				queueMicrotask(() => setIsAnimating(false));
-			}, 500);
-
-			return () => clearTimeout(timer);
-		}
-	}, [isLocating]);
+	// The spinner shows at once and stays 500 ms after locating ends, so a fast
+	// fix does not flash it; the delay lives in the CSS transitions below.
+	const spinnerClass = isLocating ? 'visible opacity-100' : 'invisible opacity-0 delay-500';
+	const iconClass = isLocating ? 'opacity-0' : 'delay-500';
 
 	const isButtonDisabled = (): boolean => {
 		if (isLocating) return true;
@@ -119,22 +111,22 @@ export default function MapControlsLocationButton({ checkPermission }: LocationB
 				variant={variant}
 				onClick={handleClick}
 			>
-				{isLocating || isAnimating ? (
-					<div className="absolute inset-0 flex items-center justify-center">
-						<div className="relative h-6 w-6">
-							<div className="border-t-cldt-blue border-r-cldt-blue/70 border-b-cldt-blue border-l-cldt-blue/70 absolute top-0 left-0 h-full w-full animate-spin rounded-full border-2 motion-reduce:animate-none"></div>
-							<div className="absolute top-[15%] left-[15%] h-[70%] w-[70%] rounded-full bg-white dark:bg-[var(--bg-secondary)]"></div>
-						</div>
+				<div
+					className={`absolute inset-0 flex items-center justify-center transition-[opacity,visibility] duration-0 ${spinnerClass}`}
+				>
+					<div className="relative h-6 w-6">
+						<div className="border-t-cldt-blue border-r-cldt-blue/70 border-b-cldt-blue border-l-cldt-blue/70 absolute top-0 left-0 h-full w-full animate-spin rounded-full border-2 motion-reduce:animate-none"></div>
+						<div className="absolute top-[15%] left-[15%] h-[70%] w-[70%] rounded-full bg-white dark:bg-[var(--bg-secondary)]"></div>
 					</div>
-				) : null}
+				</div>
 
 				{buttonState === 'active' ? (
 					<MdMyLocation
-						className={`dark:hover:text-cldt-green h-6 w-6 dark:text-white ${isLocating || isAnimating ? 'opacity-0' : ''}`}
+						className={`dark:hover:text-cldt-green h-6 w-6 transition-opacity duration-0 dark:text-white ${iconClass}`}
 					/>
 				) : (
 					<MdLocationSearching
-						className={`dark:hover:text-cldt-green h-6 w-6 dark:text-white ${isLocating || isAnimating ? 'opacity-0' : ''}`}
+						className={`dark:hover:text-cldt-green h-6 w-6 transition-opacity duration-0 dark:text-white ${iconClass}`}
 					/>
 				)}
 			</Button>

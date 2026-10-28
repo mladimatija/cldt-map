@@ -4,7 +4,7 @@
  * Elevation profile chart (distance vs. elevation). Hover syncs with the trail highlight on the map via ChartTooltipSync.
  * Uses Recharts AreaChart; data comes from store enhancedTrailPoints.
  */
-import React, { useCallback, useEffect, useMemo, useRef, useState, JSX } from 'react';
+import React, { useCallback, useMemo, useRef, useState, JSX } from 'react';
 import { useBlockMapPropagation, usePackAdjustedPaceKmh } from '@/hooks';
 import {
 	AreaChart,
@@ -79,8 +79,6 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 	const tTrail = useTranslations('trailRoute');
 	const tGpx = useTranslations('gpxDownload');
 	const tGpxMeta = useTranslations('gpx');
-	const [chartData, setChartData] = useState<ElevationPoint[]>([]);
-	const [userProgress, setUserProgress] = useState<number | null>(null);
 	const [isExpanded, setIsExpanded] = useState<boolean>(false);
 	const [pinnedPoint, setPinnedPoint] = useState<PinnedPoint | null>(null);
 	const [gpxModalOpen, setGpxModalOpen] = useState(false);
@@ -111,16 +109,35 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 	const showSections = useMapStore((state: MapStoreState) => state.showSections);
 	const gradeTintedTrail = useMapStore((state: MapStoreState) => state.gradeTintedTrail);
 	const trailOsmTagsFile = useMapStore((state: MapStoreState) => state.trailOsmTagsFile);
+
+	const chartData = useMemo((): ElevationPoint[] => {
+		if (!enhancedTrailPoints || enhancedTrailPoints.length === 0) return [];
+		// Min/max per bucket keeps every summit and valley; the first and last
+		// points are always included, so the profile reaches the trail end.
+		// The x-axis is travel km (0 at the hiker's start), so NOBO runs the SOBO
+		// points backwards.
+		const sampled = downsampleMinMax(enhancedTrailPoints, 500, (p) => p.elevation);
+		const travelOrdered = direction === 'NOBO' ? sampled.slice().reverse() : sampled;
+		const trailKm = enhancedTrailPoints[enhancedTrailPoints.length - 1].distanceFromStart / 1000;
+		return travelOrdered.map((point) => ({
+			distance: toTravelKm(point.distanceFromStart / 1000, direction, trailKm),
+			elevation: point.elevation,
+			lat: point.lat,
+			lng: point.lng,
+		}));
+	}, [enhancedTrailPoints, direction]);
+
 	const axisTextColor = darkMode ? 'var(--text-primary)' : undefined;
 	const chartRef = useRef<HTMLDivElement>(null);
 	useBlockMapPropagation(chartRef, [chartData.length]);
 
-	// Unpin when the trail tooltip is closed (e.g., the user clicks close on the map tooltip).
-	useEffect(() => {
-		if (!highlightedTrailPoint) {
-			queueMicrotask(() => setPinnedPoint(null));
-		}
-	}, [highlightedTrailPoint]);
+	// Unpin when the trail tooltip is closed (e.g., the user clicks close on the
+	// map tooltip), which clears the trail highlight.
+	const [lastHighlight, setLastHighlight] = useState(highlightedTrailPoint);
+	if (highlightedTrailPoint !== lastHighlight) {
+		setLastHighlight(highlightedTrailPoint);
+		if (!highlightedTrailPoint) setPinnedPoint(null);
+	}
 
 	// Drag-to-ruler gesture handling (plot calibration, drag preview, click-to-pin).
 	const { dragPreviewRange, handleScaleCalibration, handleChartMouseDownCapture, clearDragPreview } =
@@ -138,48 +155,9 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 		direction,
 	);
 
-	useEffect(() => {
-		if (!enhancedTrailPoints || enhancedTrailPoints.length === 0 || !gpxLoaded) {
-			return;
-		}
-
-		// Min/max per bucket keeps every summit and valley; the first and last
-		// points are always included, so the profile reaches the trail end.
-		// The x-axis is travel km (0 at the hiker's start), so NOBO runs the SOBO
-		// points backwards.
-		const sampled = downsampleMinMax(enhancedTrailPoints, 500, (p) => p.elevation);
-		const travelOrdered = direction === 'NOBO' ? sampled.slice().reverse() : sampled;
-		const trailKm = enhancedTrailPoints[enhancedTrailPoints.length - 1].distanceFromStart / 1000;
-		const elevationData: ElevationPoint[] = travelOrdered.map((point) => ({
-			distance: toTravelKm(point.distanceFromStart / 1000, direction, trailKm),
-			elevation: point.elevation,
-			lat: point.lat,
-			lng: point.lng,
-		}));
-
-		queueMicrotask(() => setChartData(elevationData));
-	}, [enhancedTrailPoints, gpxLoaded, direction]);
-
-	useEffect(() => {
-		let cancelled = false;
-		if (closestPoint) {
-			const progressKm = toTravelKm(closestPoint.distanceFromStart / 1000, direction, totalDistance);
-			queueMicrotask(() => {
-				if (!cancelled) {
-					setUserProgress(progressKm);
-				}
-			});
-		} else {
-			queueMicrotask(() => {
-				if (!cancelled) {
-					setUserProgress(null);
-				}
-			});
-		}
-		return () => {
-			cancelled = true;
-		};
-	}, [closestPoint, direction, totalDistance]);
+	const userProgress = closestPoint
+		? toTravelKm(closestPoint.distanceFromStart / 1000, direction, totalDistance)
+		: null;
 
 	const highlightedPoint = useMemo((): ElevationPoint | null => {
 		if (!highlightedTrailPoint || chartData.length === 0) {
@@ -937,8 +915,10 @@ export default function ElevationChart({ className = '' }: ElevationChartProps):
 					</div>
 				)}
 			</div>
+			{/* Keyed on the open state, so each opening starts with the disclaimer unticked. */}
 			<GpxDownloadModal
 				isOpen={gpxModalOpen}
+				key={gpxModalOpen ? 'open' : 'closed'}
 				onClose={() => setGpxModalOpen(false)}
 				onConfirm={handleGpxConfirm}
 				onShare={handleGpxShare}

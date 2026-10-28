@@ -4,7 +4,7 @@
  * Orchestrates map overlays (controls, trail, markers, elevation chart) and location init.
  * Requests permission and fetches the first location once the trail is loaded; syncs isLocating from store.
  */
-import React, { Suspense, useState, useEffect, useCallback } from 'react';
+import React, { Suspense, useEffect, useCallback, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import { useLocale, useTranslations } from 'next-intl';
 import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
@@ -167,7 +167,8 @@ function MapControlsErrorFallback(): React.ReactElement {
 }
 
 export default function MapContent(): React.ReactElement {
-	const [initialLocationFetched, setInitialLocationFetched] = useState(false);
+	// Gates the first location request; a ref, as nothing renders it.
+	const initialLocationFetchedRef = useRef(false);
 	const isLocating = useMapStore((state: MapStoreState) => state.isLocating);
 	const userLocation = useMapStore((state: MapStoreState) => state.userLocation);
 	const fakeUserLocationEnabled = useMapStore((state: MapStoreState) => state.fakeUserLocationEnabled);
@@ -231,32 +232,25 @@ export default function MapContent(): React.ReactElement {
 	// Request location permission when map and trail data have loaded (skip when fake location is enabled)
 	useEffect(() => {
 		if (fakeUserLocationEnabled) {
-			queueMicrotask(() => setInitialLocationFetched(true));
+			initialLocationFetchedRef.current = true;
 			return;
 		}
 		if (permissionStatus === 'denied') {
 			return;
 		}
-		if (gpxLoaded && permissionStatus !== undefined && !initialLocationFetched) {
+		if (gpxLoaded && permissionStatus !== undefined && !initialLocationFetchedRef.current) {
 			if (permissionStatus === 'granted') {
 				// The live watch delivers the first fix; a one-off request would ask twice.
 				if (!liveTrackingEnabled) {
 					const getCurrentLocation = useMapStore.getState().getCurrentLocation;
 					void getCurrentLocation();
 				}
-				queueMicrotask(() => setInitialLocationFetched(true));
+				initialLocationFetchedRef.current = true;
 			} else if (permissionStatus === null) {
 				void checkAndRequestLocation(true);
 			}
 		}
-	}, [
-		fakeUserLocationEnabled,
-		gpxLoaded,
-		permissionStatus,
-		checkAndRequestLocation,
-		initialLocationFetched,
-		liveTrackingEnabled,
-	]);
+	}, [fakeUserLocationEnabled, gpxLoaded, permissionStatus, checkAndRequestLocation, liveTrackingEnabled]);
 
 	// Fetch once when permission is newly granted and live tracking is off (the
 	// watch covers it otherwise; skip when fake location is enabled)
@@ -267,20 +261,12 @@ export default function MapContent(): React.ReactElement {
 		if (permissionStatus !== 'granted') {
 			return;
 		}
-		if (!userLocation && !isLocating && gpxLoaded && !initialLocationFetched) {
+		if (!userLocation && !isLocating && gpxLoaded && !initialLocationFetchedRef.current) {
 			const getCurrentLocation = useMapStore.getState().getCurrentLocation;
 			void getCurrentLocation();
-			queueMicrotask(() => setInitialLocationFetched(true));
+			initialLocationFetchedRef.current = true;
 		}
-	}, [
-		fakeUserLocationEnabled,
-		liveTrackingEnabled,
-		permissionStatus,
-		userLocation,
-		isLocating,
-		gpxLoaded,
-		initialLocationFetched,
-	]);
+	}, [fakeUserLocationEnabled, liveTrackingEnabled, permissionStatus, userLocation, isLocating, gpxLoaded]);
 
 	return (
 		<>

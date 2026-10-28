@@ -3,7 +3,7 @@
 /**
  * 2-step hint shown when the distance ruler is enabled. Persisted dismissal in localStorage.
  */
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { useMapStore, type MapStoreState } from '@/lib/store';
 import { Button } from '@/components/ui/Button';
@@ -13,13 +13,14 @@ const RULER_HINT_DISMISSED_KEY = 'cldt-map-ruler-hint-dismissed';
 export function RulerHint(): React.ReactElement | null {
 	const t = useTranslations('mapControls');
 	const isRulerEnabled = useMapStore((state: MapStoreState) => state.isRulerEnabled);
-	const [isDismissed, setIsDismissed] = useState(true);
-
-	useEffect(() => {
-		if (typeof window === 'undefined') return;
-		const stored = localStorage.getItem(RULER_HINT_DISMISSED_KEY);
-		queueMicrotask(() => setIsDismissed(stored === '1'));
-	}, []);
+	// Client-only component (loaded without SSR), so local storage is safe to read here.
+	const [isDismissed, setIsDismissed] = useState(() => {
+		try {
+			return localStorage.getItem(RULER_HINT_DISMISSED_KEY) === '1';
+		} catch {
+			return false;
+		}
+	});
 
 	const handleDismiss = (): void => {
 		localStorage.setItem(RULER_HINT_DISMISSED_KEY, '1');

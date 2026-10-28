@@ -86,8 +86,8 @@ export function MapControlsTileCachePanel({ embedded = false }: MapControlsTileC
 	const distancePrecision = useMapStore((s: MapStoreState) => s.distancePrecision);
 
 	// Live tile count local state
-	const [liveCount, setLiveCount] = useState<number | null>(null);
-	const [querying, setQuerying] = useState(false);
+	/** Cached tile count and the provider key it was read for. */
+	const [liveCount, setLiveCount] = useState<{ key: string; count: number } | null>(null);
 	const [confirmClearAll, setConfirmClearAll] = useState(false);
 	const confirmYesRef = useRef<HTMLButtonElement>(null);
 	// On mobile, downloads are gated behind a confirm row warning about storage
@@ -115,38 +115,50 @@ export function MapControlsTileCachePanel({ embedded = false }: MapControlsTileC
 		[units, distancePrecision],
 	);
 
-	const refreshLiveCount = useCallback(async (providerKey: string) => {
-		setQuerying(true);
-		try {
-			const count = await getProviderTileCount(providerKey);
-			setLiveCount(count);
-		} finally {
-			setQuerying(false);
-		}
+	const providerKey = baseMapProvider ? getProviderCacheKey(baseMapProvider) : null;
+	// Counting until a count for the current style arrives.
+	const querying = providerKey !== null && liveCount?.key !== providerKey;
+	const tileCount = liveCount?.key === providerKey ? liveCount.count : 0;
+
+	/** Re-reads the cached tile count for `key`; the returned function drops a
+	 *  count that arrives after the style changed. */
+	const refreshLiveCount = useCallback((key: string): (() => void) => {
+		let cancelled = false;
+		void getProviderTileCount(key).then((count) => {
+			if (!cancelled) setLiveCount({ key, count });
+		});
+		return () => {
+			cancelled = true;
+		};
 	}, []);
 
 	// Load meta and live count when provider changes
 	useEffect(() => {
-		if (!baseMapProvider) return;
-		const key = getProviderCacheKey(baseMapProvider);
-		void loadTileCacheMeta(key);
-		queueMicrotask(() => void refreshLiveCount(key));
-	}, [baseMapProvider, loadTileCacheMeta, refreshLiveCount]);
+		if (!providerKey) return;
+		void loadTileCacheMeta(providerKey);
+		return refreshLiveCount(providerKey);
+	}, [providerKey, loadTileCacheMeta, refreshLiveCount]);
 
 	// Refresh live count when download finishes
 	const prevDownloading = useRef(false);
 	useEffect(() => {
-		if (prevDownloading.current && !tileCacheDownloading && baseMapProvider) {
-			void refreshLiveCount(getProviderCacheKey(baseMapProvider));
+		if (prevDownloading.current && !tileCacheDownloading && providerKey) {
+			refreshLiveCount(providerKey);
 		}
 		prevDownloading.current = tileCacheDownloading;
-	}, [tileCacheDownloading, baseMapProvider, refreshLiveCount]);
+	}, [tileCacheDownloading, providerKey, refreshLiveCount]);
 
 	// Probe the POI asset count on mount, then refresh whenever the background
 	// prefetch increments the store counter.
 	useEffect(() => {
-		queueMicrotask(() => void refreshPoiAssetCount());
-	}, [poiPrefetchVersion, refreshPoiAssetCount]);
+		let cancelled = false;
+		void getPoiAssetCount().then((count) => {
+			if (!cancelled) setPoiAssetCount(count);
+		});
+		return () => {
+			cancelled = true;
+		};
+	}, [poiPrefetchVersion]);
 
 	// Focus [Yes] button when clear-all confirmation row appears
 	useEffect(() => {
@@ -191,8 +203,9 @@ export function MapControlsTileCachePanel({ embedded = false }: MapControlsTileC
 	}, [enhancedTrailPoints, startTileDownload, baseMapProvider]);
 
 	const runRedownload = useCallback(async (): Promise<void> => {
-		await clearTileCacheForProvider(getProviderCacheKey(baseMapProvider));
-		setLiveCount(0);
+		const key = getProviderCacheKey(baseMapProvider);
+		await clearTileCacheForProvider(key);
+		setLiveCount({ key, count: 0 });
 		runBaseDownload();
 	}, [clearTileCacheForProvider, baseMapProvider, runBaseDownload]);
 
@@ -235,8 +248,9 @@ export function MapControlsTileCachePanel({ embedded = false }: MapControlsTileC
 				: null;
 
 	const handleClear = async (): Promise<void> => {
-		await clearTileCacheForProvider(getProviderCacheKey(baseMapProvider));
-		setLiveCount(0);
+		const key = getProviderCacheKey(baseMapProvider);
+		await clearTileCacheForProvider(key);
+		setLiveCount({ key, count: 0 });
 	};
 
 	/** Hand the already-loaded full-trail GPX to an offline GPS app (OsmAnd /
@@ -250,7 +264,7 @@ export function MapControlsTileCachePanel({ embedded = false }: MapControlsTileC
 	const handleClearAll = async (): Promise<void> => {
 		setConfirmClearAll(false);
 		await clearTileCacheForProvider();
-		setLiveCount(0);
+		if (providerKey) setLiveCount({ key: providerKey, count: 0 });
 	};
 
 	const progressPercent = tileCacheTotal > 0 ? Math.round((tileCacheDone / tileCacheTotal) * 100) : 0;
@@ -387,7 +401,7 @@ export function MapControlsTileCachePanel({ embedded = false }: MapControlsTileC
 													{t('querying')}
 												</span>
 											) : (
-												<span>{t('tilesCount', { count: (liveCount ?? 0).toLocaleString() })}</span>
+												<span>{t('tilesCount', { count: tileCount.toLocaleString() })}</span>
 											)}
 										</span>
 									</div>

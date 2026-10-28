@@ -43,12 +43,11 @@ export function TrailNoticesBanner(): React.ReactElement | null {
 	const t = useTranslations('trailNotices');
 	const locale = useLocale();
 	const [notices, setNotices] = useState<TrailNotice[]>([]);
-	const [dismissed, setDismissed] = useState<Set<string>>(new Set());
+	// Client-only component (loaded without SSR), so session storage is safe to read here.
+	const [dismissed, setDismissed] = useState<Set<string>>(getDismissed);
 
 	useEffect(() => {
-		const dismissed = getDismissed();
-		queueMicrotask(() => setDismissed(dismissed));
-		void loadNotices().then((notices) => queueMicrotask(() => setNotices(notices)));
+		void loadNotices().then(setNotices);
 	}, []);
 
 	const visible = notices.filter((n) => !dismissed.has(n.id));
