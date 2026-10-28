@@ -37,7 +37,6 @@ const ZoomControls = dynamic(() => import('@/components/map/controls/MapControls
 const TrailRoute = dynamic(() => import('@/components/map/TrailRoute'), { ssr: false });
 const SeasonalStatusTrailLayer = dynamic(() => import('@/components/map/SeasonalStatusTrailLayer'), { ssr: false });
 const LocationControls = dynamic(() => import('@/components/map/controls/MapControlsLocationControls'), { ssr: false });
-const BaseMapSelector = dynamic(() => import('@/components/map/BaseMapSelector'), { ssr: false });
 const MapMarkers = dynamic(() => import('@/components/map/MapMarkers'), { ssr: false });
 const ShareUrlHandler = dynamic(() => import('@/components/map/ShareUrlHandler'), { ssr: false });
 const ShareTripImportDialog = dynamic(
@@ -328,9 +327,6 @@ export default function MapContent(): React.ReactElement {
 			</MapLayerBoundary>
 			<MapLayerBoundary name="ShareTripImportDialog">
 				<ShareTripImportDialog />
-			</MapLayerBoundary>
-			<MapLayerBoundary name="BaseMapSelector">
-				<BaseMapSelector />
 			</MapLayerBoundary>
 			<MapLayerBoundary name="RadarOverlay">
 				<RadarOverlay />

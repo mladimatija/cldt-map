@@ -1,5 +1,11 @@
 import type L from 'leaflet';
 
+/** True for Leaflet's default tile pane, which holds the base map layer (and the
+ *  clipped copy MapControls builds from it); overlays set a pane of their own. */
+export function isBaseTilePane(pane: string | undefined): boolean {
+	return pane === undefined || pane === 'tilePane';
+}
+
 export interface EnsurePaneOptions {
 	/** Class on the pane element; the stacking rules live in map.css. */
 	className?: string;

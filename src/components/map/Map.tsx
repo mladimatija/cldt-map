@@ -8,27 +8,22 @@ import React, { useMemo, useState } from 'react';
 import { MapContainer, AttributionControl } from 'react-leaflet';
 import { LatLngTuple } from 'leaflet';
 import dynamic from 'next/dynamic';
+import { ErrorBoundary } from '@/components/common/ErrorBoundary';
 import { mapDefaults } from '@/lib/config';
 import 'leaflet/dist/leaflet.css';
-import { BaseMapProvider } from '@/lib/services/base-map-provider';
 import { getInitialShareUrlParams } from '@/lib/utils';
 
 const MapContent = dynamic(() => import('./MapContent'), { ssr: false });
+// Loaded beside MapContent, not inside it, so the base tiles do not wait for MapContent's chunk.
 const BaseMapSelector = dynamic(() => import('./BaseMapSelector'), { ssr: false });
 
 interface MapProps {
-	defaultBaseMap?: string;
 	locale?: string;
 	zoomSnap?: number;
 	className?: string;
 }
 
-export default function Map({
-	defaultBaseMap = 'OpenStreetMap',
-	locale: _locale = 'en',
-	zoomSnap = 0,
-	className = '',
-}: MapProps): React.ReactElement {
+export default function Map({ locale: _locale = 'en', zoomSnap = 0, className = '' }: MapProps): React.ReactElement {
 	// Use share URL params for the initial view so the map opens at the correct position (no location permission needed)
 	const initialView = useMemo((): { center: LatLngTuple; zoom: number } => {
 		if (typeof window === 'undefined') return { center: mapDefaults.center, zoom: mapDefaults.zoom };
@@ -50,10 +45,6 @@ export default function Map({
 		}
 		return { center: mapDefaults.center, zoom: mapDefaults.zoom };
 	}, []);
-
-	// Get initial base map provider from defaultBaseMap prop
-	const initialProvider =
-		Object.values(BaseMapProvider).find((provider) => provider === defaultBaseMap) || BaseMapProvider.OPEN_STREET_MAP;
 
 	// Stable key per mount - do NOT include locale, so the map stays mounted across language switches.
 	// Only translated text (tooltips, labels) changes via useTranslations; the Leaflet instance must persist.
@@ -79,8 +70,10 @@ export default function Map({
 				    option and it updates automatically on base-map switches. */}
 				<AttributionControl position="bottomleft" prefix={false} />
 
-				{/* Dynamic base map selector for changing map styles */}
-				<BaseMapSelector initialProvider={initialProvider} />
+				{/* Hidden on error rather than blanking the whole map */}
+				<ErrorBoundary fallback={null} name="BaseMapSelector">
+					<BaseMapSelector />
+				</ErrorBoundary>
 
 				{/* Map content components */}
 				<MapContent />

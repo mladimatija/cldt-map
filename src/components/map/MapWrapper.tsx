@@ -9,7 +9,6 @@
 import { useState, useEffect, useRef, ReactElement } from 'react';
 import dynamic from 'next/dynamic';
 import { useTranslations } from 'next-intl';
-import { config } from '@/lib/config';
 import { useMapStore } from '@/lib/store';
 import { MAP_FULLSCREEN_TOGGLE_EVENT } from '@/lib/map-events';
 
@@ -142,7 +141,7 @@ export default function MapWrapper(_props?: MapWrapperProps): ReactElement {
 				{/* The logo lives in the map area, not the page shell, so the banner
 				    stack above pushes it down with the map instead of covering it. */}
 				<Header />
-				<Map defaultBaseMap={config.baseMapProvider} zoomSnap={0} />
+				<Map zoomSnap={0} />
 			</div>
 			<SeasonalStatusModal />
 		</div>

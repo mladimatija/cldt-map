@@ -1,13 +1,15 @@
 'use client';
 
 /** Dropdown to switch base map layer (OSM, Topo, Satellite, etc.); syncs with the persisted store. */
-import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useMap } from 'react-leaflet';
+import L from 'leaflet';
 import { BaseMapProvider } from '@/lib/services/base-map-provider';
 import { createBaseMapLayer } from '@/lib/services/base-map-layer';
+import { isBaseTilePane } from '@/lib/leaflet-panes';
 import { useBlockMapPropagation, useMapStore, usePanel } from '@/hooks';
-import { L } from '@/lib/store/leaflet';
 import { useStore, type MapStoreState, type StoreState } from '@/lib/store';
+import { config } from '@/lib/config';
 import { cn } from '@/lib/utils';
 import SmartTooltip from '@/components/ui/SmartTooltip';
 import { Button } from '@/components/ui/Button';
@@ -15,37 +17,37 @@ import { useTranslations } from 'next-intl';
 import { PROVIDER_TO_KEY, mapOptions, resolveProvider } from './base-map-options';
 import { DARK_PANEL } from './controls/map-controls-constants';
 
-interface BaseMapSelectorProps {
-	initialProvider?: BaseMapProvider;
+/** Style shown when the stored one is not a known style. */
+const FALLBACK_PROVIDER = resolveProvider(config.baseMapProvider, BaseMapProvider.OPEN_STREET_MAP);
+
+/**
+ * Puts the layer for `provider` in place of the base tile layers, the clipped
+ * copy MapControls builds included; overlays (radar, Waymarked Trails) stay.
+ */
+function replaceBaseLayer(map: L.Map, provider: BaseMapProvider): void {
+	const layer = createBaseMapLayer(provider);
+	map.eachLayer((existing) => {
+		if (existing instanceof L.TileLayer && isBaseTilePane(existing.options.pane)) map.removeLayer(existing);
+	});
+	layer.addTo(map);
 }
 
-export default function BaseMapSelector({ initialProvider }: BaseMapSelectorProps): React.ReactElement {
-	const isBrowser = typeof window !== 'undefined';
+export default function BaseMapSelector(): React.ReactElement {
 	const t = useTranslations('baseMapSelector');
 
 	const map = useMap();
 	const storedProvider = useMapStore((state: MapStoreState) => state.baseMapProvider);
 	const setBaseMapProvider = useMapStore((state: MapStoreState) => state.setBaseMapProvider);
 	const gpxLoadFailed = useStore((state: StoreState) => state.gpxLoadFailed);
-	const effectiveInitial = resolveProvider(storedProvider, initialProvider || BaseMapProvider.OPEN_STREET_MAP);
-	const [currentLayer, setCurrentLayer] = useState<BaseMapProvider>(effectiveInitial);
-
-	useEffect(() => {
-		const resolved = resolveProvider(storedProvider, initialProvider || BaseMapProvider.OPEN_STREET_MAP);
-		if (resolved !== currentLayer) {
-			queueMicrotask(() => setCurrentLayer(resolved));
-		}
-	}, [storedProvider, currentLayer, initialProvider]);
+	const currentLayer = resolveProvider(storedProvider, FALLBACK_PROVIDER);
 
 	const containerRef = useRef<HTMLDivElement>(null);
 	useBlockMapPropagation(containerRef);
 	const { isOpen, close, toggle } = usePanel('baseMap', containerRef);
 
+	// Shows the selected style on load and after every change, from this menu or
+	// a share link, replacing the previous base layer instead of stacking on it.
 	useEffect(() => {
-		if (!isBrowser || !map) {
-			return;
-		}
-
 		let cancelled = false;
 
 		const isMapContainerValid = (): boolean => {
@@ -57,72 +59,40 @@ export default function BaseMapSelector({ initialProvider }: BaseMapSelectorProp
 			}
 		};
 
-		const addInitialLayer = (): void => {
+		const showLayer = (): void => {
 			if (cancelled || !isMapContainerValid()) return;
 			try {
-				const layer = createBaseMapLayer(effectiveInitial);
-				if (!cancelled && isMapContainerValid()) {
-					layer.addTo(map);
-				}
+				replaceBaseLayer(map, currentLayer);
 			} catch (error) {
-				if (!cancelled) console.error('Error setting initial map layer:', error);
+				console.error('Error setting map layer:', error);
 			}
 		};
 
-		if (map.whenReady) {
-			map.whenReady(addInitialLayer);
-		} else {
-			addInitialLayer();
-		}
+		map.whenReady(showLayer);
 
 		return () => {
 			cancelled = true;
 		};
-	}, [map, isBrowser, effectiveInitial]);
+	}, [map, currentLayer]);
 
-	const handleMapChangeRef = useRef<(provider: BaseMapProvider) => void>(() => {});
-
-	const handleMapChange = (provider: BaseMapProvider): void => {
-		if (!isBrowser) return;
-
-		try {
-			// Built before the old layer goes, so a failure leaves the map as it was.
-			const newLayer = createBaseMapLayer(provider);
-			map.eachLayer((layer) => {
-				// Base layers live in the default tile pane; overlays (radar,
-				// Waymarked Trails) set their own pane and must survive a
-				// base-map switch.
-				if (
-					L &&
-					layer instanceof L.TileLayer &&
-					(layer.options.pane === undefined || layer.options.pane === 'tilePane')
-				) {
-					map.removeLayer(layer);
-				}
-			});
-
-			newLayer.addTo(map);
-			setCurrentLayer(provider);
-			setBaseMapProvider(provider);
-		} catch (error) {
-			console.error('Error changing map layer:', error);
-		} finally {
-			close();
-		}
-	};
-
-	// Keep ref in sync so the event listener below always calls the latest version.
-	useLayoutEffect(() => {
-		handleMapChangeRef.current = handleMapChange;
-	});
-
-	// When MapControls disables tile boundary it dispatches this event so the correct
-	// base layer (not a hardcoded OSM fallback) is restored.
+	// MapControls takes the clipped copy off when tile clipping is switched off;
+	// put the plain layer for the selected style back.
 	useEffect(() => {
-		const restore = (): void => handleMapChangeRef.current(currentLayer);
+		const restore = (): void => {
+			try {
+				replaceBaseLayer(map, currentLayer);
+			} catch (error) {
+				console.error('Error restoring map layer:', error);
+			}
+		};
 		window.addEventListener('restoreBaseMapLayer', restore);
 		return () => window.removeEventListener('restoreBaseMapLayer', restore);
-	}, [currentLayer]);
+	}, [map, currentLayer]);
+
+	const handleMapChange = (provider: BaseMapProvider): void => {
+		setBaseMapProvider(provider);
+		close();
+	};
 
 	const currentLayerName = t(PROVIDER_TO_KEY[currentLayer] ?? 'standard');
 	const toggleButton = (

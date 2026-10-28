@@ -7,6 +7,7 @@ import { formatElevation } from '@/lib/utils';
 import { formatKm, kmToUnit } from '@/lib/units';
 import { siteMetadata } from '@/lib/metadata';
 import { boundsOf, toLeafletBounds } from '@/lib/geo-bounds';
+import { isBaseTilePane } from '@/lib/leaflet-panes';
 
 /** Providers whose tile servers don't send Access-Control-Allow-Origin; PNG canvas export will taint. */
 const CORS_BLOCKED_PROVIDERS: string[] = [BaseMapProvider.SATELLITE, BaseMapProvider.CROATIA_TOPO];
@@ -131,8 +132,7 @@ export async function waitForTilesLoaded(
 		(map as unknown as { eachLayer: (fn: (layer: unknown) => void) => void }).eachLayer((layer) => {
 			const l = layer as Partial<CaptureTileLayer>;
 			if (typeof l.isLoading !== 'function') return; // not a tile/grid layer
-			const pane = l.options?.pane;
-			if (pane === undefined || pane === 'tilePane') layers.push(l as CaptureTileLayer);
+			if (isBaseTilePane(l.options?.pane)) layers.push(l as CaptureTileLayer);
 		});
 	} catch {
 		// Map stub without eachLayer: fall back to a plain settle below.
