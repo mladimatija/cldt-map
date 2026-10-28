@@ -81,8 +81,8 @@ function computeClosestPointData(
 	};
 }
 
-/** Initial trail state for slice and SSR stub. */
-export const INITIAL_TRAIL_STATE: TrailState = {
+/** Initial trail state. */
+const INITIAL_TRAIL_STATE: TrailState = {
 	trailPoints: [],
 	enhancedTrailPoints: [],
 	highlightedTrailPoint: null,

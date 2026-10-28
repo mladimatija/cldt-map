@@ -1,9 +1,8 @@
-import { create, type StoreApi, type UseBoundStore } from 'zustand';
+import { create, type StateCreator, type StoreApi, type UseBoundStore } from 'zustand';
 import type { StoreState, MapStoreState } from './types';
 import { createLocationSlice } from './location-slice';
 import { createTrailSlice } from './trail-slice';
-import { createMapStore } from './map-store';
-import { createStoreStub, createMapStoreStub } from './stub';
+import { createMapStore, createMapStoreState } from './map-store';
 
 export type { StoreState, MapStoreState };
 export type {
@@ -23,42 +22,40 @@ export type {
 type MainStore = UseBoundStore<StoreApi<StoreState>>;
 type MapStore = UseBoundStore<StoreApi<MapStoreState>>;
 
-let mainStore: MainStore | null = null;
-let mapStore: MapStore | null = null;
+const createMainStoreState: StateCreator<StoreState> = (set, get, api) => ({
+	...createLocationSlice(set, get, api),
+	...createTrailSlice(set, get, api),
+});
 
-function createMainStore(): MainStore {
-	return create<StoreState>()((set, get, api) => ({
-		...createLocationSlice(set, get, api),
-		...createTrailSlice(set, get, api),
-	}));
+/**
+ * The server's stand-in for a store: the real initial state and actions over a
+ * `set` that does nothing, so server-rendered defaults match the client's by
+ * construction. Mirrors zustand's bound-store call signatures: bare calls
+ * return the whole state (e.g. `const { units } = useMapStore()`), selector
+ * calls project it.
+ */
+function createServerStore<S>(createState: StateCreator<S>): UseBoundStore<StoreApi<S>> {
+	const api: StoreApi<S> = {
+		setState: () => {},
+		getState: () => state,
+		getInitialState: () => state,
+		subscribe: () => () => {},
+	};
+	const state = createState(api.setState, api.getState, api);
+	const useBoundStore = (selector?: (state: S) => unknown): unknown => (selector ? selector(state) : state);
+	return Object.assign(useBoundStore, api) as UseBoundStore<StoreApi<S>>;
 }
 
-function createStoredStores(): { main: MainStore; map: MapStore } {
-	const main = createMainStore();
-	const map = createMapStore(() => main.getState());
-	return { main, map };
+function createStores(): { main: MainStore; map: MapStore } {
+	if (typeof window === 'undefined') {
+		const main = createServerStore(createMainStoreState);
+		return { main, map: createServerStore(createMapStoreState(() => main.getState())) };
+	}
+	const main = create<StoreState>()(createMainStoreState);
+	return { main, map: createMapStore(() => main.getState()) };
 }
 
-function createStoreStubApi<S>(getStub: () => S): UseBoundStore<StoreApi<S>> {
-	const stub = getStub();
-	// Mirror zustand's bound-store call signatures: bare calls return the whole
-	// state (e.g. `const { units } = useMapStore()`), selector calls project it.
-	const api = ((selector?: (state: S) => unknown) => (selector ? selector(stub) : stub)) as unknown as UseBoundStore<
-		StoreApi<S>
-	>;
-	(api as unknown as { getState: () => S }).getState = getStub;
-	(api as unknown as { subscribe: () => () => void }).subscribe = () => () => {};
-	return api;
-}
+const stores = createStores();
 
-const mainStub = createStoreStubApi(createStoreStub);
-const mapStub = createStoreStubApi(createMapStoreStub);
-
-if (typeof window !== 'undefined') {
-	const { main, map } = createStoredStores();
-	mainStore = main;
-	mapStore = map;
-}
-
-export const useStore = mainStore ?? mainStub;
-export const useMapStore = mapStore ?? mapStub;
+export const useStore = stores.main;
+export const useMapStore = stores.map;
