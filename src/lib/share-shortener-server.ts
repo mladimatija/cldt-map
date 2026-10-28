@@ -1,6 +1,7 @@
 /**
- * Server-side share link storage (Netlify Blobs). Import only from API routes,
- * Route Handlers, and Netlify scheduled functions - never from client components.
+ * Server-side share link storage (Netlify Blobs). Import only from API routes
+ * and Route Handlers, never from client components (the scheduled cleanup
+ * function shares only the store name, from share-url-constants).
  */
 import { randomBytes } from 'crypto';
 import { getStore, type Store } from '@netlify/blobs';
@@ -19,7 +20,6 @@ export interface ShareLinkRecord {
 	target: string;
 	createdAt: string;
 	expiresAt: string;
-	hits: number;
 }
 
 function getShareLinksStore(): Store {
@@ -114,7 +114,6 @@ function createShareLinkRecord(target: string, now = Date.now()): ShareLinkRecor
 		target,
 		createdAt,
 		expiresAt: new Date(now + SHARE_LINK_TTL_MS).toISOString(),
-		hits: 0,
 	};
 }
 
@@ -161,9 +160,13 @@ export async function createShortShareLink(target: string): Promise<{ code: stri
 
 	for (let attempt = 0; attempt < 5; attempt++) {
 		const code = generateShareCode();
-		const existing = await store.get(code);
-		if (existing) continue;
-		await store.setJSON(code, record);
+		// Atomic: a code that is already taken is left alone and another is drawn.
+		const { modified } = await store.setJSON(code, record, {
+			onlyIfNew: true,
+			// The monthly cleanup sweeps by this without reading each body.
+			metadata: { expiresAt: Date.parse(record.expiresAt) },
+		});
+		if (!modified) continue;
 		// Blobs reads are eventually consistent. Absorb the read-after-write lag
 		// HERE, on the create path (the legitimate writer), so the public
 		// /s/{code} redirect can resolve with a single read and never has to run
@@ -180,13 +183,5 @@ export async function resolveShortShareLink(code: string): Promise<ShareLinkReco
 	// here was an unauthenticated DoS/cost-amplification primitive: any
 	// pattern-valid but missing code pinned the serverless invocation open for
 	// ~7.7s of sleep. Read-after-write consistency is handled on the create side.
-	const result = await readShareLinkRecord(code);
-	if (result === 'missing' || result === 'expired') return result;
-
-	// Best-effort hit counter: never block (or fail) the redirect on the write,
-	// and don't turn each public GET into a synchronous Blobs write.
-	const store = getShareLinksStore();
-	result.hits = (result.hits ?? 0) + 1;
-	void store.setJSON(code, result).catch(() => {});
-	return result;
+	return readShareLinkRecord(code);
 }

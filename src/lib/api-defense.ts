@@ -46,6 +46,8 @@ export async function fetchWithSizeCap(
 	const response = await fetch(url, init);
 
 	if (!response.ok) {
+		// An unread body holds the connection open until it is garbage collected.
+		await response.body?.cancel().catch(() => {});
 		// Don't leak upstream status to clients - the caller logs it server-side from response.status.
 		return { ok: false, status: response.status, reason: 'Upstream error' };
 	}

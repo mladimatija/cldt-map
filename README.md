@@ -215,11 +215,11 @@ Open [http://localhost:3000](http://localhost:3000).
 
 Map and POI share links can be shortened to `/s/{code}` so they fit SMS and chat apps. The long URL (all query params) is stored in **Netlify Blobs** (`share-links` store); no extra env vars are required beyond a normal Netlify deploy.
 
-| Route / function                            | Role                                                                                                                                                            |
-| ------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `POST /api/share`                           | Validate a same-origin share URL, allocate a 7-character code, store the target path + query in Blobs (90-day TTL). Rate limited to 30 creates per IP per hour. |
-| `GET /s/{code}`                             | Look up the code and `302` redirect to the stored target. Increments a hit counter. Expired or missing codes redirect to `/`.                                   |
-| `netlify/functions/share-links-cleanup.mts` | Scheduled monthly job that deletes expired entries from the Blobs store (redirects also reject expired links lazily).                                           |
+| Route / function                            | Role                                                                                                                                                                                                                       |
+| ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `POST /api/share`                           | Validate a same-origin share URL, allocate a 7-character code with a create-only write, store the target path + query in Blobs (90-day TTL, expiry also in the blob metadata). Rate limited to 30 creates per IP per hour. |
+| `GET /s/{code}`                             | Look up the code and `302` redirect to the stored target. Expired or missing codes redirect to `/`.                                                                                                                        |
+| `netlify/functions/share-links-cleanup.mts` | Scheduled monthly job that deletes expired entries from the Blobs store, deciding from blob metadata in concurrent batches (redirects also reject expired links lazily).                                                   |
 
 **Client behaviour:** When "Use short share links" is on (Settings, default from `NEXT_PUBLIC_DEFAULT_SHARE_SHORT_LINKS`), the share panel and POI copy actions call `POST /api/share` first and fall back to the long URL if the API is unavailable (offline, rate limit, or Blobs not configured). Successful short links are cached for the browser tab keyed by the long URL, so reopening the share panel or copying again for the same view does not mint another code. The share panel renders that URL as a QR code (`react-qr-code`, lazy-loaded) for scanning from another phone.
 

@@ -79,25 +79,28 @@ export async function GET(request: NextRequest): Promise<Response> {
 		const controller = new AbortController();
 		const timeoutId = setTimeout(() => controller.abort(), 60000); // 60s for large GPX files
 
-		const fetched = await fetchWithSizeCap(
-			targetUrl.toString(),
-			{
-				headers: {
-					Accept: 'application/xml, text/xml, */*',
-					'User-Agent': 'Mozilla/5.0 (compatible; CLDT-Map/1.0; +https://github.com/cldt-hr/cldt-map)',
+		let fetched: Awaited<ReturnType<typeof fetchWithSizeCap>>;
+		try {
+			fetched = await fetchWithSizeCap(
+				targetUrl.toString(),
+				{
+					headers: {
+						Accept: 'application/xml, text/xml, */*',
+						'User-Agent': 'Mozilla/5.0 (compatible; CLDT-Map/1.0; +https://github.com/cldt-hr/cldt-map)',
+					},
+					signal: controller.signal,
+					// The host allowlist above is only checked for the requested URL. fetch() follows
+					// redirects by default, so a redirect from the allowed host could escape the
+					// allowlist and reflect arbitrary bytes to the client (this route serves the body
+					// with a wildcard CORS header). Reject redirects instead: a 3xx lands in the
+					// !response.ok branch of fetchWithSizeCap and is reported as an upstream error.
+					redirect: 'manual',
 				},
-				signal: controller.signal,
-				// The host allowlist above is only checked for the requested URL. fetch() follows
-				// redirects by default, so a redirect from the allowed host could escape the
-				// allowlist and reflect arbitrary bytes to the client (this route serves the body
-				// with a wildcard CORS header). Reject redirects instead: a 3xx lands in the
-				// !response.ok branch of fetchWithSizeCap and is reported as an upstream error.
-				redirect: 'manual',
-			},
-			MAX_BODY_BYTES,
-		);
-
-		clearTimeout(timeoutId);
+				MAX_BODY_BYTES,
+			);
+		} finally {
+			clearTimeout(timeoutId);
+		}
 
 		if (!fetched.ok) {
 			return NextResponse.json({ error: fetched.reason }, { status: fetched.status });

@@ -1,10 +1,17 @@
 /**
  * Server-side Nominatim reverse geocoding for the SOS panel (import from API routes only).
  */
+import { fetchWithSizeCap } from '@/lib/api-defense';
 import { siteMetadata } from '@/lib/metadata';
+import packageJson from '../../package.json';
 
 const NOMINATIM_REVERSE = 'https://nominatim.openstreetmap.org/reverse';
+const USER_AGENT = `CLDT-Map/${packageJson.version} (${siteMetadata.url}; ${siteMetadata.authorUrl})`;
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000;
+/** A failed lookup (upstream error, oversized or unparseable reply) is retried after this. */
+const FAILURE_TTL_MS = 5 * 60 * 1000;
+const MAX_CACHE_ENTRIES = 500;
+const FETCH_TIMEOUT_MS = 8000;
 const MAX_RESPONSE_BYTES = 32 * 1024;
 
 interface NominatimAddressParts {
@@ -30,7 +37,26 @@ interface CacheEntry {
 	expiresAt: number;
 }
 
+/** Least recently used first: reads move an entry to the end, writes evict the front. */
 const addressCache = new Map<string, CacheEntry>();
+
+function readCache(key: string): CacheEntry | undefined {
+	const entry = addressCache.get(key);
+	if (!entry) return undefined;
+	addressCache.delete(key);
+	if (entry.expiresAt <= Date.now()) return undefined;
+	addressCache.set(key, entry);
+	return entry;
+}
+
+function writeCache(key: string, line: string | null, ttlMs: number): void {
+	addressCache.delete(key);
+	addressCache.set(key, { line, expiresAt: Date.now() + ttlMs });
+	if (addressCache.size > MAX_CACHE_ENTRIES) {
+		const oldest = addressCache.keys().next().value;
+		if (oldest !== undefined) addressCache.delete(oldest);
+	}
+}
 
 function cacheKey(lat: number, lng: number, locale: string): string {
 	return `${lat.toFixed(4)},${lng.toFixed(4)},${locale}`;
@@ -43,7 +69,6 @@ function formatAddressFromParts(address: NominatimAddressParts): string {
 	const parts: string[] = [];
 	if (road) parts.push(road);
 	if (place) parts.push(place);
-	else if (address.municipality && address.municipality !== place) parts.push(address.municipality);
 	if (address.county && !parts.includes(address.county)) parts.push(address.county);
 	return parts.join(', ');
 }
@@ -73,8 +98,8 @@ function normalizeLocale(raw: string | null): string {
 export async function reverseGeocodeAddress(lat: number, lng: number, locale: string): Promise<string | null> {
 	const lang = normalizeLocale(locale);
 	const key = cacheKey(lat, lng, lang);
-	const cached = addressCache.get(key);
-	if (cached && cached.expiresAt > Date.now()) return cached.line;
+	const cached = readCache(key);
+	if (cached) return cached.line;
 
 	const params = new URLSearchParams({
 		lat: String(lat),
@@ -85,32 +110,29 @@ export async function reverseGeocodeAddress(lat: number, lng: number, locale: st
 	});
 	const url = `${NOMINATIM_REVERSE}?${params.toString()}`;
 
-	const res = await fetch(url, {
-		headers: {
-			'User-Agent': `CLDT-Map/1.8 (${siteMetadata.url}; ${siteMetadata.authorUrl})`,
-			'Accept-Language': lang,
+	const fetched = await fetchWithSizeCap(
+		url,
+		{
+			headers: { 'User-Agent': USER_AGENT, 'Accept-Language': lang },
+			signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+			next: { revalidate: 86400 },
 		},
-		next: { revalidate: 86400 },
-	});
-
-	if (!res.ok) {
-		addressCache.set(key, { line: null, expiresAt: Date.now() + 5 * 60 * 1000 });
-		return null;
-	}
-
-	const text = await res.text();
-	if (new TextEncoder().encode(text).length > MAX_RESPONSE_BYTES) {
+		MAX_RESPONSE_BYTES,
+	);
+	if (!fetched.ok) {
+		writeCache(key, null, FAILURE_TTL_MS);
 		return null;
 	}
 
 	let data: NominatimReverseResponse;
 	try {
-		data = JSON.parse(text) as NominatimReverseResponse;
+		data = JSON.parse(fetched.body) as NominatimReverseResponse;
 	} catch {
+		writeCache(key, null, FAILURE_TTL_MS);
 		return null;
 	}
 
 	const line = formatAddressFromNominatim(data);
-	addressCache.set(key, { line, expiresAt: Date.now() + CACHE_TTL_MS });
+	writeCache(key, line, CACHE_TTL_MS);
 	return line;
 }
