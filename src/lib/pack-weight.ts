@@ -48,6 +48,16 @@ export function kgToDisplay(kg: number, units: UnitSystem): number {
 	return units === 'imperial' ? kg * LB_PER_KG : kg;
 }
 
+/** The unit of a daily food rate: "kg/day" or "lb/day". */
+export function foodRateUnitLabel(units: UnitSystem): string {
+	return `${weightUnitLabel(units)}/day`;
+}
+
+/** A daily food rate in the unit system, to one decimal: "0.6 kg/day" or "1.3 lb/day". */
+export function formatFoodRate(kgPerDay: number, units: UnitSystem): string {
+	return `${Math.round(kgToDisplay(kgPerDay, units) * 10) / 10} ${foodRateUnitLabel(units)}`;
+}
+
 /** Display number in the active unit system -> canonical kg. */
 export function displayToKg(value: number, units: UnitSystem): number {
 	return units === 'imperial' ? value / LB_PER_KG : value;

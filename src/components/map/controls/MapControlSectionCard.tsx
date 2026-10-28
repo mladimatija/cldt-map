@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { useTranslations } from 'next-intl';
 import { IoChevronDownOutline } from 'react-icons/io5';
 import { cn } from '@/lib/cn';
 
@@ -15,6 +16,7 @@ interface MapControlSectionCardProps {
 	collapsible?: boolean;
 	open?: boolean;
 	onOpenChange?: (open: boolean) => void;
+	/** Screen-reader text of the header button; defaults to the shared collapse and expand labels. */
 	collapseLabel?: string;
 	expandLabel?: string;
 }
@@ -31,6 +33,7 @@ export function MapControlSectionCard({
 	expandLabel,
 }: MapControlSectionCardProps): React.ReactElement {
 	const headingId = React.useId();
+	const tProgress = useTranslations('progress');
 
 	if (collapsible) {
 		return (
@@ -55,7 +58,9 @@ export function MapControlSectionCard({
 						)}
 					/>
 					<span className={MAP_CONTROL_SECTION_HEADING}>{title}</span>
-					<span className="sr-only">{open ? collapseLabel : expandLabel}</span>
+					<span className="sr-only">
+						{open ? (collapseLabel ?? tProgress('collapseSection')) : (expandLabel ?? tProgress('expandSection'))}
+					</span>
 				</button>
 				{open ? (
 					<div className="mt-2 flex flex-col gap-2" id={`${headingId}-body`}>

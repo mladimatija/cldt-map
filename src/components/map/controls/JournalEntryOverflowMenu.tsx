@@ -32,31 +32,69 @@ export function JournalEntryOverflowMenu({
 }: JournalEntryOverflowMenuProps): React.ReactElement {
 	const [open, setOpen] = useState(false);
 	const rootRef = useRef<HTMLDivElement>(null);
+	const menuRef = useRef<HTMLDivElement>(null);
+	const triggerRef = useRef<HTMLButtonElement>(null);
+
+	/** The menu's enabled items, in order: arrow keys move focus among them. */
+	const menuItems = (): HTMLButtonElement[] => [
+		...(menuRef.current?.querySelectorAll<HTMLButtonElement>('[role="menuitem"]:not(:disabled)') ?? []),
+	];
+
+	/** Closes the menu with focus back on its button, so keyboard users keep their place. */
+	const closeMenu = (): void => {
+		setOpen(false);
+		triggerRef.current?.focus();
+	};
 
 	useEffect(() => {
 		if (!open) return;
+		menuItems()[0]?.focus();
 		const handlePointerDown = (e: MouseEvent | TouchEvent): void => {
 			if (!rootRef.current?.contains(e.target as Node)) setOpen(false);
 		};
-		const handleKeyDown = (e: KeyboardEvent): void => {
-			if (e.key === 'Escape') setOpen(false);
-		};
 		document.addEventListener('mousedown', handlePointerDown);
 		document.addEventListener('touchstart', handlePointerDown);
-		document.addEventListener('keydown', handleKeyDown);
 		return () => {
 			document.removeEventListener('mousedown', handlePointerDown);
 			document.removeEventListener('touchstart', handlePointerDown);
-			document.removeEventListener('keydown', handleKeyDown);
 		};
 	}, [open]);
 
+	const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>): void => {
+		if (!open) return;
+		if (e.key === 'Escape') {
+			// Close the menu only. React listens on the document, like the panel's own
+			// Escape listener, so only stopping the remaining listeners there keeps the
+			// panel open.
+			e.nativeEvent.stopImmediatePropagation();
+			closeMenu();
+			return;
+		}
+		if (e.key === 'Tab') {
+			// Leave from the button, as the focused item is about to unmount.
+			closeMenu();
+			return;
+		}
+		const items = menuItems();
+		if (items.length === 0) return;
+		const current = items.indexOf(document.activeElement as HTMLButtonElement);
+		let next: number;
+		if (e.key === 'ArrowDown') next = (current + 1) % items.length;
+		else if (e.key === 'ArrowUp') next = current <= 0 ? items.length - 1 : current - 1;
+		else if (e.key === 'Home') next = 0;
+		else if (e.key === 'End') next = items.length - 1;
+		else return;
+		e.preventDefault();
+		items[next].focus();
+	};
+
 	return (
-		<div className="relative shrink-0" ref={rootRef}>
+		<div className="relative shrink-0" ref={rootRef} onKeyDown={handleKeyDown}>
 			<MapControlIconButton
 				aria-expanded={open}
 				aria-haspopup="menu"
 				aria-label={menuLabel}
+				ref={triggerRef}
 				onClick={() => setOpen((prev) => !prev)}
 			>
 				<IoEllipsisHorizontal aria-hidden className="h-4 w-4" />
@@ -67,14 +105,16 @@ export function JournalEntryOverflowMenu({
 						'z-controls-popover absolute top-full right-0 mt-1 min-w-[9rem] rounded-md border border-gray-200 bg-white py-1 shadow-md',
 						'dark:border-[var(--border-color)] dark:bg-[var(--bg-secondary)]',
 					)}
+					ref={menuRef}
 					role="menu"
 				>
 					<button
 						className="block w-full cursor-pointer border-0 bg-transparent px-3 py-1.5 text-left text-xs text-gray-700 outline-none hover:bg-gray-100 focus-visible:bg-gray-100 dark:text-[var(--text-primary)] dark:hover:bg-[var(--bg-hover)] dark:focus-visible:bg-[var(--bg-hover)]"
 						role="menuitem"
+						tabIndex={-1}
 						type="button"
 						onClick={() => {
-							setOpen(false);
+							closeMenu();
 							onEdit();
 						}}
 					>
@@ -85,11 +125,12 @@ export function JournalEntryOverflowMenu({
 							className="block w-full cursor-pointer border-0 bg-transparent px-3 py-1.5 text-left text-xs text-gray-700 outline-none hover:bg-gray-100 focus-visible:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50 dark:text-[var(--text-primary)] dark:hover:bg-[var(--bg-hover)] dark:focus-visible:bg-[var(--bg-hover)]"
 							disabled={exportGpxDisabled}
 							role="menuitem"
+							tabIndex={-1}
 							title={exportGpxTitle}
 							type="button"
 							onClick={() => {
 								if (exportGpxDisabled) return;
-								setOpen(false);
+								closeMenu();
 								onExportGpx();
 							}}
 						>
@@ -99,9 +140,10 @@ export function JournalEntryOverflowMenu({
 					<button
 						className="text-cldt-red block w-full cursor-pointer border-0 bg-transparent px-3 py-1.5 text-left text-xs outline-none hover:bg-gray-100 focus-visible:bg-gray-100 dark:hover:bg-[var(--bg-hover)] dark:focus-visible:bg-[var(--bg-hover)]"
 						role="menuitem"
+						tabIndex={-1}
 						type="button"
 						onClick={() => {
-							setOpen(false);
+							closeMenu();
 							onDelete();
 						}}
 					>

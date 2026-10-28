@@ -319,7 +319,7 @@ src/
 │   ├── s/[code]/     # Short share link redirects (/s/{code} → stored map URL)
 │   └── styles/       # CSS (base, theme, map, components)
 ├── components/
-│   ├── map/          # Map, TrailRoute, MapMarkers, POI/mine/seasonal/imported-track layers, banners, controls
+│   ├── map/          # Map, TrailRoute, MapMarkers, POI/mine/seasonal/imported-track layers, banners, controls (the stage planner, POI list and settings panels in controls/stage-planner, poi-list and settings, one file per card)
 │   ├── layout/       # Header, Footer, Layout, BackToMapBar
 │   ├── ui/           # Button, Checkbox, Radio, ExternalLink, etc.
 │   ├── common/       # ErrorBoundary, ServiceWorkerProvider, PwaInstallPrompt

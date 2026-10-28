@@ -21,7 +21,7 @@ import { exportTripBriefPdf } from '@/lib/trip-brief-pdf';
 import { exportTripBriefDocx } from '@/lib/trip-brief-docx';
 import { exportTripBriefHtml } from '@/lib/trip-brief-html';
 import { useActiveStarredPoiIds, usePackAdjustedPaceKmh } from '@/hooks';
-import { computeStagePackScenarios, formatVolume, formatWeight, kgToDisplay, weightUnitLabel } from '@/lib/pack-weight';
+import { computeStagePackScenarios, formatFoodRate, formatVolume, formatWeight } from '@/lib/pack-weight';
 import { buildResupplyCadenceLabels, type StageResupplyCadence } from '@/lib/resupply-cadence';
 import { poiDisplayName } from '@/lib/pois';
 import { filterOvernightCandidates } from '@/lib/stage-accommodation';
@@ -230,7 +230,7 @@ export function MapControlsTripBriefModal({
 					resolveTownName: poiName,
 					consumableKg: packGearList?.consumableKg ?? 0,
 					foodConsumptionKgPerDay,
-					rateLabel: `${Math.round(kgToDisplay(foodConsumptionKgPerDay, units) * 10) / 10} ${weightUnitLabel(units)}/day`,
+					rateLabel: formatFoodRate(foodConsumptionKgPerDay, units),
 					entering: (v) => t('resupplyEntering', v),
 					carry: (v) => t('resupplyCarry', v),
 					foodPack: (v) => t('resupplyFoodPack', v),

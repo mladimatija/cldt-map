@@ -82,8 +82,7 @@ export interface UsePoiListRowsResult {
 
 /**
  * Builds the filtered + sorted POI rows and (when grouping is active) the
- * decade-bucketed view. Extracted from MapControlsPoiList so the panel
- * component only owns presentation and event handling.
+ * decade-bucketed view, for the POI list (poi-list/usePoiListData).
  */
 export function usePoiListRows(args: UsePoiListRowsArgs): UsePoiListRowsResult {
 	const {

@@ -8,6 +8,7 @@ export interface MapControlIconButtonProps extends Omit<ButtonProps, 'size'> {
 	'aria-label': string;
 	title?: string;
 	children: React.ReactNode;
+	ref?: React.Ref<HTMLButtonElement>;
 }
 
 const ICON_BUTTON_CLASS = 'h-8 w-8 shrink-0 px-0';

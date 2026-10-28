@@ -36,15 +36,15 @@ import { Button } from '@/components/ui/Button';
 import { useTranslations } from 'next-intl';
 import { MapControlsButton } from './MapControlsButton';
 import { MapControlsPrecisionSlider } from './MapControlsPrecisionSlider';
-import { MapControlsSettingsPanel } from './MapControlsSettingsPanel';
+import { SettingsPanel } from './settings/SettingsPanel';
 import { MapControlsToolsPanel } from './MapControlsToolsPanel';
 import { MapControlsTestLink } from './MapControlsTestLink';
 import { MapControlsSharePanel } from './MapControlsSharePanel';
-import { MapControlsStagePlannerPanel } from './MapControlsStagePlannerPanel';
+import { StagePlannerPanel } from './stage-planner/StagePlannerPanel';
 import { MapControlsProgressPanel } from './MapControlsProgressPanel';
 import { MapControlsHelpPanel } from './MapControlsHelpPanel';
 import { MapControlsEmergencyButton } from './MapControlsEmergencyButton';
-import { MapControlsPoiList } from './MapControlsPoiList';
+import { PoiListPanel } from './poi-list/PoiListPanel';
 import { MapControlsEmergencyPanel } from './MapControlsEmergencyPanel';
 import { prefetchEmergencyData } from '@/lib/emergency-data';
 import { toTravelKm } from '@/lib/trail-frame';
@@ -714,7 +714,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 				ref={topRightControlsRef}
 				onContextMenu={(e) => e.preventDefault()}
 			>
-				<MapControlsPoiList
+				<PoiListPanel
 					containerRef={poiListContainerRef}
 					isExpanded={poiListPanel.isOpen}
 					onClose={closePanel}
@@ -805,7 +805,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 					)}
 				</div>
 
-				<MapControlsSettingsPanel
+				<SettingsPanel
 					containerRef={settingsContainerRef}
 					isExpanded={settingsPanel.isOpen}
 					onToggle={settingsPanel.toggle}
@@ -820,7 +820,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 					>
 						<IoCalendarOutline aria-hidden className="h-5 w-5" />
 					</MapControlsButton>
-					{stagePlannerPanel.isOpen && <MapControlsStagePlannerPanel />}
+					{stagePlannerPanel.isOpen && <StagePlannerPanel />}
 				</div>
 
 				<div className="relative inline-block w-10 shrink-0" ref={progressRef}>
