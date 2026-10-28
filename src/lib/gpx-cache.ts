@@ -3,6 +3,7 @@
 import localforage from 'localforage';
 import { NetworkError } from '@/lib/errors';
 import { parseGpx } from './gpx-parser';
+import { clearComputedTrails } from './trail-compute-cache';
 
 // Configure localforage
 localforage.config({
@@ -67,11 +68,12 @@ async function fetchText(url: string, timeoutMs: number): Promise<string> {
  *
  * Single-flight: concurrent callers share one in-flight request, so two
  * overlapping calls cannot interleave their cache writes (e.g., a fallback
- * re-write clobbering a fresh network write).
+ * re-write clobbering a fresh network write). With `refresh`, a current cache
+ * is not enough: the network is tried first and the cache is the fallback.
  */
-export async function fetchGPXWithCache(): Promise<GPXResult> {
+export async function fetchGPXWithCache({ refresh = false }: { refresh?: boolean } = {}): Promise<GPXResult> {
 	if (inFlightGpxFetch) return inFlightGpxFetch;
-	inFlightGpxFetch = doFetchGPXWithCache().finally(() => {
+	inFlightGpxFetch = doFetchGPXWithCache(refresh).finally(() => {
 		inFlightGpxFetch = null;
 	});
 	return inFlightGpxFetch;
@@ -79,7 +81,7 @@ export async function fetchGPXWithCache(): Promise<GPXResult> {
 
 let inFlightGpxFetch: Promise<GPXResult> | null = null;
 
-async function doFetchGPXWithCache(): Promise<GPXResult> {
+async function doFetchGPXWithCache(refresh: boolean): Promise<GPXResult> {
 	const gpxUrl = process.env.NEXT_PUBLIC_GPX_URL;
 
 	if (!gpxUrl) {
@@ -96,7 +98,7 @@ async function doFetchGPXWithCache(): Promise<GPXResult> {
 	try {
 		const cachedData = await localforage.getItem<CachedGPX>(GPX_CACHE_KEY);
 
-		if (cachedData?.version === cacheVersion) {
+		if (!refresh && cachedData?.version === cacheVersion) {
 			return {
 				data: cachedData.data,
 				source: 'cache',
@@ -179,11 +181,15 @@ async function doFetchGPXWithCache(): Promise<GPXResult> {
 }
 
 /**
- * Clears the cached GPX data so the next fetch will request from the network.
- * Use after a load failure to allow retry without stale cache.
+ * Retry after a failed trail load: fetches the GPX from the network even when
+ * the cache is current. The cached copy is replaced only when that succeeds,
+ * so a failed retry (offline, server down) keeps the trail the device has. A
+ * replaced GPX also drops the computed dataset, which is keyed by the cache
+ * version alone and may have been built from the old file.
  */
-export async function clearGPXCache(): Promise<void> {
-	await localforage.removeItem(GPX_CACHE_KEY);
+export async function refreshGPXCache(): Promise<void> {
+	const result = await fetchGPXWithCache({ refresh: true });
+	if (result.source === 'network') await clearComputedTrails();
 }
 
 /**

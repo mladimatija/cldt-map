@@ -2,7 +2,6 @@
 
 import React, { useCallback, useEffect, useMemo, useRef, useState, type RefObject } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
-import { usePathname, useRouter } from '@/i18n/navigation';
 import { routing, type Locale } from '@/i18n/routing';
 import { useClientLocale } from '@/components/providers/ClientIntlProvider';
 import { usePopoverFocusTrap } from '@/hooks';
@@ -95,8 +94,6 @@ export function MapControlsSettingsPanel({
 	const tSeasonal = useTranslations('seasonalStatus');
 	const tFooter = useTranslations('footer');
 	const activeLocale = useLocale() as Locale;
-	const pathname = usePathname();
-	const router = useRouter();
 	const { setLocale } = useClientLocale();
 	const popoverRef = usePopoverFocusTrap(isExpanded);
 	const settingsScrollTarget = useMapStore((state: MapStoreState) => state.settingsScrollTarget);
@@ -271,14 +268,15 @@ export function MapControlsSettingsPanel({
 		() => languageOptions.find((o) => o.value === activeLocale) ?? null,
 		[languageOptions, activeLocale],
 	);
+	// Applies in place, like the footer switcher: a navigation would change the
+	// [locale] segment and remount the page, map included.
 	const handleLanguageChange = useCallback(
 		(opt: LanguageOption | null): void => {
 			if (!opt) return;
 			setLocale(opt.value);
-			router.push(pathname, { locale: opt.value });
 			setLanguageMenuOpen(false);
 		},
-		[setLocale, router, pathname],
+		[setLocale],
 	);
 	// Leaflet's disableClickPropagation on this panel swallows the control's
 	// pointerdown before react-select sees it, so toggle the menu natively and

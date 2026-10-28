@@ -5,7 +5,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { IoCheckmark, IoLanguageOutline } from 'react-icons/io5';
 import { MdKeyboardArrowDown, MdKeyboardArrowUp } from 'react-icons/md';
-import { usePathname, useRouter } from '@/i18n/navigation';
 import { routing, type Locale } from '@/i18n/routing';
 import { useClientLocale } from '@/components/providers/ClientIntlProvider';
 import { useClickOutside } from '@/hooks';
@@ -14,8 +13,6 @@ import { cn } from '@/lib/cn';
 export function LanguageSwitcher(): React.ReactElement {
 	const t = useTranslations('footer');
 	const locale = useLocale() as Locale;
-	const pathname = usePathname();
-	const router = useRouter();
 	const { setLocale } = useClientLocale();
 	const [isOpen, setIsOpen] = useState(false);
 	const containerRef = useRef<HTMLDivElement>(null);
@@ -33,7 +30,6 @@ export function LanguageSwitcher(): React.ReactElement {
 
 	const handleSelect = (next: Locale): void => {
 		setLocale(next);
-		router.push(pathname, { locale: next });
 		setIsOpen(false);
 	};
 

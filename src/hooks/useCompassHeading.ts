@@ -23,6 +23,13 @@ interface IosDeviceOrientationEventCtor {
 	requestPermission?: () => Promise<'granted' | 'denied'>;
 }
 
+/** How far the screen is turned from the device's natural orientation, in
+ *  degrees (90 in landscape with the device's top to the left). */
+function screenAngle(): number {
+	const angle = typeof screen === 'undefined' ? undefined : screen.orientation?.angle;
+	return typeof angle === 'number' && Number.isFinite(angle) ? angle : 0;
+}
+
 /**
  * Requests iOS orientation permission. Resolves true when events may flow
  * (granted, or no permission gate exists on this platform). Must be invoked
@@ -66,8 +73,10 @@ export function useCompassHeading(enabled: boolean): number | null {
 				// iOS: already a compass heading (0 = north, clockwise).
 				next = ev.webkitCompassHeading;
 			} else if (ev.absolute && typeof ev.alpha === 'number' && Number.isFinite(ev.alpha)) {
-				// Absolute alpha is counterclockwise from north; invert.
-				next = (360 - ev.alpha) % 360;
+				// Absolute alpha is counterclockwise from north and relative to the
+				// device's top; invert it, then turn by the screen rotation so the
+				// cone follows the top of the screen in landscape too.
+				next = (((360 - ev.alpha + screenAngle()) % 360) + 360) % 360;
 			}
 			if (next === null) return;
 			latest = next;

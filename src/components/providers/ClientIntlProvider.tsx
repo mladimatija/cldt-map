@@ -1,12 +1,14 @@
 'use client';
 
 /**
- * Wraps the app in next-intl and provides locale state; syncs locale with localStorage so language choice persists.
+ * Wraps the app in next-intl and provides locale state. A language choice is
+ * kept in the locale cookie, so the server renders it, and in localStorage for
+ * the pages that pick their language on the client (offline, global error).
  * useClientLocale() gives children access to the current locale and setLocale.
  */
 import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { NextIntlClientProvider } from 'next-intl';
-import { routing, type Locale } from '@/i18n/routing';
+import { LOCALE_COOKIE, routing, type Locale } from '@/i18n/routing';
 
 const LOCALE_STORAGE_KEY = 'cldt-map-locale';
 
@@ -19,6 +21,14 @@ function getStoredLocale(): string | null {
 function setStoredLocale(locale: string): void {
 	if (typeof document === 'undefined') return;
 	localStorage.setItem(LOCALE_STORAGE_KEY, locale);
+}
+
+function hasLocaleCookie(): boolean {
+	return document.cookie.split('; ').some((entry) => entry.startsWith(`${LOCALE_COOKIE.name}=`));
+}
+
+function writeLocaleCookie(locale: string): void {
+	document.cookie = `${LOCALE_COOKIE.name}=${locale}; path=/; max-age=${LOCALE_COOKIE.maxAge}; samesite=lax`;
 }
 
 type Messages = Record<string, Record<string, unknown>>;
@@ -60,13 +70,13 @@ export function ClientIntlProvider({ initialLocale, initialMessages, timeZone, c
 	const activateLocale = useCallback(
 		(targetLocale: string) => {
 			if (!(routing.locales as readonly string[]).includes(targetLocale)) return;
-			if (loadedMessages[targetLocale]) {
-				setLocaleState(targetLocale);
-				return;
-			}
-			void import(`../../../messages/${targetLocale}.json`)
-				.then((mod) => {
-					setLoadedMessages((prev) => (prev[targetLocale] ? prev : { ...prev, [targetLocale]: mod.default }));
+			const cached = loadedMessages[targetLocale];
+			const messagesFor = cached
+				? Promise.resolve(cached)
+				: import(`../../../messages/${targetLocale}.json`).then((mod) => mod.default as Messages);
+			void messagesFor
+				.then((targetMessages) => {
+					setLoadedMessages((prev) => (prev[targetLocale] ? prev : { ...prev, [targetLocale]: targetMessages }));
 					// Switch only after the messages exist so no frame renders
 					// the new locale with the old locale's strings.
 					setLocaleState(targetLocale);
@@ -78,21 +88,34 @@ export function ClientIntlProvider({ initialLocale, initialMessages, timeZone, c
 		[loadedMessages],
 	);
 
-	// Sync from localStorage on mount (server can't read localStorage, so we correct after hydrate)
+	// A choice saved before the locale cookie existed lives only in
+	// localStorage: move it into the cookie (the server renders it from the
+	// next load on) and apply it to this one.
 	useEffect(() => {
+		if (hasLocaleCookie()) return;
 		const stored = getStoredLocale();
-		if (stored && stored !== locale) {
-			queueMicrotask(() => activateLocale(stored));
-		}
-	}, [locale, activateLocale]);
+		if (!stored) return;
+		writeLocaleCookie(stored);
+		if (stored !== safeInitial) activateLocale(stored);
+	}, [safeInitial, activateLocale]);
 
+	// The new language applies in place: a navigation would change the [locale]
+	// segment and remount the page, map included. Server-rendered text follows
+	// on the next load, from the cookie.
 	const setLocale = useCallback(
 		(targetLocale: Locale) => {
 			setStoredLocale(targetLocale);
+			writeLocaleCookie(targetLocale);
 			activateLocale(targetLocale);
 		},
 		[activateLocale],
 	);
+
+	// The server renders <html lang> once; keep it right after a switch in place,
+	// so screen readers read the page in its language.
+	useEffect(() => {
+		document.documentElement.lang = locale;
+	}, [locale]);
 
 	const messages = loadedMessages[locale] ?? initialMessages;
 

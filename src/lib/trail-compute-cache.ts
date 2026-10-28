@@ -16,6 +16,8 @@
  *
  * Invalidation:
  * - A NEXT_PUBLIC_CACHE_VERSION bump changes the key AND re-fetches the GPX.
+ * - A retry after a failed load that fetches a new GPX (refreshGPXCache)
+ *   clears every record.
  * - SCHEMA_VERSION (below) must be bumped whenever ComputedTrailData's shape or
  *   the computeTrailData / parseTrackPoints / TRAIL_SECTIONS logic changes, so
  *   datasets written by an older build are ignored rather than mis-hydrated.
@@ -57,6 +59,15 @@ export async function loadComputedTrail(key: string): Promise<ComputedTrailData 
 		return isComputedTrailData(data) ? data : null;
 	} catch {
 		return null;
+	}
+}
+
+/** Drops every stored dataset (best-effort), so the next load recomputes it. */
+export async function clearComputedTrails(): Promise<void> {
+	try {
+		await store.clear();
+	} catch {
+		// best-effort; a stale record is only a slower path, never a broken one
 	}
 }
 

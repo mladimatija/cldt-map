@@ -2,7 +2,7 @@
 
 /**
  * 404 Not Found: Shown when a page doesn't exist.
- * Client component so it uses locale from ClientIntlProvider (which reads cldt-map-locale from localStorage; defaults to EN).
+ * Client component so it uses the locale from ClientIntlProvider (the locale cookie's language, else Accept-Language).
  */
 import Image from 'next/image';
 import { useTranslations } from 'next-intl';

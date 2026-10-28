@@ -2,12 +2,20 @@
 
 import { useEffect, useRef, type RefObject } from 'react';
 
-const FOCUSABLE_SELECTOR = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+const FOCUSABLE_SELECTOR =
+	'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+/** The focusable elements inside `el` right now. Sections that expand or
+ *  collapse change the set, so it is read on every Tab press. */
+function focusablesIn(el: HTMLElement): HTMLElement[] {
+	return [...el.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)].filter((node) => node.getClientRects().length > 0);
+}
 
 /**
  * Returns a ref to attach to a popover/dialog container. When `isOpen` is true:
  * - Focuses `initialFocusRef` when given, else the first focusable element inside the container.
  * - Traps Tab/Shift+Tab so focus stays within the container (for keyboard accessibility).
+ * - On close, returns focus to the element that had it when the popover opened.
  */
 export function usePopoverFocusTrap(
 	isOpen: boolean,
@@ -20,28 +28,30 @@ export function usePopoverFocusTrap(
 		const el = popoverRef.current;
 		if (!el) return;
 
-		const focusables = el.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR);
-		const first = focusables[0];
-		const last = focusables[focusables.length - 1];
-		(initialFocusRef?.current ?? first)?.focus();
+		const active = document.activeElement;
+		const opener = active instanceof HTMLElement && active !== document.body ? active : null;
+		(initialFocusRef?.current ?? focusablesIn(el)[0])?.focus();
 
 		const handleKeyDown = (e: KeyboardEvent): void => {
 			if (e.key !== 'Tab') return;
+			const focusables = focusablesIn(el);
 			if (focusables.length === 0) return;
-			if (e.shiftKey) {
-				if (document.activeElement === first) {
-					e.preventDefault();
-					last?.focus();
-				}
-			} else {
-				if (document.activeElement === last) {
-					e.preventDefault();
-					first?.focus();
-				}
+			const first = focusables[0];
+			const last = focusables[focusables.length - 1];
+			if (e.shiftKey ? document.activeElement === first : document.activeElement === last) {
+				e.preventDefault();
+				(e.shiftKey ? last : first).focus();
 			}
 		};
 		el.addEventListener('keydown', handleKeyDown);
-		return () => el.removeEventListener('keydown', handleKeyDown);
+		return () => {
+			el.removeEventListener('keydown', handleKeyDown);
+			// Only when focus is still inside, or went away with the popover: a
+			// close caused by clicking some other control keeps that control focused.
+			const current = document.activeElement;
+			const focusInside = !current || current === document.body || el.contains(current);
+			if (focusInside && opener?.isConnected) opener.focus();
+		};
 	}, [isOpen, initialFocusRef]);
 
 	return popoverRef;

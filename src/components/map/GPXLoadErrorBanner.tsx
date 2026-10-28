@@ -3,7 +3,7 @@
 import React from 'react';
 import { useTranslations } from 'next-intl';
 import { useMapStore, useStore, type MapStoreState, type StoreState } from '@/lib/store';
-import { clearGPXCache } from '@/lib/gpx-cache';
+import { refreshGPXCache } from '@/lib/gpx-cache';
 import { Button } from '@/components/ui/Button';
 
 /**
@@ -19,7 +19,7 @@ export default function GPXLoadErrorBanner(): React.ReactElement | null {
 
 	const handleRetry = async (): Promise<void> => {
 		setGpxLoadFailed(false);
-		await clearGPXCache();
+		await refreshGPXCache();
 		setReloadTrailRequested(Date.now());
 	};
 
