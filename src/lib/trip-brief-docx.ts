@@ -29,6 +29,9 @@ import { formatKm } from './units';
 /** Display width matches the elevation thumbnail; height keeps PDF map aspect. */
 const MAP_IMG_W = 522;
 const MAP_IMG_H = 330;
+/** The same size in mm: docx sizes images in 96 dpi pixels. */
+const MAP_IMG_W_MM = (MAP_IMG_W / 96) * 25.4;
+const MAP_IMG_H_MM = (MAP_IMG_H / 96) * 25.4;
 
 export interface TripBriefDocxArgs {
 	brief: TripBrief;
@@ -185,7 +188,7 @@ export async function exportTripBriefDocx(args: TripBriefDocxArgs): Promise<void
 						new ImageRun({
 							data: dataUrlToBytes(mapSnapshot),
 							transformation: { width: MAP_IMG_W, height: MAP_IMG_H },
-							type: 'png',
+							type: 'jpg',
 						}),
 					],
 					spacing: { after: 120 },
@@ -363,8 +366,8 @@ export async function exportTripBriefDocx(args: TripBriefDocxArgs): Promise<void
 							day.endKm,
 							captureFilter,
 							toBlob,
-							MAP_IMG_W,
-							MAP_IMG_H,
+							MAP_IMG_W_MM,
+							MAP_IMG_H_MM,
 							signal,
 						);
 			dayBlocks.push(...buildDay(i, mapSnapshot));

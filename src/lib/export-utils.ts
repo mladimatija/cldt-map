@@ -11,6 +11,11 @@ import { isBaseTilePane } from '@/lib/leaflet-panes';
 
 const MAP_RENDER_SETTLE_MS = 600;
 
+/** Map pages in the PDF and DOCX exports print at this resolution. */
+const PRINT_DPI = 200;
+/** JPEG quality for map pages; JPEG keeps map imagery far smaller than PNG. */
+const PRINT_JPEG_QUALITY = 0.85;
+
 /** True when PNG export is off for a base map style: its tile server sends no
  *  CORS headers (Croatia Topo), so the capture could not read its tiles. */
 export function isPngExportDisabled(provider: string): boolean {
@@ -202,6 +207,7 @@ export async function captureMapImage(
 	mapEl: HTMLElement,
 	toBlob: typeof import('html-to-image').toBlob,
 	filter: (node: Element) => boolean = () => true,
+	pixelRatio?: number,
 ): Promise<Blob | null> {
 	const unreadable = new Set<Element>([...mapEl.querySelectorAll('canvas')].filter((c) => !isCanvasReadable(c)));
 	return toBlob(mapEl, {
@@ -209,10 +215,36 @@ export async function captureMapImage(
 		// WMS tiles share one path and differ only in their query string.
 		includeQueryParams: true,
 		filter: (node) => !unreadable.has(node) && filter(node),
+		pixelRatio,
 	});
 }
 
-/** Capture the live Leaflet map framed to a stage km window, cropped to aspect. */
+/** The capture pixel ratio at which the part of the map a page shows (cropped
+ *  to `widthMm` by `heightMm`) prints at PRINT_DPI: never below 1, and above 1
+ *  only up to the screen's own ratio. Captures at the screen's full ratio made
+ *  each page of a large screen's PDF about 17 MB. */
+function printPixelRatio(mapEl: HTMLElement, widthMm: number, heightMm: number): number {
+	const croppedWidth = Math.min(mapEl.clientWidth, (mapEl.clientHeight * widthMm) / heightMm);
+	const wantedPixels = (widthMm / 25.4) * PRINT_DPI;
+	return Math.max(1, Math.min(window.devicePixelRatio || 1, wantedPixels / croppedWidth));
+}
+
+/** The map captured at print resolution and cropped to a page area of `widthMm`
+ *  by `heightMm`, as a JPEG data URL; null when the capture gives no image. */
+async function capturePrintMap(
+	mapEl: HTMLElement,
+	toBlob: typeof import('html-to-image').toBlob,
+	filter: (node: Element) => boolean,
+	widthMm: number,
+	heightMm: number,
+): Promise<string | null> {
+	const blob = await captureMapImage(mapEl, toBlob, filter, printPixelRatio(mapEl, widthMm, heightMm));
+	if (!blob) return null;
+	return cropToAspect(await blobToDataUrl(blob), widthMm, heightMm);
+}
+
+/** Capture the live Leaflet map framed to a stage km window, as a JPEG data URL
+ *  cropped to the `widthMm` by `heightMm` it prints at. */
 export async function captureStageMapSnapshot(
 	map: LeafletMapForExport,
 	mapEl: HTMLElement,
@@ -221,8 +253,8 @@ export async function captureStageMapSnapshot(
 	endKm: number,
 	captureFilter: (node: Element) => boolean,
 	toBlob: typeof import('html-to-image').toBlob,
-	aspectW: number,
-	aspectH: number,
+	widthMm: number,
+	heightMm: number,
 	signal?: AbortSignal,
 ): Promise<string | null> {
 	if (signal?.aborted) return null;
@@ -241,16 +273,20 @@ export async function captureStageMapSnapshot(
 	// Wait for the repositioned tiles to actually load before snapshotting.
 	await waitForTilesLoaded(map);
 	if (signal?.aborted) return null;
-	const blob = await captureMapImage(mapEl, toBlob, captureFilter);
-	if (!blob) return null;
-	const dataUrl = await blobToDataUrl(blob);
-	return cropToAspect(dataUrl, aspectW, aspectH);
+	return capturePrintMap(mapEl, toBlob, captureFilter, widthMm, heightMm);
 }
 
-async function cropToAspect(dataUrl: string, targetW: number, targetH: number): Promise<string> {
+/** Crops a captured map to the page's aspect ratio, as a JPEG data URL; null
+ *  when the capture does not decode or is empty, so the page goes without a map. */
+async function cropToAspect(dataUrl: string, targetW: number, targetH: number): Promise<string | null> {
 	return new Promise((resolve) => {
 		const img = new Image();
+		img.onerror = () => resolve(null);
 		img.onload = () => {
+			if (!img.width || !img.height) {
+				resolve(null);
+				return;
+			}
 			const imgAspect = img.width / img.height;
 			const targetAspect = targetW / targetH;
 			let sx = 0,
@@ -267,8 +303,12 @@ async function cropToAspect(dataUrl: string, targetW: number, targetH: number): 
 			const canvas = document.createElement('canvas');
 			canvas.width = sw;
 			canvas.height = sh;
-			canvas.getContext('2d')!.drawImage(img, sx, sy, sw, sh, 0, 0, sw, sh);
-			resolve(canvas.toDataURL('image/png'));
+			const ctx = canvas.getContext('2d')!;
+			// JPEG has no transparency: anything see-through prints white, not black.
+			ctx.fillStyle = '#fff';
+			ctx.fillRect(0, 0, sw, sh);
+			ctx.drawImage(img, sx, sy, sw, sh, 0, 0, sw, sh);
+			resolve(canvas.toDataURL('image/jpeg', PRINT_JPEG_QUALITY));
 		};
 		img.src = dataUrl;
 	});
@@ -301,6 +341,8 @@ export async function exportStripMapPdf(
 
 	const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
 	// A4 landscape: 297 × 210 mm; 14 mm header band; map image fills remaining 196 mm
+	const mapWidthMm = 297;
+	const mapHeightMm = 196;
 
 	const isImperial = units === 'imperial';
 	// Stages are SOBO ranges; stats and labels follow the hiker's direction.
@@ -347,9 +389,7 @@ export async function exportStripMapPdf(
 
 			if (signal?.aborted) return;
 
-			const blob = await captureMapImage(resolvedMapEl, toBlob, captureFilter);
-			let dataUrl = blob ? await blobToDataUrl(blob) : null;
-			if (dataUrl) dataUrl = await cropToAspect(dataUrl, 297, 196);
+			const dataUrl = await capturePrintMap(resolvedMapEl, toBlob, captureFilter, mapWidthMm, mapHeightMm);
 
 			if (i > 0) pdf.addPage();
 
@@ -388,7 +428,7 @@ export async function exportStripMapPdf(
 			pdf.text(`  ${etaStr}`, 15 + gainWidth + lossWidth, 11);
 
 			if (dataUrl) {
-				pdf.addImage(dataUrl, 'PNG', 0, 14, 297, 196);
+				pdf.addImage(dataUrl, 'JPEG', 0, 14, mapWidthMm, mapHeightMm);
 			}
 
 			onProgress?.(i + 1, stages.length);

@@ -389,7 +389,7 @@ function renderDay(
 		yCursor += 5;
 	}
 	if (snapshot) {
-		pdf.addImage(snapshot, 'PNG', MARGIN_X, yCursor, MAP_W, MAP_H);
+		pdf.addImage(snapshot, 'JPEG', MARGIN_X, yCursor, MAP_W, MAP_H);
 		yCursor += MAP_H + 6;
 	}
 

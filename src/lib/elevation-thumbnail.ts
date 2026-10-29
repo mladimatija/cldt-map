@@ -96,7 +96,7 @@ export function renderElevationThumbnail(
 	return canvas.toDataURL('image/png');
 }
 
-/** Data-URL PNG -> raw bytes for docx's ImageRun. */
+/** Data URL (PNG or JPEG) -> raw bytes for docx's ImageRun. */
 export function dataUrlToBytes(dataUrl: string): Uint8Array {
 	const base64 = dataUrl.slice(dataUrl.indexOf(',') + 1);
 	const bin = atob(base64);
