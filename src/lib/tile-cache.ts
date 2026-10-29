@@ -248,11 +248,35 @@ export function generateTrailTileUrls(
 
 // ── Pre-caching ───────────────────────────────────────────────────────────────
 
-/** The copy of the tile at `url` that Cache Storage holds, if any. */
+/** Hosts whose a., b. and c. subdomains serve the same tiles. Leaflet spreads a
+ *  map's requests over all three while the offline download uses a., so the
+ *  service worker stores their tiles under a. (tileCacheKey in public/sw.js). */
+const SUBDOMAIN_TILE_HOSTS = new Set([
+	'tile.openstreetmap.org',
+	'tile.opentopomap.org',
+	'tile-cyclosm.openstreetmap.fr',
+]);
+
+/** The key the service worker stores a tile under: its URL, with a b. or c. tile
+ *  subdomain read as a. */
+function tileCacheKey(url: string): string {
+	const parsed = new URL(url);
+	const dot = parsed.hostname.indexOf('.');
+	const subdomain = parsed.hostname.slice(0, dot);
+	const host = parsed.hostname.slice(dot + 1);
+	if ((subdomain !== 'b' && subdomain !== 'c') || !SUBDOMAIN_TILE_HOSTS.has(host)) return url;
+	parsed.hostname = `a.${host}`;
+	return parsed.href;
+}
+
+/** The copy of the tile at `url` that Cache Storage holds, if any, also when
+ *  the map asks another subdomain than the one it was stored under. */
 export async function findStoredTile(url: string): Promise<Response | undefined> {
 	if (typeof caches === 'undefined') return undefined;
 	try {
-		return await caches.match(url);
+		const key = tileCacheKey(url);
+		// Tiles stored before the subdomains shared a key are still under their own URL.
+		return (await caches.match(key)) ?? (key === url ? undefined : await caches.match(url));
 	} catch {
 		return undefined;
 	}

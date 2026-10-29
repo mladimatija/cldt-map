@@ -100,6 +100,23 @@ function isTileRequest(url) {
     return TILE_HOSTS.some((host) => isAllowedHost(url.hostname, host));
 }
 
+// Hosts whose a., b. and c. subdomains serve the same tiles. Leaflet spreads a
+// map's requests over all three while the offline download has always used a.,
+// so tiles are stored under a. and found whichever subdomain asks. Keep in step
+// with tileCacheKey in src/lib/tile-cache.ts.
+const SUBDOMAIN_TILE_HOSTS = ['tile.openstreetmap.org', 'tile.opentopomap.org', 'tile-cyclosm.openstreetmap.fr'];
+
+/** The cache key of a tile URL: the URL itself, with a b. or c. tile subdomain read as a. */
+function tileCacheKey(url) {
+    const dot = url.hostname.indexOf('.');
+    const subdomain = url.hostname.slice(0, dot);
+    const host = url.hostname.slice(dot + 1);
+    if ((subdomain !== 'b' && subdomain !== 'c') || !SUBDOMAIN_TILE_HOSTS.includes(host)) return url.href;
+    const key = new URL(url.href);
+    key.hostname = 'a.' + host;
+    return key.href;
+}
+
 // ── Croatia geographic clip ──────────────────────────────────────────────────
 // The runtime tile cache used to keep every tile the user ever panned over,
 // worldwide, bounded only by a 60k-per-provider ceiling - which let casual
@@ -346,18 +363,25 @@ async function handleTileRequest(event, url) {
     const request = event.request;
     const cache = await caches.open(getTileCacheName(url.hostname));
 
-    const cachedResponse = await cache.match(request.url || request);
+    const key = tileCacheKey(url);
+    let storedKey = key;
+    let cachedResponse = await cache.match(key);
+    if (!cachedResponse && key !== url.href) {
+        // Tiles stored before the subdomains shared a key are still under their own URL.
+        storedKey = url.href;
+        cachedResponse = await cache.match(storedKey);
+    }
     if (cachedResponse) {
         // Map tiles load with CORS, and the browser rejects an opaque copy (stored
         // by earlier versions, which loaded tiles without CORS) as the answer to one.
         if (cachedResponse.type !== 'opaque' || request.mode === 'no-cors') return cachedResponse;
-        return upgradeOpaqueTile(event, cache, request, url);
+        return upgradeOpaqueTile(event, cache, request, url, storedKey);
     }
 
     try {
         const networkResponse = await fetch(request);
         if (networkResponse.ok || networkResponse.type === 'opaque') {
-            const stored = storeTile(event, cache, request, url, networkResponse.clone());
+            const stored = storeTile(event, cache, url, networkResponse.clone());
             // Map tiles (<img>) are shown at once and written in the background. The
             // corridor download fetches from script and waits for each write, so its
             // progress counts stored tiles and its batches keep pace with the disk.
@@ -387,13 +411,13 @@ async function handleTileRequest(event, url) {
  * and so it does for a map tile when the network takes longer than
  * OPAQUE_UPGRADE_TIMEOUT_MS: the page then asks again without CORS, which the old
  * copy answers at once. A script fetch (a map export) has no such fallback, so it
- * waits for the download.
+ * waits for the download. `storedKey` is where the old copy was found.
  */
-async function upgradeOpaqueTile(event, cache, request, url) {
+async function upgradeOpaqueTile(event, cache, request, url, storedKey) {
     if (self.navigator.onLine === false) return Response.error();
     if (NO_CORS_TILE_HOSTS.some((host) => isAllowedHost(url.hostname, host))) return Response.error();
     const download = fetch(request).then((response) => {
-        if (response.ok) event.waitUntil(storeTile(event, cache, request, url, response.clone()));
+        if (response.ok) event.waitUntil(storeTile(event, cache, url, response.clone(), storedKey));
         return response;
     });
     // A download that outlasts the wait still replaces the old copy for next time.
@@ -408,12 +432,15 @@ async function upgradeOpaqueTile(event, cache, request, url) {
 }
 
 /** Writes a fetched tile to its provider cache when it lies in Croatia and tells
- *  the pages when storage is full. Never throws. Trimming now and then runs
- *  alongside, so it never delays a tile. */
-async function storeTile(event, cache, request, url, response) {
+ *  the pages when storage is full. `replacedKey` is where the copy it replaces
+ *  was found; one an earlier version stored under b. or c. is removed. Never
+ *  throws. Trimming now and then runs alongside, so it never delays a tile. */
+async function storeTile(event, cache, url, response, replacedKey) {
     try {
         if (!(await tileShouldBeCached(url, getTileProviderKey(url.hostname)))) return;
-        await cache.put(request, response);
+        const key = tileCacheKey(url);
+        await cache.put(key, response);
+        if (replacedKey && replacedKey !== key) await cache.delete(replacedKey);
         if (Math.random() < TILE_TRIM_SAMPLE_RATE) event.waitUntil(trimTileCache(cache));
     } catch (cacheErr) {
         // Storage quota exceeded or other cache write error - the tile was served anyway
