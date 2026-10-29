@@ -50,7 +50,7 @@ import { prefetchEmergencyData } from '@/lib/emergency-data';
 import { toTravelKm } from '@/lib/trail-frame';
 import { loadCroatiaBoundary } from '@/lib/croatia-boundary';
 import { loadBaseMapClip } from '@/lib/services/base-map-layer';
-import { fitMapToRulerBounds, waitForTilesLoaded } from '@/lib/export-utils';
+import { captureMapImage, fitMapToRulerBounds, waitForTilesLoaded } from '@/lib/export-utils';
 import { downloadBlob } from '@/lib/download';
 
 /** `borderLabel` is read on each hover, so the tooltip follows a language change. */
@@ -107,6 +107,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 }): React.ReactElement => {
 	const map = useMap() as ExtendedMap;
 	const t = useTranslations('mapControls');
+	const tExport = useTranslations('mapExport');
 	const borderLabelRef = useRef('');
 	useEffect(() => {
 		borderLabelRef.current = t('borderOfCroatia');
@@ -252,12 +253,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 				await loadBaseMapClip();
 			} catch (error) {
 				console.error('Error enabling tile clipping:', error);
-				setTileBoundaryError(t('tileBoundaryError'));
-				if (tileBoundaryErrorTimeoutRef.current) clearTimeout(tileBoundaryErrorTimeoutRef.current);
-				tileBoundaryErrorTimeoutRef.current = setTimeout(() => {
-					setTileBoundaryError(null);
-					tileBoundaryErrorTimeoutRef.current = null;
-				}, 4000);
+				showErrorToast(t('tileBoundaryError'));
 				return;
 			}
 		}
@@ -313,8 +309,17 @@ const MapControls: React.FC<MapControlsProps> = ({
 		return null;
 	};
 
-	const [tileBoundaryError, setTileBoundaryError] = useState<string | null>(null);
-	const tileBoundaryErrorTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+	const [errorToast, setErrorToast] = useState<string | null>(null);
+	const errorToastTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+	/** Shows `message` in the top-right alert chip for a few seconds. */
+	const showErrorToast = (message: string): void => {
+		setErrorToast(message);
+		if (errorToastTimeoutRef.current) clearTimeout(errorToastTimeoutRef.current);
+		errorToastTimeoutRef.current = setTimeout(() => {
+			setErrorToast(null);
+			errorToastTimeoutRef.current = null;
+		}, 4000);
+	};
 	const shareShortLinks = useMapStore((state: MapStoreState) => state.shareShortLinks);
 	const [sharePanelUrlSnapshot, setSharePanelUrlSnapshot] = useState<string | null>(null);
 
@@ -343,7 +348,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 
 	useEffect(
 		() => () => {
-			if (tileBoundaryErrorTimeoutRef.current) clearTimeout(tileBoundaryErrorTimeoutRef.current);
+			if (errorToastTimeoutRef.current) clearTimeout(errorToastTimeoutRef.current);
 		},
 		[],
 	);
@@ -382,11 +387,12 @@ const MapControls: React.FC<MapControlsProps> = ({
 				if (!mapEl) return;
 				map.invalidateSize({ animate: false });
 				await waitForTilesLoaded(map);
-				const blob = await toBlob(mapEl, { cacheBust: true });
-				if (!blob) return;
+				const blob = await captureMapImage(mapEl, toBlob);
+				if (!blob) throw new Error('The capture returned no image');
 				downloadBlob(blob, 'cldt-map.png', 'image/png');
 			} catch (err) {
 				console.error('PNG export failed:', err instanceof Error ? err.message : String(err));
+				showErrorToast(tExport('pngFailed'));
 			}
 		}, 150);
 	};
@@ -679,13 +685,13 @@ const MapControls: React.FC<MapControlsProps> = ({
 							onPrint={handlePrint}
 						/>
 					) : null}
-					{tileBoundaryError && (
+					{errorToast && (
 						<div
 							aria-live="assertive"
 							className="map-tooltip map-tooltip--pwa animate-slide-in-from-top fixed top-4 right-4 z-[var(--z-toast)] motion-reduce:animate-none"
 							role="alert"
 						>
-							<p className="font-medium">{tileBoundaryError}</p>
+							<p className="font-medium">{errorToast}</p>
 						</div>
 					)}
 					{rulerAnnouncement && (

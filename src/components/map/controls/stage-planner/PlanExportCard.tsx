@@ -29,6 +29,7 @@ export function PlanExportCard({ data }: { data: StagePlannerData }): React.Reac
 		handleStripMapPdfExport,
 		handleTripPackageExport,
 		isPdfExporting,
+		pdfExportFailed,
 		pdfProgress,
 		setIsTripBriefOpen,
 		setStagePlannerExportOpen,
@@ -140,6 +141,11 @@ export function PlanExportCard({ data }: { data: StagePlannerData }): React.Reac
 						{t('stripMapPdfCancel')}
 					</Button>
 				</div>
+			)}
+			{pdfExportFailed && !isPdfExporting && (
+				<p className="text-xs text-red-600 dark:text-red-400" role="alert">
+					{t('stripMapPdfFailed')}
+				</p>
 			)}
 		</MapControlSectionCard>
 	);

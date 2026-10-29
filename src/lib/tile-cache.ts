@@ -48,12 +48,11 @@ export interface TileCacheMeta {
 }
 
 export interface PrecacheResult {
-	/** Tiles that fetched without a network-level error. */
+	/** Tiles now stored: downloaded, or already in the cache. */
 	done: number;
 	total: number;
-	/** Tiles that failed to fetch (offline / DNS / connection reset). With
-	 *  mode:'no-cors' only network-level failures are observable - HTTP error
-	 *  statuses resolve as opaque responses and cannot be distinguished. */
+	/** Tiles that failed to download: network failures (offline, DNS,
+	 *  connection reset) and HTTP error responses. */
 	failed: number;
 	/** URLs of the failed tiles, so the caller can retry only those. */
 	failedUrls: string[];
@@ -249,12 +248,34 @@ export function generateTrailTileUrls(
 
 // ── Pre-caching ───────────────────────────────────────────────────────────────
 
+/** The copy of the tile at `url` that Cache Storage holds, if any. */
+export async function findStoredTile(url: string): Promise<Response | undefined> {
+	if (typeof caches === 'undefined') return undefined;
+	try {
+		return await caches.match(url);
+	} catch {
+		return undefined;
+	}
+}
+
+/** Downloads one tile through the service worker, which stores it. Rejects on
+ *  a network failure or an HTTP error. */
+async function precacheTile(url: string, signal: AbortSignal): Promise<void> {
+	// A stored tile is not downloaded again. That includes the opaque copies
+	// earlier versions stored without CORS: the map still shows them, and
+	// fetching readable copies would cost a whole download's data.
+	if (await findStoredTile(url)) return;
+	const response = await fetch(url, { mode: 'cors', signal });
+	if (!response.ok) throw new Error(`Tile download failed with HTTP ${response.status}`);
+}
+
 /**
  * Fetches tile URLs in batches so the Service Worker can intercept and cache
  * each response. The SW's existing tile handler caches automatically -
  * no postMessage coordination needed.
  *
- * Uses `mode:'no-cors'` to match how Leaflet loads tiles via <img src>.
+ * Uses CORS, as the map's tile layers do, so the worker stores readable copies
+ * (the map exports draw them) and HTTP errors count as failures.
  * Reports progress via the onProgress callback after each batch.
  */
 export async function precacheTiles(
@@ -274,11 +295,11 @@ export async function precacheTiles(
 
 		const batch = urls.slice(i, i + PRECACHE_BATCH_SIZE);
 
-		// A rejected fetch is a real network-level failure (offline, DNS,
-		// connection reset) - exactly the flaky trailhead-wifi case that used to
+		// A rejected download is a network failure (offline, DNS, connection
+		// reset) or an HTTP error - the flaky trailhead-wifi case that used to
 		// be swallowed and reported as success. Count it and keep the URL so the
 		// caller can retry just the misses instead of re-downloading everything.
-		const settled = await Promise.allSettled(batch.map((url) => fetch(url, { mode: 'no-cors', signal })));
+		const settled = await Promise.allSettled(batch.map((url) => precacheTile(url, signal)));
 		settled.forEach((res, idx) => {
 			if (res.status === 'fulfilled') succeeded++;
 			else failedUrls.push(batch[idx]);

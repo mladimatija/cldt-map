@@ -1,10 +1,11 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import L from 'leaflet';
+import type L from 'leaflet';
 import { useMap } from 'react-leaflet';
 import { useMapStore, type MapStoreState } from '@/lib/store';
 import { ensurePane } from '@/lib/leaflet-panes';
+import { corsTileLayer } from '@/lib/services/cors-tile-layer';
 
 /** Esri World Hillshade - free, no API key, same ArcGIS family as the satellite
  *  base. Esri tiles use {z}/{y}/{x} order (y before x). */
@@ -83,7 +84,9 @@ export function TerrainOverlays(): null {
 		for (const layer of TERRAIN_LAYERS) {
 			const existing = layersRef.current[layer.key];
 			if (enabled[layer.key] && !existing) {
-				layersRef.current[layer.key] = L.tileLayer(layer.url, {
+				// Both hosts send CORS headers; the service worker stores their tiles, so
+				// readable copies let the map exports include the overlays offline.
+				layersRef.current[layer.key] = corsTileLayer(layer.url, {
 					attribution: layer.attribution,
 					maxNativeZoom: layer.maxNativeZoom,
 					maxZoom: OVERLAY_MAX_ZOOM,

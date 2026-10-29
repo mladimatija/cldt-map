@@ -675,7 +675,8 @@
 		"hint": "Obje opcije snimaju trenutni prikaz karte. Pomaknite i zumirajte područje koje želite prije izvoza.",
 		"printLabel": "Ispiši kartu ili spremi kao PDF",
 		"pngLabel": "Preuzmi kartu kao PNG sliku",
-		"pngDisabledTooltip": "PNG izvoz nije dostupan za ovaj stil karte zbog CORS ograničenja poslužitelja pločica."
+		"pngDisabledTooltip": "PNG izvoz nije dostupan za ovaj stil karte zbog CORS ograničenja poslužitelja pločica.",
+		"pngFailed": "Izrada slike karte nije uspjela. Pokušajte ponovno."
 	},
 	"trailNotices": {
 		"regionLabel": "Obavijesti o stazi",
@@ -868,6 +869,7 @@
 		"stripMapPdfProgress": "{current} / {total}",
 		"stripMapPdfCancel": "Odustani",
 		"stripMapPdfCancelTooltip": "Otkaži izvoz PDF-a u tijeku.",
+		"stripMapPdfFailed": "Izrada PDF-a karte etapa nije uspjela. Pokušajte ponovno.",
 		"icalExport": "Kalendar (.ics)",
 		"icalExportTooltip": "Preuzmi sve etape kao događaje u kalendaru (po jedan po danu).",
 		"icalNeedsStartDate": "Postavite datum početka putovanja gore da biste izvezli kalendar.",

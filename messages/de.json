@@ -675,7 +675,8 @@
 		"hint": "Beide Optionen erfassen den aktuellen Kartenausschnitt. Verschieben und zoomen Sie auf den gewünschten Bereich, bevor Sie exportieren.",
 		"printLabel": "Karte drucken oder als PDF speichern",
 		"pngLabel": "Karte als PNG-Bild herunterladen",
-		"pngDisabledTooltip": "PNG-Export ist für diesen Kartenstil aufgrund von CORS-Einschränkungen des Kachel-Servers nicht verfügbar."
+		"pngDisabledTooltip": "PNG-Export ist für diesen Kartenstil aufgrund von CORS-Einschränkungen des Kachel-Servers nicht verfügbar.",
+		"pngFailed": "Kartenbild konnte nicht erstellt werden. Bitte erneut versuchen."
 	},
 	"trailNotices": {
 		"regionLabel": "Trail-Hinweise",
@@ -868,6 +869,7 @@
 		"stripMapPdfProgress": "{current} / {total}",
 		"stripMapPdfCancel": "Abbrechen",
 		"stripMapPdfCancelTooltip": "Laufenden PDF-Export abbrechen.",
+		"stripMapPdfFailed": "Etappenkarten-PDF konnte nicht erstellt werden. Bitte erneut versuchen.",
 		"icalExport": "Kalender (.ics)",
 		"icalExportTooltip": "Alle Etappen als Kalendertermine herunterladen (einer pro Tag).",
 		"icalNeedsStartDate": "Legen Sie oben ein Reisedatum fest, um Kalendertermine zu exportieren.",

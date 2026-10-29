@@ -64,7 +64,8 @@ function HtmlShell({ lang, children }: { lang: string; children: React.ReactNode
 				{TILE_ORIGINS.map((origin) => (
 					<link crossOrigin="" href={origin} key={origin} rel="preconnect" />
 				))}
-				<link as="image" fetchPriority="high" href={lcpTileUrl} rel="preload" />
+				{/* Tiles load with CORS, so the preload must too, or the map cannot reuse it. */}
+				<link as="image" crossOrigin="" fetchPriority="high" href={lcpTileUrl} rel="preload" />
 			</head>
 			<body className="h-full bg-white font-sans text-base leading-relaxed antialiased">
 				<ThemeProvider>{children}</ThemeProvider>

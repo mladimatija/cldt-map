@@ -334,12 +334,25 @@ function cacheInBackground(event, key, response) {
     );
 }
 
+/** How long a map tile stored as an opaque copy waits for a readable copy
+ *  before it falls back to the old copy (see upgradeOpaqueTile). */
+const OPAQUE_UPGRADE_TIMEOUT_MS = 2000;
+
+/** Tile hosts that send no CORS headers, which the map loads without CORS (the
+ *  `cors` flag in map-service-config): a CORS request never gets a readable copy. */
+const NO_CORS_TILE_HOSTS = ['geoportal.dgu.hr'];
+
 async function handleTileRequest(event, url) {
     const request = event.request;
     const cache = await caches.open(getTileCacheName(url.hostname));
 
     const cachedResponse = await cache.match(request.url || request);
-    if (cachedResponse) return cachedResponse;
+    if (cachedResponse) {
+        // Map tiles load with CORS, and the browser rejects an opaque copy (stored
+        // by earlier versions, which loaded tiles without CORS) as the answer to one.
+        if (cachedResponse.type !== 'opaque' || request.mode === 'no-cors') return cachedResponse;
+        return upgradeOpaqueTile(event, cache, request, url);
+    }
 
     try {
         const networkResponse = await fetch(request);
@@ -353,7 +366,9 @@ async function handleTileRequest(event, url) {
         }
         return networkResponse;
     } catch {
-        // Network failed - return offline placeholder tile
+        // Network failed. A script fetch (the corridor download, a map export) gets
+        // an error, so it counts the tile as missing; a map tile gets a placeholder.
+        if (request.destination !== 'image') return Response.error();
         const svg =
             '<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">' +
             '<rect width="256" height="256" fill="#e5e7eb"/>' +
@@ -364,6 +379,32 @@ async function handleTileRequest(event, url) {
             headers: {'Content-Type': 'image/svg+xml', 'Cache-Control': 'no-store'},
         });
     }
+}
+
+/**
+ * Answers a CORS request for a tile stored as an opaque copy with a readable copy
+ * from the network, which replaces the old one. Offline it answers with an error,
+ * and so it does for a map tile when the network takes longer than
+ * OPAQUE_UPGRADE_TIMEOUT_MS: the page then asks again without CORS, which the old
+ * copy answers at once. A script fetch (a map export) has no such fallback, so it
+ * waits for the download.
+ */
+async function upgradeOpaqueTile(event, cache, request, url) {
+    if (self.navigator.onLine === false) return Response.error();
+    if (NO_CORS_TILE_HOSTS.some((host) => isAllowedHost(url.hostname, host))) return Response.error();
+    const download = fetch(request).then((response) => {
+        if (response.ok) event.waitUntil(storeTile(event, cache, request, url, response.clone()));
+        return response;
+    });
+    // A download that outlasts the wait still replaces the old copy for next time.
+    event.waitUntil(download.catch(() => {}));
+    let answer = download;
+    if (request.destination === 'image') {
+        const timeout = new Promise((resolve) => setTimeout(resolve, OPAQUE_UPGRADE_TIMEOUT_MS, null));
+        answer = Promise.race([download, timeout]);
+    }
+    const response = await answer.catch(() => null);
+    return response && response.ok ? response : Response.error();
 }
 
 /** Writes a fetched tile to its provider cache when it lies in Croatia and tells

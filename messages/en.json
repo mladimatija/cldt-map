@@ -675,7 +675,8 @@
 		"hint": "Both options capture your current map view. Pan and zoom to frame the area you want before exporting.",
 		"printLabel": "Print map or save as PDF",
 		"pngLabel": "Download map as PNG image",
-		"pngDisabledTooltip": "PNG export is unavailable for this map style due to tile server CORS restrictions."
+		"pngDisabledTooltip": "PNG export is unavailable for this map style due to tile server CORS restrictions.",
+		"pngFailed": "Could not create the map image. Please try again."
 	},
 	"trailNotices": {
 		"regionLabel": "Trail notices",
@@ -868,6 +869,7 @@
 		"stripMapPdfProgress": "{current} / {total}",
 		"stripMapPdfCancel": "Cancel",
 		"stripMapPdfCancelTooltip": "Cancel the in-progress PDF export.",
+		"stripMapPdfFailed": "Could not create the strip-map PDF. Please try again.",
 		"icalExport": "Calendar (.ics)",
 		"icalExportTooltip": "Download all stages as calendar events (one per day).",
 		"icalNeedsStartDate": "Set a trip start date above to export calendar events.",

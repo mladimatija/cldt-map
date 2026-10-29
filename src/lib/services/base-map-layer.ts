@@ -7,6 +7,7 @@ import type * as GeoJSON from 'geojson';
 import { loadCroatiaBoundary } from '@/lib/croatia-boundary';
 import { isBaseTilePane } from '@/lib/leaflet-panes';
 import type { BaseMapConfig, BaseMapProvider } from './base-map-provider';
+import { corsBoundaryCanvas, corsTileLayer, type BoundaryCanvasConstructor } from './cors-tile-layer';
 import { DEFAULT_MAP_SERVICES } from './map-service-config';
 
 /** Tile layer options for a style, shared by the plain and the clipped layer.
@@ -14,7 +15,7 @@ import { DEFAULT_MAP_SERVICES } from './map-service-config';
  *  matches the zoom levels the offline download stores (HiDPI requests one level
  *  deeper would miss them offline), at a quarter of the tile requests. */
 function tileOptions(config: BaseMapConfig): L.TileLayerOptions {
-	const { attribution, maxZoom, minZoom, subdomains, bounds, noWrap } = config;
+	const { attribution, maxZoom, minZoom, subdomains, bounds, noWrap, cors } = config;
 	return {
 		attribution,
 		maxZoom,
@@ -24,13 +25,15 @@ function tileOptions(config: BaseMapConfig): L.TileLayerOptions {
 		...(subdomains !== undefined && { subdomains }),
 		bounds,
 		noWrap,
+		...(cors && { crossOrigin: true }),
 	};
 }
 
 function buildLayer(config: BaseMapConfig): L.TileLayer {
-	const { url, attribution, maxZoom, minZoom, wms } = config;
+	const { url, attribution, maxZoom, minZoom, wms, cors } = config;
 	if (wms) return L.tileLayer.wms(url, { ...wms, attribution, maxZoom, minZoom });
-	return L.tileLayer(url, tileOptions(config));
+	const options = tileOptions(config);
+	return cors ? corsTileLayer(url, options) : L.tileLayer(url, options);
 }
 
 /** The layer for `provider`. An unknown style, or one whose layer cannot be
@@ -77,11 +80,10 @@ export function createClippedBaseMapLayer(
 ): L.TileLayer | null {
 	const service = clippableService(provider);
 	// Added to L by the plugin, which reads the global L itself.
-	const BoundaryCanvas = (
-		L.TileLayer as unknown as { BoundaryCanvas?: new (url: string, opts: unknown) => L.TileLayer }
-	).BoundaryCanvas;
+	const BoundaryCanvas = (L.TileLayer as unknown as { BoundaryCanvas?: BoundaryCanvasConstructor }).BoundaryCanvas;
 	if (!service || !BoundaryCanvas) return null;
-	return new BoundaryCanvas(service.url, { ...tileOptions(service), boundary });
+	const ClippedLayer = corsBoundaryCanvas(BoundaryCanvas);
+	return new ClippedLayer(service.url, { ...tileOptions(service), boundary });
 }
 
 /** Puts `layer` in place of the base tile layers. Overlay tile layers in their

@@ -27,6 +27,10 @@ export interface BaseMapConfig {
 	subdomains?: string;
 	bounds?: LatLngBoundsExpression;
 	noWrap?: boolean;
+	/** The tile server sends `Access-Control-Allow-Origin`, so tiles load with
+	 *  CORS: the map exports can read them back and the service worker stores
+	 *  readable copies. Without it tiles load without CORS and PNG export is off. */
+	cors?: boolean;
 	/** Set for a WMS service: `url` is then the service endpoint, not a z/x/y
 	 *  template, so the tile cache and the boundary clip leave the style alone. */
 	wms?: Pick<WMSOptions, 'layers' | 'format' | 'transparent' | 'version'>;

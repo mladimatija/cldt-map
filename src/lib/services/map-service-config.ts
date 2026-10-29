@@ -11,7 +11,8 @@ export function isBaseMapProviderAvailable(provider: string): boolean {
 }
 
 /** Base map layer configurations, read by createBaseMapLayer, the tile cache
- *  and the Croatia boundary clip. */
+ *  and the Croatia boundary clip. Every z/x/y host here sends
+ *  `Access-Control-Allow-Origin: *` (`cors`); the DGU WMS sends none. */
 export const DEFAULT_MAP_SERVICES: BaseMapConfig[] = [
 	{
 		name: BaseMapProvider.OPEN_STREET_MAP,
@@ -19,6 +20,7 @@ export const DEFAULT_MAP_SERVICES: BaseMapConfig[] = [
 		attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
 		maxZoom: 19,
 		minZoom: 0,
+		cors: true,
 		subdomains: 'abc',
 	},
 	{
@@ -28,6 +30,7 @@ export const DEFAULT_MAP_SERVICES: BaseMapConfig[] = [
 			'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="https://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)',
 		maxZoom: 17,
 		minZoom: 0,
+		cors: true,
 		subdomains: 'abc',
 	},
 	{
@@ -39,6 +42,7 @@ export const DEFAULT_MAP_SERVICES: BaseMapConfig[] = [
 			'<a href="https://wiki.openstreetmap.org/wiki/OpenHikingMap">&copy; OpenHikingMap</a> <a href="https://openmaps.fr/donate">&#10084;&#65039; Donation</a> <a href="https://www.openstreetmap.org/copyright">&copy; OpenStreetMap</a>',
 		maxZoom: 17,
 		minZoom: 0,
+		cors: true,
 		subdomains: '',
 	},
 	{
@@ -48,6 +52,7 @@ export const DEFAULT_MAP_SERVICES: BaseMapConfig[] = [
 			'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
 		maxZoom: 18,
 		minZoom: 0,
+		cors: true,
 	},
 	{
 		name: BaseMapProvider.TERRAIN,
@@ -55,6 +60,7 @@ export const DEFAULT_MAP_SERVICES: BaseMapConfig[] = [
 		attribution: 'Tiles &copy; Esri &mdash; Source: USGS, Esri, TANA, DeLorme, and NPS',
 		maxZoom: 16,
 		minZoom: 0,
+		cors: true,
 	},
 	{
 		name: BaseMapProvider.CYCL_OSM,
@@ -63,6 +69,7 @@ export const DEFAULT_MAP_SERVICES: BaseMapConfig[] = [
 			'&copy; <a href="https://github.com/cyclosm/cyclosm-cartocss-style/releases" title="CyclOSM - Open Bicycle render">CyclOSM</a> | Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
 		maxZoom: 18,
 		minZoom: 0,
+		cors: true,
 		subdomains: 'abc',
 	},
 	{
@@ -84,5 +91,6 @@ export const DEFAULT_MAP_SERVICES: BaseMapConfig[] = [
 			'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
 		maxZoom: 20,
 		minZoom: 0,
+		cors: true,
 	},
 ];

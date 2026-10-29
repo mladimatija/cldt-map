@@ -675,7 +675,8 @@
 		"hint": "Entrambe le opzioni catturano la vista corrente della mappa. Sposta e zooma sull'area che desideri prima di esportare.",
 		"printLabel": "Stampa la mappa o salva come PDF",
 		"pngLabel": "Scarica la mappa come immagine PNG",
-		"pngDisabledTooltip": "L'esportazione PNG non è disponibile per questo stile di mappa a causa delle restrizioni CORS del server tile."
+		"pngDisabledTooltip": "L'esportazione PNG non è disponibile per questo stile di mappa a causa delle restrizioni CORS del server tile.",
+		"pngFailed": "Impossibile creare l'immagine della mappa. Riprovare."
 	},
 	"trailNotices": {
 		"regionLabel": "Avvisi sul sentiero",
@@ -868,6 +869,7 @@
 		"stripMapPdfProgress": "{current} / {total}",
 		"stripMapPdfCancel": "Annulla",
 		"stripMapPdfCancelTooltip": "Annulla l'esportazione PDF in corso.",
+		"stripMapPdfFailed": "Impossibile creare il PDF delle tappe in mappa. Riprovare.",
 		"icalExport": "Calendario (.ics)",
 		"icalExportTooltip": "Scarica tutte le tappe come eventi del calendario (uno al giorno).",
 		"icalNeedsStartDate": "Imposta la data di inizio del viaggio sopra per esportare gli eventi.",

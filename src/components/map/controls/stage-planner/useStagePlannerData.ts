@@ -16,7 +16,7 @@ import {
 	findStageEndAccommodation,
 	type StageEndAccommodation,
 } from '@/lib/stage-accommodation';
-import type { StagePlanPreset, StagePlanPresetInputs } from '@/lib/store/types';
+import type { StagePlan, StagePlanPreset, StagePlanPresetInputs } from '@/lib/store/types';
 import { formatDistance, formatElevation } from '@/lib/format';
 import { LINKABLE_PHONE_RE, toDialString } from '@/lib/url-safety';
 import { kmToMiles, milesToKm } from '@/lib/units';
@@ -190,6 +190,9 @@ export function useStagePlannerData() {
 		}
 	};
 	const [isPdfExporting, setIsPdfExporting] = useState(false);
+	/** The plan the last strip-map PDF failed for: its error shows until the plan changes. */
+	const [pdfFailedPlan, setPdfFailedPlan] = useState<StagePlan | null>(null);
+	const pdfExportFailed = pdfFailedPlan !== null && pdfFailedPlan === stagePlan;
 	const [isTripBriefOpen, setIsTripBriefOpen] = useState(false);
 	/** Session-only alert buffer (days after the planned finish) for the
 	 *  safety-contact handoff. Intentionally not persisted to the store. */
@@ -508,6 +511,7 @@ export function useStagePlannerData() {
 		const controller = new AbortController();
 		pdfAbortRef.current = controller;
 		setIsPdfExporting(true);
+		setPdfFailedPlan(null);
 		setPdfProgress(null);
 		try {
 			const leafletEl = document.querySelector<HTMLElement>('.leaflet-container') ?? undefined;
@@ -527,6 +531,7 @@ export function useStagePlannerData() {
 			);
 		} catch (err) {
 			console.error('Strip-map PDF export failed:', err instanceof Error ? err.message : String(err));
+			setPdfFailedPlan(stagePlan);
 		} finally {
 			pdfAbortRef.current = null;
 			setIsPdfExporting(false);
@@ -999,6 +1004,7 @@ export function useStagePlannerData() {
 		mode,
 		openHelpToPlanning,
 		packScenariosByStage,
+		pdfExportFailed,
 		pdfProgress,
 		planIsForOtherDirection,
 		planResupplyCadence,

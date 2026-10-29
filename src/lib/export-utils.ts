@@ -1,4 +1,4 @@
-import { BaseMapProvider } from '@/lib/services/base-map-provider';
+import { DEFAULT_MAP_SERVICES } from '@/lib/services/map-service-config';
 import type { EnhancedTrailPoint, StagePlan, TrailDirection, UnitSystem } from '@/lib/store/types';
 import { computeStageStats } from '@/lib/stage-planner';
 import { toTravelRange } from '@/lib/trail-frame';
@@ -9,14 +9,13 @@ import { siteMetadata } from '@/lib/metadata';
 import { boundsOf, toLeafletBounds } from '@/lib/geo-bounds';
 import { isBaseTilePane } from '@/lib/leaflet-panes';
 
-/** Providers whose tile servers don't send Access-Control-Allow-Origin; PNG canvas export will taint. */
-const CORS_BLOCKED_PROVIDERS: string[] = [BaseMapProvider.SATELLITE, BaseMapProvider.CROATIA_TOPO];
-
 const MAP_RENDER_SETTLE_MS = 600;
 
-/** Returns true if PNG export should be disabled for the given base map provider. */
+/** True when PNG export is off for a base map style: its tile server sends no
+ *  CORS headers (Croatia Topo), so the capture could not read its tiles. */
 export function isPngExportDisabled(provider: string): boolean {
-	return CORS_BLOCKED_PROVIDERS.includes(provider);
+	const service = DEFAULT_MAP_SERVICES.find((s) => s.name === provider) ?? DEFAULT_MAP_SERVICES[0];
+	return !service.cors;
 }
 
 interface RulerRange {
@@ -169,6 +168,50 @@ export async function waitForTilesLoaded(
 	});
 }
 
+/** A 1x1 transparent GIF, drawn for a tile image the capture cannot fetch. */
+const BLANK_IMAGE_URL = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
+
+/** False for a canvas the page may not read back (drawn from an image loaded
+ *  without CORS). Tested by drawing it into a 1x1 probe, which it would taint,
+ *  so any kind of canvas context works. */
+function isCanvasReadable(canvas: HTMLCanvasElement): boolean {
+	if (canvas.width === 0 || canvas.height === 0) return true;
+	const probe = document.createElement('canvas');
+	probe.width = probe.height = 1;
+	const ctx = probe.getContext('2d');
+	if (!ctx) return true;
+	try {
+		ctx.drawImage(canvas, 0, 0, 1, 1);
+		ctx.getImageData(0, 0, 1, 1);
+		return true;
+	} catch {
+		return false;
+	}
+}
+
+/**
+ * Renders the map element to a PNG with html-to-image. Tile images come from
+ * the browser and service worker caches, so stored tiles export offline, and a
+ * tile image that cannot be fetched is left blank instead of failing the capture.
+ *
+ * A clipped tile drawn from a copy an earlier version stored without CORS
+ * cannot be read back; such tiles are left out. They are drawn that way only
+ * offline, or before the updated service worker takes over.
+ */
+export async function captureMapImage(
+	mapEl: HTMLElement,
+	toBlob: typeof import('html-to-image').toBlob,
+	filter: (node: Element) => boolean = () => true,
+): Promise<Blob | null> {
+	const unreadable = new Set<Element>([...mapEl.querySelectorAll('canvas')].filter((c) => !isCanvasReadable(c)));
+	return toBlob(mapEl, {
+		imagePlaceholder: BLANK_IMAGE_URL,
+		// WMS tiles share one path and differ only in their query string.
+		includeQueryParams: true,
+		filter: (node) => !unreadable.has(node) && filter(node),
+	});
+}
+
 /** Capture the live Leaflet map framed to a stage km window, cropped to aspect. */
 export async function captureStageMapSnapshot(
 	map: LeafletMapForExport,
@@ -198,7 +241,7 @@ export async function captureStageMapSnapshot(
 	// Wait for the repositioned tiles to actually load before snapshotting.
 	await waitForTilesLoaded(map);
 	if (signal?.aborted) return null;
-	const blob = await toBlob(mapEl, { cacheBust: true, filter: captureFilter });
+	const blob = await captureMapImage(mapEl, toBlob, captureFilter);
 	if (!blob) return null;
 	const dataUrl = await blobToDataUrl(blob);
 	return cropToAspect(dataUrl, aspectW, aspectH);
@@ -304,7 +347,7 @@ export async function exportStripMapPdf(
 
 			if (signal?.aborted) return;
 
-			const blob = await toBlob(resolvedMapEl, { cacheBust: true, filter: captureFilter });
+			const blob = await captureMapImage(resolvedMapEl, toBlob, captureFilter);
 			let dataUrl = blob ? await blobToDataUrl(blob) : null;
 			if (dataUrl) dataUrl = await cropToAspect(dataUrl, 297, 196);
 

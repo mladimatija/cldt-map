@@ -79,7 +79,8 @@ export const mapDefaults = {
 	zoom: envInt(process.env.NEXT_PUBLIC_DEFAULT_MAP_ZOOM, 7),
 } as const;
 
-/** OSM tile URL for the default map view (for LCP preload in document head). Uses Web Mercator tile indexing. */
+/** OSM tile URL for the default map view (for LCP preload in document head). Uses Web Mercator tile indexing,
+ *  and the subdomain Leaflet picks for the tile, `(x + y) % 3`, so the map's own request reuses the preload. */
 export function getDefaultMapTileUrl(): string {
 	const [lat, lng] = mapDefaults.center;
 	const z = mapDefaults.zoom;
@@ -87,7 +88,7 @@ export function getDefaultMapTileUrl(): string {
 	const x = Math.floor(((lng + 180) / 360) * n);
 	const latRad = (lat * Math.PI) / 180;
 	const y = Math.floor(((1 - Math.log(Math.tan(latRad) + 1 / Math.cos(latRad)) / Math.PI) / 2) * n);
-	return `https://a.tile.openstreetmap.org/${z}/${x}/${y}.png`;
+	return `https://${'abc'[(x + y) % 3]}.tile.openstreetmap.org/${z}/${x}/${y}.png`;
 }
 
 /** Map / UI defaults (overridable via .env.local) */
