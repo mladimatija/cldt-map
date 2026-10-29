@@ -11,6 +11,7 @@ import dynamic from 'next/dynamic';
 import { useTranslations } from 'next-intl';
 import { useMapStore } from '@/lib/store';
 import { MAP_FULLSCREEN_TOGGLE_EVENT } from '@/lib/map-events';
+import { preloadTrailOsmTagsForSavedStyle } from '@/hooks/useTrailOsmTagsFetch';
 
 const Header = dynamic(() => import('@/components/layout/Header').then((mod) => mod.Header), { ssr: false });
 const GPXLoadErrorBanner = dynamic(() => import('@/components/map/GPXLoadErrorBanner'), { ssr: false });
@@ -78,6 +79,10 @@ export default function MapWrapper(_props?: MapWrapperProps): ReactElement {
 	const [isLoading, setIsLoading] = useState(true);
 	const [loadingText, setLoadingText] = useState('');
 	const mapContainerRef = useRef<HTMLDivElement>(null);
+
+	useEffect(() => {
+		preloadTrailOsmTagsForSavedStyle();
+	}, []);
 
 	// Brief minimum loading time to avoid flash (reduced from 2.5s for better UX).
 	// loadingText is set here (not in useState) to avoid SSR/client hydration mismatch.

@@ -120,6 +120,8 @@ export interface TrailMetadata {
 	totalDistance: number;
 	elevationGain: number;
 	elevationLoss: number;
+	/** False when the GPX carries no elevation data, which rules out the Grade style. */
+	hasElevation: boolean;
 }
 
 export interface TrailState {

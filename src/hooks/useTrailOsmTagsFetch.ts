@@ -27,3 +27,15 @@ export function useTrailOsmTagsFetch(): void {
 		deferUntilIdle: !surfaceColoured && !sacColoured,
 	});
 }
+
+/**
+ * Starts the dataset load right away when the saved trail style needs it. The
+ * map, and with it the hook above, mounts about a second after the page, while
+ * the route is drawn as soon as the cached trail is read: without this head
+ * start the route is drawn in the fallback style first and again when the tags
+ * land. The hook then gets the same pending load.
+ */
+export function preloadTrailOsmTagsForSavedStyle(): void {
+	const { surfaceColoured, sacColoured } = useMapStore.getState();
+	if (surfaceColoured || sacColoured) void loadTrailOsmTags();
+}

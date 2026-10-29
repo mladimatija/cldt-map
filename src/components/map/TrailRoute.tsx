@@ -4,7 +4,7 @@
  * Renders the CLDT trail polyline, start/finish markers, and trail info tooltip on map click or share URL.
  * Fetches GPX, builds enhanced points (distance/elevation), and syncs with the main store and map store.
  */
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { useMap } from 'react-leaflet';
 import L from 'leaflet';
@@ -30,7 +30,7 @@ import {
 	SURFACE_COLORS,
 	SAC_COLORS,
 } from '@/components/map/trail-route-constants';
-import { bucketSac, bucketSurface, findRunAtKm, type SacBucket, type SurfaceBucket } from '@/lib/trail-osm-tags';
+import { bucketSac, bucketSurface, findRunAtKm, type SurfaceBucket } from '@/lib/trail-osm-tags';
 import {
 	computeSurfaceBreakdownBySection,
 	surfaceMixForSection,
@@ -175,8 +175,8 @@ interface TrailPoint {
  * Walks the trail and groups consecutive segments by their OSM-derived bucket
  * (surface or SAC scale). Returns `Map<bucketKey, LatLng[][]>` ready to feed
  * into one polyline per bucket. The caller resolves bucket -> color and
- * renders. The trail arrays and the OSM tag runs are both in SOBO km, so the
- * cumulative distance is looked up directly.
+ * renders. The trail arrays and the OSM tag runs are both in SOBO km, so each
+ * point's distance is looked up directly.
  *
  * If the lookup returns null for a point (km outside the tag dataset or no
  * way found within the snap radius), the point is bucketed as 'unknown' /
@@ -184,7 +184,7 @@ interface TrailPoint {
  */
 function buildTagBandSegments<K extends string>(
 	pointLatLngs: L.LatLng[],
-	cumDistancesM: number[],
+	enhancedPoints: EnhancedTrailPoint[],
 	bucketAt: (km: number) => K,
 ): Map<K, L.LatLng[][]> {
 	const result = new Map<K, L.LatLng[][]>();
@@ -204,7 +204,7 @@ function buildTagBandSegments<K extends string>(
 	for (let i = 0; i < pointLatLngs.length - 1; i++) {
 		const a = pointLatLngs[i];
 		const b = pointLatLngs[i + 1];
-		const key = bucketAt(cumDistancesM[i] / 1000);
+		const key = bucketAt(enhancedPoints[i].distanceFromStart / 1000);
 
 		if (key !== currentKey) {
 			flush();
@@ -276,16 +276,16 @@ interface SectionGroups {
  * order. The arrays and TRAIL_SECTIONS are both SOBO, so no mirroring is
  * needed; the tooltip converts climb and descent to the travel direction.
  */
-function buildSectionGroups(
-	points: L.LatLng[],
-	enhanced: { elevation: number }[],
-	cumDistances: number[],
-): SectionGroups {
-	const sectionAtIdx = (idx: number): number => {
-		const trailKm = cumDistances[idx] / 1000;
-		const found = TRAIL_SECTIONS.findIndex((s) => trailKm >= s.startKm && trailKm < s.endKm);
-		return found >= 0 ? found : TRAIL_SECTIONS.length - 1;
-	};
+function buildSectionGroups(points: L.LatLng[], enhanced: EnhancedTrailPoint[]): SectionGroups {
+	// Distances only grow in file order, so each point's section comes from a
+	// cursor that moves forward rather than from a search per point.
+	const lastSection = TRAIL_SECTIONS.length - 1;
+	const sectionOf = new Uint8Array(points.length);
+	for (let i = 0, cursor = 0; i < points.length; i++) {
+		const trailKm = enhanced[i].distanceFromStart / 1000;
+		while (cursor < lastSection && trailKm >= TRAIL_SECTIONS[cursor].endKm) cursor++;
+		sectionOf[i] = cursor;
+	}
 
 	const pointGroups: L.LatLng[][] = TRAIL_SECTIONS.map(() => []);
 	const firstIdx: number[] = new Array(TRAIL_SECTIONS.length).fill(-1);
@@ -294,18 +294,18 @@ function buildSectionGroups(
 	const descentM: number[] = new Array(TRAIL_SECTIONS.length).fill(0);
 
 	for (let i = 0; i < points.length; i++) {
-		const sIdx = sectionAtIdx(i);
+		const sIdx = sectionOf[i];
 		pointGroups[sIdx].push(points[i]);
 		if (firstIdx[sIdx] === -1) firstIdx[sIdx] = i;
 		lastIdx[sIdx] = i;
 		// Share the boundary point with the next section so the two meet visually.
-		if (i + 1 < points.length && sectionAtIdx(i + 1) !== sIdx) {
+		if (i + 1 < points.length && sectionOf[i + 1] !== sIdx) {
 			pointGroups[sIdx].push(points[i + 1]);
 		}
 		// Attribute a segment's elevation change to the section its start falls in.
-		if (i > 0 && enhanced[i] && enhanced[i - 1]) {
+		if (i > 0) {
 			const elevDiff = enhanced[i].elevation - enhanced[i - 1].elevation;
-			const prevIdx = sectionAtIdx(i - 1);
+			const prevIdx = sectionOf[i - 1];
 			if (elevDiff > 0) ascentM[prevIdx] += elevDiff;
 			else descentM[prevIdx] += Math.abs(elevDiff);
 		}
@@ -317,9 +317,9 @@ function buildSectionGroups(
 		const fi = firstIdx[si];
 		const li = lastIdx[si];
 		stats.push({
-			startDistM: fi >= 0 ? cumDistances[fi] : 0,
-			endDistM: li >= 0 ? cumDistances[li] : 0,
-			secDistM: fi >= 0 && li >= 0 ? cumDistances[li] - cumDistances[fi] : 0,
+			startDistM: fi >= 0 ? enhanced[fi].distanceFromStart : 0,
+			endDistM: li >= 0 ? enhanced[li].distanceFromStart : 0,
+			secDistM: fi >= 0 && li >= 0 ? enhanced[li].distanceFromStart - enhanced[fi].distanceFromStart : 0,
 			secAscent: ascentM[si],
 			secDescent: descentM[si],
 			sectionIndex: si,
@@ -355,32 +355,33 @@ function labelMarkerOnAdd(marker: L.Marker, label: string): void {
 	});
 }
 
-/**
- * Everything the render effects need to draw the route, published once per data
- * load. Holding it apart from the raw GPX is what lets a trail-style change
- * redraw from memory instead of re-reading the GPX and re-hydrating the stores.
- */
-interface TrailGeometry {
-	/** Route vertices in file (SOBO) order; index 0 is Ilok in both directions.
-	 *  Never empty - the loader does not publish a snapshot for an empty route,
-	 *  so the renderer can index the ends and take bounds without checking. */
-	points: L.LatLng[];
-	/** Cumulative SOBO metres from Ilok, parallel to `points`. */
-	cumDistances: number[];
-	/** Enhanced points, parallel to `points`: elevation for the section climb
-	 *  totals, grade band and percent for the Grade style. */
-	enhanced: EnhancedTrailPoint[];
-	/** False when the GPX carries no elevation data, which rules out the Grade style. */
-	hasElevation: boolean;
-	/** Identity of the load that produced this geometry. The renderer fits the
-	 *  viewport once per distinct value, so a redraw of the same load (any style
-	 *  change) leaves the view alone. The geometry is the same for both
-	 *  directions, so a direction flip neither reloads nor re-fits. */
-	loadToken: string;
-}
-
 /** Trail style actually drawn, after falling through styles whose data is missing. */
 type EffectiveTrailStyle = 'sac' | 'surface' | 'grade' | 'sections' | 'default';
+
+interface TrailStyleSelection {
+	sacColoured: boolean;
+	surfaceColoured: boolean;
+	gradeTintedTrail: boolean;
+	showSections: boolean;
+}
+
+/**
+ * The style to draw. Priority: sac > surface > grade > sections > default.
+ * Surface and SAC need the OSM tag dataset and Grade needs elevation; a
+ * selection whose data is missing falls through to the next style rather than
+ * rendering nothing.
+ */
+function resolveTrailStyle(
+	selection: TrailStyleSelection,
+	hasTagRuns: boolean,
+	hasElevation: boolean,
+): EffectiveTrailStyle {
+	if (selection.sacColoured && hasTagRuns) return 'sac';
+	if (selection.surfaceColoured && hasTagRuns) return 'surface';
+	if (selection.gradeTintedTrail && hasElevation) return 'grade';
+	if (selection.showSections) return 'sections';
+	return 'default';
+}
 
 /** Pane for the selected trail point marker (pulsing dot); above ruler, below tooltips. */
 const TRAIL_POINT_MARKER_PANE = 'trailPointMarkerPane';
@@ -420,10 +421,8 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 	 *  including clicks on its own buttons). Reset whenever the highlight clears. */
 	const isTooltipPinnedByClickRef = useRef(false);
 	const lastRouteClickTimeRef = useRef(0);
-	/** Route geometry from the most recent data load; drives both render effects. */
-	const [geometry, setGeometry] = useState<TrailGeometry | null>(null);
-	/** Load token the viewport was last fitted for; see `TrailGeometry.loadToken`. */
-	const fittedTokenRef = useRef<string | null>(null);
+	/** Route vertices the viewport was last fitted to; each load publishes new arrays. */
+	const fittedPointsRef = useRef<L.LatLng[] | null>(null);
 
 	useFitToRoute(map, routeLayerRef);
 
@@ -443,25 +442,29 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 	const sacColoured = useMapStore((state: MapStoreState) => state.sacColoured);
 	const trailOsmTagsFile = useMapStore((state: MapStoreState) => state.trailOsmTagsFile);
 	const walkingPaceKmh = usePackAdjustedPaceKmh();
+	const trailPoints = useStore((state: StoreState) => state.trailPoints);
+	const enhancedTrailPoints = useStore((state: StoreState) => state.enhancedTrailPoints);
+	const hasElevation = useStore((state: StoreState) => state.trailMetadata.hasElevation);
+
+	/** The loaded route in file (SOBO) order, index 0 at Ilok in both directions;
+	 *  null until a load lands, never empty after. The loader below is the only
+	 *  writer and sets both arrays in one update, so a style change redraws from
+	 *  memory and new identities mean a new load. */
+	const geometry = useMemo(
+		() => (trailPoints.length > 0 ? { points: trailPoints, enhanced: enhancedTrailPoints } : null),
+		[trailPoints, enhancedTrailPoints],
+	);
 
 	const tagRuns = trailOsmTagsFile?.runs ?? null;
 	const hasTagRuns = tagRuns !== null && tagRuns.length > 0;
-	// Style priority: sac > surface > grade > sections > default. Surface and SAC
-	// need the OSM tag dataset and Grade needs elevation; a selection whose data is
-	// missing falls through to the next style rather than rendering nothing.
 	// Deriving one value keeps the render effects off the four raw flags, so a
 	// selection that changes nothing visible (picking Surface with no tag data)
 	// no longer redraws.
-	const effectiveTrailStyle: EffectiveTrailStyle =
-		sacColoured && hasTagRuns
-			? 'sac'
-			: surfaceColoured && hasTagRuns
-				? 'surface'
-				: gradeTintedTrail && (geometry?.hasElevation ?? false)
-					? 'grade'
-					: showSections
-						? 'sections'
-						: 'default';
+	const effectiveTrailStyle = resolveTrailStyle(
+		{ sacColoured, surfaceColoured, gradeTintedTrail, showSections },
+		hasTagRuns,
+		hasElevation,
+	);
 	// Only the two OSM-tag styles read the dataset, so gate the render effect's
 	// dependency on it: tag data arriving under any other style must not redraw.
 	const styleTagRuns = effectiveTrailStyle === 'sac' || effectiveTrailStyle === 'surface' ? tagRuns : null;
@@ -888,10 +891,10 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 		}
 	}, [isRulerEnabled, clearMarkerAndTooltip, clearTrailHighlight]);
 
-	// Data: fetch the GPX, hydrate both stores, and publish the geometry snapshot
-	// the render effects draw from. Carries no style input by design, so changing
-	// the trail style never re-reads the GPX nor re-hydrates the stores - which
-	// would republish trailPoints / enhancedTrailPoints under fresh identities and
+	// Data: fetch the GPX and hydrate both stores, whose trail arrays the render
+	// effects draw from. Carries no style input by design, so changing the trail
+	// style never re-reads the GPX nor re-hydrates the stores - which would
+	// republish trailPoints / enhancedTrailPoints under fresh identities and
 	// cascade through every subscriber of them.
 	useEffect(() => {
 		if (!map) {
@@ -946,31 +949,6 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 				// One-time mirror of a northbound user's data saved before trail km were
 				// stored southbound; it needs the trail length, known from here on.
 				useMapStore.getState().applyKmFrameMigration(computed.metadata.totalDistanceM / 1000);
-				// Borrow the main store's trailPoints instead of building a second
-				// L.LatLng array over the same ~100k coordinates: applyComputedTrailData
-				// has just materialised exactly this list, and zustand's set is
-				// synchronous so it is readable in the same tick. It writes trailPoints
-				// and enhancedTrailPoints in one set(), so seeing our own `enhanced`
-				// object in the store proves this specific hydration landed and the
-				// array can be borrowed rather than rebuilt. Comparing lengths would
-				// not: a SOBO<->NOBO flip yields the same vertex count, so a stale
-				// array from the previous load would pass. The fallback covers the
-				// case where the store declined the write.
-				const hydrated = useStore.getState();
-				const points =
-					hydrated.enhancedTrailPoints === computed.enhanced
-						? hydrated.trailPoints
-						: computed.enhanced.map((p) => L.latLng(p.lat, p.lng));
-				const cumDistances = computed.enhanced.map((p) => p.distanceFromStart);
-
-				setGeometry({
-					points,
-					cumDistances,
-					// Populated by applyComputedTrailData above.
-					enhanced: useStore.getState().enhancedTrailPoints,
-					hasElevation: computed.hasElevation,
-					loadToken: String(reloadTrailRequested),
-				});
 			} catch (error) {
 				console.error('Error loading GPX trail:', error);
 				setGpxLoadFailed(true);
@@ -985,13 +963,13 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 	}, [map, reloadTrailRequested, setRawGpxData, setGpxLoadFailed]);
 
 	// Route polylines and section boundary chips for the active style. Keyed on the
-	// geometry snapshot, so a style change redraws from data already in memory.
+	// loaded route, so a style change redraws from data already in memory.
 	useEffect(() => {
 		if (!map || !geometry) {
 			return;
 		}
 
-		const { points, cumDistances, enhanced } = geometry;
+		const { points, enhanced } = geometry;
 		const featureGroup = L.featureGroup();
 		// Shared SVG renderer and base polyline options for all render branches.
 		// One renderer is reused across redraws instead of being built per redraw:
@@ -1039,22 +1017,19 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 			featureGroup.addLayer(polyline);
 		};
 
-		const totalDistanceM = cumDistances[cumDistances.length - 1];
+		/** One polyline per bucket of an OSM tag style (surface or SAC scale). */
+		const addTagBands = <K extends string>(bucketAt: (km: number) => K, colors: Record<K, string>): void => {
+			for (const [bucket, segments] of buildTagBandSegments(points, enhanced, bucketAt)) {
+				if (segments.length > 0) addPolyline(segments, colors[bucket]);
+			}
+		};
+
+		const totalDistanceM = enhanced[enhanced.length - 1].distanceFromStart;
 
 		if (effectiveTrailStyle === 'sac' && styleTagRuns) {
-			const runsByBucket = buildTagBandSegments<SacBucket>(points, cumDistances, (km) =>
-				bucketSac(findRunAtKm(styleTagRuns, km)?.sac_scale ?? null),
-			);
-			for (const [bucket, segments] of runsByBucket) {
-				if (segments.length > 0) addPolyline(segments, SAC_COLORS[bucket]);
-			}
+			addTagBands((km) => bucketSac(findRunAtKm(styleTagRuns, km)?.sac_scale ?? null), SAC_COLORS);
 		} else if (effectiveTrailStyle === 'surface' && styleTagRuns) {
-			const runsByBucket = buildTagBandSegments<SurfaceBucket>(points, cumDistances, (km) =>
-				bucketSurface(findRunAtKm(styleTagRuns, km)?.surface ?? null),
-			);
-			for (const [bucket, segments] of runsByBucket) {
-				if (segments.length > 0) addPolyline(segments, SURFACE_COLORS[bucket]);
-			}
+			addTagBands((km) => bucketSurface(findRunAtKm(styleTagRuns, km)?.surface ?? null), SURFACE_COLORS);
 		} else if (effectiveTrailStyle === 'grade') {
 			const runs = buildGradeBandSegments(enhanced, points, styleDirection ?? 'SOBO');
 			for (let band = 0; band < 5; band++) {
@@ -1069,7 +1044,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 				}
 			}
 		} else if (effectiveTrailStyle === 'sections') {
-			const groups = buildSectionGroups(points, enhanced, cumDistances);
+			const groups = buildSectionGroups(points, enhanced);
 			const travelDirection = styleDirection ?? 'SOBO';
 			const currentUnits = useMapStore.getState().units;
 			const currentPrecision = useMapStore.getState().distancePrecision;
@@ -1115,12 +1090,13 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 		featureGroup.addTo(map);
 		routeLayerRef.current = featureGroup;
 
-		// Fit the viewport once per load (see TrailGeometry.loadToken), so a style
-		// change redraws inside whatever view the user is currently on. Mark the
-		// token consumed even when a share link suppresses the fit, otherwise the
-		// next redraw would claim it and yank the map away from the linked target.
-		if (fittedTokenRef.current !== geometry.loadToken) {
-			fittedTokenRef.current = geometry.loadToken;
+		// Fit the viewport once per load, so a style change redraws inside whatever
+		// view the user is currently on. A direction flip keeps the same arrays, so
+		// it does not re-fit either. Mark the load fitted even when a share link
+		// suppresses the fit, otherwise the next redraw would claim it and yank the
+		// map away from the linked target.
+		if (fittedPointsRef.current !== points) {
+			fittedPointsRef.current = points;
 			if (!shareParamsSkipInitialTrailFitBounds(getInitialShareUrlParams())) {
 				map.fitBounds(featureGroup.getBounds(), { padding: [50, 50] });
 			}

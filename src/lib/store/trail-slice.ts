@@ -98,6 +98,7 @@ const INITIAL_TRAIL_STATE: TrailState = {
 		totalDistance: 0,
 		elevationGain: 0,
 		elevationLoss: 0,
+		hasElevation: false,
 	},
 	rawGpxData: null,
 };
@@ -200,6 +201,7 @@ export const createTrailSlice: StateCreator<StoreState, [], [], TrailSlice> = (s
 				totalDistance: data.metadata.totalDistanceM / 1000,
 				elevationGain: data.metadata.elevationGain,
 				elevationLoss: data.metadata.elevationLoss,
+				hasElevation: data.hasElevation,
 			},
 			gpxLoaded: true,
 			enhancedTrailPoints: data.enhanced,
