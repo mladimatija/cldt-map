@@ -24,61 +24,75 @@ import type { StagePlannerData } from './useStagePlannerData';
 
 const COLLAPSED_STAGE_CHIP_LIMIT = 3;
 
-type PlannedStage = NonNullable<StagePlannerData['stagePlan']>['stages'][number];
-
-/** One stage: the summary button with its chips, the expanded details, and any rest days after it. */
-export function StageRow({
-	data,
-	stage,
-	i,
-}: {
-	data: StagePlannerData;
-	stage: PlannedStage;
+interface StageRowProps {
 	i: number;
-}): React.ReactElement | null {
+	isActive: boolean;
+	stats: StagePlannerData['stageStats'][number] | undefined;
+	range: StagePlannerData['stageRanges'][number];
+	/** In the order the hiker passes them. */
+	stagePois: StagePlannerData['stagePoisInTravelOrder'][number];
+	stageCadence: NonNullable<StagePlannerData['planResupplyCadence']>['stages'][number] | undefined;
+	stageSelectedPoiIds: ReadonlySet<string>;
+	dateLabel: string | undefined;
+	stageSac: StagePlannerData['stageSacByStage'][number] | undefined;
+	accommodation: StagePlannerData['accommodationByStage'][number] | undefined;
+	waterGapKm: number | undefined;
+	packScenario: StagePlannerData['packScenariosByStage'][number] | undefined;
+	forecast: StagePlannerData['stageForecasts'][number] | undefined;
+	/** Set for the open stage only. */
+	activeStageElevationThumb: string | null;
+	activeStageToughestStretches: StagePlannerData['activeStageToughestStretches'];
+	restDays: number[] | undefined;
+	startDate: string | undefined;
+	shared: StagePlannerData['stageRowShared'];
+}
+
+/**
+ * One stage: the summary button with its chips, the expanded details, and any
+ * rest days after it. Memoized with its own stage values as props, so opening a
+ * stage or ticking a stage POI re-renders the rows it changes, not every row.
+ */
+export const StageRow = React.memo(function StageRow({
+	i,
+	isActive,
+	stats,
+	range,
+	stagePois,
+	stageCadence,
+	stageSelectedPoiIds,
+	dateLabel,
+	stageSac,
+	accommodation,
+	waterGapKm,
+	packScenario,
+	forecast,
+	activeStageElevationThumb,
+	activeStageToughestStretches,
+	restDays,
+	startDate,
+	shared,
+}: StageRowProps): React.ReactElement {
 	const {
-		accommodationByStage,
-		activeStageElevationThumb,
-		activeStageIndex,
-		activeStageToughestStretches,
 		addRestDayAfter,
 		distancePrecision,
 		distanceUnitLabel,
 		handlePoiClick,
 		handleStageClick,
-		isNobo,
 		locale,
-		packScenariosByStage,
-		planResupplyCadence,
-		poisByStage,
 		removeRestDayAfter,
 		resupplyStatusLabel,
-		selectedStagePoiIdsByStage,
 		setSelectedStagePoiIdsByStage,
-		stageDateLabels,
-		stageForecasts,
-		stagePlan,
 		stageResupplyDetailLines,
-		stageSacByStage,
-		stageStats,
 		t,
 		toDisplay,
 		tPois,
 		travelRange,
 		tWeather,
 		units,
-		waterGapByStage,
-	} = data;
-	if (!stagePlan) return null;
+	} = shared;
 
-	const stats = stageStats[i];
-	const range = travelRange(stage);
-	const poiCount = poisByStage[i]?.length ?? 0;
-	const stageCadence = planResupplyCadence?.stages[i];
+	const poiCount = stagePois.length;
 	const resupplyStatus = stageCadence?.status ?? null;
-	const isActive = i === activeStageIndex;
-	const stagePois = isNobo ? [...(poisByStage[i] ?? [])].reverse() : (poisByStage[i] ?? []);
-	const stageSelectedPoiIds = selectedStagePoiIdsByStage.get(i) ?? new Set<string>();
 	return (
 		<>
 			<div className={cn('border-l-4', isActive ? 'border-l-cldt-blue bg-cldt-light-blue/40' : 'border-l-transparent')}>
@@ -89,16 +103,16 @@ export function StageRow({
 						isActive ? 'text-gray-900 dark:text-white' : 'hover:bg-gray-50 dark:hover:bg-[var(--bg-hover)]',
 					)}
 					type="button"
-					onClick={() => handleStageClick(i)}
+					onClick={() => handleStageClick(i, isActive)}
 				>
 					<span className="flex w-full flex-wrap items-center gap-x-1.5 gap-y-0.5">
 						<span className="min-w-4 font-medium">{i + 1}</span>
 						<span className="whitespace-nowrap text-gray-500 dark:text-[var(--text-secondary)]">
 							{toDisplay(range.from).toFixed(0)}-{toDisplay(range.to).toFixed(0)} {distanceUnitLabel}
 						</span>
-						{stageDateLabels[i] && (
+						{dateLabel && (
 							<span className="shrink-0 whitespace-nowrap text-gray-400 dark:text-[var(--text-secondary)]">
-								{stageDateLabels[i]}
+								{dateLabel}
 							</span>
 						)}
 						{stats && (
@@ -113,7 +127,7 @@ export function StageRow({
 					</span>
 					{(() => {
 						const chips: React.ReactElement[] = [];
-						const sacBreakdown = stageSacByStage[i];
+						const sacBreakdown = stageSac;
 						if (hasDemandingSacTerrain(sacBreakdown) && sacBreakdown?.hardestClass) {
 							const hardestClass = sacBreakdown.hardestClass;
 							const shortLabel = SAC_BUCKET_SHORT_LABELS[hardestClass];
@@ -157,7 +171,7 @@ export function StageRow({
 								</span>,
 							);
 						}
-						const sleepAcc = accommodationByStage[i];
+						const sleepAcc = accommodation;
 						if (sleepAcc) {
 							const accName = poiDisplayName(sleepAcc.poi, locale);
 							const accAria = t('stageSleepAria', { name: accName });
@@ -173,63 +187,63 @@ export function StageRow({
 								</span>,
 							);
 						}
-						if (waterGapByStage[i] !== undefined && waterGapByStage[i] >= WATER_GAP_WARN_KM) {
+						if (waterGapKm !== undefined && waterGapKm >= WATER_GAP_WARN_KM) {
 							chips.push(
 								<span
 									aria-label={t('stageWaterGap', {
-										distance: `${toDisplay(waterGapByStage[i]).toFixed(0)} ${distanceUnitLabel}`,
+										distance: `${toDisplay(waterGapKm).toFixed(0)} ${distanceUnitLabel}`,
 									})}
 									className={cn(
 										'shrink-0 rounded-full px-1.5 py-0 text-[0.625rem] font-medium tabular-nums',
-										waterGapByStage[i] >= WATER_GAP_DANGER_KM
+										waterGapKm >= WATER_GAP_DANGER_KM
 											? 'bg-cldt-red/10 text-cldt-red'
 											: 'bg-amber-500/15 text-amber-700 dark:text-amber-400',
 									)}
 									key="water"
 									title={t('stageWaterGap', {
-										distance: `${toDisplay(waterGapByStage[i]).toFixed(0)} ${distanceUnitLabel}`,
+										distance: `${toDisplay(waterGapKm).toFixed(0)} ${distanceUnitLabel}`,
 									})}
 								>
 									<span aria-hidden>💧</span>
-									{toDisplay(waterGapByStage[i]).toFixed(0)}
+									{toDisplay(waterGapKm).toFixed(0)}
 								</span>,
 							);
 						}
-						if (packScenariosByStage[i] !== undefined) {
+						if (packScenario !== undefined) {
 							chips.push(
 								<span
 									aria-label={
-										packScenariosByStage[i].carryLiters > 0
+										packScenario.carryLiters > 0
 											? t('stagePackTooltipLoaded', {
-													base: formatWeight(packScenariosByStage[i].baseKg, units),
-													loaded: formatWeight(packScenariosByStage[i].loadedKg, units),
-													volume: formatVolume(packScenariosByStage[i].carryLiters, units),
+													base: formatWeight(packScenario.baseKg, units),
+													loaded: formatWeight(packScenario.loadedKg, units),
+													volume: formatVolume(packScenario.carryLiters, units),
 												})
 											: t('stagePackTooltipBase', {
-													base: formatWeight(packScenariosByStage[i].baseKg, units),
+													base: formatWeight(packScenario.baseKg, units),
 												})
 									}
 									className={cn(
 										'shrink-0 rounded-full px-1.5 py-0 text-[0.625rem] font-medium tabular-nums',
-										packScenariosByStage[i].carryLiters >= CARRY_WARN_L
+										packScenario.carryLiters >= CARRY_WARN_L
 											? 'bg-amber-500/15 text-amber-700 dark:text-amber-400'
 											: 'bg-gray-500/10 text-gray-600 dark:text-[var(--text-primary)]',
 									)}
 									key="pack"
 									title={
-										packScenariosByStage[i].carryLiters > 0
+										packScenario.carryLiters > 0
 											? t('stagePackTooltipLoaded', {
-													base: formatWeight(packScenariosByStage[i].baseKg, units),
-													loaded: formatWeight(packScenariosByStage[i].loadedKg, units),
-													volume: formatVolume(packScenariosByStage[i].carryLiters, units),
+													base: formatWeight(packScenario.baseKg, units),
+													loaded: formatWeight(packScenario.loadedKg, units),
+													volume: formatVolume(packScenario.carryLiters, units),
 												})
 											: t('stagePackTooltipBase', {
-													base: formatWeight(packScenariosByStage[i].baseKg, units),
+													base: formatWeight(packScenario.baseKg, units),
 												})
 									}
 								>
 									<span aria-hidden>🎒</span>
-									{formatPackWeightRange(packScenariosByStage[i].baseKg, packScenariosByStage[i].loadedKg, units)}
+									{formatPackWeightRange(packScenario.baseKg, packScenario.loadedKg, units)}
 								</span>,
 							);
 						}
@@ -252,26 +266,26 @@ export function StageRow({
 								</span>,
 							);
 						}
-						if (stageForecasts[i]) {
+						if (forecast) {
 							chips.push(
 								<span
 									aria-label={t('forecastTitle', {
-										condition: tWeather(weatherCodeToKey(stageForecasts[i].weatherCode)),
-										max: formatCompactTemp(stageForecasts[i].tMaxC, units),
-										min: formatCompactTemp(stageForecasts[i].tMinC, units),
-										precip: stageForecasts[i].precipProbPct,
+										condition: tWeather(weatherCodeToKey(forecast.weatherCode)),
+										max: formatCompactTemp(forecast.tMaxC, units),
+										min: formatCompactTemp(forecast.tMinC, units),
+										precip: forecast.precipProbPct,
 									})}
 									className="shrink-0 text-gray-600 tabular-nums dark:text-[var(--text-primary)]"
 									key="forecast"
 									title={t('forecastTitle', {
-										condition: tWeather(weatherCodeToKey(stageForecasts[i].weatherCode)),
-										max: formatCompactTemp(stageForecasts[i].tMaxC, units),
-										min: formatCompactTemp(stageForecasts[i].tMinC, units),
-										precip: stageForecasts[i].precipProbPct,
+										condition: tWeather(weatherCodeToKey(forecast.weatherCode)),
+										max: formatCompactTemp(forecast.tMaxC, units),
+										min: formatCompactTemp(forecast.tMinC, units),
+										precip: forecast.precipProbPct,
 									})}
 								>
-									<span aria-hidden>{weatherKeyToIcon(weatherCodeToKey(stageForecasts[i].weatherCode))}</span>{' '}
-									{formatCompactTemp(stageForecasts[i].tMaxC, units)}
+									<span aria-hidden>{weatherKeyToIcon(weatherCodeToKey(forecast.weatherCode))}</span>{' '}
+									{formatCompactTemp(forecast.tMaxC, units)}
 								</span>,
 							);
 						}
@@ -313,7 +327,7 @@ export function StageRow({
 							/>
 						)}
 						{(() => {
-							const sacBreakdown = stageSacByStage[i];
+							const sacBreakdown = stageSac;
 							const stretches = activeStageToughestStretches;
 							const sacRows =
 								sacBreakdown && sacBreakdown.taggedKm > 0
@@ -383,7 +397,7 @@ export function StageRow({
 							);
 						})()}
 						{(() => {
-							const acc = accommodationByStage[i];
+							const acc = accommodation;
 							if (!acc) return null;
 							const accName = poiDisplayName(acc.poi, locale);
 							const typeLabel = tPois(`type.${acc.poi.type}`, { default: acc.poi.type });
@@ -407,36 +421,36 @@ export function StageRow({
 								</p>
 							);
 						})()}
-						{waterGapByStage[i] !== undefined && (
+						{waterGapKm !== undefined && (
 							<p
 								className={cn(
 									'm-0 text-[0.625rem]',
-									waterGapByStage[i] >= WATER_GAP_DANGER_KM
+									waterGapKm >= WATER_GAP_DANGER_KM
 										? 'text-cldt-red'
-										: waterGapByStage[i] >= WATER_GAP_WARN_KM
+										: waterGapKm >= WATER_GAP_WARN_KM
 											? 'text-amber-700 dark:text-amber-400'
 											: 'text-gray-500 dark:text-[var(--text-secondary)]',
 								)}
 							>
 								<span aria-hidden>💧</span>{' '}
 								{t('stageWaterGap', {
-									distance: `${toDisplay(waterGapByStage[i]).toFixed(0)} ${distanceUnitLabel}`,
+									distance: `${toDisplay(waterGapKm).toFixed(0)} ${distanceUnitLabel}`,
 								})}
 							</p>
 						)}
-						{packScenariosByStage[i] !== undefined && (
+						{packScenario !== undefined && (
 							<div className="m-0 flex flex-col gap-0.5 text-gray-500 dark:text-[var(--text-secondary)]">
 								<p className="m-0 text-[0.625rem] leading-snug">
 									<span aria-hidden>🎒</span>{' '}
 									{t('stagePackBase', {
-										weight: formatWeight(packScenariosByStage[i].baseKg, units),
+										weight: formatWeight(packScenario.baseKg, units),
 									})}
 								</p>
-								{packScenariosByStage[i].carryLiters > 0 ? (
+								{packScenario.carryLiters > 0 ? (
 									<p className="m-0 text-[0.625rem] leading-snug">
 										{t('stagePackLoaded', {
-											weight: formatWeight(packScenariosByStage[i].loadedKg, units),
-											volume: formatVolume(packScenariosByStage[i].carryLiters, units),
+											weight: formatWeight(packScenario.loadedKg, units),
+											volume: formatVolume(packScenario.carryLiters, units),
 										})}
 									</p>
 								) : (
@@ -545,13 +559,11 @@ export function StageRow({
 					</div>
 				)}
 			</div>
-			{Array.from({ length: restDayCountAfter(i, stagePlan.restDays) }, (_, occ) => {
+			{Array.from({ length: restDayCountAfter(i, restDays) }, (_, occ) => {
 				// The day offset is unique across the whole plan (each rest day
 				// is a distinct calendar day), so it is a stable React key.
-				const restOffset = dayOffsetForRestDayAfter(i, occ, stagePlan.restDays);
-				const restDate = stagePlan.startDate
-					? formatShortWeekdayDate(stageCalendarDate(stagePlan.startDate, restOffset), locale)
-					: null;
+				const restOffset = dayOffsetForRestDayAfter(i, occ, restDays);
+				const restDate = startDate ? formatShortWeekdayDate(stageCalendarDate(startDate, restOffset), locale) : null;
 				return (
 					<div
 						className="flex items-center gap-1.5 border-l-4 border-l-transparent bg-gray-50/70 px-2 py-1.5 text-xs text-gray-500 dark:bg-[var(--bg-hover)]/40 dark:text-[var(--text-secondary)]"
@@ -575,4 +587,4 @@ export function StageRow({
 			})}
 		</>
 	);
-}
+});

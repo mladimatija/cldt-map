@@ -17,6 +17,7 @@ export function SortCard({ data }: { data: PoiListData }): React.ReactElement {
 		distancePrecision,
 		groupByDecade,
 		groupByDecadeLabel,
+		hasTrailAnchor,
 		poiListSortOpen,
 		rows,
 		selectedSortOption,
@@ -27,7 +28,6 @@ export function SortCard({ data }: { data: PoiListData }): React.ReactElement {
 		sort,
 		sortOptions,
 		t,
-		trailAnchor,
 		units,
 	} = data;
 
@@ -74,7 +74,7 @@ export function SortCard({ data }: { data: PoiListData }): React.ReactElement {
 				</div>
 			)}
 
-			{sort === 'ahead' && !trailAnchor ? (
+			{sort === 'ahead' && !hasTrailAnchor ? (
 				<p className="text-xs text-amber-700 italic dark:text-amber-300">{t('aheadNeedsAnchor')}</p>
 			) : aheadSummary ? (
 				<p className="text-xs text-gray-500 italic dark:text-[var(--text-secondary)]">{aheadSummary}</p>

@@ -170,7 +170,9 @@ export default function MapContent(): React.ReactElement {
 	// Gates the first location request; a ref, as nothing renders it.
 	const initialLocationFetchedRef = useRef(false);
 	const isLocating = useMapStore((state: MapStoreState) => state.isLocating);
-	const userLocation = useMapStore((state: MapStoreState) => state.userLocation);
+	// Presence only: subscribing to the fix itself would re-render the whole map
+	// subtree on every published GPS fix.
+	const hasUserLocation = useMapStore((state: MapStoreState) => state.userLocation !== null);
 	const fakeUserLocationEnabled = useMapStore((state: MapStoreState) => state.fakeUserLocationEnabled);
 	const gpxLoaded = useStore((state: StoreState) => state.gpxLoaded);
 	const tourActive = useMapStore((state: MapStoreState) => state.tourActive);
@@ -191,7 +193,7 @@ export default function MapContent(): React.ReactElement {
 	// Battery saver wins over the wake lock since its whole point is saving power.
 	const keepScreenOn = useMapStore((state: MapStoreState) => state.keepScreenOn);
 	const batterySaverModeForWakeLock = useMapStore((state: MapStoreState) => state.batterySaverMode);
-	useWakeLock(keepScreenOn && !batterySaverModeForWakeLock && permissionStatus === 'granted' && !!userLocation);
+	useWakeLock(keepScreenOn && !batterySaverModeForWakeLock && permissionStatus === 'granted' && hasUserLocation);
 	// Coordinates mutual-exclusion close behavior for every panel that
 	// registers via `usePanel` (map controls + base map dropdown).
 	usePanelListeners();
@@ -261,12 +263,12 @@ export default function MapContent(): React.ReactElement {
 		if (permissionStatus !== 'granted') {
 			return;
 		}
-		if (!userLocation && !isLocating && gpxLoaded && !initialLocationFetchedRef.current) {
+		if (!hasUserLocation && !isLocating && gpxLoaded && !initialLocationFetchedRef.current) {
 			const getCurrentLocation = useMapStore.getState().getCurrentLocation;
 			void getCurrentLocation();
 			initialLocationFetchedRef.current = true;
 		}
-	}, [fakeUserLocationEnabled, liveTrackingEnabled, permissionStatus, userLocation, isLocating, gpxLoaded]);
+	}, [fakeUserLocationEnabled, liveTrackingEnabled, permissionStatus, hasUserLocation, isLocating, gpxLoaded]);
 
 	return (
 		<>

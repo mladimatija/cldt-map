@@ -134,7 +134,6 @@ export function useStagePlannerData() {
 
 	const enhancedTrailPoints = useStore((s: StoreState) => s.enhancedTrailPoints);
 	const trailMetadata = useStore((s: StoreState) => s.trailMetadata);
-	const closestPoint = useStore((s: StoreState) => s.closestPoint);
 	const direction = useMapStore((s: MapStoreState) => s.direction);
 	/** A stored plan is shown in the direction it was made for (its days are in
 	 *  that travel order); new plans are generated for the current direction. */
@@ -143,17 +142,21 @@ export function useStagePlannerData() {
 	const planIsForOtherDirection = planDirection !== direction;
 	const trailTotalKm = trailMetadata?.totalDistance ?? 0;
 	/** Stored stages are SOBO ranges; show them as the hiker meets them (travel km, start first). */
-	const travelRange = (stage: { startKm: number; endKm: number }): { from: number; to: number } =>
-		toTravelRange(stage.startKm, stage.endKm, planDirection, trailTotalKm);
+	const travelRange = useCallback(
+		(stage: { startKm: number; endKm: number }): { from: number; to: number } =>
+			toTravelRange(stage.startKm, stage.endKm, planDirection, trailTotalKm),
+		[planDirection, trailTotalKm],
+	);
 
 	const map = useMap();
 	const popoverRef = usePopoverFocusTrap(true);
 
 	const isImperial = units === 'imperial';
 
-	const trailAnchor = useMemo(
-		() => resolveTrailAnchor(closestPoint, rulerRange, TRAIL_OFF_TRAIL_THRESHOLD_M),
-		[closestPoint, rulerRange],
+	// Only whether there is an anchor: the planner shows its preview-ahead button
+	// then, and must not re-render on every GPS fix that moves the anchor.
+	const hasTrailAnchor = useStore(
+		(s: StoreState) => resolveTrailAnchor(s.closestPoint, rulerRange, TRAIL_OFF_TRAIL_THRESHOLD_M) !== null,
 	);
 
 	const aheadHorizonLabel = useMemo(
@@ -203,7 +206,10 @@ export function useStagePlannerData() {
 		ReadonlyMap<number, ReadonlySet<string>>
 	>(() => new Map());
 
-	const toDisplay = (km: number): number => (isImperial ? Math.round(kmToMiles(km) * 10) / 10 : km);
+	const toDisplay = useCallback(
+		(km: number): number => (isImperial ? Math.round(kmToMiles(km) * 10) / 10 : km),
+		[isImperial],
+	);
 	const fromDisplay = (display: number): number => (isImperial ? milesToKm(display) : display);
 
 	// One batched Open-Meteo call per plan; null per stage outside the horizon.
@@ -229,19 +235,25 @@ export function useStagePlannerData() {
 	const restDayCount = stagePlan?.restDays?.length ?? 0;
 
 	/** Append one rest day after stage `index`; keeps the anchor list sorted. */
-	const addRestDayAfter = (index: number): void => {
-		if (!stagePlan) return;
-		setStagePlan({ ...stagePlan, restDays: normalizeRestDays([...(stagePlan.restDays ?? []), index]) });
-	};
+	const addRestDayAfter = useCallback(
+		(index: number): void => {
+			if (!stagePlan) return;
+			setStagePlan({ ...stagePlan, restDays: normalizeRestDays([...(stagePlan.restDays ?? []), index]) });
+		},
+		[stagePlan, setStagePlan],
+	);
 
 	/** Remove a single rest day anchored after stage `index`. */
-	const removeRestDayAfter = (index: number): void => {
-		if (!stagePlan?.restDays?.length) return;
-		const at = stagePlan.restDays.indexOf(index);
-		if (at === -1) return;
-		const next = stagePlan.restDays.filter((_, i) => i !== at);
-		setStagePlan({ ...stagePlan, restDays: next.length > 0 ? next : undefined });
-	};
+	const removeRestDayAfter = useCallback(
+		(index: number): void => {
+			if (!stagePlan?.restDays?.length) return;
+			const at = stagePlan.restDays.indexOf(index);
+			if (at === -1) return;
+			const next = stagePlan.restDays.filter((_, i) => i !== at);
+			setStagePlan({ ...stagePlan, restDays: next.length > 0 ? next : undefined });
+		},
+		[stagePlan, setStagePlan],
+	);
 
 	const currentPlannerInputs = (): StagePlanPresetInputs => ({
 		startKm,
@@ -345,24 +357,29 @@ export function useStagePlannerData() {
 		}
 	};
 
-	const handleStageClick = (index: number): void => {
-		if (index === activeStageIndex) {
-			setActiveStageIndex(null);
-			return;
-		}
-		setActiveStageIndex(index);
-		if (!stagePlan || !enhancedTrailPoints?.length) return;
-		const stage = stagePlan.stages[index];
-		const startM = stage.startKm * 1000;
-		const endM = stage.endKm * 1000;
-		const startIdx = findNearestPointIndex(enhancedTrailPoints, startM);
-		const endIdx = findNearestPointIndex(enhancedTrailPoints, endM);
-		const lo = Math.min(startIdx, endIdx);
-		const hi = Math.max(startIdx, endIdx);
-		const pts = enhancedTrailPoints.slice(lo, hi + 1);
-		if (pts.length < 2) return;
-		map.fitBounds(pointsToBounds(pts), { padding: [50, 50] });
-	};
+	/** The row passes whether it is the open one, so this needs no dependency on
+	 *  the active index and the memoized rows keep their props when it changes. */
+	const handleStageClick = useCallback(
+		(index: number, isActive: boolean): void => {
+			if (isActive) {
+				setActiveStageIndex(null);
+				return;
+			}
+			setActiveStageIndex(index);
+			if (!stagePlan || !enhancedTrailPoints?.length) return;
+			const stage = stagePlan.stages[index];
+			const startM = stage.startKm * 1000;
+			const endM = stage.endKm * 1000;
+			const startIdx = findNearestPointIndex(enhancedTrailPoints, startM);
+			const endIdx = findNearestPointIndex(enhancedTrailPoints, endM);
+			const lo = Math.min(startIdx, endIdx);
+			const hi = Math.max(startIdx, endIdx);
+			const pts = enhancedTrailPoints.slice(lo, hi + 1);
+			if (pts.length < 2) return;
+			map.fitBounds(pointsToBounds(pts), { padding: [50, 50] });
+		},
+		[stagePlan, enhancedTrailPoints, map],
+	);
 
 	/** Document-level metadata for a stage GPX export: stage stats (already in
 	 *  the travel direction), plus SAC/surface difficulty over the stage's SOBO km
@@ -877,9 +894,61 @@ export function useStagePlannerData() {
 		downloadGpxFile(gpx, `cldt-stage-${activeStageIndex + 1}-trip-package.gpx`);
 	};
 
-	const handlePoiClick = (poi: Poi): void => {
-		requestOpenPoi(poi.id);
-	};
+	const handlePoiClick = useCallback((poi: Poi): void => requestOpenPoi(poi.id), [requestOpenPoi]);
+
+	/** Each stage's range as the hiker meets it, one object per stage so the
+	 *  memoized rows get the same range until the plan or direction changes. */
+	const stageRanges = useMemo(
+		() =>
+			stagePlan?.stages.map((stage) => toTravelRange(stage.startKm, stage.endKm, planDirection, trailTotalKm)) ?? [],
+		[stagePlan, planDirection, trailTotalKm],
+	);
+
+	/** Stage POIs in the order the hiker passes them. */
+	const stagePoisInTravelOrder = useMemo(
+		() => (isNobo ? poisByStage.map((pois) => [...pois].reverse()) : poisByStage),
+		[poisByStage, isNobo],
+	);
+
+	/** What every stage row shares; one object, so a row re-renders only when
+	 *  this or its own stage values change. */
+	const stageRowShared = useMemo(
+		() => ({
+			addRestDayAfter,
+			distancePrecision,
+			distanceUnitLabel,
+			handlePoiClick,
+			handleStageClick,
+			locale,
+			removeRestDayAfter,
+			resupplyStatusLabel,
+			setSelectedStagePoiIdsByStage,
+			stageResupplyDetailLines,
+			t,
+			toDisplay,
+			tPois,
+			travelRange,
+			tWeather,
+			units,
+		}),
+		[
+			addRestDayAfter,
+			distancePrecision,
+			distanceUnitLabel,
+			handlePoiClick,
+			handleStageClick,
+			locale,
+			removeRestDayAfter,
+			resupplyStatusLabel,
+			stageResupplyDetailLines,
+			t,
+			toDisplay,
+			tPois,
+			travelRange,
+			tWeather,
+			units,
+		],
+	);
 
 	return {
 		accommodationByStage,
@@ -915,6 +984,7 @@ export function useStagePlannerData() {
 		handleStripMapPdfExport,
 		handleTripPackageExport,
 		handleTripStartDateChange,
+		hasTrailAnchor,
 		highlightPositions,
 		isImperial,
 		isNobo,
@@ -970,8 +1040,11 @@ export function useStagePlannerData() {
 		stagePlannerSetupOpen,
 		stagePlannerStagesOpen,
 		stagePlanPresets,
+		stagePoisInTravelOrder,
 		stagePresetName,
+		stageRanges,
 		stageResupplyDetailLines,
+		stageRowShared,
 		stageSacByStage,
 		stageStats,
 		startKm,
@@ -980,7 +1053,6 @@ export function useStagePlannerData() {
 		toDisplay,
 		totalStageJunctions,
 		tPois,
-		trailAnchor,
 		trailMetadata,
 		travelRange,
 		tripNextGroceryTown,

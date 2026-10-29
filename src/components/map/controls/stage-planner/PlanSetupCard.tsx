@@ -31,6 +31,7 @@ export function PlanSetupCard({ data }: { data: StagePlannerData }): React.React
 		handleGenerate,
 		handleSaveStagePreset,
 		handleTripStartDateChange,
+		hasTrailAnchor,
 		isImperial,
 		isSavingStagePreset,
 		kmPerDayKm,
@@ -56,7 +57,6 @@ export function PlanSetupCard({ data }: { data: StagePlannerData }): React.React
 		startKm,
 		t,
 		toDisplay,
-		trailAnchor,
 		trailMetadata,
 		tripStartDate,
 		valueUnitLabel,
@@ -240,7 +240,7 @@ export function PlanSetupCard({ data }: { data: StagePlannerData }): React.React
 				)}
 			</div>
 
-			{trailAnchor && (
+			{hasTrailAnchor && (
 				<Button
 					title={t('previewAheadTooltip', { distance: aheadHorizonLabel })}
 					variant="mapControlOutline"

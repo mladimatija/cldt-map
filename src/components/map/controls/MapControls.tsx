@@ -148,13 +148,17 @@ const MapControls: React.FC<MapControlsProps> = ({
 	useBlockMapPropagation(helpRef);
 	useBlockMapPropagation(emergencyContainerRef);
 
-	const userLocation = useMapStore((state: MapStoreState) => state.userLocation);
-	const permissionStatus = useMapStore((state: MapStoreState) => state.permissionStatus);
+	// A boolean, not the fix: the controls (and every panel inside them) would
+	// otherwise re-render on each published GPS fix.
+	const hasUserLocationInBounds = useMapStore(
+		(state: MapStoreState) =>
+			state.userLocation !== null &&
+			state.permissionStatus === 'granted' &&
+			isInCroatiaBbox(state.userLocation.lat, state.userLocation.lng),
+	);
 	const largeTouchTargets = useMapStore((state: MapStoreState) => state.largeTouchTargets);
 	const highlightedTrailPoint = useStore((state: StoreState) => state.highlightedTrailPoint);
 
-	const withinMapBoundary = userLocation ? isInCroatiaBbox(userLocation.lat, userLocation.lng) : false;
-	const hasUserLocationInBounds = !!userLocation && permissionStatus === 'granted' && withinMapBoundary;
 	const canShare = hasUserLocationInBounds || !!highlightedTrailPoint;
 
 	const boundaryLayerRef = useRef<L.GeoJSON | null>(null);

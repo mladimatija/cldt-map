@@ -98,9 +98,18 @@ export function usePoiListData({ isExpanded, onClose }: { isExpanded: boolean; o
 	const direction = useMapStore((s: MapStoreState) => s.direction);
 	const units = useMapStore((s: MapStoreState) => s.units);
 	const distancePrecision = useMapStore((s: MapStoreState) => s.distancePrecision);
-	const userLocation = useMapStore((s: MapStoreState) => s.userLocation);
+	/** Snapped GPS coordinates: rounded to ~0.001 deg (~100 m), so the
+	 *  O(N) haversine loop below only re-runs when the user has moved
+	 *  meaningfully rather than on every raw GPS tick. Selected rounded, so a
+	 *  fix within the same ~100 m does not re-render the panel either. */
+	const snappedLat = useMapStore((s: MapStoreState) =>
+		s.userLocation ? Math.round(s.userLocation.lat * 1000) / 1000 : null,
+	);
+	const snappedLng = useMapStore((s: MapStoreState) =>
+		s.userLocation ? Math.round(s.userLocation.lng * 1000) / 1000 : null,
+	);
 	const permissionStatus = useMapStore((s: MapStoreState) => s.permissionStatus);
-	const hasGps = !!userLocation && permissionStatus === 'granted';
+	const hasGps = snappedLat !== null && permissionStatus === 'granted';
 	const starredPoiCollections = useMapStore((s: MapStoreState) => s.starredPoiCollections);
 	const activeStarredCollectionId = useMapStore((s: MapStoreState) => s.activeStarredCollectionId);
 	const setActiveStarredCollectionId = useMapStore((s: MapStoreState) => s.setActiveStarredCollectionId);
@@ -131,7 +140,6 @@ export function usePoiListData({ isExpanded, onClose }: { isExpanded: boolean; o
 	const poiListExportOpen = useMapStore((s: MapStoreState) => s.poiListExportOpen);
 	const setPoiListExportOpen = useMapStore((s: MapStoreState) => s.setPoiListExportOpen);
 	const rulerRange = useMapStore((s: MapStoreState) => s.rulerRange);
-	const closestPoint = useStore((s: StoreState) => s.closestPoint);
 	const trailMetadata = useStore((s: StoreState) => s.trailMetadata);
 	const enhancedTrailPoints = useStore((s: StoreState) => s.enhancedTrailPoints);
 	const highlightTrailPosition = useStore((s: StoreState) => s.highlightTrailPosition);
@@ -181,13 +189,18 @@ export function usePoiListData({ isExpanded, onClose }: { isExpanded: boolean; o
 		return poisFile.pois.reduce((m, p) => (p.trailKm > m ? p.trailKm : m), 0);
 	}, [poisFile, trailMetadata]);
 
-	const trailAnchor = useMemo(
-		() => resolveTrailAnchor(closestPoint, rulerRange, TRAIL_OFF_TRAIL_THRESHOLD_M),
-		[closestPoint, rulerRange],
+	const hasTrailAnchor = useStore(
+		(s: StoreState) => resolveTrailAnchor(s.closestPoint, rulerRange, TRAIL_OFF_TRAIL_THRESHOLD_M) !== null,
 	);
-	const anchorSoboKm = trailAnchor?.soboKm ?? null;
 	// Ahead order needs an anchor; while there is none, the list runs in trail order.
-	const sort: SortMode = sortChoice === 'ahead' && !trailAnchor ? 'trail' : sortChoice;
+	const sort: SortMode = sortChoice === 'ahead' && !hasTrailAnchor ? 'trail' : sortChoice;
+	// The exact anchor only in the ahead view, the one that reads it: the other
+	// views would re-sort every row on each GPS fix for nothing.
+	const anchorSoboKm = useStore((s: StoreState) =>
+		sort === 'ahead'
+			? (resolveTrailAnchor(s.closestPoint, rulerRange, TRAIL_OFF_TRAIL_THRESHOLD_M)?.soboKm ?? null)
+			: null,
+	);
 
 	// Deep-link from Up next chip or stage planner preview; the effect clears the request.
 	if (isExpanded && pendingPoiListSort === 'ahead' && sortChoice !== 'ahead') setSort('ahead');
@@ -203,12 +216,6 @@ export function usePoiListData({ isExpanded, onClose }: { isExpanded: boolean; o
 		setGpsLockSeen(true);
 		if (sort === 'trail') setSort('gps');
 	}
-
-	/** Snapped GPS coordinates: rounded to ~0.001 deg (~100 m), so the
-	 *  O(N) haversine loop below only re-runs when the user has moved
-	 *  meaningfully rather than on every raw GPS tick. */
-	const snappedLat = userLocation ? Math.round(userLocation.lat * 1000) / 1000 : null;
-	const snappedLng = userLocation ? Math.round(userLocation.lng * 1000) / 1000 : null;
 
 	/** Per-POI distance from the user's GPS fix, in metres. Empty when GPS is
 	 *  not granted - the gps sort falls back to trail order so the panel still
@@ -295,7 +302,7 @@ export function usePoiListData({ isExpanded, onClose }: { isExpanded: boolean; o
 			{ value: 'name', label: t('sortByName') },
 			{ value: 'offTrail', label: t('sortByOffTrail') },
 		];
-		if (trailAnchor) {
+		if (hasTrailAnchor) {
 			base.push({
 				value: 'ahead',
 				label: t('sortByAhead', {
@@ -305,7 +312,7 @@ export function usePoiListData({ isExpanded, onClose }: { isExpanded: boolean; o
 		}
 		if (hasGps) base.push({ value: 'gps', label: t('sortByGps') });
 		return base;
-	}, [t, hasGps, trailAnchor, aheadHorizonKm, units, distancePrecision]);
+	}, [t, hasGps, hasTrailAnchor, aheadHorizonKm, units, distancePrecision]);
 	const selectedSortOption = useMemo(
 		() => sortOptions.find((o) => o.value === sort) ?? sortOptions[0],
 		[sortOptions, sort],
@@ -692,6 +699,7 @@ export function usePoiListData({ isExpanded, onClose }: { isExpanded: boolean; o
 		handleRenameFilterPreset,
 		handleRenameStarCollection,
 		handleSaveFilterPreset,
+		hasTrailAnchor,
 		hiddenByReachabilityCount,
 		includeRemotePois,
 		jumpLabel,
@@ -752,7 +760,6 @@ export function usePoiListData({ isExpanded, onClose }: { isExpanded: boolean; o
 		starredPoiCollections,
 		t,
 		togglePoiTag,
-		trailAnchor,
 		typeCounts,
 		typeOptions,
 		units,
