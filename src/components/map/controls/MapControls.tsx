@@ -48,29 +48,10 @@ import { PoiListPanel } from './poi-list/PoiListPanel';
 import { MapControlsEmergencyPanel } from './MapControlsEmergencyPanel';
 import { prefetchEmergencyData } from '@/lib/emergency-data';
 import { toTravelKm } from '@/lib/trail-frame';
-import { isBaseTilePane } from '@/lib/leaflet-panes';
-import { DEFAULT_MAP_SERVICES } from '@/lib/services/map-service-config';
+import { loadCroatiaBoundary } from '@/lib/croatia-boundary';
+import { loadBaseMapClip } from '@/lib/services/base-map-layer';
 import { fitMapToRulerBounds, waitForTilesLoaded } from '@/lib/export-utils';
 import { downloadBlob } from '@/lib/download';
-
-const CROATIA_BOUNDARY_URL = '/data/croatia-boundary-display.json';
-
-let croatiaBoundaryPromise: Promise<GeoJSON.FeatureCollection> | null = null;
-
-/** The Croatia outline both the border layer and tile clipping use (simplified
- *  display copy, `npm run build:boundary`), fetched once per page on first use
- *  instead of shipping in the map bundle. A failed load is retried on the next
- *  call. */
-function loadCroatiaBoundary(): Promise<GeoJSON.FeatureCollection> {
-	croatiaBoundaryPromise ??= fetch(CROATIA_BOUNDARY_URL).then((res) => {
-		if (!res.ok) throw new Error(`boundary HTTP ${res.status}`);
-		return res.json() as Promise<GeoJSON.FeatureCollection>;
-	});
-	croatiaBoundaryPromise.catch(() => {
-		croatiaBoundaryPromise = null;
-	});
-	return croatiaBoundaryPromise;
-}
 
 /** `borderLabel` is read on each hover, so the tooltip follows a language change. */
 function createCroatiaBoundaryLayer(
@@ -111,50 +92,6 @@ function createCroatiaBoundaryLayer(
 	});
 }
 
-/**
- * Swaps the base tile layer for a BoundaryCanvas copy clipped to Croatia. The
- * copy is built from the provider's own config (URL including any key,
- * attribution, zoom range, subdomains), not scraped from a rendered tile: the
- * scraped `.png` pattern missed Esri's `{z}/{y}/{x}` URLs (one tile repeated
- * everywhere) and dropped query-string keys. Returns null for styles
- * BoundaryCanvas cannot clip (WMS services such as Croatia Topo); their plain
- * base layer stays on the map.
- */
-function createAndAddTileBoundaryCanvas(
-	map: L.Map,
-	provider: string,
-	boundary: GeoJSON.FeatureCollection,
-): L.TileLayer | null {
-	const service = DEFAULT_MAP_SERVICES.find((s) => s.name === provider);
-	if (!service || service.wms) return null;
-	const BoundaryCanvasCtor = (
-		L.TileLayer as unknown as {
-			BoundaryCanvas: new (url: string, opts: unknown) => L.TileLayer;
-		}
-	).BoundaryCanvas;
-	const layer = new BoundaryCanvasCtor(service.url, {
-		boundary,
-		attribution: service.attribution,
-		maxZoom: service.maxZoom,
-		minZoom: service.minZoom,
-		...(service.subdomains ? { subdomains: service.subdomains } : {}),
-	});
-	// Only swap out the BASE tile layer. Overlay tile layers in custom panes -
-	// radar (radarPane), and any future tile-based overlays - must survive the
-	// boundary toggle, otherwise enabling boundary-clipping while the radar is on
-	// silently strips the radar and the user has to toggle it off + on to get it back.
-	map.eachLayer((l) => {
-		if (!(l instanceof L.TileLayer) || l instanceof BoundaryCanvasCtor) return;
-		// Cast to escape the over-narrowed type produced by the instanceof-exclusion
-		// guard above (TS narrows `l` to `never` after the negative BoundaryCanvasCtor
-		// check, even though l is still a plain L.TileLayer at runtime).
-		const tile = l as L.TileLayer;
-		if (isBaseTilePane(tile.options.pane)) map.removeLayer(tile);
-	});
-	layer.addTo(map);
-	return layer;
-}
-
 interface MapControlsProps {
 	onToggleDirection?: (direction: TrailDirection) => void;
 	onToggleUnits?: (units: UnitSystem) => void;
@@ -174,7 +111,6 @@ const MapControls: React.FC<MapControlsProps> = ({
 	useEffect(() => {
 		borderLabelRef.current = t('borderOfCroatia');
 	}, [t]);
-	const [showTilesBoundary, setShowTilesBoundary] = useState(false);
 	const precisionContainerRef = useRef<HTMLDivElement>(null);
 	const settingsContainerRef = useRef<HTMLDivElement>(null);
 	const poiListContainerRef = useRef<HTMLDivElement>(null);
@@ -222,12 +158,6 @@ const MapControls: React.FC<MapControlsProps> = ({
 	const canShare = hasUserLocationInBounds || !!highlightedTrailPoint;
 
 	const boundaryLayerRef = useRef<L.GeoJSON | null>(null);
-	const boundaryCanvasLayerRef = useRef<L.TileLayer | null>(null);
-	/** The clipping state the latest toggle asked for; an older toggle still
-	 *  loading must not apply its result. */
-	const tileBoundaryIntentRef = useRef<boolean | null>(null);
-	/** Base-map style the clipped layer was built for; a different style means it is stale. */
-	const boundaryCanvasProviderRef = useRef<string | null>(null);
 
 	const { close: closePanel } = usePanelManager();
 	// All ruler behavior (markers, tooltip, chart bridge, Escape handling)
@@ -309,51 +239,25 @@ const MapControls: React.FC<MapControlsProps> = ({
 		}
 	};
 
+	// BaseMapLayer draws the clipped copy once the flag is on. Turning clipping on
+	// loads what that needs first, so a failure shows here and the setting stays off.
 	const toggleTilesBoundary = async (): Promise<void> => {
-		const shouldShow = !showTilesBoundary;
-		tileBoundaryIntentRef.current = shouldShow;
-
-		setShowTilesBoundary(shouldShow);
-
-		try {
-			if (shouldShow) {
-				const [, boundary] = await Promise.all([import('leaflet-boundary-canvas'), loadCroatiaBoundary()]);
-				// Switched off again while the plugin or the outline loaded.
-				if (tileBoundaryIntentRef.current !== shouldShow) return;
-
-				if (boundaryCanvasLayerRef.current) {
-					boundaryCanvasLayerRef.current.addTo(map);
-				} else if ((L.TileLayer as unknown as { BoundaryCanvas?: unknown }).BoundaryCanvas) {
-					const provider = useMapStore.getState().baseMapProvider;
-					boundaryCanvasLayerRef.current = createAndAddTileBoundaryCanvas(map, provider, boundary);
-					boundaryCanvasProviderRef.current = provider;
-				}
-			} else {
-				if (boundaryCanvasLayerRef.current) {
-					map.removeLayer(boundaryCanvasLayerRef.current);
-					boundaryCanvasLayerRef.current = null;
-					// Signal BaseMapSelector to restore the currently selected base layer.
-					// (createAndAddTileBoundaryCanvas removed the original tile layer when it was added.)
-					window.dispatchEvent(new CustomEvent('restoreBaseMapLayer'));
-				}
+		const shouldShow = !showTileBoundary;
+		if (shouldShow) {
+			try {
+				await loadBaseMapClip();
+			} catch (error) {
+				console.error('Error enabling tile clipping:', error);
+				setTileBoundaryError(t('tileBoundaryError'));
+				if (tileBoundaryErrorTimeoutRef.current) clearTimeout(tileBoundaryErrorTimeoutRef.current);
+				tileBoundaryErrorTimeoutRef.current = setTimeout(() => {
+					setTileBoundaryError(null);
+					tileBoundaryErrorTimeoutRef.current = null;
+				}, 4000);
+				return;
 			}
-
-			setShowTileBoundary(shouldShow, { userInitiated: true });
-		} catch (error) {
-			console.error('Error toggling tile boundary:', error);
-			if (tileBoundaryIntentRef.current !== shouldShow) return;
-
-			setShowTilesBoundary(!shouldShow);
-
-			setTileBoundaryError(
-				t('tileBoundaryError', { action: shouldShow ? t('tileBoundaryEnabling') : t('tileBoundaryDisabling') }),
-			);
-			if (tileBoundaryErrorTimeoutRef.current) clearTimeout(tileBoundaryErrorTimeoutRef.current);
-			tileBoundaryErrorTimeoutRef.current = setTimeout(() => {
-				setTileBoundaryError(null);
-				tileBoundaryErrorTimeoutRef.current = null;
-			}, 4000);
 		}
+		setShowTileBoundary(shouldShow, { userInitiated: true });
 	};
 
 	const getShareStyleParams = (): ReturnType<typeof collectShareMapStyleParams> =>
@@ -506,98 +410,6 @@ const MapControls: React.FC<MapControlsProps> = ({
 		};
 	}, [showBoundary, map]);
 
-	// Builds the clipped layer on load and again after every base-map switch.
-	// BaseMapSelector drops every base tile layer (the clipped one included) when
-	// the style changes, so a layer built for another style is stale; remove it in
-	// case the style changed through a path that left it on the map.
-	useEffect(() => {
-		if (!showTileBoundary) {
-			return;
-		}
-		if (boundaryCanvasLayerRef.current && boundaryCanvasProviderRef.current !== baseMapProvider) {
-			map.removeLayer(boundaryCanvasLayerRef.current);
-			boundaryCanvasLayerRef.current = null;
-		}
-		if (boundaryCanvasLayerRef.current) {
-			return;
-		}
-
-		let cancelled = false;
-		const timeoutIds: ReturnType<typeof setTimeout>[] = [];
-		const clearAllTimeouts = (): void => {
-			timeoutIds.forEach((id) => clearTimeout(id));
-			timeoutIds.length = 0;
-		};
-
-		let retryCount = 0;
-		const maxRetries = 5;
-
-		const initTileBoundary = async (): Promise<void> => {
-			// The ref is re-checked here, not just in the effect body: the first run is
-			// a second behind the mount, and toggleTilesBoundary can create the layer
-			// inside that window. Without the re-check a pending timer would add a
-			// duplicate and orphan the layer the toggle just built.
-			if (cancelled || boundaryCanvasLayerRef.current) {
-				return;
-			}
-			try {
-				const [, boundary] = await Promise.all([import('leaflet-boundary-canvas'), loadCroatiaBoundary()]);
-				if (cancelled || boundaryCanvasLayerRef.current) {
-					return;
-				}
-
-				// Wait until the base layer has rendered a tile, so it is on the map
-				// before the clipped copy replaces it.
-				const baseLayerReady = !!document.querySelector('.leaflet-tile-pane img');
-				if (!baseLayerReady && retryCount < maxRetries) {
-					retryCount++;
-					const delay = 1000 * Math.pow(1.5, retryCount);
-					const id = setTimeout(initTileBoundary, delay);
-					timeoutIds.push(id);
-					return;
-				}
-
-				if ((L.TileLayer as unknown as { BoundaryCanvas?: unknown }).BoundaryCanvas && !cancelled) {
-					const provider = useMapStore.getState().baseMapProvider;
-					boundaryCanvasLayerRef.current = createAndAddTileBoundaryCanvas(map, provider, boundary);
-					boundaryCanvasProviderRef.current = provider;
-					if (!cancelled) {
-						setShowTilesBoundary(true);
-					}
-				}
-			} catch (error) {
-				if (cancelled) {
-					return;
-				}
-				console.error('Error initializing tile boundary layer:', error);
-
-				if (retryCount < maxRetries) {
-					retryCount++;
-					const delay = 1000 * Math.pow(1.5, retryCount);
-					const id = setTimeout(initTileBoundary, delay);
-					timeoutIds.push(id);
-				} else {
-					console.error('Max retries reached, disabling tile boundary');
-					if (!cancelled) {
-						setShowTilesBoundary(false);
-						// Deliberately not userInitiated: this is the layer giving up, not a
-						// preference. The default is re-applied on the next load so an offline
-						// or slow-tile session does not turn clipping off for good.
-						setShowTileBoundary(false);
-					}
-				}
-			}
-		};
-
-		const initialId = setTimeout(initTileBoundary, 1000);
-		timeoutIds.push(initialId);
-
-		return () => {
-			cancelled = true;
-			clearAllTimeouts();
-		};
-	}, [map, setShowTileBoundary, showTileBoundary, baseMapProvider]);
-
 	useEffect(() => {
 		try {
 			const container = map.getContainer();
@@ -625,16 +437,12 @@ const MapControls: React.FC<MapControlsProps> = ({
 		}
 	}, [map]);
 
-	// Unmount cleanup for the layers this component still owns (boundary,
-	// boundary canvas). Ruler teardown lives in useRuler.
+	// Unmount cleanup for the border outline, the one layer this component owns.
+	// Ruler teardown lives in useRuler, the base layer in BaseMapLayer.
 	useEffect(
 		() => () => {
 			if (boundaryLayerRef.current) {
 				map.removeLayer(boundaryLayerRef.current);
-			}
-
-			if (boundaryCanvasLayerRef.current) {
-				map.removeLayer(boundaryCanvasLayerRef.current);
 			}
 		},
 		[map],
@@ -798,7 +606,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 					{toolsPanel.isOpen && (
 						<MapControlsToolsPanel
 							showRadarOverlay={showRadarOverlay}
-							showTilesBoundary={showTilesBoundary}
+							showTilesBoundary={showTileBoundary}
 							onToggleRadarOverlay={() => setShowRadarOverlay(!showRadarOverlay)}
 							onToggleTilesBoundary={toggleTilesBoundary}
 						/>

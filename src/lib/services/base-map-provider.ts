@@ -27,9 +27,6 @@ export interface BaseMapConfig {
 	subdomains?: string;
 	bounds?: LatLngBoundsExpression;
 	noWrap?: boolean;
-	/** Request higher-zoom tiles on HiDPI screens (default true), which sharpens
-	 *  256px sources like OSM. */
-	detectRetina?: boolean;
 	/** Set for a WMS service: `url` is then the service endpoint, not a z/x/y
 	 *  template, so the tile cache and the boundary clip leave the style alone. */
 	wms?: Pick<WMSOptions, 'layers' | 'format' | 'transparent' | 'version'>;

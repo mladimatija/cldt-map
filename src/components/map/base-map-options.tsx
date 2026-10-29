@@ -3,6 +3,7 @@
 import React from 'react';
 import { BaseMapProvider } from '@/lib/services/base-map-provider';
 import { isBaseMapProviderAvailable } from '@/lib/services/map-service-config';
+import { config } from '@/lib/config';
 import {
 	FaMap,
 	FaMountain,
@@ -112,9 +113,17 @@ const VALID_PROVIDERS = new Set<BaseMapProvider>(
 	Object.values(BaseMapProvider).filter((provider) => isBaseMapProviderAvailable(provider)),
 );
 
-export function resolveProvider(storeValue: string | undefined, fallback: BaseMapProvider): BaseMapProvider {
+function resolveProvider(storeValue: string | undefined, fallback: BaseMapProvider): BaseMapProvider {
 	if (storeValue && VALID_PROVIDERS.has(storeValue as BaseMapProvider)) {
 		return storeValue as BaseMapProvider;
 	}
 	return fallback;
+}
+
+/** Style shown when the stored one is not a known style. */
+const FALLBACK_PROVIDER = resolveProvider(config.baseMapProvider, BaseMapProvider.OPEN_STREET_MAP);
+
+/** The style to show for the store's value: an unknown or unavailable one gets the configured default. */
+export function selectedBaseMapProvider(storeValue: string | undefined): BaseMapProvider {
+	return resolveProvider(storeValue, FALLBACK_PROVIDER);
 }

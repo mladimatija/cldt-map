@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * Root Leaflet map: sets initial center/zoom from share URL or defaults, mounts BaseMapSelector and MapContent.
+ * Root Leaflet map: sets initial center/zoom from share URL or defaults, mounts the base layer, its selector and MapContent.
  * MapContent loads controls, trail polyline, markers, and share handler dynamically (no SSR).
  */
 import React, { useMemo, useState } from 'react';
@@ -12,6 +12,7 @@ import { ErrorBoundary } from '@/components/common/ErrorBoundary';
 import { mapDefaults } from '@/lib/config';
 import 'leaflet/dist/leaflet.css';
 import { getInitialShareUrlParams } from '@/lib/share-url';
+import BaseMapLayer from './BaseMapLayer';
 
 const MapContent = dynamic(() => import('./MapContent'), { ssr: false });
 // Loaded beside MapContent, not inside it, so the base tiles do not wait for MapContent's chunk.
@@ -69,6 +70,12 @@ export default function Map({ locale: _locale = 'en', zoomSnap = 0, className = 
 				    single place it renders. Layers feed it via their attribution
 				    option and it updates automatically on base-map switches. */}
 				<AttributionControl position="bottomleft" prefix={false} />
+
+				{/* Bundled with the map so the first tiles do not wait for another chunk.
+				    If it throws, the trail and the controls keep working without base tiles. */}
+				<ErrorBoundary fallback={null} name="BaseMapLayer">
+					<BaseMapLayer />
+				</ErrorBoundary>
 
 				{/* Hidden on error rather than blanking the whole map */}
 				<ErrorBoundary fallback={null} name="BaseMapSelector">

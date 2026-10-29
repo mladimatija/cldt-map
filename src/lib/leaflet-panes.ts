@@ -1,7 +1,7 @@
 import type L from 'leaflet';
 
-/** True for Leaflet's default tile pane, which holds the base map layer (and the
- *  clipped copy MapControls builds from it); overlays set a pane of their own. */
+/** True for Leaflet's default tile pane, which holds the base map layer, plain
+ *  or clipped (BaseMapLayer); overlays set a pane of their own. */
 export function isBaseTilePane(pane: string | undefined): boolean {
 	return pane === undefined || pane === 'tilePane';
 }

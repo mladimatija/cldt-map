@@ -12,6 +12,7 @@ import { useTranslations } from 'next-intl';
 import { useMapStore } from '@/lib/store';
 import { MAP_FULLSCREEN_TOGGLE_EVENT } from '@/lib/map-events';
 import { preloadTrailOsmTagsForSavedStyle } from '@/hooks/useTrailOsmTagsFetch';
+import { loadCroatiaBoundary } from '@/lib/croatia-boundary';
 
 const Header = dynamic(() => import('@/components/layout/Header').then((mod) => mod.Header), { ssr: false });
 const GPXLoadErrorBanner = dynamic(() => import('@/components/map/GPXLoadErrorBanner'), { ssr: false });
@@ -82,6 +83,8 @@ export default function MapWrapper(_props?: MapWrapperProps): ReactElement {
 
 	useEffect(() => {
 		preloadTrailOsmTagsForSavedStyle();
+		// Tile clipping (on by default) draws no base tiles until the outline is in.
+		if (useMapStore.getState().showTileBoundary) void loadCroatiaBoundary();
 	}, []);
 
 	// Brief minimum loading time to avoid flash (reduced from 2.5s for better UX).
