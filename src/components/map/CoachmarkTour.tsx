@@ -3,7 +3,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { useMapStore, type MapStoreState } from '@/lib/store';
-import { usePopoverFocusTrap } from '@/hooks';
+import { useEscapeLayer, usePopoverFocusTrap } from '@/hooks';
 import { Button } from '@/components/ui/Button';
 
 interface TourStep {
@@ -100,13 +100,7 @@ export function CoachmarkTour(): React.ReactElement | null {
 		};
 	}, [locate]);
 
-	useEffect(() => {
-		const onKey = (e: KeyboardEvent): void => {
-			if (e.key === 'Escape') endTour();
-		};
-		window.addEventListener('keydown', onKey);
-		return () => window.removeEventListener('keydown', onKey);
-	}, [endTour]);
+	useEscapeLayer(true, endTour);
 
 	const goNext = useCallback(() => {
 		if (step >= TOUR_STEPS.length - 1) {

@@ -23,6 +23,7 @@ import { segmentGainLoss, toTravelM } from '@/lib/trail-frame';
 import { fitMapToRulerBounds } from '@/lib/export-utils';
 import { RULER_SET_FROM_CHART_EVENT, type RulerSetFromChartDetail } from '@/lib/ruler-from-chart';
 import { usePanelManager } from './usePanelManager';
+import { useEscapeLayer } from './useEscapeLayer';
 import { ensurePane } from '@/lib/leaflet-panes';
 
 type RulerRange = NonNullable<MapStoreState['rulerRange']>;
@@ -85,7 +86,7 @@ export interface UseRulerResult {
 export function useRuler(map: L.Map): UseRulerResult {
 	const t = useTranslations('mapControls');
 	const tChart = useTranslations('elevationChart');
-	const { openPanel: openPanelId, close: closePanel } = usePanelManager();
+	const { close: closePanel } = usePanelManager();
 
 	const isRulerEnabled = useMapStore((state: MapStoreState) => state.isRulerEnabled);
 	const setRulerEnabled = useMapStore((state: MapStoreState) => state.setRulerEnabled);
@@ -107,16 +108,8 @@ export function useRuler(map: L.Map): UseRulerResult {
 		rulerClickHandlerRef.current(e);
 	}, []);
 
-	// Escape closes the ruler only when no overlay panel is currently open -
-	// panel-driven Escape is handled inside usePanelManager.
-	useEffect(() => {
-		if (!isRulerEnabled || openPanelId) return;
-		const handle = (e: KeyboardEvent): void => {
-			if (e.key === 'Escape') setRulerEnabled(false);
-		};
-		document.addEventListener('keydown', handle);
-		return () => document.removeEventListener('keydown', handle);
-	}, [isRulerEnabled, openPanelId, setRulerEnabled]);
+	// Escape turns the ruler off once no panel, dialog or menu is open.
+	useEscapeLayer(isRulerEnabled, () => setRulerEnabled(false), { mode: true });
 
 	// Ruler panes: order set in map.css (ruler-pane, ruler-markers-pane, ruler-tooltip-pane).
 	useEffect(() => {

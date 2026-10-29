@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/Button';
 // Import the focus-trap hook directly, not via the '@/hooks' barrel: the barrel
 // re-exports Leaflet-importing hooks that would break this app-root component.
 import { usePopoverFocusTrap } from '@/hooks/usePopoverFocusTrap';
+import { useEscapeLayer } from '@/hooks/useEscapeLayer';
 import { useMapStore, type MapStoreState } from '@/lib/store';
 import { isSafeUrl } from '@/lib/url-safety';
 
@@ -55,6 +56,7 @@ export function PoiImageLightbox(): React.ReactElement | null {
 	// can't leak to the map controls behind the backdrop, and arrow keys can't
 	// reach the Leaflet map underneath.
 	const cardRef = usePopoverFocusTrap(Boolean(images && images.length > 0));
+	useEscapeLayer(Boolean(images && images.length > 0), close, { modal: true });
 	const viewportRef = useRef<HTMLDivElement>(null);
 
 	// Zoom / pan state. Reset whenever the visible image changes.
@@ -74,10 +76,7 @@ export function PoiImageLightbox(): React.ReactElement | null {
 	useEffect(() => {
 		if (!images) return;
 		const onKey = (e: KeyboardEvent): void => {
-			if (e.key === 'Escape') {
-				e.preventDefault();
-				close();
-			} else if (e.key === 'ArrowLeft') {
+			if (e.key === 'ArrowLeft') {
 				e.preventDefault();
 				setIndex(wrappedIndex(index - 1, images.length));
 			} else if (e.key === 'ArrowRight') {
@@ -99,7 +98,7 @@ export function PoiImageLightbox(): React.ReactElement | null {
 			document.removeEventListener('keydown', onKey);
 			document.body.style.overflow = previousOverflow;
 		};
-	}, [images, index, close, setIndex]);
+	}, [images, index, setIndex]);
 
 	// New image (or freshly opened): drop any zoom / pan from the previous one.
 	// Adjusted during render instead of in an effect to avoid a cascading

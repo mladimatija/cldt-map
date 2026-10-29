@@ -1,13 +1,13 @@
 'use client';
 
 /** Custom language dropdown for the footer. Opens upward; closes on Escape or outside click. */
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { IoCheckmark, IoLanguageOutline } from 'react-icons/io5';
 import { MdKeyboardArrowDown, MdKeyboardArrowUp } from 'react-icons/md';
 import { routing, type Locale } from '@/i18n/routing';
 import { useClientLocale } from '@/components/providers/ClientIntlProvider';
-import { useClickOutside } from '@/hooks';
+import { useClickOutside, useEscapeLayer } from '@/hooks';
 import { cn } from '@/lib/cn';
 
 export function LanguageSwitcher(): React.ReactElement {
@@ -17,14 +17,7 @@ export function LanguageSwitcher(): React.ReactElement {
 	const [isOpen, setIsOpen] = useState(false);
 	const containerRef = useRef<HTMLDivElement>(null);
 
-	useEffect(() => {
-		if (!isOpen) return;
-		const handler = (e: KeyboardEvent): void => {
-			if (e.key === 'Escape') setIsOpen(false);
-		};
-		document.addEventListener('keydown', handler);
-		return () => document.removeEventListener('keydown', handler);
-	}, [isOpen]);
+	useEscapeLayer(isOpen, () => setIsOpen(false));
 
 	useClickOutside(containerRef, isOpen, () => setIsOpen(false));
 

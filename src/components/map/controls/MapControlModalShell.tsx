@@ -1,12 +1,13 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { IoCloseOutline } from 'react-icons/io5';
 // Import the focus-trap hook directly, not via the '@/hooks' barrel: the barrel
 // re-exports useRuler/useBlockMapPropagation, which import Leaflet at module top
 // level. This shell is reachable from the server-rendered OnboardingWelcomeCard,
 // so pulling the barrel here evaluates Leaflet during SSR (window is not defined).
 import { usePopoverFocusTrap } from '@/hooks/usePopoverFocusTrap';
+import { useEscapeLayer } from '@/hooks/useEscapeLayer';
 import { Button } from '@/components/ui/Button';
 import { cn } from '@/lib/cn';
 
@@ -48,14 +49,7 @@ export function MapControlModalShell({
 }: MapControlModalShellProps): React.ReactElement | null {
 	const cardRef = usePopoverFocusTrap(open, initialFocusRef);
 
-	useEffect(() => {
-		if (!open) return;
-		const handler = (e: KeyboardEvent): void => {
-			if (e.key === 'Escape') onClose();
-		};
-		document.addEventListener('keydown', handler);
-		return () => document.removeEventListener('keydown', handler);
-	}, [open, onClose]);
+	useEscapeLayer(open, onClose, { modal: true });
 
 	if (!open) return null;
 

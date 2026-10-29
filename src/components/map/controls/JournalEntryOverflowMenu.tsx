@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { IoEllipsisHorizontal } from 'react-icons/io5';
+import { useEscapeLayer } from '@/hooks/useEscapeLayer';
 import { MapControlIconButton } from './MapControlIconButton';
 import { cn } from '@/lib/cn';
 
@@ -45,6 +46,8 @@ export function JournalEntryOverflowMenu({
 		setOpen(false);
 		triggerRef.current?.focus();
 	};
+	// Escape closes the menu only; the panel it sits in stays open.
+	useEscapeLayer(open, closeMenu);
 
 	useEffect(() => {
 		if (!open) return;
@@ -62,14 +65,6 @@ export function JournalEntryOverflowMenu({
 
 	const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>): void => {
 		if (!open) return;
-		if (e.key === 'Escape') {
-			// Close the menu only. React listens on the document, like the panel's own
-			// Escape listener, so only stopping the remaining listeners there keeps the
-			// panel open.
-			e.nativeEvent.stopImmediatePropagation();
-			closeMenu();
-			return;
-		}
 		if (e.key === 'Tab') {
 			// Leave from the button, as the focused item is about to unmount.
 			closeMenu();

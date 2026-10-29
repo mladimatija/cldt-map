@@ -527,10 +527,6 @@ export function usePoiListData({ isExpanded, onClose }: { isExpanded: boolean; o
 	});
 
 	const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>): void => {
-		if (e.key === 'Escape') {
-			onClose();
-			return;
-		}
 		if (rows.length === 0) return;
 		// Ignore keystrokes that originate from form controls (search input,
 		// sort select, type filter input). Otherwise, typing in the search

@@ -29,7 +29,9 @@ export function MapControlInlineNameForm({
 }: MapControlInlineNameFormProps): React.ReactElement {
 	return (
 		<div className="flex flex-col gap-1">
+			{/* Escape in the field cancels the form, not the panel it sits in. */}
 			<input
+				data-handles-escape
 				aria-label={ariaLabel}
 				className={cn(MAP_CONTROL_INPUT, 'w-full text-xs')}
 				placeholder={placeholder}

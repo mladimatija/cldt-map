@@ -4,11 +4,11 @@
  * Disclaimer modal shown before any GPX download.
  * The user must acknowledge the terms before the download is triggered.
  */
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/Button';
 import { Checkbox } from '@/components/ui/Checkbox';
-import { usePopoverFocusTrap } from '@/hooks';
+import { useEscapeLayer, usePopoverFocusTrap } from '@/hooks';
 import { canShareGpxFiles } from '@/lib/gpx-export';
 
 interface GpxDownloadModalProps {
@@ -43,14 +43,7 @@ export function GpxDownloadModal({
 	const shareSupported = onShare !== undefined && canShareGpxFiles();
 	const cardRef = usePopoverFocusTrap(isOpen);
 
-	useEffect(() => {
-		if (!isOpen) return;
-		const handler = (e: KeyboardEvent): void => {
-			if (e.key === 'Escape') onClose();
-		};
-		document.addEventListener('keydown', handler);
-		return () => document.removeEventListener('keydown', handler);
-	}, [isOpen, onClose]);
+	useEscapeLayer(isOpen, onClose, { modal: true });
 
 	if (!isOpen) return null;
 

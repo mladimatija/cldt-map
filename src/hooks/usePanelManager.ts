@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, type RefObject } from 'react';
 import { useMapStore, type MapStoreState } from '@/lib/store';
+import { useEscapeLayer } from './useEscapeLayer';
 
 /**
  * Module-level registry of panel container refs. Lives outside React state
@@ -88,17 +89,22 @@ export function usePanel(id: string, ref: RefObject<HTMLElement | null>): PanelH
 }
 
 /**
- * Install document-level listeners that close the currently open panel on
- * outside `mousedown` or `Escape`. Call once from a component that's mounted
- * for as long as any panel could be open (e.g. MapContent).
+ * Closes the open panel on an outside `mousedown` or on Escape. Escape goes
+ * through the Escape stack, so a dialog or menu opened from the panel closes
+ * first. Call once from a component that's mounted for as long as any panel
+ * could be open (e.g. MapContent).
  */
 export function usePanelListeners(): void {
 	const openPanel = useMapStore((s: MapStoreState) => s.openPanel);
 	const closePanel = useMapStore((s: MapStoreState) => s.closePanel);
+	const { hasModalAbove } = useEscapeLayer(openPanel, closePanel);
 
 	useEffect(() => {
 		if (!openPanel) return;
 		const handleMousedown = (e: MouseEvent): void => {
+			// A dialog opened from the panel (journal editor, POI disclaimer) handles
+			// its own dismissal; a click in it must not close the panel behind it.
+			if (hasModalAbove()) return;
 			// A react-select menu portalled out of a panel (menuPortalTarget, e.g. the
 			// settings language switcher) renders at document.body, so it is not
 			// contained by the panel ref; treat clicks inside it as inside the panel so
@@ -109,14 +115,7 @@ export function usePanelListeners(): void {
 				closePanel();
 			}
 		};
-		const handleKeydown = (e: KeyboardEvent): void => {
-			if (e.key === 'Escape') closePanel();
-		};
 		document.addEventListener('mousedown', handleMousedown);
-		document.addEventListener('keydown', handleKeydown);
-		return () => {
-			document.removeEventListener('mousedown', handleMousedown);
-			document.removeEventListener('keydown', handleKeydown);
-		};
-	}, [openPanel, closePanel]);
+		return () => document.removeEventListener('mousedown', handleMousedown);
+	}, [openPanel, closePanel, hasModalAbove]);
 }

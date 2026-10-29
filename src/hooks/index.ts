@@ -15,6 +15,7 @@ import { useBlockMapPropagation } from './useBlockMapPropagation';
 import { useSiteMetadata } from './useSiteMetadata';
 import { useFitToRoute } from './useFitToRoute';
 import { usePopoverFocusTrap } from './usePopoverFocusTrap';
+import { useEscapeLayer } from './useEscapeLayer';
 import { useClickOutside } from './useClickOutside';
 import { usePanel, usePanelListeners, usePanelManager } from './usePanelManager';
 import { usePoiListRows } from './usePoiListRows';
@@ -30,6 +31,7 @@ export {
 	useBlockMapPropagation,
 	useFitToRoute,
 	usePopoverFocusTrap,
+	useEscapeLayer,
 	useClickOutside,
 	usePanel,
 	usePanelListeners,
