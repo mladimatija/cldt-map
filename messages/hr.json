@@ -435,6 +435,7 @@
 		"sectionA": "Dionica A",
 		"sectionB": "Dionica B",
 		"sectionC": "Dionica C",
+		"sectionChipLabel": "Početak: {section}",
 		"tooltipDistanceFromStart": "Udaljenost od početka:",
 		"tooltipDistanceToEnd": "Udaljenost do kraja:",
 		"tooltipAccumulatedGain": "Nagomilani uspon:",

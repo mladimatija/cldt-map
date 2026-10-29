@@ -435,6 +435,7 @@
 		"sectionA": "Section A",
 		"sectionB": "Section B",
 		"sectionC": "Section C",
+		"sectionChipLabel": "Start of {section}",
 		"tooltipDistanceFromStart": "Distance from start:",
 		"tooltipDistanceToEnd": "Distance to end:",
 		"tooltipAccumulatedGain": "Accumulated gain:",

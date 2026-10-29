@@ -1151,7 +1151,9 @@
 	justify-content: center;
 }
 
-.trail-endpoint-marker-inner::before {
+/* Invisible 48px hit area around the flags and section chips. */
+.trail-endpoint-marker-inner::before,
+.trail-section-marker-inner::before {
 	content: '';
 	position: absolute;
 	left: 50%;
@@ -1178,6 +1180,7 @@
 }
 
 .trail-section-marker-inner {
+	position: relative;
 	width: 24px;
 	height: 24px;
 	border: 2px solid var(--marker-on-color);

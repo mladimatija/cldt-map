@@ -36,7 +36,7 @@ import {
 	surfaceMixForSection,
 	type SurfaceMixEntry,
 } from '@/lib/surface-section-stats';
-import { TRAIL_SECTIONS } from '@/lib/trail-sections';
+import { TRAIL_SECTIONS, type TrailSection } from '@/lib/trail-sections';
 import { fetchGPXWithCache } from '@/lib/gpx-cache';
 import { computeTrailDataInWorker } from '@/lib/trail-compute-client';
 import { computeFromGpx } from '@/lib/trail-compute';
@@ -344,6 +344,17 @@ function unmountTooltipRoot(rootRef: React.RefObject<Root | null>): void {
 	queueMicrotask(() => root.unmount());
 }
 
+/** Names a marker for assistive tech. Its icon element only exists once the
+ *  marker is on the map, so the label is set on add. */
+function labelMarkerOnAdd(marker: L.Marker, label: string): void {
+	marker.on('add', () => {
+		const el =
+			(marker as L.Marker & { getElement?: () => HTMLElement }).getElement?.() ??
+			(marker as unknown as { _icon?: HTMLElement })._icon;
+		if (el) el.setAttribute('aria-label', label);
+	});
+}
+
 /**
  * Everything the render effects need to draw the route, published once per data
  * load. Holding it apart from the raw GPX is what lets a trail-style change
@@ -564,6 +575,12 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 			);
 	}, [t, tSurfaceBucket]);
 
+	/** Accessible name of a section chip, which sits where the hiker enters the section. */
+	const sectionChipLabel = useCallback(
+		(section: TrailSection): string => t('sectionChipLabel', { section: t(section.nameKey) }),
+		[t],
+	);
+
 	/** Tears down the style-dependent layers: route polylines and section chips. */
 	const removeRouteLayer = useCallback((): void => {
 		if (!map) return;
@@ -607,13 +624,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 				permanent: false,
 				className: 'map-tooltip map-tooltip--compact',
 			});
-			// The icon element only exists once the marker is on the map.
-			marker.on('add', () => {
-				const el =
-					(marker as L.Marker & { getElement?: () => HTMLElement }).getElement?.() ??
-					(marker as unknown as { _icon?: HTMLElement })._icon;
-				if (el) el.setAttribute('aria-label', label);
-			});
+			labelMarkerOnAdd(marker, label);
 			marker.addTo(map);
 			return marker;
 		},
@@ -1090,6 +1101,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 						className: 'map-tooltip map-tooltip--section',
 					},
 				);
+				labelMarkerOnAdd(marker, sectionChipLabel(section));
 				marker.addTo(map);
 				newSectionMarkers.push(marker);
 			}
@@ -1129,6 +1141,7 @@ export default function TrailRoute({ pathOptions = DEFAULT_PATH_OPTIONS }: Trail
 		removeRouteLayer,
 		highlightTrailPosition,
 		makeSectionTooltipRenderer,
+		sectionChipLabel,
 	]);
 
 	// The shared SVG renderer outlives every redraw, so its teardown belongs to the
