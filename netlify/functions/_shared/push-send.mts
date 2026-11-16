@@ -1,5 +1,5 @@
 import { getStore } from '@netlify/blobs';
-import webpush from 'web-push';
+import * as webpush from 'web-push';
 
 export type PushSubscription = {
 	endpoint: string;
