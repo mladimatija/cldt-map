@@ -31,7 +31,7 @@
 	},
 	"dependencies": {
 		"@anthropic-ai/sdk": "^1.8.0",
-		"@garmin/fitsdk": "^21.221.0",
+		"@garmin/fitsdk": "^21.222.0",
 		"@netlify/blobs": "^11.1.9",
 		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",
